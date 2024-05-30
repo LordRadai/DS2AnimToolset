@@ -48,8 +48,10 @@ void initImGui(HWND hwnd)
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 
+    g_appLog.DebugMessage(MsgLevel_Info, "Add ImGui fonts\n");
     io.Fonts->AddFontDefault();
 
+    g_appLog.DebugMessage(MsgLevel_Info, "Initialising ImGui style\n");
     g_appRootWindow.GUIStyle();
 }
 
@@ -59,6 +61,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_ LPWSTR    lpCmdLine,
     _In_ int       nCmdShow)
 {
+    g_appLog = RLog::RLog(MsgLevel_Debug, ".//Data//out//morphemeEditor.log", "morphemeEditor");
+
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, hInstance, LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON)), LoadCursor(nullptr, IDC_ARROW), nullptr, nullptr, MAKEINTRESOURCEW(IDI_ICON),  LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SMALL)) };
@@ -84,6 +88,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         CleanupDeviceD3D();
         ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+
+        g_appLog.DebugMessage(MsgLevel_Error, "Failed to create D3D device\n");
+
         return 1;
     }
 
@@ -93,21 +100,28 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     try
     {
+        g_appLog.DebugMessage(MsgLevel_Info, "Loading TimeAct template\n");
+
         ifstream jsonSrc(".//Data//res//def//timeact.json");
 
         g_taeTemplate = TaeTemplate(jsonSrc);
     }
     catch (const std::exception& exc)
     {
-        g_appLog.AlertMessage(MsgLevel_Debug, exc.what());
+        g_appLog.AlertMessage(MsgLevel_Error, exc.what());
     }
 
+    g_appLog.DebugMessage(MsgLevel_Info, "Initialising ImGui\n");
     initImGui(hwnd);
-    g_appRootWindow.Initialise();
-    g_preview.Initialise(hwnd, g_pSwapChain, g_pd3dDevice, g_pd3dDeviceContext, nullptr);
-    g_pFbxManager = FbxManager::Create();
 
-    g_appLog = RLog::RLog(MsgLevel_Debug, ".//Data//out//morphemeEditor.log", "morphemeEditor");
+    g_appLog.DebugMessage(MsgLevel_Info, "Initialising application core module\n");
+    g_appRootWindow.Initialise();
+
+    g_appLog.DebugMessage(MsgLevel_Info, "Initialising preview module\n");
+    g_preview.Initialise(hwnd, g_pSwapChain, g_pd3dDevice, g_pd3dDeviceContext, nullptr);
+
+    g_appLog.DebugMessage(MsgLevel_Info, "Create FBXManager\n");
+    g_pFbxManager = FbxManager::Create();
 
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -168,13 +182,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     g_appRootWindow.m_morphemeSystem.termMorpheme();
 
     // Cleanup
+    g_appLog.DebugMessage(MsgLevel_Info, "ImGui shutdown\n");
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 
+    g_appLog.DebugMessage(MsgLevel_Info, "DirectX 11 shutdown\n");
     CleanupDeviceD3D();
     ::DestroyWindow(hwnd);
     ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+
+    g_appLog.DebugMessage(MsgLevel_Info, "Exit\n");
 
     return 0;
 }

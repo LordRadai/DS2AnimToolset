@@ -74,6 +74,8 @@ void MorphemeSystem::termMorpheme()
     MR::DispatcherBasic::term();
     MR::Manager::termMorphemeLib();
     NMP::Memory::shutdown();
+
+    g_appLog.DebugMessage(MsgLevel_Info, "Morpheme shutdown\n");
 }
 
 //----------------------------------------------------------------------------------------------------------------------
