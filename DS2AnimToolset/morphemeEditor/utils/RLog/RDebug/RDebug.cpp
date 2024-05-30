@@ -5,7 +5,6 @@ void RDebug::DebuggerOut(UINT usr_level, MsgLevel level, const char* fmt, ...)
 	if ((level - 1) > usr_level)
 		return;
 
-#ifdef _LOGGER
 	va_list args;
 	__va_start(&args, fmt);
 	std::string msg_level;
@@ -42,7 +41,6 @@ void RDebug::DebuggerOut(UINT usr_level, MsgLevel level, const char* fmt, ...)
 	std::string txt_log_msg = std::string(msg);
 
 	OutputDebugStringA(msg);
-#endif
 }
 
 void RDebug::SystemPanic(const char* src_module, const char* fmt, ...)
