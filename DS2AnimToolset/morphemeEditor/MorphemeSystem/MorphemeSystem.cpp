@@ -82,6 +82,11 @@ void MorphemeSystem::termMorpheme()
 // Creates a CharacterDef and registers it with the manager.
 CharacterDefBasic* MorphemeSystem::createCharacterDef(const char* filename)
 {
+    if (this->m_characterDef)
+        CharacterDefBasic::destroy(this->m_characterDef);
+
+    this->m_characterDef = nullptr;
+
     g_appLog.DebugMessage(MsgLevel_Info, "Creating CharacterDefBasic from file %s\n", filename);
 
     CharacterDefBasic* gameCharacterDef = CharacterDefBasic::create(filename);
