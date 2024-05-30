@@ -5,7 +5,7 @@ It can be used in the following ways:
 2) Open a TimeAct file. The program will parse the opened file and add the TimeAct list to the TimeAct tab in the Asset window. If the file opened belongs to an object, then it will also attempt to find that object's BND in the /model/obj folder.
 
 # Preview Window
-When opening an NMB, the program will attempt to find the character model in the parent path. If it finds one and it has valid vertex data in it, it will show the model in the Preview window. Note that c0001 do not have a model, player equipments are not supported yet.
+When opening an NMB, the program will attempt to find the character model in the parent path. If it finds one and it has valid vertex data in it, it will show the model in the Preview window. Note that c0001 does not have a model, player equipments are not supported yet.
 
 ![Immagine 2023-08-31 211346](https://github.com/LordRadai/MorphemeConnect/assets/22768664/9eac1a67-eb14-4d2b-a3b1-c18dcf99c0b0)
 
@@ -16,14 +16,13 @@ Tooltips are inside the `MorphemeConnect/res/tooltip folder`. They are shown whe
 # TODO
 * Implement project save as XML
 * Implement NMB Network generation logic to allow the creation of new EventTrack bundles.
-* Implement proper character skeleton loading
-* Implement NSA animation preview
 
 # Build Requirements
 If you want to compile this project, you need the following things:
 * DirectXTK UWP (install with VS GnuPackage)
 * ICU
 * ZLIB
+* FBX SDK
 * betstick's cfromloader
 
 # Bugs
