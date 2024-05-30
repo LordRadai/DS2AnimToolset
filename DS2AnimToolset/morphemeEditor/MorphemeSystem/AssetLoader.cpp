@@ -44,7 +44,7 @@ void AssetLoaderBasic::evalBundleRequirements(
 
   while (bundleReader.readNextAsset(assetType, assetID, fileGuid, asset, assetMemReqs))
   {
-    g_appLog.DebugMessage(MsgLevel_Info, "Found asset type %d (size=%d, alignment=%d)\n", assetType, assetMemReqs.size, assetMemReqs.alignment & 0xFFFFFFFF);
+    g_appLog.DebugMessage(MsgLevel_Info, "Found assetType %d (size=%d, alignment=%d)\n", assetType, assetMemReqs.size, assetMemReqs.alignment & 0xFFFFFFFF);
     
     if (assetType < MR::Manager::kAsset_NumAssetTypes)
     {
