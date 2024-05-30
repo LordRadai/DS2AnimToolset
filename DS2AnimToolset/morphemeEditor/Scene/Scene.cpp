@@ -338,7 +338,7 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
     if (model == nullptr)
         return;
 
-    Matrix world = Matrix::CreateTranslation(model->m_position) * Matrix::CreateScale(model->m_scale);    
+    Matrix world = model->m_position * Matrix::CreateScale(model->m_scale);    
 
     int boneCount = model->m_boneTransforms.size();
 

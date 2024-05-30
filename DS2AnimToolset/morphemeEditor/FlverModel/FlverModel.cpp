@@ -17,7 +17,6 @@ FlverModel::SkinnedVertex::SkinnedVertex(Vector3 pos, Vector3 normal, float* wei
 
 FlverModel::FlverModel()
 {
-	this->m_position = DirectX::SimpleMath::Vector3::Zero;
 }
 
 FlverModel::FlverModel(UMEM* umem)
@@ -28,12 +27,12 @@ FlverModel::FlverModel(UMEM* umem)
 	if (this->m_loaded)
 		delete this->m_flver;
 
-	this->m_position = DirectX::SimpleMath::Vector3::Zero;
+	this->m_position = Matrix::Identity;
 	this->m_flver = new FLVER2(umem);
 
 	float focus_y = (this->m_flver->header.boundingBoxMax.y + this->m_flver->header.boundingBoxMin.y) / 2;
 
-	this->m_focusPoint = this->m_position + DirectX::SimpleMath::Vector3(0, focus_y, 0);
+	this->m_focusPoint = Vector3::Transform(Vector3::Zero, this->m_position) + DirectX::SimpleMath::Vector3(0, focus_y, 0);
 
 	this->GetModelData();
 
@@ -266,7 +265,14 @@ Matrix GetNmTrajectoryTransform(MR::AnimationSourceHandle* animHandle)
 
 	animHandle->getTrajectory(rot, pos);
 
-	return NMDX::GetWorldMatrix(rot, pos);
+	float tmp = pos.z;
+	pos.z = -pos.y;
+	pos.y = tmp;
+
+	Matrix translation = Matrix::CreateRotationX(DirectX::XM_PIDIV2) * Matrix::CreateTranslation(NMDX::CreateFrom(pos));
+	Matrix rotation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateFromQuaternion(NMDX::CreateFrom(rot));
+
+	return rotation * translation;
 }
 
 Matrix GetNmBoneTranform(MR::AnimationSourceHandle* animHandle, int channelId)
@@ -485,7 +491,7 @@ void FlverModel::UpdateModel()
 		for (size_t j = 0; j < this->m_vertBindPose[i].size(); j++)
 			m_vertBindPose[i][j].m_pos.color = color;
 
-	this->m_focusPoint = Vector3::Transform(this->m_position, Matrix::CreateScale(this->m_scale));
+	this->m_focusPoint = Vector3::Transform(Vector3::Zero, this->m_position * Matrix::CreateScale(this->m_scale));
 
 	this->m_dummyPolygons.clear();
 	this->m_dummyPolygons.reserve(this->m_flver->header.dummyCount);
@@ -591,7 +597,7 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle, std::vector<int>
 		this->m_morphemeBoneTransforms.push_back(ComputeNmBoneGlobalTransform(animHandle, i));
 	}
 
-	this->m_position = Vector3::Transform(Vector3::Zero, GetNmTrajectoryTransform(animHandle) * Matrix::CreateRotationX(-DirectX::XM_PIDIV2));
+	this->m_position = GetNmTrajectoryTransform(animHandle);
 
 	for (size_t i = 0; i < this->m_flver->header.boneCount; i++)
 	{

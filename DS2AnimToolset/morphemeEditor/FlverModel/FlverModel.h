@@ -40,7 +40,7 @@ public:
 
 	bool m_loaded = false;
 
-	Vector3 m_position = Vector3::Zero;
+	Matrix m_position = Matrix::Identity;
 	Vector3 m_focusPoint = Vector3::Zero;
 
 	FLVER2* m_flver = nullptr;
