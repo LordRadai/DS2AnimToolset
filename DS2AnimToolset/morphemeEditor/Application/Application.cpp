@@ -157,7 +157,6 @@ void Application::Update()
 {
 	this->CheckFlags();
 	this->RenderGUI("morphemeEditor");
-	this->m_animPlayer.Update(1.f / 60.f);
 }
 
 std::string getTaeCategoryTooltip(int category)

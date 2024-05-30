@@ -234,6 +234,8 @@ void Scene::Update()
         float delta_time = float(m_timer.GetElapsedSeconds());
 
         this->m_camera.Update(this->m_width, this->m_height, delta_time);
+
+        g_appRootWindow.m_animPlayer.Update(delta_time);
     });
 
     this->m_world = Matrix::Identity;
@@ -299,6 +301,12 @@ void Scene::Render()
         m_batch->End();
 
         m_sprite.get()->Begin();
+
+        float delta_time = float(m_timer.GetElapsedSeconds());
+
+        std::string frametime = RString::FloatToString(delta_time) + " ms";
+
+        DX::AddOverlayText(m_sprite.get(), m_font.get(), frametime.c_str(), Vector2(10, 40), 0, 0.5f, Colors::White, TextFlags_Shadow);
 
         for (size_t i = 0; i < this->m_texts.size(); i++)
             DX::AddWorldSpaceText(m_sprite.get(), m_font.get(), this->m_texts[i].m_text, Vector3::Zero, this->m_texts[i].m_position, this->m_camera, this->m_texts[i].m_color);
