@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\simpleAnimRegistry.cpp" />
+    <ClCompile Include="src\simpleAnimRuntimeIDtoFilenameLookup.cpp" />
+    <ClCompile Include="src\simpleAnimRuntimeIDtoFilenameLookupBuilder.cpp" />
+    <ClCompile Include="src\simpleBundle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\simpleBundle\simpleAnimRegistry.h" />
+    <ClInclude Include="include\simpleBundle\simpleAnimRuntimeIDtoFilenameLookup.h" />
+    <ClInclude Include="include\simpleBundle\simpleAnimRuntimeIDtoFilenameLookupBuilder.h" />
+    <ClInclude Include="include\simpleBundle\simpleBundle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{92460ae2-1e3f-4650-a6e8-855f5fa20640}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\simpleBundle">
+      <UniqueIdentifier>{22873580-2e31-4fba-9025-75ba157fc8b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{3017c55f-677e-452f-9f40-b977f1e1fd8c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

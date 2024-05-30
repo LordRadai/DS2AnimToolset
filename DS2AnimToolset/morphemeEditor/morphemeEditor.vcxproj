@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{4dc3646c-04eb-48d1-ae1b-6bc65e29fc43}</ProjectGuid>
+    <RootNamespace>morphemeEditor</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
+    <IntDir>$(SolutionDir)DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
+    <ExternalIncludePath>$(SolutionDir)DS2AnimToolset\include;$(SolutionDir)DS2AnimToolset\include\zlib;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
+    <IntDir>$(SolutionDir)DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
+    <ExternalIncludePath>$(SolutionDir)DS2AnimToolset\include;$(SolutionDir)DS2AnimToolset\include\zlib;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\Debug\;$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)_debug</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)DS2AnimToolset\morpheme\utils\comms2\include\;$(SolutionDir)DS2AnimToolset\morpheme\utils\simpleBundle\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\core\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\NMPlatform\win32\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics_debug.lib;morphemeComms2_debug.lib;morphemeCore_debug.lib;morphemeSimpleBundle_debug.lib;NMPlatform_debug.lib;NMRuntimeUtils_debug.lib;d3d11.lib</AdditionalDependencies>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)DS2AnimToolset\morpheme\utils\comms2\include\;$(SolutionDir)DS2AnimToolset\morpheme\utils\simpleBundle\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\core\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\NMPlatform\win32\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d11.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics.lib;morphemeComms2.lib;morphemeCore.lib;morphemeSimpleBundle.lib;NMPlatform.lib;NMRuntimeUtils.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="fromloader\src\util\stringio\simple_sjis_table.bin" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AnimPlayer\AnimPlayer.cpp" />
+    <ClCompile Include="AnimSourceInterface\AnimSourceInterface.cpp" />
+    <ClCompile Include="Application\Application.cpp" />
+    <ClCompile Include="EventTrackEditor\EventTrackEditor.cpp" />
+    <ClCompile Include="FBXTranslator\FBXTranslator.cpp" />
+    <ClCompile Include="FlverModel\FlverModel.cpp" />
+    <ClCompile Include="fromloader\cmem.c" />
+    <ClCompile Include="fromloader\src\formats\binder\binder.cpp" />
+    <ClCompile Include="fromloader\src\formats\binder\bnd\bnd3.cpp" />
+    <ClCompile Include="fromloader\src\formats\binder\bnd\bnd4.cpp" />
+    <ClCompile Include="fromloader\src\formats\dcx\dcx.cpp" />
+    <ClCompile Include="fromloader\src\formats\flver\flver.cpp" />
+    <ClCompile Include="fromloader\src\formats\flver\flver0\flver0.cpp" />
+    <ClCompile Include="fromloader\src\formats\flver\flver2\flver2.cpp" />
+    <ClCompile Include="fromloader\src\formats\flver\flver2\flver2_helpers.cpp" />
+    <ClCompile Include="fromloader\src\formats\mtd\mtd.cpp" />
+    <ClCompile Include="fromloader\src\formats\paramdef\paramdef.cpp" />
+    <ClCompile Include="fromloader\src\open.cpp" />
+    <ClCompile Include="fromloader\src\util\endian\endian.cpp" />
+    <ClCompile Include="fromloader\src\util\fileio\fileio.cpp" />
+    <ClCompile Include="fromloader\src\util\file\file.cpp" />
+    <ClCompile Include="fromloader\src\util\inflate\inflate.cpp" />
+    <ClCompile Include="fromloader\src\util\stringio\stringio.cpp" />
+    <ClCompile Include="fromloader\src\util\types\types.cpp" />
+    <ClCompile Include="fromloader\src\util\validate\validate.cpp" />
+    <ClCompile Include="fromloader\umem.c" />
+    <ClCompile Include="FromsoftFormat\BNDReader\BNDReader.cpp" />
+    <ClCompile Include="FromsoftFormat\FlverReader\FlverReader.cpp" />
+    <ClCompile Include="FromsoftFormat\TimeActReader\TimeActEvent\TimeActEvent.cpp" />
+    <ClCompile Include="FromsoftFormat\TimeActReader\TimeActEvent\TimeActEventData\TimeActEventData.cpp" />
+    <ClCompile Include="FromsoftFormat\TimeActReader\TimeActReader.cpp" />
+    <ClCompile Include="imgui\custom\imgui_custom_logic.cpp" />
+    <ClCompile Include="imgui\custom\imgui_custom_widget.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="imsequencer\ImSequencer.cpp" />
+    <ClCompile Include="inih\ini.c" />
+    <ClCompile Include="inih\INIReader.cpp" />
+    <ClCompile Include="MorphemeEditor.cpp" />
+    <ClCompile Include="MorphemeSystem\AnimLoader.cpp" />
+    <ClCompile Include="MorphemeSystem\AssetLoader.cpp" />
+    <ClCompile Include="MorphemeSystem\Character.cpp" />
+    <ClCompile Include="MorphemeSystem\CharacterController.cpp" />
+    <ClCompile Include="MorphemeSystem\CharacterDef.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp" />
+    <ClCompile Include="ProcessReader\ProcessReader.cpp" />
+    <ClCompile Include="RLog\RDebug\RDebug.cpp" />
+    <ClCompile Include="RLog\RLog.cpp" />
+    <ClCompile Include="RLog\TextLog\TextLog.cpp" />
+    <ClCompile Include="RMath\RMath.cpp" />
+    <ClCompile Include="RString\RString.cpp" />
+    <ClCompile Include="Scene\Camera\Camera.cpp" />
+    <ClCompile Include="Scene\DebugDraw.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="TaeTemplate\TaeTemplate.cpp" />
+    <ClCompile Include="TimeActEditor\TimeActEditor.cpp" />
+    <ClCompile Include="utils\MorphemeToDirectX.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AnimPlayer\AnimPlayer.h" />
+    <ClInclude Include="AnimSourceInterface\AnimSourceInterface.h" />
+    <ClInclude Include="Application\Application.h" />
+    <ClInclude Include="EventTrackEditor\EventTrackEditor.h" />
+    <ClInclude Include="extern.h" />
+    <ClInclude Include="FBXTranslator\FBXTranslator.h" />
+    <ClInclude Include="FlverModel\FlverModel.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="fromloader\cmem.h" />
+    <ClInclude Include="fromloader\fromloader.h" />
+    <ClInclude Include="fromloader\src\common\common.h" />
+    <ClInclude Include="fromloader\src\formats\binder\bdf\bdf3.h" />
+    <ClInclude Include="fromloader\src\formats\binder\bdf\bdf4.h" />
+    <ClInclude Include="fromloader\src\formats\binder\bhd\bhd5_0.h" />
+    <ClInclude Include="fromloader\src\formats\binder\bhd\bhd5_1.h" />
+    <ClInclude Include="fromloader\src\formats\binder\binder.h" />
+    <ClInclude Include="fromloader\src\formats\binder\bnd\bnd3.h" />
+    <ClInclude Include="fromloader\src\formats\binder\bnd\bnd4.h" />
+    <ClInclude Include="fromloader\src\formats\binder\include.h" />
+    <ClInclude Include="fromloader\src\formats\dcx\dcx.h" />
+    <ClInclude Include="fromloader\src\formats\flver\flver.h" />
+    <ClInclude Include="fromloader\src\formats\flver\flver0\flver0.h" />
+    <ClInclude Include="fromloader\src\formats\flver\flver2\flver2.h" />
+    <ClInclude Include="fromloader\src\formats\flver\include.h" />
+    <ClInclude Include="fromloader\src\formats\include.h" />
+    <ClInclude Include="fromloader\src\formats\mtd\mtd.h" />
+    <ClInclude Include="fromloader\src\formats\paramdef\paramdef.h" />
+    <ClInclude Include="fromloader\src\formats\stdafx.h" />
+    <ClInclude Include="fromloader\src\open.h" />
+    <ClInclude Include="fromloader\src\util\endian\endian.h" />
+    <ClInclude Include="fromloader\src\util\fileio\fileio.h" />
+    <ClInclude Include="fromloader\src\util\file\file.h" />
+    <ClInclude Include="fromloader\src\util\include.h" />
+    <ClInclude Include="fromloader\src\util\inflate\inflate.h" />
+    <ClInclude Include="fromloader\src\util\math\math.h" />
+    <ClInclude Include="fromloader\src\util\stringio\stringio.h" />
+    <ClInclude Include="fromloader\src\util\types\types.h" />
+    <ClInclude Include="fromloader\src\util\validate\validate.h" />
+    <ClInclude Include="fromloader\umem.h" />
+    <ClInclude Include="FromsoftFormat\BNDReader\BNDReader.h" />
+    <ClInclude Include="FromsoftFormat\FlverReader\FlverReader.h" />
+    <ClInclude Include="FromsoftFormat\TimeActReader\TimeActEvent\TimeActEvent.h" />
+    <ClInclude Include="FromsoftFormat\TimeActReader\TimeActEvent\TimeActEventData\TimeActEventData.h" />
+    <ClInclude Include="FromsoftFormat\TimeActReader\TimeActReader.h" />
+    <ClInclude Include="FromsoftFormat\Utils\MemReader\MemReader.h" />
+    <ClInclude Include="imgui\custom\imgui_custom_logic.h" />
+    <ClInclude Include="imgui\custom\imgui_custom_widget.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="imgui\imgui_impl_win32.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="imsequencer\ImSequencer.h" />
+    <ClInclude Include="inih\ini.h" />
+    <ClInclude Include="inih\INIReader.h" />
+    <ClInclude Include="MorphemeEditor.h" />
+    <ClInclude Include="MorphemeSystem\AnimLoader.h" />
+    <ClInclude Include="MorphemeSystem\AssetLoader.h" />
+    <ClInclude Include="MorphemeSystem\Character.h" />
+    <ClInclude Include="MorphemeSystem\CharacterController.h" />
+    <ClInclude Include="MorphemeSystem\CharacterDef.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeSystem.h" />
+    <ClInclude Include="ProcessReader\ProcessReader.h" />
+    <ClInclude Include="resources\resource.h" />
+    <ClInclude Include="resources\resource1.h" />
+    <ClInclude Include="RLog\RDebug\RDebug.h" />
+    <ClInclude Include="RLog\RLog.h" />
+    <ClInclude Include="RLog\TextLog\TextLog.h" />
+    <ClInclude Include="RMath\RMath.h" />
+    <ClInclude Include="RString\RString.h" />
+    <ClInclude Include="Scene\Camera\Camera.h" />
+    <ClInclude Include="Scene\DebugDraw.h" />
+    <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Scene\StepTimer.h" />
+    <ClInclude Include="TaeTemplate\TaeTemplate.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="TimeActEditor\TimeActEditor.h" />
+    <ClInclude Include="utils\MorphemeToDirectX.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resources\morphemeEditor.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\DS2AnimToolset.ico" />
+    <Image Include="resources\morphemeEditor.ico" />
+    <Image Include="resources\small.ico" />
+    <Image Include="small.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\packages\directxtk_uwp.2024.2.22.1\build\native\directxtk_uwp.targets" Condition="Exists('..\..\packages\directxtk_uwp.2024.2.22.1\build\native\directxtk_uwp.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\directxtk_uwp.2024.2.22.1\build\native\directxtk_uwp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\directxtk_uwp.2024.2.22.1\build\native\directxtk_uwp.targets'))" />
+  </Target>
+</Project>
