@@ -53,6 +53,7 @@ public:
 	HWND m_window;
 	int m_width, m_height;
 	DX::StepTimer m_timer;
+	float m_deltaTime;
 
 	IDXGISwapChain* m_swapChain;
 	ID3D11Device* m_device;

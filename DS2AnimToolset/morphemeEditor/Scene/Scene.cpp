@@ -229,13 +229,16 @@ void Scene::CreateResources()
 
 void Scene::Update()
 {
+    this->m_timer.SetFixedTimeStep(true);
+    this->m_timer.SetTargetElapsedSeconds(1.f / 60.f);
+
     m_timer.Tick([&]()
     {
-        float delta_time = float(m_timer.GetElapsedSeconds());
+        this->m_deltaTime = float(m_timer.GetElapsedSeconds());
 
-        this->m_camera.Update(this->m_width, this->m_height, delta_time);
+        this->m_camera.Update(this->m_width, this->m_height, this->m_deltaTime);
 
-        g_appRootWindow.m_animPlayer.Update(delta_time);
+        g_appRootWindow.m_animPlayer.Update(this->m_deltaTime);
     });
 
     this->m_world = Matrix::Identity;
@@ -302,9 +305,7 @@ void Scene::Render()
 
         m_sprite.get()->Begin();
 
-        float delta_time = float(m_timer.GetElapsedSeconds());
-
-        std::string frametime = RString::FloatToString(delta_time) + " ms";
+        std::string frametime = RString::FloatToString(this->m_deltaTime) + " ms";
 
         DX::AddOverlayText(m_sprite.get(), m_font.get(), frametime.c_str(), Vector2(10, 40), 0, 0.5f, Colors::White, TextFlags_Shadow);
 
