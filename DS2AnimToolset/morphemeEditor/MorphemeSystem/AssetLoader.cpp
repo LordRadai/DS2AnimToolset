@@ -60,7 +60,7 @@ void AssetLoaderBasic::evalBundleRequirements(
     }
   }
 
-  g_appLog.DebugMessage(MsgLevel_Info, "Finished parsing bundle file with a total of registered %d assets (total of %d assets found)\n", numRegisteredAssets, numClientAssets);
+  g_appLog.DebugMessage(MsgLevel_Info, "Finished parsing bundle file with a total of registered %d assets\n", numRegisteredAssets);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
