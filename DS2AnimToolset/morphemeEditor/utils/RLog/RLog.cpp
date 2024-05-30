@@ -46,10 +46,10 @@ void RLog::DebugMessage(MsgLevel level, const char* fmt, ...)
 	char msg[1000];
 	vsprintf_s(msg, fmt, args);
 
-	RDebug::DebuggerOut(this->m_logLevel, level, fmt, args);
+	RDebug::DebuggerOut(this->m_logLevel, level, msg);
 
 	if (this->m_logFile != nullptr)
-		this->m_logFile->AddLog(true, fmt, args);
+		this->m_logFile->AddLog(true, msg);
 }
 
 void RLog::AlertMessage(MsgLevel level, const char* fmt, ...)
@@ -60,10 +60,10 @@ void RLog::AlertMessage(MsgLevel level, const char* fmt, ...)
 	char msg[1000];
 	vsprintf_s(msg, fmt, args);
 
-	RDebug::SystemAlert(this->m_logLevel, level, this->m_logName.c_str(), fmt, args);
+	RDebug::SystemAlert(this->m_logLevel, level, this->m_logName.c_str(), msg);
 
 	if (this->m_logFile != nullptr)
-		this->m_logFile->AddLog(true, fmt, args);
+		this->m_logFile->AddLog(true, msg);
 }
 
 void RLog::PanicMessage(const char* fmt, ...)
@@ -74,10 +74,10 @@ void RLog::PanicMessage(const char* fmt, ...)
 	char msg[1000];
 	vsprintf_s(msg, fmt, args);
 
-	RDebug::SystemPanic(this->m_logName.c_str(), fmt, args);
+	RDebug::SystemPanic(this->m_logName.c_str(), msg);
 
 	if (this->m_logFile != nullptr)
-		this->m_logFile->AddLog(true, fmt, args);
+		this->m_logFile->AddLog(true, msg);
 }
 
 void RLog::AddEntry(bool print_time, const char* fmt, ...)
