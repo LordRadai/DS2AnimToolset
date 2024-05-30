@@ -7,15 +7,19 @@ It can be used in the following ways:
 # Preview Window
 When opening an NMB, the program will attempt to find the character model in the parent path. If it finds one and it has valid vertex data in it, it will show the model in the Preview window. Note that c0001 does not have a model, player equipments are not supported yet.
 
-![Immagine 2023-08-31 211346](https://github.com/LordRadai/MorphemeConnect/assets/22768664/9eac1a67-eb14-4d2b-a3b1-c18dcf99c0b0)
+![Immagine 2024-05-30 194747](https://github.com/LordRadai/DS2AnimToolset/assets/22768664/63fd3aad-6612-4b50-85ff-7b935350156b)
 
 # TimeAct Templates, Tooltips
 Templates are inside the `MorphemeConnect/res/def/timeact` folder. If you want to make changes to the templates, just edit `timeact.json`.
 Tooltips are inside the `MorphemeConnect/res/tooltip folder`. They are shown when you hover an event in the editor windows.
 
+# Export
+You can export animations and models to FBX using the Export menu under File. Note that animation files do not contain the model within them, and that exporting animations will automatically export models
+
 # TODO
 * Implement project save as XML
-* Implement NMB Network generation logic to allow the creation of new EventTrack bundles.
+* Implement NMB generation logic to allow the creation of new EventTrack bundles.
+* Implement EventTrack editing
 
 # Build Requirements
 If you want to compile this project, you need the following things:
@@ -27,3 +31,5 @@ If you want to compile this project, you need the following things:
 
 # Bugs
 Report any bugs in the Discord server's bug report forum https://discord.gg/CJk2b5WMMF
+
+![Immagine 2024-05-30 194830](https://github.com/LordRadai/DS2AnimToolset/assets/22768664/218df726-5ad0-41d5-a885-fc955c4e3678)
