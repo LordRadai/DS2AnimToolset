@@ -1,5 +1,6 @@
 #include "FBXTranslator.h"
 #include "utils/RLog/RLog.h"
+#include "utils/RMath/RMath.h"
 #include "utils/RString/RString.h"
 #include "utils/NMDX/NMDX.h"
 #include "morpheme/AnimSource/mrAnimSourceNSA.h"
@@ -366,11 +367,11 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 	FbxTime start;
 	start.SetSecondDouble(0.0);
 
-	float animSampleRate = 60;
+	float animSampleRate = 30.f;
 	float animDuration = animSourceNSA->getDuration(animSourceNSA);
 
 	FbxTime end;
-	end.SetSecondDouble(animDuration);
+	end.SetFrame(RMath::TimeToFrame(animDuration, 30));
 
 	FbxTimeSpan timeSpan = FbxTimeSpan(start, end);
 	pAnimStack->SetLocalTimeSpan(timeSpan);
@@ -411,7 +412,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->GetTransformAtTime(animTime, boneIndex));
 
 			FbxTime keyTime;
-			keyTime.SetSecondDouble(animTime);
+			keyTime.SetFrame(RMath::TimeToFrame(animTime, 30));
 
 			FbxVector4 translation = transform.GetT();
 

@@ -12,5 +12,5 @@ Quaternion NMDX::CreateFrom(const NMP::Quat in)
 
 Matrix NMDX::GetWorldMatrix(NMP::Quat quat, NMP::Vector3 pos)
 {	
-	return DirectX::XMMatrixScaling(1.f, 1.f, 1.f) * DirectX::XMMatrixRotationQuaternion(CreateFrom(quat)) * DirectX::XMMatrixTranslationFromVector(CreateFrom(pos));
+	return Matrix::CreateScale(1.f) * Matrix::CreateFromQuaternion(CreateFrom(quat)) * Matrix::CreateTranslation(CreateFrom(pos));
 }
