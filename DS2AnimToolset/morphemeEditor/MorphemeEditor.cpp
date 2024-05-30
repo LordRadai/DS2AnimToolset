@@ -165,6 +165,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         g_pSwapChain->Present(1, 0);
     }
 
+    g_appRootWindow.m_morphemeSystem.termMorpheme();
+
     // Cleanup
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
