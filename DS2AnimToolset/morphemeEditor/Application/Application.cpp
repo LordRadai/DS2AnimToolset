@@ -28,7 +28,7 @@ std::vector<std::wstring> getTaeFileListFromChrId(std::wstring tae_path, std::ws
 	}
 
 	if (files.size() == 0)
-		g_appLog.AlertMessage(MsgLevel_Debug, "Application.cpp", "Could not find any TimeAct files belonging to c%d in %ws\n", m_chrId, tae_path);
+		g_appLog.AlertMessage(MsgLevel_Debug, "Could not find any TimeAct files belonging to c%d in %ws\n", m_chrId, tae_path);
 
 	return files;
 }
@@ -600,7 +600,7 @@ void Application::AssetsWindow()
 				if (ImGui::Button("Add"))
 				{
 					if (this->m_tae.AddTimeAct(this->m_timeActFlags.m_addTimeActId, this->m_timeActFlags.m_addTimeActLenght) == false)
-						g_appLog.AlertMessage(MsgLevel_Info, "TimeActReader.cpp", "TimeAct %d already exists\n", this->m_timeActFlags.m_addTimeActId);
+						g_appLog.AlertMessage(MsgLevel_Info, "TimeAct %d already exists\n", this->m_timeActFlags.m_addTimeActId);
 					else
 					{
 						this->m_timeActEditorFlags.m_edited.clear();
@@ -629,7 +629,7 @@ void Application::AssetsWindow()
 						this->m_timeActFlags.m_addTimeActLenght = RMath::FrameToTime(this->m_eventTrackEditor.m_frameMax);
 
 						if (this->m_tae.AddTimeAct(this->m_timeActFlags.m_addTimeActId, this->m_timeActFlags.m_addTimeActLenght) == false)
-							g_appLog.AlertMessage(MsgLevel_Info, "TimeActReader.cpp", "TimeAct %d already exists\n", this->m_timeActFlags.m_addTimeActId);
+							g_appLog.AlertMessage(MsgLevel_Info, "TimeAct %d already exists\n", this->m_timeActFlags.m_addTimeActId);
 						else
 						{
 							this->m_timeActEditorFlags.m_edited.clear();
@@ -666,7 +666,7 @@ void Application::AssetsWindow()
 				if (ImGui::Button("Delete"))
 				{
 					if (this->m_tae.DeleteTimeAct(this->m_timeActFlags.m_deleteTimeActId) == false)
-						g_appLog.AlertMessage(MsgLevel_Info, "TimeActReader.cpp", "Failed to delete TimeAct %d\n", this->m_timeActFlags.m_deleteTimeActId);
+						g_appLog.AlertMessage(MsgLevel_Info, "Failed to delete TimeAct %d\n", this->m_timeActFlags.m_deleteTimeActId);
 
 					this->m_eventTrackEditorFlags.m_load = true;
 					this->m_timeActFlags.m_deleteTimeAct = false;
@@ -761,7 +761,7 @@ void Application::EventTrackWindow(int* current_frame, int* first_frame, float* 
 					this->ResetEventTrackEditor();
 				}
 				else
-					g_appLog.AlertMessage(MsgLevel_Info, "Application.cpp", "No animation is selected\n");
+					g_appLog.AlertMessage(MsgLevel_Info, "No animation is selected\n");
 			}
 
 			ImGui::SameLine();
@@ -770,7 +770,7 @@ void Application::EventTrackWindow(int* current_frame, int* first_frame, float* 
 				if (this->m_eventTrackEditor.GetTrackCount() > 0)
 					this->m_eventTrackEditorFlags.m_save = true;
 				else
-					g_appLog.AlertMessage(MsgLevel_Info, "Application.cpp", "No Event Tracks are loaded\n");
+					g_appLog.AlertMessage(MsgLevel_Info, "No Event Tracks are loaded\n");
 			}
 
 			if (ImGui::Button("Pause"))
@@ -860,7 +860,7 @@ void Application::TimeActWindow(int* current_frame, int* first_frame, float* zoo
 					this->ResetTimeActEditor();
 				}
 				else
-					g_appLog.AlertMessage(MsgLevel_Info, "Application.cpp", "No TimeAct file is currently loaded\n");
+					g_appLog.AlertMessage(MsgLevel_Info, "No TimeAct file is currently loaded\n");
 			}
 
 			ImGui::SameLine();
@@ -869,7 +869,7 @@ void Application::TimeActWindow(int* current_frame, int* first_frame, float* zoo
 				if (this->m_tae.m_init)
 					this->m_timeActEditorFlags.m_save = true;
 				else
-					g_appLog.AlertMessage(MsgLevel_Info, "Application.cpp", "No TimeAct track is currently loaded\n");
+					g_appLog.AlertMessage(MsgLevel_Info, "No TimeAct track is currently loaded\n");
 			}
 
 			if (ImGui::Button("Pause"))
@@ -1199,7 +1199,7 @@ void Application::CheckFlags()
 		if (this->m_tae.m_init)
 			this->SaveTaeFile();
 		else
-			g_appLog.AlertMessage(MsgLevel_Error, "Application.cpp", "No TAE file is loaded\n");
+			g_appLog.AlertMessage(MsgLevel_Error, "No TAE file is loaded\n");
 	}
 
 	if (this->m_flags.m_saveAll)
@@ -1225,7 +1225,7 @@ void Application::CheckFlags()
 			if (status)
 				g_appLog.DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
 			else
-				g_appLog.AlertMessage(MsgLevel_Error, "Failed to generate file\n", "TimeActReader.cpp");
+				g_appLog.AlertMessage(MsgLevel_Error, "Failed to generate file\n");
 		}
 	}
 
@@ -1240,7 +1240,7 @@ void Application::CheckFlags()
 			int numAnims = characterDef->getAnimFileLookUp()->getNumAnims();
 
 			if (numAnims == 0)
-				g_appLog.AlertMessage(MsgLevel_Warn, "Application.cpp", "No animations are loaded");
+				g_appLog.AlertMessage(MsgLevel_Warn, "No animations are loaded");
 
 			std::wstring out_path = L".//Export";
 
@@ -1256,7 +1256,7 @@ void Application::CheckFlags()
 			if (this->m_fbxExportFlags.m_exportModelWithAnims)
 			{
 				if (!this->ExportModelToFbx(export_path))
-					g_appLog.AlertMessage(MsgLevel_Error, "Application.cpp", "Failed to export FBX model (chrId=c%04d)\n", this->m_chrId);
+					g_appLog.AlertMessage(MsgLevel_Error, "Failed to export FBX model (chrId=c%04d)\n", this->m_chrId);
 			}
 			
 			for (int i = 0; i < numAnims; i++)
@@ -1838,7 +1838,7 @@ void Application::SaveFile()
 							if (status)
 								g_appLog.DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
 							else
-								g_appLog.AlertMessage(MsgLevel_Error, "TimeActReader.cpp", "Failed to generate TAE file\n");
+								g_appLog.AlertMessage(MsgLevel_Error, "Failed to generate TAE file\n");
 						}
 					}
 					pItem->Release();
@@ -1953,7 +1953,7 @@ void Application::SaveTaeFile()
 						if (status)
 							g_appLog.DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
 						else
-							g_appLog.AlertMessage(MsgLevel_Error, "TimeActReader.cpp", "Failed to generate TAE file\n");
+							g_appLog.AlertMessage(MsgLevel_Error, "Failed to generate TAE file\n");
 					}
 					pItem->Release();
 				}

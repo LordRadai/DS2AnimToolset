@@ -99,7 +99,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
     catch (const std::exception& exc)
     {
-        g_appLog.AlertMessage(MsgLevel_Debug, "MorphemeConnect.cpp", exc.what());
+        g_appLog.AlertMessage(MsgLevel_Debug, exc.what());
     }
 
     initImGui(hwnd);

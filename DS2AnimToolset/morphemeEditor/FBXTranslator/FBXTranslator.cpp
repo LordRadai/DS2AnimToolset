@@ -352,7 +352,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 
 	if (animSourceNSA->getType() != ANIM_TYPE_NSA)
 	{
-		g_appLog.AlertMessage(MsgLevel_Error, "Application.cpp", "Unsupported animation format");
+		g_appLog.AlertMessage(MsgLevel_Error, "Unsupported animation format");
 		return false;
 	}
 
@@ -465,7 +465,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 
 	if (animSourceNSA->getType() != ANIM_TYPE_NSA)
 	{
-		g_appLog.AlertMessage(MsgLevel_Error, "Application.cpp", "Unsupported animation format");
+		g_appLog.AlertMessage(MsgLevel_Error, "Unsupported animation format");
 		return false;
 	}
 
