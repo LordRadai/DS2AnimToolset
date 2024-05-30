@@ -23,9 +23,6 @@ int GetFlverBoneIDByMorphemeBoneID(MR::AnimRigDef* pRig, FlverModel* pFlverModel
 	std::string boneName = pRig->getBoneName(idx);
 	int flverIdx = pFlverModel->GetBoneIndexFromName(boneName.c_str());
 
-	if (flverIdx == -1)
-		g_appLog.DebugMessage(MsgLevel_Debug, "Bone %s does not exist in the morpheme rig\n", boneName.c_str());
-
 	return flverIdx;
 }
 
