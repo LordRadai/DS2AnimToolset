@@ -83,19 +83,14 @@ Matrix AnimSourceInterface::GetTransformAtTime(float time, int channelId)
 
     Matrix transform = NMDX::GetWorldMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
 
-    if (channelId == animHandle->getRig()->getTrajectoryBoneIndex())
+    if ((channelId == animHandle->getRig()->getTrajectoryBoneIndex()) || (channelId == animHandle->getRig()->getCharacterRootBoneIndex()))
     {
         NMP::Vector3 trajPos;
         NMP::Quat trajRot;
         animHandle->getTrajectory(trajRot, trajPos);
 
-        transform = NMDX::GetWorldMatrix(trajRot, trajPos);
-
-        //transform *= Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateRotationY(DirectX::XM_PI);
+        transform *= NMDX::GetWorldMatrix(trajRot, trajPos);
     }
-
-    //if (channelId == animHandle->getRig()->getCharacterRootBoneIndex())
-        //transform *= Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateRotationY(DirectX::XM_PI);
 
     return transform;
 }
