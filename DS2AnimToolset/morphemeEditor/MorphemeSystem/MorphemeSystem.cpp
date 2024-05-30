@@ -4,8 +4,10 @@
 #include "NMPlatform/NMFile.h"
 #include "morpheme/Nodes/mrNodes.h"
 #include "morpheme/Nodes/mrNodeAnimSyncEvents.h"
-
 #include "AnimLoader.h"
+
+#include "extern.h"
+#include "utils/RLog/RLog.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 void MorphemeSystem::initMorpheme()
@@ -14,6 +16,7 @@ void MorphemeSystem::initMorpheme()
 
     //----------------------------
     // Initialise morpheme library
+    g_appLog.DebugMessage(MsgLevel_Info, "Initialising Morpheme\n");
     MR::Manager::initMorphemeLib();
 
     //----------------------------
@@ -50,6 +53,8 @@ void MorphemeSystem::initMorpheme()
 // details.
 void MorphemeSystem::termMorpheme()
 {
+    g_appLog.DebugMessage(MsgLevel_Info, "Terminating Morpheme\n");
+
     if (m_characterData)
     {
         //----------------------------
@@ -75,6 +80,8 @@ void MorphemeSystem::termMorpheme()
 // Creates a CharacterDef and registers it with the manager.
 CharacterDefBasic* MorphemeSystem::createCharacterDef(const char* filename)
 {
+    g_appLog.DebugMessage(MsgLevel_Info, "Creating CharacterDefBasic from file %s\n", filename);
+
     CharacterDefBasic* gameCharacterDef = CharacterDefBasic::create(filename);
     if (!gameCharacterDef || !gameCharacterDef->isLoaded())
     {

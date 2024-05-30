@@ -10,6 +10,8 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 #include "CharacterDef.h"
+#include "extern.h"
+#include "utils/RLog/RLog.h"
 
 #include "MorphemeSystem.h"
 #include "AssetLoader.h"
@@ -88,6 +90,7 @@ bool CharacterDefBasic::loadAnimations()
   // Load animations listed in this network definition
   for (UINT i = 0; i < m_netDef->getNumAnimSets(); ++i)
   {
+    g_appLog.DebugMessage(MsgLevel_Debug, "Loading animations for anim set %d\n", i);
     m_netDef->loadAnimations((MR::AnimSetIndex)i, &m_metadata);
   }
   return true;
@@ -145,11 +148,15 @@ bool CharacterDefBasic::term()
   {
     for (UINT i = 0; i < m_netDef->getNumAnimSets(); ++i)
     {
+      g_appLog.DebugMessage(MsgLevel_Info, "Unloading animations for anim set %d\n", i);
+
       if (!m_netDef->unloadAnimations((MR::AnimSetIndex)i, NULL))
       {
         return false;
       }
     }
+
+    g_appLog.DebugMessage(MsgLevel_Info, "Unloading bundles\n");
 
     //----------------------------
     // In the same theme as loadBundle above we call a function that can be cut-and-paste into any program.
@@ -199,6 +206,8 @@ AnimSourceInterface* CharacterDefBasic::getAnimationById(int id)
 
 void CharacterDefBasic::addAnimation(const char* filename)
 {
+    g_appLog.DebugMessage(MsgLevel_Debug, "Register animation %s\n", filename);
+
     int idx = m_anims.size();
 
     m_anims.push_back(new AnimSourceInterface(this->m_netDef->getRig(0), this->m_rigToAnimMaps[0], filename, idx));
