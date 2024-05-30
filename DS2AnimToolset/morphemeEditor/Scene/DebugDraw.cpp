@@ -8,7 +8,7 @@
 #include "Scene.h"
 
 #include <algorithm>
-#include "utils/MorphemeToDirectX.h"
+#include "utils/NMDX/NMDX.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

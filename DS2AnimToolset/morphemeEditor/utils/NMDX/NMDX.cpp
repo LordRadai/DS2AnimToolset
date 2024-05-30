@@ -1,4 +1,4 @@
-#include "MorphemeToDirectX.h"
+#include "NMDX.h"
 
 Vector3 NMDX::CreateFrom(const NMP::Vector3 in)
 {

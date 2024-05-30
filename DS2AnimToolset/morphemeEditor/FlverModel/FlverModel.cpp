@@ -1,7 +1,7 @@
 #include "FlverModel.h"
 #include "../framework.h"
 #include "../extern.h"
-#include "utils/MorphemeToDirectX.h"
+#include "utils/NMDX/NMDX.h"
 
 FlverModel::SkinnedVertex::SkinnedVertex(Vector3 pos, Vector3 normal, float* weights, int* bone_indices)
 {

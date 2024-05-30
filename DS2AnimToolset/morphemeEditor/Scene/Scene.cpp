@@ -240,8 +240,8 @@ void Scene::Update()
     this->m_view = this->m_camera.m_view;
     this->m_proj = this->m_camera.m_proj;
 
-    if (g_morphemeConnect.m_animPlayer.GetModel() && g_morphemeConnect.m_animPlayer.GetModel()->m_loaded)
-        this->m_camera.SetTarget(g_morphemeConnect.m_animPlayer.GetModel()->m_focusPoint);
+    if (g_appRootWindow.m_animPlayer.GetModel() && g_appRootWindow.m_animPlayer.GetModel()->m_loaded)
+        this->m_camera.SetTarget(g_appRootWindow.m_animPlayer.GetModel()->m_focusPoint);
 
     this->CreateResources();
 
@@ -291,10 +291,10 @@ void Scene::Render()
         DX::DrawGrid(this->m_batch.get(), this->m_settings.m_gridScale * Vector3::UnitX, this->m_settings.m_gridScale * Vector3::UnitZ, Vector3::Zero, 100, 100, Colors::Gray);      
         DX::DrawOriginMarker(this->m_batch.get(), Matrix::Identity, 0.5f, Colors::DarkCyan);
         
-        CharacterDefBasic* characterDef = g_morphemeConnect.m_morphemeSystem.GetCharacterDef();
+        CharacterDefBasic* characterDef = g_appRootWindow.m_morphemeSystem.GetCharacterDef();
 
         if (characterDef != nullptr)
-            this->DrawFlverModel(&g_morphemeConnect.m_animPlayer, characterDef->getNetworkDef()->getRig(0));
+            this->DrawFlverModel(&g_appRootWindow.m_animPlayer, characterDef->getNetworkDef()->getRig(0));
 
         m_batch->End();
 

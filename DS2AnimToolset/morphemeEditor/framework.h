@@ -38,6 +38,7 @@
 #include "inih/ini.h"
 #include "inih/INIReader.h"
 
-#include "RLog/RLog.h"
-#include "RMath/RMath.h"
-#include "RString/RString.h"
+#include "utils/RLog/RLog.h"
+#include "utils/RMath/RMath.h"
+#include "utils/RString/RString.h"
+#include "utils/NMDX/NMDX.h"

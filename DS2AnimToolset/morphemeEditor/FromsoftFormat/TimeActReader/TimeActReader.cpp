@@ -455,7 +455,7 @@ void TimeActReader::AdjustOffsets()
 	UINT64 dataBase = this->m_header.m_taeDataOffset + this->m_tae.size() * 0x30;
 
 	if ((this->m_header.m_taeCount != this->m_header.m_taeCount2) || this->m_header.m_taeCount != this->m_tae.size())
-		RDebug::SystemPanic("TimeActReader.cpp", "TimeAct count specified in the header does not match the actual amount (taeCount=%d, taeSize=%d)\n", this->m_header.m_taeCount, this->m_tae.size());
+		g_appLog.PanicMessage("TimeAct count specified in the header does not match the actual amount (taeCount=%d, taeSize=%d)\n", this->m_header.m_taeCount, this->m_tae.size());
 
 	UINT64 nextUnkDataOffset = dataBase;
 	for (int i = 0; i < this->m_tae.size(); i++)

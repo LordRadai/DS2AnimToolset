@@ -1,7 +1,7 @@
 #include "AnimSourceInterface.h"
 #include <string>
 #include <filesystem>
-#include "utils/MorphemeToDirectX.h"
+#include "utils/NMDX/NMDX.h"
 
 AnimSourceInterface::AnimSourceInterface()
 {

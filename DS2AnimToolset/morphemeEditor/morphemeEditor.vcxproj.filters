@@ -147,21 +147,6 @@
     <ClCompile Include="ProcessReader\ProcessReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RLog\RDebug\RDebug.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RLog\TextLog\TextLog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RLog\RLog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RMath\RMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RString\RString.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\Camera\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -178,9 +163,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\AnimLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\MorphemeToDirectX.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\AssetLoader.cpp">
@@ -205,6 +187,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FBXTranslator\FBXTranslator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\NMDX\NMDX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\RLog\RDebug\RDebug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\RLog\TextLog\TextLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\RLog\RLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\RMath\RMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\RString\RString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -374,21 +374,6 @@
     <ClInclude Include="ProcessReader\ProcessReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RLog\RDebug\RDebug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RLog\TextLog\TextLog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RLog\RLog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RMath\RMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RString\RString.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\Camera\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -452,6 +437,24 @@
     <ClInclude Include="FBXTranslator\FBXTranslator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="utils\NMDX\NMDX.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\RLog\RDebug\RDebug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\RLog\TextLog\TextLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\RLog\RLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\RMath\RMath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\RString\RString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources\morphemeEditor.rc">
@@ -459,9 +462,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\MorphemeConnect.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="small.ico">
       <Filter>Resource Files</Filter>
     </Image>
@@ -469,6 +469,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="resources\small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\DS2AnimToolset.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

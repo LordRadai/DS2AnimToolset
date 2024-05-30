@@ -1,7 +1,7 @@
 #include "AnimPlayer.h"
-#include "utils/MorphemeToDirectX.h"
-#include "RString/RString.h"
-#include "RLog/RLog.h"
+#include "utils/NMDX/NMDX.h"
+#include "utils/RString/RString.h"
+#include "utils/RLog/RLog.h"
 #include "extern.h"
 
 int GetMorphemeRigBoneIndexByFlverBoneIndex(MR::AnimRigDef* pRig, FlverModel* pFlverModel, int idx)
@@ -14,7 +14,7 @@ int GetMorphemeRigBoneIndexByFlverBoneIndex(MR::AnimRigDef* pRig, FlverModel* pF
 	int boneIdx = pRig->getBoneIndexFromName(boneName.c_str());
 
 	if (boneIdx == -1)
-		RDebug::DebuggerOut(g_logLevel, MsgLevel_Debug, "Bone %s does not exist in the morpheme rig\n", boneName.c_str());
+		g_appLog.DebugMessage(MsgLevel_Debug, "Bone %s does not exist in the morpheme rig\n", boneName.c_str());
 
 	return boneIdx;
 }
@@ -25,7 +25,7 @@ int GetFlverBoneIDByMorphemeBoneID(MR::AnimRigDef* pRig, FlverModel* pFlverModel
 	int flverIdx = pFlverModel->GetBoneIndexFromName(boneName.c_str());
 
 	if (flverIdx == -1)
-		RDebug::DebuggerOut(g_logLevel, MsgLevel_Debug, "Bone %s does not exist in the flver rig\n", boneName.c_str());
+		g_appLog.DebugMessage(MsgLevel_Debug, "Bone %s does not exist in the flver rig\n", boneName.c_str());
 
 	return flverIdx;
 }

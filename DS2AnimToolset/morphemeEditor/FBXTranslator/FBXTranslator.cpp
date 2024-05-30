@@ -1,8 +1,8 @@
 #include "FBXTranslator.h"
-#include "RString/RString.h"
-#include "utils/MorphemeToDirectX.h"
+#include "utils/RLog/RLog.h"
+#include "utils/RString/RString.h"
+#include "utils/NMDX/NMDX.h"
 #include "morpheme/AnimSource/mrAnimSourceNSA.h"
-#include "RLog/RLog.h"
 #include "extern.h"
 
 //Converts a DirectX::XMMATRIX to an FbxAMatrix
@@ -352,7 +352,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 
 	if (animSourceNSA->getType() != ANIM_TYPE_NSA)
 	{
-		RDebug::SystemAlert(g_logLevel, MsgLevel_Error, "Application.cpp", "Unsupported animation format");
+		g_appLog.AlertMessage(MsgLevel_Error, "Application.cpp", "Unsupported animation format");
 		return false;
 	}
 
@@ -465,7 +465,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 
 	if (animSourceNSA->getType() != ANIM_TYPE_NSA)
 	{
-		RDebug::SystemAlert(g_logLevel, MsgLevel_Error, "Application.cpp", "Unsupported animation format");
+		g_appLog.AlertMessage(MsgLevel_Error, "Application.cpp", "Unsupported animation format");
 		return false;
 	}
 
@@ -588,7 +588,7 @@ bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, in
 			pMeshNodesList.push_back(pMeshNode);
 		}
 		else
-			RDebug::DebuggerOut(g_logLevel, MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
+			g_appLog.DebugMessage(MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
 	}
 
 	return true;
@@ -619,7 +619,7 @@ bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, in
 			pMeshNodesList.push_back(pMeshNode);
 		}
 		else
-			RDebug::DebuggerOut(g_logLevel, MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
+			g_appLog.DebugMessage(MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
 	}
 
 	return true;
