@@ -62,7 +62,7 @@ void MorphemeSystem::termMorpheme()
         CharacterBasic::destroy(m_characterData);
     }
 
-    if (m_characterDef->isLoaded())
+    if (m_characterDef && m_characterDef->isLoaded())
     {
         //----------------------------
         // Once we've finished with the binary file release it.

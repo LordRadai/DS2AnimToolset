@@ -167,7 +167,7 @@ void TimeActEditor::ReloadTracks()
 	this->m_tracks.clear();
 	this->SetEditedState(false);
 
-	if ((g_appRootWindow->m_tae.m_init == true))
+	if ((g_appRootWindow->m_timeAct->m_init == true))
 	{
 		for (size_t i = 0; i < this->m_source->m_taeData->m_eventGroupCount; i++)
 		{
@@ -190,10 +190,10 @@ void TimeActEditor::SetEditedState(bool state)
 	if (this->m_taeIdx == -1)
 		return;
 
-	if (g_appRootWindow->m_timeActEditorFlags.m_edited.size() > this->m_taeIdx)
-		g_appRootWindow->m_timeActEditorFlags.m_edited[this->m_taeIdx] = state;
+	if (g_appRootWindow->m_timeActEditor->m_edited.size() > this->m_taeIdx)
+		g_appRootWindow->m_timeActEditor->m_edited[this->m_taeIdx] = state;
 	else
-		RDebug::SystemPanic("TimeActEditor.cpp", "Out of bound read while setting edited state (idx=%d, size=%d)\n", this->m_taeIdx, g_appRootWindow->m_timeActEditorFlags.m_edited.size());
+		RDebug::SystemPanic("TimeActEditor.cpp", "Out of bound read while setting edited state (idx=%d, size=%d)\n", this->m_taeIdx, g_appRootWindow->m_timeActEditor->m_edited.size());
 }
 
 void TimeActEditor::Clear()
@@ -203,4 +203,10 @@ void TimeActEditor::Clear()
 	this->m_frameMin = 0;
 	this->m_source = nullptr;
 	this->m_tracks.clear();
+}
+
+void TimeActEditor::ResetSelection()
+{
+	this->m_selectedEvent = -1;
+	this->m_selectedTrack = -1;
 }

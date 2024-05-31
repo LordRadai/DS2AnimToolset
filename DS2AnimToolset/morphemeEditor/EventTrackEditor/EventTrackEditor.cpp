@@ -182,7 +182,7 @@ void EventTrackEditor::ReloadTracks()
     this->SetEditedState(false);
 
     /*
-    if ((g_appRootWindow->m_nmb.IsInitialised()) && (g_appRootWindow->m_eventTrackEditorFlags.m_targetAnimIdx != -1))
+    if ((g_appRootWindow->m_nmb.IsInitialised()) && (g_appRootWindow->m_eventTrackEditor->m_targetAnimIdx != -1))
     {
         bool found = false;
 
@@ -253,10 +253,10 @@ void EventTrackEditor::SetEditedState(bool state)
     if (this->m_animIdx == -1)
         return;
 
-    if (g_appRootWindow->m_eventTrackEditorFlags.m_edited.size() > this->m_animIdx)
-        g_appRootWindow->m_eventTrackEditorFlags.m_edited[this->m_animIdx] = state;
+    if (g_appRootWindow->m_eventTrackEditor->m_edited.size() > this->m_animIdx)
+        g_appRootWindow->m_eventTrackEditor->m_edited[this->m_animIdx] = state;
     else
-        g_appLog->PanicMessage("Out of bound read while setting edited state (idx=%d, size=%d)\n", this->m_animIdx, g_appRootWindow->m_eventTrackEditorFlags.m_edited.size());
+        g_appLog->PanicMessage("Out of bound read while setting edited state (idx=%d, size=%d)\n", this->m_animIdx, g_appRootWindow->m_eventTrackEditor->m_edited.size());
 }
 
 void EventTrackEditor::Clear()
@@ -266,4 +266,10 @@ void EventTrackEditor::Clear()
     this->m_frameMin = 0;
     this->m_nodeSource = nullptr;
     this->m_eventTracks.clear();
+}
+
+void EventTrackEditor::ResetSelection()
+{
+    this->m_selectedEvent = -1;
+    this->m_selectedTrack = -1;
 }

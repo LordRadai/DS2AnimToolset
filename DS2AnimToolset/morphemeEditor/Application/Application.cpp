@@ -66,6 +66,10 @@ std::wstring getModelNameFromObjId(std::wstring model_path, std::wstring obj_id)
 
 Application::Application()
 {
+	this->m_morphemeSystem = new MorphemeSystem();
+	this->m_animPlayer = new AnimPlayer();
+	this->m_eventTrackEditor = new EventTrackEditor();
+	this->m_timeActEditor = new TimeActEditor();
 }
 
 Application::~Application()
@@ -150,7 +154,7 @@ void Application::GUIStyle()
 
 void Application::Initialise()
 {
-	this->m_morphemeSystem.initMorpheme();
+	this->m_morphemeSystem->initMorpheme();
 }
 
 void Application::Update(float delta_time)
@@ -158,7 +162,7 @@ void Application::Update(float delta_time)
 	this->CheckFlags();
 	this->RenderGUI("morphemeEditor");
 
-	this->m_animPlayer.Update(delta_time);
+	this->m_animPlayer->Update(delta_time);
 }
 
 std::string getTaeCategoryTooltip(int category)
@@ -302,16 +306,16 @@ void Application::RenderGUI(const char* title)
 
 	this->AssetsWindow();
 
-	static int firstFrame = this->m_eventTrackEditor.m_frameMin;
+	static int firstFrame = this->m_eventTrackEditor->m_frameMin;
 	static bool expanded = true;
 	static int currentFrame = 0;
 	static float zoomLevel = 5.f;
 
-	if (this->m_eventTrackEditorFlags.m_load)
-		this->ResetEventTrackEditor();
+	if (this->m_eventTrackEditor->m_load)
+		this->m_eventTrackEditor->ResetSelection();
 
-	if (!this->m_animPlayer.IsPlaybackPaused())
-		currentFrame = RMath::TimeToFrame(this->m_animPlayer.GetTime());
+	if (!this->m_animPlayer->IsPlaybackPaused())
+		currentFrame = RMath::TimeToFrame(this->m_animPlayer->GetTime());
 
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
@@ -326,8 +330,8 @@ void Application::RenderGUI(const char* title)
 	static int currentFrameTae = 0;
 	static float zoomLevelTae = 10.f;
 
-	if (this->m_eventTrackEditorFlags.m_load)
-		this->ResetTimeActEditor();
+	if (this->m_timeActEditor->m_load)
+		this->m_timeActEditor->ResetSelection();
 
 	zoomLevelTae = 2 * zoomLevel;
 
@@ -343,7 +347,7 @@ void Application::RenderGUI(const char* title)
 
 	this->TimeActInfoWindow();
 
-	this->m_animPlayer.SetTime(RMath::FrameToTime(currentFrame));
+	this->m_animPlayer->SetTime(RMath::FrameToTime(currentFrame));
 }
 
 void Application::ModelPreviewWindow()
@@ -355,7 +359,7 @@ void Application::ModelPreviewWindow()
 		{
 			if (ImGui::MenuItem("Settings", NULL, &this->m_windowStates.m_previewSettings)) { this->m_windowStates.m_previewSettings != this->m_windowStates.m_previewSettings; }
 
-			FlverModel* model = this->m_animPlayer.GetModel();
+			FlverModel* model = this->m_animPlayer->GetModel();
 			if (model)
 			{
 				if (ImGui::BeginMenu("Scene"))
@@ -411,7 +415,7 @@ void Application::AssetsWindow()
 
 		std::string tae_popup = "Load TimeAct (c" + std::string(chr_id_str) + ")";
 
-		if (this->m_eventTrackEditorFlags.m_loadTae && this->m_eventTrackEditorFlags.m_taeList.size() > 0)
+		if (this->m_eventTrackEditor->m_loadTae && this->m_eventTrackEditor->m_taeList.size() > 0)
 		{
 			ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
 
@@ -426,23 +430,28 @@ void Application::AssetsWindow()
 
 			if (ImGui::Button("Load") && selected_tae_file_idx != -1)
 			{
-				m_tae.m_init = false;
-				m_tae = TimeActReader(PWSTR(filepath.c_str()));
-
-				this->m_timeActEditorFlags.m_selectedTimeActIdx = -1;
-
-				this->m_timeActEditorFlags.m_edited.clear();
-
-				if (m_tae.m_init)
+				if (this->m_timeAct)
 				{
-					this->m_timeActEditorFlags.m_edited.reserve(m_tae.m_tae.size());
+					delete this->m_timeAct;
+					this->m_timeAct = nullptr;
+				}
 
-					for (int i = 0; i < m_tae.m_tae.size(); i++)
-						this->m_timeActEditorFlags.m_edited.push_back(false);
+				m_timeAct = new TimeActReader(PWSTR(filepath.c_str()));
 
-					g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_tae.m_filePath, m_tae.m_fileSize);
+				this->m_timeActEditor->m_selectedTimeActIdx = -1;
 
-					this->m_eventTrackEditorFlags.m_loadTae = false;
+				this->m_timeActEditor->m_edited.clear();
+
+				if (m_timeAct->m_init)
+				{
+					this->m_timeActEditor->m_edited.reserve(m_timeAct->m_tae.size());
+
+					for (int i = 0; i < m_timeAct->m_tae.size(); i++)
+						this->m_timeActEditor->m_edited.push_back(false);
+
+					g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_timeAct->m_filePath, m_timeAct->m_fileSize);
+
+					this->m_eventTrackEditor->m_loadTae = false;
 				}
 
 				ImGui::CloseCurrentPopup();
@@ -451,14 +460,14 @@ void Application::AssetsWindow()
 
 			if (ImGui::Button("Cancel"))
 			{
-				this->m_eventTrackEditorFlags.m_loadTae = false;
+				this->m_eventTrackEditor->m_loadTae = false;
 				ImGui::CloseCurrentPopup();
 			}
 
 			ImGui::BeginChild("file_list");
-			for (int i = 0; i < this->m_eventTrackEditorFlags.m_taeList.size(); i++)
+			for (int i = 0; i < this->m_eventTrackEditor->m_taeList.size(); i++)
 			{
-				std::filesystem::path path = this->m_eventTrackEditorFlags.m_taeList[i];
+				std::filesystem::path path = this->m_eventTrackEditor->m_taeList[i];
 				std::string tae_file = RString::ToNarrow(path.filename().c_str());
 
 				bool selected = (selected_tae_file_idx == i);
@@ -473,23 +482,28 @@ void Application::AssetsWindow()
 					{
 						g_appLog->DebugMessage(MsgLevel_Debug, "Selected TimeAct %s\n", tae_file.c_str());
 
-						m_tae.m_init = false;
-						m_tae = TimeActReader(PWSTR(filepath.c_str()));
-
-						this->m_timeActEditorFlags.m_selectedTimeActIdx = -1;
-
-						this->m_timeActEditorFlags.m_edited.clear();
-
-						if (m_tae.m_init)
+						if (this->m_timeAct)
 						{
-							this->m_timeActEditorFlags.m_edited.reserve(m_tae.m_tae.size());
+							delete this->m_timeAct;
+							this->m_timeAct = nullptr;
+						}
 
-							for (int i = 0; i < m_tae.m_tae.size(); i++)
-								this->m_timeActEditorFlags.m_edited.push_back(false);
+						m_timeAct = new TimeActReader(PWSTR(filepath.c_str()));
 
-							g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_tae.m_filePath, m_tae.m_fileSize);
+						this->m_timeActEditor->m_selectedTimeActIdx = -1;
 
-							this->m_eventTrackEditorFlags.m_loadTae = false;
+						this->m_timeActEditor->m_edited.clear();
+
+						if (m_timeAct->m_init)
+						{
+							this->m_timeActEditor->m_edited.reserve(m_timeAct->m_tae.size());
+
+							for (int i = 0; i < m_timeAct->m_tae.size(); i++)
+								this->m_timeActEditor->m_edited.push_back(false);
+
+							g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_timeAct->m_filePath, m_timeAct->m_fileSize);
+
+							this->m_eventTrackEditor->m_loadTae = false;
 						}
 						else
 							g_appLog->DebugMessage(MsgLevel_Debug, "Failed to load file %s\n", tae_file.c_str());
@@ -508,7 +522,7 @@ void Application::AssetsWindow()
 		ImGui::BeginTabBar("assets tab bar");
 		if (ImGui::BeginTabItem("Animations"))
 		{
-			CharacterDefBasic* characterDef = this->m_morphemeSystem.GetCharacterDef();
+			CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 			if (characterDef != nullptr)
 			{
@@ -529,14 +543,14 @@ void Application::AssetsWindow()
 						{
 							std::string anim_name = "";
 
-							if (this->m_eventTrackEditorFlags.m_edited[i])
+							if (this->m_eventTrackEditor->m_edited[i])
 								anim_name += "*";
 
 							AnimSourceInterface* currentAnim = characterDef->getAnimation(i);
 
 							anim_name += RString::RemovePathAndExtension(characterDef->getAnimFileLookUp()->getSourceFilename(currentAnim->GetID()));
 
-							bool selected = (this->m_eventTrackEditorFlags.m_selectedAnimIdx == currentAnim->GetID());
+							bool selected = (this->m_eventTrackEditor->m_selectedAnimIdx == currentAnim->GetID());
 
 							if (currentAnim->GetHandle() == nullptr)
 								ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
@@ -548,11 +562,11 @@ void Application::AssetsWindow()
 
 								if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
 								{
-									this->m_eventTrackEditorFlags.m_targetAnimIdx = currentAnim->GetID();
-									this->m_eventTrackEditorFlags.m_selectedAnimIdx = currentAnim->GetID();
+									this->m_eventTrackEditor->m_targetAnimIdx = currentAnim->GetID();
+									this->m_eventTrackEditor->m_selectedAnimIdx = currentAnim->GetID();
 
-									this->m_animPlayer.SetAnimation(currentAnim);
-									this->m_eventTrackEditorFlags.m_load = true;
+									this->m_animPlayer->SetAnimation(currentAnim);
+									this->m_eventTrackEditor->m_load = true;
 								}
 								ImGui::PopID();
 							}
@@ -600,51 +614,51 @@ void Application::AssetsWindow()
 
 				if (ImGui::Button("Add"))
 				{
-					if (this->m_tae.AddTimeAct(this->m_timeActFlags.m_addTimeActId, this->m_timeActFlags.m_addTimeActLenght) == false)
+					if (this->m_timeAct->AddTimeAct(this->m_timeActFlags.m_addTimeActId, this->m_timeActFlags.m_addTimeActLenght) == false)
 						g_appLog->AlertMessage(MsgLevel_Info, "TimeAct %d already exists\n", this->m_timeActFlags.m_addTimeActId);
 					else
 					{
-						this->m_timeActEditorFlags.m_edited.clear();
+						this->m_timeActEditor->m_edited.clear();
 
-						if (m_tae.m_init)
+						if (m_timeAct->m_init)
 						{
-							this->m_timeActEditorFlags.m_edited.reserve(m_tae.m_tae.size());
+							this->m_timeActEditor->m_edited.reserve(m_timeAct->m_tae.size());
 
-							for (int i = 0; i < m_tae.m_tae.size(); i++)
-								this->m_timeActEditorFlags.m_edited.push_back(false);
+							for (int i = 0; i < m_timeAct->m_tae.size(); i++)
+								this->m_timeActEditor->m_edited.push_back(false);
 						}
 					}
 
-					this->m_eventTrackEditorFlags.m_load = true;
+					this->m_eventTrackEditor->m_load = true;
 					this->m_timeActFlags.m_addTimeAct = false;
 					ImGui::CloseCurrentPopup();
 				}
 
 				ImGui::SameLine();
 
-				if (this->m_eventTrackEditorFlags.m_eventTrackActionTimeActValue != -1)
+				if (this->m_eventTrackEditor->m_eventTrackActionTimeActValue != -1)
 				{
 					if (ImGui::Button("Add Selected"))
 					{
-						this->m_timeActFlags.m_addTimeActId = this->m_eventTrackEditorFlags.m_eventTrackActionTimeActValue;
-						this->m_timeActFlags.m_addTimeActLenght = RMath::FrameToTime(this->m_eventTrackEditor.m_frameMax);
+						this->m_timeActFlags.m_addTimeActId = this->m_eventTrackEditor->m_eventTrackActionTimeActValue;
+						this->m_timeActFlags.m_addTimeActLenght = RMath::FrameToTime(this->m_eventTrackEditor->m_frameMax);
 
-						if (this->m_tae.AddTimeAct(this->m_timeActFlags.m_addTimeActId, this->m_timeActFlags.m_addTimeActLenght) == false)
+						if (this->m_timeAct->AddTimeAct(this->m_timeActFlags.m_addTimeActId, this->m_timeActFlags.m_addTimeActLenght) == false)
 							g_appLog->AlertMessage(MsgLevel_Info, "TimeAct %d already exists\n", this->m_timeActFlags.m_addTimeActId);
 						else
 						{
-							this->m_timeActEditorFlags.m_edited.clear();
+							this->m_timeActEditor->m_edited.clear();
 
-							if (m_tae.m_init)
+							if (m_timeAct->m_init)
 							{
-								this->m_timeActEditorFlags.m_edited.reserve(m_tae.m_tae.size());
+								this->m_timeActEditor->m_edited.reserve(m_timeAct->m_tae.size());
 
-								for (int i = 0; i < m_tae.m_tae.size(); i++)
-									this->m_timeActEditorFlags.m_edited.push_back(false);
+								for (int i = 0; i < m_timeAct->m_tae.size(); i++)
+									this->m_timeActEditor->m_edited.push_back(false);
 							}
 						}
 
-						this->m_eventTrackEditorFlags.m_load = true;
+						this->m_eventTrackEditor->m_load = true;
 						this->m_timeActFlags.m_addTimeAct = false;
 						ImGui::CloseCurrentPopup();
 					}
@@ -666,10 +680,10 @@ void Application::AssetsWindow()
 
 				if (ImGui::Button("Delete"))
 				{
-					if (this->m_tae.DeleteTimeAct(this->m_timeActFlags.m_deleteTimeActId) == false)
+					if (this->m_timeAct->DeleteTimeAct(this->m_timeActFlags.m_deleteTimeActId) == false)
 						g_appLog->AlertMessage(MsgLevel_Info, "Failed to delete TimeAct %d\n", this->m_timeActFlags.m_deleteTimeActId);
 
-					this->m_eventTrackEditorFlags.m_load = true;
+					this->m_eventTrackEditor->m_load = true;
 					this->m_timeActFlags.m_deleteTimeAct = false;
 
 					ImGui::CloseCurrentPopup();
@@ -680,18 +694,18 @@ void Application::AssetsWindow()
 			else
 				this->m_timeActFlags.m_deleteTimeAct = false;
 
-			if (this->m_tae.m_init)
+			if (this->m_timeAct->m_init)
 			{
-				ImGui::Text(RString::ToNarrow(this->m_tae.m_fileName.c_str()).c_str());
+				ImGui::Text(RString::ToNarrow(this->m_timeAct->m_fileName.c_str()).c_str());
 
 				if (ImGui::Button("Add"))
 					this->m_timeActFlags.m_addTimeAct = true;
 
-				if (this->m_timeActEditorFlags.m_taeId != -1)
+				if (this->m_timeActEditor->m_taeId != -1)
 				{
 					ImGui::SameLine();
 
-					this->m_timeActFlags.m_deleteTimeActId = this->m_timeActEditorFlags.m_taeId;
+					this->m_timeActFlags.m_deleteTimeActId = this->m_timeActEditor->m_taeId;
 
 					if (ImGui::Button("Delete"))
 						this->m_timeActFlags.m_deleteTimeAct = true;
@@ -702,20 +716,20 @@ void Application::AssetsWindow()
 			ImGui::Text("Filter:");
 			filter.Draw("##asset searchbar", 340.f);
 
-			if (this->m_tae.m_init && !this->m_timeActEditorFlags.m_load)
+			if (this->m_timeAct->m_init && !this->m_timeActEditor->m_load)
 			{
 				ImGui::BeginChild("TAE");
 				{
-					for (int i = 0; i < m_tae.m_header.m_taeCount; i++)
+					for (int i = 0; i < m_timeAct->m_header.m_taeCount; i++)
 					{
-						bool selected = (this->m_timeActEditorFlags.m_selectedTimeActIdx == i);
+						bool selected = (this->m_timeActEditor->m_selectedTimeActIdx == i);
 
 						std::string anim_name = "";
 
-						if (this->m_timeActEditorFlags.m_edited[i])
+						if (this->m_timeActEditor->m_edited[i])
 							anim_name += "*";
 
-						anim_name += std::to_string(m_tae.m_tae[i].m_id);
+						anim_name += std::to_string(m_timeAct->m_tae[i].m_id);
 
 						if (filter.PassFilter(anim_name.c_str()))
 						{
@@ -725,9 +739,9 @@ void Application::AssetsWindow()
 
 							if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
 							{
-								this->m_timeActEditorFlags.m_taeId = this->m_tae.m_tae[i].m_id;
-								this->m_timeActEditorFlags.m_selectedTimeActIdx = i;
-								this->m_timeActEditorFlags.m_load = true;
+								this->m_timeActEditor->m_taeId = this->m_timeAct->m_tae[i].m_id;
+								this->m_timeActEditor->m_selectedTimeActIdx = i;
+								this->m_timeActEditor->m_load = true;
 							}
 
 							ImGui::PopID();
@@ -752,14 +766,14 @@ void Application::EventTrackWindow(int* current_frame, int* first_frame, float* 
 	{
 		bool focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
 
-		if (this->m_morphemeSystem.GetCharacterDef() && this->m_morphemeSystem.GetCharacterDef()->isLoaded())
+		if (this->m_morphemeSystem->GetCharacterDef() && this->m_morphemeSystem->GetCharacterDef()->isLoaded())
 		{
 			if (ImGui::Button("Load"))
 			{
-				if (this->m_eventTrackEditorFlags.m_targetAnimIdx != -1)
+				if (this->m_eventTrackEditor->m_targetAnimIdx != -1)
 				{
-					this->m_eventTrackEditorFlags.m_load = true;
-					this->ResetEventTrackEditor();
+					this->m_eventTrackEditor->m_load = true;
+					this->m_eventTrackEditor->ResetSelection();
 				}
 				else
 					g_appLog->AlertMessage(MsgLevel_Info, "No animation is selected\n");
@@ -768,26 +782,26 @@ void Application::EventTrackWindow(int* current_frame, int* first_frame, float* 
 			ImGui::SameLine();
 			if (ImGui::Button("Save"))
 			{
-				if (this->m_eventTrackEditor.GetTrackCount() > 0)
-					this->m_eventTrackEditorFlags.m_save = true;
+				if (this->m_eventTrackEditor->GetTrackCount() > 0)
+					this->m_eventTrackEditor->m_save = true;
 				else
 					g_appLog->AlertMessage(MsgLevel_Info, "No Event Tracks are loaded\n");
 			}
 
 			if (ImGui::Button("Pause"))
-				this->m_animPlayer.SetPause(true);
+				this->m_animPlayer->SetPause(true);
 			
 			ImGui::SameLine();
 			if (ImGui::Button("Play"))
-				this->m_animPlayer.SetPause(false);
+				this->m_animPlayer->SetPause(false);
 
-			if (this->m_eventTrackEditor.m_animIdx > -1)
-				ImGui::Text(this->m_animPlayer.GetAnimation()->GetAnimName());
+			if (this->m_eventTrackEditor->m_animIdx > -1)
+				ImGui::Text(this->m_animPlayer->GetAnimation()->GetAnimName());
 			else
 				ImGui::Text("");
 
 			ImGui::BeginChild("sequencer");
-			ImSequencer::Sequencer(&m_eventTrackEditor, current_frame, &this->m_eventTrackEditorFlags.m_selectedTrack, &this->m_eventTrackEditorFlags.m_selectedEvent, is_expanded, focused, first_frame, zoom_level, ImSequencer::EDITOR_CHANGE_FRAME | ImSequencer::EDITOR_TRACK_RENAME | ImSequencer::EDITOR_MARK_ACTIVE_EVENTS);
+			ImSequencer::Sequencer(m_eventTrackEditor, current_frame, &this->m_eventTrackEditor->m_selectedTrack, &this->m_eventTrackEditor->m_selectedEvent, is_expanded, focused, first_frame, zoom_level, ImSequencer::EDITOR_CHANGE_FRAME | ImSequencer::EDITOR_TRACK_RENAME | ImSequencer::EDITOR_MARK_ACTIVE_EVENTS);
 			ImGui::EndChild();
 		}
 	}
@@ -798,11 +812,11 @@ void Application::EventTrackInfoWindow()
 {
 	ImGui::Begin("Event Data");
 	{
-		if ((this->m_eventTrackEditor.m_eventTracks.size() > 0) && (this->m_eventTrackEditorFlags.m_selectedTrack != -1 && this->m_eventTrackEditorFlags.m_selectedTrack < this->m_eventTrackEditor.m_eventTracks.size()) && (this->m_eventTrackEditorFlags.m_selectedEvent != -1 && this->m_eventTrackEditor.m_eventTracks[this->m_eventTrackEditorFlags.m_selectedTrack].m_numEvents))
+		if ((this->m_eventTrackEditor->m_eventTracks.size() > 0) && (this->m_eventTrackEditor->m_selectedTrack != -1 && this->m_eventTrackEditor->m_selectedTrack < this->m_eventTrackEditor->m_eventTracks.size()) && (this->m_eventTrackEditor->m_selectedEvent != -1 && this->m_eventTrackEditor->m_eventTracks[this->m_eventTrackEditor->m_selectedTrack].m_numEvents))
 		{
-			EventTrackEditor::EventTrack* track = &this->m_eventTrackEditor.m_eventTracks[this->m_eventTrackEditorFlags.m_selectedTrack];
-			float startTime = RMath::FrameToTime(track->m_event[this->m_eventTrackEditorFlags.m_selectedEvent].m_frameStart);
-			float endTime = RMath::FrameToTime(track->m_event[this->m_eventTrackEditorFlags.m_selectedEvent].m_duration + track->m_event[this->m_eventTrackEditorFlags.m_selectedEvent].m_frameStart);
+			EventTrackEditor::EventTrack* track = &this->m_eventTrackEditor->m_eventTracks[this->m_eventTrackEditor->m_selectedTrack];
+			float startTime = RMath::FrameToTime(track->m_event[this->m_eventTrackEditor->m_selectedEvent].m_frameStart);
+			float endTime = RMath::FrameToTime(track->m_event[this->m_eventTrackEditor->m_selectedEvent].m_duration + track->m_event[this->m_eventTrackEditor->m_selectedEvent].m_frameStart);
 
 			ImGui::Text(track->m_name.c_str());
 			ImGui::PushItemWidth(100);
@@ -816,13 +830,13 @@ void Application::EventTrackInfoWindow()
 				ImGui::PopTextWrapPos();
 			}
 
-			ImGui::InputInt("Event Value", &track->m_event[this->m_eventTrackEditorFlags.m_selectedEvent].m_value, 1, 0);
+			ImGui::InputInt("Event Value", &track->m_event[this->m_eventTrackEditor->m_selectedEvent].m_value, 1, 0);
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SeparatorText("Info");
 
 				ImGui::PushTextWrapPos(ImGui::GetWindowContentWidth());
-				ImGui::Text(getEventTrackEventTooltip(track->m_event[this->m_eventTrackEditorFlags.m_selectedEvent].m_value).c_str());
+				ImGui::Text(getEventTrackEventTooltip(track->m_event[this->m_eventTrackEditor->m_selectedEvent].m_value).c_str());
 				ImGui::PopTextWrapPos();
 			}
 
@@ -830,13 +844,13 @@ void Application::EventTrackInfoWindow()
 			ImGui::InputFloat("End Time", &endTime, 0.f, 0.f, "%.3f", ImGuiInputTextFlags_ReadOnly);
 			ImGui::PopItemWidth();
 
-			if (this->m_eventTrackEditorFlags.m_save)
+			if (this->m_eventTrackEditor->m_save)
 			{
-				this->m_eventTrackEditorFlags.m_save = false;
-				this->m_eventTrackEditor.SetEditedState(false);
+				this->m_eventTrackEditor->m_save = false;
+				this->m_eventTrackEditor->SetEditedState(false);
 
-				for (int i = 0; i < this->m_eventTrackEditor.GetTrackCount(); i++)
-					this->m_eventTrackEditor.m_eventTracks[i].SaveEventTrackData(this->m_eventTrackEditorFlags.m_lenMult);
+				for (int i = 0; i < this->m_eventTrackEditor->GetTrackCount(); i++)
+					this->m_eventTrackEditor->m_eventTracks[i].SaveEventTrackData(this->m_eventTrackEditor->m_lenMult);
 			}
 		}
 	}
@@ -851,14 +865,14 @@ void Application::TimeActWindow(int* current_frame, int* first_frame, float* zoo
 	{
 		bool focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
 
-		if (this->m_tae.m_init)
+		if (this->m_timeAct)
 		{
 			if (ImGui::Button("Load"))
 			{
-				if (this->m_tae.m_init)
+				if (this->m_timeAct->m_init)
 				{
-					this->m_timeActEditorFlags.m_load = true;
-					this->ResetTimeActEditor();
+					this->m_timeActEditor->m_load = true;
+					this->m_timeActEditor->ResetSelection();
 				}
 				else
 					g_appLog->AlertMessage(MsgLevel_Info, "No TimeAct file is currently loaded\n");
@@ -867,26 +881,26 @@ void Application::TimeActWindow(int* current_frame, int* first_frame, float* zoo
 			ImGui::SameLine();
 			if (ImGui::Button("Save"))
 			{
-				if (this->m_tae.m_init)
-					this->m_timeActEditorFlags.m_save = true;
+				if (this->m_timeAct->m_init)
+					this->m_timeActEditor->m_save = true;
 				else
 					g_appLog->AlertMessage(MsgLevel_Info, "No TimeAct track is currently loaded\n");
 			}
 
 			if (ImGui::Button("Pause"))
-				this->m_animPlayer.SetPause(true);
+				this->m_animPlayer->SetPause(true);
 
 			ImGui::SameLine();
 			if (ImGui::Button("Play"))
-				this->m_animPlayer.SetPause(false);
+				this->m_animPlayer->SetPause(false);
 
-			if (this->m_timeActEditorFlags.m_taeId > -1)
-				ImGui::Text(std::to_string(this->m_timeActEditorFlags.m_taeId).c_str());
+			if (this->m_timeActEditor->m_taeId > -1)
+				ImGui::Text(std::to_string(this->m_timeActEditor->m_taeId).c_str());
 			else
 				ImGui::Text("");
 
 			ImGui::BeginChild("sequencer");
-			ImSequencer::Sequencer(&m_timeActEditor, current_frame, &this->m_timeActEditorFlags.m_selectedTrack, &this->m_timeActEditorFlags.m_selectedEvent, is_expanded, focused, first_frame, zoom_level, ImSequencer::EDITOR_EDIT_ALL | ImSequencer::EDITOR_TRACK_ADD | ImSequencer::EDITOR_TRACK_RENAME | ImSequencer::EDITOR_EVENT_ADD | ImSequencer::EDITOR_MARK_ACTIVE_EVENTS);
+			ImSequencer::Sequencer(m_timeActEditor, current_frame, &this->m_timeActEditor->m_selectedTrack, &this->m_timeActEditor->m_selectedEvent, is_expanded, focused, first_frame, zoom_level, ImSequencer::EDITOR_EDIT_ALL | ImSequencer::EDITOR_TRACK_ADD | ImSequencer::EDITOR_TRACK_RENAME | ImSequencer::EDITOR_EVENT_ADD | ImSequencer::EDITOR_MARK_ACTIVE_EVENTS);
 			ImGui::EndChild();
 		}
 	}
@@ -898,13 +912,13 @@ void Application::TimeActInfoWindow()
 {
 	ImGui::Begin("TimeAct Data");
 	{
-		if ((this->m_timeActEditor.GetTrackCount() > 0) && (this->m_timeActEditorFlags.m_selectedTrack != -1 && this->m_timeActEditorFlags.m_selectedTrack < this->m_timeActEditor.GetTrackCount()) && (this->m_timeActEditorFlags.m_selectedEvent != -1 && this->m_timeActEditor.m_tracks[this->m_timeActEditorFlags.m_selectedTrack].m_count))
+		if ((this->m_timeActEditor->GetTrackCount() > 0) && (this->m_timeActEditor->m_selectedTrack != -1 && this->m_timeActEditor->m_selectedTrack < this->m_timeActEditor->GetTrackCount()) && (this->m_timeActEditor->m_selectedEvent != -1 && this->m_timeActEditor->m_tracks[this->m_timeActEditor->m_selectedTrack].m_count))
 		{
-			TimeActEditor::TimeActTrack* track = &this->m_timeActEditor.m_tracks[this->m_timeActEditorFlags.m_selectedTrack];
-			float startTime = RMath::FrameToTime(track->m_event[this->m_timeActEditorFlags.m_selectedEvent].m_frameStart, 30);
-			float endTime = RMath::FrameToTime(track->m_event[this->m_timeActEditorFlags.m_selectedEvent].m_duration + track->m_event[this->m_timeActEditorFlags.m_selectedEvent].m_frameStart, 30);
+			TimeActEditor::TimeActTrack* track = &this->m_timeActEditor->m_tracks[this->m_timeActEditor->m_selectedTrack];
+			float startTime = RMath::FrameToTime(track->m_event[this->m_timeActEditor->m_selectedEvent].m_frameStart, 30);
+			float endTime = RMath::FrameToTime(track->m_event[this->m_timeActEditor->m_selectedEvent].m_duration + track->m_event[this->m_timeActEditor->m_selectedEvent].m_frameStart, 30);
 
-			ImGui::Text(m_timeActEditor.GetEventLabel(this->m_timeActEditorFlags.m_selectedTrack, this->m_timeActEditorFlags.m_selectedEvent, false).c_str());
+			ImGui::Text(m_timeActEditor->GetEventLabel(this->m_timeActEditor->m_selectedTrack, this->m_timeActEditor->m_selectedEvent, false).c_str());
 			ImGui::PushItemWidth(100);
 			ImGui::InputInt("Event Group", &track->m_eventGroup, 1, 0);
 			if (ImGui::IsItemHovered())
@@ -916,28 +930,28 @@ void Application::TimeActInfoWindow()
 				ImGui::PopTextWrapPos();
 			}
 
-			ImGui::InputInt("Event ID", &track->m_event[this->m_timeActEditorFlags.m_selectedEvent].m_value, 1, 0);
+			ImGui::InputInt("Event ID", &track->m_event[this->m_timeActEditor->m_selectedEvent].m_value, 1, 0);
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SeparatorText("Info");
 
 				ImGui::PushTextWrapPos(ImGui::GetWindowContentWidth());
-				ImGui::Text(getTaeEventTooltip(track->m_event[this->m_timeActEditorFlags.m_selectedEvent].m_value).c_str());
+				ImGui::Text(getTaeEventTooltip(track->m_event[this->m_timeActEditor->m_selectedEvent].m_value).c_str());
 				ImGui::PopTextWrapPos();
 			}
 
 			ImGui::InputFloat("Start Time", &startTime, 0.f, 0.f, "%.3f", ImGuiInputTextFlags_ReadOnly);
 			ImGui::InputFloat("End Time", &endTime, 0.f, 0.f, "%.3f", ImGuiInputTextFlags_ReadOnly);
 
-			track->m_event[this->m_timeActEditorFlags.m_selectedEvent].m_args->ImGuiEdit();
+			track->m_event[this->m_timeActEditor->m_selectedEvent].m_args->ImGuiEdit();
 
-			if (this->m_timeActEditorFlags.m_save)
+			if (this->m_timeActEditor->m_save)
 			{
-				this->m_timeActEditorFlags.m_save = false;
-				this->m_timeActEditor.SetEditedState(false);
+				this->m_timeActEditor->m_save = false;
+				this->m_timeActEditor->SetEditedState(false);
 
-				for (int i = 0; i < this->m_timeActEditor.GetTrackCount(); i++)
-					this->m_timeActEditor.m_tracks[i].SaveTimeActTrack();
+				for (int i = 0; i < this->m_timeActEditor->GetTrackCount(); i++)
+					this->m_timeActEditor->m_tracks[i].SaveTimeActTrack();
 			}
 
 			ImGui::PopItemWidth();
@@ -965,26 +979,26 @@ void Application::SettingsWindow()
 
 	if (ImGui::BeginTabItem("EventTrack Editor Colors"))
 	{
-		ImGui::ColorEdit4("Track", (float*)&this->m_eventTrackEditor.m_colors.m_trackColor);
-		ImGui::ColorEdit4("Track Inactive", (float*)&this->m_eventTrackEditor.m_colors.m_trackColorInactive);
-		ImGui::ColorEdit4("Track Active", (float*)&this->m_eventTrackEditor.m_colors.m_trackColorActive);
-		ImGui::ColorEdit4("Track Bounding Box", (float*)&this->m_eventTrackEditor.m_colors.m_trackBoundingBox);
-		ImGui::ColorEdit4("Track Bounding Box Active", (float*)&this->m_eventTrackEditor.m_colors.m_trackBoundingBoxActive);
-		ImGui::ColorEdit4("Track Text Color", (float*)&this->m_eventTrackEditor.m_colors.m_trackTextColor);
-		ImGui::ColorEdit4("Cursor Color", (float*)&this->m_eventTrackEditor.m_colors.m_cursorColor);
+		ImGui::ColorEdit4("Track", (float*)&this->m_eventTrackEditor->m_colors.m_trackColor);
+		ImGui::ColorEdit4("Track Inactive", (float*)&this->m_eventTrackEditor->m_colors.m_trackColorInactive);
+		ImGui::ColorEdit4("Track Active", (float*)&this->m_eventTrackEditor->m_colors.m_trackColorActive);
+		ImGui::ColorEdit4("Track Bounding Box", (float*)&this->m_eventTrackEditor->m_colors.m_trackBoundingBox);
+		ImGui::ColorEdit4("Track Bounding Box Active", (float*)&this->m_eventTrackEditor->m_colors.m_trackBoundingBoxActive);
+		ImGui::ColorEdit4("Track Text Color", (float*)&this->m_eventTrackEditor->m_colors.m_trackTextColor);
+		ImGui::ColorEdit4("Cursor Color", (float*)&this->m_eventTrackEditor->m_colors.m_cursorColor);
 
 		ImGui::EndTabItem();
 	}
 
 	if (ImGui::BeginTabItem("TimeAct Editor Colors"))
 	{
-		ImGui::ColorEdit4("Track", (float*)&this->m_timeActEditor.m_colors.m_trackColor);
-		ImGui::ColorEdit4("Track Inactive", (float*)&this->m_timeActEditor.m_colors.m_trackColorInactive);
-		ImGui::ColorEdit4("Track Active", (float*)&this->m_timeActEditor.m_colors.m_trackColorActive);
-		ImGui::ColorEdit4("Track Bounding Box", (float*)&this->m_timeActEditor.m_colors.m_trackBoundingBox);
-		ImGui::ColorEdit4("Track Bounding Box Active", (float*)&this->m_timeActEditor.m_colors.m_trackBoundingBoxActive);
-		ImGui::ColorEdit4("Track Text Color", (float*)&this->m_timeActEditor.m_colors.m_trackTextColor);
-		ImGui::ColorEdit4("Cursor Color", (float*)&this->m_timeActEditor.m_colors.m_cursorColor);
+		ImGui::ColorEdit4("Track", (float*)&this->m_timeActEditor->m_colors.m_trackColor);
+		ImGui::ColorEdit4("Track Inactive", (float*)&this->m_timeActEditor->m_colors.m_trackColorInactive);
+		ImGui::ColorEdit4("Track Active", (float*)&this->m_timeActEditor->m_colors.m_trackColorActive);
+		ImGui::ColorEdit4("Track Bounding Box", (float*)&this->m_timeActEditor->m_colors.m_trackBoundingBox);
+		ImGui::ColorEdit4("Track Bounding Box Active", (float*)&this->m_timeActEditor->m_colors.m_trackBoundingBoxActive);
+		ImGui::ColorEdit4("Track Text Color", (float*)&this->m_timeActEditor->m_colors.m_trackTextColor);
+		ImGui::ColorEdit4("Cursor Color", (float*)&this->m_timeActEditor->m_colors.m_cursorColor);
 
 		ImGui::EndTabItem();
 	}
@@ -1094,7 +1108,7 @@ void SkeletonInspectorTreeNode(FLVER2* flv, int boneID, int& selected_id)
 
 void Application::PreviewSceneExplorerWindow()
 {
-	FlverModel* model = this->m_animPlayer.GetModel();
+	FlverModel* model = this->m_animPlayer->GetModel();
 
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
 
@@ -1172,11 +1186,11 @@ void Application::CheckFlags()
 	{
 		this->m_flags.m_loadFile = false;
 
-		m_eventTrackEditorFlags.m_load = false;
-		m_timeActEditorFlags.m_load = false;
+		m_eventTrackEditor->m_load = false;
+		m_timeActEditor->m_load = false;
 
-		this->m_eventTrackEditor.Clear();
-		this->m_timeActEditor.Clear();
+		this->m_eventTrackEditor->Clear();
+		this->m_timeActEditor->Clear();
 
 		this->LoadFile();
 	}
@@ -1197,7 +1211,7 @@ void Application::CheckFlags()
 	{
 		this->m_flags.m_saveTae = false;
 
-		if (this->m_tae.m_init)
+		if (this->m_timeAct->m_init)
 			this->SaveTaeFile();
 		else
 			g_appLog->AlertMessage(MsgLevel_Error, "No TAE file is loaded\n");
@@ -1219,12 +1233,12 @@ void Application::CheckFlags()
 		}
 		*/
 
-		if (this->m_tae.m_init)
+		if (this->m_timeAct->m_init)
 		{
-			bool status = m_tae.SaveFile(this->m_tae.m_filePath);
+			bool status = m_timeAct->SaveFile(this->m_timeAct->m_filePath);
 
 			if (status)
-				g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
+				g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_timeAct->m_outFilePath, m_timeAct->m_header.m_taeCount);
 			else
 				g_appLog->AlertMessage(MsgLevel_Error, "Failed to generate file\n");
 		}
@@ -1234,7 +1248,7 @@ void Application::CheckFlags()
 	{
 		this->m_flags.m_exportAll = false;
 
-		CharacterDefBasic* characterDef = this->m_morphemeSystem.GetCharacterDef();
+		CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 		if (characterDef)
 		{
@@ -1292,34 +1306,34 @@ void Application::CheckFlags()
 		this->ExportModelToFbx(export_path);
 	}
 
-	if (this->m_morphemeSystem.GetCharacterDef() == nullptr)
+	if (this->m_morphemeSystem->GetCharacterDef() == nullptr)
 	{
-		this->m_eventTrackEditor.Clear();
+		this->m_eventTrackEditor->Clear();
 
-		m_eventTrackEditorFlags.m_load = false;
-		m_eventTrackEditorFlags.m_selectedAnimIdx = -1;
+		m_eventTrackEditor->m_load = false;
+		m_eventTrackEditor->m_selectedAnimIdx = -1;
 	}
 
-	if (this->m_eventTrackEditor.m_reload)
-		this->m_eventTrackEditor.ReloadTracks();
+	if (this->m_eventTrackEditor->m_reload)
+		this->m_eventTrackEditor->ReloadTracks();
 
-	if (this->m_eventTrackEditorFlags.m_load)
+	if (this->m_eventTrackEditor->m_load)
 	{
-		this->m_eventTrackEditorFlags.m_load = false;
-		this->m_eventTrackEditor.Clear();
+		this->m_eventTrackEditor->m_load = false;
+		this->m_eventTrackEditor->Clear();
 
-		CharacterDefBasic* characterDef = this->m_morphemeSystem.GetCharacterDef();
+		CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
-		if ((characterDef != nullptr) && characterDef->isLoaded() && (this->m_eventTrackEditorFlags.m_targetAnimIdx != -1))
+		if ((characterDef != nullptr) && characterDef->isLoaded() && (this->m_eventTrackEditor->m_targetAnimIdx != -1))
 		{
 			bool found_et = false;
 			bool found_anim = false;
 
-			this->m_eventTrackEditorFlags.m_eventTrackActionTimeActValue = -1;
-			this->m_eventTrackEditorFlags.m_eventTrackActionTimeActStart = 0.f;
-			this->m_eventTrackEditorFlags.m_eventTrackActionTimeActDuration = 0.f;
+			this->m_eventTrackEditor->m_eventTrackActionTimeActValue = -1;
+			this->m_eventTrackEditor->m_eventTrackActionTimeActStart = 0.f;
+			this->m_eventTrackEditor->m_eventTrackActionTimeActDuration = 0.f;
 
-			g_appLog->DebugMessage(MsgLevel_Debug, "Performing lookup for animation ID %d\n", this->m_eventTrackEditorFlags.m_targetAnimIdx);
+			g_appLog->DebugMessage(MsgLevel_Debug, "Performing lookup for animation ID %d\n", this->m_eventTrackEditor->m_targetAnimIdx);
 			MR::NetworkDef* netDef = characterDef->getNetworkDef();
 			int numNodes = netDef->getNumNodeDefs();
 
@@ -1332,29 +1346,29 @@ void Application::CheckFlags()
 					MR::AttribDataSourceAnim* source_anim = (MR::AttribDataSourceAnim*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM);
 					MR::AttribDataSourceEventTrackSet* source_tracks = (MR::AttribDataSourceEventTrackSet*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_EVENT_TRACKS);
 
-					if (source_anim != nullptr && source_anim->m_animAssetID == this->m_eventTrackEditorFlags.m_targetAnimIdx)
+					if (source_anim != nullptr && source_anim->m_animAssetID == this->m_eventTrackEditor->m_targetAnimIdx)
 					{
 						found_anim = true;
 
 						g_appLog->DebugMessage(MsgLevel_Debug, "Animation found after %d steps\n", idx);
 
-						this->m_eventTrackEditor.m_nodeSource = node;
-						this->m_eventTrackEditor.m_frameMin = RMath::TimeToFrame(source_anim->m_clipStartFraction * source_anim->m_sourceAnimDuration);
-						this->m_eventTrackEditor.m_frameMax = RMath::TimeToFrame(source_anim->m_clipEndFraction * source_anim->m_sourceAnimDuration);
+						this->m_eventTrackEditor->m_nodeSource = node;
+						this->m_eventTrackEditor->m_frameMin = RMath::TimeToFrame(source_anim->m_clipStartFraction * source_anim->m_sourceAnimDuration);
+						this->m_eventTrackEditor->m_frameMax = RMath::TimeToFrame(source_anim->m_clipEndFraction * source_anim->m_sourceAnimDuration);
 
-						this->m_eventTrackEditor.m_animIdx = -1;
+						this->m_eventTrackEditor->m_animIdx = -1;
 
 						for (int i = 0; i < characterDef->getAnimFileLookUp()->getNumAnims(); i++)
 						{
 							if (characterDef->getAnimation(i)->GetID() == source_anim->m_animAssetID)
-								this->m_eventTrackEditor.m_animIdx = i;
+								this->m_eventTrackEditor->m_animIdx = i;
 						}
 
 						if (source_tracks != nullptr)
 						{
-							this->m_eventTrackEditorFlags.m_lenMult = source_anim->m_sourceAnimDuration / (source_anim->m_clipEndFraction - source_anim->m_clipStartFraction);
+							this->m_eventTrackEditor->m_lenMult = source_anim->m_sourceAnimDuration / (source_anim->m_clipEndFraction - source_anim->m_clipStartFraction);
 							int track_count = source_tracks->m_numDiscreteEventTracks + source_tracks->m_numCurveEventTracks + source_tracks->m_numDurEventTracks;
-							this->m_eventTrackEditor.m_eventTracks.reserve(track_count);
+							this->m_eventTrackEditor->m_eventTracks.reserve(track_count);
 
 							found_et = true;
 
@@ -1363,7 +1377,7 @@ void Application::CheckFlags()
 								MR::EventTrackDefDiscrete* source_trackss = source_tracks->m_sourceDiscreteEventTracks[i];
 
 								if (source_trackss)
-									this->m_eventTrackEditor.m_eventTracks.push_back(EventTrackEditor::EventTrack(source_trackss, this->m_eventTrackEditorFlags.m_lenMult));
+									this->m_eventTrackEditor->m_eventTracks.push_back(EventTrackEditor::EventTrack(source_trackss, this->m_eventTrackEditor->m_lenMult));
 							}
 
 							for (int i = 0; i < source_tracks->m_numCurveEventTracks; i++)
@@ -1371,7 +1385,7 @@ void Application::CheckFlags()
 								MR::EventTrackDefCurve* source_trackss = source_tracks->m_sourceCurveEventTracks[i];
 
 								if (source_trackss)
-									this->m_eventTrackEditor.m_eventTracks.push_back(EventTrackEditor::EventTrack(source_trackss, this->m_eventTrackEditorFlags.m_lenMult));
+									this->m_eventTrackEditor->m_eventTracks.push_back(EventTrackEditor::EventTrack(source_trackss, this->m_eventTrackEditor->m_lenMult));
 							}
 
 							for (int i = 0; i < source_tracks->m_numDurEventTracks; i++)
@@ -1379,30 +1393,30 @@ void Application::CheckFlags()
 								MR::EventTrackDefDuration* source_trackss = source_tracks->m_sourceDurEventTracks[i];
 
 								if (source_trackss)
-									this->m_eventTrackEditor.m_eventTracks.push_back(EventTrackEditor::EventTrack(source_trackss, this->m_eventTrackEditorFlags.m_lenMult));
+									this->m_eventTrackEditor->m_eventTracks.push_back(EventTrackEditor::EventTrack(source_trackss, this->m_eventTrackEditor->m_lenMult));
 							}
 
-							this->m_eventTrackEditor.SetEditedState(false);
+							this->m_eventTrackEditor->SetEditedState(false);
 
-							if (this->m_tae.m_init)
+							if (this->m_timeAct->m_init)
 							{
-								for (size_t i = 0; i < this->m_eventTrackEditor.m_eventTracks.size(); i++)
+								for (size_t i = 0; i < this->m_eventTrackEditor->m_eventTracks.size(); i++)
 								{
-									if (this->m_eventTrackEditor.m_eventTracks[i].m_eventId == 1000)
+									if (this->m_eventTrackEditor->m_eventTracks[i].m_eventId == 1000)
 									{
-										this->m_eventTrackEditorFlags.m_eventTrackActionTimeActValue = this->m_eventTrackEditor.m_eventTracks[i].m_event[0].m_value;
-										this->m_eventTrackEditorFlags.m_eventTrackActionTimeActStart = RMath::FrameToTime(this->m_eventTrackEditor.m_eventTracks[i].m_event[0].m_frameStart);
-										this->m_eventTrackEditorFlags.m_eventTrackActionTimeActDuration = RMath::FrameToTime(this->m_eventTrackEditor.m_eventTracks[i].m_event[0].m_duration);
+										this->m_eventTrackEditor->m_eventTrackActionTimeActValue = this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_value;
+										this->m_eventTrackEditor->m_eventTrackActionTimeActStart = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_frameStart);
+										this->m_eventTrackEditor->m_eventTrackActionTimeActDuration = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_duration);
 
-										this->m_timeActEditorFlags.m_taeId = this->m_eventTrackEditorFlags.m_eventTrackActionTimeActValue;
+										this->m_timeActEditor->m_taeId = this->m_eventTrackEditor->m_eventTrackActionTimeActValue;
 
-										for (size_t j = 0; j < this->m_tae.m_tae.size(); j++)
+										for (size_t j = 0; j < this->m_timeAct->m_tae.size(); j++)
 										{
-											if (this->m_tae.m_tae[j].m_id == this->m_timeActEditorFlags.m_taeId)
-												this->m_timeActEditorFlags.m_selectedTimeActIdx = j;
+											if (this->m_timeAct->m_tae[j].m_id == this->m_timeActEditor->m_taeId)
+												this->m_timeActEditor->m_selectedTimeActIdx = j;
 										}
 
-										this->m_timeActEditorFlags.m_load = true;
+										this->m_timeActEditor->m_load = true;
 
 										break;
 									}
@@ -1420,54 +1434,54 @@ void Application::CheckFlags()
 			}
 
 			if (!found_anim)
-				g_appLog->DebugMessage(MsgLevel_Warn, "Animation ID %d not found\n", this->m_eventTrackEditorFlags.m_targetAnimIdx);
+				g_appLog->DebugMessage(MsgLevel_Warn, "Animation ID %d not found\n", this->m_eventTrackEditor->m_targetAnimIdx);
 
 			g_appLog->DebugMessage(MsgLevel_Debug, "\n");
 		}
 	}
 
-	if (this->m_tae.m_init == false)
+	if (this->m_timeAct == nullptr)
 	{
-		this->m_timeActEditor.Clear();
+		this->m_timeActEditor->Clear();
 
-		m_timeActEditorFlags.m_load = false;
-		m_timeActEditorFlags.m_selectedTimeActIdx = -1;
+		m_timeActEditor->m_load = false;
+		m_timeActEditor->m_selectedTimeActIdx = -1;
 	}
 
-	if (this->m_timeActEditor.m_reload)
-		this->m_timeActEditor.ReloadTracks();
+	if (this->m_timeActEditor->m_reload)
+		this->m_timeActEditor->ReloadTracks();
 
-	if (this->m_timeActEditorFlags.m_load)
+	if (this->m_timeActEditor->m_load)
 	{
-		this->m_timeActEditorFlags.m_load = false;
-		this->m_timeActEditor.Clear();
+		this->m_timeActEditor->m_load = false;
+		this->m_timeActEditor->Clear();
 
-		this->m_timeActEditor.m_taeIdx = this->m_timeActEditorFlags.m_selectedTimeActIdx;
+		this->m_timeActEditor->m_taeIdx = this->m_timeActEditor->m_selectedTimeActIdx;
 
-		if (this->m_tae.m_init && this->m_timeActEditorFlags.m_taeId > -1)
+		if (this->m_timeAct->m_init && this->m_timeActEditor->m_taeId > -1)
 		{
-			if (m_tae.m_tae.size() > 0)
+			if (m_timeAct->m_tae.size() > 0)
 			{
-				TimeAct* timeact = this->m_tae.TimeActLookup(this->m_timeActEditorFlags.m_taeId);
-				this->m_timeActEditor.m_source = timeact;
+				TimeAct* timeact = this->m_timeAct->TimeActLookup(this->m_timeActEditor->m_taeId);
+				this->m_timeActEditor->m_source = timeact;
 
 				if (timeact)
 				{
 					float trackLen = (float)timeact->m_taeData->m_animData->m_lenght / (float)timeact->m_taeData->m_animData->m_fps;
 
-					this->m_timeActEditor.m_frameMax = RMath::TimeToFrame(trackLen, 30);
-					this->m_timeActEditor.m_frameMin = 0;
+					this->m_timeActEditor->m_frameMax = RMath::TimeToFrame(trackLen, 30);
+					this->m_timeActEditor->m_frameMin = 0;
 
-					this->m_timeActEditor.SetEditedState(false);
+					this->m_timeActEditor->SetEditedState(false);
 
 					if (timeact->m_taeData->m_eventGroupCount > 0)
 					{
 						for (int j = 0; j < timeact->m_taeData->m_eventGroupCount; j++)
-							this->m_timeActEditor.m_tracks.push_back(&timeact->m_taeData->m_groups[j]);
+							this->m_timeActEditor->m_tracks.push_back(&timeact->m_taeData->m_groups[j]);
 					}
 				}
 				else
-					g_appLog->DebugMessage(MsgLevel_Info, "Application.cpp", "TimeAct %d not found\n", this->m_timeActEditorFlags.m_taeId);
+					g_appLog->DebugMessage(MsgLevel_Info, "Application.cpp", "TimeAct %d not found\n", this->m_timeActEditor->m_taeId);
 			}
 			else
 				g_appLog->DebugMessage(MsgLevel_Info, "Application.cpp", "No TimeAct is loaded\n");
@@ -1475,7 +1489,7 @@ void Application::CheckFlags()
 	}
 }
 
-int Application::GetChrIdFromNmbFileName(std::wstring name)
+int GetChrIdFromNmbFileName(std::wstring name)
 {
 	std::wstring chr_id_str;
 	int m_chrId = -1;
@@ -1494,7 +1508,7 @@ int Application::GetChrIdFromNmbFileName(std::wstring name)
 	return m_chrId;
 }
 
-std::wstring Application::GetObjIdFromTaeFileName(std::wstring name)
+std::wstring GetObjIdFromTaeFileName(std::wstring name)
 {
 	std::wstring obj_id;
 
@@ -1550,9 +1564,9 @@ void Application::LoadFile()
 
 						if (filepath.extension() == ".nmb")
 						{
-							this->m_animPlayer.Clear();
+							this->m_animPlayer->Clear();
 
-							CharacterDefBasic* characterDef = m_morphemeSystem.createCharacterDef(filepath.string().c_str());
+							CharacterDefBasic* characterDef = m_morphemeSystem->createCharacterDef(filepath.string().c_str());
 							
 							if (!characterDef)
 								return;
@@ -1564,18 +1578,18 @@ void Application::LoadFile()
 							if (!character)
 								return;
 
-							this->m_morphemeSystem.registerCharacter(character);
+							this->m_morphemeSystem->registerCharacter(character);
 
-							if (m_morphemeSystem.GetCharacterDef()->isLoaded())
+							if (m_morphemeSystem->GetCharacterDef()->isLoaded())
 							{
-								int animCount = m_morphemeSystem.GetCharacterDef()->getAnimFileLookUp()->getNumAnims();
+								int animCount = m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getNumAnims();
 
 								for (int i = 0; i < animCount; i++)
 								{
 									std::filesystem::path gamepath = pszFilePath;
 									std::wstring parent_path = gamepath.parent_path();
 
-									std::wstring anim_name = RString::ToWide(this->m_morphemeSystem.GetCharacterDef()->getAnimFileLookUp()->getFilename(i));
+									std::wstring anim_name = RString::ToWide(this->m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getFilename(i));
 
 									std::wstring anim_path_str = parent_path + L"\\" + anim_name;
 
@@ -1584,14 +1598,14 @@ void Application::LoadFile()
 
 								characterDef->sortAnimations();
 
-								this->m_eventTrackEditorFlags.m_targetAnimIdx = -1;
-								this->m_eventTrackEditorFlags.m_selectedAnimIdx = -1;
+								this->m_eventTrackEditor->m_targetAnimIdx = -1;
+								this->m_eventTrackEditor->m_selectedAnimIdx = -1;
 
-								this->m_eventTrackEditorFlags.m_edited.clear();
-								this->m_eventTrackEditorFlags.m_edited.reserve(m_morphemeSystem.GetCharacterDef()->getAnimFileLookUp()->getNumAnims());
+								this->m_eventTrackEditor->m_edited.clear();
+								this->m_eventTrackEditor->m_edited.reserve(m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getNumAnims());
 
-								for (int i = 0; i < m_morphemeSystem.GetCharacterDef()->getAnimFileLookUp()->getNumAnims(); i++)
-									this->m_eventTrackEditorFlags.m_edited.push_back(false);
+								for (int i = 0; i < m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getNumAnims(); i++)
+									this->m_eventTrackEditor->m_edited.push_back(false);
 
 								this->m_chrId = GetChrIdFromNmbFileName(filepath.c_str());
 
@@ -1634,34 +1648,39 @@ void Application::LoadFile()
 
 										std::wstring string = std::wstring(chr_id_str);
 
-										this->m_eventTrackEditorFlags.m_taeList = getTaeFileListFromChrId(filepath_tae, chr_id_str);
-										this->m_eventTrackEditorFlags.m_loadTae = true;
+										this->m_eventTrackEditor->m_taeList = getTaeFileListFromChrId(filepath_tae, chr_id_str);
+										this->m_eventTrackEditor->m_loadTae = true;
 
-										m_bnd.m_init = false;
 										std::wstring path_tmp = getModelNameFromChrId(filepath_dcx, chr_id_str);
 
 										if (path_tmp.compare(L"") != 0)
 										{
 											PWSTR dcx_path = (wchar_t*)path_tmp.c_str();
 
-											m_bnd = BNDReader(dcx_path);
+											if (this->m_bnd)
+											{
+												delete this->m_bnd;
+												this->m_bnd = nullptr;
+											}
+
+											this->m_bnd = new BNDReader(dcx_path);
 
 											std::string filename = "c" + RString::ToNarrow(string.c_str()) + ".flv";
 
 											bool found_model = false;
 
-											for (size_t i = 0; i < m_bnd.m_fileCount; i++)
+											for (size_t i = 0; i < m_bnd->m_fileCount; i++)
 											{
-												if (m_bnd.m_files[i].m_name == filename)
+												if (m_bnd->m_files[i].m_name == filename)
 												{
-													UMEM* umem = uopenMem(m_bnd.m_files[i].m_data, m_bnd.m_files[i].m_uncompressedSize);
+													UMEM* umem = uopenMem(m_bnd->m_files[i].m_data, m_bnd->m_files[i].m_uncompressedSize);
 													FLVER2 flver_model = FLVER2(umem);
 
-													this->m_animPlayer.SetModel(new FlverModel(umem));
+													this->m_animPlayer->SetModel(new FlverModel(umem));
 
 													g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
 
-													this->m_animPlayer.CreateFlverToMorphemeBoneMap(this->m_morphemeSystem.GetCharacterDef()->getNetworkDef()->getRig(0));
+													this->m_animPlayer->CreateFlverToMorphemeBoneMap(this->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
 
 													found_model = true;
 													break;
@@ -1679,20 +1698,25 @@ void Application::LoadFile()
 						}
 						else if (filepath.extension() == ".tae")
 						{
-							m_tae.m_init = false;
-							m_tae = TimeActReader(pszFilePath);
-
-							if (m_tae.m_init)
+							if (this->m_timeAct)
 							{
-								this->m_timeActEditorFlags.m_selectedTimeActIdx = -1;
+								delete this->m_timeAct;
+								this->m_timeAct = nullptr;
+							}
 
-								this->m_timeActEditorFlags.m_edited.clear();
-								this->m_timeActEditorFlags.m_edited.reserve(m_tae.m_tae.size());
+							m_timeAct = new TimeActReader(pszFilePath);
 
-								for (int i = 0; i < m_tae.m_tae.size(); i++)
-									this->m_timeActEditorFlags.m_edited.push_back(false);
+							if (m_timeAct->m_init)
+							{
+								this->m_timeActEditor->m_selectedTimeActIdx = -1;
 
-								g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_tae.m_filePath, m_tae.m_fileSize);
+								this->m_timeActEditor->m_edited.clear();
+								this->m_timeActEditor->m_edited.reserve(m_timeAct->m_tae.size());
+
+								for (int i = 0; i < m_timeAct->m_tae.size(); i++)
+									this->m_timeActEditor->m_edited.push_back(false);
+
+								g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_timeAct->m_filePath, m_timeAct->m_fileSize);
 
 								bool found = false;
 
@@ -1727,36 +1751,42 @@ void Application::LoadFile()
 
 										filepath_dcx += "\\model\\obj";
 
-										m_bnd.m_init = false;
+										m_bnd->m_init = false;
 										std::wstring obj_path = getModelNameFromObjId(filepath_dcx, obj_id);
 
 										if (obj_path.compare(L"") != 0)
 										{
 											PWSTR dcx_path = (wchar_t*)obj_path.c_str();
 
-											m_bnd = BNDReader(dcx_path);
+											if (this->m_bnd)
+											{
+												delete this->m_bnd;
+												this->m_bnd = nullptr;
+											}
+
+											m_bnd = new BNDReader(dcx_path);
 
 											std::string filename = RString::ToNarrow(obj_id.c_str()) + ".flv";
 
 											bool found_model = false;
 
-											for (size_t i = 0; i < m_bnd.m_fileCount; i++)
+											for (size_t i = 0; i < m_bnd->m_fileCount; i++)
 											{
-												if (m_bnd.m_files[i].m_name == filename)
+												if (m_bnd->m_files[i].m_name == filename)
 												{
-													UMEM* umem = uopenMem(m_bnd.m_files[i].m_data, m_bnd.m_files[i].m_uncompressedSize);
+													UMEM* umem = uopenMem(m_bnd->m_files[i].m_data, m_bnd->m_files[i].m_uncompressedSize);
 													FLVER2 flver_model = FLVER2(umem);
 
-													this->m_animPlayer.SetModel(new FlverModel(umem));
+													this->m_animPlayer->SetModel(new FlverModel(umem));
 
 													g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
 
 													found_model = true;
 
-													CharacterDefBasic* characterDef = this->m_morphemeSystem.GetCharacterDef();
+													CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 													if (characterDef)
-														this->m_animPlayer.CreateFlverToMorphemeBoneMap(characterDef->getNetworkDef()->getRig(0));
+														this->m_animPlayer->CreateFlverToMorphemeBoneMap(characterDef->getNetworkDef()->getRig(0));
 
 													break;
 												}
@@ -1834,10 +1864,10 @@ void Application::SaveFile()
 						}
 						else if (filepath.extension() == ".tae")
 						{
-							bool status = m_tae.SaveFile(pszOutFilePath);
+							bool status = m_timeAct->SaveFile(pszOutFilePath);
 
 							if (status)
-								g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
+								g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_timeAct->m_outFilePath, m_timeAct->m_header.m_taeCount);
 							else
 								g_appLog->AlertMessage(MsgLevel_Error, "Failed to generate TAE file\n");
 						}
@@ -1949,10 +1979,10 @@ void Application::SaveTaeFile()
 					{
 						std::filesystem::path filepath = std::wstring(pszOutFilePath);
 
-						bool status = m_tae.SaveFile(pszOutFilePath);
+						bool status = m_timeAct->SaveFile(pszOutFilePath);
 
 						if (status)
-							g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
+							g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_timeAct->m_outFilePath, m_timeAct->m_header.m_taeCount);
 						else
 							g_appLog->AlertMessage(MsgLevel_Error, "Failed to generate TAE file\n");
 					}
@@ -1967,37 +1997,25 @@ void Application::SaveTaeFile()
 	}
 }
 
-void Application::ResetEventTrackEditor()
-{
-	this->m_eventTrackEditorFlags.m_selectedEvent = -1;
-	this->m_eventTrackEditorFlags.m_selectedTrack = -1;
-}
-
-void Application::ResetTimeActEditor()
-{
-	this->m_timeActEditorFlags.m_selectedEvent = -1;
-	this->m_timeActEditorFlags.m_selectedTrack = -1;
-}
-
 void Application::SetTimeActCurrentFrameFromEventTrack(int* current_frame_tae, int current_frame)
 {
-	if (this->m_timeActEditor.m_source == nullptr)
+	if (this->m_timeActEditor->m_source == nullptr)
 		return;
 
-	if (this->m_eventTrackEditor.GetTrackCount() > 0)
+	if (this->m_eventTrackEditor->GetTrackCount() > 0)
 	{
-		for (int i = 0; i < this->m_eventTrackEditor.GetTrackCount(); i++)
+		for (int i = 0; i < this->m_eventTrackEditor->GetTrackCount(); i++)
 		{
-			if (this->m_eventTrackEditor.m_eventTracks[i].m_eventId == 1000)
+			if (this->m_eventTrackEditor->m_eventTracks[i].m_eventId == 1000)
 			{
-				this->m_eventTrackEditorFlags.m_eventTrackActionTimeActStart = RMath::FrameToTime(this->m_eventTrackEditor.m_eventTracks[i].m_event[0].m_frameStart);
-				this->m_eventTrackEditorFlags.m_eventTrackActionTimeActDuration = RMath::FrameToTime(this->m_eventTrackEditor.m_eventTracks[i].m_event[0].m_duration);
-				this->m_eventTrackEditorFlags.m_eventTrackActionTimeActValue = this->m_eventTrackEditor.m_eventTracks[i].m_event[0].m_value;
+				this->m_eventTrackEditor->m_eventTrackActionTimeActStart = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_frameStart);
+				this->m_eventTrackEditor->m_eventTrackActionTimeActDuration = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_duration);
+				this->m_eventTrackEditor->m_eventTrackActionTimeActValue = this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_value;
 			}
 		}
 
-		if (this->m_eventTrackEditorFlags.m_eventTrackActionTimeActValue == this->m_timeActEditorFlags.m_taeId)
-			*current_frame_tae = RMath::TimeToFrame(m_timeActEditor.m_source->CalculatePlaybackPosFromMorphemeEventTrack(this->m_eventTrackEditorFlags.m_eventTrackActionTimeActStart, this->m_eventTrackEditorFlags.m_eventTrackActionTimeActDuration, RMath::FrameToTime(current_frame)), 30, false);
+		if (this->m_eventTrackEditor->m_eventTrackActionTimeActValue == this->m_timeActEditor->m_taeId)
+			*current_frame_tae = RMath::TimeToFrame(m_timeActEditor->m_source->CalculatePlaybackPosFromMorphemeEventTrack(this->m_eventTrackEditor->m_eventTrackActionTimeActStart, this->m_eventTrackEditor->m_eventTrackActionTimeActDuration, RMath::FrameToTime(current_frame)), 30, false);
 	}
 }
 
@@ -2005,7 +2023,7 @@ bool Application::ExportAnimationToFbx(std::filesystem::path export_path, int an
 {
 	bool status = true;
 
-	CharacterDefBasic* characterDef = this->m_morphemeSystem.GetCharacterDef();
+	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 	g_appLog->DebugMessage(MsgLevel_Debug, "Exporting animation %d (%s)\n", anim_id, export_path.filename().string().c_str());
 
@@ -2071,11 +2089,11 @@ bool Application::ExportModelToFbx(std::filesystem::path export_path)
 	FbxPose* pBindPoses = FbxPose::Create(pScene, "BindPoses");
 	pBindPoses->SetIsBindPose(true);
 
-	CharacterDefBasic* characterDef = this->m_morphemeSystem.GetCharacterDef();
+	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 	std::vector<FbxNode*> pMorphemeRig = FBXTranslator::CreateFbxMorphemeSkeleton(pScene, characterDef->getNetworkDef()->getRig(0), pBindPoses);
 
-	if (!FBXTranslator::CreateFbxModel(pScene, this->m_animPlayer.GetModel(), this->m_chrId, pBindPoses, pMorphemeRig, model_out, this->m_animPlayer.GetFlverToMorphemeBoneMap()))
+	if (!FBXTranslator::CreateFbxModel(pScene, this->m_animPlayer->GetModel(), this->m_chrId, pBindPoses, pMorphemeRig, model_out, this->m_animPlayer->GetFlverToMorphemeBoneMap()))
 	{
 		g_appLog->DebugMessage(MsgLevel_Error, "Failed to create FBX model/skeleton (chrId=c%04d)\n", this->m_chrId);
 

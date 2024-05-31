@@ -11,6 +11,23 @@
 
 struct EventTrackEditor
 {
+    bool m_load = false;
+    bool m_save = false;
+    int m_selectedAnimIdx = -1;
+    std::vector<BYTE> m_edited;
+
+    int m_targetAnimIdx = -1;
+    float m_lenMult = 1.f;
+    bool m_loadTae = false;
+    std::vector<std::wstring> m_taeList;
+
+    int m_selectedTrack = -1;
+    int m_selectedEvent = -1;
+
+    float m_eventTrackActionTimeActStart = 0.f;
+    float m_eventTrackActionTimeActDuration = 0.f;
+    int m_eventTrackActionTimeActValue = -1;
+
     struct EventTrack
     {
         struct Event
@@ -75,4 +92,6 @@ struct EventTrackEditor
     void SetEditedState(bool state);
 
     void Clear();
+
+    void ResetSelection();
 };

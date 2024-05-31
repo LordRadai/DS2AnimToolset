@@ -179,7 +179,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         g_pSwapChain->Present(1, 0);
     }
 
-    g_appRootWindow->m_morphemeSystem.termMorpheme();
+    g_appRootWindow->m_morphemeSystem->termMorpheme();
 
     // Cleanup
     g_appLog->DebugMessage(MsgLevel_Info, "ImGui shutdown\n");

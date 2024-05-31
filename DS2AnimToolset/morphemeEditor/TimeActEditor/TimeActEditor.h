@@ -11,6 +11,15 @@
 
 struct TimeActEditor
 {
+    bool m_load = false;
+    bool m_save = false;
+    int m_selectedTimeActIdx = -1;
+    std::vector<BYTE> m_edited;
+    int m_taeId = -1;
+
+    int m_selectedTrack = -1;
+    int m_selectedEvent = -1;
+
     struct TimeActTrack
     {
         struct Event
@@ -74,4 +83,6 @@ struct TimeActEditor
     void SetEditedState(bool state);
 
     void Clear();
+
+    void ResetSelection();
 };
