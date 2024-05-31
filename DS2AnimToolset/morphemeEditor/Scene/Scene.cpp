@@ -388,7 +388,8 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
     }
 
     DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[characterRootBoneIdx] * world, 0.03f, Colors::MediumBlue);
-    DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world, 0.03f, Colors::Red);
+    //DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world, 0.03f, Colors::Red);
+    DX::DrawReferenceFrame(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world);
 
     if (!model->m_settings.m_xray)
         DX::DrawFlverModel(this->m_batch.get(), world, model);
