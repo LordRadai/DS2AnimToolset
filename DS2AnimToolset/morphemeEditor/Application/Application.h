@@ -118,11 +118,12 @@ public:
 		bool m_exportMorphemeRigWithModel = true;
 	} m_fbxExportFlags;
 	
+	int m_chrId = -1;
+
 	MorphemeSystem m_morphemeSystem;
 	TimeActReader m_tae;
 	AnimPlayer m_animPlayer;
 	BNDReader m_bnd;
-	int m_chrId = -1;
 
 	EventTrackEditor m_eventTrackEditor;
 	TimeActEditor m_timeActEditor;
@@ -132,7 +133,7 @@ public:
 
 	void GUIStyle();
 	void Initialise();
-	void Update();
+	void Update(float delta_time);
 	void RenderGUI(const char* title);
 	void ModelPreviewWindow();
 	void AssetsWindow();

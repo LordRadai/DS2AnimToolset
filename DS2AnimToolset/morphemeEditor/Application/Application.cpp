@@ -21,14 +21,14 @@ std::vector<std::wstring> getTaeFileListFromChrId(std::wstring tae_path, std::ws
 
 			if (file_chr_id_str.compare(m_chrId) == 0)
 			{
-				g_appLog.DebugMessage(MsgLevel_Debug, "\t%ws\n", filename.c_str());
+				g_appLog->DebugMessage(MsgLevel_Debug, "\t%ws\n", filename.c_str());
 				files.push_back(entry.path());
 			}
 		}
 	}
 
 	if (files.size() == 0)
-		g_appLog.AlertMessage(MsgLevel_Debug, "Could not find any TimeAct files belonging to c%d in %ws\n", m_chrId, tae_path);
+		g_appLog->AlertMessage(MsgLevel_Debug, "Could not find any TimeAct files belonging to c%d in %ws\n", m_chrId, tae_path);
 
 	return files;
 }
@@ -153,10 +153,12 @@ void Application::Initialise()
 	this->m_morphemeSystem.initMorpheme();
 }
 
-void Application::Update()
+void Application::Update(float delta_time)
 {
 	this->CheckFlags();
 	this->RenderGUI("morphemeEditor");
+
+	this->m_animPlayer.Update(delta_time);
 }
 
 std::string getTaeCategoryTooltip(int category)
@@ -168,7 +170,7 @@ std::string getTaeCategoryTooltip(int category)
 
 	if (reader.ParseError() < 0)
 	{
-		g_appLog.DebugMessage(MsgLevel_Debug, "Failed to load group.ini\n");
+		g_appLog->DebugMessage(MsgLevel_Debug, "Failed to load group.ini\n");
 		return std::string(default_info);
 	}
 
@@ -186,7 +188,7 @@ std::string getTaeEventTooltip(int event_id)
 
 	if (reader.ParseError() < 0)
 	{
-		g_appLog.DebugMessage(MsgLevel_Error, "Failed to load event.ini\n");
+		g_appLog->DebugMessage(MsgLevel_Error, "Failed to load event.ini\n");
 		return std::string(default_info);
 	}
 
@@ -204,7 +206,7 @@ std::string getEventTrackCategoryTooltip(int category)
 
 	if (reader.ParseError() < 0)
 	{
-		g_appLog.DebugMessage(MsgLevel_Error, "Failed to load group.ini\n");
+		g_appLog->DebugMessage(MsgLevel_Error, "Failed to load group.ini\n");
 		return std::string(default_info);
 	}
 
@@ -222,7 +224,7 @@ std::string getEventTrackEventTooltip(int event_id)
 
 	if (reader.ParseError() < 0)
 	{
-		g_appLog.DebugMessage(MsgLevel_Error, "Failed to load event.ini\n");
+		g_appLog->DebugMessage(MsgLevel_Error, "Failed to load event.ini\n");
 		return std::string(default_info);
 	}
 
@@ -381,7 +383,7 @@ void Application::ModelPreviewWindow()
 
 		if (ImGui::IsItemFocused() && ImGui::IsItemHovered())
 		{
-			g_preview.m_camera.m_registerInput = true;
+			g_scene->m_camera.m_registerInput = true;
 
 			if (ImGui::IsMouseDown(0))
 				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -390,9 +392,9 @@ void Application::ModelPreviewWindow()
 				ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
 		}
 
-		g_preview.SetRenderResolution(width, height);
+		g_scene->SetRenderResolution(width, height);
 
-		ImGui::GetWindowDrawList()->AddImage(g_preview.m_shaderResourceViewViewport, pos, ImVec2(pos.x + width, pos.y + height));
+		ImGui::GetWindowDrawList()->AddImage(g_scene->m_shaderResourceViewViewport, pos, ImVec2(pos.x + width, pos.y + height));
 	}
 
 	ImGui::End();
@@ -438,7 +440,7 @@ void Application::AssetsWindow()
 					for (int i = 0; i < m_tae.m_tae.size(); i++)
 						this->m_timeActEditorFlags.m_edited.push_back(false);
 
-					g_appLog.DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_tae.m_filePath, m_tae.m_fileSize);
+					g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_tae.m_filePath, m_tae.m_fileSize);
 
 					this->m_eventTrackEditorFlags.m_loadTae = false;
 				}
@@ -469,7 +471,7 @@ void Application::AssetsWindow()
 
 					if (ImGui::IsMouseDoubleClicked(0))
 					{
-						g_appLog.DebugMessage(MsgLevel_Debug, "Selected TimeAct %s\n", tae_file.c_str());
+						g_appLog->DebugMessage(MsgLevel_Debug, "Selected TimeAct %s\n", tae_file.c_str());
 
 						m_tae.m_init = false;
 						m_tae = TimeActReader(PWSTR(filepath.c_str()));
@@ -485,12 +487,12 @@ void Application::AssetsWindow()
 							for (int i = 0; i < m_tae.m_tae.size(); i++)
 								this->m_timeActEditorFlags.m_edited.push_back(false);
 
-							g_appLog.DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_tae.m_filePath, m_tae.m_fileSize);
+							g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_tae.m_filePath, m_tae.m_fileSize);
 
 							this->m_eventTrackEditorFlags.m_loadTae = false;
 						}
 						else
-							g_appLog.DebugMessage(MsgLevel_Debug, "Failed to load file %s\n", tae_file.c_str());
+							g_appLog->DebugMessage(MsgLevel_Debug, "Failed to load file %s\n", tae_file.c_str());
 
 						ImGui::CloseCurrentPopup();
 					}
@@ -599,7 +601,7 @@ void Application::AssetsWindow()
 				if (ImGui::Button("Add"))
 				{
 					if (this->m_tae.AddTimeAct(this->m_timeActFlags.m_addTimeActId, this->m_timeActFlags.m_addTimeActLenght) == false)
-						g_appLog.AlertMessage(MsgLevel_Info, "TimeAct %d already exists\n", this->m_timeActFlags.m_addTimeActId);
+						g_appLog->AlertMessage(MsgLevel_Info, "TimeAct %d already exists\n", this->m_timeActFlags.m_addTimeActId);
 					else
 					{
 						this->m_timeActEditorFlags.m_edited.clear();
@@ -628,7 +630,7 @@ void Application::AssetsWindow()
 						this->m_timeActFlags.m_addTimeActLenght = RMath::FrameToTime(this->m_eventTrackEditor.m_frameMax);
 
 						if (this->m_tae.AddTimeAct(this->m_timeActFlags.m_addTimeActId, this->m_timeActFlags.m_addTimeActLenght) == false)
-							g_appLog.AlertMessage(MsgLevel_Info, "TimeAct %d already exists\n", this->m_timeActFlags.m_addTimeActId);
+							g_appLog->AlertMessage(MsgLevel_Info, "TimeAct %d already exists\n", this->m_timeActFlags.m_addTimeActId);
 						else
 						{
 							this->m_timeActEditorFlags.m_edited.clear();
@@ -665,7 +667,7 @@ void Application::AssetsWindow()
 				if (ImGui::Button("Delete"))
 				{
 					if (this->m_tae.DeleteTimeAct(this->m_timeActFlags.m_deleteTimeActId) == false)
-						g_appLog.AlertMessage(MsgLevel_Info, "Failed to delete TimeAct %d\n", this->m_timeActFlags.m_deleteTimeActId);
+						g_appLog->AlertMessage(MsgLevel_Info, "Failed to delete TimeAct %d\n", this->m_timeActFlags.m_deleteTimeActId);
 
 					this->m_eventTrackEditorFlags.m_load = true;
 					this->m_timeActFlags.m_deleteTimeAct = false;
@@ -760,7 +762,7 @@ void Application::EventTrackWindow(int* current_frame, int* first_frame, float* 
 					this->ResetEventTrackEditor();
 				}
 				else
-					g_appLog.AlertMessage(MsgLevel_Info, "No animation is selected\n");
+					g_appLog->AlertMessage(MsgLevel_Info, "No animation is selected\n");
 			}
 
 			ImGui::SameLine();
@@ -769,7 +771,7 @@ void Application::EventTrackWindow(int* current_frame, int* first_frame, float* 
 				if (this->m_eventTrackEditor.GetTrackCount() > 0)
 					this->m_eventTrackEditorFlags.m_save = true;
 				else
-					g_appLog.AlertMessage(MsgLevel_Info, "No Event Tracks are loaded\n");
+					g_appLog->AlertMessage(MsgLevel_Info, "No Event Tracks are loaded\n");
 			}
 
 			if (ImGui::Button("Pause"))
@@ -859,7 +861,7 @@ void Application::TimeActWindow(int* current_frame, int* first_frame, float* zoo
 					this->ResetTimeActEditor();
 				}
 				else
-					g_appLog.AlertMessage(MsgLevel_Info, "No TimeAct file is currently loaded\n");
+					g_appLog->AlertMessage(MsgLevel_Info, "No TimeAct file is currently loaded\n");
 			}
 
 			ImGui::SameLine();
@@ -868,7 +870,7 @@ void Application::TimeActWindow(int* current_frame, int* first_frame, float* zoo
 				if (this->m_tae.m_init)
 					this->m_timeActEditorFlags.m_save = true;
 				else
-					g_appLog.AlertMessage(MsgLevel_Info, "No TimeAct track is currently loaded\n");
+					g_appLog->AlertMessage(MsgLevel_Info, "No TimeAct track is currently loaded\n");
 			}
 
 			if (ImGui::Button("Pause"))
@@ -997,44 +999,44 @@ void Application::PreviewDebugManagerWindow()
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
 	ImGui::Begin("Settings##preview", &this->m_windowStates.m_previewSettings);
 
-	ImGui::DragFloat("Grid Scale", &g_preview.m_settings.m_gridScale, 0.1f, 0.f, FLT_MAX);
+	ImGui::DragFloat("Grid Scale", &g_scene->m_settings.m_gridScale, 0.1f, 0.f, FLT_MAX);
 
 	ImGui::BeginTabBar("preview_settings");
 	if (ImGui::BeginTabItem("Camera"))
 	{
 		ImGui::SeparatorText("Parameters");
 
-		ImGui::DragFloat("Target Distance", &g_preview.m_camera.m_radius, 0.1f, 0.1f, 10.f);
-		ImGui::InputFloat3("Target Offset", &g_preview.m_camera.m_offsets.x);
-		ImGui::InputFloat3("Camera Position", &g_preview.m_camera.m_position.x);
-		ImGui::InputFloat3("Camera Angles", &g_preview.m_camera.m_angles.x);
-		ImGui::DragFloat("FOV", &g_preview.m_camera.m_fov, 0.1f, 0.1f, DirectX::XM_PI);
-		ImGui::InputFloat("Near Plane", &g_preview.m_camera.m_nearZ);
-		ImGui::InputFloat("Far Plane", &g_preview.m_camera.m_farZ);
+		ImGui::DragFloat("Target Distance", &g_scene->m_camera.m_radius, 0.1f, 0.1f, 10.f);
+		ImGui::InputFloat3("Target Offset", &g_scene->m_camera.m_offsets.x);
+		ImGui::InputFloat3("Camera Position", &g_scene->m_camera.m_position.x);
+		ImGui::InputFloat3("Camera Angles", &g_scene->m_camera.m_angles.x);
+		ImGui::DragFloat("FOV", &g_scene->m_camera.m_fov, 0.1f, 0.1f, DirectX::XM_PI);
+		ImGui::InputFloat("Near Plane", &g_scene->m_camera.m_nearZ);
+		ImGui::InputFloat("Far Plane", &g_scene->m_camera.m_farZ);
 
-		ImGui::InputFloat("Width", &g_preview.m_camera.m_width, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputFloat("Height", &g_preview.m_camera.m_height, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
-		ImGui::InputFloat("Aspect Ratio", &g_preview.m_camera.m_aspectRatio, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputFloat("Width", &g_scene->m_camera.m_width, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputFloat("Height", &g_scene->m_camera.m_height, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputFloat("Aspect Ratio", &g_scene->m_camera.m_aspectRatio, 0, 0, "%.3f", ImGuiInputTextFlags_ReadOnly);
 
 		ImGui::SeparatorText("Input");
 
-		ImGui::Checkbox("Invert X Drag", &g_preview.m_camera.m_settings.m_dragInvertX);
-		ImGui::Checkbox("Invert Y Drag", &g_preview.m_camera.m_settings.m_dragInvertY);
+		ImGui::Checkbox("Invert X Drag", &g_scene->m_camera.m_settings.m_dragInvertX);
+		ImGui::Checkbox("Invert Y Drag", &g_scene->m_camera.m_settings.m_dragInvertY);
 
-		ImGui::Checkbox("Invert X Rotation", &g_preview.m_camera.m_settings.m_rotInvertX);
-		ImGui::Checkbox("Invert Y Rotation", &g_preview.m_camera.m_settings.m_rotInvertY);
+		ImGui::Checkbox("Invert X Rotation", &g_scene->m_camera.m_settings.m_rotInvertX);
+		ImGui::Checkbox("Invert Y Rotation", &g_scene->m_camera.m_settings.m_rotInvertY);
 
 		ImGui::SeparatorText("Speed Settings");
 
-		ImGui::DragFloat("Drag Speed", &g_preview.m_camera.m_settings.m_speedParams.m_dragSpeed, 0.1f, 0.f, 10.f);
-		ImGui::DragFloat("Zoom Speed", &g_preview.m_camera.m_settings.m_speedParams.m_zoomSpeed, 0.1f, 0.f, 100.f);
+		ImGui::DragFloat("Drag Speed", &g_scene->m_camera.m_settings.m_speedParams.m_dragSpeed, 0.1f, 0.f, 10.f);
+		ImGui::DragFloat("Zoom Speed", &g_scene->m_camera.m_settings.m_speedParams.m_zoomSpeed, 0.1f, 0.f, 100.f);
 	
 		ImGui::EndTabItem();
 	}
 
 	if (ImGui::BeginTabItem("Background"))
 	{
-		ImGui::ColorEdit4("Background Color", &g_preview.m_settings.m_backgroundColor.x);
+		ImGui::ColorEdit4("Background Color", &g_scene->m_settings.m_backgroundColor.x);
 
 		ImGui::EndTabItem();
 	}
@@ -1187,7 +1189,7 @@ void Application::CheckFlags()
 		if (this->m_nmb.IsInitialised())
 			this->SaveNmbFile();
 		else
-			g_appLog.AlertMessage(MsgLevel_Error, "Application.cpp", "No NMB file is loaded\n");
+			g_appLog->AlertMessage(MsgLevel_Error, "Application.cpp", "No NMB file is loaded\n");
 		*/
 	}
 
@@ -1198,7 +1200,7 @@ void Application::CheckFlags()
 		if (this->m_tae.m_init)
 			this->SaveTaeFile();
 		else
-			g_appLog.AlertMessage(MsgLevel_Error, "No TAE file is loaded\n");
+			g_appLog->AlertMessage(MsgLevel_Error, "No TAE file is loaded\n");
 	}
 
 	if (this->m_flags.m_saveAll)
@@ -1211,9 +1213,9 @@ void Application::CheckFlags()
 			bool status = m_nmb.SaveToFile(this->m_nmb.GetFilePath());
 
 			if (status)
-				g_appLog.DebugMessage(MsgLevel_Debug, "Save file %ls (bundles=%d, len=%d)\n", m_nmb.GetOutFilePath(), m_nmb.GetBundleCount(), m_nmb.GetOutFileSize());
+				g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (bundles=%d, len=%d)\n", m_nmb.GetOutFilePath(), m_nmb.GetBundleCount(), m_nmb.GetOutFileSize());
 			else
-				g_appLog.AlertMessage(MsgLevel_Error, "Failed to generate file\n", "NMBReader.cpp");
+				g_appLog->AlertMessage(MsgLevel_Error, "Failed to generate file\n", "NMBReader.cpp");
 		}
 		*/
 
@@ -1222,9 +1224,9 @@ void Application::CheckFlags()
 			bool status = m_tae.SaveFile(this->m_tae.m_filePath);
 
 			if (status)
-				g_appLog.DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
+				g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
 			else
-				g_appLog.AlertMessage(MsgLevel_Error, "Failed to generate file\n");
+				g_appLog->AlertMessage(MsgLevel_Error, "Failed to generate file\n");
 		}
 	}
 
@@ -1239,7 +1241,7 @@ void Application::CheckFlags()
 			int numAnims = characterDef->getAnimFileLookUp()->getNumAnims();
 
 			if (numAnims == 0)
-				g_appLog.AlertMessage(MsgLevel_Warn, "No animations are loaded");
+				g_appLog->AlertMessage(MsgLevel_Warn, "No animations are loaded");
 
 			std::wstring out_path = L".//Export";
 
@@ -1255,7 +1257,7 @@ void Application::CheckFlags()
 			if (this->m_fbxExportFlags.m_exportModelWithAnims)
 			{
 				if (!this->ExportModelToFbx(export_path))
-					g_appLog.AlertMessage(MsgLevel_Error, "Failed to export FBX model (chrId=c%04d)\n", this->m_chrId);
+					g_appLog->AlertMessage(MsgLevel_Error, "Failed to export FBX model (chrId=c%04d)\n", this->m_chrId);
 			}
 			
 			for (int i = 0; i < numAnims; i++)
@@ -1264,10 +1266,10 @@ void Application::CheckFlags()
 				std::filesystem::create_directories(anim_out.parent_path());
 
 				if (!this->ExportAnimationToFbx(anim_out, i))
-					g_appLog.DebugMessage(MsgLevel_Error, "Failed to export animation %d\n", i);
+					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export animation %d\n", i);
 
 				//if (!this->m_nmb.ExportEventTrackToXML(export_path, i))
-					//g_appLog.DebugMessage(MsgLevel_Error, "Failed to export event track to XML for animation %d\n", i);
+					//g_appLog->DebugMessage(MsgLevel_Error, "Failed to export event track to XML for animation %d\n", i);
 			}
 		}
 	}
@@ -1317,7 +1319,7 @@ void Application::CheckFlags()
 			this->m_eventTrackEditorFlags.m_eventTrackActionTimeActStart = 0.f;
 			this->m_eventTrackEditorFlags.m_eventTrackActionTimeActDuration = 0.f;
 
-			g_appLog.DebugMessage(MsgLevel_Debug, "Performing lookup for animation ID %d\n", this->m_eventTrackEditorFlags.m_targetAnimIdx);
+			g_appLog->DebugMessage(MsgLevel_Debug, "Performing lookup for animation ID %d\n", this->m_eventTrackEditorFlags.m_targetAnimIdx);
 			MR::NetworkDef* netDef = characterDef->getNetworkDef();
 			int numNodes = netDef->getNumNodeDefs();
 
@@ -1334,7 +1336,7 @@ void Application::CheckFlags()
 					{
 						found_anim = true;
 
-						g_appLog.DebugMessage(MsgLevel_Debug, "Animation found after %d steps\n", idx);
+						g_appLog->DebugMessage(MsgLevel_Debug, "Animation found after %d steps\n", idx);
 
 						this->m_eventTrackEditor.m_nodeSource = node;
 						this->m_eventTrackEditor.m_frameMin = RMath::TimeToFrame(source_anim->m_clipStartFraction * source_anim->m_sourceAnimDuration);
@@ -1411,16 +1413,16 @@ void Application::CheckFlags()
 						}
 						else
 						{
-							g_appLog.DebugMessage(MsgLevel_Debug, "Animation %d has no event tracks associated to it\n", source_anim->m_animAssetID);
+							g_appLog->DebugMessage(MsgLevel_Debug, "Animation %d has no event tracks associated to it\n", source_anim->m_animAssetID);
 						}
 					}
 				}
 			}
 
 			if (!found_anim)
-				g_appLog.DebugMessage(MsgLevel_Warn, "Animation ID %d not found\n", this->m_eventTrackEditorFlags.m_targetAnimIdx);
+				g_appLog->DebugMessage(MsgLevel_Warn, "Animation ID %d not found\n", this->m_eventTrackEditorFlags.m_targetAnimIdx);
 
-			g_appLog.DebugMessage(MsgLevel_Debug, "\n");
+			g_appLog->DebugMessage(MsgLevel_Debug, "\n");
 		}
 	}
 
@@ -1465,10 +1467,10 @@ void Application::CheckFlags()
 					}
 				}
 				else
-					g_appLog.DebugMessage(MsgLevel_Info, "Application.cpp", "TimeAct %d not found\n", this->m_timeActEditorFlags.m_taeId);
+					g_appLog->DebugMessage(MsgLevel_Info, "Application.cpp", "TimeAct %d not found\n", this->m_timeActEditorFlags.m_taeId);
 			}
 			else
-				g_appLog.DebugMessage(MsgLevel_Info, "Application.cpp", "No TimeAct is loaded\n");
+				g_appLog->DebugMessage(MsgLevel_Info, "Application.cpp", "No TimeAct is loaded\n");
 		}
 	}
 }
@@ -1487,7 +1489,7 @@ int Application::GetChrIdFromNmbFileName(std::wstring name)
 
 	m_chrId = stoi(chr_id_str);
 
-	g_appLog.DebugMessage(MsgLevel_Debug, "Chr ID: %d\n", m_chrId);
+	g_appLog->DebugMessage(MsgLevel_Debug, "Chr ID: %d\n", m_chrId);
 
 	return m_chrId;
 }
@@ -1503,7 +1505,7 @@ std::wstring Application::GetObjIdFromTaeFileName(std::wstring name)
 	if (obj_id.substr(0, 1).compare(L"o") != 0)
 		return L"";
 
-	g_appLog.DebugMessage(MsgLevel_Debug, "Obj ID: %s\n", obj_id);
+	g_appLog->DebugMessage(MsgLevel_Debug, "Obj ID: %s\n", obj_id);
 
 	return obj_id;
 }
@@ -1657,7 +1659,7 @@ void Application::LoadFile()
 
 													this->m_animPlayer.SetModel(new FlverModel(umem));
 
-													g_appLog.DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
+													g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
 
 													this->m_animPlayer.CreateFlverToMorphemeBoneMap(this->m_morphemeSystem.GetCharacterDef()->getNetworkDef()->getRig(0));
 
@@ -1667,11 +1669,11 @@ void Application::LoadFile()
 											}
 
 											if (!found_model)
-												g_appLog.DebugMessage(MsgLevel_Debug, "Could not find model for c%04d\n", this->m_chrId);
+												g_appLog->DebugMessage(MsgLevel_Debug, "Could not find model for c%04d\n", this->m_chrId);
 										}
 									}
 									else
-										g_appLog.DebugMessage(MsgLevel_Debug, "Could not find Game folder\n");
+										g_appLog->DebugMessage(MsgLevel_Debug, "Could not find Game folder\n");
 								}
 							}
 						}
@@ -1690,7 +1692,7 @@ void Application::LoadFile()
 								for (int i = 0; i < m_tae.m_tae.size(); i++)
 									this->m_timeActEditorFlags.m_edited.push_back(false);
 
-								g_appLog.DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_tae.m_filePath, m_tae.m_fileSize);
+								g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_tae.m_filePath, m_tae.m_fileSize);
 
 								bool found = false;
 
@@ -1747,7 +1749,7 @@ void Application::LoadFile()
 
 													this->m_animPlayer.SetModel(new FlverModel(umem));
 
-													g_appLog.DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
+													g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
 
 													found_model = true;
 
@@ -1761,11 +1763,11 @@ void Application::LoadFile()
 											}
 
 											if (!found_model)
-												g_appLog.DebugMessage(MsgLevel_Debug, "Could not find model for c%04d\n", this->m_chrId);
+												g_appLog->DebugMessage(MsgLevel_Debug, "Could not find model for c%04d\n", this->m_chrId);
 										}
 									}
 									else
-										g_appLog.DebugMessage(MsgLevel_Debug, "Could not find Game folder\n");
+										g_appLog->DebugMessage(MsgLevel_Debug, "Could not find Game folder\n");
 								}
 							}						
 						}
@@ -1825,9 +1827,9 @@ void Application::SaveFile()
 							bool status = m_nmb.SaveToFile(pszOutFilePath);
 
 							if (status)
-								g_appLog.DebugMessage(MsgLevel_Debug, "Save file %ls (bundles=%d, len=%d)\n", m_nmb.GetOutFilePath(), m_nmb.GetBundleCount(), m_nmb.GetOutFileSize());
+								g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (bundles=%d, len=%d)\n", m_nmb.GetOutFilePath(), m_nmb.GetBundleCount(), m_nmb.GetOutFileSize());
 							else
-								g_appLog.AlertMessage(MsgLevel_Error, "NMBReader.cpp", "Failed to generate NMB file\n");
+								g_appLog->AlertMessage(MsgLevel_Error, "NMBReader.cpp", "Failed to generate NMB file\n");
 							*/
 						}
 						else if (filepath.extension() == ".tae")
@@ -1835,9 +1837,9 @@ void Application::SaveFile()
 							bool status = m_tae.SaveFile(pszOutFilePath);
 
 							if (status)
-								g_appLog.DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
+								g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
 							else
-								g_appLog.AlertMessage(MsgLevel_Error, "Failed to generate TAE file\n");
+								g_appLog->AlertMessage(MsgLevel_Error, "Failed to generate TAE file\n");
 						}
 					}
 					pItem->Release();
@@ -1893,9 +1895,9 @@ void Application::SaveNmbFile()
 						bool status = m_nmb.SaveToFile(pszOutFilePath);
 
 						if (status)
-							g_appLog.DebugMessage(MsgLevel_Debug, "Save file %ls (bundles=%d, len=%d)\n", m_nmb.GetOutFilePath(), m_nmb.GetBundleCount(), m_nmb.GetOutFileSize());
+							g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (bundles=%d, len=%d)\n", m_nmb.GetOutFilePath(), m_nmb.GetBundleCount(), m_nmb.GetOutFileSize());
 						else
-							g_appLog.AlertMessage(MsgLevel_Error, "NMBReader.cpp", "Failed to generate NMB file\n");
+							g_appLog->AlertMessage(MsgLevel_Error, "NMBReader.cpp", "Failed to generate NMB file\n");
 						*/
 					}
 					pItem->Release();
@@ -1950,9 +1952,9 @@ void Application::SaveTaeFile()
 						bool status = m_tae.SaveFile(pszOutFilePath);
 
 						if (status)
-							g_appLog.DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
+							g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (taeCount=%d)\n", m_tae.m_outFilePath, m_tae.m_header.m_taeCount);
 						else
-							g_appLog.AlertMessage(MsgLevel_Error, "Failed to generate TAE file\n");
+							g_appLog->AlertMessage(MsgLevel_Error, "Failed to generate TAE file\n");
 					}
 					pItem->Release();
 				}
@@ -2005,14 +2007,14 @@ bool Application::ExportAnimationToFbx(std::filesystem::path export_path, int an
 
 	CharacterDefBasic* characterDef = this->m_morphemeSystem.GetCharacterDef();
 
-	g_appLog.DebugMessage(MsgLevel_Debug, "Exporting animation %d (%s)\n", anim_id, export_path.filename().string().c_str());
+	g_appLog->DebugMessage(MsgLevel_Debug, "Exporting animation %d (%s)\n", anim_id, export_path.filename().string().c_str());
 
 	FbxExporter* pExporter = FbxExporter::Create(g_pFbxManager, "");
 	pExporter->SetFileExportVersion(FBX_2014_00_COMPATIBLE);
 
 	if (!pExporter->Initialize(export_path.string().c_str(), g_pFbxManager->GetIOPluginRegistry()->GetNativeWriterFormat(), g_pFbxManager->GetIOSettings()))
 	{
-		g_appLog.PanicMessage("Failed to initialise FBX exporter (file=%s)\n", export_path.string().c_str());
+		g_appLog->PanicMessage("Failed to initialise FBX exporter (file=%s)\n", export_path.string().c_str());
 
 		return false;
 	}
@@ -2028,7 +2030,7 @@ bool Application::ExportAnimationToFbx(std::filesystem::path export_path, int an
 
 	if (!FBXTranslator::CreateFbxTake(pScene, pMorphemeRig, characterDef->getAnimationById(anim_id), characterDef->getAnimFileLookUp()->getTakeName(anim_id)))
 	{
-		g_appLog.DebugMessage(MsgLevel_Error, "Failed to create FBX anim take (animId=%d, chrId=c%04d)\n", anim_id, this->m_chrId);
+		g_appLog->DebugMessage(MsgLevel_Error, "Failed to create FBX anim take (animId=%d, chrId=c%04d)\n", anim_id, this->m_chrId);
 		status = false;
 	}
 
@@ -2045,7 +2047,7 @@ bool Application::ExportModelToFbx(std::filesystem::path export_path)
 {
 	bool status = true;
 
-	g_appLog.DebugMessage(MsgLevel_Debug, "Exporting model to FBX for c%04d\n", this->m_chrId);
+	g_appLog->DebugMessage(MsgLevel_Debug, "Exporting model to FBX for c%04d\n", this->m_chrId);
 
 	FbxExporter* pExporter = FbxExporter::Create(g_pFbxManager, "");
 	pExporter->SetFileExportVersion(FBX_2014_00_COMPATIBLE);
@@ -2057,7 +2059,7 @@ bool Application::ExportModelToFbx(std::filesystem::path export_path)
 
 	if (!pExporter->Initialize(model_out.c_str(), g_pFbxManager->GetIOPluginRegistry()->GetNativeWriterFormat(), g_pFbxManager->GetIOSettings()))
 	{
-		g_appLog.PanicMessage("Failed to initialise FBX exporter (file=%s)\n", model_out);
+		g_appLog->PanicMessage("Failed to initialise FBX exporter (file=%s)\n", model_out);
 
 		return false;
 	}
@@ -2075,7 +2077,7 @@ bool Application::ExportModelToFbx(std::filesystem::path export_path)
 
 	if (!FBXTranslator::CreateFbxModel(pScene, this->m_animPlayer.GetModel(), this->m_chrId, pBindPoses, pMorphemeRig, model_out, this->m_animPlayer.GetFlverToMorphemeBoneMap()))
 	{
-		g_appLog.DebugMessage(MsgLevel_Error, "Failed to create FBX model/skeleton (chrId=c%04d)\n", this->m_chrId);
+		g_appLog->DebugMessage(MsgLevel_Error, "Failed to create FBX model/skeleton (chrId=c%04d)\n", this->m_chrId);
 
 		status = false;
 	}
