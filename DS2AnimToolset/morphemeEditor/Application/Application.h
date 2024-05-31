@@ -80,59 +80,29 @@ public:
 		int m_deleteTimeActId = -1;
 	} m_timeActFlags;
 
-	struct EventTrackEditorFlags
-	{
-		bool m_load = false;
-		bool m_save = false;
-		int m_selectedAnimIdx = -1;
-		std::vector<BYTE> m_edited;
-
-		int m_targetAnimIdx = -1;
-		float m_lenMult = 1.f;
-		bool m_loadTae = false;
-		std::vector<std::wstring> m_taeList;
-
-		int m_selectedTrack = -1;
-		int m_selectedEvent = -1;
-
-		float m_eventTrackActionTimeActStart = 0.f;
-		float m_eventTrackActionTimeActDuration = 0.f;
-		int m_eventTrackActionTimeActValue = -1;
-	} m_eventTrackEditorFlags;
-
-	struct TimeActEditorFlags
-	{
-		bool m_load = false;
-		bool m_save = false;
-		int m_selectedTimeActIdx = -1;
-		std::vector<BYTE> m_edited;
-		int m_taeId = -1;
-
-		int m_selectedTrack = -1;
-		int m_selectedEvent = -1;
-	} m_timeActEditorFlags;
-
 	struct FbxExportFlags
 	{
 		bool m_exportModelWithAnims = true;
 		bool m_exportMorphemeRigWithModel = true;
 	} m_fbxExportFlags;
 	
-	MorphemeSystem m_morphemeSystem;
-	TimeActReader m_tae;
-	AnimPlayer m_animPlayer;
-	BNDReader m_bnd;
 	int m_chrId = -1;
 
-	EventTrackEditor m_eventTrackEditor;
-	TimeActEditor m_timeActEditor;
+	MorphemeSystem* m_morphemeSystem;
+	AnimPlayer* m_animPlayer;
+
+	EventTrackEditor* m_eventTrackEditor;
+	TimeActEditor* m_timeActEditor;
+
+	TimeActReader* m_timeAct;
+	BNDReader* m_bnd;
 
 	Application();
 	~Application();
 
 	void GUIStyle();
 	void Initialise();
-	void Update();
+	void Update(float delta_time);
 	void RenderGUI(const char* title);
 	void ModelPreviewWindow();
 	void AssetsWindow();
@@ -155,9 +125,4 @@ public:
 	bool ExportAnimationToFbx(std::filesystem::path export_path, int anim_id);
 
 	void SetTimeActCurrentFrameFromEventTrack(int* current_frame_tae, int current_frame);
-	int GetChrIdFromNmbFileName(std::wstring name);
-	std::wstring GetObjIdFromTaeFileName(std::wstring name);
-
-	void ResetEventTrackEditor();
-	void ResetTimeActEditor();
 };

@@ -96,9 +96,9 @@ std::string EventTrackEditor::GetEventLabel(int track_idx, int event_idx) const
 void EventTrackEditor::AddTrack(int event_id, char* name, bool duration)
 {
     /*
-    MorphemeBundle_EventTrack* new_track = g_appRootWindow.m_nmb.AddEventTrack(this->m_nodeSource, event_id, name, duration);
+    MorphemeBundle_EventTrack* new_track = g_appRootWindow->m_nmb.AddEventTrack(this->m_nodeSource, event_id, name, duration);
 
-    g_appLog.DebugMessage(MsgLevel_Debug, "Added EventTrack %d (%s) (node=%d)\n", new_track->m_signature, name, this->m_nodeSource->m_nodeID);
+    g_appLog->DebugMessage(MsgLevel_Debug, "Added EventTrack %d (%s) (node=%d)\n", new_track->m_signature, name, this->m_nodeSource->m_nodeID);
     */
 };
 
@@ -121,7 +121,7 @@ void EventTrackEditor::DeleteTrack(int idx)
     else
         event_tracks->GetDurationEventTrackSet().DeleteEventTrack(idx);
 
-    std::vector<NodeDef*> nodes = g_appRootWindow.m_nmb.GetNodesByAnimReference(source_anim->GetAnimID());
+    std::vector<NodeDef*> nodes = g_appRootWindow->m_nmb.GetNodesByAnimReference(source_anim->GetAnimID());
 
     for (int i = 0; i < nodes.size(); i++)
     {
@@ -137,7 +137,7 @@ void EventTrackEditor::DeleteTrack(int idx)
 
     this->m_reload = true;
 
-    g_appLog.DebugMessage(MsgLevel_Debug, "Deleted track %d (%s) (node=%d)\n", delete_signature, delete_name, this->m_nodeSource->m_nodeID);
+    g_appLog->DebugMessage(MsgLevel_Debug, "Deleted track %d (%s) (node=%d)\n", delete_signature, delete_name, this->m_nodeSource->m_nodeID);
     */
 }
 
@@ -153,7 +153,7 @@ void EventTrackEditor::AddEvent(int track_idx, EventTrack::Event event)
         
     this->m_reload = true;
 
-    g_appLog.DebugMessage(MsgLevel_Debug, "Added event to track %d (%.3f, %.3f, %d) (node=%d)\n", track->m_signature, RMath::FrameToTime(event.m_frameStart) / RMath::FrameToTime(this->m_frameMax), RMath::FrameToTime(event.m_duration) / RMath::FrameToTime(this->m_frameMax), event.m_value, this->m_nodeSource->m_nodeID);
+    g_appLog->DebugMessage(MsgLevel_Debug, "Added event to track %d (%.3f, %.3f, %d) (node=%d)\n", track->m_signature, RMath::FrameToTime(event.m_frameStart) / RMath::FrameToTime(this->m_frameMax), RMath::FrameToTime(event.m_duration) / RMath::FrameToTime(this->m_frameMax), event.m_value, this->m_nodeSource->m_nodeID);
 
     return;
     */
@@ -166,7 +166,7 @@ void EventTrackEditor::DeleteEvent(int track_idx, int event_idx)
 
     track->m_source->m_data->DeleteEvent(event_idx);
 
-    g_appLog.DebugMessage(MsgLevel_Debug, "Deleted event %d from Track %d (node=%d)\n", event_idx, track->m_signature, this->m_nodeSource->m_nodeID);
+    g_appLog->DebugMessage(MsgLevel_Debug, "Deleted event %d from Track %d (node=%d)\n", event_idx, track->m_signature, this->m_nodeSource->m_nodeID);
 
     this->m_reload = true;
 
@@ -182,7 +182,7 @@ void EventTrackEditor::ReloadTracks()
     this->SetEditedState(false);
 
     /*
-    if ((g_appRootWindow.m_nmb.IsInitialised()) && (g_appRootWindow.m_eventTrackEditorFlags.m_targetAnimIdx != -1))
+    if ((g_appRootWindow->m_nmb.IsInitialised()) && (g_appRootWindow->m_eventTrackEditor->m_targetAnimIdx != -1))
     {
         bool found = false;
 
@@ -193,7 +193,7 @@ void EventTrackEditor::ReloadTracks()
         {
             for (int i = 0; i < event_track_source->GetDiscreteEventTrackSet().m_trackCount; i++)
             {
-                MorphemeBundle_EventTrack* event_tracks = g_appRootWindow.m_nmb.GetEventTrackBundle(event_track_source->GetDiscreteEventTrackSet().m_trackSignatures[i]);
+                MorphemeBundle_EventTrack* event_tracks = g_appRootWindow->m_nmb.GetEventTrackBundle(event_track_source->GetDiscreteEventTrackSet().m_trackSignatures[i]);
 
                 if (event_tracks)
                     this->m_eventTracks.push_back(EventTrackEditor::EventTrack(event_tracks, RMath::FrameToTime(this->m_frameMax), true));
@@ -201,7 +201,7 @@ void EventTrackEditor::ReloadTracks()
 
             for (int i = 0; i < event_track_source->GetCurveEventTrackSet().m_trackCount; i++)
             {
-                MorphemeBundle_EventTrack* event_tracks = g_appRootWindow.m_nmb.GetEventTrackBundle(event_track_source->GetCurveEventTrackSet().m_trackSignatures[i]);
+                MorphemeBundle_EventTrack* event_tracks = g_appRootWindow->m_nmb.GetEventTrackBundle(event_track_source->GetCurveEventTrackSet().m_trackSignatures[i]);
 
                 if (event_tracks)
                     this->m_eventTracks.push_back(EventTrackEditor::EventTrack(event_tracks, RMath::FrameToTime(this->m_frameMax), false));
@@ -209,7 +209,7 @@ void EventTrackEditor::ReloadTracks()
 
             for (int i = 0; i < event_track_source->GetDurationEventTrackSet().m_trackCount; i++)
             {
-                MorphemeBundle_EventTrack* event_tracks = g_appRootWindow.m_nmb.GetEventTrackBundle(event_track_source->GetDurationEventTrackSet().m_trackSignatures[i]);
+                MorphemeBundle_EventTrack* event_tracks = g_appRootWindow->m_nmb.GetEventTrackBundle(event_track_source->GetDurationEventTrackSet().m_trackSignatures[i]);
 
                 if (event_tracks)
                     this->m_eventTracks.push_back(EventTrackEditor::EventTrack(event_tracks, RMath::FrameToTime(this->m_frameMax), false));
@@ -227,7 +227,7 @@ EventTrackEditor::EventTrackEditor()
 
     if (reader.ParseError() < 0)
     {
-        g_appLog.DebugMessage(MsgLevel_Error, "EventTrackEditor.cpp", "Failed to load eventrack.ini\n");
+        g_appLog->DebugMessage(MsgLevel_Error, "EventTrackEditor.cpp", "Failed to load eventrack.ini\n");
 
         this->m_colors.m_trackColor = { 0.31f, 0.31f, 0.91f, 1.f };
         this->m_colors.m_trackColorInactive = { 0.22f, 0.22f, 0.44f, 1.f };
@@ -253,10 +253,10 @@ void EventTrackEditor::SetEditedState(bool state)
     if (this->m_animIdx == -1)
         return;
 
-    if (g_appRootWindow.m_eventTrackEditorFlags.m_edited.size() > this->m_animIdx)
-        g_appRootWindow.m_eventTrackEditorFlags.m_edited[this->m_animIdx] = state;
+    if (g_appRootWindow->m_eventTrackEditor->m_edited.size() > this->m_animIdx)
+        g_appRootWindow->m_eventTrackEditor->m_edited[this->m_animIdx] = state;
     else
-        g_appLog.PanicMessage("Out of bound read while setting edited state (idx=%d, size=%d)\n", this->m_animIdx, g_appRootWindow.m_eventTrackEditorFlags.m_edited.size());
+        g_appLog->PanicMessage("Out of bound read while setting edited state (idx=%d, size=%d)\n", this->m_animIdx, g_appRootWindow->m_eventTrackEditor->m_edited.size());
 }
 
 void EventTrackEditor::Clear()
@@ -266,4 +266,10 @@ void EventTrackEditor::Clear()
     this->m_frameMin = 0;
     this->m_nodeSource = nullptr;
     this->m_eventTracks.clear();
+}
+
+void EventTrackEditor::ResetSelection()
+{
+    this->m_selectedEvent = -1;
+    this->m_selectedTrack = -1;
 }

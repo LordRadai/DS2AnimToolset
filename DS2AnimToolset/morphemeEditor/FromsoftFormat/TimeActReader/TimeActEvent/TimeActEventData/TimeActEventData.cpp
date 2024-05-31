@@ -5,19 +5,19 @@
 
 void TimeActEventData::GetData(ifstream* tae, int group_id, int event_id)
 {
-	for (int group_idx = 0; group_idx < g_taeTemplate.m_groups.size(); group_idx++)
+	for (int group_idx = 0; group_idx < g_taeTemplate->m_groups.size(); group_idx++)
 	{
-		if (g_taeTemplate.m_groups[group_idx].m_id == group_id)
+		if (g_taeTemplate->m_groups[group_idx].m_id == group_id)
 		{
-			for (int event_idx = 0; event_idx < g_taeTemplate.m_groups[group_idx].m_events.size(); event_idx++)
+			for (int event_idx = 0; event_idx < g_taeTemplate->m_groups[group_idx].m_events.size(); event_idx++)
 			{
-				if (g_taeTemplate.m_groups[group_idx].m_events[event_idx].m_id == event_id)
+				if (g_taeTemplate->m_groups[group_idx].m_events[event_idx].m_id == event_id)
 				{
-					for (int arg_idx = 0; arg_idx < g_taeTemplate.m_groups[group_idx].m_events[event_idx].m_args.size(); arg_idx++)
+					for (int arg_idx = 0; arg_idx < g_taeTemplate->m_groups[group_idx].m_events[event_idx].m_args.size(); arg_idx++)
 					{
 						this->m_args.push_back(Argument());
-						this->m_args.back().m_type = g_taeTemplate.m_groups[group_idx].m_events[event_idx].m_args[arg_idx].m_type;
-						this->m_args.back().m_name = g_taeTemplate.m_groups[group_idx].m_events[event_idx].m_args[arg_idx].m_name;
+						this->m_args.back().m_type = g_taeTemplate->m_groups[group_idx].m_events[event_idx].m_args[arg_idx].m_type;
+						this->m_args.back().m_name = g_taeTemplate->m_groups[group_idx].m_events[event_idx].m_args[arg_idx].m_name;
 
 						std::string arg_type = this->m_args[arg_idx].m_type;
 
@@ -188,17 +188,17 @@ void TimeActEventData::ImGuiEdit()
 
 void TimeActEventData::CreateArguments(int id)
 {
-	for (int group_idx = 0; group_idx < g_taeTemplate.m_groups.size(); group_idx++)
+	for (int group_idx = 0; group_idx < g_taeTemplate->m_groups.size(); group_idx++)
 	{
-		for (int event_idx = 0; event_idx < g_taeTemplate.m_groups[group_idx].m_events.size(); event_idx++)
+		for (int event_idx = 0; event_idx < g_taeTemplate->m_groups[group_idx].m_events.size(); event_idx++)
 		{
-			if (g_taeTemplate.m_groups[group_idx].m_events[event_idx].m_id == id)
+			if (g_taeTemplate->m_groups[group_idx].m_events[event_idx].m_id == id)
 			{
-				for (int arg_idx = 0; arg_idx < g_taeTemplate.m_groups[group_idx].m_events[event_idx].m_args.size(); arg_idx++)
+				for (int arg_idx = 0; arg_idx < g_taeTemplate->m_groups[group_idx].m_events[event_idx].m_args.size(); arg_idx++)
 				{
 					this->m_args.push_back(Argument());
-					this->m_args.back().m_type = g_taeTemplate.m_groups[group_idx].m_events[event_idx].m_args[arg_idx].m_type;
-					this->m_args.back().m_name = g_taeTemplate.m_groups[group_idx].m_events[event_idx].m_args[arg_idx].m_name;
+					this->m_args.back().m_type = g_taeTemplate->m_groups[group_idx].m_events[event_idx].m_args[arg_idx].m_type;
+					this->m_args.back().m_name = g_taeTemplate->m_groups[group_idx].m_events[event_idx].m_args[arg_idx].m_name;
 
 					std::string arg_type = this->m_args[arg_idx].m_type;
 

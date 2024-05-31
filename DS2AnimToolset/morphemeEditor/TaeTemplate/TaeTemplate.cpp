@@ -87,7 +87,7 @@ void TaeTemplate::from_json()
 	}
 	catch (const std::exception& exc)
 	{
-		g_appLog.AlertMessage(MsgLevel_Error, "TaeTemplate.cpp", exc.what());
+		g_appLog->AlertMessage(MsgLevel_Error, "TaeTemplate.cpp", exc.what());
 		return;
 	}
 }

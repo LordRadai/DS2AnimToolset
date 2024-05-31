@@ -353,7 +353,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 
 	if (animSourceNSA->getType() != ANIM_TYPE_NSA)
 	{
-		g_appLog.AlertMessage(MsgLevel_Error, "Unsupported animation format");
+		g_appLog->AlertMessage(MsgLevel_Error, "Unsupported animation format");
 		return false;
 	}
 
@@ -466,7 +466,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 
 	if (animSourceNSA->getType() != ANIM_TYPE_NSA)
 	{
-		g_appLog.AlertMessage(MsgLevel_Error, "Unsupported animation format");
+		g_appLog->AlertMessage(MsgLevel_Error, "Unsupported animation format");
 		return false;
 	}
 
@@ -589,7 +589,7 @@ bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, in
 			pMeshNodesList.push_back(pMeshNode);
 		}
 		else
-			g_appLog.DebugMessage(MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
+			g_appLog->DebugMessage(MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
 	}
 
 	return true;
@@ -620,7 +620,7 @@ bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, in
 			pMeshNodesList.push_back(pMeshNode);
 		}
 		else
-			g_appLog.DebugMessage(MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
+			g_appLog->DebugMessage(MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
 	}
 
 	return true;

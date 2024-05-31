@@ -16,7 +16,7 @@ void MorphemeSystem::initMorpheme()
 
     //----------------------------
     // Initialise morpheme library
-    g_appLog.DebugMessage(MsgLevel_Info, "Initialising Morpheme\n");
+    g_appLog->DebugMessage(MsgLevel_Info, "Initialising Morpheme\n");
     MR::Manager::initMorphemeLib();
 
     //----------------------------
@@ -53,7 +53,7 @@ void MorphemeSystem::initMorpheme()
 // details.
 void MorphemeSystem::termMorpheme()
 {
-    g_appLog.DebugMessage(MsgLevel_Info, "Terminating Morpheme\n");
+    g_appLog->DebugMessage(MsgLevel_Info, "Terminating Morpheme\n");
 
     if (m_characterData)
     {
@@ -62,7 +62,7 @@ void MorphemeSystem::termMorpheme()
         CharacterBasic::destroy(m_characterData);
     }
 
-    if (m_characterDef->isLoaded())
+    if (m_characterDef && m_characterDef->isLoaded())
     {
         //----------------------------
         // Once we've finished with the binary file release it.
@@ -75,7 +75,7 @@ void MorphemeSystem::termMorpheme()
     MR::Manager::termMorphemeLib();
     NMP::Memory::shutdown();
 
-    g_appLog.DebugMessage(MsgLevel_Info, "Morpheme shutdown\n");
+    g_appLog->DebugMessage(MsgLevel_Info, "Morpheme shutdown\n");
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ CharacterDefBasic* MorphemeSystem::createCharacterDef(const char* filename)
 
     this->m_characterDef = nullptr;
 
-    g_appLog.DebugMessage(MsgLevel_Info, "Creating CharacterDefBasic from file %s\n", filename);
+    g_appLog->DebugMessage(MsgLevel_Info, "Creating CharacterDefBasic from file %s\n", filename);
 
     CharacterDefBasic* gameCharacterDef = CharacterDefBasic::create(filename);
     if (!gameCharacterDef || !gameCharacterDef->isLoaded())
