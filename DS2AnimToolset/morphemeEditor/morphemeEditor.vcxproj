@@ -203,7 +203,6 @@
     <ClCompile Include="MorphemeSystem\CharacterController.cpp" />
     <ClCompile Include="MorphemeSystem\CharacterDef.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp" />
-    <ClCompile Include="ProcessReader\ProcessReader.cpp" />
     <ClCompile Include="Scene\Camera\Camera.cpp" />
     <ClCompile Include="Scene\DebugDraw.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
@@ -282,7 +281,6 @@
     <ClInclude Include="MorphemeSystem\CharacterController.h" />
     <ClInclude Include="MorphemeSystem\CharacterDef.h" />
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h" />
-    <ClInclude Include="ProcessReader\ProcessReader.h" />
     <ClInclude Include="resources\resource.h" />
     <ClInclude Include="resources\resource1.h" />
     <ClInclude Include="Scene\Camera\Camera.h" />

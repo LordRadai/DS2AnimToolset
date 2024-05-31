@@ -4,7 +4,6 @@
 #include "Application/Application.h"
 #include "Scene/Scene.h"
 #include "TaeTemplate/TaeTemplate.h"
-#include "ProcessReader/ProcessReader.h"
 
 // Data
 static ID3D11Device* g_pd3dDevice = nullptr;
@@ -24,7 +23,6 @@ MsgLevel g_logLevel = MsgLevel_Debug;
 Application g_appRootWindow;
 Scene g_preview;
 TaeTemplate g_taeTemplate;
-ProcessReader g_frpg2;
 fbxsdk::FbxManager* g_pFbxManager = nullptr;
 
 RLog g_appLog;
