@@ -161,8 +161,6 @@ void Application::Update(float delta_time)
 {
 	this->CheckFlags();
 	this->RenderGUI("morphemeEditor");
-
-	this->m_animPlayer->Update(delta_time);
 }
 
 std::string getTaeCategoryTooltip(int category)

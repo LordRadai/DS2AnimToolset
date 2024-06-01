@@ -86,6 +86,9 @@ void Scene::Initialise(HWND hwnd, IDXGISwapChain* pSwapChain, ID3D11Device* pDev
     this->m_font = std::make_unique<DirectX::SpriteFont>(this->m_device, L".//Data//font//font.spritefont");
     this->m_fontBold = std::make_unique<DirectX::SpriteFont>(this->m_device, L".//Data//font//font_bold.spritefont");
     this->m_fontItalic = std::make_unique<DirectX::SpriteFont>(this->m_device, L".//Data//font//font_italic.spritefont");
+
+    this->m_timer.SetFixedTimeStep(true);
+    this->m_timer.SetTargetElapsedSeconds(1.f / 60.f);
 }
 
 void Scene::CreateResources()
@@ -229,26 +232,23 @@ void Scene::CreateResources()
 
 void Scene::Update()
 {
-    if (g_appRootWindow->m_animPlayer->GetModel() && g_appRootWindow->m_animPlayer->GetModel()->m_loaded)
-        this->m_camera.SetTarget(g_appRootWindow->m_animPlayer->GetModel()->m_focusPoint);
-
-    this->m_timer.SetFixedTimeStep(true);
-    this->m_timer.SetTargetElapsedSeconds(1.f / 60.f);
-
     m_timer.Tick([&]()
     {
         this->m_deltaTime = float(m_timer.GetElapsedSeconds());
 
+        if (g_appRootWindow->m_animPlayer->GetModel() && g_appRootWindow->m_animPlayer->GetModel()->m_loaded)
+            this->m_camera.SetTarget(g_appRootWindow->m_animPlayer->GetModel()->m_focusPoint);
+
+        g_appRootWindow->m_animPlayer->Update(this->m_deltaTime);
+
         this->m_camera.Update(this->m_width, this->m_height, this->m_deltaTime);
+
+        this->m_world = Matrix::Identity;
+        this->m_view = this->m_camera.m_view;
+        this->m_proj = this->m_camera.m_proj;
     });
 
-    this->m_world = Matrix::Identity;
-    this->m_view = this->m_camera.m_view;
-    this->m_proj = this->m_camera.m_proj;
-
     this->CreateResources();
-
-    this->Render();
 }
 
 void Scene::Clear()

@@ -164,6 +164,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         g_appRootWindow->Update(g_scene->m_deltaTime);
 
         // Rendering
+        g_scene->Render();
         ImGui::Render();
         const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
         g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
@@ -176,7 +177,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             ImGui::RenderPlatformWindowsDefault();
         }
 
-        g_pSwapChain->Present(1, 0);
+        HRESULT hr = g_pSwapChain->Present(1, 0);
+
+        DX::ThrowIfFailed(hr);
     }
 
     g_appRootWindow->m_morphemeSystem->termMorpheme();
