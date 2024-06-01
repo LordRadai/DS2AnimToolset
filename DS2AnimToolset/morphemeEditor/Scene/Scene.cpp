@@ -367,6 +367,10 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
         this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
     }
 
+    //DX::DrawJoint(this->m_batch.get(), Matrix::Identity, Vector3::Transform(Vector3::Zero, model->m_boneTransforms[characterRootBoneIdx] * world), Vector3::Transform(Vector3::Zero, model->m_boneTransforms[trajectoryBoneIndex] * world), Colors::MediumAquamarine);
+
+    DX::DrawJoint(this->m_batch.get(), world, Vector3::Zero, Vector3(1, 0, 1), Colors::MediumAquamarine);
+
     for (size_t i = 0; i < boneCount; i++)
     {
         int morphemeBoneIdx = animPlayer->GetFlverToMorphemeBoneMap()[i];
@@ -381,12 +385,19 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
             Vector3 boneA = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[i] * world);
             Vector3 boneB = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[parentIndex] * world);
 
-            DX::DrawLine(this->m_batch.get(), boneA, boneB, Colors::Orange);
+            //DX::DrawLine(this->m_batch.get(), boneA, boneB, Colors::Orange);
+
+            //DX::DrawCapsule(this->m_batch.get(), Matrix::Identity, boneA, boneB, 0.01f, Colors::MediumAquamarine);
+
+            //DX::DrawJoint(this->m_batch.get(), Matrix::Identity, boneA, boneB, Colors::MediumAquamarine);
+
+            if (model->m_flver->bones[i].childIndex == -1)
+                DX::Draw(this->m_batch.get(), DirectX::BoundingSphere(boneA, 0.03f), Colors::MediumAquamarine);
         }
     }
 
-    DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[characterRootBoneIdx] * world, 0.03f, Colors::MediumBlue);
-    //DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world, 0.03f, Colors::Red);
+    DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[characterRootBoneIdx] * world, 0.05f, Colors::MediumBlue);
+    //DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world, 0.05f, Colors::Red);
     DX::DrawReferenceFrame(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world);
 
     if (!model->m_settings.m_xray)

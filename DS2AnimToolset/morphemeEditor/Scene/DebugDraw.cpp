@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include "utils/NMDX/NMDX.h"
+#include "utils/RMath/RMath.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -661,6 +662,56 @@ void XM_CALLCONV DX::DrawSphere(DirectX::PrimitiveBatch<DirectX::VertexPositionC
     DirectX::GXMVECTOR color)
 {
     DX::DrawCapsule(batch, world, Vector3(0, 0, 0), Vector3(0, 0, 0), radius, color);
+}
+
+void XM_CALLCONV DX::DrawJoint(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
+    DirectX::XMMATRIX world, DirectX::SimpleMath::Vector3 pointA, DirectX::SimpleMath::Vector3 pointB,
+    DirectX::GXMVECTOR color)
+{
+    VertexPositionColor vertices[6];
+
+    float distance = Vector3::Distance(pointA, pointB);
+
+    float fraction = 0.1f;
+    float width = 0.05f;
+
+    Matrix angle = RMath::GetRotationFrom2Vectors(pointA, pointB);
+
+    vertices[0].position = Vector3::Transform(Vector3::Transform(pointA, angle), world);
+    vertices[0].color = Vector4(color);
+
+    Vector3 center = Vector3::Transform(Vector3::Transform((pointA + pointB) / 2, angle), world);
+
+    vertices[1].position = center + Vector3::Transform(Vector3::Transform(Vector3(width, 0, 0), angle * Matrix::CreateRotationZ(XM_PIDIV2)), world);
+    vertices[1].color = Vector4(color);
+
+    vertices[2].position = center + Vector3::Transform(Vector3::Transform(Vector3(0, 0, width), angle * Matrix::CreateRotationZ(XM_PIDIV2)), world);
+    vertices[2].color = Vector4(color);
+
+    vertices[3].position = center + Vector3::Transform(Vector3::Transform(Vector3(-width, 0, 0), angle * Matrix::CreateRotationZ(XM_PIDIV2)), world);
+    vertices[3].color = Vector4(color);
+
+    vertices[4].position = center + Vector3::Transform(Vector3::Transform(Vector3(0, 0, -width), angle * Matrix::CreateRotationZ(XM_PIDIV2)), world);
+    vertices[4].color = Vector4(color);
+
+    vertices[5].position = Vector3::Transform(Vector3::Transform(pointB, angle), world);
+    vertices[5].color = Vector4(color);
+
+    DX::DrawLine(batch, vertices[0].position, vertices[1].position, color);
+    DX::DrawLine(batch, vertices[1].position, vertices[2].position, color);
+    DX::DrawLine(batch, vertices[2].position, vertices[3].position, color);
+    DX::DrawLine(batch, vertices[3].position, vertices[4].position, color);
+    DX::DrawLine(batch, vertices[4].position, vertices[1].position, color);
+    DX::DrawLine(batch, vertices[4].position, vertices[5].position, color);
+
+    DX::DrawLine(batch, vertices[0].position, vertices[2].position, color);
+    DX::DrawLine(batch, vertices[0].position, vertices[3].position, color);
+    DX::DrawLine(batch, vertices[0].position, vertices[4].position, color);
+
+    DX::DrawLine(batch, vertices[1].position, vertices[5].position, color);
+    DX::DrawLine(batch, vertices[2].position, vertices[5].position, color);
+    DX::DrawLine(batch, vertices[3].position, vertices[5].position, color);
+    DX::DrawLine(batch, vertices[4].position, vertices[5].position, color);
 }
 
 void XM_CALLCONV DX::DrawCylinder(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
