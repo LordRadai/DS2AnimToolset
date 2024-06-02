@@ -239,9 +239,9 @@ void Scene::Update()
         if (g_appRootWindow->m_animPlayer->GetModel() && g_appRootWindow->m_animPlayer->GetModel()->m_loaded)
             this->m_camera.SetTarget(g_appRootWindow->m_animPlayer->GetModel()->m_focusPoint);
 
-        g_appRootWindow->m_animPlayer->Update(this->m_deltaTime);
-
         this->m_camera.Update(this->m_width, this->m_height, this->m_deltaTime);
+
+        g_appRootWindow->m_animPlayer->Update(this->m_deltaTime);
 
         this->m_world = Matrix::Identity;
         this->m_view = this->m_camera.m_view;
@@ -367,10 +367,6 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
         this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
     }
 
-    //DX::DrawJoint(this->m_batch.get(), Matrix::Identity, Vector3::Transform(Vector3::Zero, model->m_boneTransforms[characterRootBoneIdx] * world), Vector3::Transform(Vector3::Zero, model->m_boneTransforms[trajectoryBoneIndex] * world), Colors::MediumAquamarine);
-
-    //DX::DrawJoint(this->m_batch.get(), world, Vector3::Zero, Vector3(1, 0, 1), Colors::MediumAquamarine);
-
     for (size_t i = 0; i < boneCount; i++)
     {
         int morphemeBoneIdx = animPlayer->GetFlverToMorphemeBoneMap()[i];
@@ -385,18 +381,15 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
             Vector3 boneA = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[i] * world);
             Vector3 boneB = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[parentIndex] * world);
 
-            DX::DrawLine(this->m_batch.get(), boneB, boneA, Colors::MediumAquamarine);
-
-            DX::DrawJoint(this->m_batch.get(), Matrix::Identity, boneB, boneA, Colors::MediumAquamarine);
+            DX::DrawJoint(this->m_batch.get(), Matrix::Identity, boneB, boneA, Colors::CornflowerBlue);
 
             if (model->m_flver->bones[i].childIndex == -1)
-                DX::Draw(this->m_batch.get(), DirectX::BoundingSphere(boneA, 0.03f), Colors::MediumAquamarine);
+                DX::Draw(this->m_batch.get(), DirectX::BoundingSphere(boneA, 0.03f), Colors::CornflowerBlue);
         }
     }
 
-    DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[characterRootBoneIdx] * world, 0.05f, Colors::MediumBlue);
-    //DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world, 0.05f, Colors::Red);
-    DX::DrawReferenceFrame(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world);
+    DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[characterRootBoneIdx] * world, 0.03f, Colors::MediumBlue);
+    DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world, 0.03f, Colors::Red);
 
     if (!model->m_settings.m_xray)
         DX::DrawFlverModel(this->m_batch.get(), world, model);

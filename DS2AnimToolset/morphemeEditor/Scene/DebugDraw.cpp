@@ -694,12 +694,12 @@ void XM_CALLCONV DX::DrawJoint(DirectX::PrimitiveBatch<DirectX::VertexPositionCo
     // Define the vertices of the octahedron
     std::vector<VertexPositionColor> vertices = 
     {
-        VertexPositionColor(pointA, color),
-        VertexPositionColor(pointB, color),
-        VertexPositionColor(midpoint + right * width, color),
-        VertexPositionColor(midpoint - right * width, color),
-        VertexPositionColor(midpoint + up * width, color),
-        VertexPositionColor(midpoint - up * width, color)
+        VertexPositionColor(Vector3::Transform(pointA, world), color),
+        VertexPositionColor(Vector3::Transform(pointB, world), color),
+        VertexPositionColor(Vector3::Transform(midpoint + right * width, world), color),
+        VertexPositionColor(Vector3::Transform(midpoint - right * width, world), color),
+        VertexPositionColor(Vector3::Transform(midpoint + up * width, world), color),
+        VertexPositionColor(Vector3::Transform(midpoint - up * width, world), color)
     };
 
     std::vector<uint16_t> indices = {
