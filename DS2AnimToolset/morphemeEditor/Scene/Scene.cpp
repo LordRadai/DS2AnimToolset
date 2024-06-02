@@ -369,7 +369,7 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
 
     //DX::DrawJoint(this->m_batch.get(), Matrix::Identity, Vector3::Transform(Vector3::Zero, model->m_boneTransforms[characterRootBoneIdx] * world), Vector3::Transform(Vector3::Zero, model->m_boneTransforms[trajectoryBoneIndex] * world), Colors::MediumAquamarine);
 
-    DX::DrawJoint(this->m_batch.get(), world, Vector3::Zero, Vector3(1, 0, 1), Colors::MediumAquamarine);
+    //DX::DrawJoint(this->m_batch.get(), world, Vector3::Zero, Vector3(1, 0, 1), Colors::MediumAquamarine);
 
     for (size_t i = 0; i < boneCount; i++)
     {
@@ -387,9 +387,7 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
 
             //DX::DrawLine(this->m_batch.get(), boneA, boneB, Colors::Orange);
 
-            //DX::DrawCapsule(this->m_batch.get(), Matrix::Identity, boneA, boneB, 0.01f, Colors::MediumAquamarine);
-
-            //DX::DrawJoint(this->m_batch.get(), Matrix::Identity, boneA, boneB, Colors::MediumAquamarine);
+            DX::DrawJoint(this->m_batch.get(), Matrix::Identity, boneB, boneA, Colors::MediumAquamarine);
 
             if (model->m_flver->bones[i].childIndex == -1)
                 DX::Draw(this->m_batch.get(), DirectX::BoundingSphere(boneA, 0.03f), Colors::MediumAquamarine);

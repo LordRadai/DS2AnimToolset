@@ -670,31 +670,32 @@ void XM_CALLCONV DX::DrawJoint(DirectX::PrimitiveBatch<DirectX::VertexPositionCo
 {
     VertexPositionColor vertices[6];
 
-    float distance = Vector3::Distance(pointA, pointB);
-
-    float fraction = 0.1f;
+    float fraction = 0.25f;
     float width = 0.05f;
 
-    Matrix angle = RMath::GetRotationFrom2Vectors(pointA, pointB);
+    Vector3 center = (1 - fraction) * pointA + fraction * pointB;
 
-    vertices[0].position = Vector3::Transform(Vector3::Transform(pointA, angle), world);
+    Vector3 direction = pointB - pointA;
+
+    Vector3 defaultForward = Vector3::Up;
+
+    Quaternion rotationQuat = Quaternion::CreateFromAxisAngle(defaultForward.Cross(direction), acos(defaultForward.Dot(direction)));
+    Matrix rotationMatrix = Matrix::CreateFromQuaternion(rotationQuat);
+    Matrix translationMatrix = Matrix::CreateTranslation(center);
+    Matrix transform = rotationMatrix * translationMatrix;
+
+    vertices[0].position = Vector3::Transform(pointA, world);
     vertices[0].color = Vector4(color);
 
-    Vector3 center = Vector3::Transform(Vector3::Transform((pointA + pointB) / 2, angle), world);
+    for (size_t i = 0; i < 4; i++)
+    {
+        float angle = i * XM_PIDIV2;
 
-    vertices[1].position = center + Vector3::Transform(Vector3::Transform(Vector3(width, 0, 0), angle * Matrix::CreateRotationZ(XM_PIDIV2)), world);
-    vertices[1].color = Vector4(color);
+        vertices[i + 1].position = Vector3::Transform(Vector3(width * cosf(angle), 0, width * sinf(angle)), transform * world);
+        vertices[i + 1].color = Vector4(color);
+    }
 
-    vertices[2].position = center + Vector3::Transform(Vector3::Transform(Vector3(0, 0, width), angle * Matrix::CreateRotationZ(XM_PIDIV2)), world);
-    vertices[2].color = Vector4(color);
-
-    vertices[3].position = center + Vector3::Transform(Vector3::Transform(Vector3(-width, 0, 0), angle * Matrix::CreateRotationZ(XM_PIDIV2)), world);
-    vertices[3].color = Vector4(color);
-
-    vertices[4].position = center + Vector3::Transform(Vector3::Transform(Vector3(0, 0, -width), angle * Matrix::CreateRotationZ(XM_PIDIV2)), world);
-    vertices[4].color = Vector4(color);
-
-    vertices[5].position = Vector3::Transform(Vector3::Transform(pointB, angle), world);
+    vertices[5].position = Vector3::Transform(pointB, world);
     vertices[5].color = Vector4(color);
 
     DX::DrawLine(batch, vertices[0].position, vertices[1].position, color);
