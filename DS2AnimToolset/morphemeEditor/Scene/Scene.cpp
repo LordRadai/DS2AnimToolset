@@ -385,8 +385,6 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
             Vector3 boneA = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[i] * world);
             Vector3 boneB = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[parentIndex] * world);
 
-            //DX::DrawLine(this->m_batch.get(), boneA, boneB, Colors::Orange);
-
             DX::DrawJoint(this->m_batch.get(), Matrix::Identity, boneB, boneA, Colors::MediumAquamarine);
 
             if (model->m_flver->bones[i].childIndex == -1)
