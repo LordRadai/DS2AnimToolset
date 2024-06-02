@@ -399,14 +399,6 @@ void Application::ModelPreviewWindow()
 			if (ImGui::Button(ICON_FA_FORWARD_FAST))
 				this->m_animPlayer->SetTime(RMath::TimeToFrame(this->m_eventTrackEditor->m_frameMax));
 
-			/*
-			static float speed = 1.f;
-
-			ImGui::SliderFloat("Play Speed", &speed, 0.f, 1.f);
-
-			this->m_animPlayer->SetPlaySpeed(speed);
-			*/
-
 			ImGui::EndMenuBar();
 		}
 
