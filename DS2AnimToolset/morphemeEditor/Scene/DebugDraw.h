@@ -123,6 +123,10 @@ namespace DX
         DirectX::XMMATRIX world, float radius,
         DirectX::GXMVECTOR color = DirectX::Colors::Yellow);
 
+    void XM_CALLCONV DrawJoint(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
+        DirectX::XMMATRIX world, DirectX::SimpleMath::Vector3 pointA, DirectX::SimpleMath::Vector3 pointB,
+        DirectX::GXMVECTOR color = DirectX::Colors::Yellow);
+
     void XM_CALLCONV DrawCylinder(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
         DirectX::XMMATRIX world, DirectX::SimpleMath::Vector3 pointA, DirectX::SimpleMath::Vector3 pointB, float radius,
         DirectX::GXMVECTOR color = DirectX::Colors::Yellow, bool fill = false);

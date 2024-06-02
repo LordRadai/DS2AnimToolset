@@ -7,6 +7,7 @@
 #include <Shlwapi.h>
 #include <filesystem>
 #include "FBXTranslator/FBXTranslator.h"
+#include "IconsFontAwesome6.h"
 
 std::vector<std::wstring> getTaeFileListFromChrId(std::wstring tae_path, std::wstring m_chrId)
 {
@@ -161,8 +162,6 @@ void Application::Update(float delta_time)
 {
 	this->CheckFlags();
 	this->RenderGUI("morphemeEditor");
-
-	this->m_animPlayer->Update(delta_time);
 }
 
 std::string getTaeCategoryTooltip(int category)
@@ -308,7 +307,7 @@ void Application::RenderGUI(const char* title)
 
 	static int firstFrame = this->m_eventTrackEditor->m_frameMin;
 	static bool expanded = true;
-	static int currentFrame = 0;
+	int currentFrame = RMath::TimeToFrame(this->m_animPlayer->GetTime(), 60);
 	static float zoomLevel = 5.f;
 
 	if (this->m_eventTrackEditor->m_load)
@@ -374,6 +373,31 @@ void Application::ModelPreviewWindow()
 				if (model->m_settings.m_sceneExplorer)
 					this->PreviewSceneExplorerWindow();
 			}
+
+			ImGui::Separator();
+
+			if (ImGui::Button(ICON_FA_BACKWARD_FAST))
+				this->m_animPlayer->SetTime(0.f);
+
+			ImGui::SameLine();
+			if (ImGui::Button(ICON_FA_BACKWARD_STEP))
+				this->m_animPlayer->StepPlay(-1.f / 30.f);
+
+			ImGui::SameLine();
+			if (ImGui::Button(ICON_FA_PAUSE))
+				this->m_animPlayer->SetPause(true);
+
+			ImGui::SameLine();
+			if (ImGui::Button(ICON_FA_PLAY))
+				this->m_animPlayer->SetPause(false);
+
+			ImGui::SameLine();
+			if (ImGui::Button(ICON_FA_FORWARD_STEP))
+				this->m_animPlayer->StepPlay(1.f / 30.f);
+
+			ImGui::SameLine();
+			if (ImGui::Button(ICON_FA_FORWARD_FAST))
+				this->m_animPlayer->SetTime(RMath::TimeToFrame(this->m_eventTrackEditor->m_frameMax));
 
 			ImGui::EndMenuBar();
 		}
@@ -788,13 +812,6 @@ void Application::EventTrackWindow(int* current_frame, int* first_frame, float* 
 					g_appLog->AlertMessage(MsgLevel_Info, "No Event Tracks are loaded\n");
 			}
 
-			if (ImGui::Button("Pause"))
-				this->m_animPlayer->SetPause(true);
-			
-			ImGui::SameLine();
-			if (ImGui::Button("Play"))
-				this->m_animPlayer->SetPause(false);
-
 			if (this->m_eventTrackEditor->m_animIdx > -1)
 				ImGui::Text(this->m_animPlayer->GetAnimation()->GetAnimName());
 			else
@@ -886,13 +903,6 @@ void Application::TimeActWindow(int* current_frame, int* first_frame, float* zoo
 				else
 					g_appLog->AlertMessage(MsgLevel_Info, "No TimeAct track is currently loaded\n");
 			}
-
-			if (ImGui::Button("Pause"))
-				this->m_animPlayer->SetPause(true);
-
-			ImGui::SameLine();
-			if (ImGui::Button("Play"))
-				this->m_animPlayer->SetPause(false);
 
 			if (this->m_timeActEditor->m_taeId > -1)
 				ImGui::Text(std::to_string(this->m_timeActEditor->m_taeId).c_str());
@@ -2011,6 +2021,8 @@ void Application::SetTimeActCurrentFrameFromEventTrack(int* current_frame_tae, i
 				this->m_eventTrackEditor->m_eventTrackActionTimeActStart = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_frameStart);
 				this->m_eventTrackEditor->m_eventTrackActionTimeActDuration = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_duration);
 				this->m_eventTrackEditor->m_eventTrackActionTimeActValue = this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_value;
+
+				break;
 			}
 		}
 

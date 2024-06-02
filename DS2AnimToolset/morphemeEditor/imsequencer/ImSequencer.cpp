@@ -909,7 +909,7 @@ namespace ImSequencer
                             const unsigned int quadColor[] = { 0x20FFFFFF, 0x20FFFFFF, 0x20FFFFFF };
 
                             //Tracks
-                            if (eventTrackEditor->focused && focused && movingTrack == -1 && (sequenceOptions & EDITOR_EVENT_EDIT_STARTEND))// TODOFOCUS && backgroundRect.Contains(io.MousePos))
+                            if (eventTrackEditor->focused && focused && movingTrack == -1)// TODOFOCUS && backgroundRect.Contains(io.MousePos))
                             {
                                 if (!isDiscrete)
                                 {
@@ -935,9 +935,12 @@ namespace ImSequencer
 
                                             movingTrack = trackIndex;
                                             movingEvent = eventIdx;
-                                            movingPos = cx;
-                                            movingPart = j + 1;
 
+                                            if ((sequenceOptions & EDITOR_EVENT_EDIT_STARTEND))
+                                            {
+                                                movingPos = cx;
+                                                movingPart = j + 1;
+                                            }
                                             break;
                                         }
                                     }
@@ -961,8 +964,12 @@ namespace ImSequencer
 
                                             movingTrack = trackIndex;
                                             movingEvent = eventIdx;
-                                            movingPos = cx;
-                                            movingPart = 3;
+
+                                            if ((sequenceOptions & EDITOR_EVENT_EDIT_STARTEND))
+                                            {
+                                                movingPos = cx;
+                                                movingPart = 3;
+                                            }
 
                                             break;
                                         }
@@ -973,7 +980,7 @@ namespace ImSequencer
                             //Looped entries
                             if (sequenceOptions & EDITOR_EVENT_LOOP)
                             {
-                                if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows) && focused && movingTrack == -1 && (sequenceOptions & EDITOR_EVENT_EDIT_STARTEND))// TODOFOCUS && backgroundRect.Contains(io.MousePos))
+                                if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows) && focused && movingTrack == -1)// TODOFOCUS && backgroundRect.Contains(io.MousePos))
                                 {
                                     if (!isDiscrete)
                                     {
@@ -998,8 +1005,12 @@ namespace ImSequencer
 
                                                 movingTrack = trackIndex;
                                                 movingEvent = eventIdx;
-                                                movingPos = cx;
-                                                movingPart = j + 1;
+
+                                                if ((sequenceOptions & EDITOR_EVENT_EDIT_STARTEND))
+                                                {
+                                                    movingPos = cx;
+                                                    movingPart = j + 1;
+                                                }
 
                                                 break;
                                             }
@@ -1024,8 +1035,12 @@ namespace ImSequencer
 
                                                 movingTrack = trackIndex;
                                                 movingEvent = eventIdx;
-                                                movingPos = cx;
-                                                movingPart = 3;
+
+                                                if ((sequenceOptions & EDITOR_EVENT_EDIT_STARTEND))
+                                                {
+                                                    movingPos = cx;
+                                                    movingPart = 3;
+                                                }
 
                                                 break;
                                             }
@@ -1931,7 +1946,7 @@ namespace ImSequencer
                             const unsigned int quadColor[] = { 0x20FFFFFF, 0x20FFFFFF, 0x20FFFFFF };
 
                             //Tracks
-                            if (focused && timeActEditor->focused && movingTrack == -1 && (sequenceOptions & EDITOR_EVENT_EDIT_STARTEND))// TODOFOCUS && backgroundRect.Contains(io.MousePos))
+                            if (focused && timeActEditor->focused && movingTrack == -1)// TODOFOCUS && backgroundRect.Contains(io.MousePos))
                             {
                                 for (int j = 0; j < 3; j++)
                                 {
@@ -1955,8 +1970,12 @@ namespace ImSequencer
 
                                         movingTrack = trackIndex;
                                         movingEvent = eventIdx;
-                                        movingPos = cx;
-                                        movingPart = j + 1;
+
+                                        if ((sequenceOptions & EDITOR_EVENT_EDIT_STARTEND))
+                                        {
+                                            movingPos = cx;
+                                            movingPart = j + 1;
+                                        }
 
                                         break;
                                     }
@@ -1989,8 +2008,12 @@ namespace ImSequencer
 
                                             movingTrack = trackIndex;
                                             movingEvent = eventIdx;
-                                            movingPos = cx;
-                                            movingPart = j + 1;
+
+                                            if ((sequenceOptions & EDITOR_EVENT_EDIT_STARTEND))
+                                            {
+                                                movingPos = cx;
+                                                movingPart = j + 1;
+                                            }
 
                                             break;
                                         }

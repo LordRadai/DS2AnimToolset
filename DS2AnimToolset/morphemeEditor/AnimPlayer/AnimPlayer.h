@@ -17,6 +17,8 @@ public:
 	void SetPause(bool status);
 	void SetTime(float time);
 	void SetModel(FlverModel* model);
+	void SetPlaySpeed(float speed);
+	void StepPlay(float step);
 
 	AnimSourceInterface* GetAnimation();
 	bool IsPlaybackPaused();
@@ -24,6 +26,7 @@ public:
 	float GetTime();
 	FlverModel* GetModel();
 	std::vector<int> GetFlverToMorphemeBoneMap();
+	float GetPlaySpeed();
 
 	void CreateFlverToMorphemeBoneMap(MR::AnimRigDef* pMorphemeRig);
 	int GetFlverBoneIndexByMorphemeBoneIndex(int idx);
@@ -35,4 +38,5 @@ private:
 	bool m_loop;
 	FlverModel* m_model;
 	std::vector<int> m_flverToMorphemeBoneMap;
+	float m_playSpeed = 1.f;
 };

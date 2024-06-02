@@ -4,6 +4,7 @@
 #include "Application/Application.h"
 #include "Scene/Scene.h"
 #include "TaeTemplate/TaeTemplate.h"
+#include "IconsFontAwesome6.h"
 
 // Data
 static ID3D11Device* g_pd3dDevice = nullptr;
@@ -48,6 +49,18 @@ void initImGui(HWND hwnd)
 
     g_appLog->DebugMessage(MsgLevel_Info, "Add ImGui fonts\n");
     io.Fonts->AddFontDefault();
+
+    float baseFontSize = 13.0f; // 13.0f is the size of the default font. Change to the font size you use.
+    float iconFontSize = baseFontSize * 2.0f / 3.0f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
+
+    // merge in icons from Font Awesome
+    static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
+    ImFontConfig icons_config;
+    icons_config.MergeMode = true;
+    icons_config.PixelSnapH = true;
+    icons_config.GlyphMinAdvanceX = iconFontSize;
+    io.Fonts->AddFontFromFileTTF("Data//font//" FONT_ICON_FILE_NAME_FAS, iconFontSize, &icons_config, icons_ranges);
+    // use FONT_ICON_FILE_NAME_FAR if you want regular instead of solid
 
     g_appLog->DebugMessage(MsgLevel_Info, "Initialising ImGui style\n");
     g_appRootWindow->GUIStyle();
@@ -164,6 +177,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         g_appRootWindow->Update(g_scene->m_deltaTime);
 
         // Rendering
+        g_scene->Render();
         ImGui::Render();
         const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
         g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
@@ -176,7 +190,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             ImGui::RenderPlatformWindowsDefault();
         }
 
-        g_pSwapChain->Present(1, 0);
+        HRESULT hr = g_pSwapChain->Present(1, 0);
+
+        DX::ThrowIfFailed(hr);
     }
 
     g_appRootWindow->m_morphemeSystem->termMorpheme();
