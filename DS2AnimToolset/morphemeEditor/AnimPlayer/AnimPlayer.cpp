@@ -108,6 +108,7 @@ void AnimPlayer::SetPause(bool status)
 void AnimPlayer::SetTime(float time)
 {
 	this->m_time = time;
+	//this->m_anim->GetHandle()->setTime(this->m_time);
 }
 
 void AnimPlayer::SetModel(FlverModel* model)
@@ -116,6 +117,17 @@ void AnimPlayer::SetModel(FlverModel* model)
 
 	if (model != nullptr)
 		this->m_model->GetModelData();
+}
+
+void AnimPlayer::SetPlaySpeed(float speed)
+{
+	this->m_playSpeed = speed;
+}
+
+void AnimPlayer::StepPlay(float step)
+{
+	this->m_time += step;
+	this->m_anim->GetHandle()->setTime(this->m_time);
 }
 
 AnimSourceInterface* AnimPlayer::GetAnimation()
@@ -146,6 +158,11 @@ FlverModel* AnimPlayer::GetModel()
 std::vector<int> AnimPlayer::GetFlverToMorphemeBoneMap()
 {
 	return this->m_flverToMorphemeBoneMap;
+}
+
+float AnimPlayer::GetPlaySpeed()
+{
+	return this->m_playSpeed;
 }
 
 //Creates an anim map from the flver model bone to the morpheme rig and saves it in m_morphemeToFlverRigMap
