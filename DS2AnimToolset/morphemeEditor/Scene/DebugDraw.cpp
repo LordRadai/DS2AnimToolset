@@ -668,51 +668,52 @@ void XM_CALLCONV DX::DrawJoint(DirectX::PrimitiveBatch<DirectX::VertexPositionCo
     DirectX::XMMATRIX world, DirectX::SimpleMath::Vector3 pointA, DirectX::SimpleMath::Vector3 pointB,
     DirectX::GXMVECTOR color)
 {
-    VertexPositionColor vertices[6];
+    float height = Vector3::Distance(pointA, pointB);
 
-    float fraction = 0.25f;
-    float width = 0.05f;
+    constexpr float fraction = 0.25f;
+    float width = std::fminf(0.03f, height * 0.25f); // Adjust size as needed
 
-    Vector3 center = (1 - fraction) * pointA + fraction * pointB;
+    // Compute the midpoint
+    Vector3 midpoint = (1 - fraction) * pointA + fraction * pointB;
 
-    Vector3 direction = pointB - pointA;
+    // Compute the direction vector and normalize it
+    Vector3 direction = pointA - pointB;
+    direction.Normalize();
 
-    Vector3 defaultForward = Vector3::Up;
+    // Find an arbitrary vector that is not parallel to the direction
+    Vector3 arbitrary = (fabs(direction.x) > 0.1f) ? Vector3(0.0f, 1.0f, 0.0f) : Vector3(1.0f, 0.0f, 0.0f);
 
-    Quaternion rotationQuat = Quaternion::CreateFromAxisAngle(defaultForward.Cross(direction), acos(defaultForward.Dot(direction)));
-    Matrix rotationMatrix = Matrix::CreateFromQuaternion(rotationQuat);
-    Matrix translationMatrix = Matrix::CreateTranslation(center);
-    Matrix transform = rotationMatrix * translationMatrix;
+    // Compute the first perpendicular vector
+    Vector3 right = direction.Cross(arbitrary);
+    right.Normalize();
 
-    vertices[0].position = Vector3::Transform(pointA, world);
-    vertices[0].color = Vector4(color);
+    // Compute the second perpendicular vector
+    Vector3 up = right.Cross(direction);
+    up.Normalize();
 
-    for (size_t i = 0; i < 4; i++)
+    // Define the vertices of the octahedron
+    std::vector<VertexPositionColor> vertices = 
     {
-        float angle = i * XM_PIDIV2;
+        VertexPositionColor(pointA, color),
+        VertexPositionColor(pointB, color),
+        VertexPositionColor(midpoint + right * width, color),
+        VertexPositionColor(midpoint - right * width, color),
+        VertexPositionColor(midpoint + up * width, color),
+        VertexPositionColor(midpoint - up * width, color)
+    };
 
-        vertices[i + 1].position = Vector3::Transform(Vector3(width * cosf(angle), 0, width * sinf(angle)), transform * world);
-        vertices[i + 1].color = Vector4(color);
-    }
+    std::vector<uint16_t> indices = {
+    0, 2, 4, // Top front right
+    0, 4, 3, // Top front left
+    0, 3, 5, // Top back left
+    0, 5, 2, // Top back right
+    1, 2, 5, // Bottom front right
+    1, 4, 2, // Bottom front left
+    1, 3, 4, // Bottom back left
+    1, 5, 3  // Bottom back right
+    };
 
-    vertices[5].position = Vector3::Transform(pointB, world);
-    vertices[5].color = Vector4(color);
-
-    DX::DrawLine(batch, vertices[0].position, vertices[1].position, color);
-    DX::DrawLine(batch, vertices[1].position, vertices[2].position, color);
-    DX::DrawLine(batch, vertices[2].position, vertices[3].position, color);
-    DX::DrawLine(batch, vertices[3].position, vertices[4].position, color);
-    DX::DrawLine(batch, vertices[4].position, vertices[1].position, color);
-    DX::DrawLine(batch, vertices[4].position, vertices[5].position, color);
-
-    DX::DrawLine(batch, vertices[0].position, vertices[2].position, color);
-    DX::DrawLine(batch, vertices[0].position, vertices[3].position, color);
-    DX::DrawLine(batch, vertices[0].position, vertices[4].position, color);
-
-    DX::DrawLine(batch, vertices[1].position, vertices[5].position, color);
-    DX::DrawLine(batch, vertices[2].position, vertices[5].position, color);
-    DX::DrawLine(batch, vertices[3].position, vertices[5].position, color);
-    DX::DrawLine(batch, vertices[4].position, vertices[5].position, color);
+    batch->DrawIndexed(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, indices.data(), indices.size(), vertices.data(), vertices.size());
 }
 
 void XM_CALLCONV DX::DrawCylinder(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
