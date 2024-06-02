@@ -2009,6 +2009,8 @@ void Application::SetTimeActCurrentFrameFromEventTrack(int* current_frame_tae, i
 				this->m_eventTrackEditor->m_eventTrackActionTimeActStart = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_frameStart);
 				this->m_eventTrackEditor->m_eventTrackActionTimeActDuration = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_duration);
 				this->m_eventTrackEditor->m_eventTrackActionTimeActValue = this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_value;
+
+				break;
 			}
 		}
 
