@@ -635,6 +635,9 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle, std::vector<int>
 			{
 				int boneID = indices[wt];
 
+				if (boneID < 0 || boneID >= boneRelativeTransforms.size())
+					continue;
+
 				newPos += Vector3::Transform(this->m_vertBindPose[meshIdx][vertexIndex].m_pos.position, boneRelativeTransforms[boneID]) * weights[wt];
 			}
 
