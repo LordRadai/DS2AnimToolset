@@ -67,7 +67,7 @@ void AnimPlayer::Update(float dt)
 
 	if (!this->m_pause)
 	{
-		this->m_time += dt;
+		this->m_time += (this->m_playSpeed * dt);
 
 		if (this->m_time > animHandle->getDuration())
 		{
@@ -108,7 +108,9 @@ void AnimPlayer::SetPause(bool status)
 void AnimPlayer::SetTime(float time)
 {
 	this->m_time = time;
-	//this->m_anim->GetHandle()->setTime(this->m_time);
+
+	if (this->m_anim)
+		this->m_anim->GetHandle()->setTime(this->m_time);
 }
 
 void AnimPlayer::SetModel(FlverModel* model)
@@ -127,7 +129,12 @@ void AnimPlayer::SetPlaySpeed(float speed)
 void AnimPlayer::StepPlay(float step)
 {
 	this->m_time += step;
-	this->m_anim->GetHandle()->setTime(this->m_time);
+
+	if (this->m_time < 0)
+		this->m_time = 0;
+
+	if (this->m_anim)
+		this->m_anim->GetHandle()->setTime(this->m_time);
 }
 
 AnimSourceInterface* AnimPlayer::GetAnimation()

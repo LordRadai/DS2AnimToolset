@@ -38,5 +38,5 @@ private:
 	bool m_loop;
 	FlverModel* m_model;
 	std::vector<int> m_flverToMorphemeBoneMap;
-	float m_playSpeed;
+	float m_playSpeed = 1.f;
 };
