@@ -138,7 +138,7 @@ void AnimPlayer::StepPlay(float step)
 		this->m_time = 0;
 
 	if (this->m_time > this->m_anim->GetHandle()->getDuration())
-		this->m_time = 0;
+		this->m_time = this->m_anim->GetHandle()->getDuration();
 
 	this->m_anim->GetHandle()->setTime(this->m_time);
 }
