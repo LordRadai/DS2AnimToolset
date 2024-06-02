@@ -377,15 +377,11 @@ void Application::ModelPreviewWindow()
 			ImGui::Separator();
 
 			if (ImGui::Button(ICON_FA_BACKWARD_FAST))
-			{
 				this->m_animPlayer->SetTime(0.f);
-			}
 
 			ImGui::SameLine();
 			if (ImGui::Button(ICON_FA_BACKWARD_STEP))
-			{
 				this->m_animPlayer->StepPlay(-1.f / 30.f);
-			}
 
 			ImGui::SameLine();
 			if (ImGui::Button(ICON_FA_PAUSE))
@@ -397,15 +393,11 @@ void Application::ModelPreviewWindow()
 
 			ImGui::SameLine();
 			if (ImGui::Button(ICON_FA_FORWARD_STEP))
-			{
 				this->m_animPlayer->StepPlay(1.f / 30.f);
-			}
 
 			ImGui::SameLine();
 			if (ImGui::Button(ICON_FA_FORWARD_FAST))
-			{
 				this->m_animPlayer->SetTime(RMath::TimeToFrame(this->m_eventTrackEditor->m_frameMax));
-			}
 
 			/*
 			static float speed = 1.f;
