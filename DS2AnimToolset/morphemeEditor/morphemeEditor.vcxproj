@@ -261,6 +261,7 @@
     <ClInclude Include="FromsoftFormat\TimeActReader\TimeActEvent\TimeActEventData\TimeActEventData.h" />
     <ClInclude Include="FromsoftFormat\TimeActReader\TimeActReader.h" />
     <ClInclude Include="FromsoftFormat\Utils\MemReader\MemReader.h" />
+    <ClInclude Include="IconsFontAwesome6.h" />
     <ClInclude Include="imgui\custom\imgui_custom_logic.h" />
     <ClInclude Include="imgui\custom\imgui_custom_widget.h" />
     <ClInclude Include="imgui\imconfig.h" />

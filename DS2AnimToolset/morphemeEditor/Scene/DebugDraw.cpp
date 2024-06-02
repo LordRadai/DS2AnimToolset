@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include "utils/NMDX/NMDX.h"
+#include "utils/RMath/RMath.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -661,6 +662,58 @@ void XM_CALLCONV DX::DrawSphere(DirectX::PrimitiveBatch<DirectX::VertexPositionC
     DirectX::GXMVECTOR color)
 {
     DX::DrawCapsule(batch, world, Vector3(0, 0, 0), Vector3(0, 0, 0), radius, color);
+}
+
+void XM_CALLCONV DX::DrawJoint(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
+    DirectX::XMMATRIX world, DirectX::SimpleMath::Vector3 pointA, DirectX::SimpleMath::Vector3 pointB,
+    DirectX::GXMVECTOR color)
+{
+    float height = Vector3::Distance(pointA, pointB);
+
+    constexpr float fraction = 0.25f;
+    float width = std::fminf(0.03f, height * 0.25f); // Adjust size as needed
+
+    // Compute the midpoint
+    Vector3 midpoint = (1 - fraction) * pointA + fraction * pointB;
+
+    // Compute the direction vector and normalize it
+    Vector3 direction = pointA - pointB;
+    direction.Normalize();
+
+    // Find an arbitrary vector that is not parallel to the direction
+    Vector3 arbitrary = (fabs(direction.x) > 0.1f) ? Vector3(0.0f, 1.0f, 0.0f) : Vector3(1.0f, 0.0f, 0.0f);
+
+    // Compute the first perpendicular vector
+    Vector3 right = direction.Cross(arbitrary);
+    right.Normalize();
+
+    // Compute the second perpendicular vector
+    Vector3 up = right.Cross(direction);
+    up.Normalize();
+
+    // Define the vertices of the octahedron
+    std::vector<VertexPositionColor> vertices = 
+    {
+        VertexPositionColor(Vector3::Transform(pointA, world), color),
+        VertexPositionColor(Vector3::Transform(pointB, world), color),
+        VertexPositionColor(Vector3::Transform(midpoint + right * width, world), color),
+        VertexPositionColor(Vector3::Transform(midpoint - right * width, world), color),
+        VertexPositionColor(Vector3::Transform(midpoint + up * width, world), color),
+        VertexPositionColor(Vector3::Transform(midpoint - up * width, world), color)
+    };
+
+    std::vector<uint16_t> indices = {
+    0, 2, 4, // Top front right
+    0, 4, 3, // Top front left
+    0, 3, 5, // Top back left
+    0, 5, 2, // Top back right
+    1, 2, 5, // Bottom front right
+    1, 4, 2, // Bottom front left
+    1, 3, 4, // Bottom back left
+    1, 5, 3  // Bottom back right
+    };
+
+    batch->DrawIndexed(D3D11_PRIMITIVE_TOPOLOGY_LINELIST, indices.data(), indices.size(), vertices.data(), vertices.size());
 }
 
 void XM_CALLCONV DX::DrawCylinder(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
