@@ -1112,60 +1112,91 @@ void SkeletonInspectorTreeNode(FLVER2* flv, int boneID, int& selected_id)
 	}
 }
 
+void ModelTreeNode(FlverModel* model)
+{
+	if (model)
+	{
+		if (ImGui::TreeNode(model->m_name.c_str()))
+		{
+			if (model->m_flver->header.boneCount > 0)
+			{
+				if (ImGui::TreeNode("Bones"))
+				{
+					ImGui::BeginChild("skeleton_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
+
+					int boneID = 0;
+
+					while (boneID != -1)
+					{
+						SkeletonInspectorTreeNode(model->m_flver, boneID, model->m_settings.m_selectedBone);
+
+						boneID = model->m_flver->bones[boneID].nextSiblingIndex;
+					}
+
+					ImGui::EndChild();
+
+					ImGui::TreePop();
+				}
+			}
+
+			if (model->m_flver->header.dummyCount > 0)
+			{
+				if (ImGui::TreeNode("Dummy Polygons"))
+				{
+					ImGui::BeginChild("dummy_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
+
+					for (size_t i = 0; i < model->m_flver->header.dummyCount; i++)
+					{
+						std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[i].referenceID);
+
+						bool selected = (model->m_settings.m_selectedDummy == i);
+
+						if (ImGui::Selectable(dummy_name.c_str(), selected))
+							model->m_settings.m_selectedDummy = i;
+					}
+
+					ImGui::EndChild();
+
+					ImGui::TreePop();
+				}
+
+			}
+
+			if (ImGui::IsMouseDoubleClicked(0))
+			{
+				model->m_settings.m_selectedDummy = -1;
+				model->m_settings.m_selectedBone = -1;
+			}
+
+			ImGui::TreePop();
+		}
+	}
+
+}
+
 void Application::PreviewSceneExplorerWindow()
 {
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
 
 	ImGui::Begin("Scene Explorer", &this->m_sceneFlags.m_sceneExplorer);
 
-	FlverModel* model = this->m_animPlayer->GetModel();
-	
-	if (ImGui::TreeNode("Model"))
-	{
-		if (ImGui::TreeNode("Skeleton"))
-		{
-			ImGui::BeginChild("skeleton_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
+	FlverModel* model = this->m_animPlayer->GetModel();	
+	ModelTreeNode(model);
 
-			int boneID = 0;
+	model = this->m_animPlayer->GetModelPart(Parts_Face);
+	ModelTreeNode(model);
 
-			while (boneID != -1)
-			{
-				SkeletonInspectorTreeNode(model->m_flver, boneID, model->m_settings.m_selectedBone);
+	model = this->m_animPlayer->GetModelPart(Parts_Head);
+	ModelTreeNode(model);
 
-				boneID = model->m_flver->bones[boneID].nextSiblingIndex;
-			}
+	model = this->m_animPlayer->GetModelPart(Parts_Body);
+	ModelTreeNode(model);
 
-			ImGui::EndChild();
+	model = this->m_animPlayer->GetModelPart(Parts_Arm);
+	ModelTreeNode(model);
 
-			ImGui::TreePop();
-		}
-
-		if (ImGui::TreeNode("Dummy Polygons"))
-		{
-			ImGui::BeginChild("dummy_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
-
-			for (size_t i = 0; i < model->m_flver->header.dummyCount; i++)
-			{
-				std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[i].referenceID);
-
-				bool selected = (model->m_settings.m_selectedDummy == i);
-
-				if (ImGui::Selectable(dummy_name.c_str(), selected))
-					model->m_settings.m_selectedDummy = i;
-			}
-
-			ImGui::EndChild();
-
-			ImGui::TreePop();
-		}
-
-		if (ImGui::IsMouseDoubleClicked(0))
-		{
-			model->m_settings.m_selectedDummy = -1;
-			model->m_settings.m_selectedBone = -1;
-		}
-	}
-
+	model = this->m_animPlayer->GetModelPart(Parts_Leg);
+	ModelTreeNode(model);
 
 	ImGui::End();
 }

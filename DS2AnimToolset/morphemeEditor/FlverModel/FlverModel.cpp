@@ -87,7 +87,7 @@ FlverModel* FlverModel::CreateFromBnd(std::wstring path)
 			model = new FlverModel(umem);
 			model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
 
-			g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %ws\n", model->m_name);
+			g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", model->m_name.c_str());
 
 			found = true;
 			break;
