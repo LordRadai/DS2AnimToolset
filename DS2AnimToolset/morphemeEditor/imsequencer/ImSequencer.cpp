@@ -306,7 +306,7 @@ namespace ImSequencer
 
             //header
             draw_list->AddRectFilled(canvas_pos, ImVec2(canvas_size.x + canvas_pos.x, canvas_pos.y + ItemHeight), 0xFF404040, 0);
-            if (sequenceOptions & EDITOR_TRACK_ADD && (eventTrackEditor->m_nodeSource != nullptr))
+            if (sequenceOptions & EDITOR_TRACK_ADD && (eventTrackEditor->m_nodeSource))
             {
                 if (SequencerAddTrackButton(draw_list, ImVec2(canvas_pos.x + legendWidth - 8, canvas_pos.y + 2), ImVec2(4, ItemHeight * 0.8f)) && focused && ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && !popupOpened && !MovingCurrentFrame && !MovingScrollBar && movingTrack == -1 && !legendResizeRect.Contains(io.MousePos))
                 {
@@ -1472,7 +1472,7 @@ namespace ImSequencer
 
             //header
             draw_list->AddRectFilled(canvas_pos, ImVec2(canvas_size.x + canvas_pos.x, canvas_pos.y + ItemHeight), 0xFF404040, 0);
-            if (sequenceOptions & EDITOR_TRACK_ADD && (timeActEditor->m_source != nullptr))
+            if (sequenceOptions & EDITOR_TRACK_ADD && (timeActEditor->m_source))
             {
                 if (SequencerAddTrackButton(draw_list, ImVec2(canvas_pos.x + legendWidth - 8, canvas_pos.y + 2), ImVec2(4, ItemHeight * 0.8f)) && focused && ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && !popupOpened && !MovingCurrentFrame && !MovingScrollBar && movingTrack == -1 && !legendResizeRect.Contains(io.MousePos))
                 {

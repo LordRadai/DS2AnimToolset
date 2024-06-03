@@ -54,50 +54,50 @@ void AnimPlayer::Update(float dt)
 	if (this->m_anim)
 		animHandle = this->m_anim->GetHandle();
 
-	if (this->m_modelParts.m_model != nullptr)
+	if (this->m_modelParts.m_model)
 	{
 		this->m_modelParts.m_model->UpdateModel();
 		this->m_modelParts.m_model->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_head != nullptr)
+	if (this->m_modelParts.m_head)
 	{
 		this->m_modelParts.m_head->UpdateModel();
 		this->m_modelParts.m_head->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_face != nullptr)
+	if (this->m_modelParts.m_face)
 	{
 		this->m_modelParts.m_face->UpdateModel();
 		this->m_modelParts.m_face->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_body != nullptr)
+	if (this->m_modelParts.m_body)
 	{
 		this->m_modelParts.m_body->UpdateModel();
 		this->m_modelParts.m_body->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_arm != nullptr)
+	if (this->m_modelParts.m_arm)
 	{
 		this->m_modelParts.m_arm->UpdateModel();
 		this->m_modelParts.m_arm->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_leg != nullptr)
+	if (this->m_modelParts.m_leg)
 	{
 		this->m_modelParts.m_leg->UpdateModel();
 		this->m_modelParts.m_leg->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_weaponLeft != nullptr)
+	if (this->m_modelParts.m_weaponLeft)
 	{
 		this->m_modelParts.m_weaponLeft->m_position = this->m_modelParts.m_model->GetDummyPolygonTransform(1);
 		this->m_modelParts.m_weaponLeft->UpdateModel();
 		this->m_modelParts.m_weaponLeft->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_weaponRight != nullptr)
+	if (this->m_modelParts.m_weaponRight)
 	{
 		this->m_modelParts.m_weaponLeft->m_position = this->m_modelParts.m_model->GetDummyPolygonTransform(2);
 		this->m_modelParts.m_weaponRight->UpdateModel();
@@ -160,7 +160,7 @@ void AnimPlayer::SetModel(FlverModel* model)
 {
 	this->m_modelParts.m_model = model;
 
-	if (model != nullptr)
+	if (model)
 		this->m_modelParts.m_model->GetModelData();
 }
 
