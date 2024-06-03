@@ -325,6 +325,7 @@ Matrix GetNmTrajectoryTransform(MR::AnimationSourceHandle* animHandle)
 	float tmp = pos.z;
 	pos.z = pos.y;
 	pos.y = tmp;
+	pos.x = -pos.x;
 
 	Matrix translation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateTranslation(NMDX::CreateFrom(pos));
 	Matrix rotation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateFromQuaternion(NMDX::CreateFrom(rot));
