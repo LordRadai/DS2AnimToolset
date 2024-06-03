@@ -74,7 +74,7 @@ FlverModel* FlverModel::CreateFromBnd(std::wstring path)
 
 	BNDReader bnd(dcx_path);
 
-	bool found_model = false;
+	bool found = false;
 
 	for (size_t i = 0; i < bnd.m_fileCount; i++)
 	{
@@ -89,12 +89,12 @@ FlverModel* FlverModel::CreateFromBnd(std::wstring path)
 
 			g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %ws\n", model->m_name);
 
-			found_model = true;
+			found = true;
 			break;
 		}
 	}
 
-	if (!found_model)
+	if (!found)
 		g_appLog->DebugMessage(MsgLevel_Error, "Could not find model %ws\n", path);
 
 	return model;
