@@ -1649,7 +1649,7 @@ void Application::LoadFile()
 									std::filesystem::path filepath_tae;
 									std::filesystem::path filepath_dcx;
 
-									if (gamepath != "")
+									if (gamepath.compare("") != 0)
 									{
 										filepath_tae = gamepath;
 										filepath_dcx = gamepath;
@@ -1738,7 +1738,7 @@ void Application::LoadFile()
 									std::filesystem::path gamepath = FindGamePath(pszFilePath);
 									std::filesystem::path filepath_dcx;
 
-									if (gamepath != "")
+									if (gamepath.compare("") != 0)
 									{
 										filepath_dcx = gamepath;
 
