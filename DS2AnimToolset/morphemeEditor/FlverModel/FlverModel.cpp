@@ -355,7 +355,6 @@ Matrix ComputeNmBoneGlobalTransform(MR::AnimationSourceHandle* animHandle, int c
 
 	boneLocalTransform *= Matrix::CreateRotationZ(DirectX::XM_PI);
 	boneLocalTransform *= Matrix::CreateRotationX(DirectX::XM_PIDIV2);
-	//boneLocalTransform *= Matrix::CreateReflection(Plane(Vector3::Right));
 
 	return boneLocalTransform;
 }
@@ -374,7 +373,6 @@ Matrix ComputeNmBoneBindPoseGlobalTransform(const MR::AnimRigDef* rig, int chann
 
 	boneLocalTransform *= Matrix::CreateRotationZ(DirectX::XM_PI);
 	boneLocalTransform *= Matrix::CreateRotationX(DirectX::XM_PIDIV2);
-	//boneLocalTransform *= Matrix::CreateReflection(Plane(Vector3::Right));
 
 	return boneLocalTransform;
 }
@@ -406,6 +404,7 @@ Matrix ComputeFlvBoneGlobalTransform(FLVER2* flv, int channelId)
 	}
 
 	localTransform *= Matrix::CreateRotationY(DirectX::XM_PI);
+	localTransform *= Matrix::CreateReflection(Plane(Vector3::Right));
 
 	return localTransform;
 }
@@ -521,13 +520,13 @@ void FlverModel::GetModelData()
 				float y = mesh->vertexData->positions[(vertexIndex * 3) + 2];
 				float z = mesh->vertexData->positions[(vertexIndex * 3) + 1];
 
-				Vector3 pos = DirectX::SimpleMath::Vector3(x, y, z);
+				Vector3 pos = Vector3::Transform(DirectX::SimpleMath::Vector3(x, y, z), Matrix::CreateReflection(Plane(Vector3::Right)));
 
 				float norm_x = mesh->vertexData->positions[(vertexIndex * 3) + 0];
 				float norm_y = mesh->vertexData->positions[(vertexIndex * 3) + 2];
 				float norm_z = mesh->vertexData->positions[(vertexIndex * 3) + 1];
 
-				Vector3 normal(norm_x, norm_y, norm_z);
+				Vector3 normal = Vector3::Transform(DirectX::SimpleMath::Vector3(norm_x, norm_y, norm_z), Matrix::CreateReflection(Plane(Vector3::Right)));
 
 				meshSkinnedVertices.push_back(SkinnedVertex(pos, normal, weights, indices));
 				meshVertices.push_back(Vector3::Zero);
@@ -713,7 +712,7 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
 			//Take the morpheme animation transform relative to the morpheme bind pose, mirror it on the ZY plane, and then apply them to the flver bind pose. Propagate to all children of the current bone
 			Matrix morphemeRelativeTransform = (this->m_morphemeBoneBindPose[morphemeBoneIdx].Invert() * this->m_morphemeBoneTransforms[morphemeBoneIdx]);
 
-			ApplyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPose, (Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
+			ApplyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPose, (Matrix::CreateReflection(Plane(Vector3::Right)) * Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
 		}
 	}
 
