@@ -18,8 +18,8 @@ struct ModelParts
 	FlverModel* m_head;
 	FlverModel* m_face;
 	FlverModel* m_body;
-	FlverModel* m_arms;
-	FlverModel* m_legs;
+	FlverModel* m_arm;
+	FlverModel* m_leg;
 };
 
 class AnimPlayer

@@ -358,20 +358,13 @@ void Application::ModelPreviewWindow()
 		{
 			if (ImGui::MenuItem("Settings", NULL, &this->m_windowStates.m_previewSettings)) { this->m_windowStates.m_previewSettings != this->m_windowStates.m_previewSettings; }
 
-			FlverModel* model = this->m_animPlayer->GetModel();
-			if (model)
+			if (ImGui::BeginMenu("Scene"))
 			{
-				if (ImGui::BeginMenu("Scene"))
-				{
-					if (ImGui::MenuItem("Hide Model", NULL, &model->m_settings.m_xray)) { model->m_settings.m_xray != model->m_settings.m_xray; }
-					if (ImGui::MenuItem("Show Dummies", NULL, &model->m_settings.m_drawDummyPolygons)) { model->m_settings.m_drawDummyPolygons != model->m_settings.m_drawDummyPolygons; }
-					if (ImGui::MenuItem("Scene Explorer", NULL, &model->m_settings.m_sceneExplorer)) { model->m_settings.m_xray != model->m_settings.m_sceneExplorer; }
+				if (ImGui::MenuItem("Hide Model", NULL, &this->m_sceneFlags.m_hideModel)) { this->m_sceneFlags.m_hideModel != this->m_sceneFlags.m_hideModel; }
+				if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
+				if (ImGui::MenuItem("Scene Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
 
-					ImGui::EndMenu();
-				}
-
-				if (model->m_settings.m_sceneExplorer)
-					this->PreviewSceneExplorerWindow();
+				ImGui::EndMenu();
 			}
 
 			ImGui::Separator();
@@ -423,6 +416,9 @@ void Application::ModelPreviewWindow()
 		g_scene->SetRenderResolution(width, height);
 
 		ImGui::GetWindowDrawList()->AddImage(g_scene->m_shaderResourceViewViewport, pos, ImVec2(pos.x + width, pos.y + height));
+
+		if (this->m_sceneFlags.m_sceneExplorer)
+			this->PreviewSceneExplorerWindow();
 	}
 
 	ImGui::End();
@@ -1118,54 +1114,58 @@ void SkeletonInspectorTreeNode(FLVER2* flv, int boneID, int& selected_id)
 
 void Application::PreviewSceneExplorerWindow()
 {
-	FlverModel* model = this->m_animPlayer->GetModel();
-
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
 
-	ImGui::Begin("Scene Explorer", &model->m_settings.m_sceneExplorer);
+	ImGui::Begin("Scene Explorer", &this->m_sceneFlags.m_sceneExplorer);
 
-	if (ImGui::TreeNode("Skeleton"))
+	FlverModel* model = this->m_animPlayer->GetModel();
+	
+	if (ImGui::TreeNode("Model"))
 	{
-		ImGui::BeginChild("skeleton_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
-
-		int boneID = 0;
-
-		while (boneID != -1)
+		if (ImGui::TreeNode("Skeleton"))
 		{
-			SkeletonInspectorTreeNode(model->m_flver, boneID, model->m_settings.m_selectedBone);
+			ImGui::BeginChild("skeleton_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
 
-			boneID = model->m_flver->bones[boneID].nextSiblingIndex;
+			int boneID = 0;
+
+			while (boneID != -1)
+			{
+				SkeletonInspectorTreeNode(model->m_flver, boneID, model->m_settings.m_selectedBone);
+
+				boneID = model->m_flver->bones[boneID].nextSiblingIndex;
+			}
+
+			ImGui::EndChild();
+
+			ImGui::TreePop();
 		}
 
-		ImGui::EndChild();
-
-		ImGui::TreePop();
-	}
-
-	if (ImGui::TreeNode("Dummy Polygons"))
-	{
-		ImGui::BeginChild("dummy_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
-
-		for (size_t i = 0; i < model->m_flver->header.dummyCount; i++)
+		if (ImGui::TreeNode("Dummy Polygons"))
 		{
-			std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[i].referenceID);
+			ImGui::BeginChild("dummy_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
 
-			bool selected = (model->m_settings.m_selectedDummy == i);
+			for (size_t i = 0; i < model->m_flver->header.dummyCount; i++)
+			{
+				std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[i].referenceID);
 
-			if (ImGui::Selectable(dummy_name.c_str(), selected))
-				model->m_settings.m_selectedDummy = i;
+				bool selected = (model->m_settings.m_selectedDummy == i);
+
+				if (ImGui::Selectable(dummy_name.c_str(), selected))
+					model->m_settings.m_selectedDummy = i;
+			}
+
+			ImGui::EndChild();
+
+			ImGui::TreePop();
 		}
 
-		ImGui::EndChild();
-
-		ImGui::TreePop();
+		if (ImGui::IsMouseDoubleClicked(0))
+		{
+			model->m_settings.m_selectedDummy = -1;
+			model->m_settings.m_selectedBone = -1;
+		}
 	}
 
-	if (ImGui::IsMouseDoubleClicked(0))
-	{
-		model->m_settings.m_selectedDummy = -1;
-		model->m_settings.m_selectedBone = -1;
-	}
 
 	ImGui::End();
 }
@@ -1503,32 +1503,50 @@ void Application::CheckFlags()
 		FlverModel* model = this->m_animPlayer->GetModel();
 
 		if (model)
+		{
 			model->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+			model->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
+		}
 
 		FlverModel* face = this->m_animPlayer->GetModelPart(Parts_Face);
 
 		if (face)
+		{
 			face->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+			face->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
+		}
 
 		FlverModel* head = this->m_animPlayer->GetModelPart(Parts_Head);
 
 		if (head)
+		{
 			head->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+			head->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
+		}
 
 		FlverModel* body = this->m_animPlayer->GetModelPart(Parts_Body);
 
 		if (body)
+		{
 			body->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+			body->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
+		}
 
 		FlverModel* arm = this->m_animPlayer->GetModelPart(Parts_Arm);
 
 		if (arm)
+		{
 			arm->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+			arm->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
+		}
 
 		FlverModel* leg = this->m_animPlayer->GetModelPart(Parts_Leg);
 
 		if (leg)
+		{
 			leg->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+			leg->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
+		}
 	}
 }
 
@@ -1591,56 +1609,38 @@ std::wstring FindGamePath(std::wstring current_path)
 	return L"";
 }
 
-void LoadPartsBnd(Application* application, std::wstring root, PartType type)
+void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type)
 {
-	std::wstring path_tmp = root.c_str();
+	std::wstring filepath = root.c_str();
 
 	switch (type)
 	{
 	case Parts_Head:
-		path_tmp += L"";
+		filepath += L"";
 		break;
 	case Parts_Face:
-		path_tmp += L"\\face\\fc_7610_m.bnd";
+		filepath += L"\\face\\fc_7610_m.bnd";
 		break;
 	case Parts_Body:
-		path_tmp += L"\\body\\bd_1001_m.bnd";
+		filepath += L"\\body\\bd_1001_m.bnd";
 		break;
 	case Parts_Arm:
-		path_tmp += L"\\arm\\am_1001_m.bnd";
+		filepath += L"\\arm\\am_1001_m.bnd";
 		break;
 	case Parts_Leg:
-		path_tmp += L"\\leg\\lg_1001_m.bnd";
+		filepath += L"\\leg\\lg_1001_m.bnd";
 		break;
 	default:
 		break;
 	}
 
-	PWSTR face_path = (wchar_t*)path_tmp.c_str();
+	FlverModel* model = FlverModel::CreateFromBnd(filepath);
 
-	BNDReader face_bnd = BNDReader(face_path);
-
-	bool found_model = false;
-
-	for (size_t i = 0; i < face_bnd.m_fileCount; i++)
+	if (model)
 	{
-		std::filesystem::path bnd_file = face_bnd.m_files[i].m_name;
-
-		if (bnd_file.extension().compare(".flv") == 0)
-		{
-			UMEM* umem = uopenMem(face_bnd.m_files[i].m_data, face_bnd.m_files[i].m_uncompressedSize);
-
-			application->m_animPlayer->SetModelPart(type, new FlverModel(umem));
-			application->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
-			g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", path_tmp.c_str());
-
-			found_model = true;
-			break;
-		}
+		pApplication->m_animPlayer->SetModelPart(type, model);
+		pApplication->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
 	}
-
-	if (!found_model)
-		g_appLog->DebugMessage(MsgLevel_Warn, "Could not find part model (type=%d)\n", type);
 }
 
 void Application::LoadFile()
@@ -1753,37 +1753,14 @@ void Application::LoadFile()
 										this->m_eventTrackEditor->m_taeList = getTaeFileListFromChrId(filepath_tae, chr_id_str);
 										this->m_eventTrackEditor->m_loadTae = true;
 
-										std::wstring path_tmp = getModelNameFromChrId(filepath_dcx, chr_id_str);
+										std::wstring model_path = getModelNameFromChrId(filepath_dcx, chr_id_str);
 
-										if (path_tmp.compare(L"") != 0)
+										FlverModel* model = FlverModel::CreateFromBnd(model_path);
+
+										if (model)
 										{
-											PWSTR dcx_path = (wchar_t*)path_tmp.c_str();
-
-											BNDReader bnd(dcx_path);
-
-											std::string filename = "c" + RString::ToNarrow(string.c_str()) + ".flv";
-
-											bool found_model = false;
-
-											for (size_t i = 0; i < bnd.m_fileCount; i++)
-											{
-												if (bnd.m_files[i].m_name == filename)
-												{
-													UMEM* umem = uopenMem(bnd.m_files[i].m_data, bnd.m_files[i].m_uncompressedSize);
-
-													this->m_animPlayer->SetModel(new FlverModel(umem));
-
-													g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
-
-													this->m_animPlayer->GetModel()->CreateFlverToMorphemeBoneMap(this->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
-
-													found_model = true;
-													break;
-												}
-											}
-
-											if (!found_model)
-												g_appLog->DebugMessage(MsgLevel_Debug, "Could not find model for c%04d\n", this->m_chrId);
+											this->m_animPlayer->SetModel(model);
+											this->m_animPlayer->GetModel()->CreateFlverToMorphemeBoneMap(this->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
 										}
 
 										//Load external parts for the player character

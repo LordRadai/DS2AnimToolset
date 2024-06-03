@@ -22,7 +22,27 @@ void AnimPlayer::Clear()
 	if (this->m_modelParts.m_model)
 		delete this->m_modelParts.m_model;
 
+	if (this->m_modelParts.m_head)
+		delete this->m_modelParts.m_head;
+
+	if (this->m_modelParts.m_face)
+		delete this->m_modelParts.m_face;
+
+	if (this->m_modelParts.m_body)
+		delete this->m_modelParts.m_body;
+
+	if (this->m_modelParts.m_arm)
+		delete this->m_modelParts.m_arm;
+
+	if (this->m_modelParts.m_leg)
+		delete this->m_modelParts.m_leg;
+
 	this->m_modelParts.m_model = nullptr;
+	this->m_modelParts.m_head = nullptr;
+	this->m_modelParts.m_face = nullptr;
+	this->m_modelParts.m_body = nullptr;
+	this->m_modelParts.m_arm = nullptr;
+	this->m_modelParts.m_leg = nullptr;
 
 	this->Reset();
 }
@@ -58,16 +78,16 @@ void AnimPlayer::Update(float dt)
 		this->m_modelParts.m_body->UpdateModel();
 	}
 
-	if (this->m_modelParts.m_arms != nullptr)
+	if (this->m_modelParts.m_arm != nullptr)
 	{
-		this->m_modelParts.m_arms->Animate(animHandle);
-		this->m_modelParts.m_arms->UpdateModel();
+		this->m_modelParts.m_arm->Animate(animHandle);
+		this->m_modelParts.m_arm->UpdateModel();
 	}
 
-	if (this->m_modelParts.m_legs != nullptr)
+	if (this->m_modelParts.m_leg != nullptr)
 	{
-		this->m_modelParts.m_legs->Animate(animHandle);
-		this->m_modelParts.m_legs->UpdateModel();
+		this->m_modelParts.m_leg->Animate(animHandle);
+		this->m_modelParts.m_leg->UpdateModel();
 	}
 
 	if (animHandle == nullptr)
@@ -153,16 +173,16 @@ void AnimPlayer::SetModelPart(PartType partType, FlverModel* model)
 			this->m_modelParts.m_body->GetModelData();
 		break;
 	case Parts_Arm:
-		this->m_modelParts.m_arms = model;
+		this->m_modelParts.m_arm = model;
 
 		if (model)
-			this->m_modelParts.m_arms->GetModelData();
+			this->m_modelParts.m_arm->GetModelData();
 		break;
 	case Parts_Leg:
-		this->m_modelParts.m_legs = model;
+		this->m_modelParts.m_leg = model;
 
 		if (model)
-			this->m_modelParts.m_legs->GetModelData();
+			this->m_modelParts.m_leg->GetModelData();
 		break;
 	default:
 		g_appLog->DebugMessage(MsgLevel_Error, "Invalid part type %d\n", partType);
@@ -227,9 +247,9 @@ FlverModel* AnimPlayer::GetModelPart(PartType partType)
 	case Parts_Body:
 		return this->m_modelParts.m_body;
 	case Parts_Arm:
-		return this->m_modelParts.m_arms;
+		return this->m_modelParts.m_arm;
 	case Parts_Leg:
-		return this->m_modelParts.m_legs;
+		return this->m_modelParts.m_leg;
 	default:
 		return nullptr;
 	}

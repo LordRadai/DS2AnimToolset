@@ -33,12 +33,12 @@ public:
 	{
 		bool m_xray = false;
 		bool m_drawDummyPolygons = false;
-		bool m_sceneExplorer = false;
 		int m_selectedBone = -1;
 		int m_selectedDummy = -1;
 	} m_settings;
 
 	bool m_loaded = false;
+	std::string m_name;
 
 	Matrix m_position = Matrix::Identity;
 	Vector3 m_focusPoint = Vector3::Zero;
@@ -58,6 +58,8 @@ public:
 	FlverModel(UMEM* umem);
 	~FlverModel();
 
+	static FlverModel* CreateFromBnd(std::wstring path);
+
 	std::vector<FbxVector4> GetModelMeshVertices(int idx, bool flip);
 	std::vector<FbxVector4> GetModelMeshNormals(int idx, bool flip);
 	std::vector<FbxVector4> GetModelMeshBoneWeights(int idx);
@@ -66,10 +68,12 @@ public:
 	void GetModelData();
 	void UpdateModel();
 	int GetBoneIndexFromName(const char* name);
+	std::string GetModelName();
 
 	std::vector<int> GetFlverToMorphemeBoneMap();
 	void CreateFlverToMorphemeBoneMap(MR::AnimRigDef* pMorphemeRig);
 	int GetFlverBoneIndexByMorphemeBoneIndex(int idx);
 
+	void SetModelName(std::string name);
 	void Animate(MR::AnimationSourceHandle* animHandle);
 };

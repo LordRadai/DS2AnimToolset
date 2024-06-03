@@ -89,6 +89,8 @@ public:
 	struct SceneFlags
 	{
 		bool m_hideModel = false;
+		bool m_sceneExplorer = false;
+		bool m_drawDummies = false;
 	} m_sceneFlags;
 	
 	int m_chrId = -1;

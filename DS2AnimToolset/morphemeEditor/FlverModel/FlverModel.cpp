@@ -2,6 +2,7 @@
 #include "../framework.h"
 #include "../extern.h"
 #include "utils/NMDX/NMDX.h"
+#include "FromsoftFormat/BNDReader/BNDReader.h"
 
 int GetMorphemeRigBoneIndexByFlverBoneIndex(MR::AnimRigDef* pRig, FlverModel* pFlverModel, int idx)
 {
@@ -63,6 +64,40 @@ FlverModel::FlverModel(UMEM* umem)
 
 FlverModel::~FlverModel()
 {
+}
+
+FlverModel* FlverModel::CreateFromBnd(std::wstring path)
+{
+	FlverModel* model = nullptr;
+
+	PWSTR dcx_path = (wchar_t*)path.c_str();
+
+	BNDReader bnd(dcx_path);
+
+	bool found_model = false;
+
+	for (size_t i = 0; i < bnd.m_fileCount; i++)
+	{
+		std::filesystem::path name = bnd.m_files[i].m_name;
+
+		if (name.extension().compare(".flv") == 0)
+		{
+			UMEM* umem = uopenMem(bnd.m_files[i].m_data, bnd.m_files[i].m_uncompressedSize);
+
+			model = new FlverModel(umem);
+			model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
+
+			g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %ws\n", model->m_name);
+
+			found_model = true;
+			break;
+		}
+	}
+
+	if (!found_model)
+		g_appLog->DebugMessage(MsgLevel_Error, "Could not find model %ws\n", path);
+
+	return model;
 }
 
 //Gets the vertices for the FLVER mesh at index idx
@@ -543,6 +578,11 @@ int FlverModel::GetBoneIndexFromName(const char* name)
 	return -1;
 }
 
+std::string FlverModel::GetModelName()
+{
+	return this->m_name;
+}
+
 std::vector<Matrix> ComputeGlobalTransforms(std::vector<Matrix> relativeTransforms, FLVER2* flv)
 {
 	std::vector<Matrix> globalTransformedPos;
@@ -624,6 +664,11 @@ int FlverModel::GetFlverBoneIndexByMorphemeBoneIndex(int idx)
 		if (this->m_flverToMorphemeBoneMap[i] == idx)
 			return i;
 	}
+}
+
+void FlverModel::SetModelName(std::string name)
+{
+	this->m_name = name;
 }
 
 void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
