@@ -287,7 +287,14 @@ Matrix GetNmTrajectoryTransform(MR::AnimationSourceHandle* animHandle)
 
 	animHandle->getTrajectory(rot, pos);
 
-	return NMDX::GetWorldMatrix(rot, pos);
+	float tmp = pos.z;
+	pos.z = pos.y;
+	pos.y = tmp;
+
+	Matrix translation = Matrix::CreateReflection(Plane(Vector3::Right)) * Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateTranslation(NMDX::CreateFrom(pos));
+	Matrix rotation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateFromQuaternion(NMDX::CreateFrom(rot));
+
+	return rotation * translation;
 }
 
 Matrix GetNmBoneTranform(MR::AnimationSourceHandle* animHandle, int channelId)
@@ -639,7 +646,7 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
 		this->m_morphemeBoneTransforms.push_back(ComputeNmBoneGlobalTransform(animHandle, i));
 	}
 
-	this->m_position = GetNmTrajectoryTransform(animHandle);
+	this->m_position = GetNmTrajectoryTransform(animHandle) * Matrix::CreateRotationY(DirectX::XM_PI);
 
 	for (size_t i = 0; i < this->m_flver->header.boneCount; i++)
 	{
@@ -650,7 +657,7 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
 			//Take the morpheme animation transform relative to the morpheme bind pose, mirror it on the ZY plane, and then apply them to the flver bind pose. Propagate to all children of the current bone
 			Matrix morphemeRelativeTransform = (this->m_morphemeBoneBindPose[morphemeBoneIdx].Invert() * this->m_morphemeBoneTransforms[morphemeBoneIdx]);
 
-			ApplyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPose, (Matrix::CreateReflection(Plane(Vector3::Right)) * morphemeRelativeTransform), i);
+			ApplyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPose, (Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
 		}
 	}
 
