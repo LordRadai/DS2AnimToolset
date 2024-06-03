@@ -54,40 +54,54 @@ void AnimPlayer::Update(float dt)
 	if (this->m_anim)
 		animHandle = this->m_anim->GetHandle();
 
-	if (this->m_modelParts.m_model != nullptr)
+	if (this->m_modelParts.m_model)
 	{
-		this->m_modelParts.m_model->Animate(animHandle);
 		this->m_modelParts.m_model->UpdateModel();
+		this->m_modelParts.m_model->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_head != nullptr)
+	if (this->m_modelParts.m_head)
 	{
-		this->m_modelParts.m_head->Animate(animHandle);
 		this->m_modelParts.m_head->UpdateModel();
+		this->m_modelParts.m_head->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_face != nullptr)
+	if (this->m_modelParts.m_face)
 	{
-		this->m_modelParts.m_face->Animate(animHandle);
 		this->m_modelParts.m_face->UpdateModel();
+		this->m_modelParts.m_face->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_body != nullptr)
+	if (this->m_modelParts.m_body)
 	{
-		this->m_modelParts.m_body->Animate(animHandle);
 		this->m_modelParts.m_body->UpdateModel();
+		this->m_modelParts.m_body->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_arm != nullptr)
+	if (this->m_modelParts.m_arm)
 	{
-		this->m_modelParts.m_arm->Animate(animHandle);
 		this->m_modelParts.m_arm->UpdateModel();
+		this->m_modelParts.m_arm->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_leg != nullptr)
+	if (this->m_modelParts.m_leg)
 	{
-		this->m_modelParts.m_leg->Animate(animHandle);
 		this->m_modelParts.m_leg->UpdateModel();
+		this->m_modelParts.m_leg->Animate(animHandle);
+	}
+
+	if (this->m_modelParts.m_weaponLeft)
+	{
+		this->m_modelParts.m_weaponLeft->m_position = this->m_modelParts.m_model->GetDummyPolygonTransform(1);
+		this->m_modelParts.m_weaponLeft->UpdateModel();
+		this->m_modelParts.m_weaponLeft->Animate(animHandle);
+	}
+
+	if (this->m_modelParts.m_weaponRight)
+	{
+		this->m_modelParts.m_weaponLeft->m_position = this->m_modelParts.m_model->GetDummyPolygonTransform(2);
+		this->m_modelParts.m_weaponRight->UpdateModel();
+		this->m_modelParts.m_weaponRight->Animate(animHandle);
 	}
 
 	if (animHandle == nullptr)
@@ -146,7 +160,7 @@ void AnimPlayer::SetModel(FlverModel* model)
 {
 	this->m_modelParts.m_model = model;
 
-	if (model != nullptr)
+	if (model)
 		this->m_modelParts.m_model->GetModelData();
 }
 
@@ -183,6 +197,18 @@ void AnimPlayer::SetModelPart(PartType partType, FlverModel* model)
 
 		if (model)
 			this->m_modelParts.m_leg->GetModelData();
+		break;
+	case Parts_WeaponLeft:
+		this->m_modelParts.m_weaponLeft = model;
+
+		if (model)
+			this->m_modelParts.m_weaponLeft->GetModelData();
+		break;
+	case Parts_WeaponRight:
+		this->m_modelParts.m_weaponRight = model;
+
+		if (model)
+			this->m_modelParts.m_weaponRight->GetModelData();
 		break;
 	default:
 		g_appLog->DebugMessage(MsgLevel_Error, "Invalid part type %d\n", partType);
@@ -250,6 +276,10 @@ FlverModel* AnimPlayer::GetModelPart(PartType partType)
 		return this->m_modelParts.m_arm;
 	case Parts_Leg:
 		return this->m_modelParts.m_leg;
+	case Parts_WeaponLeft:
+		return this->m_modelParts.m_weaponLeft;
+	case Parts_WeaponRight:
+		return this->m_modelParts.m_weaponRight;
 	default:
 		return nullptr;
 	}

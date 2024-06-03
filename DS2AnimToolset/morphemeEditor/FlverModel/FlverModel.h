@@ -74,6 +74,7 @@ public:
 	void CreateFlverToMorphemeBoneMap(MR::AnimRigDef* pMorphemeRig);
 	int GetFlverBoneIndexByMorphemeBoneIndex(int idx);
 
-	void SetModelName(std::string name);
+	Matrix GetDummyPolygonTransform(int id);
+
 	void Animate(MR::AnimationSourceHandle* animHandle);
 };

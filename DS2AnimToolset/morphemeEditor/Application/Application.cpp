@@ -544,7 +544,7 @@ void Application::AssetsWindow()
 		{
 			CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
-			if (characterDef != nullptr)
+			if (characterDef)
 			{
 				if (characterDef->isLoaded())
 					ImGui::Text(characterDef->getFilename());
@@ -1198,6 +1198,12 @@ void Application::PreviewSceneExplorerWindow()
 	model = this->m_animPlayer->GetModelPart(Parts_Leg);
 	ModelTreeNode(model);
 
+	model = this->m_animPlayer->GetModelPart(Parts_WeaponLeft);
+	ModelTreeNode(model);
+
+	model = this->m_animPlayer->GetModelPart(Parts_WeaponRight);
+	ModelTreeNode(model);
+
 	ImGui::End();
 }
 
@@ -1365,7 +1371,7 @@ void Application::CheckFlags()
 
 		CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
-		if ((characterDef != nullptr) && characterDef->isLoaded() && (this->m_eventTrackEditor->m_targetAnimIdx != -1))
+		if ((characterDef) && characterDef->isLoaded() && (this->m_eventTrackEditor->m_targetAnimIdx != -1))
 		{
 			bool found_et = false;
 			bool found_anim = false;
@@ -1387,7 +1393,7 @@ void Application::CheckFlags()
 					MR::AttribDataSourceAnim* source_anim = (MR::AttribDataSourceAnim*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM);
 					MR::AttribDataSourceEventTrackSet* source_tracks = (MR::AttribDataSourceEventTrackSet*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_EVENT_TRACKS);
 
-					if (source_anim != nullptr && source_anim->m_animAssetID == this->m_eventTrackEditor->m_targetAnimIdx)
+					if (source_anim && source_anim->m_animAssetID == this->m_eventTrackEditor->m_targetAnimIdx)
 					{
 						found_anim = true;
 
@@ -1405,7 +1411,7 @@ void Application::CheckFlags()
 								this->m_eventTrackEditor->m_animIdx = i;
 						}
 
-						if (source_tracks != nullptr)
+						if (source_tracks)
 						{
 							this->m_eventTrackEditor->m_lenMult = source_anim->m_sourceAnimDuration / (source_anim->m_clipEndFraction - source_anim->m_clipStartFraction);
 							int track_count = source_tracks->m_numDiscreteEventTracks + source_tracks->m_numCurveEventTracks + source_tracks->m_numDurEventTracks;
@@ -1640,6 +1646,34 @@ std::wstring FindGamePath(std::wstring current_path)
 	return L"";
 }
 
+void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, int id, bool shield)
+{
+	std::wstring filepath = root.c_str();
+
+	if (shield)
+	{
+		wchar_t modelName[255];
+		swprintf_s(modelName, L"sd_%d_m.bnd", id);
+
+		filepath += L"\\shield\\" + std::wstring(modelName);
+	}
+	else
+	{
+		wchar_t modelName[255];
+		swprintf_s(modelName, L"wp_%d_m.bnd", id);
+
+		filepath += L"\\weapon\\" + std::wstring(modelName);
+	}
+
+	FlverModel* model = FlverModel::CreateFromBnd(filepath);
+
+	if (model)
+	{
+		pApplication->m_animPlayer->SetModelPart(type, model);
+		pApplication->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+	}
+}
+
 void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type)
 {
 	std::wstring filepath = root.c_str();
@@ -1802,6 +1836,9 @@ void Application::LoadFile()
 											LoadPartsBnd(this, filepath_parts, Parts_Body);
 											LoadPartsBnd(this, filepath_parts, Parts_Arm);
 											LoadPartsBnd(this, filepath_parts, Parts_Leg);
+
+											LoadWeaponBnd(this, filepath_parts, Parts_WeaponLeft, 1000, false);
+											LoadWeaponBnd(this, filepath_parts, Parts_WeaponRight, 1000, true);
 										}
 									}
 									else

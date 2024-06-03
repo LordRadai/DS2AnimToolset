@@ -54,7 +54,7 @@ namespace cfr
 
 	File::~File()
 	{
-		if(this->parent != nullptr)
+		if(this->parent)
 			this->parent->children.erase(this->parent->children.find(this->uid));
 		uclose(this->data);
 	};

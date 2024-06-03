@@ -9,6 +9,8 @@ enum PartType
 	Parts_Body,
 	Parts_Arm,
 	Parts_Leg,
+	Parts_WeaponLeft,
+	Parts_WeaponRight,
 };
 
 struct ModelParts
@@ -20,6 +22,9 @@ struct ModelParts
 	FlverModel* m_body;
 	FlverModel* m_arm;
 	FlverModel* m_leg;
+
+	FlverModel* m_weaponLeft;
+	FlverModel* m_weaponRight;
 };
 
 class AnimPlayer

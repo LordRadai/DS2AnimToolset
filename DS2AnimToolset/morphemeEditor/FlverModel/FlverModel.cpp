@@ -134,7 +134,7 @@ std::vector<FbxVector4> FlverModel::GetModelMeshVertices(int idx, bool flip)
 
 	facesetp->triangulate();
 
-	if (facesetp != nullptr)
+	if (facesetp)
 	{
 		for (int j = 0; j < facesetp->triCount; j++)
 		{
@@ -192,7 +192,7 @@ std::vector<FbxVector4> FlverModel::GetModelMeshNormals(int idx, bool flip)
 
 	facesetp->triangulate();
 
-	if (facesetp != nullptr)
+	if (facesetp)
 	{
 		for (int j = 0; j < facesetp->triCount; j++)
 		{
@@ -246,7 +246,7 @@ std::vector<FbxVector4> FlverModel::GetModelMeshBoneWeights(int idx)
 
 	facesetp->triangulate();
 
-	if (facesetp != nullptr)
+	if (facesetp)
 	{
 		for (size_t j = 0; j < facesetp->triCount; j++)
 		{
@@ -296,7 +296,7 @@ void FlverModel::GetModelMeshBoneIndices(std::vector<int*>& buffer, int idx)
 
 	facesetp->triangulate();
 
-	if (facesetp != nullptr)
+	if (facesetp)
 	{
 		for (size_t j = 0; j < facesetp->triCount; j++)
 		{
@@ -491,7 +491,7 @@ void FlverModel::GetModelData()
 		std::vector<Vector3> meshVertices;
 		std::vector<SkinnedVertex> meshSkinnedVertices;
 
-		if (facesetp != nullptr)
+		if (facesetp)
 		{
 			meshVertices.reserve(facesetp->triCount);
 			meshSkinnedVertices.reserve(facesetp->triCount);
@@ -666,9 +666,17 @@ int FlverModel::GetFlverBoneIndexByMorphemeBoneIndex(int idx)
 	}
 }
 
-void FlverModel::SetModelName(std::string name)
+Matrix FlverModel::GetDummyPolygonTransform(int id)
 {
-	this->m_name = name;
+	for (size_t i = 0; i < this->m_flver->header.dummyCount; i++)
+	{
+		if (this->m_flver->dummies[i].referenceID == id)
+			return this->m_dummyPolygons[i];
+	}
+
+	g_appLog->DebugMessage(MsgLevel_Error, "Could not find dummy polygon %d (%s)\n", id, this->m_name);
+
+	return Matrix::Identity;
 }
 
 void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
