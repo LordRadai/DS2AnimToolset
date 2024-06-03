@@ -354,7 +354,7 @@ Matrix ComputeNmBoneGlobalTransform(MR::AnimationSourceHandle* animHandle, int c
 
 	boneLocalTransform *= Matrix::CreateRotationZ(DirectX::XM_PI);
 	boneLocalTransform *= Matrix::CreateRotationX(DirectX::XM_PIDIV2);
-	boneLocalTransform *= Matrix::CreateReflection(Plane(Vector3::Right));
+	//boneLocalTransform *= Matrix::CreateReflection(Plane(Vector3::Right));
 
 	return boneLocalTransform;
 }
@@ -373,7 +373,7 @@ Matrix ComputeNmBoneBindPoseGlobalTransform(const MR::AnimRigDef* rig, int chann
 
 	boneLocalTransform *= Matrix::CreateRotationZ(DirectX::XM_PI);
 	boneLocalTransform *= Matrix::CreateRotationX(DirectX::XM_PIDIV2);
-	boneLocalTransform *= Matrix::CreateReflection(Plane(Vector3::Right));
+	//boneLocalTransform *= Matrix::CreateReflection(Plane(Vector3::Right));
 
 	return boneLocalTransform;
 }
@@ -712,7 +712,7 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
 			//Take the morpheme animation transform relative to the morpheme bind pose, mirror it on the ZY plane, and then apply them to the flver bind pose. Propagate to all children of the current bone
 			Matrix morphemeRelativeTransform = (this->m_morphemeBoneBindPose[morphemeBoneIdx].Invert() * this->m_morphemeBoneTransforms[morphemeBoneIdx]);
 
-			ApplyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPose, (Matrix::CreateReflection(Plane(Vector3::Right)) * Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
+			ApplyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPose, (Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
 		}
 	}
 
