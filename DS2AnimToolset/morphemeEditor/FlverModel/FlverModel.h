@@ -44,6 +44,7 @@ public:
 	Vector3 m_focusPoint = Vector3::Zero;
 
 	FLVER2* m_flver = nullptr;
+	std::vector<int> m_flverToMorphemeBoneMap;
 	std::vector<std::vector<SkinnedVertex>> m_verts;
 	std::vector<std::vector<SkinnedVertex>> m_vertBindPose;
 	std::vector<Matrix> m_boneTransforms;
@@ -66,5 +67,9 @@ public:
 	void UpdateModel();
 	int GetBoneIndexFromName(const char* name);
 
-	void Animate(MR::AnimationSourceHandle* animHandle, std::vector<int> flverToMorphemeBoneMap);
+	std::vector<int> GetFlverToMorphemeBoneMap();
+	void CreateFlverToMorphemeBoneMap(MR::AnimRigDef* pMorphemeRig);
+	int GetFlverBoneIndexByMorphemeBoneIndex(int idx);
+
+	void Animate(MR::AnimationSourceHandle* animHandle);
 };

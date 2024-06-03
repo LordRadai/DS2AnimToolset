@@ -94,5 +94,5 @@ public:
 	void Render();
 	void SetRenderResolution(int width, int height);
 	void AddText(std::string text, Matrix position, DirectX::XMVECTORF32 color = DirectX::Colors::White);
-	void DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig);
+	void DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBones = true);
 };

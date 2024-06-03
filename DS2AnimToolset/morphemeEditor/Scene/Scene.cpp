@@ -297,7 +297,14 @@ void Scene::Render()
         CharacterDefBasic* characterDef = g_appRootWindow->m_morphemeSystem->GetCharacterDef();
 
         if (characterDef != nullptr)
-            this->DrawFlverModel(g_appRootWindow->m_animPlayer, characterDef->getNetworkDef()->getRig(0));
+        {
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModel(), characterDef->getNetworkDef()->getRig(0));
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Head), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Face), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Body), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Arm), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Leg), characterDef->getNetworkDef()->getRig(0), false);
+        }
 
         m_batch->End();
 
@@ -329,10 +336,8 @@ void Scene::AddText(std::string text, Matrix position, DirectX::XMVECTORF32 colo
     this->m_texts.push_back(TextItem(text, position, color));
 }
 
-void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
+void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBones)
 {
-    FlverModel* model = animPlayer->GetModel();
-
     if (model == nullptr)
         return;
 
@@ -340,8 +345,8 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
 
     int boneCount = model->m_boneTransforms.size();
 
-    int trajectoryBoneIndex = animPlayer->GetFlverBoneIndexByMorphemeBoneIndex(rig->getTrajectoryBoneIndex());
-    int characterRootBoneIdx = animPlayer->GetFlverBoneIndexByMorphemeBoneIndex(rig->getCharacterRootBoneIndex());
+    int trajectoryBoneIndex = model->GetFlverBoneIndexByMorphemeBoneIndex(rig->getTrajectoryBoneIndex());
+    int characterRootBoneIdx = model->GetFlverBoneIndexByMorphemeBoneIndex(rig->getCharacterRootBoneIndex());
 
     if (model->m_settings.m_selectedBone != -1)
     {
@@ -367,29 +372,32 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
         this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
     }
 
-    for (size_t i = 0; i < boneCount; i++)
+    if (drawBones)
     {
-        int morphemeBoneIdx = animPlayer->GetFlverToMorphemeBoneMap()[i];
-
-        if ((morphemeBoneIdx == -1) || (i == trajectoryBoneIndex) || (i == characterRootBoneIdx))
-            continue;
-
-        int parentIndex = model->m_flver->bones[i].parentIndex;
-
-        if (parentIndex != -1)
+        for (size_t i = 0; i < boneCount; i++)
         {
-            Vector3 boneA = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[i] * world);
-            Vector3 boneB = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[parentIndex] * world);
+            int morphemeBoneIdx = model->GetFlverToMorphemeBoneMap()[i];
 
-            DX::DrawJoint(this->m_batch.get(), Matrix::Identity, boneB, boneA, Colors::CornflowerBlue);
+            if ((morphemeBoneIdx == -1) || (i == trajectoryBoneIndex) || (i == characterRootBoneIdx))
+                continue;
 
-            if (model->m_flver->bones[i].childIndex == -1)
-                DX::Draw(this->m_batch.get(), DirectX::BoundingSphere(boneA, 0.03f), Colors::CornflowerBlue);
+            int parentIndex = model->m_flver->bones[i].parentIndex;
+
+            if (parentIndex != -1)
+            {
+                Vector3 boneA = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[i] * world);
+                Vector3 boneB = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[parentIndex] * world);
+
+                DX::DrawJoint(this->m_batch.get(), Matrix::Identity, boneB, boneA, Colors::CornflowerBlue);
+
+                if (model->m_flver->bones[i].childIndex == -1)
+                    DX::Draw(this->m_batch.get(), DirectX::BoundingSphere(boneA, 0.03f), Colors::CornflowerBlue);
+            }
         }
-    }
 
-    DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[characterRootBoneIdx] * world, 0.03f, Colors::MediumBlue);
-    DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world, 0.03f, Colors::Red);
+        DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[characterRootBoneIdx] * world, 0.03f, Colors::MediumBlue);
+        DX::DrawReferenceFrame(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world);
+    }
 
     if (!model->m_settings.m_xray)
         DX::DrawFlverModel(this->m_batch.get(), world, model);

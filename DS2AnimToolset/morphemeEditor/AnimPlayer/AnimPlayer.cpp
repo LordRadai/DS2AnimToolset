@@ -4,28 +4,6 @@
 #include "utils/RLog/RLog.h"
 #include "extern.h"
 
-int GetMorphemeRigBoneIndexByFlverBoneIndex(MR::AnimRigDef* pRig, FlverModel* pFlverModel, int idx)
-{
-	if (idx == -1)
-		return -1;
-
-	std::string boneName = RString::ToNarrow(pFlverModel->m_flver->bones[idx].name);
-
-	int boneIdx = pRig->getBoneIndexFromName(boneName.c_str());
-
-	g_appLog->DebugMessage(MsgLevel_Debug, "Bone %s: (to=%d, from=%d)\n", boneName.c_str(), boneIdx, idx);
-
-	return boneIdx;
-}
-
-int GetFlverBoneIDByMorphemeBoneID(MR::AnimRigDef* pRig, FlverModel* pFlverModel, int idx)
-{
-	std::string boneName = pRig->getBoneName(idx);
-	int flverIdx = pFlverModel->GetBoneIndexFromName(boneName.c_str());
-
-	return flverIdx;
-}
-
 AnimPlayer::AnimPlayer()
 {
 	this->m_anim = nullptr;
@@ -58,37 +36,37 @@ void AnimPlayer::Update(float dt)
 
 	if (this->m_modelParts.m_model != nullptr)
 	{
-		this->m_modelParts.m_model->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_model->Animate(animHandle);
 		this->m_modelParts.m_model->UpdateModel();
 	}
 
 	if (this->m_modelParts.m_head != nullptr)
 	{
-		this->m_modelParts.m_head->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_head->Animate(animHandle);
 		this->m_modelParts.m_head->UpdateModel();
 	}
 
 	if (this->m_modelParts.m_face != nullptr)
 	{
-		this->m_modelParts.m_face->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_face->Animate(animHandle);
 		this->m_modelParts.m_face->UpdateModel();
 	}
 
 	if (this->m_modelParts.m_body != nullptr)
 	{
-		this->m_modelParts.m_body->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_body->Animate(animHandle);
 		this->m_modelParts.m_body->UpdateModel();
 	}
 
 	if (this->m_modelParts.m_arms != nullptr)
 	{
-		this->m_modelParts.m_arms->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_arms->Animate(animHandle);
 		this->m_modelParts.m_arms->UpdateModel();
 	}
 
 	if (this->m_modelParts.m_legs != nullptr)
 	{
-		this->m_modelParts.m_legs->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_legs->Animate(animHandle);
 		this->m_modelParts.m_legs->UpdateModel();
 	}
 
@@ -174,13 +152,13 @@ void AnimPlayer::SetModelPart(PartType partType, FlverModel* model)
 		if (model)
 			this->m_modelParts.m_body->GetModelData();
 		break;
-	case Parts_Arms:
+	case Parts_Arm:
 		this->m_modelParts.m_arms = model;
 
 		if (model)
 			this->m_modelParts.m_arms->GetModelData();
 		break;
-	case Parts_Legs:
+	case Parts_Leg:
 		this->m_modelParts.m_legs = model;
 
 		if (model)
@@ -248,40 +226,16 @@ FlverModel* AnimPlayer::GetModelPart(PartType partType)
 		return this->m_modelParts.m_face;
 	case Parts_Body:
 		return this->m_modelParts.m_body;
-	case Parts_Arms:
+	case Parts_Arm:
 		return this->m_modelParts.m_arms;
-	case Parts_Legs:
+	case Parts_Leg:
 		return this->m_modelParts.m_legs;
 	default:
 		return nullptr;
 	}
 }
 
-std::vector<int> AnimPlayer::GetFlverToMorphemeBoneMap()
-{
-	return this->m_flverToMorphemeBoneMap;
-}
-
 float AnimPlayer::GetPlaySpeed()
 {
 	return this->m_playSpeed;
-}
-
-//Creates an anim map from the flver model bone to the morpheme rig and saves it in m_morphemeToFlverRigMap
-void AnimPlayer::CreateFlverToMorphemeBoneMap(MR::AnimRigDef* pMorphemeRig)
-{
-	this->m_flverToMorphemeBoneMap.clear();
-	this->m_flverToMorphemeBoneMap.reserve(this->m_modelParts.m_model->m_flver->header.boneCount);
-
-	for (int i = 0; i < this->m_modelParts.m_model->m_flver->header.boneCount; i++)
-		this->m_flverToMorphemeBoneMap.push_back(GetMorphemeRigBoneIndexByFlverBoneIndex(pMorphemeRig, this->m_modelParts.m_model, i));
-}
-
-int AnimPlayer::GetFlverBoneIndexByMorphemeBoneIndex(int idx)
-{
-	for (size_t i = 0; i < this->m_flverToMorphemeBoneMap.size(); i++)
-	{
-		if (this->m_flverToMorphemeBoneMap[i] == idx)
-			return i;
-	}
 }

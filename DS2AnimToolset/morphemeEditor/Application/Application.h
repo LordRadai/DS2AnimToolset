@@ -85,6 +85,11 @@ public:
 		bool m_exportModelWithAnims = true;
 		bool m_exportMorphemeRigWithModel = true;
 	} m_fbxExportFlags;
+
+	struct SceneFlags
+	{
+		bool m_hideModel = false;
+	} m_sceneFlags;
 	
 	int m_chrId = -1;
 
@@ -95,7 +100,6 @@ public:
 	TimeActEditor* m_timeActEditor;
 
 	TimeActReader* m_timeAct;
-	BNDReader* m_bnd;
 
 	Application();
 	~Application();

@@ -1497,6 +1497,39 @@ void Application::CheckFlags()
 				g_appLog->DebugMessage(MsgLevel_Info, "Application.cpp", "No TimeAct is loaded\n");
 		}
 	}
+
+	if (this->m_animPlayer)
+	{
+		FlverModel* model = this->m_animPlayer->GetModel();
+
+		if (model)
+			model->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+
+		FlverModel* face = this->m_animPlayer->GetModelPart(Parts_Face);
+
+		if (face)
+			face->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+
+		FlverModel* head = this->m_animPlayer->GetModelPart(Parts_Head);
+
+		if (head)
+			head->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+
+		FlverModel* body = this->m_animPlayer->GetModelPart(Parts_Body);
+
+		if (body)
+			body->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+
+		FlverModel* arm = this->m_animPlayer->GetModelPart(Parts_Arm);
+
+		if (arm)
+			arm->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+
+		FlverModel* leg = this->m_animPlayer->GetModelPart(Parts_Leg);
+
+		if (leg)
+			leg->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
+	}
 }
 
 int GetChrIdFromNmbFileName(std::wstring name)
@@ -1556,6 +1589,58 @@ std::wstring FindGamePath(std::wstring current_path)
 	} while (true);
 
 	return L"";
+}
+
+void LoadPartsBnd(Application* application, std::wstring root, PartType type)
+{
+	std::wstring path_tmp = root.c_str();
+
+	switch (type)
+	{
+	case Parts_Head:
+		path_tmp += L"";
+		break;
+	case Parts_Face:
+		path_tmp += L"\\face\\fc_7610_m.bnd";
+		break;
+	case Parts_Body:
+		path_tmp += L"\\body\\bd_1001_m.bnd";
+		break;
+	case Parts_Arm:
+		path_tmp += L"\\arm\\am_1001_m.bnd";
+		break;
+	case Parts_Leg:
+		path_tmp += L"\\leg\\lg_1001_m.bnd";
+		break;
+	default:
+		break;
+	}
+
+	PWSTR face_path = (wchar_t*)path_tmp.c_str();
+
+	BNDReader face_bnd = BNDReader(face_path);
+
+	bool found_model = false;
+
+	for (size_t i = 0; i < face_bnd.m_fileCount; i++)
+	{
+		std::filesystem::path bnd_file = face_bnd.m_files[i].m_name;
+
+		if (bnd_file.extension().compare(".flv") == 0)
+		{
+			UMEM* umem = uopenMem(face_bnd.m_files[i].m_data, face_bnd.m_files[i].m_uncompressedSize);
+
+			application->m_animPlayer->SetModelPart(type, new FlverModel(umem));
+			application->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+			g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", path_tmp.c_str());
+
+			found_model = true;
+			break;
+		}
+	}
+
+	if (!found_model)
+		g_appLog->DebugMessage(MsgLevel_Warn, "Could not find part model (type=%d)\n", type);
 }
 
 void Application::LoadFile()
@@ -1646,16 +1731,19 @@ void Application::LoadFile()
 								if (this->m_chrId != -1)
 								{
 									std::filesystem::path gamepath = FindGamePath(pszFilePath);
-									std::filesystem::path filepath_tae;
-									std::filesystem::path filepath_dcx;
+									std::filesystem::path filepath_tae = "";
+									std::filesystem::path filepath_dcx = "";
+									std::filesystem::path filepath_parts = "";
 
 									if (gamepath.compare("") != 0)
 									{
 										filepath_tae = gamepath;
 										filepath_dcx = gamepath;
+										filepath_parts = gamepath;
 
 										filepath_tae += "\\timeact\\chr";
 										filepath_dcx += "\\model\\chr";
+										filepath_parts += "\\model\\parts";
 
 										wchar_t chr_id_str[50];
 										swprintf_s(chr_id_str, L"%04d", this->m_chrId);
@@ -1671,29 +1759,23 @@ void Application::LoadFile()
 										{
 											PWSTR dcx_path = (wchar_t*)path_tmp.c_str();
 
-											if (this->m_bnd)
-											{
-												delete this->m_bnd;
-												this->m_bnd = nullptr;
-											}
-
-											this->m_bnd = new BNDReader(dcx_path);
+											BNDReader bnd(dcx_path);
 
 											std::string filename = "c" + RString::ToNarrow(string.c_str()) + ".flv";
 
 											bool found_model = false;
 
-											for (size_t i = 0; i < m_bnd->m_fileCount; i++)
+											for (size_t i = 0; i < bnd.m_fileCount; i++)
 											{
-												if (m_bnd->m_files[i].m_name == filename)
+												if (bnd.m_files[i].m_name == filename)
 												{
-													UMEM* umem = uopenMem(m_bnd->m_files[i].m_data, m_bnd->m_files[i].m_uncompressedSize);
+													UMEM* umem = uopenMem(bnd.m_files[i].m_data, bnd.m_files[i].m_uncompressedSize);
 
 													this->m_animPlayer->SetModel(new FlverModel(umem));
 
 													g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
 
-													this->m_animPlayer->CreateFlverToMorphemeBoneMap(this->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+													this->m_animPlayer->GetModel()->CreateFlverToMorphemeBoneMap(this->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
 
 													found_model = true;
 													break;
@@ -1702,6 +1784,16 @@ void Application::LoadFile()
 
 											if (!found_model)
 												g_appLog->DebugMessage(MsgLevel_Debug, "Could not find model for c%04d\n", this->m_chrId);
+										}
+
+										//Load external parts for the player character
+										if (this->m_chrId == 1)
+										{
+											LoadPartsBnd(this, filepath_parts, Parts_Head);
+											LoadPartsBnd(this, filepath_parts, Parts_Face);
+											LoadPartsBnd(this, filepath_parts, Parts_Body);
+											LoadPartsBnd(this, filepath_parts, Parts_Arm);
+											LoadPartsBnd(this, filepath_parts, Parts_Leg);
 										}
 									}
 									else
@@ -1744,30 +1836,23 @@ void Application::LoadFile()
 
 										filepath_dcx += "\\model\\obj";
 
-										m_bnd->m_init = false;
 										std::wstring obj_path = getModelNameFromObjId(filepath_dcx, obj_id);
 
 										if (obj_path.compare(L"") != 0)
 										{
 											PWSTR dcx_path = (wchar_t*)obj_path.c_str();
 
-											if (this->m_bnd)
-											{
-												delete this->m_bnd;
-												this->m_bnd = nullptr;
-											}
-
-											m_bnd = new BNDReader(dcx_path);
+											BNDReader bnd(dcx_path);
 
 											std::string filename = RString::ToNarrow(obj_id.c_str()) + ".flv";
 
 											bool found_model = false;
 
-											for (size_t i = 0; i < m_bnd->m_fileCount; i++)
+											for (size_t i = 0; i < bnd.m_fileCount; i++)
 											{
-												if (m_bnd->m_files[i].m_name == filename)
+												if (bnd.m_files[i].m_name == filename)
 												{
-													UMEM* umem = uopenMem(m_bnd->m_files[i].m_data, m_bnd->m_files[i].m_uncompressedSize);
+													UMEM* umem = uopenMem(bnd.m_files[i].m_data, bnd.m_files[i].m_uncompressedSize);
 													FLVER2 flver_model = FLVER2(umem);
 
 													this->m_animPlayer->SetModel(new FlverModel(umem));
@@ -1775,11 +1860,6 @@ void Application::LoadFile()
 													g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
 
 													found_model = true;
-
-													CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
-
-													if (characterDef)
-														this->m_animPlayer->CreateFlverToMorphemeBoneMap(characterDef->getNetworkDef()->getRig(0));
 
 													break;
 												}
@@ -2088,7 +2168,7 @@ bool Application::ExportModelToFbx(std::filesystem::path export_path)
 
 	std::vector<FbxNode*> pMorphemeRig = FBXTranslator::CreateFbxMorphemeSkeleton(pScene, characterDef->getNetworkDef()->getRig(0), pBindPoses);
 
-	if (!FBXTranslator::CreateFbxModel(pScene, this->m_animPlayer->GetModel(), this->m_chrId, pBindPoses, pMorphemeRig, model_out, this->m_animPlayer->GetFlverToMorphemeBoneMap()))
+	if (!FBXTranslator::CreateFbxModel(pScene, this->m_animPlayer->GetModel(), this->m_chrId, pBindPoses, pMorphemeRig, model_out, this->m_animPlayer->GetModel()->GetFlverToMorphemeBoneMap()))
 	{
 		g_appLog->DebugMessage(MsgLevel_Error, "Failed to create FBX model/skeleton (chrId=c%04d)\n", this->m_chrId);
 
