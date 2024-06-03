@@ -1668,10 +1668,7 @@ void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, 
 	FlverModel* model = FlverModel::CreateFromBnd(filepath);
 
 	if (model)
-	{
 		pApplication->m_animPlayer->SetModelPart(type, model);
-		pApplication->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
-	}
 }
 
 void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type)
@@ -1837,8 +1834,8 @@ void Application::LoadFile()
 											LoadPartsBnd(this, filepath_parts, Parts_Arm);
 											LoadPartsBnd(this, filepath_parts, Parts_Leg);
 
-											LoadWeaponBnd(this, filepath_parts, Parts_WeaponLeft, 1000, false);
-											LoadWeaponBnd(this, filepath_parts, Parts_WeaponRight, 1000, true);
+											LoadWeaponBnd(this, filepath_parts, Parts_WeaponLeft, 0, false);
+											LoadWeaponBnd(this, filepath_parts, Parts_WeaponRight, 1220, false);
 										}
 									}
 									else
