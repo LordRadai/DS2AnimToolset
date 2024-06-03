@@ -1534,6 +1534,30 @@ std::wstring GetObjIdFromTaeFileName(std::wstring name)
 	return obj_id;
 }
 
+std::wstring FindGamePath(std::wstring current_path)
+{
+	std::filesystem::path gamepath = current_path;
+
+	do
+	{
+		std::wstring parent_path = gamepath.parent_path();
+		gamepath = parent_path;
+
+		int lastDirPos = parent_path.find_last_of(L"\\");
+
+		std::wstring folder = parent_path.substr(lastDirPos, parent_path.length());
+
+		if (folder.compare(L"\\") == 0)
+			return L"";
+
+		if (folder.compare(L"\\Game") == 0)
+			return gamepath;
+
+	} while (true);
+
+	return L"";
+}
+
 void Application::LoadFile()
 {
 	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"TimeAct", L"*.tae"}, {L"All Files",L"*.*"} };
@@ -1621,31 +1645,11 @@ void Application::LoadFile()
 
 								if (this->m_chrId != -1)
 								{
-									bool found = false;
-
-									std::filesystem::path gamepath = pszFilePath;
+									std::filesystem::path gamepath = FindGamePath(pszFilePath);
 									std::filesystem::path filepath_tae;
 									std::filesystem::path filepath_dcx;
-									do
-									{
-										std::wstring parent_path = gamepath.parent_path();
-										gamepath = parent_path;
 
-										int lastDirPos = parent_path.find_last_of(L"\\");
-
-										std::wstring folder = parent_path.substr(lastDirPos, parent_path.length());
-
-										if (folder.compare(L"\\") == 0)
-											break;
-
-										if (folder.compare(L"\\Game") == 0)
-										{
-											found = true;
-											break;
-										}
-									} while (true);
-
-									if (found)
+									if (gamepath != "")
 									{
 										filepath_tae = gamepath;
 										filepath_dcx = gamepath;
@@ -1684,7 +1688,6 @@ void Application::LoadFile()
 												if (m_bnd->m_files[i].m_name == filename)
 												{
 													UMEM* umem = uopenMem(m_bnd->m_files[i].m_data, m_bnd->m_files[i].m_uncompressedSize);
-													FLVER2 flver_model = FLVER2(umem);
 
 													this->m_animPlayer->SetModel(new FlverModel(umem));
 
@@ -1728,34 +1731,14 @@ void Application::LoadFile()
 
 								g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_timeAct->m_filePath, m_timeAct->m_fileSize);
 
-								bool found = false;
-
 								std::wstring obj_id = GetObjIdFromTaeFileName(pszFilePath);
 
 								if (obj_id.compare(L"") != 0)
 								{
-									std::filesystem::path gamepath = pszFilePath;
+									std::filesystem::path gamepath = FindGamePath(pszFilePath);
 									std::filesystem::path filepath_dcx;
-									do
-									{
-										std::wstring parent_path = gamepath.parent_path();
-										gamepath = parent_path;
 
-										int lastDirPos = parent_path.find_last_of(L"\\");
-
-										std::wstring folder = parent_path.substr(lastDirPos, parent_path.length());
-
-										if (folder.compare(L"\\") == 0)
-											break;
-
-										if (folder.compare(L"\\Game") == 0)
-										{
-											found = true;
-											break;
-										}
-									} while (true);
-
-									if (found)
+									if (gamepath != "")
 									{
 										filepath_dcx = gamepath;
 

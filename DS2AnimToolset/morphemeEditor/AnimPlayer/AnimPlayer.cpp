@@ -32,7 +32,7 @@ AnimPlayer::AnimPlayer()
 	this->m_time = 0.f;
 	this->m_pause = true;
 	this->m_loop = true;
-	this->m_model = nullptr;
+	this->m_modelParts.m_model = nullptr;
 }
 
 AnimPlayer::~AnimPlayer()
@@ -41,10 +41,10 @@ AnimPlayer::~AnimPlayer()
 
 void AnimPlayer::Clear()
 {
-	if (this->m_model)
-		delete this->m_model;
+	if (this->m_modelParts.m_model)
+		delete this->m_modelParts.m_model;
 
-	this->m_model = nullptr;
+	this->m_modelParts.m_model = nullptr;
 
 	this->Reset();
 }
@@ -56,10 +56,40 @@ void AnimPlayer::Update(float dt)
 	if (this->m_anim)
 		animHandle = this->m_anim->GetHandle();
 
-	if (this->m_model != nullptr)
+	if (this->m_modelParts.m_model != nullptr)
 	{
-		this->m_model->Animate(animHandle, this->m_flverToMorphemeBoneMap);
-		this->m_model->UpdateModel();
+		this->m_modelParts.m_model->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_model->UpdateModel();
+	}
+
+	if (this->m_modelParts.m_head != nullptr)
+	{
+		this->m_modelParts.m_head->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_head->UpdateModel();
+	}
+
+	if (this->m_modelParts.m_face != nullptr)
+	{
+		this->m_modelParts.m_face->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_face->UpdateModel();
+	}
+
+	if (this->m_modelParts.m_body != nullptr)
+	{
+		this->m_modelParts.m_body->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_body->UpdateModel();
+	}
+
+	if (this->m_modelParts.m_arms != nullptr)
+	{
+		this->m_modelParts.m_arms->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_arms->UpdateModel();
+	}
+
+	if (this->m_modelParts.m_legs != nullptr)
+	{
+		this->m_modelParts.m_legs->Animate(animHandle, this->m_flverToMorphemeBoneMap);
+		this->m_modelParts.m_legs->UpdateModel();
 	}
 
 	if (animHandle == nullptr)
@@ -90,7 +120,7 @@ void AnimPlayer::SetAnimation(AnimSourceInterface* anim)
 
 void AnimPlayer::Reset()
 {
-	this->SetModel(this->m_model);
+	this->SetModel(this->m_modelParts.m_model);
 	this->m_anim = nullptr;
 	this->m_time = 0.f;
 }
@@ -116,10 +146,50 @@ void AnimPlayer::SetTime(float time)
 
 void AnimPlayer::SetModel(FlverModel* model)
 {
-	this->m_model = model;
+	this->m_modelParts.m_model = model;
 
 	if (model != nullptr)
-		this->m_model->GetModelData();
+		this->m_modelParts.m_model->GetModelData();
+}
+
+void AnimPlayer::SetModelPart(PartType partType, FlverModel* model)
+{
+	switch (partType)
+	{
+	case Parts_Head:
+		this->m_modelParts.m_head = model;
+
+		if (model)
+			this->m_modelParts.m_head->GetModelData();
+		break;
+	case Parts_Face:
+		this->m_modelParts.m_face = model;
+
+		if (model)
+			this->m_modelParts.m_face->GetModelData();
+		break;
+	case Parts_Body:
+		this->m_modelParts.m_body = model;
+
+		if (model)
+			this->m_modelParts.m_body->GetModelData();
+		break;
+	case Parts_Arms:
+		this->m_modelParts.m_arms = model;
+
+		if (model)
+			this->m_modelParts.m_arms->GetModelData();
+		break;
+	case Parts_Legs:
+		this->m_modelParts.m_legs = model;
+
+		if (model)
+			this->m_modelParts.m_legs->GetModelData();
+		break;
+	default:
+		g_appLog->DebugMessage(MsgLevel_Error, "Invalid part type %d\n", partType);
+		break;
+	}
 }
 
 void AnimPlayer::SetPlaySpeed(float speed)
@@ -165,7 +235,26 @@ float AnimPlayer::GetTime()
 
 FlverModel* AnimPlayer::GetModel()
 {
-	return this->m_model;
+	return this->m_modelParts.m_model;
+}
+
+FlverModel* AnimPlayer::GetModelPart(PartType partType)
+{
+	switch (partType)
+	{
+	case Parts_Head:
+		return this->m_modelParts.m_head;
+	case Parts_Face:
+		return this->m_modelParts.m_face;
+	case Parts_Body:
+		return this->m_modelParts.m_body;
+	case Parts_Arms:
+		return this->m_modelParts.m_arms;
+	case Parts_Legs:
+		return this->m_modelParts.m_legs;
+	default:
+		return nullptr;
+	}
 }
 
 std::vector<int> AnimPlayer::GetFlverToMorphemeBoneMap()
@@ -182,10 +271,10 @@ float AnimPlayer::GetPlaySpeed()
 void AnimPlayer::CreateFlverToMorphemeBoneMap(MR::AnimRigDef* pMorphemeRig)
 {
 	this->m_flverToMorphemeBoneMap.clear();
-	this->m_flverToMorphemeBoneMap.reserve(this->m_model->m_flver->header.boneCount);
+	this->m_flverToMorphemeBoneMap.reserve(this->m_modelParts.m_model->m_flver->header.boneCount);
 
-	for (int i = 0; i < this->m_model->m_flver->header.boneCount; i++)
-		this->m_flverToMorphemeBoneMap.push_back(GetMorphemeRigBoneIndexByFlverBoneIndex(pMorphemeRig, this->m_model, i));
+	for (int i = 0; i < this->m_modelParts.m_model->m_flver->header.boneCount; i++)
+		this->m_flverToMorphemeBoneMap.push_back(GetMorphemeRigBoneIndexByFlverBoneIndex(pMorphemeRig, this->m_modelParts.m_model, i));
 }
 
 int AnimPlayer::GetFlverBoneIndexByMorphemeBoneIndex(int idx)
