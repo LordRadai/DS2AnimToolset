@@ -183,7 +183,7 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	if (bone_weights.size() > 0)
 		pSkin = FbxSkin::Create(pScene, std::string(mesh_node_name + "_skin").c_str());
 
-	if (pSkin)
+	if (pSkin != nullptr)
 	{
 		for (int i = 0; i < pFlverModel->m_flver->meshes[idx].header.boneCount; i++)
 		{
@@ -581,7 +581,7 @@ bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, in
 
 		pMeshNode = FBXTranslator::CreateModelFbxMesh(pScene, pFlverModel, pBoneList, i);
 
-		if (pMeshNode)
+		if (pMeshNode != nullptr)
 		{
 			pModelNode->AddChild(pMeshNode);
 			pBindPoses->Add(pMeshNode, FbxAMatrix());
@@ -612,7 +612,7 @@ bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, in
 
 		pMeshNode = FBXTranslator::CreateModelFbxMesh(pScene, pFlverModel, pBoneList, i, morphemeToFlverBoneMap);
 
-		if (pMeshNode)
+		if (pMeshNode != nullptr)
 		{
 			pModelNode->AddChild(pMeshNode);
 			pBindPoses->Add(pMeshNode, FbxAMatrix());

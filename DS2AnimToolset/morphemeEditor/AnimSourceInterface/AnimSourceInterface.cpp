@@ -54,7 +54,7 @@ AnimSourceInterface::AnimSourceInterface(MR::AnimRigDef* rig, MR::RigToAnimMap* 
         animHandle = nullptr;
     }
 
-    if (animHandle)
+    if (animHandle != nullptr)
     {
         animHandle->setRigToAnimMap(rigToAnimMap);
         animHandle->setRig(rig);

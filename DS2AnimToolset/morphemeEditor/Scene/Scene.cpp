@@ -95,19 +95,19 @@ void Scene::CreateResources()
 {
     this->m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
-    if (this->m_depthStencilView)
+    if (this->m_depthStencilView != nullptr)
         this->m_depthStencilView->Release();
 
-    if (this->m_renderTargetTextureViewport)
+    if (this->m_renderTargetTextureViewport != nullptr)
         this->m_renderTargetTextureViewport->Release();
 
-    if (this->m_renderTargetView)
+    if (this->m_renderTargetView != nullptr)
         this->m_renderTargetView->Release();
 
-    if (this->m_shaderResourceViewViewport)
+    if (this->m_shaderResourceViewViewport != nullptr)
         this->m_shaderResourceViewViewport->Release();
 
-    if (this->m_depthStencilState)
+    if (this->m_depthStencilState != nullptr)
         this->m_depthStencilState->Release();
 
     const UINT backBufferWidth = static_cast<UINT>(this->m_width);
@@ -296,7 +296,7 @@ void Scene::Render()
         
         CharacterDefBasic* characterDef = g_appRootWindow->m_morphemeSystem->GetCharacterDef();
 
-        if (characterDef)
+        if (characterDef != nullptr)
         {
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModel(), characterDef->getNetworkDef()->getRig(0));
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Head), characterDef->getNetworkDef()->getRig(0), false);

@@ -134,7 +134,7 @@ std::vector<FbxVector4> FlverModel::GetModelMeshVertices(int idx, bool flip)
 
 	facesetp->triangulate();
 
-	if (facesetp)
+	if (facesetp != nullptr)
 	{
 		for (int j = 0; j < facesetp->triCount; j++)
 		{
@@ -192,7 +192,7 @@ std::vector<FbxVector4> FlverModel::GetModelMeshNormals(int idx, bool flip)
 
 	facesetp->triangulate();
 
-	if (facesetp)
+	if (facesetp != nullptr)
 	{
 		for (int j = 0; j < facesetp->triCount; j++)
 		{
@@ -246,7 +246,7 @@ std::vector<FbxVector4> FlverModel::GetModelMeshBoneWeights(int idx)
 
 	facesetp->triangulate();
 
-	if (facesetp)
+	if (facesetp != nullptr)
 	{
 		for (size_t j = 0; j < facesetp->triCount; j++)
 		{
@@ -296,7 +296,7 @@ void FlverModel::GetModelMeshBoneIndices(std::vector<int*>& buffer, int idx)
 
 	facesetp->triangulate();
 
-	if (facesetp)
+	if (facesetp != nullptr)
 	{
 		for (size_t j = 0; j < facesetp->triCount; j++)
 		{
@@ -491,7 +491,7 @@ void FlverModel::GetModelData()
 		std::vector<Vector3> meshVertices;
 		std::vector<SkinnedVertex> meshSkinnedVertices;
 
-		if (facesetp)
+		if (facesetp != nullptr)
 		{
 			meshVertices.reserve(facesetp->triCount);
 			meshSkinnedVertices.reserve(facesetp->triCount);

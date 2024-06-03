@@ -544,7 +544,7 @@ void Application::AssetsWindow()
 		{
 			CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
-			if (characterDef)
+			if (characterDef != nullptr)
 			{
 				if (characterDef->isLoaded())
 					ImGui::Text(characterDef->getFilename());
@@ -1371,7 +1371,7 @@ void Application::CheckFlags()
 
 		CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
-		if ((characterDef) && characterDef->isLoaded() && (this->m_eventTrackEditor->m_targetAnimIdx != -1))
+		if ((characterDef != nullptr) && characterDef->isLoaded() && (this->m_eventTrackEditor->m_targetAnimIdx != -1))
 		{
 			bool found_et = false;
 			bool found_anim = false;
@@ -1393,7 +1393,7 @@ void Application::CheckFlags()
 					MR::AttribDataSourceAnim* source_anim = (MR::AttribDataSourceAnim*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM);
 					MR::AttribDataSourceEventTrackSet* source_tracks = (MR::AttribDataSourceEventTrackSet*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_EVENT_TRACKS);
 
-					if (source_anim && source_anim->m_animAssetID == this->m_eventTrackEditor->m_targetAnimIdx)
+					if (source_anim != nullptr && source_anim->m_animAssetID == this->m_eventTrackEditor->m_targetAnimIdx)
 					{
 						found_anim = true;
 
@@ -1411,7 +1411,7 @@ void Application::CheckFlags()
 								this->m_eventTrackEditor->m_animIdx = i;
 						}
 
-						if (source_tracks)
+						if (source_tracks != nullptr)
 						{
 							this->m_eventTrackEditor->m_lenMult = source_anim->m_sourceAnimDuration / (source_anim->m_clipEndFraction - source_anim->m_clipStartFraction);
 							int track_count = source_tracks->m_numDiscreteEventTracks + source_tracks->m_numCurveEventTracks + source_tracks->m_numDurEventTracks;
