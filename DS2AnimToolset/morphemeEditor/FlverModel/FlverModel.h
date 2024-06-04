@@ -52,6 +52,7 @@ public:
 	std::vector<Matrix> m_morphemeBoneTransforms;
 	std::vector<Matrix> m_morphemeBoneBindPose;
 	std::vector<Matrix> m_dummyPolygons;
+	std::vector<std::vector<int>> m_childIndices;
 	float m_scale = 1.5;
 
 	FlverModel();

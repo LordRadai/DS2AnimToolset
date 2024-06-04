@@ -380,7 +380,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
         {
             int morphemeBoneIdx = model->GetFlverToMorphemeBoneMap()[i];
 
-            if ((morphemeBoneIdx == -1) || (i == trajectoryBoneIndex) || (i == characterRootBoneIdx))
+            if ((i == trajectoryBoneIndex) || (i == characterRootBoneIdx))
                 continue;
 
             int parentIndex = model->m_flver->bones[i].parentIndex;
