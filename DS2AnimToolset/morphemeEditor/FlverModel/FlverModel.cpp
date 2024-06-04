@@ -474,21 +474,6 @@ void FlverModel::GetModelData()
 	this->m_verts.reserve(m_flver->header.meshCount);
 	this->m_vertBindPose.reserve(m_flver->header.meshCount);
 
-	this->m_childIndices.reserve(this->m_flver->header.boneCount);
-
-	for (size_t i = 0; i < this->m_flver->header.boneCount; i++)
-	{
-		std::vector<int> children;
-
-		for (size_t j = 0; j < this->m_flver->header.boneCount; j++)
-		{
-			if (this->m_flver->bones[j].parentIndex == i)
-				children.push_back(j);
-		}
-
-		this->m_childIndices.push_back(children);
-	}
-
 	for (int i = 0; i < m_flver->header.meshCount; i++)
 	{
 		cfr::FLVER2::Mesh* mesh = &m_flver->meshes[i];
@@ -646,17 +631,32 @@ Matrix GetNmRelativeTransform(MR::AnimationSourceHandle* animHandle, int idx)
 	return transform;
 }
 
-void ApplyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix> bindPose, std::vector<int> children, Matrix transform, int boneID)
+void ApplyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix> bindPose, Matrix transform, int boneID)
 {
 	//Transform the bone
 	buffer[boneID] = bindPose[boneID] * transform;
 
-	//Transforms all the children of the current bone
-	for (size_t i = 0; i < children.size(); i++)
-	{
-		int childIndex = children[i];
+	int siblingIndex = flv->bones[boneID].nextSiblingIndex;
 
+	while (siblingIndex != -1)
+	{
+		buffer[siblingIndex] = buffer[boneID];
+		siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
+	}
+
+	//Transforms all the children of the current bone
+	int childIndex = flv->bones[boneID].childIndex;
+
+	if (childIndex != -1)
+	{
 		buffer[childIndex] = bindPose[childIndex] * transform;
+		siblingIndex = flv->bones[childIndex].nextSiblingIndex;
+
+		while (siblingIndex != -1)
+		{
+			buffer[siblingIndex] = bindPose[siblingIndex] * transform;
+			siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
+		}
 	}
 }
 
@@ -727,7 +727,7 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
 				//Take the morpheme animation transform relative to the morpheme bind pose, mirror it on the ZY plane, and then apply them to the flver bind pose. Propagate to all children of the current bone
 				Matrix morphemeRelativeTransform = (this->m_morphemeBoneBindPose[morphemeBoneIdx].Invert() * this->m_morphemeBoneTransforms[morphemeBoneIdx]);
 
-				ApplyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPose, this->m_childIndices[i], (Matrix::CreateReflection(Plane(Vector3::Right)) * Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
+				ApplyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPose, (Matrix::CreateReflection(Plane(Vector3::Right)) * Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
 			}
 		}
 	}
