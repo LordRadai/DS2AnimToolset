@@ -352,7 +352,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
 
     if (model->m_settings.m_selectedBone != -1)
     {
-        DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[model->m_settings.m_selectedBone] * world, 0.03f, Colors::MediumAquamarine);
+        DX::DrawReferenceFrame(this->m_batch.get(), model->m_boneTransforms[model->m_settings.m_selectedBone] * world);
         this->AddText(RString::ToNarrow(model->m_flver->bones[model->m_settings.m_selectedBone].name).c_str(), model->m_boneTransforms[model->m_settings.m_selectedBone] * world);
     }
 
