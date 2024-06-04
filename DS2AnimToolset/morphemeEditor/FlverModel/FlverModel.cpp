@@ -652,28 +652,12 @@ void ApplyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix
 	buffer[boneID] = bindPose[boneID] * transform;
 
 	//Transforms all the children of the current bone
-	int childIndex = flv->bones[boneID].childIndex;
-
 	for (size_t i = 0; i < children.size(); i++)
 	{
 		int childIndex = children[i];
 
 		buffer[childIndex] = bindPose[childIndex] * transform;
 	}
-
-	/*
-	if (childIndex != -1)
-	{
-		buffer[childIndex] = bindPose[childIndex] * transform;
-		siblingIndex = flv->bones[childIndex].nextSiblingIndex;
-
-		while (siblingIndex != -1)
-		{
-			buffer[siblingIndex] = bindPose[siblingIndex] * transform;
-			siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
-		}
-	}
-	*/
 }
 
 std::vector<int> FlverModel::GetFlverToMorphemeBoneMap()
