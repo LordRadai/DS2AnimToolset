@@ -19,9 +19,9 @@ int GetMorphemeRigBoneIndexByFlverBoneIndex(MR::AnimRigDef* pRig, FlverModel* pF
 		boneName = "L_Thigh";
 	else if (boneName == "RThighTwist")
 		boneName = "R_Thigh";
-	else if (boneName == "LUpArmTwist")
+	else if (boneName == "L_UpArmTwist")
 		boneName = "L_UpperArm";
-	else if (boneName == "RUpArmTwist")
+	else if (boneName == "R_UpArmTwist")
 		boneName = "R_UpperArm";
 	else if (boneName == "L_ForeTwist")
 		boneName = "L_Forearm";
