@@ -37,12 +37,20 @@ void AnimPlayer::Clear()
 	if (this->m_modelParts.m_leg)
 		delete this->m_modelParts.m_leg;
 
+	if (this->m_modelParts.m_weaponRight)
+		delete this->m_modelParts.m_weaponRight;
+
+	if (this->m_modelParts.m_weaponLeft)
+		delete this->m_modelParts.m_weaponLeft;
+
 	this->m_modelParts.m_model = nullptr;
 	this->m_modelParts.m_head = nullptr;
 	this->m_modelParts.m_face = nullptr;
 	this->m_modelParts.m_body = nullptr;
 	this->m_modelParts.m_arm = nullptr;
 	this->m_modelParts.m_leg = nullptr;
+	this->m_modelParts.m_weaponRight = nullptr;
+	this->m_modelParts.m_weaponLeft = nullptr;
 
 	this->Reset();
 }
