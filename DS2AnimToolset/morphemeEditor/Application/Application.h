@@ -88,7 +88,7 @@ public:
 
 	struct SceneFlags
 	{
-		bool m_hideModel = false;
+		bool m_wireframe = false;
 		bool m_sceneExplorer = false;
 		bool m_drawDummies = false;
 	} m_sceneFlags;

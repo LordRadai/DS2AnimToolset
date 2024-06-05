@@ -412,7 +412,6 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
 
     DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(this->m_deviceContext, UINT16_MAX * 3, UINT16_MAX);
     prim.Begin();
-    if (!model->m_settings.m_xray)
-        DX::DrawFlverModel(&prim, world, model);
+    DX::DrawFlverModel(&prim, world, model, model->m_settings.m_xray);
     prim.End();
 }

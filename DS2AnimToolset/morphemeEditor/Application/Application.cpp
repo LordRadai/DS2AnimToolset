@@ -360,7 +360,7 @@ void Application::ModelPreviewWindow()
 
 			if (ImGui::BeginMenu("Scene"))
 			{
-				if (ImGui::MenuItem("Hide Model", NULL, &this->m_sceneFlags.m_hideModel)) { this->m_sceneFlags.m_hideModel != this->m_sceneFlags.m_hideModel; }
+				if (ImGui::MenuItem("X-Ray", NULL, &this->m_sceneFlags.m_wireframe)) { this->m_sceneFlags.m_wireframe != this->m_sceneFlags.m_wireframe; }
 				if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
 				if (ImGui::MenuItem("Scene Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
 
@@ -1225,6 +1225,15 @@ void Application::PreviewSceneExplorerWindow()
 	ImGui::End();
 }
 
+void SetModelFlags(FlverModel* model, bool xray, bool showDummies)
+{
+	if (model)
+	{
+		model->m_settings.m_xray = xray;
+		model->m_settings.m_drawDummyPolygons = showDummies;
+	}
+}
+
 void Application::CheckFlags()
 {
 	if (this->m_windowStates.m_settingWindow)
@@ -1556,52 +1565,46 @@ void Application::CheckFlags()
 	if (this->m_animPlayer)
 	{
 		FlverModel* model = this->m_animPlayer->GetModel();
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 
-		if (model)
-		{
-			model->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
-			model->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
-		}
+		model = this->m_animPlayer->GetModelPart(Parts_Head);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 
-		FlverModel* face = this->m_animPlayer->GetModelPart(Parts_Face);
+		model = this->m_animPlayer->GetModelPart(Parts_Face);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 
-		if (face)
-		{
-			face->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
-			face->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
-		}
+		model = this->m_animPlayer->GetModelPart(Parts_Body);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 
-		FlverModel* head = this->m_animPlayer->GetModelPart(Parts_Head);
+		model = this->m_animPlayer->GetModelPart(Parts_Arm);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 
-		if (head)
-		{
-			head->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
-			head->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
-		}
+		model = this->m_animPlayer->GetModelPart(Parts_Leg);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 
-		FlverModel* body = this->m_animPlayer->GetModelPart(Parts_Body);
+		model = this->m_animPlayer->GetModelPart(Parts_WeaponLeft);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 
-		if (body)
-		{
-			body->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
-			body->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
-		}
+		model = this->m_animPlayer->GetModelPart(Parts_WeaponRight);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 
-		FlverModel* arm = this->m_animPlayer->GetModelPart(Parts_Arm);
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Face);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 
-		if (arm)
-		{
-			arm->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
-			arm->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
-		}
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Head);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 
-		FlverModel* leg = this->m_animPlayer->GetModelPart(Parts_Leg);
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Eyes);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 
-		if (leg)
-		{
-			leg->m_settings.m_xray = this->m_sceneFlags.m_hideModel;
-			leg->m_settings.m_drawDummyPolygons = this->m_sceneFlags.m_drawDummies;
-		}
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_EyeBrows);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Beard);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Hair);
+		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 	}
 }
 
