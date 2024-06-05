@@ -125,13 +125,13 @@ void AnimPlayer::Update(float dt)
 	if (this->m_modelParts.m_weaponLeft)
 	{
 		this->m_modelParts.m_weaponLeft->UpdateModel();
-		this->m_modelParts.m_weaponLeft->m_position = Matrix::CreateRotationY(DirectX::XM_PIDIV2) * Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * this->m_modelParts.m_model->GetDummyPolygonTransform(21) * this->m_modelParts.m_model->m_position;
+		this->m_modelParts.m_weaponLeft->m_position = Matrix::CreateRotationY(-DirectX::XM_PIDIV2) * Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * this->m_modelParts.m_model->GetDummyPolygonTransform(21) * this->m_modelParts.m_model->m_position;
 	}
 
 	if (this->m_modelParts.m_weaponRight)
 	{
 		this->m_modelParts.m_weaponRight->UpdateModel();
-		this->m_modelParts.m_weaponRight->m_position = Matrix::CreateRotationY(DirectX::XM_PIDIV2) * Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * this->m_modelParts.m_model->GetDummyPolygonTransform(20) * this->m_modelParts.m_model->m_position;
+		this->m_modelParts.m_weaponRight->m_position = Matrix::CreateRotationY(-DirectX::XM_PIDIV2) * Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * this->m_modelParts.m_model->GetDummyPolygonTransform(20) * this->m_modelParts.m_model->m_position;
 	}
 
 	if (this->m_modelParts.m_faceGen.m_fgFace)

@@ -57,6 +57,7 @@ public:
 	{
 		bool m_settingWindow = false;
 		bool m_previewSettings = false;
+		bool m_entityManager = false;
 		bool m_queryTae = false;
 		bool m_queryEventTrack = false;
 	} m_windowStates;
@@ -95,6 +96,8 @@ public:
 		FlverModel* m_selectedModel = nullptr;
 	} m_sceneFlags;
 	
+	std::wstring m_gamePath;
+
 	int m_chrId = -1;
 
 	MorphemeSystem* m_morphemeSystem;
@@ -121,6 +124,7 @@ public:
 	void SettingsWindow();
 	void PreviewDebugManagerWindow();
 	void PreviewSceneExplorerWindow();
+	void EntityManagerWindow();
 
 	void CheckFlags();
 

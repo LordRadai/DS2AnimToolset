@@ -9,6 +9,114 @@
 #include "FBXTranslator/FBXTranslator.h"
 #include "IconsFontAwesome6.h"
 
+void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartType type, int id, bool female)
+{
+	std::wstring filepath = root.c_str();
+	wchar_t modelName[255] = { 0 };
+	int fullId = 0;
+
+	switch (type)
+	{
+	case FaceGen_Face:
+		if (female)
+			swprintf_s(modelName, L"\\face\\fg_1001_f.bnd");
+		else
+			swprintf_s(modelName, L"\\face\\fg_1001_m.bnd");
+		break;
+	case FaceGen_Head:
+		if (female)
+			swprintf_s(modelName, L"\\face\\fg_2001_f.bnd");
+		else
+			swprintf_s(modelName, L"\\face\\fg_2001_m.bnd");
+		break;
+	case FaceGen_Eyes:
+		swprintf_s(modelName, L"\\face\\fg_3001_a.bnd");
+		break;
+	case FaceGen_EyeBrows:
+		fullId = 4000 + id;
+
+		swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
+		break;
+	case FaceGen_Beard:
+		fullId = 5000 + id;
+
+		swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
+		break;
+	case FaceGen_Hair:
+		fullId = 7000 + id;
+
+		if (female)
+			swprintf_s(modelName, L"\\face\\fg_%d_f.bnd", fullId + 19);
+		else
+			swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
+		break;
+	default:
+		break;
+	}
+
+	filepath += modelName;
+
+	FlverModel* model = FlverModel::CreateFromBnd(filepath);
+
+	if (model)
+	{
+		pApplication->m_animPlayer->SetModelPartFacegen(type, model);
+		pApplication->m_animPlayer->GetModelPartFacegen(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+	}
+}
+
+void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type, int id, bool female)
+{
+	std::wstring filepath = root.c_str();
+	wchar_t modelName[255] = { 0 };
+
+	switch (type)
+	{
+	case Parts_Head:
+		if (female)
+			swprintf_s(modelName, L"\\head\\hd_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\head\\hd_%d_m.bnd", id);
+		break;
+	case Parts_Face:
+		if (female)
+			swprintf_s(modelName, L"\\face\\fc_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\face\\fc_%d_m.bnd", id);
+		break;
+	case Parts_Body:
+		if (female)
+			swprintf_s(modelName, L"\\body\\bd_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\body\\bd_%d_m.bnd", id);
+		break;
+	case Parts_Arm:
+		if (female)
+			swprintf_s(modelName, L"\\arm\\am_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\arm\\am_%d_m.bnd", id);
+		break;
+	case Parts_Leg:
+		if (female)
+			swprintf_s(modelName, L"\\leg\\lg_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\leg\\lg_%d_m.bnd", id);
+		break;
+	default:
+		break;
+	}
+
+	filepath += modelName;
+
+	FlverModel* model = FlverModel::CreateFromBnd(filepath);
+
+	if (model)
+	{
+		pApplication->m_animPlayer->SetModelPart(type, model);
+		pApplication->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+	}
+}
+
 std::vector<std::wstring> getTaeFileListFromChrId(std::wstring tae_path, std::wstring m_chrId)
 {
 	std::vector<std::wstring> files;
@@ -367,6 +475,8 @@ void Application::ModelPreviewWindow()
 
 				ImGui::EndMenu();
 			}
+
+			if (ImGui::MenuItem("Entity Manager", NULL, &this->m_windowStates.m_entityManager)) { this->m_windowStates.m_entityManager != this->m_windowStates.m_entityManager; }
 
 			ImGui::Separator();
 
@@ -1239,6 +1349,80 @@ void Application::PreviewSceneExplorerWindow()
 	ImGui::End();
 }
 
+void ModelPartsList(Application* application, std::wstring rootPath, PartType type)
+{
+	char childName[255];
+	sprintf_s(childName, "parts_%d", type);
+
+	ImGui::BeginChild(childName, ImVec2(ImGui::GetContentRegionAvail().x, 300));
+
+	FlverModel* currentPart = application->m_animPlayer->GetModelPart(type);
+
+	if (ImGui::Selectable("None", currentPart == nullptr))
+		application->m_animPlayer->SetModelPart(type, nullptr);
+
+	for (const auto& entry : std::filesystem::directory_iterator(rootPath))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd"))
+		{
+			std::string filepath = entry.path().string();
+			std::string filename = RString::RemovePathAndExtension(entry.path().string());
+
+			bool selected = false;
+
+			if (application->m_animPlayer->GetModelPart(type))
+				selected = (application->m_animPlayer->GetModelPart(type)->m_name.compare(filename) == 0);
+
+			if (ImGui::Selectable(filename.c_str(), selected))
+			{
+				FlverModel* model = FlverModel::CreateFromBnd(RString::ToWide(filepath));
+
+				if (model)
+				{
+					application->m_animPlayer->SetModelPart(type, model);
+					application->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+				}
+			}
+		}
+	}
+	ImGui::EndChild();
+}
+
+void Application::EntityManagerWindow()
+{
+	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
+
+	ImGui::Begin("Entity Manager", &this->m_windowStates.m_entityManager);
+
+	if (this->m_chrId == 1)
+	{
+		std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
+
+		std::filesystem::path weapon_path = parts_path + L"\\weapon";
+
+		if (std::filesystem::exists(weapon_path))
+		{
+			ImGui::SeparatorText("Right");
+
+			ModelPartsList(this, weapon_path, Parts_WeaponRight);
+
+			ImGui::SeparatorText("Left");
+
+			ModelPartsList(this, weapon_path, Parts_WeaponLeft);
+		}
+
+		/*
+		ImGui::SeparatorText("FaceGen");
+
+		ImGui::BeginChild("facegen");
+
+		ImGui::EndChild();
+		*/
+	}
+
+	ImGui::End();
+}
+
 void SetModelFlags(FlverModel* model, bool xray, bool showDummies)
 {
 	if (model)
@@ -1258,6 +1442,11 @@ void Application::CheckFlags()
 	if (this->m_windowStates.m_previewSettings)
 	{
 		this->PreviewDebugManagerWindow();
+	}
+
+	if (this->m_windowStates.m_entityManager)
+	{
+		this->EntityManagerWindow();
 	}
 
 	if (this->m_windowStates.m_queryEventTrack)
@@ -1486,7 +1675,7 @@ void Application::CheckFlags()
 
 							this->m_eventTrackEditor->SetEditedState(false);
 
-							if (this->m_timeAct->m_init)
+							if (this->m_timeAct)
 							{
 								for (size_t i = 0; i < this->m_eventTrackEditor->m_eventTracks.size(); i++)
 								{
@@ -1546,7 +1735,7 @@ void Application::CheckFlags()
 
 		this->m_timeActEditor->m_taeIdx = this->m_timeActEditor->m_selectedTimeActIdx;
 
-		if (this->m_timeAct->m_init && this->m_timeActEditor->m_taeId > -1)
+		if (this->m_timeAct && this->m_timeActEditor->m_taeId > -1)
 		{
 			if (m_timeAct->m_tae.size() > 0)
 			{
@@ -1699,114 +1888,6 @@ void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, 
 		pApplication->m_animPlayer->SetModelPart(type, model);
 }
 
-void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartType type, int id, bool female)
-{
-	std::wstring filepath = root.c_str();
-	wchar_t modelName[255] = { 0 };
-	int fullId = 0;
-
-	switch (type)
-	{
-	case FaceGen_Face:
-		if (female)
-			swprintf_s(modelName, L"\\face\\fg_1001_f.bnd");
-		else
-			swprintf_s(modelName, L"\\face\\fg_1001_m.bnd");
-		break;
-	case FaceGen_Head:
-		if (female)
-			swprintf_s(modelName, L"\\face\\fg_2001_f.bnd");
-		else
-			swprintf_s(modelName, L"\\face\\fg_2001_m.bnd");
-		break;
-	case FaceGen_Eyes:
-		swprintf_s(modelName, L"\\face\\fg_3001_a.bnd");
-		break;
-	case FaceGen_EyeBrows:
-		fullId = 4000 + id;
-
-		swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
-		break;
-	case FaceGen_Beard:
-		fullId = 5000 + id;
-
-		swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
-		break;
-	case FaceGen_Hair:
-		fullId = 7000 + id;
-
-		if (female)
-			swprintf_s(modelName, L"\\face\\fg_%d_f.bnd", fullId + 19);
-		else
-			swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
-		break;
-	default:
-		break;
-	}
-
-	filepath += modelName;
-
-	FlverModel* model = FlverModel::CreateFromBnd(filepath);
-
-	if (model)
-	{
-		pApplication->m_animPlayer->SetModelPartFacegen(type, model);
-		pApplication->m_animPlayer->GetModelPartFacegen(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
-	}
-}
-
-void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type, int id, bool female)
-{
-	std::wstring filepath = root.c_str();
-	wchar_t modelName[255] = { 0 };
-
-	switch (type)
-	{
-	case Parts_Head:
-		if (female)
-			swprintf_s(modelName, L"\\head\\hd_%d_f.bnd", id);
-		else
-			swprintf_s(modelName, L"\\head\\hd_%d_m.bnd", id);
-		break;
-	case Parts_Face:
-		if (female)
-			swprintf_s(modelName, L"\\face\\fc_%d_f.bnd", id);
-		else
-			swprintf_s(modelName, L"\\face\\fc_%d_m.bnd", id);		
-		break;
-	case Parts_Body:
-		if (female)
-			swprintf_s(modelName, L"\\body\\bd_%d_f.bnd", id);
-		else
-			swprintf_s(modelName, L"\\body\\bd_%d_m.bnd", id);
-		break;
-	case Parts_Arm:
-		if (female)
-			swprintf_s(modelName, L"\\arm\\am_%d_f.bnd", id);
-		else
-			swprintf_s(modelName, L"\\arm\\am_%d_m.bnd", id);
-		break;
-	case Parts_Leg:
-		if (female)
-			swprintf_s(modelName, L"\\leg\\lg_%d_f.bnd", id);
-		else
-			swprintf_s(modelName, L"\\leg\\lg_%d_m.bnd", id);
-		break;
-	default:
-		break;
-	}
-
-	filepath += modelName;
-
-	FlverModel* model = FlverModel::CreateFromBnd(filepath);
-
-	if (model)
-	{
-		pApplication->m_animPlayer->SetModelPart(type, model);
-		pApplication->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
-	}
-}
-
 void Application::LoadFile()
 {
 	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"TimeAct", L"*.tae"}, {L"All Files",L"*.*"} };
@@ -1895,6 +1976,8 @@ void Application::LoadFile()
 								if (this->m_chrId != -1)
 								{
 									std::filesystem::path gamepath = FindGamePath(pszFilePath);
+									this->m_gamePath = gamepath;
+
 									std::filesystem::path filepath_tae = "";
 									std::filesystem::path filepath_dcx = "";
 									std::filesystem::path filepath_parts = "";
