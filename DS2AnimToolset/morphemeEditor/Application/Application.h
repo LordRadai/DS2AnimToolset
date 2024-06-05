@@ -91,6 +91,7 @@ public:
 		bool m_wireframe = false;
 		bool m_sceneExplorer = false;
 		bool m_drawDummies = false;
+		bool m_xray = false;
 	} m_sceneFlags;
 	
 	int m_chrId = -1;

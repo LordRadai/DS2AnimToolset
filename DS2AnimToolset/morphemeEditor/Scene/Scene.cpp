@@ -70,7 +70,35 @@ void Scene::Initialise(HWND hwnd, IDXGISwapChain* pSwapChain, ID3D11Device* pDev
             m_inputLayout.ReleaseAndGetAddressOf())
     );
 
-    m_batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(this->m_deviceContext);
+    m_physicalEffect = std::make_unique<BasicEffect>(this->m_device);
+    m_physicalEffect->SetVertexColorEnabled(true);
+    m_physicalEffect->SetLightingEnabled(true);
+    m_physicalEffect->SetPerPixelLighting(true);
+
+    m_physicalEffect->SetAmbientLightColor(Vector4(0.1f, 0.1f, 0.1f, 1.f));
+    m_physicalEffect->SetDiffuseColor(Vector4(0.5f, 0.5f, 0.5f, 1.f));
+    m_physicalEffect->SetSpecularColor(Vector4(0.04f, 0.04f, 0.04f, 1.f));
+    m_physicalEffect->SetSpecularPower(32.f);
+
+    m_physicalEffect->SetLightEnabled(0, true);
+    m_physicalEffect->SetLightDirection(0, Vector3::Down + Vector3::Forward + Vector3::Right);
+    m_physicalEffect->SetLightDiffuseColor(0, Colors::White);
+    m_physicalEffect->SetLightSpecularColor(0, Colors::White);
+
+    m_physicalEffect->SetLightEnabled(1, true);
+    m_physicalEffect->SetLightDirection(1, Vector3::Down + Vector3::Backward + Vector3::Left);
+    m_physicalEffect->SetLightDiffuseColor(1, Colors::White);
+    m_physicalEffect->SetLightSpecularColor(1, Colors::White);
+
+    m_physicalEffect->SetLightEnabled(2, true);
+    m_physicalEffect->SetLightDirection(2, Vector3::Up);
+    m_physicalEffect->SetLightDiffuseColor(2, Colors::White);
+    m_physicalEffect->SetLightSpecularColor(2, Colors::White);
+
+    DX::ThrowIfFailed(
+        CreateInputLayoutFromEffect<VertexPositionNormalColor>(this->m_device, m_physicalEffect.get(),
+            m_physicalInputLayout.ReleaseAndGetAddressOf())
+    );
 
     m_view = Matrix::CreateLookAt(Vector3(2.f, 2.f, 2.f),
         Vector3::Zero, Vector3::UnitY);
@@ -81,6 +109,10 @@ void Scene::Initialise(HWND hwnd, IDXGISwapChain* pSwapChain, ID3D11Device* pDev
     m_effect->SetView(m_view);
     m_effect->SetProjection(m_proj);
     m_effect->SetWorld(m_world);
+
+    m_physicalEffect->SetView(m_view);
+    m_physicalEffect->SetProjection(m_proj);
+    m_physicalEffect->SetWorld(m_world);
 
     this->m_sprite = std::make_unique<DirectX::SpriteBatch>(this->m_deviceContext);
     this->m_font = std::make_unique<DirectX::SpriteFont>(this->m_device, L".//Data//font//font.spritefont");
@@ -289,11 +321,14 @@ void Scene::Render()
 
         context->IASetInputLayout(m_inputLayout.Get());
 
-        m_batch->Begin();
+        DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(this->m_deviceContext);
+        prim.Begin();
 
-        DX::DrawGrid(this->m_batch.get(), this->m_settings.m_gridScale * Vector3::UnitX, this->m_settings.m_gridScale * Vector3::UnitZ, Vector3::Zero, 100, 100, Colors::Gray);      
-        DX::DrawOriginMarker(this->m_batch.get(), Matrix::Identity, 0.5f, Colors::DarkCyan);
+        DX::DrawGrid(&prim, this->m_settings.m_gridScale * Vector3::UnitX, this->m_settings.m_gridScale * Vector3::UnitZ, Vector3::Zero, 100, 100, Colors::Gray);      
+        DX::DrawOriginMarker(&prim, Matrix::Identity, 0.5f, Colors::DarkCyan);
         
+        prim.End();
+
         CharacterDefBasic* characterDef = g_appRootWindow->m_morphemeSystem->GetCharacterDef();
 
         if (characterDef)
@@ -316,8 +351,6 @@ void Scene::Render()
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Beard), characterDef->getNetworkDef()->getRig(0), false);
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Hair), characterDef->getNetworkDef()->getRig(0), false);
         }
-
-        m_batch->End();
 
         m_sprite.get()->Begin();
 
@@ -352,6 +385,16 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
     if (model == nullptr)
         return;
 
+    m_effect->SetWorld(m_world);
+    m_effect->SetView(m_view);
+    m_effect->SetProjection(m_proj);
+    m_effect->Apply(this->m_deviceContext);
+
+    this->m_deviceContext->IASetInputLayout(m_inputLayout.Get());
+
+    DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(this->m_deviceContext, UINT16_MAX * 3, UINT16_MAX);
+    prim.Begin();
+
     Matrix world = model->m_position * Matrix::CreateScale(model->m_scale);    
 
     int boneCount = model->m_boneTransforms.size();
@@ -361,7 +404,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
 
     if (model->m_settings.m_selectedBone != -1)
     {
-        DX::DrawReferenceFrame(this->m_batch.get(), model->m_boneTransforms[model->m_settings.m_selectedBone] * world);
+        DX::DrawReferenceFrame(&prim, model->m_boneTransforms[model->m_settings.m_selectedBone] * world);
         this->AddText(RString::ToNarrow(model->m_flver->bones[model->m_settings.m_selectedBone].name).c_str(), model->m_boneTransforms[model->m_settings.m_selectedBone] * world);
     }
 
@@ -371,7 +414,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
         {
             std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[i].referenceID);
 
-            DX::DrawReferenceFrame(this->m_batch.get(), model->m_dummyPolygons[i] * world);
+            DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[i] * world);
             this->AddText(dummy_name.c_str(), model->m_dummyPolygons[i] * world);
         }
     }
@@ -379,7 +422,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
     {
         std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[model->m_settings.m_selectedDummy].referenceID);
 
-        DX::DrawReferenceFrame(this->m_batch.get(), model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
+        DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
         this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
     }
 
@@ -399,19 +442,35 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
                 Vector3 boneA = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[i] * world);
                 Vector3 boneB = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[parentIndex] * world);
 
-                DX::DrawJoint(this->m_batch.get(), Matrix::Identity, boneB, boneA, Colors::CornflowerBlue);
+                DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, Colors::CornflowerBlue);
 
                 if (model->m_flver->bones[i].childIndex == -1)
-                    DX::Draw(this->m_batch.get(), DirectX::BoundingSphere(boneA, 0.03f), Colors::CornflowerBlue);
+                    DX::Draw(&prim, DirectX::BoundingSphere(boneA, 0.03f), Colors::CornflowerBlue);
             }
         }
 
-        DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[characterRootBoneIdx] * world, 0.03f, Colors::MediumBlue);
-        DX::DrawReferenceFrame(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world);
+        DX::DrawSphere(&prim, model->m_boneTransforms[characterRootBoneIdx] * world, 0.03f, Colors::MediumBlue);
+        DX::DrawReferenceFrame(&prim, model->m_boneTransforms[trajectoryBoneIndex] * world);
     }
 
-    DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(this->m_deviceContext, UINT16_MAX * 3, UINT16_MAX);
-    prim.Begin();
-    DX::DrawFlverModel(&prim, world, model, model->m_settings.m_xray);
     prim.End();
+
+    DirectX::PrimitiveBatch<DirectX::VertexPositionNormalColor> primShaded(this->m_deviceContext, UINT16_MAX * 3, UINT16_MAX);
+
+    m_physicalEffect->SetWorld(world);
+    m_physicalEffect->SetView(m_view);
+    m_physicalEffect->SetProjection(m_proj);
+
+    m_physicalEffect->SetAlpha(1.f);
+
+    if (g_appRootWindow->m_sceneFlags.m_xray)
+        m_physicalEffect->SetAlpha(0.2f);
+
+    m_physicalEffect->Apply(this->m_deviceContext);
+
+    this->m_deviceContext->IASetInputLayout(m_physicalInputLayout.Get());
+
+    primShaded.Begin();
+    DX::DrawFlverModel(&primShaded, Matrix::Identity, model, model->m_settings.m_wireframe);
+    primShaded.End();
 }

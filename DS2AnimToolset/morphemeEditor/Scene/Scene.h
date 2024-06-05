@@ -66,13 +66,14 @@ public:
 
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	std::unique_ptr<DirectX::BasicEffect> m_effect;
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batch;
+	std::unique_ptr<DirectX::BasicEffect> m_physicalEffect;
 	std::unique_ptr<DirectX::SpriteBatch> m_sprite;
 	std::unique_ptr<DirectX::SpriteFont> m_font;
 	std::unique_ptr<DirectX::SpriteFont> m_fontBold;
 	std::unique_ptr<DirectX::SpriteFont> m_fontItalic;
 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_physicalInputLayout;
 
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;

@@ -360,7 +360,8 @@ void Application::ModelPreviewWindow()
 
 			if (ImGui::BeginMenu("Scene"))
 			{
-				if (ImGui::MenuItem("X-Ray", NULL, &this->m_sceneFlags.m_wireframe)) { this->m_sceneFlags.m_wireframe != this->m_sceneFlags.m_wireframe; }
+				if (ImGui::MenuItem("X-Ray", NULL, &this->m_sceneFlags.m_xray)) { this->m_sceneFlags.m_xray != this->m_sceneFlags.m_xray; }
+				if (ImGui::MenuItem("Wireframe", NULL, &this->m_sceneFlags.m_wireframe)) { this->m_sceneFlags.m_wireframe != this->m_sceneFlags.m_wireframe; }
 				if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
 				if (ImGui::MenuItem("Scene Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
 
@@ -1229,7 +1230,7 @@ void SetModelFlags(FlverModel* model, bool xray, bool showDummies)
 {
 	if (model)
 	{
-		model->m_settings.m_xray = xray;
+		model->m_settings.m_wireframe = xray;
 		model->m_settings.m_drawDummyPolygons = showDummies;
 	}
 }

@@ -20,8 +20,7 @@ class FlverModel
 public:
 	struct SkinnedVertex
 	{
-		DirectX::VertexPositionColor m_pos;
-		Vector3 m_normal;
+		DirectX::VertexPositionNormalColor m_pos;
 		float bone_weights[4];
 		int bone_indices[4];
 
@@ -31,7 +30,7 @@ public:
 
 	struct Settings
 	{
-		bool m_xray = false;
+		bool m_wireframe = false;
 		bool m_drawDummyPolygons = false;
 		int m_selectedBone = -1;
 		int m_selectedDummy = -1;

@@ -45,8 +45,7 @@ int GetFlverBoneIDByMorphemeBoneID(MR::AnimRigDef* pRig, FlverModel* pFlverModel
 
 FlverModel::SkinnedVertex::SkinnedVertex(Vector3 pos, Vector3 normal, float* weights, int* bone_indices)
 {
-	this->m_pos = DirectX::VertexPositionColor(pos, Vector4(0.7f, 0.7f, 0.7f, 1.f));
-	this->m_normal = normal;
+	this->m_pos = DirectX::VertexPositionNormalColor(pos, normal, DirectX::Colors::White);
 
 	for (size_t i = 0; i < 4; i++)
 	{
@@ -539,9 +538,9 @@ void FlverModel::GetModelData()
 
 				Vector3 pos = Vector3::Transform(DirectX::SimpleMath::Vector3(x, y, z), Matrix::CreateReflection(Plane(Vector3::Right)));
 
-				float norm_x = mesh->vertexData->positions[(vertexIndex * 3) + 0];
-				float norm_y = mesh->vertexData->positions[(vertexIndex * 3) + 2];
-				float norm_z = mesh->vertexData->positions[(vertexIndex * 3) + 1];
+				float norm_x = mesh->vertexData->normals[(vertexIndex * 3) + 0];
+				float norm_y = mesh->vertexData->normals[(vertexIndex * 3) + 2];
+				float norm_z = mesh->vertexData->normals[(vertexIndex * 3) + 1];
 
 				Vector3 normal = Vector3::Transform(DirectX::SimpleMath::Vector3(norm_x, norm_y, norm_z), Matrix::CreateReflection(Plane(Vector3::Right)));
 
@@ -562,9 +561,6 @@ void FlverModel::UpdateModel()
 		return;
 
 	DirectX::SimpleMath::Vector4 color = DirectX::SimpleMath::Vector4(0.7f, 0.7f, 0.7f, 1.f);
-
-	if (this->m_settings.m_xray)
-		color = DirectX::SimpleMath::Vector4(0.7f, 0.7f, 0.7f, 0.f);
 
 	for (int i = 0; i < this->m_vertBindPose.size(); i++)
 		for (size_t j = 0; j < this->m_vertBindPose[i].size(); j++)
@@ -747,6 +743,7 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
 			float* weights = this->m_vertBindPose[meshIdx][vertexIndex].bone_weights;
 
 			Vector3 newPos = Vector3::Zero;
+			Vector3 newNorm = Vector3::Zero;
 
 			for (size_t wt = 0; wt < 4; wt++)
 			{
@@ -756,9 +753,11 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
 					continue;
 
 				newPos += Vector3::Transform(this->m_vertBindPose[meshIdx][vertexIndex].m_pos.position, boneRelativeTransforms[boneID]) * weights[wt];
+				newNorm += Vector3::Transform(this->m_vertBindPose[meshIdx][vertexIndex].m_pos.normal, boneRelativeTransforms[boneID]) * weights[wt];
 			}
 
 			this->m_verts[meshIdx][vertexIndex].m_pos.position = newPos;
+			this->m_verts[meshIdx][vertexIndex].m_pos.normal = newNorm;
 		}
 	}
 }
