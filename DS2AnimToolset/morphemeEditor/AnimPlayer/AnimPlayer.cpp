@@ -43,6 +43,24 @@ void AnimPlayer::Clear()
 	if (this->m_modelParts.m_weaponLeft)
 		delete this->m_modelParts.m_weaponLeft;
 
+	if (this->m_modelParts.m_faceGen->m_fgFace)
+		delete this->m_modelParts.m_faceGen->m_fgFace;
+
+	if (this->m_modelParts.m_faceGen->m_fgHead)
+		delete this->m_modelParts.m_faceGen->m_fgHead;
+
+	if (this->m_modelParts.m_faceGen->m_fgEyes)
+		delete this->m_modelParts.m_faceGen->m_fgEyes;
+
+	if (this->m_modelParts.m_faceGen->m_fgEyeBrows)
+		delete this->m_modelParts.m_faceGen->m_fgEyeBrows;
+
+	if (this->m_modelParts.m_faceGen->m_fgBeard)
+		delete this->m_modelParts.m_faceGen->m_fgBeard;
+
+	if (this->m_modelParts.m_faceGen->m_fgHair)
+		delete this->m_modelParts.m_faceGen->m_fgHair;
+
 	this->m_modelParts.m_model = nullptr;
 	this->m_modelParts.m_head = nullptr;
 	this->m_modelParts.m_face = nullptr;
@@ -51,6 +69,12 @@ void AnimPlayer::Clear()
 	this->m_modelParts.m_leg = nullptr;
 	this->m_modelParts.m_weaponRight = nullptr;
 	this->m_modelParts.m_weaponLeft = nullptr;
+	this->m_modelParts.m_faceGen->m_fgFace = nullptr;
+	this->m_modelParts.m_faceGen->m_fgHead = nullptr;
+	this->m_modelParts.m_faceGen->m_fgEyes = nullptr;
+	this->m_modelParts.m_faceGen->m_fgEyeBrows = nullptr;
+	this->m_modelParts.m_faceGen->m_fgBeard = nullptr;
+	this->m_modelParts.m_faceGen->m_fgHair = nullptr;
 
 	this->Reset();
 }
@@ -108,6 +132,42 @@ void AnimPlayer::Update(float dt)
 	{
 		this->m_modelParts.m_weaponRight->UpdateModel();
 		this->m_modelParts.m_weaponRight->m_position = Matrix::CreateRotationY(DirectX::XM_PIDIV2) * Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * this->m_modelParts.m_model->GetDummyPolygonTransform(20) * this->m_modelParts.m_model->m_position;
+	}
+
+	if (this->m_modelParts.m_faceGen->m_fgFace)
+	{
+		this->m_modelParts.m_faceGen->m_fgFace->UpdateModel();
+		this->m_modelParts.m_faceGen->m_fgFace->Animate(animHandle);
+	}
+
+	if (this->m_modelParts.m_faceGen->m_fgHead)
+	{
+		this->m_modelParts.m_faceGen->m_fgHead->UpdateModel();
+		this->m_modelParts.m_faceGen->m_fgHead->Animate(animHandle);
+	}
+
+	if (this->m_modelParts.m_faceGen->m_fgEyes)
+	{
+		this->m_modelParts.m_faceGen->m_fgEyes->UpdateModel();
+		this->m_modelParts.m_faceGen->m_fgEyes->Animate(animHandle);
+	}
+
+	if (this->m_modelParts.m_faceGen->m_fgEyeBrows)
+	{
+		this->m_modelParts.m_faceGen->m_fgEyeBrows->UpdateModel();
+		this->m_modelParts.m_faceGen->m_fgEyeBrows->Animate(animHandle);
+	}
+
+	if (this->m_modelParts.m_faceGen->m_fgBeard)
+	{
+		this->m_modelParts.m_faceGen->m_fgBeard->UpdateModel();
+		this->m_modelParts.m_faceGen->m_fgBeard->Animate(animHandle);
+	}
+
+	if (this->m_modelParts.m_faceGen->m_fgHair)
+	{
+		this->m_modelParts.m_faceGen->m_fgHair->UpdateModel();
+		this->m_modelParts.m_faceGen->m_fgHair->Animate(animHandle);
 	}
 
 	if (animHandle == nullptr)
@@ -222,6 +282,33 @@ void AnimPlayer::SetModelPart(PartType partType, FlverModel* model)
 	}
 }
 
+void AnimPlayer::SetModelPartFacegen(FgPartType fgType, FlverModel* model)
+{
+	switch (fgType)
+	{
+	case FaceGen_Face:
+		this->m_modelParts.m_faceGen->m_fgFace = model;
+		break;
+	case FaceGen_Head:
+		this->m_modelParts.m_faceGen->m_fgHead = model;
+		break;
+	case FaceGen_Eyes:
+		this->m_modelParts.m_faceGen->m_fgEyes = model;
+		break;
+	case FaceGen_EyeBrows:
+		this->m_modelParts.m_faceGen->m_fgEyeBrows = model;
+		break;
+	case FaceGen_Beard:
+		this->m_modelParts.m_faceGen->m_fgBeard = model;
+		break;
+	case FaceGen_Hair:
+		this->m_modelParts.m_faceGen->m_fgHair = model;
+		break;
+	default:
+		break;
+	}
+}
+
 void AnimPlayer::SetPlaySpeed(float speed)
 {
 	this->m_playSpeed = speed;
@@ -270,6 +357,12 @@ FlverModel* AnimPlayer::GetModel()
 
 FlverModel* AnimPlayer::GetModelPart(PartType partType)
 {
+	if (partType >= Parts_MaxValue)
+	{
+		g_appLog->DebugMessage(MsgLevel_Error, "Requesting facegen outside of the maximum allowed bounadry (request=%d, max=%d)\n", partType, Parts_MaxValue);
+		return nullptr;
+	}
+
 	switch (partType)
 	{
 	case Parts_Head:
@@ -286,6 +379,38 @@ FlverModel* AnimPlayer::GetModelPart(PartType partType)
 		return this->m_modelParts.m_weaponLeft;
 	case Parts_WeaponRight:
 		return this->m_modelParts.m_weaponRight;
+	default:
+		return nullptr;
+	}
+}
+
+FlverModel* AnimPlayer::GetModelPartFacegen(FgPartType fgType)
+{
+	if (fgType >= FaceGen_MaxValue)
+	{
+		g_appLog->DebugMessage(MsgLevel_Error, "Requesting facegen outside of the maximum allowed bounadry (request=%d, max=%d)\n", fgType, FaceGen_MaxValue);
+		return nullptr;
+	}
+
+	switch (fgType)
+	{
+	case FaceGen_Face:
+		return this->m_modelParts.m_faceGen->m_fgFace;
+	case FaceGen_Head:
+		return this->m_modelParts.m_faceGen->m_fgHead;
+		break;
+	case FaceGen_Eyes:
+		return this->m_modelParts.m_faceGen->m_fgEyes;
+		break;
+	case FaceGen_EyeBrows:
+		return this->m_modelParts.m_faceGen->m_fgEyeBrows;
+		break;
+	case FaceGen_Beard:
+		return this->m_modelParts.m_faceGen->m_fgBeard;
+		break;
+	case FaceGen_Hair:
+		return this->m_modelParts.m_faceGen->m_fgHair;
+		break;
 	default:
 		return nullptr;
 	}

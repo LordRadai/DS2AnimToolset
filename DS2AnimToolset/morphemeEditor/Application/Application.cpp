@@ -1649,21 +1649,14 @@ std::wstring FindGamePath(std::wstring current_path)
 void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, int id, bool shield)
 {
 	std::wstring filepath = root.c_str();
+	wchar_t modelName[255];
 
 	if (shield)
-	{
-		wchar_t modelName[255];
-		swprintf_s(modelName, L"sd_%d_m.bnd", id);
-
-		filepath += L"\\shield\\" + std::wstring(modelName);
-	}
+		swprintf_s(modelName, L"\\shield\\sd_%d_m.bnd", id);
 	else
-	{
-		wchar_t modelName[255];
-		swprintf_s(modelName, L"wp_%d_m.bnd", id);
+		swprintf_s(modelName, L"\\weapon\\wp_%d_m.bnd", id);
 
-		filepath += L"\\weapon\\" + std::wstring(modelName);
-	}
+	filepath += modelName;
 
 	FlverModel* model = FlverModel::CreateFromBnd(filepath);
 
@@ -1671,30 +1664,110 @@ void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, 
 		pApplication->m_animPlayer->SetModelPart(type, model);
 }
 
-void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type)
+void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartType type, int id, bool female)
 {
+	if (id < 0)
+		return;
+
 	std::wstring filepath = root.c_str();
+	wchar_t modelName[255] = { 0 };
+	int fullId = 0;
 
 	switch (type)
 	{
-	case Parts_Head:
-		filepath += L"";
+	case FaceGen_Face:
+		if (female)
+			swprintf_s(modelName, L"\\face\\fg_1001_f_%d.bnd", id);
+		else
+			swprintf_s(modelName, L"\\face\\fg_1001_m_%d.bnd", id);
 		break;
-	case Parts_Face:
-		filepath += L"\\face\\fc_7610_m.bnd";
+	case FaceGen_Head:
+		if (female)
+			swprintf_s(modelName, L"\\face\\fg_2001_f.bnd");
+		else
+			swprintf_s(modelName, L"\\face\\fg_2001_m.bnd");
 		break;
-	case Parts_Body:
-		filepath += L"\\body\\bd_1001_m.bnd";
+	case FaceGen_Eyes:
+		swprintf_s(modelName, L"\\face\\fg_3001_a.bnd");
 		break;
-	case Parts_Arm:
-		filepath += L"\\arm\\am_1001_m.bnd";
+	case FaceGen_EyeBrows:
+		fullId = 4000 + id;
+
+		swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
 		break;
-	case Parts_Leg:
-		filepath += L"\\leg\\lg_1001_m.bnd";
+	case FaceGen_Beard:
+		fullId = 5000 + id;
+
+		swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
+		break;
+	case FaceGen_Hair:
+		fullId = 7000 + id;
+
+		if (female)
+			swprintf_s(modelName, L"\\face\\fg_2001_f.bnd", fullId + 19);
+		else
+			swprintf_s(modelName, L"\\face\\fg_2001_m.bnd", fullId);
 		break;
 	default:
 		break;
 	}
+
+	filepath += modelName;
+
+	FlverModel* model = FlverModel::CreateFromBnd(filepath);
+
+	if (model)
+	{
+		pApplication->m_animPlayer->SetModelPartFacegen(type, model);
+		pApplication->m_animPlayer->GetModelPartFacegen(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+	}
+}
+
+void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type, int id, bool female)
+{
+	if (id < 0)
+		return;
+
+	std::wstring filepath = root.c_str();
+	wchar_t modelName[255] = { 0 };
+
+	switch (type)
+	{
+	case Parts_Head:
+		if (female)
+			swprintf_s(modelName, L"\\head\\hd_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\head\\hd_%d_m.bnd", id);
+		break;
+	case Parts_Face:
+		if (female)
+			swprintf_s(modelName, L"\\face\\fc_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\face\\fc_%d_m.bnd", id);		
+		break;
+	case Parts_Body:
+		if (female)
+			swprintf_s(modelName, L"\\body\\bd_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\body\\bd_%d_m.bnd", id);
+		break;
+	case Parts_Arm:
+		if (female)
+			swprintf_s(modelName, L"\\arm\\am_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\arm\\am_%d_m.bnd", id);
+		break;
+	case Parts_Leg:
+		if (female)
+			swprintf_s(modelName, L"\\leg\\lg_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\leg\\lg_%d_m.bnd", id);
+		break;
+	default:
+		break;
+	}
+
+	filepath += modelName;
 
 	FlverModel* model = FlverModel::CreateFromBnd(filepath);
 
@@ -1828,11 +1901,18 @@ void Application::LoadFile()
 										//Load external parts for the player character
 										if (this->m_chrId == 1)
 										{
-											LoadPartsBnd(this, filepath_parts, Parts_Head);
-											LoadPartsBnd(this, filepath_parts, Parts_Face);
-											LoadPartsBnd(this, filepath_parts, Parts_Body);
-											LoadPartsBnd(this, filepath_parts, Parts_Arm);
-											LoadPartsBnd(this, filepath_parts, Parts_Leg);
+											LoadPartsBnd(this, filepath_parts, Parts_Head, -1, false);
+											LoadPartsBnd(this, filepath_parts, Parts_Face, -1, false);
+											LoadPartsBnd(this, filepath_parts, Parts_Body, 1001, false);
+											LoadPartsBnd(this, filepath_parts, Parts_Arm, 1001, false);
+											LoadPartsBnd(this, filepath_parts, Parts_Leg, 1001, false);
+
+											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Face, 1, false);
+											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Head, 1, false);
+											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Eyes, 1, false);
+											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_EyeBrows, 1, false);
+											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Beard, 1, false);
+											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Hair, 1, false);
 
 											LoadWeaponBnd(this, filepath_parts, Parts_WeaponLeft, 0, false);
 											LoadWeaponBnd(this, filepath_parts, Parts_WeaponRight, 1220, false);

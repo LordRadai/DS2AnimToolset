@@ -11,6 +11,28 @@ enum PartType
 	Parts_Leg,
 	Parts_WeaponLeft,
 	Parts_WeaponRight,
+	Parts_MaxValue,		//This must always be the last value
+};
+
+enum FgPartType
+{
+	FaceGen_Face,
+	FaceGen_Head,
+	FaceGen_Eyes,
+	FaceGen_EyeBrows,
+	FaceGen_Beard,
+	FaceGen_Hair,
+	FaceGen_MaxValue,	//This must always be the last value
+};
+
+struct ModelFaceGen
+{
+	FlverModel* m_fgFace;
+	FlverModel* m_fgHead;
+	FlverModel* m_fgEyes;
+	FlverModel* m_fgEyeBrows;
+	FlverModel* m_fgBeard;
+	FlverModel* m_fgHair;
 };
 
 struct ModelParts
@@ -19,6 +41,7 @@ struct ModelParts
 
 	FlverModel* m_head;
 	FlverModel* m_face;
+	ModelFaceGen* m_faceGen;
 	FlverModel* m_body;
 	FlverModel* m_arm;
 	FlverModel* m_leg;
@@ -43,6 +66,7 @@ public:
 	void SetTime(float time);
 	void SetModel(FlverModel* model);
 	void SetModelPart(PartType partType, FlverModel* model);
+	void SetModelPartFacegen(FgPartType fgType, FlverModel* model);
 	void SetPlaySpeed(float speed);
 	void StepPlay(float step);
 
@@ -52,6 +76,7 @@ public:
 	float GetTime();
 	FlverModel* GetModel();
 	FlverModel* GetModelPart(PartType partType);
+	FlverModel* GetModelPartFacegen(FgPartType fgType);
 	float GetPlaySpeed();
 
 private:

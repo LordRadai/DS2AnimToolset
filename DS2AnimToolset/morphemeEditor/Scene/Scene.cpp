@@ -299,13 +299,22 @@ void Scene::Render()
         if (characterDef)
         {
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModel(), characterDef->getNetworkDef()->getRig(0));
+
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Head), characterDef->getNetworkDef()->getRig(0), false);
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Face), characterDef->getNetworkDef()->getRig(0), false);
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Body), characterDef->getNetworkDef()->getRig(0), false);
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Arm), characterDef->getNetworkDef()->getRig(0), false);
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Leg), characterDef->getNetworkDef()->getRig(0), false);
+
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_WeaponLeft), characterDef->getNetworkDef()->getRig(0), false);
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_WeaponRight), characterDef->getNetworkDef()->getRig(0), false);
+
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Face), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Head), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Eyes), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_EyeBrows), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Beard), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Hair), characterDef->getNetworkDef()->getRig(0), false);
         }
 
         m_batch->End();
