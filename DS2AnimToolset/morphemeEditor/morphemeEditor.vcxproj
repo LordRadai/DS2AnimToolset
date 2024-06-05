@@ -146,6 +146,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)DS2AnimToolset\morpheme\utils\comms2\include\;$(SolutionDir)DS2AnimToolset\morpheme\utils\simpleBundle\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\core\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\NMPlatform\win32\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <WholeProgramOptimization>true</WholeProgramOptimization>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

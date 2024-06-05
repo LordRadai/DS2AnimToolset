@@ -75,8 +75,7 @@ public:
 	struct ModelLoadFlags
 	{
 		bool m_loadModel = false;
-		int m_modelID = -1;
-		bool m_isShield = false;
+		std::wstring m_modelPath = L"";
 		PartType m_partType = Parts_Invalid;
 	} m_modelLoadFlags;
 
