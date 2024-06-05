@@ -1695,9 +1695,9 @@ void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartTyp
 	{
 	case FaceGen_Face:
 		if (female)
-			swprintf_s(modelName, L"\\face\\fg_1001_f_%d.bnd", id);
+			swprintf_s(modelName, L"\\face\\fg_1001_f.bnd", id);
 		else
-			swprintf_s(modelName, L"\\face\\fg_1001_m_%d.bnd", id);
+			swprintf_s(modelName, L"\\face\\fg_1001_m.bnd", id);
 		break;
 	case FaceGen_Head:
 		if (female)
