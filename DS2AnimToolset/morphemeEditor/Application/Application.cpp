@@ -1684,9 +1684,6 @@ void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, 
 
 void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartType type, int id, bool female)
 {
-	if (id < 0)
-		return;
-
 	std::wstring filepath = root.c_str();
 	wchar_t modelName[255] = { 0 };
 	int fullId = 0;
@@ -1743,9 +1740,6 @@ void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartTyp
 
 void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type, int id, bool female)
 {
-	if (id < 0)
-		return;
-
 	std::wstring filepath = root.c_str();
 	wchar_t modelName[255] = { 0 };
 
@@ -1929,7 +1923,7 @@ void Application::LoadFile()
 											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Head, 1, false);
 											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Eyes, 1, false);
 											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_EyeBrows, 1, false);
-											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Beard, 1, false);
+											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Beard, 999, false);
 											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Hair, 1, false);
 
 											LoadWeaponBnd(this, filepath_parts, Parts_WeaponLeft, 0, false);
