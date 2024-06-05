@@ -144,7 +144,10 @@ namespace DX
         DirectX::GXMVECTOR color = DirectX::Colors::Yellow);
 
     void XM_CALLCONV DrawFlverModel(DirectX::PrimitiveBatch<DirectX::VertexPositionNormalColor>* batch,
-        DirectX::XMMATRIX world, FlverModel* model, bool wireframe);
+        DirectX::XMMATRIX world, FlverModel* model);
+
+    void XM_CALLCONV DrawFlverModelWireframe(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
+        DirectX::XMMATRIX world, FlverModel* model);
 
     void XM_CALLCONV DrawReferenceFrame(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
         DirectX::XMMATRIX world);

@@ -62,11 +62,11 @@ void Scene::Initialise(HWND hwnd, IDXGISwapChain* pSwapChain, ID3D11Device* pDev
 
     m_states = std::make_unique<CommonStates>(this->m_device);
 
-    m_effect = std::make_unique<BasicEffect>(this->m_device);
-    m_effect->SetVertexColorEnabled(true);
+    m_debugEffect = std::make_unique<BasicEffect>(this->m_device);
+    m_debugEffect->SetVertexColorEnabled(true);
 
     DX::ThrowIfFailed(
-        CreateInputLayoutFromEffect<VertexPositionColor>(this->m_device, m_effect.get(),
+        CreateInputLayoutFromEffect<VertexPositionColor>(this->m_device, m_debugEffect.get(),
             m_inputLayout.ReleaseAndGetAddressOf())
     );
 
@@ -106,9 +106,9 @@ void Scene::Initialise(HWND hwnd, IDXGISwapChain* pSwapChain, ID3D11Device* pDev
         float(this->m_width) / float(this->m_height), 0.1f, 10.f);
     m_world = Matrix::Identity;
 
-    m_effect->SetView(m_view);
-    m_effect->SetProjection(m_proj);
-    m_effect->SetWorld(m_world);
+    m_debugEffect->SetView(m_view);
+    m_debugEffect->SetProjection(m_proj);
+    m_debugEffect->SetWorld(m_world);
 
     m_physicalEffect->SetView(m_view);
     m_physicalEffect->SetProjection(m_proj);
@@ -314,10 +314,10 @@ void Scene::Render()
         context->OMSetBlendState(m_states->AlphaBlend(), nullptr, 0xFFFFFFFF);
         context->RSSetState(m_states->CullNone());
 
-        m_effect->SetWorld(m_world);
-        m_effect->SetView(m_view);
-        m_effect->SetProjection(m_proj);
-        m_effect->Apply(context);
+        m_debugEffect->SetWorld(m_world);
+        m_debugEffect->SetView(m_view);
+        m_debugEffect->SetProjection(m_proj);
+        m_debugEffect->Apply(context);
 
         context->IASetInputLayout(m_inputLayout.Get());
 
@@ -385,17 +385,17 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
     if (model == nullptr)
         return;
 
-    m_effect->SetWorld(m_world);
-    m_effect->SetView(m_view);
-    m_effect->SetProjection(m_proj);
-    m_effect->Apply(this->m_deviceContext);
+    Matrix world = model->m_position * Matrix::CreateScale(model->m_scale);
+
+    m_debugEffect->SetWorld(world);
+    m_debugEffect->SetView(m_view);
+    m_debugEffect->SetProjection(m_proj);
+    m_debugEffect->Apply(this->m_deviceContext);
 
     this->m_deviceContext->IASetInputLayout(m_inputLayout.Get());
 
     DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(this->m_deviceContext, UINT16_MAX * 3, UINT16_MAX);
     prim.Begin();
-
-    Matrix world = model->m_position * Matrix::CreateScale(model->m_scale);    
 
     int boneCount = model->m_boneTransforms.size();
 
@@ -404,8 +404,8 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
 
     if (model->m_settings.m_selectedBone != -1)
     {
-        DX::DrawReferenceFrame(&prim, model->m_boneTransforms[model->m_settings.m_selectedBone] * world);
-        this->AddText(RString::ToNarrow(model->m_flver->bones[model->m_settings.m_selectedBone].name).c_str(), model->m_boneTransforms[model->m_settings.m_selectedBone] * world);
+        DX::DrawReferenceFrame(&prim, model->m_boneTransforms[model->m_settings.m_selectedBone]);
+        this->AddText(RString::ToNarrow(model->m_flver->bones[model->m_settings.m_selectedBone].name).c_str(), model->m_boneTransforms[model->m_settings.m_selectedBone]);
     }
 
     if (model->m_settings.m_drawDummyPolygons)
@@ -414,16 +414,16 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
         {
             std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[i].referenceID);
 
-            DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[i] * world);
-            this->AddText(dummy_name.c_str(), model->m_dummyPolygons[i] * world);
+            DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[i]);
+            this->AddText(dummy_name.c_str(), model->m_dummyPolygons[i]);
         }
     }
     else if (model->m_settings.m_selectedDummy != -1)
     {
         std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[model->m_settings.m_selectedDummy].referenceID);
 
-        DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
-        this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
+        DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[model->m_settings.m_selectedDummy]);
+        this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy]);
     }
 
     if (drawBones)
@@ -439,8 +439,8 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
 
             if (parentIndex != -1)
             {
-                Vector3 boneA = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[i] * world);
-                Vector3 boneB = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[parentIndex] * world);
+                Vector3 boneA = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[i]);
+                Vector3 boneB = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[parentIndex]);
 
                 DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, Colors::CornflowerBlue);
 
@@ -449,28 +449,37 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
             }
         }
 
-        DX::DrawSphere(&prim, model->m_boneTransforms[characterRootBoneIdx] * world, 0.03f, Colors::MediumBlue);
-        DX::DrawReferenceFrame(&prim, model->m_boneTransforms[trajectoryBoneIndex] * world);
+        DX::DrawSphere(&prim, model->m_boneTransforms[characterRootBoneIdx], 0.03f, Colors::MediumBlue);
+        DX::DrawReferenceFrame(&prim, model->m_boneTransforms[trajectoryBoneIndex]);
     }
 
     prim.End();
 
-    DirectX::PrimitiveBatch<DirectX::VertexPositionNormalColor> primShaded(this->m_deviceContext, UINT16_MAX * 3, UINT16_MAX);
+    if (!model->m_settings.m_wireframe)
+    {
+        DirectX::PrimitiveBatch<DirectX::VertexPositionNormalColor> primShaded(this->m_deviceContext, UINT16_MAX * 3, UINT16_MAX);
 
-    m_physicalEffect->SetWorld(world);
-    m_physicalEffect->SetView(m_view);
-    m_physicalEffect->SetProjection(m_proj);
+        m_physicalEffect->SetWorld(world);
+        m_physicalEffect->SetView(m_view);
+        m_physicalEffect->SetProjection(m_proj);
 
-    m_physicalEffect->SetAlpha(1.f);
+        m_physicalEffect->SetAlpha(1.f);
 
-    if (g_appRootWindow->m_sceneFlags.m_xray)
-        m_physicalEffect->SetAlpha(0.2f);
+        if (g_appRootWindow->m_sceneFlags.m_xray)
+            m_physicalEffect->SetAlpha(0.5f);
 
-    m_physicalEffect->Apply(this->m_deviceContext);
+        m_physicalEffect->Apply(this->m_deviceContext);
 
-    this->m_deviceContext->IASetInputLayout(m_physicalInputLayout.Get());
+        this->m_deviceContext->IASetInputLayout(m_physicalInputLayout.Get());
 
-    primShaded.Begin();
-    DX::DrawFlverModel(&primShaded, Matrix::Identity, model, model->m_settings.m_wireframe);
-    primShaded.End();
+        primShaded.Begin();
+        DX::DrawFlverModel(&primShaded, Matrix::Identity, model);
+        primShaded.End();
+    }
+    else
+    {
+        prim.Begin();
+        DX::DrawFlverModelWireframe(&prim, Matrix::Identity, model);
+        prim.End();
+    }
 }
