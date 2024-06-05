@@ -41,7 +41,7 @@ struct ModelParts
 
 	FlverModel* m_head;
 	FlverModel* m_face;
-	ModelFaceGen* m_faceGen;
+	ModelFaceGen m_faceGen;
 	FlverModel* m_body;
 	FlverModel* m_arm;
 	FlverModel* m_leg;

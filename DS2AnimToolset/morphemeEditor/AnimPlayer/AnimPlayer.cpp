@@ -43,23 +43,23 @@ void AnimPlayer::Clear()
 	if (this->m_modelParts.m_weaponLeft)
 		delete this->m_modelParts.m_weaponLeft;
 
-	if (this->m_modelParts.m_faceGen->m_fgFace)
-		delete this->m_modelParts.m_faceGen->m_fgFace;
+	if (this->m_modelParts.m_faceGen.m_fgFace)
+		delete this->m_modelParts.m_faceGen.m_fgFace;
 
-	if (this->m_modelParts.m_faceGen->m_fgHead)
-		delete this->m_modelParts.m_faceGen->m_fgHead;
+	if (this->m_modelParts.m_faceGen.m_fgHead)
+		delete this->m_modelParts.m_faceGen.m_fgHead;
 
-	if (this->m_modelParts.m_faceGen->m_fgEyes)
-		delete this->m_modelParts.m_faceGen->m_fgEyes;
+	if (this->m_modelParts.m_faceGen.m_fgEyes)
+		delete this->m_modelParts.m_faceGen.m_fgEyes;
 
-	if (this->m_modelParts.m_faceGen->m_fgEyeBrows)
-		delete this->m_modelParts.m_faceGen->m_fgEyeBrows;
+	if (this->m_modelParts.m_faceGen.m_fgEyeBrows)
+		delete this->m_modelParts.m_faceGen.m_fgEyeBrows;
 
-	if (this->m_modelParts.m_faceGen->m_fgBeard)
-		delete this->m_modelParts.m_faceGen->m_fgBeard;
+	if (this->m_modelParts.m_faceGen.m_fgBeard)
+		delete this->m_modelParts.m_faceGen.m_fgBeard;
 
-	if (this->m_modelParts.m_faceGen->m_fgHair)
-		delete this->m_modelParts.m_faceGen->m_fgHair;
+	if (this->m_modelParts.m_faceGen.m_fgHair)
+		delete this->m_modelParts.m_faceGen.m_fgHair;
 
 	this->m_modelParts.m_model = nullptr;
 	this->m_modelParts.m_head = nullptr;
@@ -69,12 +69,12 @@ void AnimPlayer::Clear()
 	this->m_modelParts.m_leg = nullptr;
 	this->m_modelParts.m_weaponRight = nullptr;
 	this->m_modelParts.m_weaponLeft = nullptr;
-	this->m_modelParts.m_faceGen->m_fgFace = nullptr;
-	this->m_modelParts.m_faceGen->m_fgHead = nullptr;
-	this->m_modelParts.m_faceGen->m_fgEyes = nullptr;
-	this->m_modelParts.m_faceGen->m_fgEyeBrows = nullptr;
-	this->m_modelParts.m_faceGen->m_fgBeard = nullptr;
-	this->m_modelParts.m_faceGen->m_fgHair = nullptr;
+	this->m_modelParts.m_faceGen.m_fgFace = nullptr;
+	this->m_modelParts.m_faceGen.m_fgHead = nullptr;
+	this->m_modelParts.m_faceGen.m_fgEyes = nullptr;
+	this->m_modelParts.m_faceGen.m_fgEyeBrows = nullptr;
+	this->m_modelParts.m_faceGen.m_fgBeard = nullptr;
+	this->m_modelParts.m_faceGen.m_fgHair = nullptr;
 
 	this->Reset();
 }
@@ -134,40 +134,40 @@ void AnimPlayer::Update(float dt)
 		this->m_modelParts.m_weaponRight->m_position = Matrix::CreateRotationY(DirectX::XM_PIDIV2) * Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * this->m_modelParts.m_model->GetDummyPolygonTransform(20) * this->m_modelParts.m_model->m_position;
 	}
 
-	if (this->m_modelParts.m_faceGen->m_fgFace)
+	if (this->m_modelParts.m_faceGen.m_fgFace)
 	{
-		this->m_modelParts.m_faceGen->m_fgFace->UpdateModel();
-		this->m_modelParts.m_faceGen->m_fgFace->Animate(animHandle);
+		this->m_modelParts.m_faceGen.m_fgFace->UpdateModel();
+		this->m_modelParts.m_faceGen.m_fgFace->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_faceGen->m_fgHead)
+	if (this->m_modelParts.m_faceGen.m_fgHead)
 	{
-		this->m_modelParts.m_faceGen->m_fgHead->UpdateModel();
-		this->m_modelParts.m_faceGen->m_fgHead->Animate(animHandle);
+		this->m_modelParts.m_faceGen.m_fgHead->UpdateModel();
+		this->m_modelParts.m_faceGen.m_fgHead->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_faceGen->m_fgEyes)
+	if (this->m_modelParts.m_faceGen.m_fgEyes)
 	{
-		this->m_modelParts.m_faceGen->m_fgEyes->UpdateModel();
-		this->m_modelParts.m_faceGen->m_fgEyes->Animate(animHandle);
+		this->m_modelParts.m_faceGen.m_fgEyes->UpdateModel();
+		this->m_modelParts.m_faceGen.m_fgEyes->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_faceGen->m_fgEyeBrows)
+	if (this->m_modelParts.m_faceGen.m_fgEyeBrows)
 	{
-		this->m_modelParts.m_faceGen->m_fgEyeBrows->UpdateModel();
-		this->m_modelParts.m_faceGen->m_fgEyeBrows->Animate(animHandle);
+		this->m_modelParts.m_faceGen.m_fgEyeBrows->UpdateModel();
+		this->m_modelParts.m_faceGen.m_fgEyeBrows->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_faceGen->m_fgBeard)
+	if (this->m_modelParts.m_faceGen.m_fgBeard)
 	{
-		this->m_modelParts.m_faceGen->m_fgBeard->UpdateModel();
-		this->m_modelParts.m_faceGen->m_fgBeard->Animate(animHandle);
+		this->m_modelParts.m_faceGen.m_fgBeard->UpdateModel();
+		this->m_modelParts.m_faceGen.m_fgBeard->Animate(animHandle);
 	}
 
-	if (this->m_modelParts.m_faceGen->m_fgHair)
+	if (this->m_modelParts.m_faceGen.m_fgHair)
 	{
-		this->m_modelParts.m_faceGen->m_fgHair->UpdateModel();
-		this->m_modelParts.m_faceGen->m_fgHair->Animate(animHandle);
+		this->m_modelParts.m_faceGen.m_fgHair->UpdateModel();
+		this->m_modelParts.m_faceGen.m_fgHair->Animate(animHandle);
 	}
 
 	if (animHandle == nullptr)
@@ -296,40 +296,40 @@ void AnimPlayer::SetModelPartFacegen(FgPartType fgType, FlverModel* model)
 	switch (fgType)
 	{
 	case FaceGen_Face:
-		if (this->m_modelParts.m_faceGen->m_fgFace)
-			delete this->m_modelParts.m_faceGen->m_fgFace;
+		if (this->m_modelParts.m_faceGen.m_fgFace)
+			delete this->m_modelParts.m_faceGen.m_fgFace;
 
-		this->m_modelParts.m_faceGen->m_fgFace = model;
+		this->m_modelParts.m_faceGen.m_fgFace = model;
 		break;
 	case FaceGen_Head:
-		if (this->m_modelParts.m_faceGen->m_fgHead)
-			delete this->m_modelParts.m_faceGen->m_fgHead;
+		if (this->m_modelParts.m_faceGen.m_fgHead)
+			delete this->m_modelParts.m_faceGen.m_fgHead;
 
-		this->m_modelParts.m_faceGen->m_fgHead = model;
+		this->m_modelParts.m_faceGen.m_fgHead = model;
 		break;
 	case FaceGen_Eyes:
-		if (this->m_modelParts.m_faceGen->m_fgEyes)
-			delete this->m_modelParts.m_faceGen->m_fgEyes;
+		if (this->m_modelParts.m_faceGen.m_fgEyes)
+			delete this->m_modelParts.m_faceGen.m_fgEyes;
 
-		this->m_modelParts.m_faceGen->m_fgEyes = model;
+		this->m_modelParts.m_faceGen.m_fgEyes = model;
 		break;
 	case FaceGen_EyeBrows:
-		if (this->m_modelParts.m_faceGen->m_fgEyeBrows)
-			delete this->m_modelParts.m_faceGen->m_fgEyeBrows;
+		if (this->m_modelParts.m_faceGen.m_fgEyeBrows)
+			delete this->m_modelParts.m_faceGen.m_fgEyeBrows;
 
-		this->m_modelParts.m_faceGen->m_fgEyeBrows = model;
+		this->m_modelParts.m_faceGen.m_fgEyeBrows = model;
 		break;
 	case FaceGen_Beard:
-		if (this->m_modelParts.m_faceGen->m_fgBeard)
-			delete this->m_modelParts.m_faceGen->m_fgBeard;
+		if (this->m_modelParts.m_faceGen.m_fgBeard)
+			delete this->m_modelParts.m_faceGen.m_fgBeard;
 
-		this->m_modelParts.m_faceGen->m_fgBeard = model;
+		this->m_modelParts.m_faceGen.m_fgBeard = model;
 		break;
 	case FaceGen_Hair:
-		if (this->m_modelParts.m_faceGen->m_fgHair)
-			delete this->m_modelParts.m_faceGen->m_fgHair;
+		if (this->m_modelParts.m_faceGen.m_fgHair)
+			delete this->m_modelParts.m_faceGen.m_fgHair;
 
-		this->m_modelParts.m_faceGen->m_fgHair = model;
+		this->m_modelParts.m_faceGen.m_fgHair = model;
 		break;
 	default:
 		break;
@@ -422,21 +422,21 @@ FlverModel* AnimPlayer::GetModelPartFacegen(FgPartType fgType)
 	switch (fgType)
 	{
 	case FaceGen_Face:
-		return this->m_modelParts.m_faceGen->m_fgFace;
+		return this->m_modelParts.m_faceGen.m_fgFace;
 	case FaceGen_Head:
-		return this->m_modelParts.m_faceGen->m_fgHead;
+		return this->m_modelParts.m_faceGen.m_fgHead;
 		break;
 	case FaceGen_Eyes:
-		return this->m_modelParts.m_faceGen->m_fgEyes;
+		return this->m_modelParts.m_faceGen.m_fgEyes;
 		break;
 	case FaceGen_EyeBrows:
-		return this->m_modelParts.m_faceGen->m_fgEyeBrows;
+		return this->m_modelParts.m_faceGen.m_fgEyeBrows;
 		break;
 	case FaceGen_Beard:
-		return this->m_modelParts.m_faceGen->m_fgBeard;
+		return this->m_modelParts.m_faceGen.m_fgBeard;
 		break;
 	case FaceGen_Hair:
-		return this->m_modelParts.m_faceGen->m_fgHair;
+		return this->m_modelParts.m_faceGen.m_fgHair;
 		break;
 	default:
 		return nullptr;
