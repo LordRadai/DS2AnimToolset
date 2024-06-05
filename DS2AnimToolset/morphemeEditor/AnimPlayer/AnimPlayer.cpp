@@ -224,57 +224,63 @@ void AnimPlayer::SetTime(float time)
 
 void AnimPlayer::SetModel(FlverModel* model)
 {
-	this->m_modelParts.m_model = model;
-
 	if (model)
-		this->m_modelParts.m_model->GetModelData();
+		model->GetModelData();
+
+	if (this->m_modelParts.m_model)
+		delete this->m_modelParts.m_model;
+
+	this->m_modelParts.m_model = model;
 }
 
 void AnimPlayer::SetModelPart(PartType partType, FlverModel* model)
 {
+	if (model)
+		model->GetModelData();
+
 	switch (partType)
 	{
 	case Parts_Head:
-		this->m_modelParts.m_head = model;
+		if (this->m_modelParts.m_head)
+			delete this->m_modelParts.m_head;
 
-		if (model)
-			this->m_modelParts.m_head->GetModelData();
+		this->m_modelParts.m_head = model;
 		break;
 	case Parts_Face:
-		this->m_modelParts.m_face = model;
+		if (this->m_modelParts.m_face)
+			delete this->m_modelParts.m_face;
 
-		if (model)
-			this->m_modelParts.m_face->GetModelData();
+		this->m_modelParts.m_face = model;
 		break;
 	case Parts_Body:
-		this->m_modelParts.m_body = model;
+		if (this->m_modelParts.m_body)
+			delete this->m_modelParts.m_body;
 
-		if (model)
-			this->m_modelParts.m_body->GetModelData();
+		this->m_modelParts.m_body = model;
 		break;
 	case Parts_Arm:
-		this->m_modelParts.m_arm = model;
+		if (this->m_modelParts.m_arm)
+			delete this->m_modelParts.m_arm;
 
-		if (model)
-			this->m_modelParts.m_arm->GetModelData();
+		this->m_modelParts.m_arm = model;
 		break;
 	case Parts_Leg:
-		this->m_modelParts.m_leg = model;
+		if (this->m_modelParts.m_leg)
+			delete this->m_modelParts.m_leg;
 
-		if (model)
-			this->m_modelParts.m_leg->GetModelData();
+		this->m_modelParts.m_leg = model;
 		break;
 	case Parts_WeaponLeft:
-		this->m_modelParts.m_weaponLeft = model;
+		if (this->m_modelParts.m_weaponLeft)
+			delete this->m_modelParts.m_weaponLeft;
 
-		if (model)
-			this->m_modelParts.m_weaponLeft->GetModelData();
+		this->m_modelParts.m_weaponLeft = model;
 		break;
 	case Parts_WeaponRight:
-		this->m_modelParts.m_weaponRight = model;
+		if (this->m_modelParts.m_weaponRight)
+			delete this->m_modelParts.m_weaponRight;
 
-		if (model)
-			this->m_modelParts.m_weaponRight->GetModelData();
+		this->m_modelParts.m_weaponRight = model;
 		break;
 	default:
 		g_appLog->DebugMessage(MsgLevel_Error, "Invalid part type %d\n", partType);
@@ -284,24 +290,45 @@ void AnimPlayer::SetModelPart(PartType partType, FlverModel* model)
 
 void AnimPlayer::SetModelPartFacegen(FgPartType fgType, FlverModel* model)
 {
+	if (model)
+		model->GetModelData();
+
 	switch (fgType)
 	{
 	case FaceGen_Face:
+		if (this->m_modelParts.m_faceGen->m_fgFace)
+			delete this->m_modelParts.m_faceGen->m_fgFace;
+
 		this->m_modelParts.m_faceGen->m_fgFace = model;
 		break;
 	case FaceGen_Head:
+		if (this->m_modelParts.m_faceGen->m_fgHead)
+			delete this->m_modelParts.m_faceGen->m_fgHead;
+
 		this->m_modelParts.m_faceGen->m_fgHead = model;
 		break;
 	case FaceGen_Eyes:
+		if (this->m_modelParts.m_faceGen->m_fgEyes)
+			delete this->m_modelParts.m_faceGen->m_fgEyes;
+
 		this->m_modelParts.m_faceGen->m_fgEyes = model;
 		break;
 	case FaceGen_EyeBrows:
+		if (this->m_modelParts.m_faceGen->m_fgEyeBrows)
+			delete this->m_modelParts.m_faceGen->m_fgEyeBrows;
+
 		this->m_modelParts.m_faceGen->m_fgEyeBrows = model;
 		break;
 	case FaceGen_Beard:
+		if (this->m_modelParts.m_faceGen->m_fgBeard)
+			delete this->m_modelParts.m_faceGen->m_fgBeard;
+
 		this->m_modelParts.m_faceGen->m_fgBeard = model;
 		break;
 	case FaceGen_Hair:
+		if (this->m_modelParts.m_faceGen->m_fgHair)
+			delete this->m_modelParts.m_faceGen->m_fgHair;
+
 		this->m_modelParts.m_faceGen->m_fgHair = model;
 		break;
 	default:
