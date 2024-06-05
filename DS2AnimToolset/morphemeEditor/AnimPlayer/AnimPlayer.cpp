@@ -198,7 +198,6 @@ void AnimPlayer::SetAnimation(AnimSourceInterface* anim)
 
 void AnimPlayer::Reset()
 {
-	this->SetModel(this->m_modelParts.m_model);
 	this->m_anim = nullptr;
 	this->m_time = 0.f;
 }
