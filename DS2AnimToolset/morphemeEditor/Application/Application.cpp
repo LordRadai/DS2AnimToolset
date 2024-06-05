@@ -1204,6 +1204,24 @@ void Application::PreviewSceneExplorerWindow()
 	model = this->m_animPlayer->GetModelPart(Parts_WeaponRight);
 	ModelTreeNode(model);
 
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Face);
+	ModelTreeNode(model);
+
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Head);
+	ModelTreeNode(model);
+
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Eyes);
+	ModelTreeNode(model);
+
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_EyeBrows);
+	ModelTreeNode(model);
+
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Beard);
+	ModelTreeNode(model);
+
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Hair);
+	ModelTreeNode(model);
+
 	ImGui::End();
 }
 
