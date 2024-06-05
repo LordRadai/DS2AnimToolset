@@ -1113,11 +1113,18 @@ void SkeletonInspectorTreeNode(FLVER2* flv, int boneID, int& selected_id)
 	}
 }
 
-void ModelTreeNode(FlverModel* model)
+void ModelTreeNode(Application* application, FlverModel* model)
 {
 	if (model)
 	{
-		if (ImGui::TreeNode(model->m_name.c_str()))
+		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+
+		if (application->m_sceneFlags.m_selectedModel == model)
+			node_flags |= ImGuiTreeNodeFlags_Selected;
+
+		bool open = ImGui::TreeNodeEx(model->m_name.c_str(), node_flags);
+
+		if (open)
 		{
 			if (model->m_flver->header.boneCount > 0)
 			{
@@ -1171,6 +1178,12 @@ void ModelTreeNode(FlverModel* model)
 
 			ImGui::TreePop();
 		}
+
+		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+			application->m_sceneFlags.m_selectedModel = model;
+
+		if (ImGui::IsMouseDoubleClicked(0))
+			application->m_sceneFlags.m_selectedModel = nullptr;
 	}
 
 }
@@ -1182,46 +1195,46 @@ void Application::PreviewSceneExplorerWindow()
 	ImGui::Begin("Scene Explorer", &this->m_sceneFlags.m_sceneExplorer);
 
 	FlverModel* model = this->m_animPlayer->GetModel();	
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPart(Parts_Face);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPart(Parts_Head);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPart(Parts_Body);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPart(Parts_Arm);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPart(Parts_Leg);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPart(Parts_WeaponLeft);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPart(Parts_WeaponRight);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Face);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Head);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Eyes);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_EyeBrows);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Beard);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Hair);
-	ModelTreeNode(model);
+	ModelTreeNode(this, model);
 
 	ImGui::End();
 }

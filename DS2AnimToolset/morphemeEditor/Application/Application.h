@@ -92,6 +92,7 @@ public:
 		bool m_sceneExplorer = false;
 		bool m_drawDummies = false;
 		bool m_xray = false;
+		FlverModel* m_selectedModel = nullptr;
 	} m_sceneFlags;
 	
 	int m_chrId = -1;

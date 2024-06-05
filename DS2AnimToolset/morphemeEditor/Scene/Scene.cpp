@@ -333,6 +333,9 @@ void Scene::Render()
 
         if (characterDef)
         {
+            if (g_appRootWindow->m_sceneFlags.m_selectedModel)
+                this->AddText(g_appRootWindow->m_sceneFlags.m_selectedModel->m_name, g_appRootWindow->m_sceneFlags.m_selectedModel->m_position);
+
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModel(), characterDef->getNetworkDef()->getRig(0));
 
             this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Head), characterDef->getNetworkDef()->getRig(0), false);
