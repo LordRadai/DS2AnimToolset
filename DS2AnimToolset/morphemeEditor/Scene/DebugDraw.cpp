@@ -1384,8 +1384,6 @@ void XM_CALLCONV DX::Draw3DArc(DirectX::PrimitiveBatch<DirectX::VertexPositionCo
 void XM_CALLCONV DX::DrawFlverModel(DirectX::PrimitiveBatch<DirectX::VertexPositionNormalColor>* batch,
     DirectX::XMMATRIX world, FlverModel* model)
 {
-    Vector4 color = Vector4(Colors::CornflowerBlue);
-
     for (size_t meshIdx = 0; meshIdx < model->m_verts.size(); meshIdx++)
     {
         std::vector<VertexPositionNormalColor> vertices;
@@ -1417,7 +1415,7 @@ void XM_CALLCONV DX::DrawFlverModel(DirectX::PrimitiveBatch<DirectX::VertexPosit
 void XM_CALLCONV DX::DrawFlverModelWireframe(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
     DirectX::XMMATRIX world, FlverModel* model)
 {
-    Vector4 color = Vector4(Colors::CornflowerBlue);
+    Vector4 color = Vector4(Colors::White);
 
     for (size_t meshIdx = 0; meshIdx < model->m_verts.size(); meshIdx++)
     {
@@ -1426,7 +1424,6 @@ void XM_CALLCONV DX::DrawFlverModelWireframe(DirectX::PrimitiveBatch<DirectX::Ve
 
         vertices.reserve(model->m_verts[meshIdx].size());
         indices.reserve(model->m_verts[meshIdx].size() * 2);
-
 
         for (int i = 0; i < model->m_verts[meshIdx].size(); i += 3)
         {

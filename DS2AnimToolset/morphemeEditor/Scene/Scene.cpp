@@ -73,25 +73,25 @@ void Scene::Initialise(HWND hwnd, IDXGISwapChain* pSwapChain, ID3D11Device* pDev
     m_physicalEffect = std::make_unique<BasicEffect>(this->m_device);
     m_physicalEffect->SetVertexColorEnabled(true);
     m_physicalEffect->SetLightingEnabled(true);
-    m_physicalEffect->SetPerPixelLighting(true);
 
-    m_physicalEffect->SetAmbientLightColor(Vector4(0.1f, 0.1f, 0.1f, 1.f));
+    m_physicalEffect->SetAmbientLightColor(Colors::White);
+
     m_physicalEffect->SetDiffuseColor(Vector4(0.5f, 0.5f, 0.5f, 1.f));
     m_physicalEffect->SetSpecularColor(Vector4(0.04f, 0.04f, 0.04f, 1.f));
     m_physicalEffect->SetSpecularPower(32.f);
 
     m_physicalEffect->SetLightEnabled(0, true);
-    m_physicalEffect->SetLightDirection(0, Vector3::Down + Vector3::Forward + Vector3::Right);
+    m_physicalEffect->SetLightDirection(0, Vector3(0.577f, -0.577f, -0.577f));
     m_physicalEffect->SetLightDiffuseColor(0, Colors::White);
     m_physicalEffect->SetLightSpecularColor(0, Colors::White);
 
     m_physicalEffect->SetLightEnabled(1, true);
-    m_physicalEffect->SetLightDirection(1, Vector3::Down + Vector3::Backward + Vector3::Left);
-    m_physicalEffect->SetLightDiffuseColor(1, Colors::White);
-    m_physicalEffect->SetLightSpecularColor(1, Colors::White);
+    m_physicalEffect->SetLightDirection(1, Vector3(-0.577f, -0.577f, 0.577f));
+    m_physicalEffect->SetLightDiffuseColor(1, Colors::Gray);
+    m_physicalEffect->SetLightSpecularColor(1, Colors::Gray);
 
     m_physicalEffect->SetLightEnabled(2, true);
-    m_physicalEffect->SetLightDirection(2, Vector3::Up);
+    m_physicalEffect->SetLightDirection(2, Vector3(0.0f, 0.577f, -0.577f));
     m_physicalEffect->SetLightDiffuseColor(2, Colors::White);
     m_physicalEffect->SetLightSpecularColor(2, Colors::White);
 
