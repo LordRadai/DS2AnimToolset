@@ -120,6 +120,9 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)DS2AnimToolset\morpheme\utils\comms2\include\;$(SolutionDir)DS2AnimToolset\morpheme\utils\simpleBundle\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\core\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\NMPlatform\win32\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -127,6 +130,8 @@
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics_debug.lib;morphemeComms2_debug.lib;morphemeCore_debug.lib;morphemeSimpleBundle_debug.lib;NMPlatform_debug.lib;NMRuntimeUtils_debug.lib;d3d11.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
+      <StackReserveSize>
+      </StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,6 +144,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)DS2AnimToolset\morpheme\utils\comms2\include\;$(SolutionDir)DS2AnimToolset\morpheme\utils\simpleBundle\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\core\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\NMPlatform\win32\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>MaxSpeed</Optimization>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

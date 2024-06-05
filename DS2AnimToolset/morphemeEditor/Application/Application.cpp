@@ -57,12 +57,27 @@ void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartTyp
 	filepath += modelName;
 
 	FlverModel* model = FlverModel::CreateFromBnd(filepath);
+	pApplication->m_animPlayer->SetModelPartFacegen(type, model);
 
 	if (model)
-	{
-		pApplication->m_animPlayer->SetModelPartFacegen(type, model);
 		pApplication->m_animPlayer->GetModelPartFacegen(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
-	}
+}
+
+void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, int id, bool shield)
+{
+	std::wstring filepath = root.c_str();
+	wchar_t modelName[255];
+
+	if (shield)
+		swprintf_s(modelName, L"\\shield\\sd_%d_m.bnd", id);
+	else
+		swprintf_s(modelName, L"\\weapon\\wp_%d_m.bnd", id);
+
+	filepath += modelName;
+
+	FlverModel* model = FlverModel::CreateFromBnd(filepath);
+
+	pApplication->m_animPlayer->SetModelPart(type, model);
 }
 
 void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type, int id, bool female)
@@ -109,12 +124,10 @@ void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type, i
 	filepath += modelName;
 
 	FlverModel* model = FlverModel::CreateFromBnd(filepath);
+	pApplication->m_animPlayer->SetModelPart(type, model);
 
 	if (model)
-	{
-		pApplication->m_animPlayer->SetModelPart(type, model);
 		pApplication->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
-	}
 }
 
 std::vector<std::wstring> getTaeFileListFromChrId(std::wstring tae_path, std::wstring m_chrId)
@@ -1351,11 +1364,24 @@ void Application::PreviewSceneExplorerWindow()
 
 void ModelPartsList(Application* application, std::wstring rootPath, PartType type)
 {
+	ImGui::PushID(type);
+
+	ImGui::InputInt("Model ID", &application->m_modelLoadFlags.m_modelID);
+	ImGui::Checkbox("Is Shield", &application->m_modelLoadFlags.m_isShield);
+
+	if (ImGui::Button("Load"))
+	{
+		application->m_modelLoadFlags.m_partType = type;
+		application->m_modelLoadFlags.m_loadModel = true;
+	}
+
+	ImGui::PopID();
+
+	/*
 	char childName[255];
 	sprintf_s(childName, "parts_%d", type);
 
 	ImGui::BeginChild(childName, ImVec2(ImGui::GetContentRegionAvail().x, 300));
-
 	FlverModel* currentPart = application->m_animPlayer->GetModelPart(type);
 
 	if (ImGui::Selectable("None", currentPart == nullptr))
@@ -1365,7 +1391,7 @@ void ModelPartsList(Application* application, std::wstring rootPath, PartType ty
 	{
 		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd"))
 		{
-			std::string filepath = entry.path().string();
+			std::wstring filepath = entry.path();
 			std::string filename = RString::RemovePathAndExtension(entry.path().string());
 
 			bool selected = false;
@@ -1373,19 +1399,19 @@ void ModelPartsList(Application* application, std::wstring rootPath, PartType ty
 			if (application->m_animPlayer->GetModelPart(type))
 				selected = (application->m_animPlayer->GetModelPart(type)->m_name.compare(filename) == 0);
 
-			if (ImGui::Selectable(filename.c_str(), selected))
-			{
-				FlverModel* model = FlverModel::CreateFromBnd(RString::ToWide(filepath));
+			ImGui::Selectable(filename.c_str(), selected);
 
-				if (model)
-				{
-					application->m_animPlayer->SetModelPart(type, model);
-					application->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
-				}
+			if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+			{
+				application->m_modelLoadFlags.m_loadModel = true;
+				application->m_modelLoadFlags.m_modelPath = filepath;
+				application->m_modelLoadFlags.m_partType = type;
 			}
 		}
 	}
+
 	ImGui::EndChild();
+	*/
 }
 
 void Application::EntityManagerWindow()
@@ -1809,6 +1835,13 @@ void Application::CheckFlags()
 		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Hair);
 		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
 	}
+
+	if (this->m_modelLoadFlags.m_loadModel)
+	{
+		this->m_modelLoadFlags.m_loadModel = false;
+
+		LoadWeaponBnd(this, this->m_gamePath + L"\\model\\parts", this->m_modelLoadFlags.m_partType, this->m_modelLoadFlags.m_modelID, this->m_modelLoadFlags.m_isShield);
+	}
 }
 
 int GetChrIdFromNmbFileName(std::wstring name)
@@ -1868,24 +1901,6 @@ std::wstring FindGamePath(std::wstring current_path)
 	} while (true);
 
 	return L"";
-}
-
-void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, int id, bool shield)
-{
-	std::wstring filepath = root.c_str();
-	wchar_t modelName[255];
-
-	if (shield)
-		swprintf_s(modelName, L"\\shield\\sd_%d_m.bnd", id);
-	else
-		swprintf_s(modelName, L"\\weapon\\wp_%d_m.bnd", id);
-
-	filepath += modelName;
-
-	FlverModel* model = FlverModel::CreateFromBnd(filepath);
-
-	if (model)
-		pApplication->m_animPlayer->SetModelPart(type, model);
 }
 
 void Application::LoadFile()

@@ -43,7 +43,7 @@ public:
 	Vector3 m_focusPoint = Vector3::Zero;
 
 	FLVER2* m_flver = nullptr;
-	MR::AnimRigDef* m_nmRig;
+	MR::AnimRigDef* m_nmRig = nullptr;
 	std::vector<int> m_flverToMorphemeBoneMap;
 	std::vector<std::vector<SkinnedVertex>> m_verts;
 	std::vector<std::vector<SkinnedVertex>> m_vertBindPose;

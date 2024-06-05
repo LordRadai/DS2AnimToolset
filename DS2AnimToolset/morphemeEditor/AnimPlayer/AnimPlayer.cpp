@@ -234,9 +234,6 @@ void AnimPlayer::SetModel(FlverModel* model)
 
 void AnimPlayer::SetModelPart(PartType partType, FlverModel* model)
 {
-	if (model)
-		model->GetModelData();
-
 	switch (partType)
 	{
 	case Parts_Head:

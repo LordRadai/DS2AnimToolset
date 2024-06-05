@@ -72,6 +72,14 @@ public:
 		bool m_exportModel = false;
 	} m_flags;
 
+	struct ModelLoadFlags
+	{
+		bool m_loadModel = false;
+		int m_modelID = -1;
+		bool m_isShield = false;
+		PartType m_partType = Parts_Invalid;
+	} m_modelLoadFlags;
+
 	struct TimeActFlags
 	{
 		bool m_addTimeAct = false;

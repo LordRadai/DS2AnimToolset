@@ -12,6 +12,7 @@ enum PartType
 	Parts_WeaponLeft,
 	Parts_WeaponRight,
 	Parts_MaxValue,		//This must always be the last value
+	Parts_Invalid = -1,
 };
 
 enum FgPartType
@@ -23,6 +24,7 @@ enum FgPartType
 	FaceGen_Beard,
 	FaceGen_Hair,
 	FaceGen_MaxValue,	//This must always be the last value
+	FaceGen_Invalid = -1,
 };
 
 struct ModelFaceGen
