@@ -1722,9 +1722,9 @@ void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartTyp
 		fullId = 7000 + id;
 
 		if (female)
-			swprintf_s(modelName, L"\\face\\fg_2001_f.bnd", fullId + 19);
+			swprintf_s(modelName, L"\\face\\fg_%d_f.bnd", fullId + 19);
 		else
-			swprintf_s(modelName, L"\\face\\fg_2001_m.bnd", fullId);
+			swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
 		break;
 	default:
 		break;
