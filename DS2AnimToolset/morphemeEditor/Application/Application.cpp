@@ -1927,11 +1927,11 @@ void Application::LoadFile()
 											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Head, 1, false);
 											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Eyes, 1, false);
 											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_EyeBrows, 1, false);
-											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Beard, 999, false);
+											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Beard, 1, false);
 											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Hair, 1, false);
 
-											LoadWeaponBnd(this, filepath_parts, Parts_WeaponLeft, 0, false);
-											LoadWeaponBnd(this, filepath_parts, Parts_WeaponRight, 1220, false);
+											LoadWeaponBnd(this, filepath_parts, Parts_WeaponLeft, -1, false);
+											LoadWeaponBnd(this, filepath_parts, Parts_WeaponRight, -1, false);
 										}
 									}
 									else
