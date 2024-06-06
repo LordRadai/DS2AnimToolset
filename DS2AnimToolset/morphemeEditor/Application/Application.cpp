@@ -14,7 +14,7 @@ bool IsEquipShield(std::wstring filename)
 {
 	size_t first = filename.find_first_of(L"_");
 
-	std::wstring category = filename.substr(0, first);
+	std::wstring category = filename.substr(0, first - 1);
 
 	if (category == L"sd")
 		return true;
@@ -27,7 +27,7 @@ int GetEquipIDByFilename(std::wstring filename)
 	size_t first = filename.find_first_of(L"_");
 	size_t second = filename.find_last_of(L"_");
 
-	std::wstring modelIdStr = filename.substr(first, second);
+	std::wstring modelIdStr = filename.substr(first + 1, second - 3);
 
 	return std::stoi(modelIdStr);
 }
@@ -1530,11 +1530,11 @@ void SaveModelPartsWeaponPreset(Application* application, PartType type, int val
 	{
 	case Parts_WeaponLeft:
 		application->m_playerModelPreset.SetInt("Left", "id", value);
-		application->m_playerModelPreset.SetBool("Left", "id", shield);
+		application->m_playerModelPreset.SetBool("Left", "is_shield", shield);
 		break;
 	case Parts_WeaponRight:
 		application->m_playerModelPreset.SetInt("Right", "id", value);
-		application->m_playerModelPreset.SetBool("Right", "id", shield);
+		application->m_playerModelPreset.SetBool("Right", "is_shield", shield);
 		break;
 	}
 }
@@ -1584,7 +1584,7 @@ void ModelPartsList(Application* application, std::vector<FileNamePathPair> path
 			}
 			catch (const std::exception& e)
 			{
-				g_appLog->AlertMessage(MsgLevel_Error, e.what());
+				g_appLog->PanicMessage(e.what());
 			}
 		}
 	}
