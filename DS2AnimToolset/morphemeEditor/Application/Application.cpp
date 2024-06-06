@@ -1575,7 +1575,7 @@ void ModelPartsList(Application* application, std::vector<FileNamePathPair> path
 					application->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
 					
 					if (type == Parts_WeaponLeft || type == Parts_WeaponRight)
-						SaveModelPartsWeaponPreset(application, type, GetEquipIDByFilename(RString::ToWide(paths[i].m_name)), IsEquipShield(RString::ToWide(paths[i].m_name));
+						SaveModelPartsWeaponPreset(application, type, GetEquipIDByFilename(RString::ToWide(paths[i].m_name)), IsEquipShield(RString::ToWide(paths[i].m_name)));
 					else
 						SaveModelPartsArmorPreset(application, type, GetEquipIDByFilename(RString::ToWide(paths[i].m_name)));
 				}
