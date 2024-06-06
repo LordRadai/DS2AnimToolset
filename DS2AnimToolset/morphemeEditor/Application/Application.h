@@ -136,6 +136,7 @@ public:
 
 	TimeActReader* m_timeAct;
 
+	INI m_playerModelPreset;
 	FileNameMapPairList m_fileNameMapPairList;
 
 	Application();
