@@ -408,14 +408,14 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
     if (model->m_settings.m_selectedBone != -1)
     {
         DX::DrawReferenceFrame(&prim, model->m_boneTransforms[model->m_settings.m_selectedBone]);
-        this->AddText(RString::ToNarrow(model->m_flver.bones[model->m_settings.m_selectedBone].name).c_str(), model->m_boneTransforms[model->m_settings.m_selectedBone]);
+        this->AddText(RString::ToNarrow(model->m_flver->bones[model->m_settings.m_selectedBone].name).c_str(), model->m_boneTransforms[model->m_settings.m_selectedBone]);
     }
 
     if (model->m_settings.m_drawDummyPolygons)
     {
-        for (size_t i = 0; i < model->m_flver.header.dummyCount; i++)
+        for (size_t i = 0; i < model->m_flver->header.dummyCount; i++)
         {
-            std::string dummy_name = "Dmy_" + std::to_string(model->m_flver.dummies[i].referenceID);
+            std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[i].referenceID);
 
             DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[i]);
             this->AddText(dummy_name.c_str(), model->m_dummyPolygons[i] * world);
@@ -423,7 +423,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
     }
     else if (model->m_settings.m_selectedDummy != -1)
     {
-        std::string dummy_name = "Dmy_" + std::to_string(model->m_flver.dummies[model->m_settings.m_selectedDummy].referenceID);
+        std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[model->m_settings.m_selectedDummy].referenceID);
 
         DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[model->m_settings.m_selectedDummy]);
         this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
@@ -438,7 +438,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
             if ((morphemeBoneIdx == -1) || (i == trajectoryBoneIndex) || (i == characterRootBoneIdx))
                 continue;
 
-            int parentIndex = model->m_flver.bones[i].parentIndex;
+            int parentIndex = model->m_flver->bones[i].parentIndex;
 
             if (parentIndex != -1)
             {
@@ -447,7 +447,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
 
                 DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, Colors::CornflowerBlue);
 
-                if (model->m_flver.bones[i].childIndex == -1)
+                if (model->m_flver->bones[i].childIndex == -1)
                     DX::Draw(&prim, DirectX::BoundingSphere(boneA, 0.03f), Colors::CornflowerBlue);
             }
         }

@@ -133,7 +133,7 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	if (pFlverModel->m_flver == nullptr)
 		return nullptr;
 	*/
-	if (idx > pFlverModel->m_flver.header.meshCount)
+	if (idx > pFlverModel->m_flver->header.meshCount)
 		return nullptr;
 
 	std::string mesh_node_name = "mesh[" + std::to_string(idx) + "]";
@@ -186,16 +186,16 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 
 	if (pSkin)
 	{
-		for (int i = 0; i < pFlverModel->m_flver.meshes[idx].header.boneCount; i++)
+		for (int i = 0; i < pFlverModel->m_flver->meshes[idx].header.boneCount; i++)
 		{
-			int boneIndex = pFlverModel->m_flver.meshes[idx].boneIndices[i];
+			int boneIndex = pFlverModel->m_flver->meshes[idx].boneIndices[i];
 
 			if (boneIndex == -1)
 				continue;
 
 			FbxNode* pBoneNode = skeletonNodes[boneIndex];
 
-			FbxCluster* pCluster = FbxCluster::Create(pScene, (mesh_node_name + "_" + RString::ToNarrow(pFlverModel->m_flver.bones[boneIndex].name) + "_cluster").c_str());
+			FbxCluster* pCluster = FbxCluster::Create(pScene, (mesh_node_name + "_" + RString::ToNarrow(pFlverModel->m_flver->bones[boneIndex].name) + "_cluster").c_str());
 			pCluster->SetLink(pBoneNode);
 			pCluster->SetLinkMode(FbxCluster::eTotalOne);
 
@@ -248,7 +248,7 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 		return nullptr;
 	*/
 
-	if (idx > pFlverModel->m_flver.header.meshCount)
+	if (idx > pFlverModel->m_flver->header.meshCount)
 		return nullptr;
 
 	std::string mesh_node_name = "mesh[" + std::to_string(idx) + "]";
@@ -297,18 +297,18 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 std::vector<FbxNode*> FBXTranslator::CreateFbxFlverSkeleton(FbxScene* pScene, FlverModel* pFlverModel, FbxPose* pBindPoses)
 {
 	std::vector<FbxNode*> boneNodes;
-	boneNodes.reserve(pFlverModel->m_flver.header.boneCount);
+	boneNodes.reserve(pFlverModel->m_flver->header.boneCount);
 
-	for (int i = 0; i < pFlverModel->m_flver.header.boneCount; i++)
+	for (int i = 0; i < pFlverModel->m_flver->header.boneCount; i++)
 	{
-		cfr::FLVER2::Bone bone = pFlverModel->m_flver.bones[i];
+		cfr::FLVER2::Bone bone = pFlverModel->m_flver->bones[i];
 
 		boneNodes.push_back(CreateFlverBoneNode(pScene, pBindPoses, bone, i));
 	}
 
-	for (int i = 0; i < pFlverModel->m_flver.header.boneCount; i++)
+	for (int i = 0; i < pFlverModel->m_flver->header.boneCount; i++)
 	{
-		cfr::FLVER2::Bone bone = pFlverModel->m_flver.bones[i];
+		cfr::FLVER2::Bone bone = pFlverModel->m_flver->bones[i];
 
 		if (bone.parentIndex != -1)
 			boneNodes[bone.parentIndex]->AddChild(boneNodes[i]);
@@ -576,9 +576,9 @@ bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, in
 
 	std::vector<FbxNode*> pMeshNodesList;
 
-	pMeshNodesList.reserve(pFlverModel->m_flver.header.meshCount);
+	pMeshNodesList.reserve(pFlverModel->m_flver->header.meshCount);
 
-	for (int i = 0; i < pFlverModel->m_flver.header.meshCount; i++)
+	for (int i = 0; i < pFlverModel->m_flver->header.meshCount; i++)
 	{
 		FbxNode* pMeshNode = nullptr;
 
@@ -607,9 +607,9 @@ bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, in
 
 	std::vector<FbxNode*> pMeshNodesList;
 
-	pMeshNodesList.reserve(pFlverModel->m_flver.header.meshCount);
+	pMeshNodesList.reserve(pFlverModel->m_flver->header.meshCount);
 
-	for (int i = 0; i < pFlverModel->m_flver.header.meshCount; i++)
+	for (int i = 0; i < pFlverModel->m_flver->header.meshCount; i++)
 	{
 		FbxNode* pMeshNode = nullptr;
 
