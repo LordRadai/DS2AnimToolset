@@ -173,6 +173,100 @@ std::wstring getModelNameFromObjId(std::wstring model_path, std::wstring obj_id)
 	return L"";
 }
 
+FileNamePathPair::FileNamePathPair(std::wstring path, std::string name)
+{
+	this->m_path = path;
+	this->m_name = name;
+}
+
+void FileNameMapPairList::Clear()
+{
+	this->m_weaponModelPaths.clear();
+	this->m_shieldModelPaths.clear();
+	this->m_headModelPaths.clear();
+	this->m_bodyModelPaths.clear();
+	this->m_armModelPaths.clear();
+	this->m_legModelPaths.clear();
+}
+
+void FileNameMapPairList::Create(std::wstring gamePath)
+{
+	std::filesystem::path shield_path = gamePath + L"\\model\\parts\\shield";
+	std::filesystem::path weapon_path = gamePath + L"\\model\\parts\\weapon";
+
+	std::filesystem::path head_path = gamePath + L"\\model\\parts\\head";
+	std::filesystem::path body_path = gamePath + L"\\model\\parts\\body";
+	std::filesystem::path arm_path = gamePath + L"\\model\\parts\\arm";
+	std::filesystem::path leg_path = gamePath + L"\\model\\parts\\leg";
+
+	for (const auto& entry : std::filesystem::directory_iterator(weapon_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();
+			std::string filename = RString::RemovePathAndExtension(entry.path().string());
+
+			this->m_weaponModelPaths.push_back(FileNamePathPair(filepath, filename));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(shield_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();
+			std::string filename = RString::RemovePathAndExtension(entry.path().string());
+
+			this->m_shieldModelPaths.push_back(FileNamePathPair(filepath, filename));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(head_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();
+			std::string filename = RString::RemovePathAndExtension(entry.path().string());
+
+			this->m_headModelPaths.push_back(FileNamePathPair(filepath, filename));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(body_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();
+			std::string filename = RString::RemovePathAndExtension(entry.path().string());
+
+			this->m_bodyModelPaths.push_back(FileNamePathPair(filepath, filename));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(arm_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();
+			std::string filename = RString::RemovePathAndExtension(entry.path().string());
+
+			this->m_armModelPaths.push_back(FileNamePathPair(filepath, filename));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(leg_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();
+			std::string filename = RString::RemovePathAndExtension(entry.path().string());
+
+			this->m_legModelPaths.push_back(FileNamePathPair(filepath, filename));
+		}
+	}
+
+}
+
 Application::Application()
 {
 	this->m_morphemeSystem = new MorphemeSystem();
@@ -1353,6 +1447,54 @@ void Application::PreviewSceneExplorerWindow()
 	ImGui::End();
 }
 
+void ModelPartsList(Application* application, std::vector<FileNamePathPair> paths, PartType type)
+{
+	if (paths.size() == 0)
+		return;
+
+	char childName[255];
+	sprintf_s(childName, "parts_%ls_%d", paths[0].m_path.c_str(), type);
+
+	FlverModel* currentPart = application->m_animPlayer->GetModelPart(type);
+
+	ImGui::BeginChild(childName, ImVec2(ImGui::GetContentRegionAvail().x, 300));
+
+	if (ImGui::Selectable("None", currentPart == nullptr))
+		application->m_animPlayer->SetModelPart(type, nullptr);
+
+	for (size_t i = 0; i < paths.size(); i++)
+	{
+		bool selected = false;
+
+		if (application->m_animPlayer->GetModelPart(type))
+			selected = (application->m_animPlayer->GetModelPart(type)->m_name.compare(paths[i].m_name) == 0);
+
+		ImGui::Selectable(paths[i].m_name.c_str(), selected);
+
+		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+		{
+			try
+			{
+				FlverModel* model = FlverModel::CreateFromBnd(paths[i].m_path);
+
+				if (model)
+				{
+					application->m_animPlayer->SetModelPart(type, model);
+					application->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+				}
+				else
+					delete model;
+			}
+			catch (const std::exception& e)
+			{
+				g_appLog->AlertMessage(MsgLevel_Error, e.what());
+			}
+		}
+	}
+
+	ImGui::EndChild();
+}
+
 void ModelPartsList(Application* application, std::wstring rootPath, PartType type)
 {
 	char childName[255];
@@ -1413,22 +1555,15 @@ void Application::EntityManagerWindow()
 
 	ImGui::BeginDisabled(disable);
 
-	std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
-
-	std::filesystem::path weapon_path = parts_path + L"\\weapon";
-	std::filesystem::path shield_path = parts_path + L"\\shield";
-
-	ImGui::SeparatorText("Weapon & Shield");
-
-	if (std::filesystem::exists(weapon_path) && std::filesystem::exists(shield_path))
+	if (this->m_fileNameMapPairList.m_weaponModelPaths.size() && this->m_fileNameMapPairList.m_shieldModelPaths.size())
 	{
 		if (ImGui::TreeNode("Right"))
 		{
 			ImGui::SeparatorText("Weapon");
-			ModelPartsList(this, weapon_path, Parts_WeaponRight);
+			ModelPartsList(this, this->m_fileNameMapPairList.m_weaponModelPaths, Parts_WeaponRight);
 
 			ImGui::SeparatorText("Shield");
-			ModelPartsList(this, shield_path, Parts_WeaponRight);
+			ModelPartsList(this, this->m_fileNameMapPairList.m_shieldModelPaths, Parts_WeaponRight);
 
 			ImGui::TreePop();
 		}
@@ -1436,58 +1571,50 @@ void Application::EntityManagerWindow()
 		if (ImGui::TreeNode("Left"))
 		{
 			ImGui::SeparatorText("Weapon");
-			ModelPartsList(this, weapon_path, Parts_WeaponLeft);
+			ModelPartsList(this, this->m_fileNameMapPairList.m_weaponModelPaths, Parts_WeaponLeft);
 
 			ImGui::SeparatorText("Shield");
-			ModelPartsList(this, shield_path, Parts_WeaponLeft);
+			ModelPartsList(this, this->m_fileNameMapPairList.m_shieldModelPaths, Parts_WeaponLeft);
 		}
 	}
 
 	ImGui::SeparatorText("Armor");
 
-	std::filesystem::path armor_parts = parts_path + L"\\head";
-
-	if (std::filesystem::exists(armor_parts))
+	if (this->m_fileNameMapPairList.m_headModelPaths.size())
 	{
 		if (ImGui::TreeNode("Head"))
 		{
-			ModelPartsList(this, armor_parts, Parts_Head);
+			ModelPartsList(this, this->m_fileNameMapPairList.m_headModelPaths, Parts_Head);
 
 			ImGui::TreePop();
 		}
 	}
 
-	armor_parts = parts_path + L"\\body";
-
-	if (std::filesystem::exists(armor_parts))
+	if (this->m_fileNameMapPairList.m_bodyModelPaths.size())
 	{
 		if (ImGui::TreeNode("Body"))
 		{
-			ModelPartsList(this, armor_parts, Parts_Body);
+			ModelPartsList(this, this->m_fileNameMapPairList.m_bodyModelPaths, Parts_Body);
 
 			ImGui::TreePop();
 		}
 	}
 
-	armor_parts = parts_path + L"\\arm";
-
-	if (std::filesystem::exists(armor_parts))
+	if (this->m_fileNameMapPairList.m_armModelPaths.size())
 	{
 		if (ImGui::TreeNode("Arm"))
 		{
-			ModelPartsList(this, armor_parts, Parts_Arm);
+			ModelPartsList(this, this->m_fileNameMapPairList.m_armModelPaths, Parts_Arm);
 
 			ImGui::TreePop();
 		}
 	}
 
-	armor_parts = parts_path + L"\\leg";
-
-	if (std::filesystem::exists(armor_parts))
+	if (this->m_fileNameMapPairList.m_legModelPaths.size())
 	{
 		if (ImGui::TreeNode("Leg"))
 		{
-			ModelPartsList(this, armor_parts, Parts_Leg);
+			ModelPartsList(this, this->m_fileNameMapPairList.m_legModelPaths, Parts_Leg);
 
 			ImGui::TreePop();
 		}
@@ -2004,6 +2131,8 @@ void Application::LoadFile()
 
 						if (filepath.extension() == ".nmb")
 						{
+							this->m_fileNameMapPairList.Clear();
+
 							this->m_animPlayer->Clear();
 
 							CharacterDefBasic* characterDef = m_morphemeSystem->createCharacterDef(filepath.string().c_str());
@@ -2026,8 +2155,8 @@ void Application::LoadFile()
 
 								for (int i = 0; i < animCount; i++)
 								{
-									std::filesystem::path gamepath = pszFilePath;
-									std::wstring parent_path = gamepath.parent_path();
+									std::filesystem::path animFolder = pszFilePath;
+									std::wstring parent_path = animFolder.parent_path();
 
 									std::wstring anim_name = RString::ToWide(this->m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getFilename(i));
 
@@ -2053,6 +2182,8 @@ void Application::LoadFile()
 								{
 									std::filesystem::path gamepath = FindGamePath(pszFilePath);
 									this->m_gamePath = gamepath;
+
+									this->m_fileNameMapPairList.Create(this->m_gamePath);
 
 									std::filesystem::path filepath_tae = "";
 									std::filesystem::path filepath_dcx = "";
@@ -2113,6 +2244,8 @@ void Application::LoadFile()
 						}
 						else if (filepath.extension() == ".tae")
 						{
+							this->m_fileNameMapPairList.Clear();
+
 							if (this->m_timeAct)
 							{
 								delete this->m_timeAct;
@@ -2139,6 +2272,8 @@ void Application::LoadFile()
 								{
 									std::filesystem::path gamepath = FindGamePath(pszFilePath);
 									std::filesystem::path filepath_dcx;
+
+									this->m_fileNameMapPairList.Create(this->m_gamePath);
 
 									if (gamepath.compare("") != 0)
 									{

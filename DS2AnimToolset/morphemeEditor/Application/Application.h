@@ -50,6 +50,28 @@
 
 using namespace cfr;
 
+struct FileNamePathPair
+{
+	std::wstring m_path;
+	std::string m_name;
+
+	FileNamePathPair() {}
+	FileNamePathPair(std::wstring path, std::string name);
+};
+
+struct FileNameMapPairList
+{
+	std::vector<FileNamePathPair> m_weaponModelPaths;
+	std::vector<FileNamePathPair> m_shieldModelPaths;
+	std::vector<FileNamePathPair> m_headModelPaths;
+	std::vector<FileNamePathPair> m_bodyModelPaths;
+	std::vector<FileNamePathPair> m_armModelPaths;
+	std::vector<FileNamePathPair> m_legModelPaths;
+
+	void Clear();
+	void Create(std::wstring gamePath);
+};
+
 class Application
 {
 public:
@@ -113,6 +135,8 @@ public:
 	TimeActEditor* m_timeActEditor;
 
 	TimeActReader* m_timeAct;
+
+	FileNameMapPairList m_fileNameMapPairList;
 
 	Application();
 	~Application();
