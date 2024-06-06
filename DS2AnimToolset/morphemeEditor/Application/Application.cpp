@@ -2091,6 +2091,55 @@ void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, 
 		pApplication->m_animPlayer->SetModelPart(type, model);
 }
 
+void LoadPlayerModelParts(Application* application, std::wstring parts_path)
+{
+	INIReader reader(".//Data//res//c0001.ini");
+
+	char default_info[255];
+	sprintf_s(default_info, "No specific information is known for this event\n");
+
+	if (reader.ParseError() < 0)
+		g_appLog->PanicMessage("Failed to load c0001.ini\n");
+
+	bool female = reader.GetBoolean("Gender", "is_female", false);
+
+	int rightId = reader.GetInteger("Right", "id", -1);
+	bool rightShield = reader.GetBoolean("Right", "is_shield", false);
+
+	LoadWeaponBnd(application, parts_path, Parts_WeaponRight, rightId, rightShield);
+
+	int leftId = reader.GetInteger("Left", "id", -1);
+	bool leftShield = reader.GetBoolean("Left", "is_shield", false);
+
+	LoadWeaponBnd(application, parts_path, Parts_WeaponLeft, leftId, leftShield);
+
+	int headId = reader.GetInteger("Armor", "head", -1);
+	int faceId = reader.GetInteger("Armor", "face", -1);
+	int bodyId = reader.GetInteger("Armor", "body", -1);
+	int armId = reader.GetInteger("Armor", "arm", -1);
+	int legId = reader.GetInteger("Armor", "leg", -1);
+
+	LoadPartsBnd(application, parts_path, Parts_Head, headId, female);
+	LoadPartsBnd(application, parts_path, Parts_Face, faceId, female);
+	LoadPartsBnd(application, parts_path, Parts_Body, bodyId, female);
+	LoadPartsBnd(application, parts_path, Parts_Arm, armId, female);
+	LoadPartsBnd(application, parts_path, Parts_Leg, legId, female);
+
+	int fgFaceId = reader.GetInteger("FaceGen", "face", -1);
+	int fgHeadId = reader.GetInteger("FaceGen", "head", -1);
+	int fgEyeId = reader.GetInteger("FaceGen", "eye", -1);
+	int fgEyeBrowsId = reader.GetInteger("FaceGen", "eye_brows", -1);
+	int fgBeard = reader.GetInteger("FaceGen", "beard", -1);
+	int fgHair = reader.GetInteger("FaceGen", "hair", -1);
+
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Face, fgFaceId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Head, fgHeadId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Eyes, fgEyeId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_EyeBrows, fgEyeBrowsId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Beard, fgBeard, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Hair, fgHair, female);
+}
+
 void Application::LoadFile()
 {
 	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"TimeAct", L"*.tae"}, {L"All Files",L"*.*"} };
@@ -2220,21 +2269,7 @@ void Application::LoadFile()
 										//Load external parts for the player character
 										if (this->m_chrId == 1)
 										{
-											LoadPartsBnd(this, filepath_parts, Parts_Head, 1010, false);
-											LoadPartsBnd(this, filepath_parts, Parts_Face, -1, false);
-											LoadPartsBnd(this, filepath_parts, Parts_Body, 1010, false);
-											LoadPartsBnd(this, filepath_parts, Parts_Arm, 1010, false);
-											LoadPartsBnd(this, filepath_parts, Parts_Leg, 1010, false);
-
-											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Face, 1, false);
-											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Head, 1, false);
-											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Eyes, 1, false);
-											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_EyeBrows, -1, false);
-											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Beard, -1, false);
-											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Hair, -1, false);
-
-											LoadWeaponBnd(this, filepath_parts, Parts_WeaponLeft, -1, false);
-											LoadWeaponBnd(this, filepath_parts, Parts_WeaponRight, -1, false);
+											LoadPlayerModelParts(this, filepath_parts);
 										}
 									}
 									else
