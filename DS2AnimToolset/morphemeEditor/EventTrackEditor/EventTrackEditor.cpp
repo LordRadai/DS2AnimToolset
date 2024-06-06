@@ -227,7 +227,7 @@ EventTrackEditor::EventTrackEditor()
 
     if (!ini.Open(".//Data//res//color//eventrack.ini"))
     {
-        g_appLog->DebugMessage(MsgLevel_Error, "EventTrackEditor.cpp", "Failed to load eventrack.ini\n");
+        g_appLog->DebugMessage(MsgLevel_Error, "Failed to load eventrack.ini\n");
 
         this->m_colors.m_trackColor = { 0.31f, 0.31f, 0.91f, 1.f };
         this->m_colors.m_trackColorInactive = { 0.22f, 0.22f, 0.44f, 1.f };
