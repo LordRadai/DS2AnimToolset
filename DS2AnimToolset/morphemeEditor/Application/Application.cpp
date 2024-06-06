@@ -14,7 +14,7 @@ bool IsEquipShield(std::wstring filename)
 {
 	size_t first = filename.find_first_of(L"_");
 
-	std::wstring category = filename.substr(0, first - 1);
+	std::wstring category = filename.substr(0, first - 2);
 
 	if (category == L"sd")
 		return true;

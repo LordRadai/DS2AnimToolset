@@ -72,12 +72,12 @@ void INI::SetBool(std::string section, std::string key, bool value)
 
 void INI::SetInt(std::string section, std::string key, int value)
 {
-	this->m_data[section][key] = value;
+	this->m_data[section][key] = std::to_string(value);
 }
 
 void INI::SetFloat(std::string section, std::string key, float value)
 {
-	this->m_data[section][key] = value;
+	this->m_data[section][key] = std::to_string(value);
 }
 
 void INI::SetString(std::string section, std::string key, std::string value)
