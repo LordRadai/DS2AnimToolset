@@ -10,16 +10,24 @@
 #include "IconsFontAwesome6.h"
 #include "INI/INI.h"
 
-int GetEquipIDByFilename(std::wstring filename, bool& shield)
+bool IsEquipShield(std::wstring filename)
+{
+	size_t first = filename.find_first_of(L"_");
+
+	std::wstring category = filename.substr(0, first);
+
+	if (category == L"sd")
+		return true;
+
+	return false;
+}
+
+int GetEquipIDByFilename(std::wstring filename)
 {
 	size_t first = filename.find_first_of(L"_");
 	size_t second = filename.find_last_of(L"_");
 
 	std::wstring modelIdStr = filename.substr(first, second);
-	std::wstring category = filename.substr(0, first);
-
-	if (category == L"sd")
-		shield = true;
 
 	return std::stoi(modelIdStr);
 }
@@ -1566,20 +1574,10 @@ void ModelPartsList(Application* application, std::vector<FileNamePathPair> path
 					application->m_animPlayer->SetModelPart(type, model);
 					application->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
 					
-					bool shield;
-
 					if (type == Parts_WeaponLeft || type == Parts_WeaponRight)
-					{
-						int equipID = GetEquipIDByFilename(RString::ToWide(paths[i].m_name), shield);
-
-						SaveModelPartsWeaponPreset(application, type, equipID, shield);
-					}
+						SaveModelPartsWeaponPreset(application, type, GetEquipIDByFilename(RString::ToWide(paths[i].m_name)), IsEquipShield(RString::ToWide(paths[i].m_name));
 					else
-					{
-						int equipID = GetEquipIDByFilename(RString::ToWide(paths[i].m_name), shield);
-
-						SaveModelPartsArmorPreset(application, type, equipID);
-					}
+						SaveModelPartsArmorPreset(application, type, GetEquipIDByFilename(RString::ToWide(paths[i].m_name)));
 				}
 				else
 					delete model;
