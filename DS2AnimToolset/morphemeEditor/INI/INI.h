@@ -20,6 +20,7 @@ public:
 	void SetInt(std::string section, std::string key, int value);
 	void SetFloat(std::string section, std::string key, float value);
 	void SetString(std::string section, std::string key, std::string value);
+
 private:
 	mINI::INIStructure m_data;
 };
