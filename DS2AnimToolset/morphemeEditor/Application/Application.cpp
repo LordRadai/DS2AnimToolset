@@ -1377,15 +1377,23 @@ void ModelPartsList(Application* application, std::wstring rootPath, PartType ty
 
 			if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
 			{
-				FlverModel* model = FlverModel::CreateFromBnd(RString::ToWide(filepath));
-
-				if (model)
+				try
 				{
-					application->m_animPlayer->SetModelPart(type, model);
-					application->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+					FlverModel* model = FlverModel::CreateFromBnd(RString::ToWide(filepath));
+
+					if (model)
+					{
+						application->m_animPlayer->Clear();
+						application->m_animPlayer->SetModelPart(type, model);
+						application->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+					}
+					else
+						delete model;
 				}
-				else
-					delete model;
+				catch (const std::exception& e)
+				{
+					g_appLog->AlertMessage(MsgLevel_Error, e.what());
+				}
 			}
 		}
 	}
