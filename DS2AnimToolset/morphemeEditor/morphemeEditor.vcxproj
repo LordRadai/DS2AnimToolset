@@ -205,8 +205,7 @@
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="imsequencer\ImSequencer.cpp" />
-    <ClCompile Include="inih\ini.c" />
-    <ClCompile Include="inih\INIReader.cpp" />
+    <ClCompile Include="INI\INI.cpp" />
     <ClCompile Include="MorphemeEditor.cpp" />
     <ClCompile Include="MorphemeSystem\AnimLoader.cpp" />
     <ClCompile Include="MorphemeSystem\AssetLoader.cpp" />
@@ -284,8 +283,8 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="imsequencer\ImSequencer.h" />
-    <ClInclude Include="inih\ini.h" />
-    <ClInclude Include="inih\INIReader.h" />
+    <ClInclude Include="INI\INI.h" />
+    <ClInclude Include="INI\mini\ini.h" />
     <ClInclude Include="MorphemeEditor.h" />
     <ClInclude Include="MorphemeSystem\AnimLoader.h" />
     <ClInclude Include="MorphemeSystem\AssetLoader.h" />

@@ -8,6 +8,7 @@
 #include <filesystem>
 #include "FBXTranslator/FBXTranslator.h"
 #include "IconsFontAwesome6.h"
+#include "INI/INI.h"
 
 void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartType type, int id, bool female)
 {
@@ -368,12 +369,12 @@ void Application::Update(float delta_time)
 
 std::string getTaeCategoryTooltip(int category)
 {
-	INIReader reader(".//Data//res//tooltip//timeact//group.ini");
-	
+	INI ini;
+
 	char default_info[255];
 	sprintf_s(default_info, "No specific information is known for this category\n");
 
-	if (reader.ParseError() < 0)
+	if (!ini.Open(".//Data//res//tooltip//timeact//group.ini"))
 	{
 		g_appLog->DebugMessage(MsgLevel_Debug, "Failed to load group.ini\n");
 		return std::string(default_info);
@@ -381,61 +382,61 @@ std::string getTaeCategoryTooltip(int category)
 
 	std::string category_str = std::to_string(category);
 
-	return reader.GetString(category_str, "tooltip", std::string(default_info));
+	return ini.GetString(category_str, "tooltip", default_info);
 }
 
 std::string getTaeEventTooltip(int event_id)
 {
-	INIReader reader(".//Data//res//tooltip//timeact//event.ini");
+	INI ini;
 
 	char default_info[255];
 	sprintf_s(default_info, "No specific information is known for this event\n");
 
-	if (reader.ParseError() < 0)
+	if (!ini.Open(".//Data//res//tooltip//timeact//event.ini"))
 	{
-		g_appLog->DebugMessage(MsgLevel_Error, "Failed to load event.ini\n");
+		g_appLog->DebugMessage(MsgLevel_Debug, "Failed to load group.ini\n");
 		return std::string(default_info);
 	}
 
 	std::string category_str = std::to_string(event_id);
 
-	return reader.GetString(category_str, "tooltip", std::string(default_info));
+	return ini.GetString(category_str, "tooltip", default_info);
 }
 
 std::string getEventTrackCategoryTooltip(int category)
 {
-	INIReader reader(".//Data//res//tooltip//eventrack//group.ini");
+	INI ini;
 
 	char default_info[255];
 	sprintf_s(default_info, "No specific information is known for this category\n");
 
-	if (reader.ParseError() < 0)
+	if (!ini.Open(".//Data//res//tooltip//eventrack//group.ini"))
 	{
-		g_appLog->DebugMessage(MsgLevel_Error, "Failed to load group.ini\n");
+		g_appLog->DebugMessage(MsgLevel_Debug, "Failed to load group.ini\n");
 		return std::string(default_info);
 	}
 
 	std::string category_str = std::to_string(category);
 
-	return reader.GetString(category_str, "tooltip", std::string(default_info));
+	return ini.GetString(category_str, "tooltip", default_info);
 }
 
 std::string getEventTrackEventTooltip(int event_id)
 {
-	INIReader reader(".//Data//res//tooltip//eventrack//event.ini");
+	INI ini;
 
 	char default_info[255];
 	sprintf_s(default_info, "No specific information is known for this event\n");
 
-	if (reader.ParseError() < 0)
+	if (!ini.Open(".//Data//res//tooltip//eventrack//event.ini"))
 	{
-		g_appLog->DebugMessage(MsgLevel_Error, "Failed to load event.ini\n");
+		g_appLog->DebugMessage(MsgLevel_Debug, "Failed to load group.ini\n");
 		return std::string(default_info);
 	}
 
 	std::string category_str = std::to_string(event_id);
 
-	return reader.GetString(category_str, "tooltip", std::string(default_info));
+	return ini.GetString(category_str, "tooltip", default_info);
 }
 
 void Application::RenderGUI(const char* title)
@@ -2073,6 +2074,16 @@ std::wstring FindGamePath(std::wstring current_path)
 	return L"";
 }
 
+int GetEquipIDByFilename(std::wstring filename)
+{
+	size_t first = filename.find_first_of(L"_");
+	size_t second = filename.find_last_of(L"_");
+
+	std::wstring modelIdStr = filename.substr(first, second);
+
+	return std::stoi(modelIdStr);
+}
+
 void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, int id, bool shield)
 {
 	std::wstring filepath = root.c_str();
@@ -2093,31 +2104,31 @@ void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, 
 
 void LoadPlayerModelParts(Application* application, std::wstring parts_path)
 {
-	INIReader reader(".//Data//res//c0001.ini");
+	INI ini;
 
 	char default_info[255];
 	sprintf_s(default_info, "No specific information is known for this event\n");
 
-	if (reader.ParseError() < 0)
+	if (!ini.Open(".//Data//res//c0001.ini"))
 		g_appLog->PanicMessage("Failed to load c0001.ini\n");
 
-	bool female = reader.GetBoolean("Gender", "is_female", false);
+	bool female = ini.GetBool("Gender", "is_female", false);
 
-	int rightId = reader.GetInteger("Right", "id", -1);
-	bool rightShield = reader.GetBoolean("Right", "is_shield", false);
+	int rightId = ini.GetInt("Right", "id", -1);
+	bool rightShield = ini.GetBool("Right", "is_shield", false);
 
 	LoadWeaponBnd(application, parts_path, Parts_WeaponRight, rightId, rightShield);
 
-	int leftId = reader.GetInteger("Left", "id", -1);
-	bool leftShield = reader.GetBoolean("Left", "is_shield", false);
+	int leftId = ini.GetInt("Left", "id", -1);
+	bool leftShield = ini.GetBool("Left", "is_shield", false);
 
 	LoadWeaponBnd(application, parts_path, Parts_WeaponLeft, leftId, leftShield);
 
-	int headId = reader.GetInteger("Armor", "head", -1);
-	int faceId = reader.GetInteger("Armor", "face", -1);
-	int bodyId = reader.GetInteger("Armor", "body", -1);
-	int armId = reader.GetInteger("Armor", "arm", -1);
-	int legId = reader.GetInteger("Armor", "leg", -1);
+	int headId = ini.GetInt("Armor", "head", -1);
+	int faceId = ini.GetInt("Armor", "face", -1);
+	int bodyId = ini.GetInt("Armor", "body", -1);
+	int armId = ini.GetInt("Armor", "arm", -1);
+	int legId = ini.GetInt("Armor", "leg", -1);
 
 	LoadPartsBnd(application, parts_path, Parts_Head, headId, female);
 	LoadPartsBnd(application, parts_path, Parts_Face, faceId, female);
@@ -2125,12 +2136,12 @@ void LoadPlayerModelParts(Application* application, std::wstring parts_path)
 	LoadPartsBnd(application, parts_path, Parts_Arm, armId, female);
 	LoadPartsBnd(application, parts_path, Parts_Leg, legId, female);
 
-	int fgFaceId = reader.GetInteger("FaceGen", "face", -1);
-	int fgHeadId = reader.GetInteger("FaceGen", "head", -1);
-	int fgEyeId = reader.GetInteger("FaceGen", "eye", -1);
-	int fgEyeBrowsId = reader.GetInteger("FaceGen", "eye_brows", -1);
-	int fgBeard = reader.GetInteger("FaceGen", "beard", -1);
-	int fgHair = reader.GetInteger("FaceGen", "hair", -1);
+	int fgFaceId = ini.GetInt("FaceGen", "face", -1);
+	int fgHeadId = ini.GetInt("FaceGen", "head", -1);
+	int fgEyeId = ini.GetInt("FaceGen", "eye", -1);
+	int fgEyeBrowsId = ini.GetInt("FaceGen", "eye_brows", -1);
+	int fgBeard = ini.GetInt("FaceGen", "beard", -1);
+	int fgHair = ini.GetInt("FaceGen", "hair", -1);
 
 	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Face, fgFaceId, female);
 	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Head, fgHeadId, female);
