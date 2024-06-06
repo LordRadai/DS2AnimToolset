@@ -1,4 +1,6 @@
 #pragma once
+#define MINI_CASE_SENSITIVE
+
 #include <string>
 #include "mini/ini.h"
 
