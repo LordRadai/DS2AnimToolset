@@ -1363,7 +1363,7 @@ void ModelPartsList(Application* application, std::wstring rootPath, PartType ty
 
 	for (const auto& entry : std::filesystem::directory_iterator(rootPath))
 	{
-		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd"))
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
 		{
 			std::string filepath = entry.path().string();
 			std::string filename = RString::RemovePathAndExtension(entry.path().string());
@@ -1410,25 +1410,82 @@ void Application::EntityManagerWindow()
 		std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
 
 		std::filesystem::path weapon_path = parts_path + L"\\weapon";
+		std::filesystem::path shield_path = parts_path + L"\\shield";
 
-		if (std::filesystem::exists(weapon_path))
+		if (std::filesystem::exists(weapon_path) && std::filesystem::exists(shield_path))
 		{
-			ImGui::SeparatorText("Right");
+			ImGui::SeparatorText("Weapon & Shield");
 
-			ModelPartsList(this, weapon_path, Parts_WeaponRight);
+			if (ImGui::TreeNode("Right"))
+			{
+				ImGui::SeparatorText("Weapon##r");
+				ModelPartsList(this, weapon_path, Parts_WeaponRight);
 
-			ImGui::SeparatorText("Left");
+				ImGui::SeparatorText("Shield##r");
+				ModelPartsList(this, shield_path, Parts_WeaponRight);
 
-			ModelPartsList(this, weapon_path, Parts_WeaponLeft);
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Left"))
+			{
+				ImGui::SeparatorText("Weapon##l");
+				ModelPartsList(this, weapon_path, Parts_WeaponLeft);
+
+				ImGui::SeparatorText("Shield##l");
+				ModelPartsList(this, shield_path, Parts_WeaponLeft);
+			}
 		}
 
-		/*
-		ImGui::SeparatorText("FaceGen");
+		ImGui::SeparatorText("Armor");
 
-		ImGui::BeginChild("facegen");
+		std::filesystem::path armor_parts = parts_path + L"\\head";
 
-		ImGui::EndChild();
-		*/
+		if (std::filesystem::exists(armor_parts))
+		{
+			if (ImGui::TreeNode("Head"))
+			{
+				ModelPartsList(this, armor_parts, Parts_Head);
+	
+				ImGui::TreePop();
+			}
+		}
+
+		armor_parts = parts_path + L"\\body";
+
+		if (std::filesystem::exists(armor_parts))
+		{
+			if (ImGui::TreeNode("Body"))
+			{
+				ModelPartsList(this, armor_parts, Parts_Body);
+
+				ImGui::TreePop();
+			}
+		}
+
+		armor_parts = parts_path + L"\\arm";
+
+		if (std::filesystem::exists(armor_parts))
+		{
+			if (ImGui::TreeNode("Arm"))
+			{
+				ModelPartsList(this, armor_parts, Parts_Arm);
+
+				ImGui::TreePop();
+			}
+		}
+
+		armor_parts = parts_path + L"\\leg";
+
+		if (std::filesystem::exists(armor_parts))
+		{
+			if (ImGui::TreeNode("Leg"))
+			{
+				ModelPartsList(this, armor_parts, Parts_Leg);
+
+				ImGui::TreePop();
+			}
+		}
 	}
 
 	ImGui::End();
