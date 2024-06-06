@@ -1552,7 +1552,14 @@ void ModelPartsList(Application* application, std::vector<FileNamePathPair> path
 	ImGui::BeginChild(childName, ImVec2(ImGui::GetContentRegionAvail().x, 300));
 
 	if (ImGui::Selectable("None", currentPart == nullptr))
+	{
 		application->m_animPlayer->SetModelPart(type, nullptr);
+
+		if (type == Parts_WeaponLeft || type == Parts_WeaponRight)
+			SaveModelPartsWeaponPreset(application, type, -1, false);
+		else
+			SaveModelPartsArmorPreset(application, type, -1);
+	}
 
 	for (size_t i = 0; i < paths.size(); i++)
 	{
