@@ -1,6 +1,7 @@
 #include "TimeActEditor.h"
 #include "../Application/Application.h"
 #include "../TaeTemplate/TaeTemplate.h"
+#include "INI/INI.h"
 
 TimeActEditor::TimeActTrack::TimeActTrack(int eventId)
 {
@@ -55,10 +56,9 @@ int TimeActEditor::GetTrackCount() const { return (int)m_tracks.size(); }
 TimeActEditor::TimeActEditor() 
 {
 	this->m_source = nullptr;
+	INI ini;
 
-	INIReader reader(".//Data//res//color//timeact.ini");
-
-	if (reader.ParseError() < 0) 
+	if (!ini.Open(".//Data//res//color//timeact.ini"))
 	{
 		g_appLog->AlertMessage(MsgLevel_Error, "TimeActEditor.cpp", "Failed to load timeact.ini\n");
 
@@ -71,13 +71,13 @@ TimeActEditor::TimeActEditor()
 		this->m_colors.m_cursorColor = { 0.f, 0.f, 0.f, 1.f };
 	}
 
-	this->m_colors.m_trackColor = { (float)reader.GetReal("Track", "r", 0.33f), (float)reader.GetReal("Track", "g", 0.33f), (float)reader.GetReal("Track", "b", 0.33f), (float)reader.GetReal("Track", "a", 1.f) };
-	this->m_colors.m_trackColorInactive = { (float)reader.GetReal("TrackInactive", "r", 0.33f), (float)reader.GetReal("TrackInactive", "g", 0.33f), (float)reader.GetReal("TrackInactive", "b", 0.33f), (float)reader.GetReal("TrackInactive", "a", 1.f) };
-	this->m_colors.m_trackColorActive = { (float)reader.GetReal("TrackActive", "r", 0.f), (float)reader.GetReal("TrackActive", "g", 0.4f), (float)reader.GetReal("TrackActive", "b", 0.8f), (float)reader.GetReal("TrackActive", "a", 1.f) };
-	this->m_colors.m_trackBoundingBox = { (float)reader.GetReal("TrackBoundingBox", "r", 0.f), (float)reader.GetReal("TrackBoundingBox", "g", 0.f), (float)reader.GetReal("TrackBoundingBox", "b", 0.f), (float)reader.GetReal("TrackBoundingBox", "a", 1.f) };
-	this->m_colors.m_trackBoundingBoxActive = { (float)reader.GetReal("TrackActiveBoundingBox", "r", 1.f), (float)reader.GetReal("TrackActiveBoundingBox", "g", 1.f), (float)reader.GetReal("TrackActiveBoundingBox", "b", 0.f), (float)reader.GetReal("TrackActiveBoundingBox", "a", 1.f) };
-	this->m_colors.m_trackTextColor = { (float)reader.GetReal("TrackText", "r", 1.f), (float)reader.GetReal("TrackText", "g", 1.f), (float)reader.GetReal("TrackText", "b", 1.f), (float)reader.GetReal("TrackText", "a", 1.f) };
-	this->m_colors.m_cursorColor = { (float)reader.GetReal("TrackCursor", "r", 1.f), (float)reader.GetReal("TrackCursor", "g", 1.f), (float)reader.GetReal("TrackCursor", "b", 1.f), (float)reader.GetReal("TrackCursor", "a", 1.f) };
+	this->m_colors.m_trackColor = { (float)ini.GetFloat("Track", "r", 0.33f), (float)ini.GetFloat("Track", "g", 0.33f), (float)ini.GetFloat("Track", "b", 0.33f), (float)ini.GetFloat("Track", "a", 1.f) };
+	this->m_colors.m_trackColorInactive = { (float)ini.GetFloat("TrackInactive", "r", 0.33f), (float)ini.GetFloat("TrackInactive", "g", 0.33f), (float)ini.GetFloat("TrackInactive", "b", 0.33f), (float)ini.GetFloat("TrackInactive", "a", 1.f) };
+	this->m_colors.m_trackColorActive = { (float)ini.GetFloat("TrackActive", "r", 0.f), (float)ini.GetFloat("TrackActive", "g", 0.4f), (float)ini.GetFloat("TrackActive", "b", 0.8f), (float)ini.GetFloat("TrackActive", "a", 1.f) };
+	this->m_colors.m_trackBoundingBox = { (float)ini.GetFloat("TrackBoundingBox", "r", 0.f), (float)ini.GetFloat("TrackBoundingBox", "g", 0.f), (float)ini.GetFloat("TrackBoundingBox", "b", 0.f), (float)ini.GetFloat("TrackBoundingBox", "a", 1.f) };
+	this->m_colors.m_trackBoundingBoxActive = { (float)ini.GetFloat("TrackActiveBoundingBox", "r", 1.f), (float)ini.GetFloat("TrackActiveBoundingBox", "g", 1.f), (float)ini.GetFloat("TrackActiveBoundingBox", "b", 0.f), (float)ini.GetFloat("TrackActiveBoundingBox", "a", 1.f) };
+	this->m_colors.m_trackTextColor = { (float)ini.GetFloat("TrackText", "r", 1.f), (float)ini.GetFloat("TrackText", "g", 1.f), (float)ini.GetFloat("TrackText", "b", 1.f), (float)ini.GetFloat("TrackText", "a", 1.f) };
+	this->m_colors.m_cursorColor = { (float)ini.GetFloat("TrackCursor", "r", 1.f), (float)ini.GetFloat("TrackCursor", "g", 1.f), (float)ini.GetFloat("TrackCursor", "b", 1.f), (float)ini.GetFloat("TrackCursor", "a", 1.f) };
 }
 
 std::string TimeActEditor::GetTrackName(int idx) 
