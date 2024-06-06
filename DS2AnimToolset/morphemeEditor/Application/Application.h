@@ -47,6 +47,7 @@
 
 #include "MorphemeSystem/MorphemeSystem.h"
 #include "AnimPlayer/AnimPlayer.h"
+#include "INI/INI.h"
 
 using namespace cfr;
 
