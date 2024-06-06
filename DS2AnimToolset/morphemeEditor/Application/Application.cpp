@@ -468,8 +468,12 @@ void Application::ModelPreviewWindow()
 
 			if (ImGui::BeginMenu("Scene"))
 			{
-				if (ImGui::MenuItem("X-Ray", NULL, &this->m_sceneFlags.m_xray)) { this->m_sceneFlags.m_xray != this->m_sceneFlags.m_xray; }
-				if (ImGui::MenuItem("Wireframe", NULL, &this->m_sceneFlags.m_wireframe)) { this->m_sceneFlags.m_wireframe != this->m_sceneFlags.m_wireframe; }
+				if (ImGui::MenuItem("Normal", NULL, this->m_sceneFlags.m_displayMode == Mode_Normal)) { this->m_sceneFlags.m_displayMode = Mode_Normal; }
+				if (ImGui::MenuItem("X-Ray", NULL, this->m_sceneFlags.m_displayMode == Mode_XRay)) { this->m_sceneFlags.m_displayMode = Mode_XRay; }
+				if (ImGui::MenuItem("Wireframe", NULL, this->m_sceneFlags.m_displayMode == Mode_Wireframe)) { this->m_sceneFlags.m_displayMode = Mode_Wireframe; }
+				
+				ImGui::Separator();
+
 				if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
 				if (ImGui::MenuItem("Scene Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
 
@@ -1405,97 +1409,101 @@ void Application::EntityManagerWindow()
 
 	ImGui::Begin("Entity Manager", &this->m_windowStates.m_entityManager);
 
-	if (this->m_chrId == 1)
+	bool disable = (this->m_chrId != 1);
+
+	ImGui::BeginDisabled(disable);
+
+	std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
+
+	std::filesystem::path weapon_path = parts_path + L"\\weapon";
+	std::filesystem::path shield_path = parts_path + L"\\shield";
+
+	ImGui::SeparatorText("Weapon & Shield");
+
+	if (std::filesystem::exists(weapon_path) && std::filesystem::exists(shield_path))
 	{
-		std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
-
-		std::filesystem::path weapon_path = parts_path + L"\\weapon";
-		std::filesystem::path shield_path = parts_path + L"\\shield";
-
-		if (std::filesystem::exists(weapon_path) && std::filesystem::exists(shield_path))
+		if (ImGui::TreeNode("Right"))
 		{
-			ImGui::SeparatorText("Weapon & Shield");
+			ImGui::SeparatorText("Weapon");
+			ModelPartsList(this, weapon_path, Parts_WeaponRight);
 
-			if (ImGui::TreeNode("Right"))
-			{
-				ImGui::SeparatorText("Weapon");
-				ModelPartsList(this, weapon_path, Parts_WeaponRight);
+			ImGui::SeparatorText("Shield");
+			ModelPartsList(this, shield_path, Parts_WeaponRight);
 
-				ImGui::SeparatorText("Shield");
-				ModelPartsList(this, shield_path, Parts_WeaponRight);
-
-				ImGui::TreePop();
-			}
-
-			if (ImGui::TreeNode("Left"))
-			{
-				ImGui::SeparatorText("Weapon");
-				ModelPartsList(this, weapon_path, Parts_WeaponLeft);
-
-				ImGui::SeparatorText("Shield");
-				ModelPartsList(this, shield_path, Parts_WeaponLeft);
-			}
+			ImGui::TreePop();
 		}
 
-		ImGui::SeparatorText("Armor");
-
-		std::filesystem::path armor_parts = parts_path + L"\\head";
-
-		if (std::filesystem::exists(armor_parts))
+		if (ImGui::TreeNode("Left"))
 		{
-			if (ImGui::TreeNode("Head"))
-			{
-				ModelPartsList(this, armor_parts, Parts_Head);
-	
-				ImGui::TreePop();
-			}
-		}
+			ImGui::SeparatorText("Weapon");
+			ModelPartsList(this, weapon_path, Parts_WeaponLeft);
 
-		armor_parts = parts_path + L"\\body";
-
-		if (std::filesystem::exists(armor_parts))
-		{
-			if (ImGui::TreeNode("Body"))
-			{
-				ModelPartsList(this, armor_parts, Parts_Body);
-
-				ImGui::TreePop();
-			}
-		}
-
-		armor_parts = parts_path + L"\\arm";
-
-		if (std::filesystem::exists(armor_parts))
-		{
-			if (ImGui::TreeNode("Arm"))
-			{
-				ModelPartsList(this, armor_parts, Parts_Arm);
-
-				ImGui::TreePop();
-			}
-		}
-
-		armor_parts = parts_path + L"\\leg";
-
-		if (std::filesystem::exists(armor_parts))
-		{
-			if (ImGui::TreeNode("Leg"))
-			{
-				ModelPartsList(this, armor_parts, Parts_Leg);
-
-				ImGui::TreePop();
-			}
+			ImGui::SeparatorText("Shield");
+			ModelPartsList(this, shield_path, Parts_WeaponLeft);
 		}
 	}
+
+	ImGui::SeparatorText("Armor");
+
+	std::filesystem::path armor_parts = parts_path + L"\\head";
+
+	if (std::filesystem::exists(armor_parts))
+	{
+		if (ImGui::TreeNode("Head"))
+		{
+			ModelPartsList(this, armor_parts, Parts_Head);
+
+			ImGui::TreePop();
+		}
+	}
+
+	armor_parts = parts_path + L"\\body";
+
+	if (std::filesystem::exists(armor_parts))
+	{
+		if (ImGui::TreeNode("Body"))
+		{
+			ModelPartsList(this, armor_parts, Parts_Body);
+
+			ImGui::TreePop();
+		}
+	}
+
+	armor_parts = parts_path + L"\\arm";
+
+	if (std::filesystem::exists(armor_parts))
+	{
+		if (ImGui::TreeNode("Arm"))
+		{
+			ModelPartsList(this, armor_parts, Parts_Arm);
+
+			ImGui::TreePop();
+		}
+	}
+
+	armor_parts = parts_path + L"\\leg";
+
+	if (std::filesystem::exists(armor_parts))
+	{
+		if (ImGui::TreeNode("Leg"))
+		{
+			ModelPartsList(this, armor_parts, Parts_Leg);
+
+			ImGui::TreePop();
+		}
+	}
+
+	if (disable)
+		ImGui::EndDisabled();
 
 	ImGui::End();
 }
 
-void SetModelFlags(FlverModel* model, bool xray, bool showDummies)
+void SetModelFlags(FlverModel* model, DisplayMode mode, bool showDummies)
 {
 	if (model)
 	{
-		model->m_settings.m_wireframe = xray;
+		model->m_settings.m_displayMode = mode;
 		model->m_settings.m_drawDummyPolygons = showDummies;
 	}
 }
@@ -1836,46 +1844,46 @@ void Application::CheckFlags()
 	if (this->m_animPlayer)
 	{
 		FlverModel* model = this->m_animPlayer->GetModel();
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPart(Parts_Head);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPart(Parts_Face);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPart(Parts_Body);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPart(Parts_Arm);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPart(Parts_Leg);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPart(Parts_WeaponLeft);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPart(Parts_WeaponRight);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Face);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Head);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Eyes);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_EyeBrows);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Beard);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 
 		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Hair);
-		SetModelFlags(model, this->m_sceneFlags.m_wireframe, this->m_sceneFlags.m_drawDummies);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 	}
 }
 
@@ -2081,11 +2089,11 @@ void Application::LoadFile()
 										//Load external parts for the player character
 										if (this->m_chrId == 1)
 										{
-											LoadPartsBnd(this, filepath_parts, Parts_Head, -1, false);
+											LoadPartsBnd(this, filepath_parts, Parts_Head, 1010, false);
 											LoadPartsBnd(this, filepath_parts, Parts_Face, -1, false);
-											LoadPartsBnd(this, filepath_parts, Parts_Body, 1001, false);
-											LoadPartsBnd(this, filepath_parts, Parts_Arm, 1001, false);
-											LoadPartsBnd(this, filepath_parts, Parts_Leg, 1001, false);
+											LoadPartsBnd(this, filepath_parts, Parts_Body, 1010, false);
+											LoadPartsBnd(this, filepath_parts, Parts_Arm, 1010, false);
+											LoadPartsBnd(this, filepath_parts, Parts_Leg, 1010, false);
 
 											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Face, 1, false);
 											LoadPartsFaceGenBnd(this, filepath_parts, FaceGen_Head, 1, false);

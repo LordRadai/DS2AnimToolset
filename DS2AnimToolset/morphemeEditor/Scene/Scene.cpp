@@ -458,7 +458,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
 
     prim.End();
 
-    if (!model->m_settings.m_wireframe)
+    if (model->m_settings.m_displayMode != Mode_Wireframe)
     {
         DirectX::PrimitiveBatch<DirectX::VertexPositionNormalColor> primShaded(this->m_deviceContext, UINT16_MAX * 3, UINT16_MAX);
 
@@ -468,7 +468,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
 
         m_physicalEffect->SetAlpha(1.f);
 
-        if (g_appRootWindow->m_sceneFlags.m_xray)
+        if (model->m_settings.m_displayMode == Mode_XRay)
             m_physicalEffect->SetAlpha(0.5f);
 
         m_physicalEffect->Apply(this->m_deviceContext);

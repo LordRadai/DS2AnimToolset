@@ -15,6 +15,13 @@
 
 using namespace cfr;
 
+enum DisplayMode
+{
+	Mode_Normal,
+	Mode_XRay,
+	Mode_Wireframe,
+};
+
 class FlverModel
 {
 public:
@@ -30,7 +37,7 @@ public:
 
 	struct Settings
 	{
-		bool m_wireframe = false;
+		DisplayMode m_displayMode = Mode_Normal;
 		bool m_drawDummyPolygons = false;
 		int m_selectedBone = -1;
 		int m_selectedDummy = -1;
