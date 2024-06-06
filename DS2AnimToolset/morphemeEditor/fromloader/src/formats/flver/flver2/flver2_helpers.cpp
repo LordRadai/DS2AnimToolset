@@ -752,36 +752,16 @@ namespace cfr
 		UMEM* dstUVs         = uopenMem((char*)&uvs[0],          uvs_size);
 		UMEM* dstColors      = uopenMem((char*)&colors[0],       clr_size);
 
-		vd->positions.assign(positions, positions + vertCount * 3);
-		vd->bone_weights.assign(bone_weights, bone_weights + vertCount * 4);
-		vd->bone_indices.assign(bone_indices, bone_indices + vertCount * 4);
-		vd->normals.assign(normals, normals + vertCount * 3);
-		vd->normalws.assign(normalws, normalws + vertCount);
-		vd->tangents.assign(tangents, tangents + vertCount * 4 * tanCount);
-		vd->bitangents.assign(bitangents, bitangents + vertCount * 4);
-		vd->uvs.assign(uvs, uvs + vertCount * 2 * uvCount);
-		vd->colors.assign(colors, colors + vertCount * 4 * colorCount);
-
-		delete[] positions;
-		delete[] bone_weights;
-		delete[] bone_indices;
-		delete[] normals;
-		delete[] normalws;
-		delete[] tangents;
-		delete[] bitangents;
-		delete[] uvs;
-		delete[] colors;
-
 		//this is needed, i don't know why
-		useek(dstPositions,0,SEEK_SET);
-		useek(dstBoneWeights,0,SEEK_SET);
-		useek(dstBoneIndices,0,SEEK_SET);
-		useek(dstNormals,0,SEEK_SET);
-		useek(dstNormalWs,0,SEEK_SET);
-		useek(dstTangents,0,SEEK_SET);
-		useek(dstBitangents,0,SEEK_SET);
-		useek(dstUVs,0,SEEK_SET);
-		useek(dstColors,0,SEEK_SET);
+		useek(dstPositions, 0, SEEK_SET);
+		useek(dstBoneWeights, 0, SEEK_SET);
+		useek(dstBoneIndices, 0, SEEK_SET);
+		useek(dstNormals, 0, SEEK_SET);
+		useek(dstNormalWs, 0, SEEK_SET);
+		useek(dstTangents, 0, SEEK_SET);
+		useek(dstBitangents, 0, SEEK_SET);
+		useek(dstUVs, 0, SEEK_SET);
+		useek(dstColors, 0, SEEK_SET);
 
 		//for now only "all" is supported, to support individual types, more complex logic will be needed
 		if(requests.size() > 2) //check if all are selected
@@ -910,6 +890,26 @@ namespace cfr
 		uclose(dstTangents);
 		uclose(dstBitangents);
 		uclose(dstColors);*/
+
+		vd->positions.assign(positions, positions + vertCount * 3);
+		vd->bone_weights.assign(bone_weights, bone_weights + vertCount * 4);
+		vd->bone_indices.assign(bone_indices, bone_indices + vertCount * 4);
+		vd->normals.assign(normals, normals + vertCount * 3);
+		vd->normalws.assign(normalws, normalws + vertCount);
+		vd->tangents.assign(tangents, tangents + vertCount * 4 * tanCount);
+		vd->bitangents.assign(bitangents, bitangents + vertCount * 4);
+		vd->uvs.assign(uvs, uvs + vertCount * 2 * uvCount);
+		vd->colors.assign(colors, colors + vertCount * 4 * colorCount);
+
+		delete[] positions;
+		delete[] bone_weights;
+		delete[] bone_indices;
+		delete[] normals;
+		delete[] normalws;
+		delete[] tangents;
+		delete[] bitangents;
+		delete[] uvs;
+		delete[] colors;
 
 		if ((vd->positions[0] != vd->positions[1]) && (vd->positions[1] != vd->positions[2]) && (vd->positions[0] != vd->positions[2]))
 			this->meshes[meshIndex].vertexData = vd;
