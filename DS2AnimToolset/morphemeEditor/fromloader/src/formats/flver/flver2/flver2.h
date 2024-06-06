@@ -4,7 +4,6 @@
 #include <map>
 
 #include "../../stdafx.h"
-#include <vector>
 //welcome to FLVER-town
 
 //standard fromsoft model format from DSPTDE onwards
@@ -14,15 +13,15 @@
 namespace cfr {
 	struct VertexData 
 	{
-		std::vector<float> positions;
-		std::vector<float> bone_weights;
-		std::vector<short> bone_indices;
-		std::vector<float> normals;
-		std::vector<int>   normalws;
-		std::vector<float> uvs;
-		std::vector<float> tangents;
-		std::vector<float> bitangents;
-		std::vector<float> colors;
+		float* positions    ;
+		float* bone_weights ;
+		short* bone_indices ;
+		float* normals      ;
+		int*   normalws     ;
+		float* uvs          ;
+		float* tangents     ;
+		float* bitangents   ;
+		float* colors       ;
 	};
 
 	enum VertexSemantic
@@ -37,6 +36,42 @@ namespace cfr {
 		FVS_BITANGENT    =  7,
 		FVS_VERTEX_COLOR = 10,
 	};
+
+	/*enum VertexType
+	{
+		FVT_VEC2               = 0x01, //two floats
+		FVT_VEC3               = 0x02, //three floats
+		FVT_VEC4               = 0x03, //four floats
+		FVT_UNK0               = 0x10, //unknown
+		FVT_4_BYTE_0           = 0x11, //four bytes
+		FVT_SHORT2             = 0x12, //two shorts
+		FVT_4_BYTE_1           = 0x13, //four bytes
+		FVT_UV                 = 0x15, //two shorts
+		FVT_UV_PAIR            = 0x16, //four shorts
+		FVT_SHORT_BONE_INDICES = 0x18, //four shorts
+		FVT_4_SHORT_0          = 0x1A, //four shorts
+		FVT_UNK1               = 0x2E, //unknown
+		FVT_UNK2               = 0x2F, //unknown
+		FVT_UNK3               = 0xF0, //unknown
+	};*/
+
+	/*enum VertexType
+	{
+		FVT_VEC2               = 0x01, //two floats
+		FVT_VEC3               = 0x02, //three floats
+		FVT_VEC4               = 0x03, //four floats
+		FVT_4_SBYTE            = 0x10, //(four sbytes),(three sbytes div by 127, one ubyte),(two sshorts)
+		FVT_4_UBYTE            = 0x11, //four ubytes
+		FVT_NORMAL             = 0x12, //ubyte, three sbytes each div by 127, converted to floats
+		FVT_4_BYTE_1           = 0x13, //four bytes
+		FVT_UV                 = 0x15, //two shorts
+		FVT_UV_PAIR            = 0x16, //four shorts
+		FVT_SHORT_BONE_INDICES = 0x18, //four shorts
+		FVT_4_SHORT_0          = 0x1A, //four shorts
+		FVT_UNK1               = 0x2E, //unknown
+		FVT_UNK2               = 0x2F, //unknown
+		FVT_UNK3               = 0xF0, //unknown
+	};*/
 
 	enum VertexType
 	{
