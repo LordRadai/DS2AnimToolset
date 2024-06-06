@@ -373,6 +373,9 @@ void Application::GUIStyle()
 void Application::Initialise()
 {
 	this->m_morphemeSystem->initMorpheme();
+
+	if (!this->m_playerModelPreset.Open(".//Data//res//c0001.application->m_playerModelPreset"))
+		g_appLog->AlertMessage(MsgLevel_Warn, "Failed to load c0001.application->m_playerModelPreset\n");
 }
 
 void Application::Update(float delta_time)
@@ -2139,12 +2142,6 @@ void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, 
 
 void LoadPlayerModelParts(Application* application, std::wstring parts_path)
 {
-	char default_info[255];
-	sprintf_s(default_info, "No specific information is known for this event\n");
-
-	if (!application->m_playerModelPreset.Open(".//Data//res//c0001.application->m_playerModelPreset"))
-		g_appLog->PanicMessage("Failed to load c0001.application->m_playerModelPreset\n");
-
 	bool female = application->m_playerModelPreset.GetBool("Gender", "is_female", false);
 
 	int rightId = application->m_playerModelPreset.GetInt("Right", "id", -1);
