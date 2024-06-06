@@ -708,7 +708,7 @@ namespace cfr
 		//printf("got uvCount:%i\n",uvCount);
 		//printf("got tanCount:%i\n",tanCount);
 
-		VertexData* vd = (VertexData*)malloc(sizeof(VertexData));
+		VertexData* vd = new VertexData;
 
 		//uvCount += 5; //this is needed, i don't know why
 
@@ -731,26 +731,46 @@ namespace cfr
 		printf("c uv count: %i\n",uvCount);
 		printf("c uv size: %i\n",uvs_size);*/
 
-		vd->positions    = (float*)malloc(pos_size);
-		vd->bone_weights = (float*)malloc(bnw_size);
-		vd->bone_indices = (short*)malloc(bni_size);
-		vd->normals      = (float*)malloc(nrm_size);
-		vd->normalws     = (int*  )malloc(nrw_size);
-		vd->tangents     = (float*)malloc(tan_size);
-		vd->bitangents   = (float*)malloc(btn_size);
-		vd->uvs          = (float*)malloc(uvs_size);
-		vd->colors       = (float*)malloc(clr_size);
+		float* positions    = new float[vertCount * 3];
+		float* bone_weights = new float[vertCount * 4];
+		short* bone_indices = new short[vertCount * 4];
+		float* normals      = new float[vertCount * 3];
+		int*   normalws		= new int[vertCount];
+		float* tangents     = new float[vertCount * 4 * tanCount];
+		float* bitangents   = new float[vertCount * 4];
+		float* uvs          = new float[vertCount * 2 * uvCount];
+		float* colors       = new float[vertCount * 4 * colorCount];
 
 		//open up umem handles on the data outputs
-		UMEM* dstPositions   = uopenMem((char*)&vd->positions[0],    pos_size);
-		UMEM* dstBoneWeights = uopenMem((char*)&vd->bone_weights[0], bnw_size);
-		UMEM* dstBoneIndices = uopenMem((char*)&vd->bone_indices[0], bni_size);
-		UMEM* dstNormals     = uopenMem((char*)&vd->normals[0],      nrm_size);
-		UMEM* dstNormalWs    = uopenMem((char*)&vd->normalws[0],     nrw_size);
-		UMEM* dstTangents    = uopenMem((char*)&vd->tangents[0],     tan_size);
-		UMEM* dstBitangents  = uopenMem((char*)&vd->bitangents[0],   btn_size);
-		UMEM* dstUVs         = uopenMem((char*)&vd->uvs[0],          uvs_size);
-		UMEM* dstColors      = uopenMem((char*)&vd->colors[0],       clr_size);
+		UMEM* dstPositions   = uopenMem((char*)&positions[0],    pos_size);
+		UMEM* dstBoneWeights = uopenMem((char*)&bone_weights[0], bnw_size);
+		UMEM* dstBoneIndices = uopenMem((char*)&bone_indices[0], bni_size);
+		UMEM* dstNormals     = uopenMem((char*)&normals[0],      nrm_size);
+		UMEM* dstNormalWs    = uopenMem((char*)&normalws[0],     nrw_size);
+		UMEM* dstTangents    = uopenMem((char*)&tangents[0],     tan_size);
+		UMEM* dstBitangents  = uopenMem((char*)&bitangents[0],   btn_size);
+		UMEM* dstUVs         = uopenMem((char*)&uvs[0],          uvs_size);
+		UMEM* dstColors      = uopenMem((char*)&colors[0],       clr_size);
+
+		vd->positions.assign(positions, positions + vertCount * 3);
+		vd->bone_weights.assign(bone_weights, bone_weights + vertCount * 4);
+		vd->bone_indices.assign(bone_indices, bone_indices + vertCount * 4);
+		vd->normals.assign(normals, normals + vertCount * 3);
+		vd->normalws.assign(normalws, normalws + vertCount);
+		vd->tangents.assign(tangents, tangents + vertCount * 4 * tanCount);
+		vd->bitangents.assign(bitangents, bitangents + vertCount * 4);
+		vd->uvs.assign(uvs, uvs + vertCount * 2 * uvCount);
+		vd->colors.assign(colors, colors + vertCount * 4 * colorCount);
+
+		delete[] positions;
+		delete[] bone_weights;
+		delete[] bone_indices;
+		delete[] normals;
+		delete[] normalws;
+		delete[] tangents;
+		delete[] bitangents;
+		delete[] uvs;
+		delete[] colors;
 
 		//this is needed, i don't know why
 		useek(dstPositions,0,SEEK_SET);
