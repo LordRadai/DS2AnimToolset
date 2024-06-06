@@ -9,7 +9,7 @@ int GetMorphemeRigBoneIndexByFlverBoneIndex(MR::AnimRigDef* pRig, FlverModel* pF
 	if (idx == -1)
 		return -1;
 
-	std::string boneName = RString::ToNarrow(pFlverModel->m_flver->bones[idx].name);
+	std::string boneName = RString::ToNarrow(pFlverModel->m_flver.bones[idx].name);
 
 	if (boneName == "LCalfTwist")
 		boneName = "L_Calf";
@@ -63,13 +63,10 @@ FlverModel::FlverModel(UMEM* umem)
 	this->m_loaded = false;
 	this->m_verts.clear();
 
-	if (this->m_loaded)
-		delete this->m_flver;
-
 	this->m_position = Matrix::Identity;
-	this->m_flver = new FLVER2(umem);
+	this->m_flver = FLVER2(umem);
 
-	float focus_y = (this->m_flver->header.boundingBoxMax.y + this->m_flver->header.boundingBoxMin.y) / 2;
+	float focus_y = (this->m_flver.header.boundingBoxMax.y + this->m_flver.header.boundingBoxMin.y) / 2;
 
 	this->m_focusPoint = Vector3::Transform(Vector3::Zero, this->m_position) + DirectX::SimpleMath::Vector3(0, focus_y, 0);
 
@@ -121,19 +118,21 @@ std::vector<FbxVector4> FlverModel::GetModelMeshVertices(int idx, bool flip)
 {
 	std::vector<FbxVector4> vertices;
 
+	/*
 	if (m_flver == nullptr)
 		return vertices;
+	*/
 
-	if (idx > m_flver->header.meshCount)
+	if (idx > m_flver.header.meshCount)
 		return vertices;
 
-	cfr::FLVER2::Mesh* mesh = &m_flver->meshes[idx];
+	cfr::FLVER2::Mesh* mesh = &m_flver.meshes[idx];
 
 	int uvCount = 0;
 	int colorCount = 0;
 	int tanCount = 0;
 
-	m_flver->getVertexData(idx, &uvCount, &colorCount, &tanCount);
+	m_flver.getVertexData(idx, &uvCount, &colorCount, &tanCount);
 
 	uint64_t lowest_flags = LLONG_MAX;
 	cfr::FLVER2::Faceset* facesetp = nullptr;
@@ -141,9 +140,9 @@ std::vector<FbxVector4> FlverModel::GetModelMeshVertices(int idx, bool flip)
 	for (int mfsi = 0; mfsi < mesh->header.facesetCount; mfsi++)
 	{
 		int fsindex = mesh->facesetIndices[mfsi];
-		if (this->m_flver->facesets[fsindex].header.flags < lowest_flags)
+		if (this->m_flver.facesets[fsindex].header.flags < lowest_flags)
 		{
-			facesetp = &this->m_flver->facesets[fsindex];
+			facesetp = &this->m_flver.facesets[fsindex];
 			lowest_flags = facesetp->header.flags;
 		}
 	}
@@ -179,19 +178,21 @@ std::vector<FbxVector4> FlverModel::GetModelMeshNormals(int idx, bool flip)
 {
 	std::vector<FbxVector4> normals;
 
+	/*
 	if (m_flver == nullptr)
 		return normals;
+	*/
 
-	if (idx > m_flver->header.meshCount)
+	if (idx > m_flver.header.meshCount)
 		return normals;
 
-	cfr::FLVER2::Mesh* mesh = &m_flver->meshes[idx];
+	cfr::FLVER2::Mesh* mesh = &m_flver.meshes[idx];
 
 	int uvCount = 0;
 	int colorCount = 0;
 	int tanCount = 0;
 
-	m_flver->getVertexData(idx, &uvCount, &colorCount, &tanCount);
+	m_flver.getVertexData(idx, &uvCount, &colorCount, &tanCount);
 
 	uint64_t lowest_flags = LLONG_MAX;
 	cfr::FLVER2::Faceset* facesetp = nullptr;
@@ -199,9 +200,9 @@ std::vector<FbxVector4> FlverModel::GetModelMeshNormals(int idx, bool flip)
 	for (int mfsi = 0; mfsi < mesh->header.facesetCount; mfsi++)
 	{
 		int fsindex = mesh->facesetIndices[mfsi];
-		if (this->m_flver->facesets[fsindex].header.flags < lowest_flags)
+		if (this->m_flver.facesets[fsindex].header.flags < lowest_flags)
 		{
-			facesetp = &this->m_flver->facesets[fsindex];
+			facesetp = &this->m_flver.facesets[fsindex];
 			lowest_flags = facesetp->header.flags;
 		}
 	}
@@ -233,19 +234,21 @@ std::vector<FbxVector4> FlverModel::GetModelMeshBoneWeights(int idx)
 {
 	std::vector<FbxVector4> weights;
 
+	/*
 	if (m_flver == nullptr)
 		return weights;
+	*/
 
-	if (idx > m_flver->header.meshCount)
+	if (idx > m_flver.header.meshCount)
 		return weights;
 
-	cfr::FLVER2::Mesh* mesh = &m_flver->meshes[idx];
+	cfr::FLVER2::Mesh* mesh = &m_flver.meshes[idx];
 
 	int uvCount = 0;
 	int colorCount = 0;
 	int tanCount = 0;
 
-	m_flver->getVertexData(idx, &uvCount, &colorCount, &tanCount);
+	m_flver.getVertexData(idx, &uvCount, &colorCount, &tanCount);
 
 	uint64_t lowest_flags = LLONG_MAX;
 	cfr::FLVER2::Faceset* facesetp = nullptr;
@@ -253,9 +256,9 @@ std::vector<FbxVector4> FlverModel::GetModelMeshBoneWeights(int idx)
 	for (int mfsi = 0; mfsi < mesh->header.facesetCount; mfsi++)
 	{
 		int fsindex = mesh->facesetIndices[mfsi];
-		if (this->m_flver->facesets[fsindex].header.flags < lowest_flags)
+		if (this->m_flver.facesets[fsindex].header.flags < lowest_flags)
 		{
-			facesetp = &this->m_flver->facesets[fsindex];
+			facesetp = &this->m_flver.facesets[fsindex];
 			lowest_flags = facesetp->header.flags;
 		}
 	}
@@ -283,19 +286,21 @@ std::vector<FbxVector4> FlverModel::GetModelMeshBoneWeights(int idx)
 //Gets the bone indices for the FLVER mesh at index idx
 void FlverModel::GetModelMeshBoneIndices(std::vector<int*>& buffer, int idx)
 {
+	/*
 	if (m_flver == nullptr)
 		return;
+	*/
 
-	if (idx > m_flver->header.meshCount)
+	if (idx > m_flver.header.meshCount)
 		return;
 
-	cfr::FLVER2::Mesh* mesh = &m_flver->meshes[idx];
+	cfr::FLVER2::Mesh* mesh = &m_flver.meshes[idx];
 
 	int uvCount = 0;
 	int colorCount = 0;
 	int tanCount = 0;
 
-	m_flver->getVertexData(idx, &uvCount, &colorCount, &tanCount);
+	m_flver.getVertexData(idx, &uvCount, &colorCount, &tanCount);
 
 	uint64_t lowest_flags = LLONG_MAX;
 	cfr::FLVER2::Faceset* facesetp = nullptr;
@@ -303,9 +308,9 @@ void FlverModel::GetModelMeshBoneIndices(std::vector<int*>& buffer, int idx)
 	for (int mfsi = 0; mfsi < mesh->header.facesetCount; mfsi++)
 	{
 		int fsindex = mesh->facesetIndices[mfsi];
-		if (this->m_flver->facesets[fsindex].header.flags < lowest_flags)
+		if (this->m_flver.facesets[fsindex].header.flags < lowest_flags)
 		{
-			facesetp = &this->m_flver->facesets[fsindex];
+			facesetp = &this->m_flver.facesets[fsindex];
 			lowest_flags = facesetp->header.flags;
 		}
 	}
@@ -464,32 +469,34 @@ void FlverModel::GetModelData()
 	this->m_vertBindPose.clear();
 	this->m_boneBindPose.clear();
 
+	/*
 	if (m_flver == nullptr)
 		return;
+	*/
 
-	this->m_boneBindPose = ComputeGlobalFlverRigTransform(this->m_flver);
+	this->m_boneBindPose = ComputeGlobalFlverRigTransform(&this->m_flver);
 	this->m_boneTransforms = this->m_boneBindPose;
 
-	this->m_verts.reserve(m_flver->header.meshCount);
-	this->m_vertBindPose.reserve(m_flver->header.meshCount);
+	this->m_verts.reserve(m_flver.header.meshCount);
+	this->m_vertBindPose.reserve(m_flver.header.meshCount);
 
-	for (int i = 0; i < m_flver->header.meshCount; i++)
+	for (int i = 0; i < m_flver.header.meshCount; i++)
 	{
-		cfr::FLVER2::Mesh* mesh = &m_flver->meshes[i];
+		cfr::FLVER2::Mesh* mesh = &m_flver.meshes[i];
 
 		int vertexCount = 0;
 
 		for (int vbi = 0; vbi < mesh->header.vertexBufferCount; vbi++)
 		{
-			int vb_index = m_flver->meshes[i].vertexBufferIndices[vbi];
-			vertexCount += m_flver->vertexBuffers[vb_index].header.vertexCount;
+			int vb_index = m_flver.meshes[i].vertexBufferIndices[vbi];
+			vertexCount += m_flver.vertexBuffers[vb_index].header.vertexCount;
 		}
 
 		int uvCount = 0;
 		int colorCount = 0;
 		int tanCount = 0;
 
-		m_flver->getVertexData(i, &uvCount, &colorCount, &tanCount);
+		m_flver.getVertexData(i, &uvCount, &colorCount, &tanCount);
 
 		uint64_t lowest_flags = LLONG_MAX;
 		cfr::FLVER2::Faceset* facesetp = nullptr;
@@ -497,9 +504,9 @@ void FlverModel::GetModelData()
 		for (int mfsi = 0; mfsi < mesh->header.facesetCount; mfsi++)
 		{
 			int fsindex = mesh->facesetIndices[mfsi];
-			if (this->m_flver->facesets[fsindex].header.flags < lowest_flags)
+			if (this->m_flver.facesets[fsindex].header.flags < lowest_flags)
 			{
-				facesetp = &this->m_flver->facesets[fsindex];
+				facesetp = &this->m_flver.facesets[fsindex];
 				lowest_flags = facesetp->header.flags;
 			}
 		}
@@ -557,9 +564,10 @@ void FlverModel::GetModelData()
 
 void FlverModel::UpdateModel()
 {
+	/*
 	if (m_flver == nullptr)
 		return;
-
+	*/
 	DirectX::SimpleMath::Vector4 color = DirectX::SimpleMath::Vector4(0.7f, 0.7f, 0.7f, 1.f);
 
 	for (int i = 0; i < this->m_vertBindPose.size(); i++)
@@ -569,24 +577,24 @@ void FlverModel::UpdateModel()
 	this->m_focusPoint = Vector3::Transform(Vector3::Zero, this->m_position * Matrix::CreateScale(this->m_scale));
 
 	this->m_dummyPolygons.clear();
-	this->m_dummyPolygons.reserve(this->m_flver->header.dummyCount);
-	for (size_t i = 0; i < this->m_flver->header.dummyCount; i++)
+	this->m_dummyPolygons.reserve(this->m_flver.header.dummyCount);
+	for (size_t i = 0; i < this->m_flver.header.dummyCount; i++)
 	{
-		Vector3 dummyPos(this->m_flver->dummies[i].position.x, this->m_flver->dummies[i].position.y, this->m_flver->dummies[i].position.z);
-		Vector3 dummyUp(this->m_flver->dummies[i].upward.x, this->m_flver->dummies[i].upward.y, this->m_flver->dummies[i].upward.z);
-		Vector3 dummyForward(this->m_flver->dummies[i].forward.x, this->m_flver->dummies[i].forward.y, this->m_flver->dummies[i].forward.z);
+		Vector3 dummyPos(this->m_flver.dummies[i].position.x, this->m_flver.dummies[i].position.y, this->m_flver.dummies[i].position.z);
+		Vector3 dummyUp(this->m_flver.dummies[i].upward.x, this->m_flver.dummies[i].upward.y, this->m_flver.dummies[i].upward.z);
+		Vector3 dummyForward(this->m_flver.dummies[i].forward.x, this->m_flver.dummies[i].forward.y, this->m_flver.dummies[i].forward.z);
 
 		Matrix dummyLocalTransform = Matrix::CreateWorld(dummyPos, dummyUp, dummyForward);
 
-		this->m_dummyPolygons.push_back(dummyLocalTransform * this->m_boneTransforms[this->m_flver->dummies[i].dummyBoneIndex]);
+		this->m_dummyPolygons.push_back(dummyLocalTransform * this->m_boneTransforms[this->m_flver.dummies[i].dummyBoneIndex]);
 	}
 }
 
 int FlverModel::GetBoneIndexFromName(const char* name)
 {
-	for (size_t i = 0; i < this->m_flver->header.boneCount; i++)
+	for (size_t i = 0; i < this->m_flver.header.boneCount; i++)
 	{
-		if (strcmp(RString::ToNarrow(this->m_flver->bones[i].name).c_str(), name) == 0)
+		if (strcmp(RString::ToNarrow(this->m_flver.bones[i].name).c_str(), name) == 0)
 			return i;
 	}
 
@@ -665,9 +673,9 @@ std::vector<int> FlverModel::GetFlverToMorphemeBoneMap()
 void FlverModel::CreateFlverToMorphemeBoneMap(MR::AnimRigDef* pMorphemeRig)
 {
 	this->m_flverToMorphemeBoneMap.clear();
-	this->m_flverToMorphemeBoneMap.reserve(this->m_flver->header.boneCount);
+	this->m_flverToMorphemeBoneMap.reserve(this->m_flver.header.boneCount);
 
-	for (int i = 0; i < this->m_flver->header.boneCount; i++)
+	for (int i = 0; i < this->m_flver.header.boneCount; i++)
 		this->m_flverToMorphemeBoneMap.push_back(GetMorphemeRigBoneIndexByFlverBoneIndex(pMorphemeRig, this, i));
 }
 
@@ -682,9 +690,9 @@ int FlverModel::GetFlverBoneIndexByMorphemeBoneIndex(int idx)
 
 Matrix FlverModel::GetDummyPolygonTransform(int id)
 {
-	for (size_t i = 0; i < this->m_flver->header.dummyCount; i++)
+	for (size_t i = 0; i < this->m_flver.header.dummyCount; i++)
 	{
-		if (this->m_flver->dummies[i].referenceID == id)
+		if (this->m_flver.dummies[i].referenceID == id)
 			return this->m_dummyPolygons[i];
 	}
 
@@ -714,7 +722,7 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
 
 		this->m_position = GetNmTrajectoryTransform(animHandle) * Matrix::CreateRotationY(DirectX::XM_PI);
 
-		for (size_t i = 0; i < this->m_flver->header.boneCount; i++)
+		for (size_t i = 0; i < this->m_flver.header.boneCount; i++)
 		{
 			int morphemeBoneIdx = this->m_flverToMorphemeBoneMap[i];
 
@@ -723,19 +731,19 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
 				//Take the morpheme animation transform relative to the morpheme bind pose, mirror it on the ZY plane, and then apply them to the flver bind pose. Propagate to all children of the current bone
 				Matrix morphemeRelativeTransform = (this->m_morphemeBoneBindPose[morphemeBoneIdx].Invert() * this->m_morphemeBoneTransforms[morphemeBoneIdx]);
 
-				ApplyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPose, (Matrix::CreateReflection(Plane(Vector3::Right)) * Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
+				ApplyTransform(this->m_boneTransforms, &this->m_flver, this->m_boneBindPose, (Matrix::CreateReflection(Plane(Vector3::Right)) * Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
 			}
 		}
 	}
 
 	//Compute the relative transform to the flver bind pose. This will be used to transform model meshes in the skinning process
 	std::vector<Matrix> boneRelativeTransforms;
-	boneRelativeTransforms.reserve(this->m_flver->header.boneCount);
+	boneRelativeTransforms.reserve(this->m_flver.header.boneCount);
 
-	for (size_t i = 0; i < this->m_flver->header.boneCount; i++)
+	for (size_t i = 0; i < this->m_flver.header.boneCount; i++)
 		boneRelativeTransforms.push_back(this->m_boneBindPose[i].Invert() * this->m_boneTransforms[i]);
 
-	for (size_t meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
+	for (size_t meshIdx = 0; meshIdx < this->m_flver.header.meshCount; meshIdx++)
 	{
 		for (size_t vertexIndex = 0; vertexIndex < this->m_vertBindPose[meshIdx].size(); vertexIndex++)
 		{

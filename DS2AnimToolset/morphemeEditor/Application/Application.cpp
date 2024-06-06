@@ -1236,7 +1236,7 @@ void ModelTreeNode(Application* application, FlverModel* model)
 
 		if (open)
 		{
-			if (model->m_flver->header.boneCount > 0)
+			if (model->m_flver.header.boneCount > 0)
 			{
 				if (ImGui::TreeNode("Bones"))
 				{
@@ -1246,9 +1246,9 @@ void ModelTreeNode(Application* application, FlverModel* model)
 
 					while (boneID != -1)
 					{
-						SkeletonInspectorTreeNode(model->m_flver, boneID, model->m_settings.m_selectedBone);
+						SkeletonInspectorTreeNode(&model->m_flver, boneID, model->m_settings.m_selectedBone);
 
-						boneID = model->m_flver->bones[boneID].nextSiblingIndex;
+						boneID = model->m_flver.bones[boneID].nextSiblingIndex;
 					}
 
 					ImGui::EndChild();
@@ -1257,15 +1257,15 @@ void ModelTreeNode(Application* application, FlverModel* model)
 				}
 			}
 
-			if (model->m_flver->header.dummyCount > 0)
+			if (model->m_flver.header.dummyCount > 0)
 			{
 				if (ImGui::TreeNode("Dummy Polygons"))
 				{
 					ImGui::BeginChild("dummy_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
 
-					for (size_t i = 0; i < model->m_flver->header.dummyCount; i++)
+					for (size_t i = 0; i < model->m_flver.header.dummyCount; i++)
 					{
-						std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[i].referenceID);
+						std::string dummy_name = "Dmy_" + std::to_string(model->m_flver.dummies[i].referenceID);
 
 						bool selected = (model->m_settings.m_selectedDummy == i);
 
@@ -1383,7 +1383,6 @@ void ModelPartsList(Application* application, std::wstring rootPath, PartType ty
 
 					if (model)
 					{
-						application->m_animPlayer->Clear();
 						application->m_animPlayer->SetModelPart(type, model);
 						application->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
 					}
