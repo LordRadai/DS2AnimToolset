@@ -202,7 +202,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
     }
 
-    g_appRootWindow->m_playerModelPreset.Write(".\\Data\\res\\c0001.ini");
+    g_appRootWindow->m_playerModelPreset.Write(".//Data//res//c0001.ini");
     g_appRootWindow->m_morphemeSystem->termMorpheme();
 
     // Cleanup

@@ -374,8 +374,8 @@ void Application::Initialise()
 {
 	this->m_morphemeSystem->initMorpheme();
 
-	if (!this->m_playerModelPreset.Open(".//Data//res//c0001.application->m_playerModelPreset"))
-		g_appLog->AlertMessage(MsgLevel_Warn, "Failed to load c0001.application->m_playerModelPreset\n");
+	if (!this->m_playerModelPreset.Open(".//Data//res//c0001.ini"))
+		g_appLog->AlertMessage(MsgLevel_Warn, "Failed to load c0001.ini\n");
 }
 
 void Application::Update(float delta_time)
