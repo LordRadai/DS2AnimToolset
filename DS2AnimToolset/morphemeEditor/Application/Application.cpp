@@ -12,7 +12,7 @@
 
 bool IsEquipShield(std::wstring filename)
 {
-	size_t first = filename.find_first_of(L"_") + 1;
+	size_t first = filename.find_first_of(L"_");
 
 	std::wstring category = filename.substr(0, first);
 
