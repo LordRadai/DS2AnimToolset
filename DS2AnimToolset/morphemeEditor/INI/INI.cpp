@@ -64,7 +64,10 @@ std::string INI::GetString(std::string section, std::string key, std::string vDe
 
 void INI::SetBool(std::string section, std::string key, bool value)
 {
-	this->m_data[section][key] = value;
+	if (value)
+		this->m_data[section][key] = "true";
+	else
+		this->m_data[section][key] = "false";
 }
 
 void INI::SetInt(std::string section, std::string key, int value)
