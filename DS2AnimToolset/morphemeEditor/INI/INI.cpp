@@ -9,11 +9,20 @@ INI::~INI()
 {
 }
 
+//Generate INI structure from existing file
 bool INI::Open(std::string path)
 {
 	mINI::INIFile file(path);
 
 	return file.read(this->m_data);
+}
+
+//Generate INI file from. Set pretty to true for a more spaced output
+void INI::Write(std::string path, bool pretty)
+{
+	mINI::INIFile file(path);
+
+	file.generate(this->m_data, pretty);
 }
 
 bool INI::GetBool(std::string section, std::string key, bool vDefault)
@@ -53,10 +62,22 @@ std::string INI::GetString(std::string section, std::string key, std::string vDe
 	return this->m_data.get(section).get(key);
 }
 
-std::wstring INI::GetWString(std::string section, std::string key, std::wstring vDefault)
+void INI::SetBool(std::string section, std::string key, bool value)
 {
-	if (!this->m_data.has(section) || !this->m_data.get(section).has(key))
-		return vDefault;
+	this->m_data[section][key] = value;
+}
 
-	return RString::ToWide(this->m_data.get(section).get(key));
+void INI::SetInt(std::string section, std::string key, int value)
+{
+	this->m_data[section][key] = value;
+}
+
+void INI::SetFloat(std::string section, std::string key, float value)
+{
+	this->m_data[section][key] = value;
+}
+
+void INI::SetString(std::string section, std::string key, std::string value)
+{
+	this->m_data[section][key] = value;
 }
