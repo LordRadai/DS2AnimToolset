@@ -12,9 +12,9 @@
 
 bool IsEquipShield(std::wstring filename)
 {
-	size_t first = filename.find_first_of(L"_");
+	size_t first = filename.find_first_of(L"_") + 1;
 
-	std::wstring category = filename.substr(0, first - 2);
+	std::wstring category = filename.substr(0, first);
 
 	if (category == L"sd")
 		return true;
@@ -24,10 +24,10 @@ bool IsEquipShield(std::wstring filename)
 
 int GetEquipIDByFilename(std::wstring filename)
 {
-	size_t first = filename.find_first_of(L"_");
+	size_t first = filename.find_first_of(L"_") + 1;
 	size_t second = filename.find_last_of(L"_");
 
-	std::wstring modelIdStr = filename.substr(first + 1, second - 3);
+	std::wstring modelIdStr = filename.substr(first, second - first);
 
 	return std::stoi(modelIdStr);
 }
@@ -1622,6 +1622,8 @@ void Application::EntityManagerWindow()
 
 			ImGui::SeparatorText("Shield");
 			ModelPartsList(this, this->m_fileNameMapPairList.m_shieldModelPaths, Parts_WeaponLeft);
+
+			ImGui::TreePop();
 		}
 	}
 
@@ -1667,8 +1669,7 @@ void Application::EntityManagerWindow()
 		}
 	}
 
-	if (disable)
-		ImGui::EndDisabled();
+	ImGui::EndDisabled();
 
 	ImGui::End();
 }
