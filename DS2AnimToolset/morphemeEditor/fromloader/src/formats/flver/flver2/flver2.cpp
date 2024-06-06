@@ -160,16 +160,16 @@ namespace cfr
 		if(this->header.boneCount > 0)
 		{
 			useek(src,this->header.boneIndicesOffset,SEEK_SET);
-			this->boneIndices = (int32_t*)malloc(sizeof(int32_t) * this->header.boneCount);
+			this->boneIndices = new int32_t[this->header.boneCount];
 			uread(&this->boneIndices[0],sizeof(int32_t),this->header.boneCount,src);
 		}
 
 		useek(src,this->header.facesetIndicesOffset,SEEK_SET);
-		this->facesetIndices = (int32_t*)malloc(sizeof(int32_t) * this->header.facesetCount);
+		this->facesetIndices = new int32_t[this->header.facesetCount];
 		uread(&facesetIndices[0],sizeof(int32_t),this->header.facesetCount,src);
 
 		useek(src,this->header.vertexBufferIndicesOffset,SEEK_SET);
-		this->vertexBufferIndices = (int32_t*)malloc(sizeof(int32_t) * this->header.vertexBufferCount);
+		this->vertexBufferIndices = new int32_t[this->header.vertexBufferCount];
 		uread(&vertexBufferIndices[0],sizeof(int32_t),this->header.vertexBufferCount,src);
 
 		this->parent = parent;

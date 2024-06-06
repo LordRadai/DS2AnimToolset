@@ -534,10 +534,17 @@ void FlverModel::GetModelData()
 
 				int indices[4];
 
-				indices[0] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 0]];
-				indices[1] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 1]];
-				indices[2] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 2]];
-				indices[3] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 3]];
+				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 0] < mesh->header.boneCount)
+					indices[0] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 0]];
+
+				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 1] < mesh->header.boneCount)
+					indices[1] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 1]];
+
+				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 2] < mesh->header.boneCount)
+					indices[2] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 2]];
+
+				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 3] < mesh->header.boneCount)
+					indices[3] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 3]];
 
 				float x = mesh->vertexData->positions[(vertexIndex * 3) + 0];
 				float y = mesh->vertexData->positions[(vertexIndex * 3) + 2];
