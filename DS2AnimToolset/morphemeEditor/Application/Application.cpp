@@ -1352,7 +1352,7 @@ void Application::PreviewSceneExplorerWindow()
 void ModelPartsList(Application* application, std::wstring rootPath, PartType type)
 {
 	char childName[255];
-	sprintf_s(childName, "parts_%d", type);
+	sprintf_s(childName, "parts_%ls_%d", rootPath.c_str(), type);
 
 	ImGui::BeginChild(childName, ImVec2(ImGui::GetContentRegionAvail().x, 300));
 
@@ -1418,10 +1418,10 @@ void Application::EntityManagerWindow()
 
 			if (ImGui::TreeNode("Right"))
 			{
-				ImGui::SeparatorText("Weapon##r");
+				ImGui::SeparatorText("Weapon");
 				ModelPartsList(this, weapon_path, Parts_WeaponRight);
 
-				ImGui::SeparatorText("Shield##r");
+				ImGui::SeparatorText("Shield");
 				ModelPartsList(this, shield_path, Parts_WeaponRight);
 
 				ImGui::TreePop();
@@ -1429,10 +1429,10 @@ void Application::EntityManagerWindow()
 
 			if (ImGui::TreeNode("Left"))
 			{
-				ImGui::SeparatorText("Weapon##l");
+				ImGui::SeparatorText("Weapon");
 				ModelPartsList(this, weapon_path, Parts_WeaponLeft);
 
-				ImGui::SeparatorText("Shield##l");
+				ImGui::SeparatorText("Shield");
 				ModelPartsList(this, shield_path, Parts_WeaponLeft);
 			}
 		}
