@@ -79,6 +79,62 @@ void AnimPlayer::Clear()
 	this->Reset();
 }
 
+void AnimPlayer::ClearModelParts()
+{
+	if (this->m_modelParts.m_head)
+		delete this->m_modelParts.m_head;
+
+	if (this->m_modelParts.m_face)
+		delete this->m_modelParts.m_face;
+
+	if (this->m_modelParts.m_body)
+		delete this->m_modelParts.m_body;
+
+	if (this->m_modelParts.m_arm)
+		delete this->m_modelParts.m_arm;
+
+	if (this->m_modelParts.m_leg)
+		delete this->m_modelParts.m_leg;
+
+	if (this->m_modelParts.m_weaponRight)
+		delete this->m_modelParts.m_weaponRight;
+
+	if (this->m_modelParts.m_weaponLeft)
+		delete this->m_modelParts.m_weaponLeft;
+
+	if (this->m_modelParts.m_faceGen.m_fgFace)
+		delete this->m_modelParts.m_faceGen.m_fgFace;
+
+	if (this->m_modelParts.m_faceGen.m_fgHead)
+		delete this->m_modelParts.m_faceGen.m_fgHead;
+
+	if (this->m_modelParts.m_faceGen.m_fgEyes)
+		delete this->m_modelParts.m_faceGen.m_fgEyes;
+
+	if (this->m_modelParts.m_faceGen.m_fgEyeBrows)
+		delete this->m_modelParts.m_faceGen.m_fgEyeBrows;
+
+	if (this->m_modelParts.m_faceGen.m_fgBeard)
+		delete this->m_modelParts.m_faceGen.m_fgBeard;
+
+	if (this->m_modelParts.m_faceGen.m_fgHair)
+		delete this->m_modelParts.m_faceGen.m_fgHair;
+
+	this->m_modelParts.m_head = nullptr;
+	this->m_modelParts.m_face = nullptr;
+	this->m_modelParts.m_body = nullptr;
+	this->m_modelParts.m_arm = nullptr;
+	this->m_modelParts.m_leg = nullptr;
+	this->m_modelParts.m_weaponRight = nullptr;
+	this->m_modelParts.m_weaponLeft = nullptr;
+	this->m_modelParts.m_faceGen.m_fgFace = nullptr;
+	this->m_modelParts.m_faceGen.m_fgHead = nullptr;
+	this->m_modelParts.m_faceGen.m_fgEyes = nullptr;
+	this->m_modelParts.m_faceGen.m_fgEyeBrows = nullptr;
+	this->m_modelParts.m_faceGen.m_fgBeard = nullptr;
+	this->m_modelParts.m_faceGen.m_fgHair = nullptr;
+}
+
 void AnimPlayer::Update(float dt)
 {
 	MR::AnimationSourceHandle* animHandle = nullptr;

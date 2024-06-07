@@ -55,9 +55,10 @@ struct FileNamePathPair
 {
 	std::wstring m_path;
 	std::string m_name;
+	int m_id;
 
 	FileNamePathPair() {}
-	FileNamePathPair(std::wstring path, std::string name);
+	FileNamePathPair(std::wstring path);
 };
 
 struct FileNameMapPairList
@@ -137,14 +138,16 @@ public:
 
 	TimeActReader* m_timeAct;
 
-	INI m_playerModelPreset;
-	FileNameMapPairList m_fileNameMapPairList;
+	INI* m_playerModelPreset;
+	FileNameMapPairList* m_fileNameMapPairList;
 
 	Application();
 	~Application();
 
 	void GUIStyle();
 	void Initialise();
+	void Shutdown();
+
 	void Update(float delta_time);
 	void RenderGUI(const char* title);
 	void ModelPreviewWindow();

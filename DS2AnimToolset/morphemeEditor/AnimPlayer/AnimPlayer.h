@@ -59,6 +59,8 @@ public:
 	~AnimPlayer();
 	
 	void Clear();
+	void ClearModelParts();
+
 	void Update(float dt);
 	void Reset();
 	void TogglePause();

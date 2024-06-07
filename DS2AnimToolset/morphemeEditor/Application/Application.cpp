@@ -22,6 +22,18 @@ bool IsEquipShield(std::wstring filename)
 	return false;
 }
 
+bool IsEquipFemale(std::wstring filename)
+{
+	size_t first = filename.find_last_of(L"_");
+
+	std::wstring gender = filename.substr(first + 1, filename.npos);
+
+	if (gender == L"f")
+		return true;
+
+	return false;
+}
+
 int GetEquipIDByFilename(std::wstring filename)
 {
 	size_t first = filename.find_first_of(L"_") + 1;
@@ -88,6 +100,24 @@ void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartTyp
 	}
 }
 
+void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, int id, bool shield)
+{
+	std::wstring filepath = root.c_str();
+	wchar_t modelName[255];
+
+	if (shield)
+		swprintf_s(modelName, L"\\shield\\sd_%d_m.bnd", id);
+	else
+		swprintf_s(modelName, L"\\weapon\\wp_%d_m.bnd", id);
+
+	filepath += modelName;
+
+	FlverModel* model = FlverModel::CreateFromBnd(filepath);
+
+	if (model)
+		pApplication->m_animPlayer->SetModelPart(type, model);
+}
+
 void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type, int id, bool female)
 {
 	std::wstring filepath = root.c_str();
@@ -138,6 +168,49 @@ void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type, i
 		pApplication->m_animPlayer->SetModelPart(type, model);
 		pApplication->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
 	}
+}
+
+void LoadPlayerModelParts(Application* application, std::wstring parts_path)
+{
+	application->m_animPlayer->ClearModelParts();
+
+	bool female = application->m_playerModelPreset->GetBool("Gender", "is_female", false);
+
+	int rightId = application->m_playerModelPreset->GetInt("Right", "id", -1);
+	bool rightShield = application->m_playerModelPreset->GetBool("Right", "is_shield", false);
+
+	LoadWeaponBnd(application, parts_path, Parts_WeaponRight, rightId, rightShield);
+
+	int leftId = application->m_playerModelPreset->GetInt("Left", "id", -1);
+	bool leftShield = application->m_playerModelPreset->GetBool("Left", "is_shield", false);
+
+	LoadWeaponBnd(application, parts_path, Parts_WeaponLeft, leftId, leftShield);
+
+	int headId = application->m_playerModelPreset->GetInt("Armor", "head", -1);
+	int faceId = application->m_playerModelPreset->GetInt("Armor", "face", -1);
+	int bodyId = application->m_playerModelPreset->GetInt("Armor", "body", -1);
+	int armId = application->m_playerModelPreset->GetInt("Armor", "arm", -1);
+	int legId = application->m_playerModelPreset->GetInt("Armor", "leg", -1);
+
+	LoadPartsBnd(application, parts_path, Parts_Head, headId, female);
+	LoadPartsBnd(application, parts_path, Parts_Face, faceId, female);
+	LoadPartsBnd(application, parts_path, Parts_Body, bodyId, female);
+	LoadPartsBnd(application, parts_path, Parts_Arm, armId, female);
+	LoadPartsBnd(application, parts_path, Parts_Leg, legId, female);
+
+	int fgFaceId = application->m_playerModelPreset->GetInt("FaceGen", "face", -1);
+	int fgHeadId = application->m_playerModelPreset->GetInt("FaceGen", "head", -1);
+	int fgEyeId = application->m_playerModelPreset->GetInt("FaceGen", "eye", -1);
+	int fgEyeBrowsId = application->m_playerModelPreset->GetInt("FaceGen", "eye_brows", -1);
+	int fgBeard = application->m_playerModelPreset->GetInt("FaceGen", "beard", -1);
+	int fgHair = application->m_playerModelPreset->GetInt("FaceGen", "hair", -1);
+
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Face, fgFaceId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Head, fgHeadId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Eyes, fgEyeId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_EyeBrows, fgEyeBrowsId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Beard, fgBeard, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Hair, fgHair, female);
 }
 
 std::vector<std::wstring> getTaeFileListFromChrId(std::wstring tae_path, std::wstring m_chrId)
@@ -196,10 +269,11 @@ std::wstring getModelNameFromObjId(std::wstring model_path, std::wstring obj_id)
 	return L"";
 }
 
-FileNamePathPair::FileNamePathPair(std::wstring path, std::string name)
+FileNamePathPair::FileNamePathPair(std::wstring path)
 {
 	this->m_path = path;
-	this->m_name = name;
+	this->m_name = RString::RemovePathAndExtension(RString::ToNarrow(path));
+	this->m_id = GetEquipIDByFilename(path);
 }
 
 void FileNameMapPairList::Clear()
@@ -227,9 +301,8 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
 		{
 			std::wstring filepath = entry.path();
-			std::string filename = RString::RemovePathAndExtension(entry.path().string());
 
-			this->m_weaponModelPaths.push_back(FileNamePathPair(filepath, filename));
+			this->m_weaponModelPaths.push_back(FileNamePathPair(filepath));
 		}
 	}
 
@@ -238,9 +311,8 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
 		{
 			std::wstring filepath = entry.path();
-			std::string filename = RString::RemovePathAndExtension(entry.path().string());
 
-			this->m_shieldModelPaths.push_back(FileNamePathPair(filepath, filename));
+			this->m_shieldModelPaths.push_back(FileNamePathPair(filepath));
 		}
 	}
 
@@ -249,9 +321,8 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
 		{
 			std::wstring filepath = entry.path();
-			std::string filename = RString::RemovePathAndExtension(entry.path().string());
 
-			this->m_headModelPaths.push_back(FileNamePathPair(filepath, filename));
+			this->m_headModelPaths.push_back(FileNamePathPair(filepath));
 		}
 	}
 
@@ -260,9 +331,8 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
 		{
 			std::wstring filepath = entry.path();
-			std::string filename = RString::RemovePathAndExtension(entry.path().string());
 
-			this->m_bodyModelPaths.push_back(FileNamePathPair(filepath, filename));
+			this->m_bodyModelPaths.push_back(FileNamePathPair(filepath));
 		}
 	}
 
@@ -271,9 +341,8 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
 		{
 			std::wstring filepath = entry.path();
-			std::string filename = RString::RemovePathAndExtension(entry.path().string());
 
-			this->m_armModelPaths.push_back(FileNamePathPair(filepath, filename));
+			this->m_armModelPaths.push_back(FileNamePathPair(filepath));
 		}
 	}
 
@@ -282,9 +351,8 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
 		{
 			std::wstring filepath = entry.path();
-			std::string filename = RString::RemovePathAndExtension(entry.path().string());
 
-			this->m_legModelPaths.push_back(FileNamePathPair(filepath, filename));
+			this->m_legModelPaths.push_back(FileNamePathPair(filepath));
 		}
 	}
 
@@ -292,10 +360,6 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 
 Application::Application()
 {
-	this->m_morphemeSystem = new MorphemeSystem();
-	this->m_animPlayer = new AnimPlayer();
-	this->m_eventTrackEditor = new EventTrackEditor();
-	this->m_timeActEditor = new TimeActEditor();
 }
 
 Application::~Application()
@@ -380,10 +444,30 @@ void Application::GUIStyle()
 
 void Application::Initialise()
 {
+	this->m_morphemeSystem = new MorphemeSystem();
+	this->m_animPlayer = new AnimPlayer();
+	this->m_eventTrackEditor = new EventTrackEditor();
+	this->m_timeActEditor = new TimeActEditor();
+	this->m_playerModelPreset = new INI;
+	this->m_fileNameMapPairList = new FileNameMapPairList;
+
 	this->m_morphemeSystem->initMorpheme();
 
-	if (!this->m_playerModelPreset.Open(".//Data//res//c0001.ini"))
-		g_appLog->AlertMessage(MsgLevel_Warn, "Failed to load c0001.ini\n");
+	if (!this->m_playerModelPreset->Open(".//Data//res//c0001.ini"))
+		g_appLog->PanicMessage("Failed to load c0001.ini\n");
+}
+
+void Application::Shutdown()
+{
+	this->m_morphemeSystem->termMorpheme();
+	this->m_playerModelPreset->Write(".//Data//res//c0001.ini");
+
+	delete this->m_morphemeSystem;
+	delete this->m_animPlayer;
+	delete this->m_eventTrackEditor;
+	delete this->m_timeAct;
+	delete this->m_playerModelPreset;
+	delete this->m_fileNameMapPairList;
 }
 
 void Application::Update(float delta_time)
@@ -1478,22 +1562,22 @@ void SaveModelPartsFaceGenPreset(Application* application, FgPartType type, int 
 	switch (type)
 	{
 	case FaceGen_Face:
-		application->m_playerModelPreset.SetInt("FaceGen", "face", value);
+		application->m_playerModelPreset->SetInt("FaceGen", "face", value);
 		break;
 	case FaceGen_Head:
-		application->m_playerModelPreset.SetInt("FaceGen", "head", value);
+		application->m_playerModelPreset->SetInt("FaceGen", "head", value);
 		break;
 	case FaceGen_Eyes:
-		application->m_playerModelPreset.SetInt("FaceGen", "eye", value);
+		application->m_playerModelPreset->SetInt("FaceGen", "eye", value);
 		break;
 	case FaceGen_EyeBrows:
-		application->m_playerModelPreset.SetInt("FaceGen", "eye_brows", value);
+		application->m_playerModelPreset->SetInt("FaceGen", "eye_brows", value);
 		break;
 	case FaceGen_Beard:
-		application->m_playerModelPreset.SetInt("FaceGen", "beard", value);
+		application->m_playerModelPreset->SetInt("FaceGen", "beard", value);
 		break;
 	case FaceGen_Hair:
-		application->m_playerModelPreset.SetInt("FaceGen", "hair", value);
+		application->m_playerModelPreset->SetInt("FaceGen", "hair", value);
 		break;
 	default:
 		break;
@@ -1505,19 +1589,19 @@ void SaveModelPartsArmorPreset(Application* application, PartType type, int valu
 	switch (type)
 	{
 	case Parts_Head:
-		application->m_playerModelPreset.SetInt("Armor", "head", value);
+		application->m_playerModelPreset->SetInt("Armor", "head", value);
 		break;
 	case Parts_Face:
-		application->m_playerModelPreset.SetInt("Armor", "face", value);
+		application->m_playerModelPreset->SetInt("Armor", "face", value);
 		break;
 	case Parts_Body:
-		application->m_playerModelPreset.SetInt("Armor", "body", value);
+		application->m_playerModelPreset->SetInt("Armor", "body", value);
 		break;
 	case Parts_Arm:
-		application->m_playerModelPreset.SetInt("Armor", "arm", value);
+		application->m_playerModelPreset->SetInt("Armor", "arm", value);
 		break;
 	case Parts_Leg:
-		application->m_playerModelPreset.SetInt("Armor", "leg", value);
+		application->m_playerModelPreset->SetInt("Armor", "leg", value);
 		break;
 	default:
 		break;
@@ -1529,12 +1613,12 @@ void SaveModelPartsWeaponPreset(Application* application, PartType type, int val
 	switch (type)
 	{
 	case Parts_WeaponLeft:
-		application->m_playerModelPreset.SetInt("Left", "id", value);
-		application->m_playerModelPreset.SetBool("Left", "is_shield", shield);
+		application->m_playerModelPreset->SetInt("Left", "id", value);
+		application->m_playerModelPreset->SetBool("Left", "is_shield", shield);
 		break;
 	case Parts_WeaponRight:
-		application->m_playerModelPreset.SetInt("Right", "id", value);
-		application->m_playerModelPreset.SetBool("Right", "is_shield", shield);
+		application->m_playerModelPreset->SetInt("Right", "id", value);
+		application->m_playerModelPreset->SetBool("Right", "is_shield", shield);
 		break;
 	}
 }
@@ -1564,6 +1648,10 @@ void ModelPartsList(Application* application, std::vector<FileNamePathPair> path
 	for (size_t i = 0; i < paths.size(); i++)
 	{
 		bool selected = false;
+		bool is_female = application->m_playerModelPreset->GetBool("Gender", "is_female", false);
+
+		if (is_female != IsEquipFemale(paths[i].m_path))
+			continue;
 
 		if (application->m_animPlayer->GetModelPart(type))
 			selected = (application->m_animPlayer->GetModelPart(type)->m_name.compare(paths[i].m_name) == 0);
@@ -1609,15 +1697,15 @@ void Application::EntityManagerWindow()
 
 	ImGui::BeginDisabled(disable);
 
-	if (this->m_fileNameMapPairList.m_weaponModelPaths.size() && this->m_fileNameMapPairList.m_shieldModelPaths.size())
+	if (this->m_fileNameMapPairList->m_weaponModelPaths.size() && this->m_fileNameMapPairList->m_shieldModelPaths.size())
 	{
 		if (ImGui::TreeNode("Right"))
 		{
 			ImGui::SeparatorText("Weapon");
-			ModelPartsList(this, this->m_fileNameMapPairList.m_weaponModelPaths, Parts_WeaponRight);
+			ModelPartsList(this, this->m_fileNameMapPairList->m_weaponModelPaths, Parts_WeaponRight);
 
 			ImGui::SeparatorText("Shield");
-			ModelPartsList(this, this->m_fileNameMapPairList.m_shieldModelPaths, Parts_WeaponRight);
+			ModelPartsList(this, this->m_fileNameMapPairList->m_shieldModelPaths, Parts_WeaponRight);
 
 			ImGui::TreePop();
 		}
@@ -1625,10 +1713,10 @@ void Application::EntityManagerWindow()
 		if (ImGui::TreeNode("Left"))
 		{
 			ImGui::SeparatorText("Weapon");
-			ModelPartsList(this, this->m_fileNameMapPairList.m_weaponModelPaths, Parts_WeaponLeft);
+			ModelPartsList(this, this->m_fileNameMapPairList->m_weaponModelPaths, Parts_WeaponLeft);
 
 			ImGui::SeparatorText("Shield");
-			ModelPartsList(this, this->m_fileNameMapPairList.m_shieldModelPaths, Parts_WeaponLeft);
+			ModelPartsList(this, this->m_fileNameMapPairList->m_shieldModelPaths, Parts_WeaponLeft);
 
 			ImGui::TreePop();
 		}
@@ -1636,41 +1724,55 @@ void Application::EntityManagerWindow()
 
 	ImGui::SeparatorText("Armor");
 
-	if (this->m_fileNameMapPairList.m_headModelPaths.size())
+	static bool female = this->m_playerModelPreset->GetBool("Gender", "is_female", false);
+	bool female_bak = female;
+
+	ImGui::Checkbox("Female", &female);
+
+	this->m_playerModelPreset->SetBool("Gender", "is_female", female);
+
+	if (female != female_bak)
+	{
+		std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
+
+		LoadPlayerModelParts(this, parts_path);
+	}
+
+	if (this->m_fileNameMapPairList->m_headModelPaths.size())
 	{
 		if (ImGui::TreeNode("Head"))
 		{
-			ModelPartsList(this, this->m_fileNameMapPairList.m_headModelPaths, Parts_Head);
+			ModelPartsList(this, this->m_fileNameMapPairList->m_headModelPaths, Parts_Head);
 
 			ImGui::TreePop();
 		}
 	}
 
-	if (this->m_fileNameMapPairList.m_bodyModelPaths.size())
+	if (this->m_fileNameMapPairList->m_bodyModelPaths.size())
 	{
 		if (ImGui::TreeNode("Body"))
 		{
-			ModelPartsList(this, this->m_fileNameMapPairList.m_bodyModelPaths, Parts_Body);
+			ModelPartsList(this, this->m_fileNameMapPairList->m_bodyModelPaths, Parts_Body);
 
 			ImGui::TreePop();
 		}
 	}
 
-	if (this->m_fileNameMapPairList.m_armModelPaths.size())
+	if (this->m_fileNameMapPairList->m_armModelPaths.size())
 	{
 		if (ImGui::TreeNode("Arm"))
 		{
-			ModelPartsList(this, this->m_fileNameMapPairList.m_armModelPaths, Parts_Arm);
+			ModelPartsList(this, this->m_fileNameMapPairList->m_armModelPaths, Parts_Arm);
 
 			ImGui::TreePop();
 		}
 	}
 
-	if (this->m_fileNameMapPairList.m_legModelPaths.size())
+	if (this->m_fileNameMapPairList->m_legModelPaths.size())
 	{
 		if (ImGui::TreeNode("Leg"))
 		{
-			ModelPartsList(this, this->m_fileNameMapPairList.m_legModelPaths, Parts_Leg);
+			ModelPartsList(this, this->m_fileNameMapPairList->m_legModelPaths, Parts_Leg);
 
 			ImGui::TreePop();
 		}
@@ -2128,65 +2230,6 @@ std::wstring FindGamePath(std::wstring current_path)
 	return L"";
 }
 
-void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, int id, bool shield)
-{
-	std::wstring filepath = root.c_str();
-	wchar_t modelName[255];
-
-	if (shield)
-		swprintf_s(modelName, L"\\shield\\sd_%d_m.bnd", id);
-	else
-		swprintf_s(modelName, L"\\weapon\\wp_%d_m.bnd", id);
-
-	filepath += modelName;
-
-	FlverModel* model = FlverModel::CreateFromBnd(filepath);
-
-	if (model)
-		pApplication->m_animPlayer->SetModelPart(type, model);
-}
-
-void LoadPlayerModelParts(Application* application, std::wstring parts_path)
-{
-	bool female = application->m_playerModelPreset.GetBool("Gender", "is_female", false);
-
-	int rightId = application->m_playerModelPreset.GetInt("Right", "id", -1);
-	bool rightShield = application->m_playerModelPreset.GetBool("Right", "is_shield", false);
-
-	LoadWeaponBnd(application, parts_path, Parts_WeaponRight, rightId, rightShield);
-
-	int leftId = application->m_playerModelPreset.GetInt("Left", "id", -1);
-	bool leftShield = application->m_playerModelPreset.GetBool("Left", "is_shield", false);
-
-	LoadWeaponBnd(application, parts_path, Parts_WeaponLeft, leftId, leftShield);
-
-	int headId = application->m_playerModelPreset.GetInt("Armor", "head", -1);
-	int faceId = application->m_playerModelPreset.GetInt("Armor", "face", -1);
-	int bodyId = application->m_playerModelPreset.GetInt("Armor", "body", -1);
-	int armId = application->m_playerModelPreset.GetInt("Armor", "arm", -1);
-	int legId = application->m_playerModelPreset.GetInt("Armor", "leg", -1);
-
-	LoadPartsBnd(application, parts_path, Parts_Head, headId, female);
-	LoadPartsBnd(application, parts_path, Parts_Face, faceId, female);
-	LoadPartsBnd(application, parts_path, Parts_Body, bodyId, female);
-	LoadPartsBnd(application, parts_path, Parts_Arm, armId, female);
-	LoadPartsBnd(application, parts_path, Parts_Leg, legId, female);
-
-	int fgFaceId = application->m_playerModelPreset.GetInt("FaceGen", "face", -1);
-	int fgHeadId = application->m_playerModelPreset.GetInt("FaceGen", "head", -1);
-	int fgEyeId = application->m_playerModelPreset.GetInt("FaceGen", "eye", -1);
-	int fgEyeBrowsId = application->m_playerModelPreset.GetInt("FaceGen", "eye_brows", -1);
-	int fgBeard = application->m_playerModelPreset.GetInt("FaceGen", "beard", -1);
-	int fgHair = application->m_playerModelPreset.GetInt("FaceGen", "hair", -1);
-
-	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Face, fgFaceId, female);
-	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Head, fgHeadId, female);
-	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Eyes, fgEyeId, female);
-	LoadPartsFaceGenBnd(application, parts_path, FaceGen_EyeBrows, fgEyeBrowsId, female);
-	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Beard, fgBeard, female);
-	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Hair, fgHair, female);
-}
-
 void Application::LoadFile()
 {
 	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"TimeAct", L"*.tae"}, {L"All Files",L"*.*"} };
@@ -2227,7 +2270,7 @@ void Application::LoadFile()
 
 						if (filepath.extension() == ".nmb")
 						{
-							this->m_fileNameMapPairList.Clear();
+							this->m_fileNameMapPairList->Clear();
 
 							this->m_animPlayer->Clear();
 
@@ -2279,7 +2322,7 @@ void Application::LoadFile()
 									std::filesystem::path gamepath = FindGamePath(pszFilePath);
 									this->m_gamePath = gamepath;
 
-									this->m_fileNameMapPairList.Create(this->m_gamePath);
+									this->m_fileNameMapPairList->Create(this->m_gamePath);
 
 									std::filesystem::path filepath_tae = "";
 									std::filesystem::path filepath_dcx = "";
@@ -2326,7 +2369,7 @@ void Application::LoadFile()
 						}
 						else if (filepath.extension() == ".tae")
 						{
-							this->m_fileNameMapPairList.Clear();
+							this->m_fileNameMapPairList->Clear();
 
 							if (this->m_timeAct)
 							{
@@ -2355,7 +2398,7 @@ void Application::LoadFile()
 									std::filesystem::path gamepath = FindGamePath(pszFilePath);
 									std::filesystem::path filepath_dcx;
 
-									this->m_fileNameMapPairList.Create(this->m_gamePath);
+									this->m_fileNameMapPairList->Create(this->m_gamePath);
 
 									if (gamepath.compare("") != 0)
 									{
