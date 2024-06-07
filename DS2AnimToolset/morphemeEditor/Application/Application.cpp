@@ -1945,11 +1945,9 @@ void Application::PlayerCharacterPartsManager()
 	ImGui::BeginTabBar("parts");
 	if (ImGui::BeginTabItem("Equip"))
 	{
-		ImGui::SeparatorText("Weapon & Shield");
-
 		if (this->m_fileNameMapPairList->m_weaponModelPaths.size() && this->m_fileNameMapPairList->m_shieldModelPaths.size())
 		{
-			if (ImGui::TreeNode("Right"))
+			if (ImGui::TreeNode("Right Hand"))
 			{
 				ImGui::SeparatorText("Weapon");
 				ModelPartsList(this, this->m_fileNameMapPairList->m_weaponModelPaths, Parts_WeaponRight);
@@ -1960,7 +1958,7 @@ void Application::PlayerCharacterPartsManager()
 				ImGui::TreePop();
 			}
 
-			if (ImGui::TreeNode("Left"))
+			if (ImGui::TreeNode("Left Hand"))
 			{
 				ImGui::SeparatorText("Weapon");
 				ModelPartsList(this, this->m_fileNameMapPairList->m_weaponModelPaths, Parts_WeaponLeft);
@@ -1971,8 +1969,6 @@ void Application::PlayerCharacterPartsManager()
 				ImGui::TreePop();
 			}
 		}
-
-		ImGui::SeparatorText("Armor");
 
 		if (this->m_fileNameMapPairList->m_headModelPaths.size())
 		{
