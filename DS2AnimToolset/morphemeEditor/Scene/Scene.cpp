@@ -408,7 +408,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
     if (model->m_settings.m_selectedBone != -1)
     {
         DX::DrawReferenceFrame(&prim, model->m_boneTransforms[model->m_settings.m_selectedBone]);
-        this->AddText(RString::ToNarrow(model->m_flver->bones[model->m_settings.m_selectedBone].name).c_str(), model->m_boneTransforms[model->m_settings.m_selectedBone]);
+        this->AddText(RString::ToNarrow(model->m_flver->bones[model->m_settings.m_selectedBone].name).c_str(), model->m_boneTransforms[model->m_settings.m_selectedBone] * world);
     }
 
     if (model->m_settings.m_drawDummyPolygons)
@@ -426,7 +426,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
         std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[model->m_settings.m_selectedDummy].referenceID);
 
         DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[model->m_settings.m_selectedDummy]);
-        this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
+        this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy]);
     }
 
     if (drawBones)
