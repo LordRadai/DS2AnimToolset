@@ -1893,10 +1893,6 @@ void Application::EquipManagerWindow()
 
 	ImGui::Begin("Entity Manager", &this->m_windowStates.m_equipManagerWindow);
 
-	bool disable = (this->m_chrId != 1);
-
-	ImGui::BeginDisabled(disable);
-
 	static bool female = this->m_playerModelPreset->GetBool("Gender", "is_female", false);
 	bool female_bak = female;
 
@@ -1980,8 +1976,6 @@ void Application::EquipManagerWindow()
 		}
 	}
 
-	ImGui::EndDisabled();
-
 	ImGui::End();
 }
 
@@ -1990,10 +1984,6 @@ void Application::FaceGenWindow()
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
 
 	ImGui::Begin("FaceGen Manager", &this->m_windowStates.m_faceGenManager);
-
-	bool disable = (this->m_chrId != 1);
-
-	ImGui::BeginDisabled(disable);
 
 	if (this->m_fileNameMapPairList->m_fgFace.size())
 	{
@@ -2048,8 +2038,6 @@ void Application::FaceGenWindow()
 			ImGui::TreePop();
 		}
 	}
-
-	ImGui::EndDisabled();
 
 	ImGui::End();
 }
