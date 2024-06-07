@@ -26,7 +26,7 @@ bool IsEquipFemale(std::wstring filename)
 {
 	size_t first = filename.find_last_of(L"_");
 
-	std::wstring gender = filename.substr(first + 1, filename.npos);
+	std::wstring gender = filename.substr(first + 1, first + 2);
 
 	if (gender == L"f")
 		return true;
@@ -72,12 +72,9 @@ int GetFgIDByFilename(std::wstring filename, FgPartType type)
 		break;
 	}
 
-	size_t first = filename.find_first_of(L"_") + 1;
-	size_t second = filename.find_last_of(L"_");
+	int id = GetEquipIDByFilename(filename);
 
-	std::wstring modelIdStr = filename.substr(first, second - first);
-
-	return baseId - std::stoi(modelIdStr);
+	return id - baseId;
 }
 
 void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartType type, int id, bool female)
@@ -116,7 +113,11 @@ void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartTyp
 	case FaceGen_Hair:
 		fullId = 7000 + id;
 
-		swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
+		if (female)
+			swprintf_s(modelName, L"\\face\\fg_%d_f.bnd", fullId);
+		else
+			swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
+
 		break;
 	default:
 		break;
@@ -417,7 +418,7 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 
 	for (const auto& entry : std::filesystem::directory_iterator(face_path))
 	{
-		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_1"))
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'f') || (entry.path().stem().string().back() == 'm')) && (entry.path().stem().string().substr(0, 4) == "fg_1"))
 		{
 			std::wstring filepath = entry.path();
 			int id = GetFgIDByFilename(filepath, FaceGen_Face);
@@ -428,7 +429,7 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 
 	for (const auto& entry : std::filesystem::directory_iterator(face_path))
 	{
-		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_2"))
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'f') || (entry.path().stem().string().back() == 'm')) && (entry.path().stem().string().substr(0, 4) == "fg_2"))
 		{
 			std::wstring filepath = entry.path();
 			int id = GetFgIDByFilename(filepath, FaceGen_Head);
@@ -439,7 +440,7 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 
 	for (const auto& entry : std::filesystem::directory_iterator(face_path))
 	{
-		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_3"))
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'a')) && (entry.path().stem().string().substr(0, 4) == "fg_3"))
 		{
 			std::wstring filepath = entry.path();
 			int id = GetFgIDByFilename(filepath, FaceGen_Eyes);
@@ -450,7 +451,7 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 
 	for (const auto& entry : std::filesystem::directory_iterator(face_path))
 	{
-		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_4"))
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'm')) && (entry.path().stem().string().substr(0, 4) == "fg_4"))
 		{
 			std::wstring filepath = entry.path();
 			int id = GetFgIDByFilename(filepath, FaceGen_EyeBrows);
@@ -461,7 +462,7 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 
 	for (const auto& entry : std::filesystem::directory_iterator(face_path))
 	{
-		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_5"))
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'm')) && (entry.path().stem().string().substr(0, 4) == "fg_5"))
 		{
 			std::wstring filepath = entry.path();
 			int id = GetFgIDByFilename(filepath, FaceGen_Beard);
@@ -472,7 +473,7 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 
 	for (const auto& entry : std::filesystem::directory_iterator(face_path))
 	{
-		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_7"))
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'f') || (entry.path().stem().string().back() == 'm')) && (entry.path().stem().string().substr(0, 4) == "fg_7"))
 		{
 			std::wstring filepath = entry.path();
 			int id = GetFgIDByFilename(filepath, FaceGen_Hair);
@@ -1980,11 +1981,55 @@ void Application::FaceGenWindow()
 	{
 		if (ImGui::TreeNode("Face"))
 		{
-
+			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgFace, FaceGen_Face);
 			ImGui::TreePop();
 		}
 	}
 
+	if (this->m_fileNameMapPairList->m_fgHead.size())
+	{
+		if (ImGui::TreeNode("Head"))
+		{
+			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgHead, FaceGen_Head);
+			ImGui::TreePop();
+		}
+	}
+
+	if (this->m_fileNameMapPairList->m_fgEyes.size())
+	{
+		if (ImGui::TreeNode("Eyes"))
+		{
+			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgEyes, FaceGen_Eyes);
+			ImGui::TreePop();
+		}
+	}
+
+	if (this->m_fileNameMapPairList->m_fgEyeBrows.size())
+	{
+		if (ImGui::TreeNode("EyeBrows"))
+		{
+			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgEyeBrows, FaceGen_EyeBrows);
+			ImGui::TreePop();
+		}
+	}
+
+	if (this->m_fileNameMapPairList->m_fgBeard.size())
+	{
+		if (ImGui::TreeNode("Beard"))
+		{
+			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgBeard, FaceGen_Beard);
+			ImGui::TreePop();
+		}
+	}
+
+	if (this->m_fileNameMapPairList->m_fgHair.size())
+	{
+		if (ImGui::TreeNode("Hair"))
+		{
+			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgHair, FaceGen_Hair);
+			ImGui::TreePop();
+		}
+	}
 	ImGui::End();
 }
 
