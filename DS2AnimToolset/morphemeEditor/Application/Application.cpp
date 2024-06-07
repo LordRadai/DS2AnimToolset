@@ -22,16 +22,22 @@ bool IsEquipShield(std::wstring filename)
 	return false;
 }
 
-bool IsEquipFemale(std::wstring filename)
+bool IsEquipSameGenderAs(std::wstring filename, bool female)
 {
 	size_t first = filename.find_last_of(L"_");
 
-	std::wstring gender = filename.substr(first + 1, first + 2);
+	std::wstring gender = std::filesystem::path(filename.substr(first + 1, first + 2)).stem();
+
+	bool is_female = false;
 
 	if (gender == L"f")
+		is_female = true;
+	else if (gender == L"m")
+		is_female = false;
+	else
 		return true;
 
-	return false;
+	return (female == is_female);
 }
 
 int GetEquipIDByFilename(std::wstring filename)
@@ -1772,7 +1778,7 @@ void ModelPartsFgList(Application* application, std::vector<FileNamePathPair> pa
 		bool selected = false;
 		bool is_female = application->m_playerModelPreset->GetBool("Gender", "is_female", false);
 
-		if (is_female != IsEquipFemale(paths[i].m_path))
+		if (!IsEquipSameGenderAs(paths[i].m_path, is_female))
 			continue;
 
 		if (application->m_animPlayer->GetModelPartFacegen(type))
@@ -1833,7 +1839,7 @@ void ModelPartsList(Application* application, std::vector<FileNamePathPair> path
 		bool selected = false;
 		bool is_female = application->m_playerModelPreset->GetBool("Gender", "is_female", false);
 
-		if (is_female != IsEquipFemale(paths[i].m_path))
+		if (!IsEquipSameGenderAs(paths[i].m_path, is_female))
 			continue;
 
 		if (application->m_animPlayer->GetModelPart(type))
