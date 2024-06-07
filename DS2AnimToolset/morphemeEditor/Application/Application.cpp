@@ -724,17 +724,22 @@ void Application::RenderGUI(const char* title)
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("Settings"))
+		if (ImGui::BeginMenu("Edit"))
 		{
-			ImGui::SeparatorText("Track Editor");
+			if (ImGui::MenuItem("Scene Settings", NULL, &this->m_windowStates.m_previewSettings)) { this->m_windowStates.m_previewSettings != this->m_windowStates.m_previewSettings; }
 
-			static bool timecode = true;
+			if (ImGui::BeginMenu("Timecode"))
+			{
+				static bool timecode = true;
 
-			if (ImGui::MenuItem("Seconds", NULL, timecode)) { timecode = true; }
-			if (ImGui::MenuItem("Frames", NULL, !timecode)) { timecode = false; }
+				if (ImGui::MenuItem("Seconds", NULL, timecode)) { timecode = true; }
+				if (ImGui::MenuItem("Frames", NULL, !timecode)) { timecode = false; }
 
-			this->m_eventTrackEditor->m_showTimecode = timecode;
-			this->m_timeActEditor->m_showTimecode = timecode;
+				this->m_eventTrackEditor->m_showTimecode = timecode;
+				this->m_timeActEditor->m_showTimecode = timecode;
+
+				ImGui::EndMenu();
+			}
 
 			ImGui::EndMenu();
 		}
@@ -817,14 +822,10 @@ void Application::ModelPreviewWindow()
 	{
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::MenuItem("Settings", NULL, &this->m_windowStates.m_previewSettings)) { this->m_windowStates.m_previewSettings != this->m_windowStates.m_previewSettings; }
+			if (ImGui::MenuItem("Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
 
-			if (ImGui::BeginMenu("Scene"))
+			if (ImGui::BeginMenu("Display Mode"))
 			{
-				if (ImGui::MenuItem("Scene Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
-
-				ImGui::SeparatorText("Display Mode");
-
 				if (ImGui::MenuItem("Normal", NULL, this->m_sceneFlags.m_displayMode == Mode_Normal)) { this->m_sceneFlags.m_displayMode = Mode_Normal; }
 				if (ImGui::MenuItem("X-Ray", NULL, this->m_sceneFlags.m_displayMode == Mode_XRay)) { this->m_sceneFlags.m_displayMode = Mode_XRay; }
 				if (ImGui::MenuItem("Wireframe", NULL, this->m_sceneFlags.m_displayMode == Mode_Wireframe)) { this->m_sceneFlags.m_displayMode = Mode_Wireframe; }
@@ -1511,7 +1512,7 @@ void Application::SettingsWindow()
 void Application::PreviewDebugManagerWindow()
 {
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
-	ImGui::Begin("Settings##preview", &this->m_windowStates.m_previewSettings);
+	ImGui::Begin("Scene Settings", &this->m_windowStates.m_previewSettings);
 
 	ImGui::DragFloat("Grid Scale", &g_scene->m_settings.m_gridScale, 0.1f, 0.f, FLT_MAX);
 

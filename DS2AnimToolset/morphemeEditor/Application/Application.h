@@ -116,7 +116,7 @@ public:
 
 	struct FbxExportFlags
 	{
-		bool m_exportModelWithAnims = true;
+		bool m_exportModelWithAnims = false;
 		bool m_exportMorphemeRigWithModel = true;
 	} m_fbxExportFlags;
 
