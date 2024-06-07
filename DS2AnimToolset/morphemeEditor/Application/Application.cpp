@@ -849,26 +849,9 @@ void Application::ModelPreviewWindow()
 			{
 				if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
 
-				ImGui::SeparatorText("Parts");
-
 				ImGui::BeginDisabled(this->m_chrId != 1);
 
-				static bool female = this->m_playerModelPreset->GetBool("Gender", "is_female", false);
-				bool female_bak = female;
-
-				if (ImGui::MenuItem("Female", NULL, &female)) { female != female; }
-
-				this->m_playerModelPreset->SetBool("Gender", "is_female", female);
-
-				if (female != female_bak)
-				{
-					std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
-
-					LoadPlayerModelParts(this, parts_path);
-				}
-
-				if (ImGui::MenuItem("FaceGen", NULL, &this->m_windowStates.m_faceGenManager)) { this->m_windowStates.m_faceGenManager != this->m_windowStates.m_faceGenManager; }
-				if (ImGui::MenuItem("Equip", NULL, &this->m_windowStates.m_equipManagerWindow)) { this->m_windowStates.m_equipManagerWindow != this->m_windowStates.m_equipManagerWindow; }
+				if (ImGui::MenuItem("Player Parts", NULL, &this->m_windowStates.m_playerPartsManagerWindow)) { this->m_windowStates.m_playerPartsManagerWindow != this->m_windowStates.m_playerPartsManagerWindow; }
 
 				ImGui::EndDisabled();
 				ImGui::EndMenu();
@@ -1048,7 +1031,7 @@ void Application::AssetsWindow()
 		else
 			selected_tae_file_idx = -1;
 
-		ImGui::BeginTabBar("assets tab bar");
+		ImGui::BeginTabBar("assets");
 		if (ImGui::BeginTabItem("Animations"))
 		{
 			CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
@@ -1283,7 +1266,7 @@ void Application::AssetsWindow()
 			ImGui::EndTabItem();
 		}
 
-		ImGui::EndTabItem();
+		ImGui::EndTabBar();
 	}
 
 	ImGui::End();
@@ -1939,143 +1922,161 @@ void ModelPartsList(Application* application, std::vector<FileNamePathPair> path
 	ImGui::EndChild();
 }
 
-void Application::EquipManagerWindow()
+void Application::PlayerCharacterPartsManager()
 {
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
 
-	ImGui::Begin("Entity Manager", &this->m_windowStates.m_equipManagerWindow);
+	ImGui::Begin("Player Model", &this->m_windowStates.m_playerPartsManagerWindow);
 
-	ImGui::SeparatorText("Weapon & Shield");
+	static bool female = this->m_playerModelPreset->GetBool("Gender", "is_female", false);
+	bool female_bak = female;
 
-	if (this->m_fileNameMapPairList->m_weaponModelPaths.size() && this->m_fileNameMapPairList->m_shieldModelPaths.size())
+	ImGui::Checkbox("Female", &female);
+
+	this->m_playerModelPreset->SetBool("Gender", "is_female", female);
+
+	if (female != female_bak)
 	{
-		if (ImGui::TreeNode("Right"))
-		{
-			ImGui::SeparatorText("Weapon");
-			ModelPartsList(this, this->m_fileNameMapPairList->m_weaponModelPaths, Parts_WeaponRight);
+		std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
 
-			ImGui::SeparatorText("Shield");
-			ModelPartsList(this, this->m_fileNameMapPairList->m_shieldModelPaths, Parts_WeaponRight);
-
-			ImGui::TreePop();
-		}
-
-		if (ImGui::TreeNode("Left"))
-		{
-			ImGui::SeparatorText("Weapon");
-			ModelPartsList(this, this->m_fileNameMapPairList->m_weaponModelPaths, Parts_WeaponLeft);
-
-			ImGui::SeparatorText("Shield");
-			ModelPartsList(this, this->m_fileNameMapPairList->m_shieldModelPaths, Parts_WeaponLeft);
-
-			ImGui::TreePop();
-		}
+		LoadPlayerModelParts(this, parts_path);
 	}
 
-	ImGui::SeparatorText("Armor");
-
-	if (this->m_fileNameMapPairList->m_headModelPaths.size())
+	ImGui::BeginTabBar("parts");
+	if (ImGui::BeginTabItem("Equip"))
 	{
-		if (ImGui::TreeNode("Head"))
-		{
-			ModelPartsList(this, this->m_fileNameMapPairList->m_headModelPaths, Parts_Head);
+		ImGui::SeparatorText("Weapon & Shield");
 
-			ImGui::TreePop();
+		if (this->m_fileNameMapPairList->m_weaponModelPaths.size() && this->m_fileNameMapPairList->m_shieldModelPaths.size())
+		{
+			if (ImGui::TreeNode("Right"))
+			{
+				ImGui::SeparatorText("Weapon");
+				ModelPartsList(this, this->m_fileNameMapPairList->m_weaponModelPaths, Parts_WeaponRight);
+
+				ImGui::SeparatorText("Shield");
+				ModelPartsList(this, this->m_fileNameMapPairList->m_shieldModelPaths, Parts_WeaponRight);
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Left"))
+			{
+				ImGui::SeparatorText("Weapon");
+				ModelPartsList(this, this->m_fileNameMapPairList->m_weaponModelPaths, Parts_WeaponLeft);
+
+				ImGui::SeparatorText("Shield");
+				ModelPartsList(this, this->m_fileNameMapPairList->m_shieldModelPaths, Parts_WeaponLeft);
+
+				ImGui::TreePop();
+			}
 		}
+
+		ImGui::SeparatorText("Armor");
+
+		if (this->m_fileNameMapPairList->m_headModelPaths.size())
+		{
+			if (ImGui::TreeNode("Head"))
+			{
+				ModelPartsList(this, this->m_fileNameMapPairList->m_headModelPaths, Parts_Head);
+
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_bodyModelPaths.size())
+		{
+			if (ImGui::TreeNode("Body"))
+			{
+				ModelPartsList(this, this->m_fileNameMapPairList->m_bodyModelPaths, Parts_Body);
+
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_armModelPaths.size())
+		{
+			if (ImGui::TreeNode("Arm"))
+			{
+				ModelPartsList(this, this->m_fileNameMapPairList->m_armModelPaths, Parts_Arm);
+
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_legModelPaths.size())
+		{
+			if (ImGui::TreeNode("Leg"))
+			{
+				ModelPartsList(this, this->m_fileNameMapPairList->m_legModelPaths, Parts_Leg);
+
+				ImGui::TreePop();
+			}
+		}
+
+		ImGui::EndTabItem();
 	}
 
-	if (this->m_fileNameMapPairList->m_bodyModelPaths.size())
+	if (ImGui::BeginTabItem("FaceGen"))
 	{
-		if (ImGui::TreeNode("Body"))
+
+		if (this->m_fileNameMapPairList->m_fgFace.size())
 		{
-			ModelPartsList(this, this->m_fileNameMapPairList->m_bodyModelPaths, Parts_Body);
-
-			ImGui::TreePop();
+			if (ImGui::TreeNode("Face"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgFace, FaceGen_Face);
+				ImGui::TreePop();
+			}
 		}
-	}
 
-	if (this->m_fileNameMapPairList->m_armModelPaths.size())
-	{
-		if (ImGui::TreeNode("Arm"))
+		if (this->m_fileNameMapPairList->m_fgHead.size())
 		{
-			ModelPartsList(this, this->m_fileNameMapPairList->m_armModelPaths, Parts_Arm);
-
-			ImGui::TreePop();
+			if (ImGui::TreeNode("Head"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgHead, FaceGen_Head);
+				ImGui::TreePop();
+			}
 		}
-	}
 
-	if (this->m_fileNameMapPairList->m_legModelPaths.size())
-	{
-		if (ImGui::TreeNode("Leg"))
+		if (this->m_fileNameMapPairList->m_fgEyes.size())
 		{
-			ModelPartsList(this, this->m_fileNameMapPairList->m_legModelPaths, Parts_Leg);
-
-			ImGui::TreePop();
+			if (ImGui::TreeNode("Eyes"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgEyes, FaceGen_Eyes);
+				ImGui::TreePop();
+			}
 		}
-	}
 
-	ImGui::End();
-}
-
-void Application::FaceGenWindow()
-{
-	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
-
-	ImGui::Begin("FaceGen Manager", &this->m_windowStates.m_faceGenManager);
-
-	if (this->m_fileNameMapPairList->m_fgFace.size())
-	{
-		if (ImGui::TreeNode("Face"))
+		if (this->m_fileNameMapPairList->m_fgEyeBrows.size())
 		{
-			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgFace, FaceGen_Face);
-			ImGui::TreePop();
+			if (ImGui::TreeNode("EyeBrows"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgEyeBrows, FaceGen_EyeBrows);
+				ImGui::TreePop();
+			}
 		}
-	}
 
-	if (this->m_fileNameMapPairList->m_fgHead.size())
-	{
-		if (ImGui::TreeNode("Head"))
+		if (this->m_fileNameMapPairList->m_fgBeard.size())
 		{
-			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgHead, FaceGen_Head);
-			ImGui::TreePop();
+			if (ImGui::TreeNode("Beard"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgBeard, FaceGen_Beard);
+				ImGui::TreePop();
+			}
 		}
-	}
 
-	if (this->m_fileNameMapPairList->m_fgEyes.size())
-	{
-		if (ImGui::TreeNode("Eyes"))
+		if (this->m_fileNameMapPairList->m_fgHair.size())
 		{
-			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgEyes, FaceGen_Eyes);
-			ImGui::TreePop();
+			if (ImGui::TreeNode("Hair"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgHair, FaceGen_Hair);
+				ImGui::TreePop();
+			}
 		}
-	}
 
-	if (this->m_fileNameMapPairList->m_fgEyeBrows.size())
-	{
-		if (ImGui::TreeNode("EyeBrows"))
-		{
-			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgEyeBrows, FaceGen_EyeBrows);
-			ImGui::TreePop();
-		}
+		ImGui::EndTabItem();
 	}
-
-	if (this->m_fileNameMapPairList->m_fgBeard.size())
-	{
-		if (ImGui::TreeNode("Beard"))
-		{
-			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgBeard, FaceGen_Beard);
-			ImGui::TreePop();
-		}
-	}
-
-	if (this->m_fileNameMapPairList->m_fgHair.size())
-	{
-		if (ImGui::TreeNode("Hair"))
-		{
-			ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgHair, FaceGen_Hair);
-			ImGui::TreePop();
-		}
-	}
+	ImGui::EndTabBar();
 
 	ImGui::End();
 }
@@ -2101,14 +2102,9 @@ void Application::CheckFlags()
 		this->PreviewDebugManagerWindow();
 	}
 
-	if (this->m_windowStates.m_equipManagerWindow)
+	if (this->m_windowStates.m_playerPartsManagerWindow)
 	{
-		this->EquipManagerWindow();
-	}
-
-	if (this->m_windowStates.m_faceGenManager)
-	{
-		this->FaceGenWindow();
+		this->PlayerCharacterPartsManager();
 	}
 
 	if (this->m_windowStates.m_queryEventTrack)

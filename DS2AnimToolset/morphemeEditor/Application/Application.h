@@ -89,8 +89,7 @@ public:
 	{
 		bool m_settingWindow = false;
 		bool m_previewSettings = false;
-		bool m_equipManagerWindow = false;
-		bool m_faceGenManager = false;
+		bool m_playerPartsManagerWindow = false;
 		bool m_queryTae = false;
 		bool m_queryEventTrack = false;
 	} m_windowStates;
@@ -162,8 +161,7 @@ public:
 	void SettingsWindow();
 	void PreviewDebugManagerWindow();
 	void PreviewSceneExplorerWindow();
-	void EquipManagerWindow();
-	void FaceGenWindow();
+	void PlayerCharacterPartsManager();
 
 	void CheckFlags();
 
