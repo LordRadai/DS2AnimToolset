@@ -426,7 +426,7 @@ void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBone
         std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[model->m_settings.m_selectedDummy].referenceID);
 
         DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[model->m_settings.m_selectedDummy]);
-        this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy]);
+        this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
     }
 
     if (drawBones)
