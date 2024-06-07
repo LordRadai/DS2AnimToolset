@@ -822,6 +822,20 @@ void Application::ModelPreviewWindow()
 
 				ImGui::BeginDisabled(this->m_chrId != 1);
 
+				static bool female = this->m_playerModelPreset->GetBool("Gender", "is_female", false);
+				bool female_bak = female;
+
+				if (ImGui::MenuItem("Female", NULL, &female)) { female != female; }
+
+				this->m_playerModelPreset->SetBool("Gender", "is_female", female);
+
+				if (female != female_bak)
+				{
+					std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
+
+					LoadPlayerModelParts(this, parts_path);
+				}
+
 				if (ImGui::MenuItem("FaceGen", NULL, &this->m_windowStates.m_faceGenManager)) { this->m_windowStates.m_faceGenManager != this->m_windowStates.m_faceGenManager; }
 				if (ImGui::MenuItem("Equip", NULL, &this->m_windowStates.m_equipManagerWindow)) { this->m_windowStates.m_equipManagerWindow != this->m_windowStates.m_equipManagerWindow; }
 
@@ -853,6 +867,8 @@ void Application::ModelPreviewWindow()
 			ImGui::SameLine();
 			if (ImGui::Button(ICON_FA_FORWARD_FAST))
 				this->m_animPlayer->SetTime(RMath::TimeToFrame(this->m_eventTrackEditor->m_frameMax));
+
+			ImGui::Separator();
 
 			ImGui::EndMenuBar();
 		}
@@ -1790,8 +1806,11 @@ void ModelPartsFgList(Application* application, std::vector<FileNamePathPair> pa
 		bool selected = false;
 		bool is_female = application->m_playerModelPreset->GetBool("Gender", "is_female", false);
 
-		if (!IsEquipSameGenderAs(paths[i].m_path, is_female))
-			continue;
+		if (type != FaceGen_EyeBrows)
+		{
+			if (!IsEquipSameGenderAs(paths[i].m_path, is_female))
+				continue;
+		}
 
 		if (application->m_animPlayer->GetModelPartFacegen(type))
 			selected = (application->m_animPlayer->GetModelPartFacegen(type)->m_name.compare(paths[i].m_name) == 0);
@@ -1896,20 +1915,6 @@ void Application::EquipManagerWindow()
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
 
 	ImGui::Begin("Entity Manager", &this->m_windowStates.m_equipManagerWindow);
-
-	static bool female = this->m_playerModelPreset->GetBool("Gender", "is_female", false);
-	bool female_bak = female;
-
-	ImGui::Checkbox("Female", &female);
-
-	this->m_playerModelPreset->SetBool("Gender", "is_female", female);
-
-	if (female != female_bak)
-	{
-		std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
-
-		LoadPlayerModelParts(this, parts_path);
-	}
 
 	ImGui::SeparatorText("Weapon & Shield");
 
