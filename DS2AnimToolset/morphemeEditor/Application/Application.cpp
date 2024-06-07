@@ -588,7 +588,7 @@ void Application::Initialise()
 	if (!this->m_playerModelPreset->Open(".//Data//res//c0001.ini"))
 		g_appLog->PanicMessage("Failed to load c0001.ini\n");
 
-	if (!this->m_playerModelPreset->Open(".//Data//res//settings.ini"))
+	if (!this->m_appSettings->Open(".//Data//res//settings.ini"))
 		g_appLog->PanicMessage("Failed to load settings.ini\n");
 }
 
