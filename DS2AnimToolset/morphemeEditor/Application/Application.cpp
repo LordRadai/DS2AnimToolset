@@ -579,6 +579,7 @@ void Application::Initialise()
 	this->m_animPlayer = new AnimPlayer();
 	this->m_eventTrackEditor = new EventTrackEditor();
 	this->m_timeActEditor = new TimeActEditor();
+	this->m_appSettings = new INI;
 	this->m_playerModelPreset = new INI;
 	this->m_fileNameMapPairList = new FileNameMapPairList;
 
@@ -586,17 +587,23 @@ void Application::Initialise()
 
 	if (!this->m_playerModelPreset->Open(".//Data//res//c0001.ini"))
 		g_appLog->PanicMessage("Failed to load c0001.ini\n");
+
+	if (!this->m_playerModelPreset->Open(".//Data//res//settings.ini"))
+		g_appLog->PanicMessage("Failed to load settings.ini\n");
 }
 
 void Application::Shutdown()
 {
 	this->m_morphemeSystem->termMorpheme();
+
+	this->m_appSettings->Write(".//Data//res//settings.ini");
 	this->m_playerModelPreset->Write(".//Data//res//c0001.ini");
 
 	delete this->m_morphemeSystem;
 	delete this->m_animPlayer;
 	delete this->m_eventTrackEditor;
 	delete this->m_timeAct;
+	delete this->m_appSettings;
 	delete this->m_playerModelPreset;
 	delete this->m_fileNameMapPairList;
 }
@@ -730,13 +737,18 @@ void Application::RenderGUI(const char* title)
 
 			if (ImGui::BeginMenu("Timecode"))
 			{
-				static bool timecode = true;
+				static bool timecode = this->m_appSettings->GetBool("AppRootWindow", "use_seconds", true);
+
+				bool timecode_bak = timecode;
 
 				if (ImGui::MenuItem("Seconds", NULL, timecode)) { timecode = true; }
 				if (ImGui::MenuItem("Frames", NULL, !timecode)) { timecode = false; }
 
 				this->m_eventTrackEditor->m_showTimecode = timecode;
 				this->m_timeActEditor->m_showTimecode = timecode;
+
+				if (timecode_bak != timecode)
+					this->m_appSettings->SetBool("AppRootWindow", "use_seconds", timecode);
 
 				ImGui::EndMenu();
 			}
