@@ -809,7 +809,6 @@ void Application::ModelPreviewWindow()
 				
 				ImGui::Separator();
 
-				if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
 				if (ImGui::MenuItem("Scene Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
 
 				ImGui::EndMenu();
@@ -823,6 +822,10 @@ void Application::ModelPreviewWindow()
 				if (ImGui::MenuItem("Equip", NULL, &this->m_windowStates.m_equipManagerWindow)) { this->m_windowStates.m_equipManagerWindow != this->m_windowStates.m_equipManagerWindow; }
 				
 				ImGui::EndDisabled();
+
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
 
 				ImGui::EndMenu();
 			}
