@@ -114,7 +114,8 @@ void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartTyp
 	case FaceGen_Beard:
 		fullId = 5000 + id;
 
-		swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
+		if (!female)
+			swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
 		break;
 	case FaceGen_Hair:
 		fullId = 7000 + id;
