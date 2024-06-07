@@ -114,7 +114,7 @@ void Camera::CameraInput(float delta_time)
 
 void Camera::UpdateRadius(float speed, float delta_time)
 {
-	constexpr float maxRadius = 30.f;
+	constexpr float maxRadius = 9999.f;
 
 	if (this->m_radius + speed * delta_time > 0.1f && this->m_radius + speed * delta_time < maxRadius)
 		this->m_radius += speed * delta_time;

@@ -1517,7 +1517,7 @@ void Application::PreviewDebugManagerWindow()
 	{
 		ImGui::SeparatorText("Parameters");
 
-		ImGui::DragFloat("Target Distance", &g_scene->m_camera.m_radius, 0.1f, 0.1f, 10.f);
+		ImGui::DragFloat("Target Distance", &g_scene->m_camera.m_radius, 0.1f, 0.1f, 9999.f);
 		ImGui::InputFloat3("Target Offset", &g_scene->m_camera.m_offsets.x);
 		ImGui::InputFloat3("Camera Position", &g_scene->m_camera.m_position.x);
 		ImGui::InputFloat3("Camera Angles", &g_scene->m_camera.m_angles.x);
