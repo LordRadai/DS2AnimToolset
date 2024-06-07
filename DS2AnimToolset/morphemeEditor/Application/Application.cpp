@@ -724,18 +724,36 @@ void Application::RenderGUI(const char* title)
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("Edit"))
+		if (ImGui::BeginMenu("Settings"))
 		{
-			if (ImGui::MenuItem("Settings", NULL, &this->m_windowStates.m_settingWindow)) { this->m_windowStates.m_settingWindow != this->m_windowStates.m_settingWindow; }
-			
+			ImGui::SeparatorText("Track Editor");
+
+			static bool timecode = true;
+
+			if (ImGui::MenuItem("Seconds", NULL, timecode)) { timecode = true; }
+			if (ImGui::MenuItem("Frames", NULL, !timecode)) { timecode = false; }
+
+			this->m_eventTrackEditor->m_showTimecode = timecode;
+			this->m_timeActEditor->m_showTimecode = timecode;
+
+			ImGui::EndMenu();
+		}
+
 #ifdef _DEBUG
-			ImGui::Separator();
+		if (ImGui::BeginMenu("Debug"))
+		{
+			ImGui::SeparatorText("Track Editor Format");
+
+			if (ImGui::MenuItem("Style Settings", NULL, &this->m_windowStates.m_settingWindow)) { this->m_windowStates.m_settingWindow != this->m_windowStates.m_settingWindow; }
+			
+			ImGui::SeparatorText("Query");
 
 			if (ImGui::MenuItem("Find TimeAct", NULL, &this->m_windowStates.m_queryTae)) { this->m_windowStates.m_queryTae != this->m_windowStates.m_queryTae; }
 			if (ImGui::MenuItem("Find EventTrack", NULL, &this->m_windowStates.m_queryEventTrack)) { this->m_windowStates.m_queryEventTrack != this->m_windowStates.m_queryEventTrack; }
-#endif
+			
 			ImGui::EndMenu();
 		}
+#endif
 
 		ImGui::EndMenuBar();
 	}
@@ -1452,22 +1470,15 @@ void Application::SettingsWindow()
 
 	ImGui::BeginTabBar("settings");
 
-#ifdef _DEBUG
 	if (ImGui::BeginTabItem("Style"))
 	{
 		ImGui::ShowStyleEditor();
 
 		ImGui::EndTabItem();
 	}
-#endif
 
 	if (ImGui::BeginTabItem("EventTrack Editor"))
 	{
-		ImGui::Checkbox("Show Timecode", &this->m_eventTrackEditor->m_showTimecode);
-
-#ifdef _DEBUG
-		ImGui::SeparatorText("Colors");
-
 		ImGui::ColorEdit4("Track", (float*)&this->m_eventTrackEditor->m_colors.m_trackColor);
 		ImGui::ColorEdit4("Track Inactive", (float*)&this->m_eventTrackEditor->m_colors.m_trackColorInactive);
 		ImGui::ColorEdit4("Track Active", (float*)&this->m_eventTrackEditor->m_colors.m_trackColorActive);
@@ -1475,18 +1486,12 @@ void Application::SettingsWindow()
 		ImGui::ColorEdit4("Track Bounding Box Active", (float*)&this->m_eventTrackEditor->m_colors.m_trackBoundingBoxActive);
 		ImGui::ColorEdit4("Track Text Color", (float*)&this->m_eventTrackEditor->m_colors.m_trackTextColor);
 		ImGui::ColorEdit4("Cursor Color", (float*)&this->m_eventTrackEditor->m_colors.m_cursorColor);
-#endif
 
 		ImGui::EndTabItem();
 	}
 
 	if (ImGui::BeginTabItem("TimeAct Editor"))
 	{
-		ImGui::Checkbox("Show Timecode", &this->m_timeActEditor->m_showTimecode);
-
-#ifdef _DEBUG
-		ImGui::SeparatorText("Colors");
-
 		ImGui::ColorEdit4("Track", (float*)&this->m_timeActEditor->m_colors.m_trackColor);
 		ImGui::ColorEdit4("Track Inactive", (float*)&this->m_timeActEditor->m_colors.m_trackColorInactive);
 		ImGui::ColorEdit4("Track Active", (float*)&this->m_timeActEditor->m_colors.m_trackColorActive);
@@ -1494,7 +1499,6 @@ void Application::SettingsWindow()
 		ImGui::ColorEdit4("Track Bounding Box Active", (float*)&this->m_timeActEditor->m_colors.m_trackBoundingBoxActive);
 		ImGui::ColorEdit4("Track Text Color", (float*)&this->m_timeActEditor->m_colors.m_trackTextColor);
 		ImGui::ColorEdit4("Cursor Color", (float*)&this->m_timeActEditor->m_colors.m_cursorColor);
-#endif
 
 		ImGui::EndTabItem();
 	}
