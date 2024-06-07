@@ -89,7 +89,7 @@ public:
 	{
 		bool m_settingWindow = false;
 		bool m_previewSettings = false;
-		bool m_entityManager = false;
+		bool m_equipManagerWindow = false;
 		bool m_faceGenManager = false;
 		bool m_queryTae = false;
 		bool m_queryEventTrack = false;
@@ -168,7 +168,7 @@ public:
 	void SettingsWindow();
 	void PreviewDebugManagerWindow();
 	void PreviewSceneExplorerWindow();
-	void EntityManagerWindow();
+	void EquipManagerWindow();
 	void FaceGenWindow();
 
 	void CheckFlags();

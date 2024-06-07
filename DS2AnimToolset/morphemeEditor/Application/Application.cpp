@@ -815,7 +815,11 @@ void Application::ModelPreviewWindow()
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::MenuItem("Entity Manager", NULL, &this->m_windowStates.m_entityManager)) { this->m_windowStates.m_entityManager != this->m_windowStates.m_entityManager; }
+			if (ImGui::BeginMenu("Entity Manager"))
+			{
+				if (ImGui::MenuItem("FaceGen", NULL, &this->m_windowStates.m_faceGenManager)) { this->m_windowStates.m_faceGenManager != this->m_windowStates.m_faceGenManager; }
+				if (ImGui::MenuItem("Equip", NULL, &this->m_windowStates.m_equipManagerWindow)) { this->m_windowStates.m_equipManagerWindow != this->m_windowStates.m_equipManagerWindow; }
+			}
 
 			ImGui::Separator();
 
@@ -1879,18 +1883,15 @@ void ModelPartsList(Application* application, std::vector<FileNamePathPair> path
 	ImGui::EndChild();
 }
 
-void Application::EntityManagerWindow()
+void Application::EquipManagerWindow()
 {
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
 
-	ImGui::Begin("Entity Manager", &this->m_windowStates.m_entityManager);
+	ImGui::Begin("Entity Manager", &this->m_windowStates.m_equipManagerWindow);
 
 	bool disable = (this->m_chrId != 1);
 
 	ImGui::BeginDisabled(disable);
-
-	if (ImGui::Button("FaceGen"))
-		this->m_windowStates.m_faceGenManager = true;
 
 	static bool female = this->m_playerModelPreset->GetBool("Gender", "is_female", false);
 	bool female_bak = female;
@@ -1986,6 +1987,10 @@ void Application::FaceGenWindow()
 
 	ImGui::Begin("FaceGen Manager", &this->m_windowStates.m_faceGenManager);
 
+	bool disable = (this->m_chrId != 1);
+
+	ImGui::BeginDisabled(disable);
+
 	if (this->m_fileNameMapPairList->m_fgFace.size())
 	{
 		if (ImGui::TreeNode("Face"))
@@ -2039,6 +2044,9 @@ void Application::FaceGenWindow()
 			ImGui::TreePop();
 		}
 	}
+
+	ImGui::EndDisabled();
+
 	ImGui::End();
 }
 
@@ -2063,9 +2071,9 @@ void Application::CheckFlags()
 		this->PreviewDebugManagerWindow();
 	}
 
-	if (this->m_windowStates.m_entityManager)
+	if (this->m_windowStates.m_equipManagerWindow)
 	{
-		this->EntityManagerWindow();
+		this->EquipManagerWindow();
 	}
 
 	if (this->m_windowStates.m_faceGenManager)
