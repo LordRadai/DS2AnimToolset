@@ -1697,6 +1697,20 @@ void Application::EntityManagerWindow()
 
 	ImGui::BeginDisabled(disable);
 
+	static bool female = this->m_playerModelPreset->GetBool("Gender", "is_female", false);
+	bool female_bak = female;
+
+	ImGui::Checkbox("Female", &female);
+
+	this->m_playerModelPreset->SetBool("Gender", "is_female", female);
+
+	if (female != female_bak)
+	{
+		std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
+
+		LoadPlayerModelParts(this, parts_path);
+	}
+
 	if (this->m_fileNameMapPairList->m_weaponModelPaths.size() && this->m_fileNameMapPairList->m_shieldModelPaths.size())
 	{
 		if (ImGui::TreeNode("Right"))
@@ -1723,20 +1737,6 @@ void Application::EntityManagerWindow()
 	}
 
 	ImGui::SeparatorText("Armor");
-
-	static bool female = this->m_playerModelPreset->GetBool("Gender", "is_female", false);
-	bool female_bak = female;
-
-	ImGui::Checkbox("Female", &female);
-
-	this->m_playerModelPreset->SetBool("Gender", "is_female", female);
-
-	if (female != female_bak)
-	{
-		std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
-
-		LoadPlayerModelParts(this, parts_path);
-	}
 
 	if (this->m_fileNameMapPairList->m_headModelPaths.size())
 	{
