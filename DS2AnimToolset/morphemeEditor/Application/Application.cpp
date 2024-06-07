@@ -823,6 +823,8 @@ void Application::ModelPreviewWindow()
 				if (ImGui::MenuItem("Equip", NULL, &this->m_windowStates.m_equipManagerWindow)) { this->m_windowStates.m_equipManagerWindow != this->m_windowStates.m_equipManagerWindow; }
 				
 				ImGui::EndDisabled();
+
+				ImGui::EndMenu();
 			}
 
 			ImGui::Separator();
