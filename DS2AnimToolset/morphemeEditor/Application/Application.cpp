@@ -1839,8 +1839,11 @@ void ModelPartsList(Application* application, std::vector<FileNamePathPair> path
 		bool selected = false;
 		bool is_female = application->m_playerModelPreset->GetBool("Gender", "is_female", false);
 
-		if (!IsEquipSameGenderAs(paths[i].m_path, is_female))
-			continue;
+		if ((type != Parts_WeaponLeft) && (type != Parts_WeaponRight))
+		{
+			if (!IsEquipSameGenderAs(paths[i].m_path, is_female))
+				continue;
+		}
 
 		if (application->m_animPlayer->GetModelPart(type))
 			selected = (application->m_animPlayer->GetModelPart(type)->m_name.compare(paths[i].m_name) == 0);
