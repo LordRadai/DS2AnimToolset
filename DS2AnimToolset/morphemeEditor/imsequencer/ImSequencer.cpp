@@ -412,8 +412,17 @@ namespace ImSequencer
                 if (baseIndex && px > (canvas_pos.x + legendWidth))
                 {
                     char tmps[512];
-                    ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(i));
-                    draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+
+                    if (eventTrackEditor->m_showTimecode)
+                    {
+                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(i));
+                        draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+                    }
+                    else
+                    {
+                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%d", i);
+                        draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+                    }
                 }
             };
 
@@ -1156,8 +1165,16 @@ namespace ImSequencer
                         draw_list->PopClipRect();
                         draw_list->PopClipRect();
 
-                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(*currentFrame));
-                        draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        if (eventTrackEditor->m_showTimecode)
+                        {
+                            ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(*currentFrame));
+                            draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        }
+                        else
+                        {
+                            ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%d", *currentFrame);
+                            draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        }
 
                         draw_list->PushClipRect(childFramePos, childFramePos + childFrameSize, true);
                         draw_list->PushClipRect(childFramePos + ImVec2(float(legendWidth), 0.f), childFramePos + childFrameSize, true);
@@ -1563,8 +1580,17 @@ namespace ImSequencer
                 if (baseIndex && px > (canvas_pos.x + legendWidth))
                 {
                     char tmps[512];
-                    ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(i, 30));
-                    draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+
+                    if (timeActEditor->m_showTimecode)
+                    {
+                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(i, 30));
+                        draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+                    }
+                    else
+                    {
+                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%d", i);
+                        draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+                    }
                 }
                 };
 
@@ -2098,8 +2124,16 @@ namespace ImSequencer
                         draw_list->PopClipRect();
                         draw_list->PopClipRect();
 
-                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(*currentFrame, 30));
-                        draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        if (timeActEditor->m_showTimecode)
+                        {
+                            ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(*currentFrame, 30));
+                            draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        }
+                        else
+                        {
+                            ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%d", *currentFrame);
+                            draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        }
 
                         draw_list->PushClipRect(childFramePos, childFramePos + childFrameSize, true);
                         draw_list->PushClipRect(childFramePos + ImVec2(float(legendWidth), 0.f), childFramePos + childFrameSize, true);

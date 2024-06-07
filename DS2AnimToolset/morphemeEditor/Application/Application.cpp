@@ -1461,8 +1461,13 @@ void Application::SettingsWindow()
 	}
 #endif
 
-	if (ImGui::BeginTabItem("EventTrack Editor Colors"))
+	if (ImGui::BeginTabItem("EventTrack Editor"))
 	{
+		ImGui::Checkbox("Show Timecode", &this->m_eventTrackEditor->m_showTimecode);
+
+#ifdef _DEBUG
+		ImGui::SeparatorText("Colors");
+
 		ImGui::ColorEdit4("Track", (float*)&this->m_eventTrackEditor->m_colors.m_trackColor);
 		ImGui::ColorEdit4("Track Inactive", (float*)&this->m_eventTrackEditor->m_colors.m_trackColorInactive);
 		ImGui::ColorEdit4("Track Active", (float*)&this->m_eventTrackEditor->m_colors.m_trackColorActive);
@@ -1470,12 +1475,18 @@ void Application::SettingsWindow()
 		ImGui::ColorEdit4("Track Bounding Box Active", (float*)&this->m_eventTrackEditor->m_colors.m_trackBoundingBoxActive);
 		ImGui::ColorEdit4("Track Text Color", (float*)&this->m_eventTrackEditor->m_colors.m_trackTextColor);
 		ImGui::ColorEdit4("Cursor Color", (float*)&this->m_eventTrackEditor->m_colors.m_cursorColor);
+#endif
 
 		ImGui::EndTabItem();
 	}
 
-	if (ImGui::BeginTabItem("TimeAct Editor Colors"))
+	if (ImGui::BeginTabItem("TimeAct Editor"))
 	{
+		ImGui::Checkbox("Show Timecode", &this->m_timeActEditor->m_showTimecode);
+
+#ifdef _DEBUG
+		ImGui::SeparatorText("Colors");
+
 		ImGui::ColorEdit4("Track", (float*)&this->m_timeActEditor->m_colors.m_trackColor);
 		ImGui::ColorEdit4("Track Inactive", (float*)&this->m_timeActEditor->m_colors.m_trackColorInactive);
 		ImGui::ColorEdit4("Track Active", (float*)&this->m_timeActEditor->m_colors.m_trackColorActive);
@@ -1483,6 +1494,7 @@ void Application::SettingsWindow()
 		ImGui::ColorEdit4("Track Bounding Box Active", (float*)&this->m_timeActEditor->m_colors.m_trackBoundingBoxActive);
 		ImGui::ColorEdit4("Track Text Color", (float*)&this->m_timeActEditor->m_colors.m_trackTextColor);
 		ImGui::ColorEdit4("Cursor Color", (float*)&this->m_timeActEditor->m_colors.m_cursorColor);
+#endif
 
 		ImGui::EndTabItem();
 	}
