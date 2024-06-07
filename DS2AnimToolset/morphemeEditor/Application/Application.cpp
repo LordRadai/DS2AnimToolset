@@ -803,30 +803,29 @@ void Application::ModelPreviewWindow()
 
 			if (ImGui::BeginMenu("Scene"))
 			{
+				if (ImGui::MenuItem("Scene Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
+
+				ImGui::SeparatorText("Display Mode");
+
 				if (ImGui::MenuItem("Normal", NULL, this->m_sceneFlags.m_displayMode == Mode_Normal)) { this->m_sceneFlags.m_displayMode = Mode_Normal; }
 				if (ImGui::MenuItem("X-Ray", NULL, this->m_sceneFlags.m_displayMode == Mode_XRay)) { this->m_sceneFlags.m_displayMode = Mode_XRay; }
 				if (ImGui::MenuItem("Wireframe", NULL, this->m_sceneFlags.m_displayMode == Mode_Wireframe)) { this->m_sceneFlags.m_displayMode = Mode_Wireframe; }
 				
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("Scene Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
-
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("Model Manager"))
+			if (ImGui::BeginMenu("Model"))
 			{
+				if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
+
+				ImGui::SeparatorText("Parts");
+
 				ImGui::BeginDisabled(this->m_chrId != 1);
 
 				if (ImGui::MenuItem("FaceGen", NULL, &this->m_windowStates.m_faceGenManager)) { this->m_windowStates.m_faceGenManager != this->m_windowStates.m_faceGenManager; }
 				if (ImGui::MenuItem("Equip", NULL, &this->m_windowStates.m_equipManagerWindow)) { this->m_windowStates.m_equipManagerWindow != this->m_windowStates.m_equipManagerWindow; }
-				
+
 				ImGui::EndDisabled();
-
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
-
 				ImGui::EndMenu();
 			}
 
