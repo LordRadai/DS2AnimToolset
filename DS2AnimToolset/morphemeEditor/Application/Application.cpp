@@ -8,6 +8,251 @@
 #include <filesystem>
 #include "FBXTranslator/FBXTranslator.h"
 #include "IconsFontAwesome6.h"
+#include "INI/INI.h"
+
+bool IsEquipShield(std::wstring filename)
+{
+	size_t first = filename.find_first_of(L"_");
+
+	std::wstring category = filename.substr(0, first);
+
+	if (category == L"sd")
+		return true;
+
+	return false;
+}
+
+bool IsEquipSameGenderAs(std::wstring filename, bool female)
+{
+	size_t first = filename.find_last_of(L"_");
+
+	std::wstring gender = std::filesystem::path(filename.substr(first + 1, first + 2)).stem();
+
+	bool is_female = false;
+
+	if (gender == L"f")
+		is_female = true;
+	else if (gender == L"m")
+		is_female = false;
+	else
+		return true;
+
+	return (female == is_female);
+}
+
+int GetEquipIDByFilename(std::wstring filename)
+{
+	size_t first = filename.find_first_of(L"_") + 1;
+	size_t second = filename.find_last_of(L"_");
+
+	std::wstring modelIdStr = filename.substr(first, second - first);
+
+	return std::stoi(modelIdStr);
+}
+
+int GetFgIDByFilename(std::wstring filename, FgPartType type)
+{
+	int baseId = 0;
+
+	switch (type)
+	{
+	case FaceGen_Face:
+		baseId = 1000;
+		break;
+	case FaceGen_Head:
+		baseId = 2000;
+		break;
+	case FaceGen_Eyes:
+		baseId = 3000;
+		break;
+	case FaceGen_EyeBrows:
+		baseId = 4000;
+		break;
+	case FaceGen_Beard:
+		baseId = 5000;
+		break;
+	case FaceGen_Hair:
+		baseId = 7000;
+		break;
+	default:
+		break;
+	}
+
+	int id = GetEquipIDByFilename(filename);
+
+	return id - baseId;
+}
+
+void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartType type, int id, bool female)
+{
+	std::wstring filepath = root.c_str();
+	wchar_t modelName[255] = { 0 };
+	int fullId = 0;
+
+	switch (type)
+	{
+	case FaceGen_Face:
+		if (female)
+			swprintf_s(modelName, L"\\face\\fg_1001_f.bnd");
+		else
+			swprintf_s(modelName, L"\\face\\fg_1001_m.bnd");
+		break;
+	case FaceGen_Head:
+		if (female)
+			swprintf_s(modelName, L"\\face\\fg_2001_f.bnd");
+		else
+			swprintf_s(modelName, L"\\face\\fg_2001_m.bnd");
+		break;
+	case FaceGen_Eyes:
+		swprintf_s(modelName, L"\\face\\fg_3001_a.bnd");
+		break;
+	case FaceGen_EyeBrows:
+		fullId = 4000 + id;
+
+		swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
+		break;
+	case FaceGen_Beard:
+		fullId = 5000 + id;
+
+		if (!female)
+			swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
+		break;
+	case FaceGen_Hair:
+		fullId = 7000 + id;
+
+		if (female)
+			swprintf_s(modelName, L"\\face\\fg_%d_f.bnd", fullId);
+		else
+			swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
+
+		break;
+	default:
+		break;
+	}
+
+	filepath += modelName;
+
+	FlverModel* model = FlverModel::CreateFromBnd(filepath);
+
+	if (model)
+	{
+		pApplication->m_animPlayer->SetModelPartFacegen(type, model);
+		pApplication->m_animPlayer->GetModelPartFacegen(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+	}
+}
+
+void LoadWeaponBnd(Application* pApplication, std::wstring root, PartType type, int id, bool shield)
+{
+	std::wstring filepath = root.c_str();
+	wchar_t modelName[255];
+
+	if (shield)
+		swprintf_s(modelName, L"\\shield\\sd_%d_m.bnd", id);
+	else
+		swprintf_s(modelName, L"\\weapon\\wp_%d_m.bnd", id);
+
+	filepath += modelName;
+
+	FlverModel* model = FlverModel::CreateFromBnd(filepath);
+
+	if (model)
+		pApplication->m_animPlayer->SetModelPart(type, model);
+}
+
+void LoadPartsBnd(Application* pApplication, std::wstring root, PartType type, int id, bool female)
+{
+	std::wstring filepath = root.c_str();
+	wchar_t modelName[255] = { 0 };
+
+	switch (type)
+	{
+	case Parts_Head:
+		if (female)
+			swprintf_s(modelName, L"\\head\\hd_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\head\\hd_%d_m.bnd", id);
+		break;
+	case Parts_Face:
+		if (female)
+			swprintf_s(modelName, L"\\face\\fc_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\face\\fc_%d_m.bnd", id);
+		break;
+	case Parts_Body:
+		if (female)
+			swprintf_s(modelName, L"\\body\\bd_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\body\\bd_%d_m.bnd", id);
+		break;
+	case Parts_Arm:
+		if (female)
+			swprintf_s(modelName, L"\\arm\\am_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\arm\\am_%d_m.bnd", id);
+		break;
+	case Parts_Leg:
+		if (female)
+			swprintf_s(modelName, L"\\leg\\lg_%d_f.bnd", id);
+		else
+			swprintf_s(modelName, L"\\leg\\lg_%d_m.bnd", id);
+		break;
+	default:
+		break;
+	}
+
+	filepath += modelName;
+
+	FlverModel* model = FlverModel::CreateFromBnd(filepath);
+
+	if (model)
+	{
+		pApplication->m_animPlayer->SetModelPart(type, model);
+		pApplication->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(pApplication->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+	}
+}
+
+void LoadPlayerModelParts(Application* application, std::wstring parts_path)
+{
+	application->m_animPlayer->ClearModelParts();
+
+	bool female = application->m_playerModelPreset->GetBool("Gender", "is_female", false);
+
+	int rightId = application->m_playerModelPreset->GetInt("Right", "id", -1);
+	bool rightShield = application->m_playerModelPreset->GetBool("Right", "is_shield", false);
+
+	LoadWeaponBnd(application, parts_path, Parts_WeaponRight, rightId, rightShield);
+
+	int leftId = application->m_playerModelPreset->GetInt("Left", "id", -1);
+	bool leftShield = application->m_playerModelPreset->GetBool("Left", "is_shield", false);
+
+	LoadWeaponBnd(application, parts_path, Parts_WeaponLeft, leftId, leftShield);
+
+	int headId = application->m_playerModelPreset->GetInt("Armor", "head", -1);
+	int faceId = application->m_playerModelPreset->GetInt("Armor", "face", -1);
+	int bodyId = application->m_playerModelPreset->GetInt("Armor", "body", -1);
+	int armId = application->m_playerModelPreset->GetInt("Armor", "arm", -1);
+	int legId = application->m_playerModelPreset->GetInt("Armor", "leg", -1);
+
+	LoadPartsBnd(application, parts_path, Parts_Head, headId, female);
+	LoadPartsBnd(application, parts_path, Parts_Face, faceId, female);
+	LoadPartsBnd(application, parts_path, Parts_Body, bodyId, female);
+	LoadPartsBnd(application, parts_path, Parts_Arm, armId, female);
+	LoadPartsBnd(application, parts_path, Parts_Leg, legId, female);
+
+	int fgFaceId = application->m_playerModelPreset->GetInt("FaceGen", "face", -1);
+	int fgHeadId = application->m_playerModelPreset->GetInt("FaceGen", "head", -1);
+	int fgEyeId = application->m_playerModelPreset->GetInt("FaceGen", "eye", -1);
+	int fgEyeBrowsId = application->m_playerModelPreset->GetInt("FaceGen", "eye_brows", -1);
+	int fgBeard = application->m_playerModelPreset->GetInt("FaceGen", "beard", -1);
+	int fgHair = application->m_playerModelPreset->GetInt("FaceGen", "hair", -1);
+
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Face, fgFaceId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Head, fgHeadId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Eyes, fgEyeId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_EyeBrows, fgEyeBrowsId, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Beard, fgBeard, female);
+	LoadPartsFaceGenBnd(application, parts_path, FaceGen_Hair, fgHair, female);
+}
 
 std::vector<std::wstring> getTaeFileListFromChrId(std::wstring tae_path, std::wstring m_chrId)
 {
@@ -65,12 +310,188 @@ std::wstring getModelNameFromObjId(std::wstring model_path, std::wstring obj_id)
 	return L"";
 }
 
+FileNamePathPair::FileNamePathPair(std::wstring path, int id)
+{
+	this->m_path = path;
+	this->m_name = RString::RemoveExtension(RString::ToNarrow(path));
+	this->m_id = id;
+}
+
+void FileNameMapPairList::Clear()
+{
+	this->m_weaponModelPaths.clear();
+	this->m_shieldModelPaths.clear();
+	this->m_headModelPaths.clear();
+	this->m_faceModelPaths.clear();
+	this->m_bodyModelPaths.clear();
+	this->m_armModelPaths.clear();
+	this->m_legModelPaths.clear();
+
+	this->m_fgFace.clear();
+	this->m_fgHead.clear();
+	this->m_fgEyes.clear();
+	this->m_fgEyeBrows.clear();
+	this->m_fgBeard.clear();
+	this->m_fgHair.clear();
+}
+
+void FileNameMapPairList::Create(std::wstring gamePath)
+{
+	std::filesystem::path shield_path = gamePath + L"\\model\\parts\\shield";
+	std::filesystem::path weapon_path = gamePath + L"\\model\\parts\\weapon";
+
+	std::filesystem::path head_path = gamePath + L"\\model\\parts\\head";
+	std::filesystem::path face_path = gamePath + L"\\model\\parts\\face";
+	std::filesystem::path body_path = gamePath + L"\\model\\parts\\body";
+	std::filesystem::path arm_path = gamePath + L"\\model\\parts\\arm";
+	std::filesystem::path leg_path = gamePath + L"\\model\\parts\\leg";
+
+	for (const auto& entry : std::filesystem::directory_iterator(weapon_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();		
+			int id = GetEquipIDByFilename(filepath);
+
+			this->m_weaponModelPaths.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(shield_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
+
+			this->m_shieldModelPaths.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(head_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
+
+			this->m_headModelPaths.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 2) == "fc"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
+
+			this->m_faceModelPaths.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(body_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
+
+			this->m_bodyModelPaths.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(arm_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
+
+			this->m_armModelPaths.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(leg_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l'))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
+
+			this->m_legModelPaths.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'f') || (entry.path().stem().string().back() == 'm')) && (entry.path().stem().string().substr(0, 4) == "fg_1"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_Face);
+
+			this->m_fgFace.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'f') || (entry.path().stem().string().back() == 'm')) && (entry.path().stem().string().substr(0, 4) == "fg_2"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_Head);
+
+			this->m_fgHead.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'a')) && (entry.path().stem().string().substr(0, 4) == "fg_3"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_Eyes);
+
+			this->m_fgEyes.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'm')) && (entry.path().stem().string().substr(0, 4) == "fg_4"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_EyeBrows);
+
+			this->m_fgEyeBrows.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'm')) && (entry.path().stem().string().substr(0, 4) == "fg_5"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_Beard);
+
+			this->m_fgBeard.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && ((entry.path().stem().string().back() == 'f') || (entry.path().stem().string().back() == 'm')) && (entry.path().stem().string().substr(0, 4) == "fg_7"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_Hair);
+
+			this->m_fgHair.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+}
+
 Application::Application()
 {
-	this->m_morphemeSystem = new MorphemeSystem();
-	this->m_animPlayer = new AnimPlayer();
-	this->m_eventTrackEditor = new EventTrackEditor();
-	this->m_timeActEditor = new TimeActEditor();
 }
 
 Application::~Application()
@@ -155,7 +576,37 @@ void Application::GUIStyle()
 
 void Application::Initialise()
 {
+	this->m_morphemeSystem = new MorphemeSystem();
+	this->m_animPlayer = new AnimPlayer();
+	this->m_eventTrackEditor = new EventTrackEditor();
+	this->m_timeActEditor = new TimeActEditor();
+	this->m_appSettings = new INI;
+	this->m_playerModelPreset = new INI;
+	this->m_fileNameMapPairList = new FileNameMapPairList;
+
 	this->m_morphemeSystem->initMorpheme();
+
+	if (!this->m_playerModelPreset->Open(".//Data//res//c0001.ini"))
+		g_appLog->PanicMessage("Failed to load c0001.ini\n");
+
+	if (!this->m_appSettings->Open(".//Data//res//settings.ini"))
+		g_appLog->PanicMessage("Failed to load settings.ini\n");
+}
+
+void Application::Shutdown()
+{
+	this->m_morphemeSystem->termMorpheme();
+
+	this->m_appSettings->Write(".//Data//res//settings.ini");
+	this->m_playerModelPreset->Write(".//Data//res//c0001.ini");
+
+	delete this->m_morphemeSystem;
+	delete this->m_animPlayer;
+	delete this->m_eventTrackEditor;
+	delete this->m_timeAct;
+	delete this->m_appSettings;
+	delete this->m_playerModelPreset;
+	delete this->m_fileNameMapPairList;
 }
 
 void Application::Update(float delta_time)
@@ -166,12 +617,12 @@ void Application::Update(float delta_time)
 
 std::string getTaeCategoryTooltip(int category)
 {
-	INIReader reader(".//Data//res//tooltip//timeact//group.ini");
-	
+	INI ini;
+
 	char default_info[255];
 	sprintf_s(default_info, "No specific information is known for this category\n");
 
-	if (reader.ParseError() < 0)
+	if (!ini.Open(".//Data//res//tooltip//timeact//group.ini"))
 	{
 		g_appLog->DebugMessage(MsgLevel_Debug, "Failed to load group.ini\n");
 		return std::string(default_info);
@@ -179,61 +630,61 @@ std::string getTaeCategoryTooltip(int category)
 
 	std::string category_str = std::to_string(category);
 
-	return reader.GetString(category_str, "tooltip", std::string(default_info));
+	return ini.GetString(category_str, "tooltip", default_info);
 }
 
 std::string getTaeEventTooltip(int event_id)
 {
-	INIReader reader(".//Data//res//tooltip//timeact//event.ini");
+	INI ini;
 
 	char default_info[255];
 	sprintf_s(default_info, "No specific information is known for this event\n");
 
-	if (reader.ParseError() < 0)
+	if (!ini.Open(".//Data//res//tooltip//timeact//event.ini"))
 	{
-		g_appLog->DebugMessage(MsgLevel_Error, "Failed to load event.ini\n");
+		g_appLog->DebugMessage(MsgLevel_Debug, "Failed to load group.ini\n");
 		return std::string(default_info);
 	}
 
 	std::string category_str = std::to_string(event_id);
 
-	return reader.GetString(category_str, "tooltip", std::string(default_info));
+	return ini.GetString(category_str, "tooltip", default_info);
 }
 
 std::string getEventTrackCategoryTooltip(int category)
 {
-	INIReader reader(".//Data//res//tooltip//eventrack//group.ini");
+	INI ini;
 
 	char default_info[255];
 	sprintf_s(default_info, "No specific information is known for this category\n");
 
-	if (reader.ParseError() < 0)
+	if (!ini.Open(".//Data//res//tooltip//eventrack//group.ini"))
 	{
-		g_appLog->DebugMessage(MsgLevel_Error, "Failed to load group.ini\n");
+		g_appLog->DebugMessage(MsgLevel_Debug, "Failed to load group.ini\n");
 		return std::string(default_info);
 	}
 
 	std::string category_str = std::to_string(category);
 
-	return reader.GetString(category_str, "tooltip", std::string(default_info));
+	return ini.GetString(category_str, "tooltip", default_info);
 }
 
 std::string getEventTrackEventTooltip(int event_id)
 {
-	INIReader reader(".//Data//res//tooltip//eventrack//event.ini");
+	INI ini;
 
 	char default_info[255];
 	sprintf_s(default_info, "No specific information is known for this event\n");
 
-	if (reader.ParseError() < 0)
+	if (!ini.Open(".//Data//res//tooltip//eventrack//event.ini"))
 	{
-		g_appLog->DebugMessage(MsgLevel_Error, "Failed to load event.ini\n");
+		g_appLog->DebugMessage(MsgLevel_Debug, "Failed to load group.ini\n");
 		return std::string(default_info);
 	}
 
 	std::string category_str = std::to_string(event_id);
 
-	return reader.GetString(category_str, "tooltip", std::string(default_info));
+	return ini.GetString(category_str, "tooltip", default_info);
 }
 
 void Application::RenderGUI(const char* title)
@@ -283,16 +734,44 @@ void Application::RenderGUI(const char* title)
 
 		if (ImGui::BeginMenu("Edit"))
 		{
-			if (ImGui::MenuItem("Settings", NULL, &this->m_windowStates.m_settingWindow)) { this->m_windowStates.m_settingWindow != this->m_windowStates.m_settingWindow; }
-			
+			if (ImGui::MenuItem("Scene Settings", NULL, &this->m_windowStates.m_previewSettings)) { this->m_windowStates.m_previewSettings != this->m_windowStates.m_previewSettings; }
+
+			if (ImGui::BeginMenu("Timecode"))
+			{
+				static bool timecode = this->m_appSettings->GetBool("AppRootWindow", "use_seconds", true);
+
+				bool timecode_bak = timecode;
+
+				if (ImGui::MenuItem("Seconds", NULL, timecode)) { timecode = true; }
+				if (ImGui::MenuItem("Frames", NULL, !timecode)) { timecode = false; }
+
+				this->m_eventTrackEditor->m_showTimecode = timecode;
+				this->m_timeActEditor->m_showTimecode = timecode;
+
+				if (timecode_bak != timecode)
+					this->m_appSettings->SetBool("AppRootWindow", "use_seconds", timecode);
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenu();
+		}
+
 #ifdef _DEBUG
-			ImGui::Separator();
+		if (ImGui::BeginMenu("Debug"))
+		{
+			ImGui::SeparatorText("Track Editor Format");
+
+			if (ImGui::MenuItem("Style Settings", NULL, &this->m_windowStates.m_settingWindow)) { this->m_windowStates.m_settingWindow != this->m_windowStates.m_settingWindow; }
+			
+			ImGui::SeparatorText("Query");
 
 			if (ImGui::MenuItem("Find TimeAct", NULL, &this->m_windowStates.m_queryTae)) { this->m_windowStates.m_queryTae != this->m_windowStates.m_queryTae; }
 			if (ImGui::MenuItem("Find EventTrack", NULL, &this->m_windowStates.m_queryEventTrack)) { this->m_windowStates.m_queryEventTrack != this->m_windowStates.m_queryEventTrack; }
-#endif
+			
 			ImGui::EndMenu();
 		}
+#endif
 
 		ImGui::EndMenuBar();
 	}
@@ -356,22 +835,27 @@ void Application::ModelPreviewWindow()
 	{
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::MenuItem("Settings", NULL, &this->m_windowStates.m_previewSettings)) { this->m_windowStates.m_previewSettings != this->m_windowStates.m_previewSettings; }
+			if (ImGui::MenuItem("Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
 
-			FlverModel* model = this->m_animPlayer->GetModel();
-			if (model)
+			if (ImGui::BeginMenu("Display Mode"))
 			{
-				if (ImGui::BeginMenu("Scene"))
-				{
-					if (ImGui::MenuItem("Hide Model", NULL, &model->m_settings.m_xray)) { model->m_settings.m_xray != model->m_settings.m_xray; }
-					if (ImGui::MenuItem("Show Dummies", NULL, &model->m_settings.m_drawDummyPolygons)) { model->m_settings.m_drawDummyPolygons != model->m_settings.m_drawDummyPolygons; }
-					if (ImGui::MenuItem("Scene Explorer", NULL, &model->m_settings.m_sceneExplorer)) { model->m_settings.m_xray != model->m_settings.m_sceneExplorer; }
+				if (ImGui::MenuItem("Normal", NULL, this->m_sceneFlags.m_displayMode == Mode_Normal)) { this->m_sceneFlags.m_displayMode = Mode_Normal; }
+				if (ImGui::MenuItem("X-Ray", NULL, this->m_sceneFlags.m_displayMode == Mode_XRay)) { this->m_sceneFlags.m_displayMode = Mode_XRay; }
+				if (ImGui::MenuItem("Wireframe", NULL, this->m_sceneFlags.m_displayMode == Mode_Wireframe)) { this->m_sceneFlags.m_displayMode = Mode_Wireframe; }
+				
+				ImGui::EndMenu();
+			}
 
-					ImGui::EndMenu();
-				}
+			if (ImGui::BeginMenu("Model"))
+			{
+				if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
 
-				if (model->m_settings.m_sceneExplorer)
-					this->PreviewSceneExplorerWindow();
+				ImGui::BeginDisabled(this->m_chrId != 1);
+
+				if (ImGui::MenuItem("Player Parts", NULL, &this->m_windowStates.m_playerPartsManagerWindow)) { this->m_windowStates.m_playerPartsManagerWindow != this->m_windowStates.m_playerPartsManagerWindow; }
+
+				ImGui::EndDisabled();
+				ImGui::EndMenu();
 			}
 
 			ImGui::Separator();
@@ -399,6 +883,8 @@ void Application::ModelPreviewWindow()
 			if (ImGui::Button(ICON_FA_FORWARD_FAST))
 				this->m_animPlayer->SetTime(RMath::TimeToFrame(this->m_eventTrackEditor->m_frameMax));
 
+			ImGui::Separator();
+
 			ImGui::EndMenuBar();
 		}
 
@@ -423,6 +909,9 @@ void Application::ModelPreviewWindow()
 		g_scene->SetRenderResolution(width, height);
 
 		ImGui::GetWindowDrawList()->AddImage(g_scene->m_shaderResourceViewViewport, pos, ImVec2(pos.x + width, pos.y + height));
+
+		if (this->m_sceneFlags.m_sceneExplorer)
+			this->PreviewSceneExplorerWindow();
 	}
 
 	ImGui::End();
@@ -543,12 +1032,12 @@ void Application::AssetsWindow()
 		else
 			selected_tae_file_idx = -1;
 
-		ImGui::BeginTabBar("assets tab bar");
+		ImGui::BeginTabBar("assets");
 		if (ImGui::BeginTabItem("Animations"))
 		{
 			CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
-			if (characterDef != nullptr)
+			if (characterDef)
 			{
 				if (characterDef->isLoaded())
 					ImGui::Text(characterDef->getFilename());
@@ -572,7 +1061,7 @@ void Application::AssetsWindow()
 
 							AnimSourceInterface* currentAnim = characterDef->getAnimation(i);
 
-							anim_name += RString::RemovePathAndExtension(characterDef->getAnimFileLookUp()->getSourceFilename(currentAnim->GetID()));
+							anim_name += RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(currentAnim->GetID()));
 
 							bool selected = (this->m_eventTrackEditor->m_selectedAnimIdx == currentAnim->GetID());
 
@@ -778,7 +1267,7 @@ void Application::AssetsWindow()
 			ImGui::EndTabItem();
 		}
 
-		ImGui::EndTabItem();
+		ImGui::EndTabBar();
 	}
 
 	ImGui::End();
@@ -978,16 +1467,14 @@ void Application::SettingsWindow()
 
 	ImGui::BeginTabBar("settings");
 
-#ifdef _DEBUG
 	if (ImGui::BeginTabItem("Style"))
 	{
 		ImGui::ShowStyleEditor();
 
 		ImGui::EndTabItem();
 	}
-#endif
 
-	if (ImGui::BeginTabItem("EventTrack Editor Colors"))
+	if (ImGui::BeginTabItem("EventTrack Editor"))
 	{
 		ImGui::ColorEdit4("Track", (float*)&this->m_eventTrackEditor->m_colors.m_trackColor);
 		ImGui::ColorEdit4("Track Inactive", (float*)&this->m_eventTrackEditor->m_colors.m_trackColorInactive);
@@ -1000,7 +1487,7 @@ void Application::SettingsWindow()
 		ImGui::EndTabItem();
 	}
 
-	if (ImGui::BeginTabItem("TimeAct Editor Colors"))
+	if (ImGui::BeginTabItem("TimeAct Editor"))
 	{
 		ImGui::ColorEdit4("Track", (float*)&this->m_timeActEditor->m_colors.m_trackColor);
 		ImGui::ColorEdit4("Track Inactive", (float*)&this->m_timeActEditor->m_colors.m_trackColorInactive);
@@ -1021,7 +1508,7 @@ void Application::SettingsWindow()
 void Application::PreviewDebugManagerWindow()
 {
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
-	ImGui::Begin("Settings##preview", &this->m_windowStates.m_previewSettings);
+	ImGui::Begin("Scene Settings", &this->m_windowStates.m_previewSettings);
 
 	ImGui::DragFloat("Grid Scale", &g_scene->m_settings.m_gridScale, 0.1f, 0.f, FLT_MAX);
 
@@ -1116,58 +1603,488 @@ void SkeletonInspectorTreeNode(FLVER2* flv, int boneID, int& selected_id)
 	}
 }
 
+void ModelTreeNode(Application* application, FlverModel* model)
+{
+	if (model)
+	{
+		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+
+		if (application->m_sceneFlags.m_selectedModel == model)
+			node_flags |= ImGuiTreeNodeFlags_Selected;
+
+		bool open = ImGui::TreeNodeEx(model->m_name.c_str(), node_flags);
+
+		if (open)
+		{
+			if (model->m_flver->header.boneCount > 0)
+			{
+				if (ImGui::TreeNode("Bones"))
+				{
+					ImGui::BeginChild("skeleton_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
+
+					int boneID = 0;
+
+					while (boneID != -1)
+					{
+						SkeletonInspectorTreeNode(model->m_flver, boneID, model->m_settings.m_selectedBone);
+
+						boneID = model->m_flver->bones[boneID].nextSiblingIndex;
+					}
+
+					ImGui::EndChild();
+
+					ImGui::TreePop();
+				}
+			}
+
+			if (model->m_flver->header.dummyCount > 0)
+			{
+				if (ImGui::TreeNode("Dummy Polygons"))
+				{
+					ImGui::BeginChild("dummy_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
+
+					for (size_t i = 0; i < model->m_flver->header.dummyCount; i++)
+					{
+						std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[i].referenceID);
+
+						bool selected = (model->m_settings.m_selectedDummy == i);
+
+						if (ImGui::Selectable(dummy_name.c_str(), selected))
+							model->m_settings.m_selectedDummy = i;
+					}
+
+					ImGui::EndChild();
+
+					ImGui::TreePop();
+				}
+
+			}
+
+			if (ImGui::IsMouseDoubleClicked(0))
+			{
+				model->m_settings.m_selectedDummy = -1;
+				model->m_settings.m_selectedBone = -1;
+			}
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+			application->m_sceneFlags.m_selectedModel = model;
+
+		if (ImGui::IsMouseDoubleClicked(0))
+			application->m_sceneFlags.m_selectedModel = nullptr;
+	}
+
+}
+
 void Application::PreviewSceneExplorerWindow()
 {
-	FlverModel* model = this->m_animPlayer->GetModel();
-
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
 
-	ImGui::Begin("Scene Explorer", &model->m_settings.m_sceneExplorer);
+	ImGui::Begin("Scene Explorer", &this->m_sceneFlags.m_sceneExplorer);
 
-	if (ImGui::TreeNode("Skeleton"))
-	{
-		ImGui::BeginChild("skeleton_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
+	FlverModel* model = this->m_animPlayer->GetModel();	
+	ModelTreeNode(this, model);
 
-		int boneID = 0;
+	model = this->m_animPlayer->GetModelPart(Parts_Face);
+	ModelTreeNode(this, model);
 
-		while (boneID != -1)
-		{
-			SkeletonInspectorTreeNode(model->m_flver, boneID, model->m_settings.m_selectedBone);
+	model = this->m_animPlayer->GetModelPart(Parts_Head);
+	ModelTreeNode(this, model);
 
-			boneID = model->m_flver->bones[boneID].nextSiblingIndex;
-		}
+	model = this->m_animPlayer->GetModelPart(Parts_Body);
+	ModelTreeNode(this, model);
 
-		ImGui::EndChild();
+	model = this->m_animPlayer->GetModelPart(Parts_Arm);
+	ModelTreeNode(this, model);
 
-		ImGui::TreePop();
-	}
+	model = this->m_animPlayer->GetModelPart(Parts_Leg);
+	ModelTreeNode(this, model);
 
-	if (ImGui::TreeNode("Dummy Polygons"))
-	{
-		ImGui::BeginChild("dummy_inspector", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetWindowSize().y / 3));
+	model = this->m_animPlayer->GetModelPart(Parts_WeaponLeft);
+	ModelTreeNode(this, model);
 
-		for (size_t i = 0; i < model->m_flver->header.dummyCount; i++)
-		{
-			std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[i].referenceID);
+	model = this->m_animPlayer->GetModelPart(Parts_WeaponRight);
+	ModelTreeNode(this, model);
 
-			bool selected = (model->m_settings.m_selectedDummy == i);
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Face);
+	ModelTreeNode(this, model);
 
-			if (ImGui::Selectable(dummy_name.c_str(), selected))
-				model->m_settings.m_selectedDummy = i;
-		}
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Head);
+	ModelTreeNode(this, model);
 
-		ImGui::EndChild();
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Eyes);
+	ModelTreeNode(this, model);
 
-		ImGui::TreePop();
-	}
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_EyeBrows);
+	ModelTreeNode(this, model);
 
-	if (ImGui::IsMouseDoubleClicked(0))
-	{
-		model->m_settings.m_selectedDummy = -1;
-		model->m_settings.m_selectedBone = -1;
-	}
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Beard);
+	ModelTreeNode(this, model);
+
+	model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Hair);
+	ModelTreeNode(this, model);
 
 	ImGui::End();
+}
+
+void SaveModelPartsFaceGenPreset(Application* application, FgPartType type, int value)
+{
+	switch (type)
+	{
+	case FaceGen_Face:
+		application->m_playerModelPreset->SetInt("FaceGen", "face", value);
+		break;
+	case FaceGen_Head:
+		application->m_playerModelPreset->SetInt("FaceGen", "head", value);
+		break;
+	case FaceGen_Eyes:
+		application->m_playerModelPreset->SetInt("FaceGen", "eye", value);
+		break;
+	case FaceGen_EyeBrows:
+		application->m_playerModelPreset->SetInt("FaceGen", "eye_brows", value);
+		break;
+	case FaceGen_Beard:
+		application->m_playerModelPreset->SetInt("FaceGen", "beard", value);
+		break;
+	case FaceGen_Hair:
+		application->m_playerModelPreset->SetInt("FaceGen", "hair", value);
+		break;
+	default:
+		break;
+	}
+}
+
+void SaveModelPartsArmorPreset(Application* application, PartType type, int value)
+{
+	switch (type)
+	{
+	case Parts_Head:
+		application->m_playerModelPreset->SetInt("Armor", "head", value);
+		break;
+	case Parts_Face:
+		application->m_playerModelPreset->SetInt("Armor", "face", value);
+		break;
+	case Parts_Body:
+		application->m_playerModelPreset->SetInt("Armor", "body", value);
+		break;
+	case Parts_Arm:
+		application->m_playerModelPreset->SetInt("Armor", "arm", value);
+		break;
+	case Parts_Leg:
+		application->m_playerModelPreset->SetInt("Armor", "leg", value);
+		break;
+	default:
+		break;
+	}
+}
+
+void SaveModelPartsWeaponPreset(Application* application, PartType type, int value, bool shield)
+{
+	switch (type)
+	{
+	case Parts_WeaponLeft:
+		application->m_playerModelPreset->SetInt("Left", "id", value);
+		application->m_playerModelPreset->SetBool("Left", "is_shield", shield);
+		break;
+	case Parts_WeaponRight:
+		application->m_playerModelPreset->SetInt("Right", "id", value);
+		application->m_playerModelPreset->SetBool("Right", "is_shield", shield);
+		break;
+	}
+}
+
+void ModelPartsFgList(Application* application, std::vector<FileNamePathPair> paths, FgPartType type)
+{
+	if (paths.size() == 0)
+		return;
+
+	char childName[255];
+	sprintf_s(childName, "fgParts_%ls_%d", paths[0].m_path.c_str(), type);
+
+	FlverModel* currentPart = application->m_animPlayer->GetModelPartFacegen(type);
+
+	ImGui::BeginChild(childName, ImVec2(ImGui::GetContentRegionAvail().x, 300));
+
+	if (ImGui::Selectable("None", currentPart == nullptr))
+	{
+		application->m_animPlayer->SetModelPartFacegen(type, nullptr);
+
+		SaveModelPartsFaceGenPreset(application, type, -1);
+	}
+
+	for (size_t i = 0; i < paths.size(); i++)
+	{
+		bool selected = false;
+		bool is_female = application->m_playerModelPreset->GetBool("Gender", "is_female", false);
+
+		if (type != FaceGen_EyeBrows)
+		{
+			if (!IsEquipSameGenderAs(paths[i].m_path, is_female))
+				continue;
+		}
+
+		if (application->m_animPlayer->GetModelPartFacegen(type))
+			selected = (application->m_animPlayer->GetModelPartFacegen(type)->m_name.compare(paths[i].m_name) == 0);
+
+		ImGui::Selectable(paths[i].m_name.c_str(), selected);
+
+		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+		{
+			try
+			{
+				FlverModel* model = FlverModel::CreateFromBnd(paths[i].m_path);
+
+				if (model)
+				{
+					application->m_animPlayer->SetModelPartFacegen(type, model);
+					application->m_animPlayer->GetModelPartFacegen(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+
+					SaveModelPartsFaceGenPreset(application, type, GetFgIDByFilename(RString::ToWide(paths[i].m_name), type));
+				}
+				else
+					delete model;
+			}
+			catch (const std::exception& e)
+			{
+				g_appLog->PanicMessage(e.what());
+			}
+		}
+	}
+
+	ImGui::EndChild();
+}
+
+void ModelPartsList(Application* application, std::vector<FileNamePathPair> paths, PartType type)
+{
+	if (paths.size() == 0)
+		return;
+
+	char childName[255];
+	sprintf_s(childName, "parts_%ls_%d", paths[0].m_path.c_str(), type);
+
+	FlverModel* currentPart = application->m_animPlayer->GetModelPart(type);
+
+	ImGui::BeginChild(childName, ImVec2(ImGui::GetContentRegionAvail().x, 300));
+
+	if (ImGui::Selectable("None", currentPart == nullptr))
+	{
+		application->m_animPlayer->SetModelPart(type, nullptr);
+
+		if (type == Parts_WeaponLeft || type == Parts_WeaponRight)
+			SaveModelPartsWeaponPreset(application, type, -1, false);
+		else
+			SaveModelPartsArmorPreset(application, type, -1);
+	}
+
+	for (size_t i = 0; i < paths.size(); i++)
+	{
+		bool selected = false;
+		bool is_female = application->m_playerModelPreset->GetBool("Gender", "is_female", false);
+
+		if ((type != Parts_WeaponLeft) && (type != Parts_WeaponRight))
+		{
+			if (!IsEquipSameGenderAs(paths[i].m_path, is_female))
+				continue;
+		}
+
+		if (application->m_animPlayer->GetModelPart(type))
+			selected = (application->m_animPlayer->GetModelPart(type)->m_name.compare(paths[i].m_name) == 0);
+
+		ImGui::Selectable(paths[i].m_name.c_str(), selected);
+
+		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+		{
+			try
+			{
+				FlverModel* model = FlverModel::CreateFromBnd(paths[i].m_path);
+
+				if (model)
+				{
+					application->m_animPlayer->SetModelPart(type, model);
+					application->m_animPlayer->GetModelPart(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+					
+					if (type == Parts_WeaponLeft || type == Parts_WeaponRight)
+						SaveModelPartsWeaponPreset(application, type, GetEquipIDByFilename(RString::ToWide(paths[i].m_name)), IsEquipShield(RString::ToWide(paths[i].m_name)));
+					else
+						SaveModelPartsArmorPreset(application, type, GetEquipIDByFilename(RString::ToWide(paths[i].m_name)));
+				}
+				else
+					delete model;
+			}
+			catch (const std::exception& e)
+			{
+				g_appLog->PanicMessage(e.what());
+			}
+		}
+	}
+
+	ImGui::EndChild();
+}
+
+void Application::PlayerCharacterPartsManager()
+{
+	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
+
+	ImGui::Begin("Player Model", &this->m_windowStates.m_playerPartsManagerWindow);
+
+	static bool female = this->m_playerModelPreset->GetBool("Gender", "is_female", false);
+	bool female_bak = female;
+
+	ImGui::Checkbox("Female", &female);
+
+	this->m_playerModelPreset->SetBool("Gender", "is_female", female);
+
+	if (female != female_bak)
+	{
+		std::wstring parts_path = this->m_gamePath + L"\\model\\parts";
+
+		LoadPlayerModelParts(this, parts_path);
+	}
+
+	ImGui::BeginTabBar("parts");
+	if (ImGui::BeginTabItem("Equip"))
+	{
+		if (this->m_fileNameMapPairList->m_weaponModelPaths.size() && this->m_fileNameMapPairList->m_shieldModelPaths.size())
+		{
+			if (ImGui::TreeNode("Right Hand"))
+			{
+				ImGui::SeparatorText("Weapon");
+				ModelPartsList(this, this->m_fileNameMapPairList->m_weaponModelPaths, Parts_WeaponRight);
+
+				ImGui::SeparatorText("Shield");
+				ModelPartsList(this, this->m_fileNameMapPairList->m_shieldModelPaths, Parts_WeaponRight);
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Left Hand"))
+			{
+				ImGui::SeparatorText("Weapon");
+				ModelPartsList(this, this->m_fileNameMapPairList->m_weaponModelPaths, Parts_WeaponLeft);
+
+				ImGui::SeparatorText("Shield");
+				ModelPartsList(this, this->m_fileNameMapPairList->m_shieldModelPaths, Parts_WeaponLeft);
+
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_headModelPaths.size())
+		{
+			if (ImGui::TreeNode("Head"))
+			{
+				ModelPartsList(this, this->m_fileNameMapPairList->m_headModelPaths, Parts_Head);
+
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_bodyModelPaths.size())
+		{
+			if (ImGui::TreeNode("Body"))
+			{
+				ModelPartsList(this, this->m_fileNameMapPairList->m_bodyModelPaths, Parts_Body);
+
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_armModelPaths.size())
+		{
+			if (ImGui::TreeNode("Arm"))
+			{
+				ModelPartsList(this, this->m_fileNameMapPairList->m_armModelPaths, Parts_Arm);
+
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_legModelPaths.size())
+		{
+			if (ImGui::TreeNode("Leg"))
+			{
+				ModelPartsList(this, this->m_fileNameMapPairList->m_legModelPaths, Parts_Leg);
+
+				ImGui::TreePop();
+			}
+		}
+
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("FaceGen"))
+	{
+
+		if (this->m_fileNameMapPairList->m_fgFace.size())
+		{
+			if (ImGui::TreeNode("Face"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgFace, FaceGen_Face);
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_fgHead.size())
+		{
+			if (ImGui::TreeNode("Head"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgHead, FaceGen_Head);
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_fgEyes.size())
+		{
+			if (ImGui::TreeNode("Eyes"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgEyes, FaceGen_Eyes);
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_fgEyeBrows.size())
+		{
+			if (ImGui::TreeNode("EyeBrows"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgEyeBrows, FaceGen_EyeBrows);
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_fgBeard.size())
+		{
+			if (ImGui::TreeNode("Beard"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgBeard, FaceGen_Beard);
+				ImGui::TreePop();
+			}
+		}
+
+		if (this->m_fileNameMapPairList->m_fgHair.size())
+		{
+			if (ImGui::TreeNode("Hair"))
+			{
+				ModelPartsFgList(this, this->m_fileNameMapPairList->m_fgHair, FaceGen_Hair);
+				ImGui::TreePop();
+			}
+		}
+
+		ImGui::EndTabItem();
+	}
+	ImGui::EndTabBar();
+
+	ImGui::End();
+}
+
+void SetModelFlags(FlverModel* model, DisplayMode mode, bool showDummies)
+{
+	if (model)
+	{
+		model->m_settings.m_displayMode = mode;
+		model->m_settings.m_drawDummyPolygons = showDummies;
+	}
 }
 
 void Application::CheckFlags()
@@ -1180,6 +2097,11 @@ void Application::CheckFlags()
 	if (this->m_windowStates.m_previewSettings)
 	{
 		this->PreviewDebugManagerWindow();
+	}
+
+	if (this->m_windowStates.m_playerPartsManagerWindow)
+	{
+		this->PlayerCharacterPartsManager();
 	}
 
 	if (this->m_windowStates.m_queryEventTrack)
@@ -1286,7 +2208,7 @@ void Application::CheckFlags()
 			
 			for (int i = 0; i < numAnims; i++)
 			{
-				std::filesystem::path anim_out = std::filesystem::path(RString::ToNarrow(export_path) + "Animations//" + RString::RemovePathAndExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx");
+				std::filesystem::path anim_out = std::filesystem::path(RString::ToNarrow(export_path) + "Animations//" + RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx");
 				std::filesystem::create_directories(anim_out.parent_path());
 
 				if (!this->ExportAnimationToFbx(anim_out, i))
@@ -1334,7 +2256,7 @@ void Application::CheckFlags()
 
 		CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
-		if ((characterDef != nullptr) && characterDef->isLoaded() && (this->m_eventTrackEditor->m_targetAnimIdx != -1))
+		if ((characterDef) && characterDef->isLoaded() && (this->m_eventTrackEditor->m_targetAnimIdx != -1))
 		{
 			bool found_et = false;
 			bool found_anim = false;
@@ -1356,7 +2278,7 @@ void Application::CheckFlags()
 					MR::AttribDataSourceAnim* source_anim = (MR::AttribDataSourceAnim*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM);
 					MR::AttribDataSourceEventTrackSet* source_tracks = (MR::AttribDataSourceEventTrackSet*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_EVENT_TRACKS);
 
-					if (source_anim != nullptr && source_anim->m_animAssetID == this->m_eventTrackEditor->m_targetAnimIdx)
+					if (source_anim && source_anim->m_animAssetID == this->m_eventTrackEditor->m_targetAnimIdx)
 					{
 						found_anim = true;
 
@@ -1374,7 +2296,7 @@ void Application::CheckFlags()
 								this->m_eventTrackEditor->m_animIdx = i;
 						}
 
-						if (source_tracks != nullptr)
+						if (source_tracks)
 						{
 							this->m_eventTrackEditor->m_lenMult = source_anim->m_sourceAnimDuration / (source_anim->m_clipEndFraction - source_anim->m_clipStartFraction);
 							int track_count = source_tracks->m_numDiscreteEventTracks + source_tracks->m_numCurveEventTracks + source_tracks->m_numDurEventTracks;
@@ -1408,7 +2330,7 @@ void Application::CheckFlags()
 
 							this->m_eventTrackEditor->SetEditedState(false);
 
-							if (this->m_timeAct->m_init)
+							if (this->m_timeAct)
 							{
 								for (size_t i = 0; i < this->m_eventTrackEditor->m_eventTracks.size(); i++)
 								{
@@ -1468,7 +2390,7 @@ void Application::CheckFlags()
 
 		this->m_timeActEditor->m_taeIdx = this->m_timeActEditor->m_selectedTimeActIdx;
 
-		if (this->m_timeAct->m_init && this->m_timeActEditor->m_taeId > -1)
+		if (this->m_timeAct && this->m_timeActEditor->m_taeId > -1)
 		{
 			if (m_timeAct->m_tae.size() > 0)
 			{
@@ -1496,6 +2418,51 @@ void Application::CheckFlags()
 			else
 				g_appLog->DebugMessage(MsgLevel_Info, "Application.cpp", "No TimeAct is loaded\n");
 		}
+	}
+
+	if (this->m_animPlayer)
+	{
+		FlverModel* model = this->m_animPlayer->GetModel();
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPart(Parts_Head);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPart(Parts_Face);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPart(Parts_Body);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPart(Parts_Arm);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPart(Parts_Leg);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPart(Parts_WeaponLeft);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPart(Parts_WeaponRight);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Face);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Head);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Eyes);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_EyeBrows);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Beard);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
+
+		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Hair);
+		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 	}
 }
 
@@ -1532,6 +2499,30 @@ std::wstring GetObjIdFromTaeFileName(std::wstring name)
 	g_appLog->DebugMessage(MsgLevel_Debug, "Obj ID: %s\n", obj_id);
 
 	return obj_id;
+}
+
+std::wstring FindGamePath(std::wstring current_path)
+{
+	std::filesystem::path gamepath = current_path;
+
+	do
+	{
+		std::wstring parent_path = gamepath.parent_path();
+		gamepath = parent_path;
+
+		int lastDirPos = parent_path.find_last_of(L"\\");
+
+		std::wstring folder = parent_path.substr(lastDirPos, parent_path.length());
+
+		if (folder.compare(L"\\") == 0)
+			return L"";
+
+		if (folder.compare(L"\\Game") == 0)
+			return gamepath;
+
+	} while (true);
+
+	return L"";
 }
 
 void Application::LoadFile()
@@ -1574,6 +2565,8 @@ void Application::LoadFile()
 
 						if (filepath.extension() == ".nmb")
 						{
+							this->m_fileNameMapPairList->Clear();
+
 							this->m_animPlayer->Clear();
 
 							CharacterDefBasic* characterDef = m_morphemeSystem->createCharacterDef(filepath.string().c_str());
@@ -1596,8 +2589,8 @@ void Application::LoadFile()
 
 								for (int i = 0; i < animCount; i++)
 								{
-									std::filesystem::path gamepath = pszFilePath;
-									std::wstring parent_path = gamepath.parent_path();
+									std::filesystem::path animFolder = pszFilePath;
+									std::wstring parent_path = animFolder.parent_path();
 
 									std::wstring anim_name = RString::ToWide(this->m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getFilename(i));
 
@@ -1621,37 +2614,24 @@ void Application::LoadFile()
 
 								if (this->m_chrId != -1)
 								{
-									bool found = false;
+									std::filesystem::path gamepath = FindGamePath(pszFilePath);
+									this->m_gamePath = gamepath;
 
-									std::filesystem::path gamepath = pszFilePath;
-									std::filesystem::path filepath_tae;
-									std::filesystem::path filepath_dcx;
-									do
-									{
-										std::wstring parent_path = gamepath.parent_path();
-										gamepath = parent_path;
+									this->m_fileNameMapPairList->Create(this->m_gamePath);
 
-										int lastDirPos = parent_path.find_last_of(L"\\");
+									std::filesystem::path filepath_tae = "";
+									std::filesystem::path filepath_dcx = "";
+									std::filesystem::path filepath_parts = "";
 
-										std::wstring folder = parent_path.substr(lastDirPos, parent_path.length());
-
-										if (folder.compare(L"\\") == 0)
-											break;
-
-										if (folder.compare(L"\\Game") == 0)
-										{
-											found = true;
-											break;
-										}
-									} while (true);
-
-									if (found)
+									if (gamepath.compare("") != 0)
 									{
 										filepath_tae = gamepath;
 										filepath_dcx = gamepath;
+										filepath_parts = gamepath;
 
 										filepath_tae += "\\timeact\\chr";
 										filepath_dcx += "\\model\\chr";
+										filepath_parts += "\\model\\parts";
 
 										wchar_t chr_id_str[50];
 										swprintf_s(chr_id_str, L"%04d", this->m_chrId);
@@ -1661,44 +2641,20 @@ void Application::LoadFile()
 										this->m_eventTrackEditor->m_taeList = getTaeFileListFromChrId(filepath_tae, chr_id_str);
 										this->m_eventTrackEditor->m_loadTae = true;
 
-										std::wstring path_tmp = getModelNameFromChrId(filepath_dcx, chr_id_str);
+										std::wstring model_path = getModelNameFromChrId(filepath_dcx, chr_id_str);
 
-										if (path_tmp.compare(L"") != 0)
+										FlverModel* model = FlverModel::CreateFromBnd(model_path);
+
+										if (model)
 										{
-											PWSTR dcx_path = (wchar_t*)path_tmp.c_str();
+											this->m_animPlayer->SetModel(model);
+											this->m_animPlayer->GetModel()->CreateFlverToMorphemeBoneMap(this->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+										}
 
-											if (this->m_bnd)
-											{
-												delete this->m_bnd;
-												this->m_bnd = nullptr;
-											}
-
-											this->m_bnd = new BNDReader(dcx_path);
-
-											std::string filename = "c" + RString::ToNarrow(string.c_str()) + ".flv";
-
-											bool found_model = false;
-
-											for (size_t i = 0; i < m_bnd->m_fileCount; i++)
-											{
-												if (m_bnd->m_files[i].m_name == filename)
-												{
-													UMEM* umem = uopenMem(m_bnd->m_files[i].m_data, m_bnd->m_files[i].m_uncompressedSize);
-													FLVER2 flver_model = FLVER2(umem);
-
-													this->m_animPlayer->SetModel(new FlverModel(umem));
-
-													g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
-
-													this->m_animPlayer->CreateFlverToMorphemeBoneMap(this->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
-
-													found_model = true;
-													break;
-												}
-											}
-
-											if (!found_model)
-												g_appLog->DebugMessage(MsgLevel_Debug, "Could not find model for c%04d\n", this->m_chrId);
+										//Load external parts for the player character
+										if (this->m_chrId == 1)
+										{
+											LoadPlayerModelParts(this, filepath_parts);
 										}
 									}
 									else
@@ -1708,6 +2664,8 @@ void Application::LoadFile()
 						}
 						else if (filepath.extension() == ".tae")
 						{
+							this->m_fileNameMapPairList->Clear();
+
 							if (this->m_timeAct)
 							{
 								delete this->m_timeAct;
@@ -1728,63 +2686,38 @@ void Application::LoadFile()
 
 								g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_timeAct->m_filePath, m_timeAct->m_fileSize);
 
-								bool found = false;
-
 								std::wstring obj_id = GetObjIdFromTaeFileName(pszFilePath);
 
 								if (obj_id.compare(L"") != 0)
 								{
-									std::filesystem::path gamepath = pszFilePath;
+									std::filesystem::path gamepath = FindGamePath(pszFilePath);
 									std::filesystem::path filepath_dcx;
-									do
-									{
-										std::wstring parent_path = gamepath.parent_path();
-										gamepath = parent_path;
 
-										int lastDirPos = parent_path.find_last_of(L"\\");
+									this->m_fileNameMapPairList->Create(this->m_gamePath);
 
-										std::wstring folder = parent_path.substr(lastDirPos, parent_path.length());
-
-										if (folder.compare(L"\\") == 0)
-											break;
-
-										if (folder.compare(L"\\Game") == 0)
-										{
-											found = true;
-											break;
-										}
-									} while (true);
-
-									if (found)
+									if (gamepath.compare("") != 0)
 									{
 										filepath_dcx = gamepath;
 
 										filepath_dcx += "\\model\\obj";
 
-										m_bnd->m_init = false;
 										std::wstring obj_path = getModelNameFromObjId(filepath_dcx, obj_id);
 
 										if (obj_path.compare(L"") != 0)
 										{
 											PWSTR dcx_path = (wchar_t*)obj_path.c_str();
 
-											if (this->m_bnd)
-											{
-												delete this->m_bnd;
-												this->m_bnd = nullptr;
-											}
-
-											m_bnd = new BNDReader(dcx_path);
+											BNDReader bnd(dcx_path);
 
 											std::string filename = RString::ToNarrow(obj_id.c_str()) + ".flv";
 
 											bool found_model = false;
 
-											for (size_t i = 0; i < m_bnd->m_fileCount; i++)
+											for (size_t i = 0; i < bnd.m_fileCount; i++)
 											{
-												if (m_bnd->m_files[i].m_name == filename)
+												if (bnd.m_files[i].m_name == filename)
 												{
-													UMEM* umem = uopenMem(m_bnd->m_files[i].m_data, m_bnd->m_files[i].m_uncompressedSize);
+													UMEM* umem = uopenMem(bnd.m_files[i].m_data, bnd.m_files[i].m_uncompressedSize);
 													FLVER2 flver_model = FLVER2(umem);
 
 													this->m_animPlayer->SetModel(new FlverModel(umem));
@@ -1792,11 +2725,6 @@ void Application::LoadFile()
 													g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
 
 													found_model = true;
-
-													CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
-
-													if (characterDef)
-														this->m_animPlayer->CreateFlverToMorphemeBoneMap(characterDef->getNetworkDef()->getRig(0));
 
 													break;
 												}
@@ -2105,7 +3033,7 @@ bool Application::ExportModelToFbx(std::filesystem::path export_path)
 
 	std::vector<FbxNode*> pMorphemeRig = FBXTranslator::CreateFbxMorphemeSkeleton(pScene, characterDef->getNetworkDef()->getRig(0), pBindPoses);
 
-	if (!FBXTranslator::CreateFbxModel(pScene, this->m_animPlayer->GetModel(), this->m_chrId, pBindPoses, pMorphemeRig, model_out, this->m_animPlayer->GetFlverToMorphemeBoneMap()))
+	if (!FBXTranslator::CreateFbxModel(pScene, this->m_animPlayer->GetModel(), this->m_chrId, pBindPoses, pMorphemeRig, model_out, this->m_animPlayer->GetModel()->GetFlverToMorphemeBoneMap()))
 	{
 		g_appLog->DebugMessage(MsgLevel_Error, "Failed to create FBX model/skeleton (chrId=c%04d)\n", this->m_chrId);
 

@@ -101,7 +101,7 @@ namespace cfr {
 		class Material;
 		class Bone;
 		class Mesh;
-		class Member;
+		struct Member;
 		class EdgeIndices;
 		class Faceset;
 		class VertexBuffer;
@@ -187,6 +187,7 @@ namespace cfr {
 			int32_t unk38; //assert(0)
 			int32_t unk3C; //assert(0)
 
+			Dummy() {}
 			Dummy(UMEM* src);
 		};
 
@@ -199,6 +200,7 @@ namespace cfr {
 
 			char* data;
 
+			GxItem() {}
 			GxItem(UMEM* src, FLVER2* parent);
 		};
 
@@ -231,6 +233,8 @@ namespace cfr {
 			//std::vector<GxItem*> gxItems;
 			GxItem* gxItems;
 			int gxItemCount;
+
+			Material() {}
 			Material(UMEM* src, FLVER2* parent);
 			void print();
 		};
@@ -263,6 +267,7 @@ namespace cfr {
 			// 13 * 4 bytes of space
 			//char emptyJunk[52]; //potentially needed for spacing :/
 
+			Bone() {}
 			Bone(UMEM* src, FLVER2* parent);
 			
 			void print();
@@ -314,6 +319,7 @@ namespace cfr {
 			VertexData* vertexData = nullptr;
 			VertexData* vertexDataOrdered = nullptr;
 
+			Mesh() {}
 			Mesh(UMEM* src, FLVER2* parent);
 
 			//ret binary vert data in specd format vec of ints to select type and order
@@ -361,6 +367,7 @@ namespace cfr {
 			Header header;
 			UMEM* data; //size of dataLength
 
+			Member() {}
 			Member(UMEM* src, long startOffset);
 		};
 
@@ -379,6 +386,7 @@ namespace cfr {
 			Header header;
 			std::vector<Member*> members; //size of memberCount
 
+			EdgeIndices() {}
 			EdgeIndices(UMEM* src);
 		};
 
@@ -415,6 +423,7 @@ namespace cfr {
 			long triCount = 0;
 			int vertexSize = 0; //more accurate
 
+			Faceset() {}
 			Faceset(UMEM* src, FLVER2* parent);
 
 			//will add to module to avoid copying data
@@ -432,6 +441,7 @@ namespace cfr {
 			uint32_t semantic = 0;
 			int32_t index = 0; //this doesn't seem to be used?
 
+			LayoutMember() {}
 			LayoutMember(UMEM* src);
 		};
 
@@ -452,6 +462,7 @@ namespace cfr {
 			//std::vector<LayoutMember*> members; //size of memberCount
 			LayoutMember* members = nullptr;
 
+			BufferLayout() {}
 			BufferLayout(UMEM* src);
 
 			//prints human readable laytout info
@@ -479,6 +490,7 @@ namespace cfr {
 			char* verts = nullptr; //actual data that data hooks to
 			UMEM* data = nullptr; //vertexCount * vertexSize
 
+			VertexBuffer() {}
 			VertexBuffer(UMEM* src, FLVER2* parent);
 		};
 
@@ -504,6 +516,7 @@ namespace cfr {
 			wchar_t* type;
 			int typeLength;
 
+			Texture() {}
 			Texture(UMEM* src, FLVER2* parent);
 
 			void print();
@@ -515,6 +528,7 @@ namespace cfr {
 			float a,b,c,d;
 			int32_t length; //always 4
 
+			VertexBoneWeights() {}
 			VertexBoneWeights(UMEM* src);
 		};
 
@@ -524,6 +538,7 @@ namespace cfr {
 			int32_t a,b,c,d;
 			int32_t length; //always 4
 
+			VertexBoneIndices() {}
 			VertexBoneIndices(UMEM* src);
 		};
 
@@ -542,6 +557,7 @@ namespace cfr {
 		BufferLayout* bufferLayouts;
 		Texture* textures;
 
+		FLVER2() {}
 		FLVER2(const char* path);
 		FLVER2(UMEM* src);
 

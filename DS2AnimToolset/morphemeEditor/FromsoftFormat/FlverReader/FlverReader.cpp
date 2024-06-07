@@ -1,3 +1,4 @@
+#include <filesystem>
 #include "FlverReader.h"
 
 FlverHeader::FlverHeader()
@@ -153,6 +154,9 @@ FlverReader::FlverReader()
 FlverReader::FlverReader(PWSTR pszFilePath)
 {
 	this->m_filePath = pszFilePath;
+
+	if (!std::filesystem::exists(pszFilePath))
+		return;
 
 	ifstream flver;
 

@@ -44,6 +44,7 @@ namespace cfr
 
 		int newChild(File* file);
 
+		File() {}
 		File(const char* path);
 		File(UMEM* src);
 		~File();

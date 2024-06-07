@@ -192,10 +192,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
         HRESULT hr = g_pSwapChain->Present(1, 0);
 
-        DX::ThrowIfFailed(hr);
+        try
+        {
+            DX::ThrowIfFailed(hr);
+        }
+        catch (const std::exception& e)
+        {
+            g_appLog->AlertMessage(MsgLevel_Error, e.what());
+        }
     }
 
-    g_appRootWindow->m_morphemeSystem->termMorpheme();
+    g_appRootWindow->Shutdown();
 
     // Cleanup
     g_appLog->DebugMessage(MsgLevel_Info, "ImGui shutdown\n");

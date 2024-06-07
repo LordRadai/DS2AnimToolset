@@ -1,5 +1,6 @@
 #include <assert.h>
 #include "BNDReader.h"
+#include <filesystem>
 
 BndFile::BndFile()
 {
@@ -40,6 +41,9 @@ BNDReader::BNDReader()
 
 BNDReader::BNDReader(PWSTR pszFilePath)
 {
+	if (!std::filesystem::exists(pszFilePath))
+		return;
+
 	this->m_filePath = pszFilePath;
 
 	ifstream dcx;

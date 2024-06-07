@@ -47,8 +47,40 @@
 
 #include "MorphemeSystem/MorphemeSystem.h"
 #include "AnimPlayer/AnimPlayer.h"
+#include "INI/INI.h"
 
 using namespace cfr;
+
+struct FileNamePathPair
+{
+	std::wstring m_path;
+	std::string m_name;
+	int m_id;
+
+	FileNamePathPair() {}
+	FileNamePathPair(std::wstring path, int id);
+};
+
+struct FileNameMapPairList
+{
+	std::vector<FileNamePathPair> m_weaponModelPaths;
+	std::vector<FileNamePathPair> m_shieldModelPaths;
+	std::vector<FileNamePathPair> m_faceModelPaths;
+	std::vector<FileNamePathPair> m_headModelPaths;
+	std::vector<FileNamePathPair> m_bodyModelPaths;
+	std::vector<FileNamePathPair> m_armModelPaths;
+	std::vector<FileNamePathPair> m_legModelPaths;
+
+	std::vector<FileNamePathPair> m_fgFace;
+	std::vector<FileNamePathPair> m_fgHead;
+	std::vector<FileNamePathPair> m_fgEyes;
+	std::vector<FileNamePathPair> m_fgEyeBrows;
+	std::vector<FileNamePathPair> m_fgBeard;
+	std::vector<FileNamePathPair> m_fgHair;
+
+	void Clear();
+	void Create(std::wstring gamePath);
+};
 
 class Application
 {
@@ -57,6 +89,7 @@ public:
 	{
 		bool m_settingWindow = false;
 		bool m_previewSettings = false;
+		bool m_playerPartsManagerWindow = false;
 		bool m_queryTae = false;
 		bool m_queryEventTrack = false;
 	} m_windowStates;
@@ -82,10 +115,20 @@ public:
 
 	struct FbxExportFlags
 	{
-		bool m_exportModelWithAnims = true;
+		bool m_exportModelWithAnims = false;
 		bool m_exportMorphemeRigWithModel = true;
 	} m_fbxExportFlags;
+
+	struct SceneFlags
+	{
+		DisplayMode m_displayMode = Mode_Normal;
+		bool m_sceneExplorer = false;
+		bool m_drawDummies = false;
+		FlverModel* m_selectedModel = nullptr;
+	} m_sceneFlags;
 	
+	std::wstring m_gamePath;
+
 	int m_chrId = -1;
 
 	MorphemeSystem* m_morphemeSystem;
@@ -95,13 +138,18 @@ public:
 	TimeActEditor* m_timeActEditor;
 
 	TimeActReader* m_timeAct;
-	BNDReader* m_bnd;
+
+	INI* m_appSettings;
+	INI* m_playerModelPreset;
+	FileNameMapPairList* m_fileNameMapPairList;
 
 	Application();
 	~Application();
 
 	void GUIStyle();
 	void Initialise();
+	void Shutdown();
+
 	void Update(float delta_time);
 	void RenderGUI(const char* title);
 	void ModelPreviewWindow();
@@ -113,6 +161,7 @@ public:
 	void SettingsWindow();
 	void PreviewDebugManagerWindow();
 	void PreviewSceneExplorerWindow();
+	void PlayerCharacterPartsManager();
 
 	void CheckFlags();
 

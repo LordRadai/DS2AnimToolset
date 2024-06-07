@@ -306,7 +306,7 @@ namespace ImSequencer
 
             //header
             draw_list->AddRectFilled(canvas_pos, ImVec2(canvas_size.x + canvas_pos.x, canvas_pos.y + ItemHeight), 0xFF404040, 0);
-            if (sequenceOptions & EDITOR_TRACK_ADD && (eventTrackEditor->m_nodeSource != nullptr))
+            if (sequenceOptions & EDITOR_TRACK_ADD && (eventTrackEditor->m_nodeSource))
             {
                 if (SequencerAddTrackButton(draw_list, ImVec2(canvas_pos.x + legendWidth - 8, canvas_pos.y + 2), ImVec2(4, ItemHeight * 0.8f)) && focused && ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && !popupOpened && !MovingCurrentFrame && !MovingScrollBar && movingTrack == -1 && !legendResizeRect.Contains(io.MousePos))
                 {
@@ -412,8 +412,17 @@ namespace ImSequencer
                 if (baseIndex && px > (canvas_pos.x + legendWidth))
                 {
                     char tmps[512];
-                    ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(i));
-                    draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+
+                    if (eventTrackEditor->m_showTimecode)
+                    {
+                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(i));
+                        draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+                    }
+                    else
+                    {
+                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%d", i);
+                        draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+                    }
                 }
             };
 
@@ -1156,8 +1165,16 @@ namespace ImSequencer
                         draw_list->PopClipRect();
                         draw_list->PopClipRect();
 
-                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(*currentFrame));
-                        draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        if (eventTrackEditor->m_showTimecode)
+                        {
+                            ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(*currentFrame));
+                            draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        }
+                        else
+                        {
+                            ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%d", *currentFrame);
+                            draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        }
 
                         draw_list->PushClipRect(childFramePos, childFramePos + childFrameSize, true);
                         draw_list->PushClipRect(childFramePos + ImVec2(float(legendWidth), 0.f), childFramePos + childFrameSize, true);
@@ -1472,7 +1489,7 @@ namespace ImSequencer
 
             //header
             draw_list->AddRectFilled(canvas_pos, ImVec2(canvas_size.x + canvas_pos.x, canvas_pos.y + ItemHeight), 0xFF404040, 0);
-            if (sequenceOptions & EDITOR_TRACK_ADD && (timeActEditor->m_source != nullptr))
+            if (sequenceOptions & EDITOR_TRACK_ADD && (timeActEditor->m_source))
             {
                 if (SequencerAddTrackButton(draw_list, ImVec2(canvas_pos.x + legendWidth - 8, canvas_pos.y + 2), ImVec2(4, ItemHeight * 0.8f)) && focused && ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && !popupOpened && !MovingCurrentFrame && !MovingScrollBar && movingTrack == -1 && !legendResizeRect.Contains(io.MousePos))
                 {
@@ -1563,8 +1580,17 @@ namespace ImSequencer
                 if (baseIndex && px > (canvas_pos.x + legendWidth))
                 {
                     char tmps[512];
-                    ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(i, 30));
-                    draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+
+                    if (timeActEditor->m_showTimecode)
+                    {
+                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(i, 30));
+                        draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+                    }
+                    else
+                    {
+                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%d", i);
+                        draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
+                    }
                 }
                 };
 
@@ -2098,8 +2124,16 @@ namespace ImSequencer
                         draw_list->PopClipRect();
                         draw_list->PopClipRect();
 
-                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(*currentFrame, 30));
-                        draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        if (timeActEditor->m_showTimecode)
+                        {
+                            ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::FrameToTime(*currentFrame, 30));
+                            draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        }
+                        else
+                        {
+                            ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%d", *currentFrame);
+                            draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
+                        }
 
                         draw_list->PushClipRect(childFramePos, childFramePos + childFrameSize, true);
                         draw_list->PushClipRect(childFramePos + ImVec2(float(legendWidth), 0.f), childFramePos + childFrameSize, true);

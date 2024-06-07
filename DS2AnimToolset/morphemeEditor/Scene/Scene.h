@@ -65,14 +65,15 @@ public:
 	ID3D11DepthStencilState* m_depthStencilState;
 
 	std::unique_ptr<DirectX::CommonStates> m_states;
-	std::unique_ptr<DirectX::BasicEffect> m_effect;
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batch;
+	std::unique_ptr<DirectX::BasicEffect> m_debugEffect;
+	std::unique_ptr<DirectX::BasicEffect> m_physicalEffect;
 	std::unique_ptr<DirectX::SpriteBatch> m_sprite;
 	std::unique_ptr<DirectX::SpriteFont> m_font;
 	std::unique_ptr<DirectX::SpriteFont> m_fontBold;
 	std::unique_ptr<DirectX::SpriteFont> m_fontItalic;
 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_physicalInputLayout;
 
 	DirectX::SimpleMath::Matrix m_world;
 	DirectX::SimpleMath::Matrix m_view;
@@ -94,5 +95,5 @@ public:
 	void Render();
 	void SetRenderResolution(int width, int height);
 	void AddText(std::string text, Matrix position, DirectX::XMVECTORF32 color = DirectX::Colors::White);
-	void DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig);
+	void DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBones = true);
 };

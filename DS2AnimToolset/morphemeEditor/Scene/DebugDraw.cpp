@@ -1381,22 +1381,80 @@ void XM_CALLCONV DX::Draw3DArc(DirectX::PrimitiveBatch<DirectX::VertexPositionCo
     }
 }
 
-void XM_CALLCONV DX::DrawFlverModel(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
+void XM_CALLCONV DX::DrawFlverModel(DirectX::PrimitiveBatch<DirectX::VertexPositionNormalColor>* batch,
     DirectX::XMMATRIX world, FlverModel* model)
 {
     for (size_t meshIdx = 0; meshIdx < model->m_verts.size(); meshIdx++)
     {
+        std::vector<VertexPositionNormalColor> vertices;
+        std::vector<UINT16> indices;
+
+        vertices.reserve(model->m_verts[meshIdx].size());
+        indices.reserve(model->m_verts[meshIdx].size());
+
+        for (size_t i = 0; i < model->m_verts[meshIdx].size(); i++)
+        {
+            if (i < model->m_verts[meshIdx].size())
+            {
+                vertices.push_back(VertexPositionNormalColor(Vector3::Transform(model->m_verts[meshIdx][i].m_pos.position, world), Vector3::Transform(model->m_verts[meshIdx][i].m_pos.normal, world), model->m_verts[meshIdx][i].m_pos.color));
+                indices.push_back(i);
+            }
+        }
+
+        try
+        {
+            batch->DrawIndexed(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, indices.data(), indices.size(), vertices.data(), vertices.size());
+        }
+        catch (const std::exception& e)
+        {
+            g_appLog->PanicMessage(e.what());
+        }
+    }
+}
+
+void XM_CALLCONV DX::DrawFlverModelWireframe(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
+    DirectX::XMMATRIX world, FlverModel* model)
+{
+    Vector4 color = Vector4(Colors::White);
+
+    for (size_t meshIdx = 0; meshIdx < model->m_verts.size(); meshIdx++)
+    {
+        std::vector<VertexPositionColor> vertices;
+        std::vector<UINT16> indices;
+
+        vertices.reserve(model->m_verts[meshIdx].size());
+        indices.reserve(model->m_verts[meshIdx].size() * 2);
+
         for (int i = 0; i < model->m_verts[meshIdx].size(); i += 3)
         {
             if (i + 1 < model->m_verts[meshIdx].size() && i + 2 < model->m_verts[meshIdx].size())
             {
-                VertexPositionColor v1 = VertexPositionColor(Vector3::Transform(model->m_verts[meshIdx][i].m_pos.position, world), model->m_verts[meshIdx][i].m_pos.color);
-                VertexPositionColor v2 = VertexPositionColor(Vector3::Transform(model->m_verts[meshIdx][i + 1].m_pos.position, world), model->m_verts[meshIdx][i + 1].m_pos.color);;
-                VertexPositionColor v3 = VertexPositionColor(Vector3::Transform(model->m_verts[meshIdx][i + 2].m_pos.position, world), model->m_verts[meshIdx][i + 2].m_pos.color);;
+                VertexPositionColor v1 = VertexPositionColor(Vector3::Transform(model->m_verts[meshIdx][i].m_pos.position, world), color);
+                VertexPositionColor v2 = VertexPositionColor(Vector3::Transform(model->m_verts[meshIdx][i + 1].m_pos.position, world), color);
+                VertexPositionColor v3 = VertexPositionColor(Vector3::Transform(model->m_verts[meshIdx][i + 2].m_pos.position, world), color);
 
-                batch->DrawTriangle(v1, v2, v3);
-                DX::DrawTriangle(batch, Vector3(v1.position), Vector3(v2.position), Vector3(v3.position), Vector4(0.f, 0.f, 0.f, 0.5f * model->m_verts[meshIdx][i].m_pos.color.w));
+                vertices.push_back(v1);
+                vertices.push_back(v2);
+                vertices.push_back(v3);
+
+                indices.push_back(i);
+                indices.push_back(i + 1);
+
+                indices.push_back(i + 1);
+                indices.push_back(i + 2);
+
+                indices.push_back(i + 2);
+                indices.push_back(i);
             }
+        }
+
+        try
+        {
+            batch->DrawIndexed(D3D_PRIMITIVE_TOPOLOGY_LINELIST, indices.data(), indices.size(), vertices.data(), vertices.size());
+        }
+        catch (const std::exception& e)
+        {
+            g_appLog->PanicMessage(e.what());
         }
     }
 }

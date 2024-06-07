@@ -395,6 +395,9 @@ TimeActReader::TimeActReader()
 
 TimeActReader::TimeActReader(PWSTR filePath)
 {
+	if (!std::filesystem::exists(filePath))
+		return;
+
 	this->m_filePath = filePath;
 
 	std::filesystem::path path(filePath);

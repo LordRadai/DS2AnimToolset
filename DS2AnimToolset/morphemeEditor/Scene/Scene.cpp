@@ -62,15 +62,43 @@ void Scene::Initialise(HWND hwnd, IDXGISwapChain* pSwapChain, ID3D11Device* pDev
 
     m_states = std::make_unique<CommonStates>(this->m_device);
 
-    m_effect = std::make_unique<BasicEffect>(this->m_device);
-    m_effect->SetVertexColorEnabled(true);
+    m_debugEffect = std::make_unique<BasicEffect>(this->m_device);
+    m_debugEffect->SetVertexColorEnabled(true);
 
     DX::ThrowIfFailed(
-        CreateInputLayoutFromEffect<VertexPositionColor>(this->m_device, m_effect.get(),
+        CreateInputLayoutFromEffect<VertexPositionColor>(this->m_device, m_debugEffect.get(),
             m_inputLayout.ReleaseAndGetAddressOf())
     );
 
-    m_batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(this->m_deviceContext);
+    m_physicalEffect = std::make_unique<BasicEffect>(this->m_device);
+    m_physicalEffect->SetVertexColorEnabled(true);
+    m_physicalEffect->SetLightingEnabled(true);
+
+    m_physicalEffect->SetAmbientLightColor(Colors::White);
+
+    m_physicalEffect->SetDiffuseColor(Vector4(0.5f, 0.5f, 0.5f, 1.f));
+    m_physicalEffect->SetSpecularColor(Vector4(0.04f, 0.04f, 0.04f, 1.f));
+    m_physicalEffect->SetSpecularPower(32.f);
+
+    m_physicalEffect->SetLightEnabled(0, true);
+    m_physicalEffect->SetLightDirection(0, Vector3(0.577f, -0.577f, -0.577f));
+    m_physicalEffect->SetLightDiffuseColor(0, Colors::White);
+    m_physicalEffect->SetLightSpecularColor(0, Colors::White);
+
+    m_physicalEffect->SetLightEnabled(1, true);
+    m_physicalEffect->SetLightDirection(1, Vector3(-0.577f, -0.577f, 0.577f));
+    m_physicalEffect->SetLightDiffuseColor(1, Colors::Gray);
+    m_physicalEffect->SetLightSpecularColor(1, Colors::Gray);
+
+    m_physicalEffect->SetLightEnabled(2, true);
+    m_physicalEffect->SetLightDirection(2, Vector3(0.0f, 0.577f, -0.577f));
+    m_physicalEffect->SetLightDiffuseColor(2, Colors::White);
+    m_physicalEffect->SetLightSpecularColor(2, Colors::White);
+
+    DX::ThrowIfFailed(
+        CreateInputLayoutFromEffect<VertexPositionNormalColor>(this->m_device, m_physicalEffect.get(),
+            m_physicalInputLayout.ReleaseAndGetAddressOf())
+    );
 
     m_view = Matrix::CreateLookAt(Vector3(2.f, 2.f, 2.f),
         Vector3::Zero, Vector3::UnitY);
@@ -78,9 +106,13 @@ void Scene::Initialise(HWND hwnd, IDXGISwapChain* pSwapChain, ID3D11Device* pDev
         float(this->m_width) / float(this->m_height), 0.1f, 10.f);
     m_world = Matrix::Identity;
 
-    m_effect->SetView(m_view);
-    m_effect->SetProjection(m_proj);
-    m_effect->SetWorld(m_world);
+    m_debugEffect->SetView(m_view);
+    m_debugEffect->SetProjection(m_proj);
+    m_debugEffect->SetWorld(m_world);
+
+    m_physicalEffect->SetView(m_view);
+    m_physicalEffect->SetProjection(m_proj);
+    m_physicalEffect->SetWorld(m_world);
 
     this->m_sprite = std::make_unique<DirectX::SpriteBatch>(this->m_deviceContext);
     this->m_font = std::make_unique<DirectX::SpriteFont>(this->m_device, L".//Data//font//font.spritefont");
@@ -95,19 +127,19 @@ void Scene::CreateResources()
 {
     this->m_deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
-    if (this->m_depthStencilView != nullptr)
+    if (this->m_depthStencilView)
         this->m_depthStencilView->Release();
 
-    if (this->m_renderTargetTextureViewport != nullptr)
+    if (this->m_renderTargetTextureViewport)
         this->m_renderTargetTextureViewport->Release();
 
-    if (this->m_renderTargetView != nullptr)
+    if (this->m_renderTargetView)
         this->m_renderTargetView->Release();
 
-    if (this->m_shaderResourceViewViewport != nullptr)
+    if (this->m_shaderResourceViewViewport)
         this->m_shaderResourceViewViewport->Release();
 
-    if (this->m_depthStencilState != nullptr)
+    if (this->m_depthStencilState)
         this->m_depthStencilState->Release();
 
     const UINT backBufferWidth = static_cast<UINT>(this->m_width);
@@ -282,24 +314,46 @@ void Scene::Render()
         context->OMSetBlendState(m_states->AlphaBlend(), nullptr, 0xFFFFFFFF);
         context->RSSetState(m_states->CullNone());
 
-        m_effect->SetWorld(m_world);
-        m_effect->SetView(m_view);
-        m_effect->SetProjection(m_proj);
-        m_effect->Apply(context);
+        m_debugEffect->SetWorld(m_world);
+        m_debugEffect->SetView(m_view);
+        m_debugEffect->SetProjection(m_proj);
+        m_debugEffect->Apply(context);
 
         context->IASetInputLayout(m_inputLayout.Get());
 
-        m_batch->Begin();
+        DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(this->m_deviceContext);
+        prim.Begin();
 
-        DX::DrawGrid(this->m_batch.get(), this->m_settings.m_gridScale * Vector3::UnitX, this->m_settings.m_gridScale * Vector3::UnitZ, Vector3::Zero, 100, 100, Colors::Gray);      
-        DX::DrawOriginMarker(this->m_batch.get(), Matrix::Identity, 0.5f, Colors::DarkCyan);
+        DX::DrawGrid(&prim, this->m_settings.m_gridScale * Vector3::UnitX, this->m_settings.m_gridScale * Vector3::UnitZ, Vector3::Zero, 100, 100, Colors::Gray);      
+        DX::DrawOriginMarker(&prim, Matrix::Identity, 0.5f, Colors::DarkCyan);
         
+        prim.End();
+
         CharacterDefBasic* characterDef = g_appRootWindow->m_morphemeSystem->GetCharacterDef();
 
-        if (characterDef != nullptr)
-            this->DrawFlverModel(g_appRootWindow->m_animPlayer, characterDef->getNetworkDef()->getRig(0));
+        if (characterDef)
+        {
+            if (g_appRootWindow->m_sceneFlags.m_selectedModel)
+                this->AddText(g_appRootWindow->m_sceneFlags.m_selectedModel->m_name, g_appRootWindow->m_sceneFlags.m_selectedModel->m_position);
 
-        m_batch->End();
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModel(), characterDef->getNetworkDef()->getRig(0));
+
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Head), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Face), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Body), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Arm), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_Leg), characterDef->getNetworkDef()->getRig(0), false);
+
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_WeaponLeft), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPart(Parts_WeaponRight), characterDef->getNetworkDef()->getRig(0), false);
+
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Face), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Head), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Eyes), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_EyeBrows), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Beard), characterDef->getNetworkDef()->getRig(0), false);
+            this->DrawFlverModel(g_appRootWindow->m_animPlayer->GetModelPartFacegen(FaceGen_Hair), characterDef->getNetworkDef()->getRig(0), false);
+        }
 
         m_sprite.get()->Begin();
 
@@ -329,24 +383,32 @@ void Scene::AddText(std::string text, Matrix position, DirectX::XMVECTORF32 colo
     this->m_texts.push_back(TextItem(text, position, color));
 }
 
-void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
+void Scene::DrawFlverModel(FlverModel* model, MR::AnimRigDef* rig, bool drawBones)
 {
-    FlverModel* model = animPlayer->GetModel();
-
     if (model == nullptr)
         return;
 
-    Matrix world = model->m_position * Matrix::CreateScale(model->m_scale);    
+    Matrix world = model->m_position * Matrix::CreateScale(model->m_scale);
+
+    m_debugEffect->SetWorld(world);
+    m_debugEffect->SetView(m_view);
+    m_debugEffect->SetProjection(m_proj);
+    m_debugEffect->Apply(this->m_deviceContext);
+
+    this->m_deviceContext->IASetInputLayout(m_inputLayout.Get());
+
+    DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(this->m_deviceContext, UINT16_MAX * 3, UINT16_MAX);
+    prim.Begin();
 
     int boneCount = model->m_boneTransforms.size();
 
-    int trajectoryBoneIndex = animPlayer->GetFlverBoneIndexByMorphemeBoneIndex(rig->getTrajectoryBoneIndex());
-    int characterRootBoneIdx = animPlayer->GetFlverBoneIndexByMorphemeBoneIndex(rig->getCharacterRootBoneIndex());
+    int trajectoryBoneIndex = model->GetFlverBoneIndexByMorphemeBoneIndex(rig->getTrajectoryBoneIndex());
+    int characterRootBoneIdx = model->GetFlverBoneIndexByMorphemeBoneIndex(rig->getCharacterRootBoneIndex());
 
     if (model->m_settings.m_selectedBone != -1)
     {
-        DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[model->m_settings.m_selectedBone] * world, 0.03f, Colors::MediumAquamarine);
-        this->AddText(RString::ToNarrow(model->m_flver->bones[model->m_settings.m_selectedBone].name).c_str(), model->m_boneTransforms[model->m_settings.m_selectedBone] * world);
+        DX::DrawReferenceFrame(&prim, model->m_boneTransforms[model->m_settings.m_selectedBone]);
+        this->AddText(RString::ToNarrow(model->m_flver->bones[model->m_settings.m_selectedBone].name).c_str(), model->m_boneTransforms[model->m_settings.m_selectedBone]);
     }
 
     if (model->m_settings.m_drawDummyPolygons)
@@ -355,7 +417,7 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
         {
             std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[i].referenceID);
 
-            DX::DrawReferenceFrame(this->m_batch.get(), model->m_dummyPolygons[i] * world);
+            DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[i]);
             this->AddText(dummy_name.c_str(), model->m_dummyPolygons[i] * world);
         }
     }
@@ -363,34 +425,64 @@ void Scene::DrawFlverModel(AnimPlayer* animPlayer, MR::AnimRigDef* rig)
     {
         std::string dummy_name = "Dmy_" + std::to_string(model->m_flver->dummies[model->m_settings.m_selectedDummy].referenceID);
 
-        DX::DrawReferenceFrame(this->m_batch.get(), model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
+        DX::DrawReferenceFrame(&prim, model->m_dummyPolygons[model->m_settings.m_selectedDummy]);
         this->AddText(dummy_name.c_str(), model->m_dummyPolygons[model->m_settings.m_selectedDummy] * world);
     }
 
-    for (size_t i = 0; i < boneCount; i++)
+    if (drawBones)
     {
-        int morphemeBoneIdx = animPlayer->GetFlverToMorphemeBoneMap()[i];
-
-        if ((morphemeBoneIdx == -1) || (i == trajectoryBoneIndex) || (i == characterRootBoneIdx))
-            continue;
-
-        int parentIndex = model->m_flver->bones[i].parentIndex;
-
-        if (parentIndex != -1)
+        for (size_t i = 0; i < boneCount; i++)
         {
-            Vector3 boneA = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[i] * world);
-            Vector3 boneB = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[parentIndex] * world);
+            int morphemeBoneIdx = model->GetFlverToMorphemeBoneMap()[i];
 
-            DX::DrawJoint(this->m_batch.get(), Matrix::Identity, boneB, boneA, Colors::CornflowerBlue);
+            if ((morphemeBoneIdx == -1) || (i == trajectoryBoneIndex) || (i == characterRootBoneIdx))
+                continue;
 
-            if (model->m_flver->bones[i].childIndex == -1)
-                DX::Draw(this->m_batch.get(), DirectX::BoundingSphere(boneA, 0.03f), Colors::CornflowerBlue);
+            int parentIndex = model->m_flver->bones[i].parentIndex;
+
+            if (parentIndex != -1)
+            {
+                Vector3 boneA = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[i]);
+                Vector3 boneB = Vector3::Transform(Vector3::Zero, model->m_boneTransforms[parentIndex]);
+
+                DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, Colors::CornflowerBlue);
+
+                if (model->m_flver->bones[i].childIndex == -1)
+                    DX::Draw(&prim, DirectX::BoundingSphere(boneA, 0.03f), Colors::CornflowerBlue);
+            }
         }
+
+        DX::DrawSphere(&prim, model->m_boneTransforms[characterRootBoneIdx], 0.03f, Colors::MediumBlue);
+        DX::DrawReferenceFrame(&prim, model->m_boneTransforms[trajectoryBoneIndex]);
     }
 
-    DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[characterRootBoneIdx] * world, 0.03f, Colors::MediumBlue);
-    DX::DrawSphere(this->m_batch.get(), model->m_boneTransforms[trajectoryBoneIndex] * world, 0.03f, Colors::Red);
+    prim.End();
 
-    if (!model->m_settings.m_xray)
-        DX::DrawFlverModel(this->m_batch.get(), world, model);
+    if (model->m_settings.m_displayMode != Mode_Wireframe)
+    {
+        DirectX::PrimitiveBatch<DirectX::VertexPositionNormalColor> primShaded(this->m_deviceContext, UINT16_MAX * 3, UINT16_MAX);
+
+        m_physicalEffect->SetWorld(world);
+        m_physicalEffect->SetView(m_view);
+        m_physicalEffect->SetProjection(m_proj);
+
+        m_physicalEffect->SetAlpha(1.f);
+
+        if (model->m_settings.m_displayMode == Mode_XRay)
+            m_physicalEffect->SetAlpha(0.5f);
+
+        m_physicalEffect->Apply(this->m_deviceContext);
+
+        this->m_deviceContext->IASetInputLayout(m_physicalInputLayout.Get());
+
+        primShaded.Begin();
+        DX::DrawFlverModel(&primShaded, Matrix::Identity, model);
+        primShaded.End();
+    }
+    else
+    {
+        prim.Begin();
+        DX::DrawFlverModelWireframe(&prim, Matrix::Identity, model);
+        prim.End();
+    }
 }

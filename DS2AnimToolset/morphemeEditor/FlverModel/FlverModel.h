@@ -15,13 +15,19 @@
 
 using namespace cfr;
 
+enum DisplayMode
+{
+	Mode_Normal,
+	Mode_XRay,
+	Mode_Wireframe,
+};
+
 class FlverModel
 {
 public:
 	struct SkinnedVertex
 	{
-		DirectX::VertexPositionColor m_pos;
-		Vector3 m_normal;
+		DirectX::VertexPositionNormalColor m_pos;
 		float bone_weights[4];
 		int bone_indices[4];
 
@@ -31,19 +37,21 @@ public:
 
 	struct Settings
 	{
-		bool m_xray = false;
+		DisplayMode m_displayMode = Mode_Normal;
 		bool m_drawDummyPolygons = false;
-		bool m_sceneExplorer = false;
 		int m_selectedBone = -1;
 		int m_selectedDummy = -1;
 	} m_settings;
 
 	bool m_loaded = false;
+	std::string m_name;
 
 	Matrix m_position = Matrix::Identity;
 	Vector3 m_focusPoint = Vector3::Zero;
 
-	FLVER2* m_flver = nullptr;
+	FLVER2* m_flver;
+	MR::AnimRigDef* m_nmRig = nullptr;
+	std::vector<int> m_flverToMorphemeBoneMap;
 	std::vector<std::vector<SkinnedVertex>> m_verts;
 	std::vector<std::vector<SkinnedVertex>> m_vertBindPose;
 	std::vector<Matrix> m_boneTransforms;
@@ -57,6 +65,8 @@ public:
 	FlverModel(UMEM* umem);
 	~FlverModel();
 
+	static FlverModel* CreateFromBnd(std::wstring path);
+
 	std::vector<FbxVector4> GetModelMeshVertices(int idx, bool flip);
 	std::vector<FbxVector4> GetModelMeshNormals(int idx, bool flip);
 	std::vector<FbxVector4> GetModelMeshBoneWeights(int idx);
@@ -65,6 +75,13 @@ public:
 	void GetModelData();
 	void UpdateModel();
 	int GetBoneIndexFromName(const char* name);
+	std::string GetModelName();
 
-	void Animate(MR::AnimationSourceHandle* animHandle, std::vector<int> flverToMorphemeBoneMap);
+	std::vector<int> GetFlverToMorphemeBoneMap();
+	void CreateFlverToMorphemeBoneMap(MR::AnimRigDef* pMorphemeRig);
+	int GetFlverBoneIndexByMorphemeBoneIndex(int idx);
+
+	Matrix GetDummyPolygonTransform(int id);
+
+	void Animate(MR::AnimationSourceHandle* animHandle);
 };

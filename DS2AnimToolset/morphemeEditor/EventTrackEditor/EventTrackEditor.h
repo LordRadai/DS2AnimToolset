@@ -61,6 +61,7 @@ struct EventTrackEditor
     int m_frameMin, m_frameMax;
     bool focused = false;
     bool m_reload = false;
+    bool m_showTimecode = true;
 
     struct EventTrackColor
     {

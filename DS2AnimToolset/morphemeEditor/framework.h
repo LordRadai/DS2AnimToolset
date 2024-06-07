@@ -34,10 +34,6 @@
 #include "imgui/custom/imgui_custom_logic.h"
 #include "imgui/custom/imgui_custom_widget.h"
 
-//IniReader
-#include "inih/ini.h"
-#include "inih/INIReader.h"
-
 #include "utils/RLog/RLog.h"
 #include "utils/RMath/RMath.h"
 #include "utils/RString/RString.h"

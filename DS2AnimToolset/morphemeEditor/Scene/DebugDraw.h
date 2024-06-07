@@ -143,7 +143,10 @@ namespace DX
         DirectX::SimpleMath::Vector3 rotation, DirectX::SimpleMath::Vector3 center, float radius, float angle, float height, bool is_front,
         DirectX::GXMVECTOR color = DirectX::Colors::Yellow);
 
-    void XM_CALLCONV DrawFlverModel(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
+    void XM_CALLCONV DrawFlverModel(DirectX::PrimitiveBatch<DirectX::VertexPositionNormalColor>* batch,
+        DirectX::XMMATRIX world, FlverModel* model);
+
+    void XM_CALLCONV DrawFlverModelWireframe(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
         DirectX::XMMATRIX world, FlverModel* model);
 
     void XM_CALLCONV DrawReferenceFrame(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,

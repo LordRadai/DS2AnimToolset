@@ -2,11 +2,50 @@
 #include "../framework.h"
 #include "../extern.h"
 #include "utils/NMDX/NMDX.h"
+#include "FromsoftFormat/BNDReader/BNDReader.h"
+
+int GetMorphemeRigBoneIndexByFlverBoneIndex(MR::AnimRigDef* pRig, FlverModel* pFlverModel, int idx)
+{
+	if (idx == -1)
+		return -1;
+
+	std::string boneName = RString::ToNarrow(pFlverModel->m_flver->bones[idx].name);
+
+	if (boneName == "LCalfTwist")
+		boneName = "L_Calf";
+	else if (boneName == "RCalfTwist")
+		boneName = "R_Calf";
+	else if (boneName == "LThighTwist")
+		boneName = "L_Thigh";
+	else if (boneName == "RThighTwist")
+		boneName = "R_Thigh";
+	else if (boneName == "L_UpArmTwist")
+		boneName = "L_UpperArm";
+	else if (boneName == "R_UpArmTwist")
+		boneName = "R_UpperArm";
+	else if (boneName == "L_ForeTwist")
+		boneName = "L_Forearm";
+	else if (boneName == "R_ForeTwist")
+		boneName = "R_Forearm";
+
+	int boneIdx = pRig->getBoneIndexFromName(boneName.c_str());
+
+	g_appLog->DebugMessage(MsgLevel_Debug, "Bone %s: (to=%d, from=%d)\n", boneName.c_str(), boneIdx, idx);
+
+	return boneIdx;
+}
+
+int GetFlverBoneIDByMorphemeBoneID(MR::AnimRigDef* pRig, FlverModel* pFlverModel, int idx)
+{
+	std::string boneName = pRig->getBoneName(idx);
+	int flverIdx = pFlverModel->GetBoneIndexFromName(boneName.c_str());
+
+	return flverIdx;
+}
 
 FlverModel::SkinnedVertex::SkinnedVertex(Vector3 pos, Vector3 normal, float* weights, int* bone_indices)
 {
-	this->m_pos = DirectX::VertexPositionColor(pos, Vector4(0.7f, 0.7f, 0.7f, 1.f));
-	this->m_normal = normal;
+	this->m_pos = DirectX::VertexPositionNormalColor(pos, normal, DirectX::Colors::White);
 
 	for (size_t i = 0; i < 4; i++)
 	{
@@ -24,9 +63,6 @@ FlverModel::FlverModel(UMEM* umem)
 	this->m_loaded = false;
 	this->m_verts.clear();
 
-	if (this->m_loaded)
-		delete this->m_flver;
-
 	this->m_position = Matrix::Identity;
 	this->m_flver = new FLVER2(umem);
 
@@ -41,6 +77,40 @@ FlverModel::FlverModel(UMEM* umem)
 
 FlverModel::~FlverModel()
 {
+}
+
+FlverModel* FlverModel::CreateFromBnd(std::wstring path)
+{
+	FlverModel* model = nullptr;
+
+	PWSTR dcx_path = (wchar_t*)path.c_str();
+
+	BNDReader bnd(dcx_path);
+
+	bool found = false;
+
+	for (size_t i = 0; i < bnd.m_fileCount; i++)
+	{
+		std::filesystem::path name = bnd.m_files[i].m_name;
+
+		if (name.extension().compare(".flv") == 0)
+		{
+			UMEM* umem = uopenMem(bnd.m_files[i].m_data, bnd.m_files[i].m_uncompressedSize);
+
+			model = new FlverModel(umem);
+			model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
+
+			g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", model->m_name.c_str());
+
+			found = true;
+			break;
+		}
+	}
+
+	if (!found)
+		g_appLog->DebugMessage(MsgLevel_Error, "Could not find model %ws\n", path);
+
+	return model;
 }
 
 //Gets the vertices for the FLVER mesh at index idx
@@ -77,7 +147,7 @@ std::vector<FbxVector4> FlverModel::GetModelMeshVertices(int idx, bool flip)
 
 	facesetp->triangulate();
 
-	if (facesetp != nullptr)
+	if (facesetp)
 	{
 		for (int j = 0; j < facesetp->triCount; j++)
 		{
@@ -135,7 +205,7 @@ std::vector<FbxVector4> FlverModel::GetModelMeshNormals(int idx, bool flip)
 
 	facesetp->triangulate();
 
-	if (facesetp != nullptr)
+	if (facesetp)
 	{
 		for (int j = 0; j < facesetp->triCount; j++)
 		{
@@ -189,7 +259,7 @@ std::vector<FbxVector4> FlverModel::GetModelMeshBoneWeights(int idx)
 
 	facesetp->triangulate();
 
-	if (facesetp != nullptr)
+	if (facesetp)
 	{
 		for (size_t j = 0; j < facesetp->triCount; j++)
 		{
@@ -239,7 +309,7 @@ void FlverModel::GetModelMeshBoneIndices(std::vector<int*>& buffer, int idx)
 
 	facesetp->triangulate();
 
-	if (facesetp != nullptr)
+	if (facesetp)
 	{
 		for (size_t j = 0; j < facesetp->triCount; j++)
 		{
@@ -268,6 +338,7 @@ Matrix GetNmTrajectoryTransform(MR::AnimationSourceHandle* animHandle)
 	float tmp = pos.z;
 	pos.z = pos.y;
 	pos.y = tmp;
+	pos.x = -pos.x;
 
 	Matrix translation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateTranslation(NMDX::CreateFrom(pos));
 	Matrix rotation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateFromQuaternion(NMDX::CreateFrom(rot));
@@ -346,6 +417,7 @@ Matrix ComputeFlvBoneGlobalTransform(FLVER2* flv, int channelId)
 	}
 
 	localTransform *= Matrix::CreateRotationY(DirectX::XM_PI);
+	localTransform *= Matrix::CreateReflection(Plane(Vector3::Right));
 
 	return localTransform;
 }
@@ -434,7 +506,7 @@ void FlverModel::GetModelData()
 		std::vector<Vector3> meshVertices;
 		std::vector<SkinnedVertex> meshSkinnedVertices;
 
-		if (facesetp != nullptr)
+		if (facesetp)
 		{
 			meshVertices.reserve(facesetp->triCount);
 			meshSkinnedVertices.reserve(facesetp->triCount);
@@ -451,23 +523,30 @@ void FlverModel::GetModelData()
 				weights[3] = mesh->vertexData->bone_weights[(vertexIndex * 4) + 3];
 
 				int indices[4];
-			
-				indices[0] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 0]];
-				indices[1] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 1]];
-				indices[2] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 2]];
-				indices[3] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 3]];
+
+				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 0] < mesh->header.boneCount)
+					indices[0] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 0]];
+
+				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 1] < mesh->header.boneCount)
+					indices[1] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 1]];
+
+				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 2] < mesh->header.boneCount)
+					indices[2] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 2]];
+
+				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 3] < mesh->header.boneCount)
+					indices[3] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 3]];
 
 				float x = mesh->vertexData->positions[(vertexIndex * 3) + 0];
 				float y = mesh->vertexData->positions[(vertexIndex * 3) + 2];
 				float z = mesh->vertexData->positions[(vertexIndex * 3) + 1];
 
-				Vector3 pos = DirectX::SimpleMath::Vector3(x, y, z);
+				Vector3 pos = Vector3::Transform(DirectX::SimpleMath::Vector3(x, y, z), Matrix::CreateReflection(Plane(Vector3::Right)));
 
-				float norm_x = mesh->vertexData->positions[(vertexIndex * 3) + 0];
-				float norm_y = mesh->vertexData->positions[(vertexIndex * 3) + 2];
-				float norm_z = mesh->vertexData->positions[(vertexIndex * 3) + 1];
+				float norm_x = mesh->vertexData->normals[(vertexIndex * 3) + 0];
+				float norm_y = mesh->vertexData->normals[(vertexIndex * 3) + 2];
+				float norm_z = mesh->vertexData->normals[(vertexIndex * 3) + 1];
 
-				Vector3 normal(norm_x, norm_y, norm_z);
+				Vector3 normal = Vector3::Transform(DirectX::SimpleMath::Vector3(norm_x, norm_y, norm_z), Matrix::CreateReflection(Plane(Vector3::Right)));
 
 				meshSkinnedVertices.push_back(SkinnedVertex(pos, normal, weights, indices));
 				meshVertices.push_back(Vector3::Zero);
@@ -486,9 +565,6 @@ void FlverModel::UpdateModel()
 		return;
 
 	DirectX::SimpleMath::Vector4 color = DirectX::SimpleMath::Vector4(0.7f, 0.7f, 0.7f, 1.f);
-
-	if (this->m_settings.m_xray)
-		color = DirectX::SimpleMath::Vector4(0.7f, 0.7f, 0.7f, 0.f);
 
 	for (int i = 0; i < this->m_vertBindPose.size(); i++)
 		for (size_t j = 0; j < this->m_vertBindPose[i].size(); j++)
@@ -521,9 +597,14 @@ int FlverModel::GetBoneIndexFromName(const char* name)
 	return -1;
 }
 
+std::string FlverModel::GetModelName()
+{
+	return this->m_name;
+}
+
 std::vector<Matrix> ComputeGlobalTransforms(std::vector<Matrix> relativeTransforms, FLVER2* flv)
 {
-	std::vector<Matrix> globalTransformedPos; 
+	std::vector<Matrix> globalTransformedPos;
 	globalTransformedPos.reserve(flv->header.boneCount);
 
 	for (size_t i = 0; i < flv->header.boneCount; i++)
@@ -555,12 +636,11 @@ void ApplyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix
 	//Transform the bone
 	buffer[boneID] = bindPose[boneID] * transform;
 
-	//Transform all sibling of the current bone
 	int siblingIndex = flv->bones[boneID].nextSiblingIndex;
 
 	while (siblingIndex != -1)
 	{
-		buffer[siblingIndex] = bindPose[siblingIndex] * transform;
+		buffer[siblingIndex] = buffer[boneID];
 		siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
 	}
 
@@ -580,38 +660,75 @@ void ApplyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix
 	}
 }
 
-void FlverModel::Animate(MR::AnimationSourceHandle* animHandle, std::vector<int> flverToMorphemeBoneMap)
+std::vector<int> FlverModel::GetFlverToMorphemeBoneMap()
+{
+	return this->m_flverToMorphemeBoneMap;
+}
+
+//Creates an anim map from the flver model bone to the morpheme rig and saves it in m_morphemeToFlverRigMap
+void FlverModel::CreateFlverToMorphemeBoneMap(MR::AnimRigDef* pMorphemeRig)
+{
+	this->m_flverToMorphemeBoneMap.clear();
+	this->m_flverToMorphemeBoneMap.reserve(this->m_flver->header.boneCount);
+
+	for (int i = 0; i < this->m_flver->header.boneCount; i++)
+		this->m_flverToMorphemeBoneMap.push_back(GetMorphemeRigBoneIndexByFlverBoneIndex(pMorphemeRig, this, i));
+}
+
+int FlverModel::GetFlverBoneIndexByMorphemeBoneIndex(int idx)
+{
+	for (size_t i = 0; i < this->m_flverToMorphemeBoneMap.size(); i++)
+	{
+		if (this->m_flverToMorphemeBoneMap[i] == idx)
+			return i;
+	}
+}
+
+Matrix FlverModel::GetDummyPolygonTransform(int id)
+{
+	for (size_t i = 0; i < this->m_flver->header.dummyCount; i++)
+	{
+		if (this->m_flver->dummies[i].referenceID == id)
+			return this->m_dummyPolygons[i];
+	}
+
+	g_appLog->DebugMessage(MsgLevel_Error, "Could not find dummy polygon %d (%s)\n", id, this->m_name);
+
+	return Matrix::Identity;
+}
+
+void FlverModel::Animate(MR::AnimationSourceHandle* animHandle)
 {
 	//We initialise the final transforms to the flver bind pose so we can skip bones unhandled by morpheme in the next loop
 	this->m_boneTransforms = this->m_boneBindPose;
 	this->m_verts = this->m_vertBindPose;
 
-	if (animHandle == nullptr)
-		return;
-
-	const MR::AnimRigDef* rig = animHandle->getRig();
-
-	//Store morpheme global bind pose and animation transforms
-	this->m_morphemeBoneTransforms.clear();
-	this->m_morphemeBoneBindPose.clear();
-	for (size_t i = 0; i < animHandle->getChannelCount(); i++)
+	if (animHandle)
 	{
-		this->m_morphemeBoneBindPose.push_back(ComputeNmBoneBindPoseGlobalTransform(animHandle->getRig(), i));
-		this->m_morphemeBoneTransforms.push_back(ComputeNmBoneGlobalTransform(animHandle, i));
-	}
+		const MR::AnimRigDef* rig = animHandle->getRig();
 
-	this->m_position = GetNmTrajectoryTransform(animHandle) * Matrix::CreateRotationY(DirectX::XM_PI);
-
-	for (size_t i = 0; i < this->m_flver->header.boneCount; i++)
-	{
-		int morphemeBoneIdx = flverToMorphemeBoneMap[i];
-
-		if (morphemeBoneIdx != -1)
+		//Store morpheme global bind pose and animation transforms
+		this->m_morphemeBoneTransforms.clear();
+		this->m_morphemeBoneBindPose.clear();
+		for (size_t i = 0; i < animHandle->getChannelCount(); i++)
 		{
-			//Take the morpheme animation transform relative to the morpheme bind pose, mirror it on the ZY plane, and then apply them to the flver bind pose. Propagate to all children of the current bone
-			Matrix morphemeRelativeTransform = (this->m_morphemeBoneBindPose[morphemeBoneIdx].Invert() * this->m_morphemeBoneTransforms[morphemeBoneIdx]);
+			this->m_morphemeBoneBindPose.push_back(ComputeNmBoneBindPoseGlobalTransform(animHandle->getRig(), i));
+			this->m_morphemeBoneTransforms.push_back(ComputeNmBoneGlobalTransform(animHandle, i));
+		}
 
-			ApplyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPose, (Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
+		this->m_position = GetNmTrajectoryTransform(animHandle) * Matrix::CreateRotationY(DirectX::XM_PI);
+
+		for (size_t i = 0; i < this->m_flver->header.boneCount; i++)
+		{
+			int morphemeBoneIdx = this->m_flverToMorphemeBoneMap[i];
+
+			if (morphemeBoneIdx != -1)
+			{
+				//Take the morpheme animation transform relative to the morpheme bind pose, mirror it on the ZY plane, and then apply them to the flver bind pose. Propagate to all children of the current bone
+				Matrix morphemeRelativeTransform = (this->m_morphemeBoneBindPose[morphemeBoneIdx].Invert() * this->m_morphemeBoneTransforms[morphemeBoneIdx]);
+
+				ApplyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPose, (Matrix::CreateReflection(Plane(Vector3::Right)) * Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
+			}
 		}
 	}
 
@@ -630,6 +747,7 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle, std::vector<int>
 			float* weights = this->m_vertBindPose[meshIdx][vertexIndex].bone_weights;
 
 			Vector3 newPos = Vector3::Zero;
+			Vector3 newNorm = Vector3::Zero;
 
 			for (size_t wt = 0; wt < 4; wt++)
 			{
@@ -639,9 +757,11 @@ void FlverModel::Animate(MR::AnimationSourceHandle* animHandle, std::vector<int>
 					continue;
 
 				newPos += Vector3::Transform(this->m_vertBindPose[meshIdx][vertexIndex].m_pos.position, boneRelativeTransforms[boneID]) * weights[wt];
+				newNorm += Vector3::Transform(this->m_vertBindPose[meshIdx][vertexIndex].m_pos.normal, boneRelativeTransforms[boneID]) * weights[wt];
 			}
 
 			this->m_verts[meshIdx][vertexIndex].m_pos.position = newPos;
+			this->m_verts[meshIdx][vertexIndex].m_pos.normal = newNorm;
 		}
 	}
 }

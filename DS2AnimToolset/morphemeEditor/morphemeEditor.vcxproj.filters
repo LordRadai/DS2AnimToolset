@@ -138,12 +138,6 @@
     <ClCompile Include="imsequencer\ImSequencer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="inih\ini.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="inih\INIReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\Camera\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -202,6 +196,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="utils\RString\RString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="INI\INI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -362,12 +359,6 @@
     <ClInclude Include="imsequencer\ImSequencer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inih\ini.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inih\INIReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\Camera\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -450,6 +441,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IconsFontAwesome6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="INI\mini\ini.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="INI\INI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
