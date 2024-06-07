@@ -20,16 +20,7 @@ std::wstring RString::ToWide(const std::string& s)
 
 std::string RString::RemoveExtension(std::string filename)
 {
-	size_t lastdot = filename.find_last_of(".");
-
-	if (lastdot == std::string::npos) return filename;
-
-	return filename.substr(0, lastdot);
-}
-
-std::string RString::RemovePathAndExtension(std::string filename)
-{
-	return std::filesystem::path(RemoveExtension(filename).c_str()).filename().string();
+	return std::filesystem::path(filename).stem().string();
 }
 
 std::string RString::Replace(std::string str, std::string substr, std::string replacement)

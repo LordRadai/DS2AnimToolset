@@ -44,6 +44,42 @@ int GetEquipIDByFilename(std::wstring filename)
 	return std::stoi(modelIdStr);
 }
 
+int GetFgIDByFilename(std::wstring filename, FgPartType type)
+{
+	int baseId = 0;
+
+	switch (type)
+	{
+	case FaceGen_Face:
+		baseId = 1000;
+		break;
+	case FaceGen_Head:
+		baseId = 2000;
+		break;
+	case FaceGen_Eyes:
+		baseId = 3000;
+		break;
+	case FaceGen_EyeBrows:
+		baseId = 4000;
+		break;
+	case FaceGen_Beard:
+		baseId = 5000;
+		break;
+	case FaceGen_Hair:
+		baseId = 7000;
+		break;
+	default:
+		break;
+	}
+
+	size_t first = filename.find_first_of(L"_") + 1;
+	size_t second = filename.find_last_of(L"_");
+
+	std::wstring modelIdStr = filename.substr(first, second - first);
+
+	return baseId - std::stoi(modelIdStr);
+}
+
 void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartType type, int id, bool female)
 {
 	std::wstring filepath = root.c_str();
@@ -80,10 +116,7 @@ void LoadPartsFaceGenBnd(Application* pApplication, std::wstring root, FgPartTyp
 	case FaceGen_Hair:
 		fullId = 7000 + id;
 
-		if (female)
-			swprintf_s(modelName, L"\\face\\fg_%d_f.bnd", fullId + 19);
-		else
-			swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
+		swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
 		break;
 	default:
 		break;
@@ -269,11 +302,11 @@ std::wstring getModelNameFromObjId(std::wstring model_path, std::wstring obj_id)
 	return L"";
 }
 
-FileNamePathPair::FileNamePathPair(std::wstring path)
+FileNamePathPair::FileNamePathPair(std::wstring path, int id)
 {
 	this->m_path = path;
-	this->m_name = RString::RemovePathAndExtension(RString::ToNarrow(path));
-	this->m_id = GetEquipIDByFilename(path);
+	this->m_name = RString::RemoveExtension(RString::ToNarrow(path));
+	this->m_id = id;
 }
 
 void FileNameMapPairList::Clear()
@@ -281,9 +314,17 @@ void FileNameMapPairList::Clear()
 	this->m_weaponModelPaths.clear();
 	this->m_shieldModelPaths.clear();
 	this->m_headModelPaths.clear();
+	this->m_faceModelPaths.clear();
 	this->m_bodyModelPaths.clear();
 	this->m_armModelPaths.clear();
 	this->m_legModelPaths.clear();
+
+	this->m_fgFace.clear();
+	this->m_fgHead.clear();
+	this->m_fgEyes.clear();
+	this->m_fgEyeBrows.clear();
+	this->m_fgBeard.clear();
+	this->m_fgHair.clear();
 }
 
 void FileNameMapPairList::Create(std::wstring gamePath)
@@ -292,6 +333,7 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 	std::filesystem::path weapon_path = gamePath + L"\\model\\parts\\weapon";
 
 	std::filesystem::path head_path = gamePath + L"\\model\\parts\\head";
+	std::filesystem::path face_path = gamePath + L"\\model\\parts\\face";
 	std::filesystem::path body_path = gamePath + L"\\model\\parts\\body";
 	std::filesystem::path arm_path = gamePath + L"\\model\\parts\\arm";
 	std::filesystem::path leg_path = gamePath + L"\\model\\parts\\leg";
@@ -300,9 +342,10 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 	{
 		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
 		{
-			std::wstring filepath = entry.path();
+			std::wstring filepath = entry.path();		
+			int id = GetEquipIDByFilename(filepath);
 
-			this->m_weaponModelPaths.push_back(FileNamePathPair(filepath));
+			this->m_weaponModelPaths.push_back(FileNamePathPair(filepath, id));
 		}
 	}
 
@@ -311,51 +354,132 @@ void FileNameMapPairList::Create(std::wstring gamePath)
 		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
 		{
 			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
 
-			this->m_shieldModelPaths.push_back(FileNamePathPair(filepath));
+			this->m_shieldModelPaths.push_back(FileNamePathPair(filepath, id));
 		}
 	}
 
 	for (const auto& entry : std::filesystem::directory_iterator(head_path))
 	{
-		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l'))
 		{
 			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
 
-			this->m_headModelPaths.push_back(FileNamePathPair(filepath));
+			this->m_headModelPaths.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 2) == "fc"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
+
+			this->m_faceModelPaths.push_back(FileNamePathPair(filepath, id));
 		}
 	}
 
 	for (const auto& entry : std::filesystem::directory_iterator(body_path))
 	{
-		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l'))
 		{
 			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
 
-			this->m_bodyModelPaths.push_back(FileNamePathPair(filepath));
+			this->m_bodyModelPaths.push_back(FileNamePathPair(filepath, id));
 		}
 	}
 
 	for (const auto& entry : std::filesystem::directory_iterator(arm_path))
 	{
-		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l'))
 		{
 			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
 
-			this->m_armModelPaths.push_back(FileNamePathPair(filepath));
+			this->m_armModelPaths.push_back(FileNamePathPair(filepath, id));
 		}
 	}
 
 	for (const auto& entry : std::filesystem::directory_iterator(leg_path))
 	{
-		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'a') && (entry.path().stem().string().back() != 'l'))
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l'))
 		{
 			std::wstring filepath = entry.path();
+			int id = GetEquipIDByFilename(filepath);
 
-			this->m_legModelPaths.push_back(FileNamePathPair(filepath));
+			this->m_legModelPaths.push_back(FileNamePathPair(filepath, id));
 		}
 	}
 
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_1"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_Face);
+
+			this->m_fgFace.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_2"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_Head);
+
+			this->m_fgHead.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_3"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_Eyes);
+
+			this->m_fgEyes.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_4"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_EyeBrows);
+
+			this->m_fgEyeBrows.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_5"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_Beard);
+
+			this->m_fgBeard.push_back(FileNamePathPair(filepath, id));
+		}
+	}
+
+	for (const auto& entry : std::filesystem::directory_iterator(face_path))
+	{
+		if (std::filesystem::is_regular_file(entry.status()) && entry.path().extension().compare("bnd") && (entry.path().stem().string().back() != 'l') && (entry.path().stem().string().substr(0, 4) == "fg_7"))
+		{
+			std::wstring filepath = entry.path();
+			int id = GetFgIDByFilename(filepath, FaceGen_Hair);
+
+			this->m_fgHair.push_back(FileNamePathPair(filepath, id));
+		}
+	}
 }
 
 Application::Application()
@@ -887,7 +1011,7 @@ void Application::AssetsWindow()
 
 							AnimSourceInterface* currentAnim = characterDef->getAnimation(i);
 
-							anim_name += RString::RemovePathAndExtension(characterDef->getAnimFileLookUp()->getSourceFilename(currentAnim->GetID()));
+							anim_name += RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(currentAnim->GetID()));
 
 							bool selected = (this->m_eventTrackEditor->m_selectedAnimIdx == currentAnim->GetID());
 
@@ -1623,6 +1747,64 @@ void SaveModelPartsWeaponPreset(Application* application, PartType type, int val
 	}
 }
 
+void ModelPartsFgList(Application* application, std::vector<FileNamePathPair> paths, FgPartType type)
+{
+	if (paths.size() == 0)
+		return;
+
+	char childName[255];
+	sprintf_s(childName, "fgParts_%ls_%d", paths[0].m_path.c_str(), type);
+
+	FlverModel* currentPart = application->m_animPlayer->GetModelPartFacegen(type);
+
+	ImGui::BeginChild(childName, ImVec2(ImGui::GetContentRegionAvail().x, 300));
+
+	if (ImGui::Selectable("None", currentPart == nullptr))
+	{
+		application->m_animPlayer->SetModelPartFacegen(type, nullptr);
+
+		SaveModelPartsFaceGenPreset(application, type, -1);
+	}
+
+	for (size_t i = 0; i < paths.size(); i++)
+	{
+		bool selected = false;
+		bool is_female = application->m_playerModelPreset->GetBool("Gender", "is_female", false);
+
+		if (is_female != IsEquipFemale(paths[i].m_path))
+			continue;
+
+		if (application->m_animPlayer->GetModelPartFacegen(type))
+			selected = (application->m_animPlayer->GetModelPartFacegen(type)->m_name.compare(paths[i].m_name) == 0);
+
+		ImGui::Selectable(paths[i].m_name.c_str(), selected);
+
+		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+		{
+			try
+			{
+				FlverModel* model = FlverModel::CreateFromBnd(paths[i].m_path);
+
+				if (model)
+				{
+					application->m_animPlayer->SetModelPartFacegen(type, model);
+					application->m_animPlayer->GetModelPartFacegen(type)->CreateFlverToMorphemeBoneMap(application->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+
+					SaveModelPartsFaceGenPreset(application, type, GetFgIDByFilename(RString::ToWide(paths[i].m_name), type));
+				}
+				else
+					delete model;
+			}
+			catch (const std::exception& e)
+			{
+				g_appLog->PanicMessage(e.what());
+			}
+		}
+	}
+
+	ImGui::EndChild();
+}
+
 void ModelPartsList(Application* application, std::vector<FileNamePathPair> paths, PartType type)
 {
 	if (paths.size() == 0)
@@ -1697,6 +1879,9 @@ void Application::EntityManagerWindow()
 
 	ImGui::BeginDisabled(disable);
 
+	if (ImGui::Button("FaceGen"))
+		this->m_windowStates.m_faceGenManager = true;
+
 	static bool female = this->m_playerModelPreset->GetBool("Gender", "is_female", false);
 	bool female_bak = female;
 
@@ -1710,6 +1895,8 @@ void Application::EntityManagerWindow()
 
 		LoadPlayerModelParts(this, parts_path);
 	}
+
+	ImGui::SeparatorText("Weapon & Shield");
 
 	if (this->m_fileNameMapPairList->m_weaponModelPaths.size() && this->m_fileNameMapPairList->m_shieldModelPaths.size())
 	{
@@ -1783,6 +1970,24 @@ void Application::EntityManagerWindow()
 	ImGui::End();
 }
 
+void Application::FaceGenWindow()
+{
+	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
+
+	ImGui::Begin("FaceGen Manager", &this->m_windowStates.m_faceGenManager);
+
+	if (this->m_fileNameMapPairList->m_fgFace.size())
+	{
+		if (ImGui::TreeNode("Face"))
+		{
+
+			ImGui::TreePop();
+		}
+	}
+
+	ImGui::End();
+}
+
 void SetModelFlags(FlverModel* model, DisplayMode mode, bool showDummies)
 {
 	if (model)
@@ -1807,6 +2012,11 @@ void Application::CheckFlags()
 	if (this->m_windowStates.m_entityManager)
 	{
 		this->EntityManagerWindow();
+	}
+
+	if (this->m_windowStates.m_faceGenManager)
+	{
+		this->FaceGenWindow();
 	}
 
 	if (this->m_windowStates.m_queryEventTrack)
@@ -1913,7 +2123,7 @@ void Application::CheckFlags()
 			
 			for (int i = 0; i < numAnims; i++)
 			{
-				std::filesystem::path anim_out = std::filesystem::path(RString::ToNarrow(export_path) + "Animations//" + RString::RemovePathAndExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx");
+				std::filesystem::path anim_out = std::filesystem::path(RString::ToNarrow(export_path) + "Animations//" + RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx");
 				std::filesystem::create_directories(anim_out.parent_path());
 
 				if (!this->ExportAnimationToFbx(anim_out, i))
