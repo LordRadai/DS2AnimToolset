@@ -815,10 +815,14 @@ void Application::ModelPreviewWindow()
 				ImGui::EndMenu();
 			}
 
-			if (ImGui::BeginMenu("Entity Manager"))
+			if (ImGui::BeginMenu("Model Manager"))
 			{
+				ImGui::BeginDisabled(this->m_chrId != 1);
+
 				if (ImGui::MenuItem("FaceGen", NULL, &this->m_windowStates.m_faceGenManager)) { this->m_windowStates.m_faceGenManager != this->m_windowStates.m_faceGenManager; }
 				if (ImGui::MenuItem("Equip", NULL, &this->m_windowStates.m_equipManagerWindow)) { this->m_windowStates.m_equipManagerWindow != this->m_windowStates.m_equipManagerWindow; }
+				
+				ImGui::EndDisabled();
 			}
 
 			ImGui::Separator();
