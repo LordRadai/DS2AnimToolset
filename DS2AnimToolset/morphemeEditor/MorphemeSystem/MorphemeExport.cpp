@@ -17,9 +17,8 @@ ME::TakeListXML* MorphemeExport::ExportAnimXML(CharacterDefBasic* character, int
 		if (node->getNodeTypeID() == NODE_TYPE_ANIM_EVENTS)
 		{
 			MR::AttribDataSourceAnim* source_anim = (MR::AttribDataSourceAnim*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM);
-			MR::AttribDataSourceEventTrackSet* source_tracks = (MR::AttribDataSourceEventTrackSet*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_EVENT_TRACKS);
 
-			if (source_anim && source_anim->m_animAssetID == animId)
+			if (source_anim && (source_anim->m_animAssetID == animId))
 			{
 				animNode = node;
 				break;

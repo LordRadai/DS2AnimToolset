@@ -128,7 +128,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics_debug.lib;morphemeComms2_debug.lib;morphemeCore_debug.lib;morphemeSimpleBundle_debug.lib;NMPlatform_debug.lib;NMRuntimeUtils_debug.lib;d3d11.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics_debug.lib;morphemeComms2_debug.lib;morphemeCore_debug.lib;morphemeSimpleBundle_debug.lib;NMPlatform_debug.lib;NMRuntimeUtils_debug.lib;d3d11.lib;morphemeExport_debug.lib;NMTinyXML_debug.lib;NMTL_debug.lib;XMD_debug.lib</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
       <StackReserveSize>
