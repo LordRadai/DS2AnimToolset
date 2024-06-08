@@ -2189,12 +2189,12 @@ void Application::CheckFlags()
 			if (numAnims == 0)
 				g_appLog->AlertMessage(MsgLevel_Warn, "No animations are loaded");
 
-			std::wstring out_path = L"/Export";
+			std::wstring out_path = L"Export";
 
 			wchar_t chr_id_str[50];
 			swprintf_s(chr_id_str, L"c%04d", this->m_chrId);
 
-			out_path += L"/" + std::wstring(chr_id_str) + L"/";
+			out_path += L"\\" + std::wstring(chr_id_str) + L"\\";
 
 			std::filesystem::create_directories(out_path);
 
@@ -2208,13 +2208,13 @@ void Application::CheckFlags()
 			
 			for (int i = 0; i < numAnims; i++)
 			{
-				std::filesystem::path anim_out = std::filesystem::path(RString::ToNarrow(export_path) + "Animations/" + RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx");
+				std::filesystem::path anim_out = std::filesystem::path(RString::ToNarrow(export_path) + "Animations\\" + RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx");
 				std::filesystem::create_directories(anim_out.parent_path());
 
 				if (!this->ExportAnimationToFbx(anim_out, i))
 					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export animation %d\n", i);
 
-				std::filesystem::path takeListPath = std::filesystem::path(RString::ToNarrow(export_path) + "morphemeMarkup/" + RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx.xml");
+				std::filesystem::path takeListPath = std::filesystem::path(RString::ToNarrow(export_path) + "morphemeMarkup\\" + RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx.xml");
 				std::filesystem::create_directories(takeListPath.parent_path());
 
 				ME::TakeListXML* takeListXML = MorphemeExport::ExportAnimXML(characterDef, i, takeListPath.c_str());
@@ -2239,7 +2239,7 @@ void Application::CheckFlags()
 		wchar_t chr_id_str[50];
 		swprintf_s(chr_id_str, L"c%04d", this->m_chrId);
 
-		out_path += L"/" + std::wstring(chr_id_str) + L"/";
+		out_path += L"\\" + std::wstring(chr_id_str) + L"\\";
 
 		std::filesystem::create_directories(out_path);
 
