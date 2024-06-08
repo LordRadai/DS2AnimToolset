@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NMRuntimeUtils", "DS2AnimTo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "morphemeEditor", "DS2AnimToolset\morphemeEditor\morphemeEditor.vcxproj", "{4DC3646C-04EB-48D1-AE1B-6BC65E29FC43}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "morphemeAssetCompiler", "DS2AnimToolset\morpheme\tools\assetCompiler\morphemeAssetCompiler_X64.vcxproj", "{D5EA6945-C696-4C11-89A4-EB1C8F663912}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Tool|x64 = Debug Tool|x64
@@ -261,6 +263,38 @@ Global
 		{4DC3646C-04EB-48D1-AE1B-6BC65E29FC43}.Target LE64 Release|x64.Build.0 = Release|x64
 		{4DC3646C-04EB-48D1-AE1B-6BC65E29FC43}.Target LE64 Release|x86.ActiveCfg = Release|Win32
 		{4DC3646C-04EB-48D1-AE1B-6BC65E29FC43}.Target LE64 Release|x86.Build.0 = Release|Win32
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Debug Tool|x64.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Debug Tool|x64.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Debug Tool|x86.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Debug Tool|x86.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Debug|x64.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Debug|x64.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Debug|x86.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Debug|x86.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release Tool|x64.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release Tool|x64.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release Tool|x86.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release Tool|x86.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release_new|x64.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release_new|x64.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release_new|x86.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release_new|x86.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release_test|x64.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release_test|x64.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release_test|x86.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release_test|x86.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release|x64.ActiveCfg = Target LE64 Release|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release|x64.Build.0 = Target LE64 Release|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release|x86.ActiveCfg = Target LE64 Release|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Release|x86.Build.0 = Target LE64 Release|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Target LE64 Debug|x64.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Target LE64 Debug|x64.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Target LE64 Debug|x86.ActiveCfg = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Target LE64 Debug|x86.Build.0 = Target LE64 Debug|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Target LE64 Release|x64.ActiveCfg = Target LE64 Release|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Target LE64 Release|x64.Build.0 = Target LE64 Release|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Target LE64 Release|x86.ActiveCfg = Target LE64 Release|x64
+		{D5EA6945-C696-4C11-89A4-EB1C8F663912}.Target LE64 Release|x86.Build.0 = Target LE64 Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
