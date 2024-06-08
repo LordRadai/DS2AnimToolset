@@ -26,7 +26,7 @@ ME::TakeListXML* MorphemeExport::ExportAnimXML(CharacterDefBasic* character, int
 		}
 	}
 
-	if ((animNode == nullptr) || (animNode->getNodeID() != NODE_TYPE_ANIM_EVENTS))
+	if (animNode == nullptr)
 		return nullptr;
 
 	MR::AttribDataSourceAnim* sourceAnim = (MR::AttribDataSourceAnim*)animNode->getAttribData(ATTRIB_SEMANTIC_SOURCE_ANIM);
