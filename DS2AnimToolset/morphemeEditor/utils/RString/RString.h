@@ -1,4 +1,5 @@
 #pragma once
+#include <Windows.h>
 #include <ostream>
 #include <string>
 #include <sstream>
@@ -11,4 +12,5 @@ namespace RString
 	std::wstring ToWide(const std::string& s);
 	std::string RemoveExtension(std::string filename);
 	std::string Replace(std::string str, std::string substr, std::string replacement);
+	std::string GuidToString(GUID guid);
 }

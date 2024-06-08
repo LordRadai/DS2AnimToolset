@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 #include "CharacterDef.h"
+#include "MorphemeExport.h"
 
 #include <vector>
 #include <string>

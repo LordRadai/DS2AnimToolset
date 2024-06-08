@@ -2992,6 +2992,8 @@ bool Application::ExportAnimationToFbx(std::filesystem::path export_path, int an
 		status = false;
 	}
 
+	MorphemeExport::ExportAnimXML(characterDef, anim_id, RString::ToWide(characterDef->getAnimationById(anim_id)->GetAnimName()).c_str());
+
 	pScene->AddPose(pBindPoses);
 
 	pExporter->Export(pScene);
