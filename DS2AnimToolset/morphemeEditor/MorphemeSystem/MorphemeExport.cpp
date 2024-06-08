@@ -80,5 +80,7 @@ ME::TakeListXML* MorphemeExport::ExportAnimXML(CharacterDefBasic* character, int
 		for (size_t j = 0; j < track->getNumEvents(); j++)
 			trackXML->createEvent(j, track->getEvent(j)->getStartTime(), track->getEvent(j)->getDuration(), track->getEvent(j)->getUserData());
 	}
+
+	return takeList;
 }
 
