@@ -2214,8 +2214,14 @@ void Application::CheckFlags()
 				if (!this->ExportAnimationToFbx(anim_out, i))
 					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export animation %d\n", i);
 
-				//if (!this->m_nmb.ExportEventTrackToXML(export_path, i))
-					//g_appLog->DebugMessage(MsgLevel_Error, "Failed to export event track to XML for animation %d\n", i);
+				std::wstring takeListPath = std::filesystem::path(RString::ToNarrow(export_path) + "morphemeMarkup//" + RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx.xml");
+
+				ME::TakeListXML* takeListXML = MorphemeExport::ExportAnimXML(characterDef, i, takeListPath.c_str());
+
+				if (takeListXML)
+					takeListXML->write();
+				else
+					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export event track to XML for animation %d\n", i);
 			}
 		}
 	}
@@ -2991,8 +2997,6 @@ bool Application::ExportAnimationToFbx(std::filesystem::path export_path, int an
 		g_appLog->DebugMessage(MsgLevel_Error, "Failed to create FBX anim take (animId=%d, chrId=c%04d)\n", anim_id, this->m_chrId);
 		status = false;
 	}
-
-	MorphemeExport::ExportAnimXML(characterDef, anim_id, RString::ToWide(characterDef->getAnimationById(anim_id)->GetAnimName()).c_str());
 
 	pScene->AddPose(pBindPoses);
 
