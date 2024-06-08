@@ -156,7 +156,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d11.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics.lib;morphemeComms2.lib;morphemeCore.lib;morphemeSimpleBundle.lib;NMPlatform.lib;NMRuntimeUtils.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d11.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics.lib;morphemeComms2.lib;morphemeCore.lib;morphemeSimpleBundle.lib;NMPlatform.lib;NMRuntimeUtils.lib;morphemeExport.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -212,6 +212,7 @@
     <ClCompile Include="MorphemeSystem\Character.cpp" />
     <ClCompile Include="MorphemeSystem\CharacterController.cpp" />
     <ClCompile Include="MorphemeSystem\CharacterDef.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeExport.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp" />
     <ClCompile Include="Scene\Camera\Camera.cpp" />
     <ClCompile Include="Scene\DebugDraw.cpp" />
@@ -291,6 +292,7 @@
     <ClInclude Include="MorphemeSystem\Character.h" />
     <ClInclude Include="MorphemeSystem\CharacterController.h" />
     <ClInclude Include="MorphemeSystem\CharacterDef.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeExport.h" />
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h" />
     <ClInclude Include="resources\resource.h" />
     <ClInclude Include="resources\resource1.h" />

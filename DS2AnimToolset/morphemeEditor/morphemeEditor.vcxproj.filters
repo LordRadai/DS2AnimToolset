@@ -201,6 +201,9 @@
     <ClCompile Include="INI\INI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TimeActEditor\TimeActEditor.h">
@@ -447,6 +450,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="INI\INI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -133,3 +133,11 @@ CharacterBasic* MorphemeSystem::GetCharacter()
 {
     return this->m_characterData;
 }
+
+bool MorphemeSystem::ExportXML()
+{
+    if (this->m_characterDef == nullptr)
+        return false;
+
+    return true;
+}

@@ -43,14 +43,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>NMTinyXML_debug</TargetName>
     <IntDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\</OutDir>
+    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>NMTinyXML</TargetName>
     <IntDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\</OutDir>
+    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>

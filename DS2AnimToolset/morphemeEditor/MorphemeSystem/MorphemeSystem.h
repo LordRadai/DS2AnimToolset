@@ -49,6 +49,8 @@ public:
 	//----------------------------
 	// Get character instance
 	CharacterBasic* GetCharacter();
+
+	bool ExportXML();
 protected:
 	CharacterDefBasic* m_characterDef;   // Store a pointer to a morpheme character definition
 	CharacterBasic* m_characterData;  // Store a pointer to a morpheme character
