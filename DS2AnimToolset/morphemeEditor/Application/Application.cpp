@@ -2214,13 +2214,17 @@ void Application::CheckFlags()
 				if (!this->ExportAnimationToFbx(anim_out, i))
 					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export animation %d\n", i);
 
-				std::wstring takeListPath = std::filesystem::path(RString::ToNarrow(export_path) + "morphemeMarkup//" + RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx.xml");
+				std::filesystem::path takeListPath = std::filesystem::path(RString::ToNarrow(export_path) + "morphemeMarkup//" + RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx.xml");
+				std::filesystem::create_directories(takeListPath.parent_path());
 
 				ME::TakeListXML* takeListXML = MorphemeExport::ExportAnimXML(characterDef, i, takeListPath.c_str());
 
+				bool state = false;
+
 				if (takeListXML)
-					takeListXML->write();
-				else
+					state = takeListXML->write();
+
+				if (!state)
 					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export event track to XML for animation %d\n", i);
 			}
 		}
