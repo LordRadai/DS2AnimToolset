@@ -831,88 +831,92 @@ void Application::RenderGUI(const char* title)
 void Application::ModelPreviewWindow()
 {
 	ImGui::Begin("Preview", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar);
+	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
+	if (ImGui::BeginMenuBar())
 	{
-		if (ImGui::BeginMenuBar())
+		if (ImGui::MenuItem("Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
+
+		if (ImGui::BeginMenu("Display Mode"))
 		{
-			if (ImGui::MenuItem("Explorer", NULL, &this->m_sceneFlags.m_sceneExplorer)) { this->m_sceneFlags.m_sceneExplorer != this->m_sceneFlags.m_sceneExplorer; }
+			if (ImGui::MenuItem("Normal", NULL, this->m_sceneFlags.m_displayMode == Mode_Normal)) { this->m_sceneFlags.m_displayMode = Mode_Normal; }
+			if (ImGui::MenuItem("X-Ray", NULL, this->m_sceneFlags.m_displayMode == Mode_XRay)) { this->m_sceneFlags.m_displayMode = Mode_XRay; }
+			if (ImGui::MenuItem("Wireframe", NULL, this->m_sceneFlags.m_displayMode == Mode_Wireframe)) { this->m_sceneFlags.m_displayMode = Mode_Wireframe; }
 
-			if (ImGui::BeginMenu("Display Mode"))
-			{
-				if (ImGui::MenuItem("Normal", NULL, this->m_sceneFlags.m_displayMode == Mode_Normal)) { this->m_sceneFlags.m_displayMode = Mode_Normal; }
-				if (ImGui::MenuItem("X-Ray", NULL, this->m_sceneFlags.m_displayMode == Mode_XRay)) { this->m_sceneFlags.m_displayMode = Mode_XRay; }
-				if (ImGui::MenuItem("Wireframe", NULL, this->m_sceneFlags.m_displayMode == Mode_Wireframe)) { this->m_sceneFlags.m_displayMode = Mode_Wireframe; }
-				
-				ImGui::EndMenu();
-			}
-
-			if (ImGui::BeginMenu("Model"))
-			{
-				if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
-
-				ImGui::BeginDisabled(this->m_chrId != 1);
-
-				if (ImGui::MenuItem("Player Parts", NULL, &this->m_windowStates.m_playerPartsManagerWindow)) { this->m_windowStates.m_playerPartsManagerWindow != this->m_windowStates.m_playerPartsManagerWindow; }
-
-				ImGui::EndDisabled();
-				ImGui::EndMenu();
-			}
-
-			ImGui::Separator();
-
-			if (ImGui::Button(ICON_FA_BACKWARD_FAST))
-				this->m_animPlayer->SetTime(0.f);
-
-			ImGui::SameLine();
-			if (ImGui::Button(ICON_FA_BACKWARD_STEP))
-				this->m_animPlayer->StepPlay(-1.f / 30.f);
-
-			ImGui::SameLine();
-			if (ImGui::Button(ICON_FA_PAUSE))
-				this->m_animPlayer->SetPause(true);
-
-			ImGui::SameLine();
-			if (ImGui::Button(ICON_FA_PLAY))
-				this->m_animPlayer->SetPause(false);
-
-			ImGui::SameLine();
-			if (ImGui::Button(ICON_FA_FORWARD_STEP))
-				this->m_animPlayer->StepPlay(1.f / 30.f);
-
-			ImGui::SameLine();
-			if (ImGui::Button(ICON_FA_FORWARD_FAST))
-				this->m_animPlayer->SetTime(RMath::TimeToFrame(this->m_eventTrackEditor->m_frameMax));
-
-			ImGui::Separator();
-
-			ImGui::EndMenuBar();
+			ImGui::EndMenu();
 		}
 
-		ImVec2 pos = ImGui::GetWindowPos();
-
-		int	width = ImGui::GetWindowSize().x;
-		int	height = ImGui::GetWindowSize().y;
-
-		ImGui::InvisibleButton("viewport_preview", ImVec2(width, height));
-
-		if (ImGui::IsItemFocused() && ImGui::IsItemHovered())
+		if (ImGui::BeginMenu("Model"))
 		{
-			g_scene->m_camera.m_registerInput = true;
+			if (ImGui::MenuItem("Show Dummies", NULL, &this->m_sceneFlags.m_drawDummies)) { this->m_sceneFlags.m_drawDummies != this->m_sceneFlags.m_drawDummies; }
 
-			if (ImGui::IsMouseDown(0))
-				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+			bool disabled = true;
 
-			if (ImGui::IsMouseDown(1))
-				ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
+			if (characterDef && characterDef->getCharacterId() == 1)
+				disabled = false;
+
+			ImGui::BeginDisabled(disabled);
+
+			if (ImGui::MenuItem("Player Parts", NULL, &this->m_windowStates.m_playerPartsManagerWindow)) { this->m_windowStates.m_playerPartsManagerWindow != this->m_windowStates.m_playerPartsManagerWindow; }
+
+			ImGui::EndDisabled();
+			ImGui::EndMenu();
 		}
 
-		g_scene->SetRenderResolution(width, height);
+		ImGui::Separator();
 
-		ImGui::GetWindowDrawList()->AddImage(g_scene->m_shaderResourceViewViewport, pos, ImVec2(pos.x + width, pos.y + height));
+		if (ImGui::Button(ICON_FA_BACKWARD_FAST))
+			this->m_animPlayer->SetTime(0.f);
 
-		if (this->m_sceneFlags.m_sceneExplorer)
-			this->PreviewSceneExplorerWindow();
+		ImGui::SameLine();
+		if (ImGui::Button(ICON_FA_BACKWARD_STEP))
+			this->m_animPlayer->StepPlay(-1.f / 30.f);
+
+		ImGui::SameLine();
+		if (ImGui::Button(ICON_FA_PAUSE))
+			this->m_animPlayer->SetPause(true);
+
+		ImGui::SameLine();
+		if (ImGui::Button(ICON_FA_PLAY))
+			this->m_animPlayer->SetPause(false);
+
+		ImGui::SameLine();
+		if (ImGui::Button(ICON_FA_FORWARD_STEP))
+			this->m_animPlayer->StepPlay(1.f / 30.f);
+
+		ImGui::SameLine();
+		if (ImGui::Button(ICON_FA_FORWARD_FAST))
+			this->m_animPlayer->SetTime(RMath::TimeToFrame(this->m_eventTrackEditor->m_frameMax));
+
+		ImGui::Separator();
+
+		ImGui::EndMenuBar();
 	}
+
+	ImVec2 pos = ImGui::GetWindowPos();
+
+	int	width = ImGui::GetWindowSize().x;
+	int	height = ImGui::GetWindowSize().y;
+
+	ImGui::InvisibleButton("viewport_preview", ImVec2(width, height));
+
+	if (ImGui::IsItemFocused() && ImGui::IsItemHovered())
+	{
+		g_scene->m_camera.m_registerInput = true;
+
+		if (ImGui::IsMouseDown(0))
+			ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+
+		if (ImGui::IsMouseDown(1))
+			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
+	}
+
+	g_scene->SetRenderResolution(width, height);
+
+	ImGui::GetWindowDrawList()->AddImage(g_scene->m_shaderResourceViewViewport, pos, ImVec2(pos.x + width, pos.y + height));
+
+	if (this->m_sceneFlags.m_sceneExplorer)
+		this->PreviewSceneExplorerWindow();
 
 	ImGui::End();
 }
@@ -921,10 +925,13 @@ void Application::AssetsWindow()
 {
 	ImGui::Begin("Assets");
 
+	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
+
+	if (characterDef)
 	{
 		static int selected_tae_file_idx = -1;
 		char chr_id_str[50];
-		sprintf_s(chr_id_str, "%04d", this->m_chrId);
+		sprintf_s(chr_id_str, "%04d", characterDef->getCharacterId());
 
 		std::string tae_popup = "Load TimeAct (c" + std::string(chr_id_str) + ")";
 
@@ -1355,8 +1362,8 @@ void Application::EventTrackInfoWindow()
 				this->m_eventTrackEditor->m_save = false;
 				this->m_eventTrackEditor->SetEditedState(false);
 
-				for (int i = 0; i < this->m_eventTrackEditor->GetTrackCount(); i++)
-					this->m_eventTrackEditor->m_eventTracks[i].SaveEventTrackData(this->m_eventTrackEditor->m_lenMult);
+				//for (int i = 0; i < this->m_eventTrackEditor->GetTrackCount(); i++)
+					//this->m_eventTrackEditor->m_eventTracks[i].SaveEventTrackData(this->m_eventTrackEditor->m_lenMult);
 			}
 		}
 	}
@@ -2192,7 +2199,7 @@ void Application::CheckFlags()
 			std::wstring out_path = L"Export";
 
 			wchar_t chr_id_str[50];
-			swprintf_s(chr_id_str, L"c%04d", this->m_chrId);
+			swprintf_s(chr_id_str, L"c%04d", characterDef->getCharacterId());
 
 			out_path += L"\\" + std::wstring(chr_id_str) + L"\\";
 
@@ -2203,7 +2210,7 @@ void Application::CheckFlags()
 			if (this->m_fbxExportFlags.m_exportModelWithAnims)
 			{
 				if (!this->ExportModelToFbx(export_path))
-					g_appLog->AlertMessage(MsgLevel_Error, "Failed to export FBX model (chrId=c%04d)\n", this->m_chrId);
+					g_appLog->AlertMessage(MsgLevel_Error, "Failed to export FBX model (chrId=c%04d)\n", characterDef->getCharacterId());
 			}
 			
 			for (int i = 0; i < numAnims; i++)
@@ -2214,10 +2221,10 @@ void Application::CheckFlags()
 				if (!this->ExportAnimationToFbx(anim_out, i))
 					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export animation %d\n", i);
 
-				std::filesystem::path takeListPath = std::filesystem::path(RString::ToNarrow(export_path) + "morphemeMarkup\\" + RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx.xml");
-				std::filesystem::create_directories(takeListPath.parent_path());
+				ME::TakeListXML* takeListXML = characterDef->getAnimation(i)->GetTakeXML();
 
-				ME::TakeListXML* takeListXML = MorphemeExport::ExportAnimXML(characterDef, i, takeListPath.c_str());
+				std::filesystem::path takeListPath = takeListXML->getDestFilename();
+				std::filesystem::create_directories(takeListPath.parent_path());
 
 				bool state = false;
 
@@ -2230,22 +2237,27 @@ void Application::CheckFlags()
 		}
 	}
 
-	if (this->m_flags.m_exportModel)
+	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
+
+	if (characterDef)
 	{
-		this->m_flags.m_exportModel = false;
+		if (this->m_flags.m_exportModel)
+		{
+			this->m_flags.m_exportModel = false;
 
-		std::wstring out_path = L"Export";
+			std::wstring out_path = L"Export";
 
-		wchar_t chr_id_str[50];
-		swprintf_s(chr_id_str, L"c%04d", this->m_chrId);
+			wchar_t chr_id_str[50];
+			swprintf_s(chr_id_str, L"c%04d", characterDef->getCharacterId());
 
-		out_path += L"\\" + std::wstring(chr_id_str) + L"\\";
+			out_path += L"\\" + std::wstring(chr_id_str) + L"\\";
 
-		std::filesystem::create_directories(out_path);
+			std::filesystem::create_directories(out_path);
 
-		PWSTR export_path = (wchar_t*)out_path.c_str();
+			PWSTR export_path = (wchar_t*)out_path.c_str();
 
-		this->ExportModelToFbx(export_path);
+			this->ExportModelToFbx(export_path);
+		}
 	}
 
 	if (this->m_morphemeSystem->GetCharacterDef() == nullptr)
@@ -2268,115 +2280,70 @@ void Application::CheckFlags()
 
 		if ((characterDef) && characterDef->isLoaded() && (this->m_eventTrackEditor->m_targetAnimIdx != -1))
 		{
-			bool found_et = false;
-			bool found_anim = false;
-
 			this->m_eventTrackEditor->m_eventTrackActionTimeActValue = -1;
 			this->m_eventTrackEditor->m_eventTrackActionTimeActStart = 0.f;
 			this->m_eventTrackEditor->m_eventTrackActionTimeActDuration = 0.f;
 
-			g_appLog->DebugMessage(MsgLevel_Debug, "Performing lookup for animation ID %d\n", this->m_eventTrackEditor->m_targetAnimIdx);
-			MR::NetworkDef* netDef = characterDef->getNetworkDef();
-			int numNodes = netDef->getNumNodeDefs();
+			AnimSourceInterface* animSource = characterDef->getAnimation(this->m_eventTrackEditor->m_targetAnimIdx);
+			this->m_eventTrackEditor->m_animSource = animSource;
 
-			for (int idx = 0; idx < numNodes; idx++)
+			ME::TakeListXML* takeList = animSource->GetTakeXML();
+			if (takeList)
 			{
-				MR::NodeDef* node = netDef->getNodeDef(idx);
+				this->m_eventTrackEditor->m_frameMin = RMath::TimeToFrame(takeList->getTake(0)->getClipStart() * animSource->GetTakeXML()->getTake(0)->getCachedTakeSecondsDuration());
+				this->m_eventTrackEditor->m_frameMax = RMath::TimeToFrame(takeList->getTake(0)->getClipEnd() * animSource->GetTakeXML()->getTake(0)->getCachedTakeSecondsDuration());
 
-				if (node->getNodeTypeID() == NODE_TYPE_ANIM_EVENTS)
+				this->m_eventTrackEditor->m_animIdx = -1;
+
+				for (int i = 0; i < characterDef->getAnimFileLookUp()->getNumAnims(); i++)
 				{
-					MR::AttribDataSourceAnim* source_anim = (MR::AttribDataSourceAnim*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM);
-					MR::AttribDataSourceEventTrackSet* source_tracks = (MR::AttribDataSourceEventTrackSet*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_EVENT_TRACKS);
+					if (characterDef->getAnimation(i)->GetID() == animSource->GetID())
+						this->m_eventTrackEditor->m_animIdx = i;
+				}
 
-					if (source_anim && source_anim->m_animAssetID == this->m_eventTrackEditor->m_targetAnimIdx)
+				this->m_eventTrackEditor->m_lenMult = takeList->getTake(0)->getCachedTakeSecondsDuration() / (takeList->getTake(0)->getClipEnd() - takeList->getTake(0)->getClipStart());
+				int track_count = takeList->getTake(0)->getNumEventTracks();
+
+				this->m_eventTrackEditor->m_eventTracks.reserve(track_count);
+
+				for (size_t i = 0; i < track_count; i++)
+				{
+					ME::EventTrackExport* eventTrackXML = takeList->getTake(0)->getEventTrack(i);
+
+					this->m_eventTrackEditor->m_eventTracks.push_back(EventTrackEditor::EventTrack(eventTrackXML, this->m_eventTrackEditor->m_lenMult));
+				}
+
+				this->m_eventTrackEditor->SetEditedState(false);
+
+				if (this->m_timeAct)
+				{
+					for (size_t i = 0; i < this->m_eventTrackEditor->m_eventTracks.size(); i++)
 					{
-						found_anim = true;
-
-						g_appLog->DebugMessage(MsgLevel_Debug, "Animation found after %d steps\n", idx);
-
-						this->m_eventTrackEditor->m_nodeSource = node;
-						this->m_eventTrackEditor->m_frameMin = RMath::TimeToFrame(source_anim->m_clipStartFraction * source_anim->m_sourceAnimDuration);
-						this->m_eventTrackEditor->m_frameMax = RMath::TimeToFrame(source_anim->m_clipEndFraction * source_anim->m_sourceAnimDuration);
-
-						this->m_eventTrackEditor->m_animIdx = -1;
-
-						for (int i = 0; i < characterDef->getAnimFileLookUp()->getNumAnims(); i++)
+						if (this->m_eventTrackEditor->m_eventTracks[i].m_eventId == 1000)
 						{
-							if (characterDef->getAnimation(i)->GetID() == source_anim->m_animAssetID)
-								this->m_eventTrackEditor->m_animIdx = i;
-						}
+							this->m_eventTrackEditor->m_eventTrackActionTimeActValue = this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_value;
+							this->m_eventTrackEditor->m_eventTrackActionTimeActStart = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_frameStart);
+							this->m_eventTrackEditor->m_eventTrackActionTimeActDuration = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_duration);
 
-						if (source_tracks)
-						{
-							this->m_eventTrackEditor->m_lenMult = source_anim->m_sourceAnimDuration / (source_anim->m_clipEndFraction - source_anim->m_clipStartFraction);
-							int track_count = source_tracks->m_numDiscreteEventTracks + source_tracks->m_numCurveEventTracks + source_tracks->m_numDurEventTracks;
-							this->m_eventTrackEditor->m_eventTracks.reserve(track_count);
+							this->m_timeActEditor->m_taeId = this->m_eventTrackEditor->m_eventTrackActionTimeActValue;
 
-							found_et = true;
-
-							for (int i = 0; i < source_tracks->m_numDiscreteEventTracks; i++)
+							for (size_t j = 0; j < this->m_timeAct->m_tae.size(); j++)
 							{
-								MR::EventTrackDefDiscrete* source_trackss = source_tracks->m_sourceDiscreteEventTracks[i];
-
-								if (source_trackss)
-									this->m_eventTrackEditor->m_eventTracks.push_back(EventTrackEditor::EventTrack(source_trackss, this->m_eventTrackEditor->m_lenMult));
+								if (this->m_timeAct->m_tae[j].m_id == this->m_timeActEditor->m_taeId)
+									this->m_timeActEditor->m_selectedTimeActIdx = j;
 							}
 
-							for (int i = 0; i < source_tracks->m_numCurveEventTracks; i++)
-							{
-								MR::EventTrackDefCurve* source_trackss = source_tracks->m_sourceCurveEventTracks[i];
-
-								if (source_trackss)
-									this->m_eventTrackEditor->m_eventTracks.push_back(EventTrackEditor::EventTrack(source_trackss, this->m_eventTrackEditor->m_lenMult));
-							}
-
-							for (int i = 0; i < source_tracks->m_numDurEventTracks; i++)
-							{
-								MR::EventTrackDefDuration* source_trackss = source_tracks->m_sourceDurEventTracks[i];
-
-								if (source_trackss)
-									this->m_eventTrackEditor->m_eventTracks.push_back(EventTrackEditor::EventTrack(source_trackss, this->m_eventTrackEditor->m_lenMult));
-							}
-
-							this->m_eventTrackEditor->SetEditedState(false);
-
-							if (this->m_timeAct)
-							{
-								for (size_t i = 0; i < this->m_eventTrackEditor->m_eventTracks.size(); i++)
-								{
-									if (this->m_eventTrackEditor->m_eventTracks[i].m_eventId == 1000)
-									{
-										this->m_eventTrackEditor->m_eventTrackActionTimeActValue = this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_value;
-										this->m_eventTrackEditor->m_eventTrackActionTimeActStart = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_frameStart);
-										this->m_eventTrackEditor->m_eventTrackActionTimeActDuration = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_duration);
-
-										this->m_timeActEditor->m_taeId = this->m_eventTrackEditor->m_eventTrackActionTimeActValue;
-
-										for (size_t j = 0; j < this->m_timeAct->m_tae.size(); j++)
-										{
-											if (this->m_timeAct->m_tae[j].m_id == this->m_timeActEditor->m_taeId)
-												this->m_timeActEditor->m_selectedTimeActIdx = j;
-										}
-
-										this->m_timeActEditor->m_load = true;
-
-										break;
-									}
-								}
-							}
+							this->m_timeActEditor->m_load = true;
 
 							break;
-						}
-						else
-						{
-							g_appLog->DebugMessage(MsgLevel_Debug, "Animation %d has no event tracks associated to it\n", source_anim->m_animAssetID);
 						}
 					}
 				}
 			}
-
-			if (!found_anim)
-				g_appLog->DebugMessage(MsgLevel_Warn, "Animation ID %d not found\n", this->m_eventTrackEditor->m_targetAnimIdx);
+			else
+			{
+				g_appLog->DebugMessage(MsgLevel_Debug, "Animation %d has no event tracks associated to it\n", animSource->GetID());
+			}
 
 			g_appLog->DebugMessage(MsgLevel_Debug, "\n");
 		}
@@ -2474,25 +2441,6 @@ void Application::CheckFlags()
 		model = this->m_animPlayer->GetModelPartFacegen(FaceGen_Hair);
 		SetModelFlags(model, this->m_sceneFlags.m_displayMode, this->m_sceneFlags.m_drawDummies);
 	}
-}
-
-int GetChrIdFromNmbFileName(std::wstring name)
-{
-	std::wstring chr_id_str;
-	int m_chrId = -1;
-
-	int lastCPos = name.find_last_of(L"\\");
-
-	if (name.substr(lastCPos + 1, 1).compare(L"c") != 0)
-		return -1;
-
-	chr_id_str = name.substr(lastCPos + 2, 4);
-
-	m_chrId = stoi(chr_id_str);
-
-	g_appLog->DebugMessage(MsgLevel_Debug, "Chr ID: %d\n", m_chrId);
-
-	return m_chrId;
 }
 
 std::wstring GetObjIdFromTaeFileName(std::wstring name)
@@ -2620,9 +2568,7 @@ void Application::LoadFile()
 								for (int i = 0; i < m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getNumAnims(); i++)
 									this->m_eventTrackEditor->m_edited.push_back(false);
 
-								this->m_chrId = GetChrIdFromNmbFileName(filepath.c_str());
-
-								if (this->m_chrId != -1)
+								if (characterDef->getCharacterId() != -1)
 								{
 									std::filesystem::path gamepath = FindGamePath(pszFilePath);
 									this->m_gamePath = gamepath;
@@ -2644,7 +2590,7 @@ void Application::LoadFile()
 										filepath_parts += "\\model\\parts";
 
 										wchar_t chr_id_str[50];
-										swprintf_s(chr_id_str, L"%04d", this->m_chrId);
+										swprintf_s(chr_id_str, L"%04d", characterDef->getCharacterId());
 
 										std::wstring string = std::wstring(chr_id_str);
 
@@ -2662,7 +2608,7 @@ void Application::LoadFile()
 										}
 
 										//Load external parts for the player character
-										if (this->m_chrId == 1)
+										if (characterDef->getCharacterId() == 1)
 										{
 											LoadPlayerModelParts(this, filepath_parts);
 										}
@@ -2739,9 +2685,6 @@ void Application::LoadFile()
 													break;
 												}
 											}
-
-											if (!found_model)
-												g_appLog->DebugMessage(MsgLevel_Debug, "Could not find model for c%04d\n", this->m_chrId);
 										}
 									}
 									else
@@ -2998,7 +2941,7 @@ bool Application::ExportAnimationToFbx(std::filesystem::path export_path, int an
 
 	if (!FBXTranslator::CreateFbxTake(pScene, pMorphemeRig, characterDef->getAnimationById(anim_id), characterDef->getAnimFileLookUp()->getTakeName(anim_id)))
 	{
-		g_appLog->DebugMessage(MsgLevel_Error, "Failed to create FBX anim take (animId=%d, chrId=c%04d)\n", anim_id, this->m_chrId);
+		g_appLog->DebugMessage(MsgLevel_Error, "Failed to create FBX anim take (animId=%d, chrId=c%04d)\n", anim_id, characterDef->getCharacterId());
 		status = false;
 	}
 
@@ -3015,13 +2958,18 @@ bool Application::ExportModelToFbx(std::filesystem::path export_path)
 {
 	bool status = true;
 
-	g_appLog->DebugMessage(MsgLevel_Debug, "Exporting model to FBX for c%04d\n", this->m_chrId);
+	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
+
+	if (characterDef == nullptr)
+		return false;
+
+	g_appLog->DebugMessage(MsgLevel_Debug, "Exporting model to FBX for c%04d\n", characterDef->getCharacterId());
 
 	FbxExporter* pExporter = FbxExporter::Create(g_pFbxManager, "");
 	pExporter->SetFileExportVersion(FBX_2014_00_COMPATIBLE);
 
 	char chr_id_str[20];
-	sprintf_s(chr_id_str, "c%04d", this->m_chrId);
+	sprintf_s(chr_id_str, "c%04d", characterDef->getCharacterId());
 
 	std::string model_out = export_path.string() + std::string(chr_id_str) + ".fbx";
 
@@ -3039,13 +2987,11 @@ bool Application::ExportModelToFbx(std::filesystem::path export_path)
 	FbxPose* pBindPoses = FbxPose::Create(pScene, "BindPoses");
 	pBindPoses->SetIsBindPose(true);
 
-	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
-
 	std::vector<FbxNode*> pMorphemeRig = FBXTranslator::CreateFbxMorphemeSkeleton(pScene, characterDef->getNetworkDef()->getRig(0), pBindPoses);
 
-	if (!FBXTranslator::CreateFbxModel(pScene, this->m_animPlayer->GetModel(), this->m_chrId, pBindPoses, pMorphemeRig, model_out, this->m_animPlayer->GetModel()->GetFlverToMorphemeBoneMap()))
+	if (!FBXTranslator::CreateFbxModel(pScene, this->m_animPlayer->GetModel(), characterDef->getCharacterId(), pBindPoses, pMorphemeRig, model_out, this->m_animPlayer->GetModel()->GetFlverToMorphemeBoneMap()))
 	{
-		g_appLog->DebugMessage(MsgLevel_Error, "Failed to create FBX model/skeleton (chrId=c%04d)\n", this->m_chrId);
+		g_appLog->DebugMessage(MsgLevel_Error, "Failed to create FBX model/skeleton (chrId=c%04d)\n", characterDef->getCharacterId());
 
 		status = false;
 	}

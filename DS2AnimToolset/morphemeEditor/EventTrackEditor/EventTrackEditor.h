@@ -37,7 +37,7 @@ struct EventTrackEditor
             int m_value = 0;
         };
 
-        MR::EventTrackDefBase* m_source;
+        ME::EventTrackExport* m_source;
 
         int m_numEvents;
         int m_eventId;
@@ -46,13 +46,12 @@ struct EventTrackEditor
         bool m_discrete;
 
         EventTrack(int numEvents, int eventId, Event* event, char* name, bool is_discrete);
-        EventTrack(MR::EventTrackDefBase* src, float len);
+        EventTrack(ME::EventTrackExport* src, float len);
 
-        void SaveEventTrackData(float len);
         bool IsEventActive(int event_idx, int frame);
     };
 
-    MR::NodeDef* m_nodeSource;
+    AnimSourceInterface* m_animSource;
 
     int m_fps = 60;
     int m_animIdx = -1;

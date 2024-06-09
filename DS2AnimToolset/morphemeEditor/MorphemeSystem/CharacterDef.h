@@ -66,6 +66,7 @@ public:
   MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* getAnimFileLookUp() const { return m_metadata.m_animFileLookUp; }
   const char* getBundleFilepath() const { return m_metadata.m_bundleDir; }
   const char* getFilename() const { return m_filename; }
+  int getCharacterId() const { return m_chrId; }
   MR::RigToAnimMap* getRigToAnimMap(int idx);
   AnimSourceInterface* getAnimation(int idx);
   AnimSourceInterface* getAnimationById(int id);
@@ -108,6 +109,7 @@ protected:
   AnimData m_metadata;
   char m_filename[255];
 
+  int m_chrId;
   std::vector<AnimSourceInterface*> m_anims;
 };
 

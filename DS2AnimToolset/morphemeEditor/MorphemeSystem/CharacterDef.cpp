@@ -17,6 +17,25 @@
 #include "AssetLoader.h"
 //----------------------------------------------------------------------------------------------------------------------
 
+int GetChrIdFromNmbFileName(std::wstring name)
+{
+    std::wstring chr_id_str;
+    int m_chrId = -1;
+
+    int lastCPos = name.find_last_of(L"\\");
+
+    if (name.substr(lastCPos + 1, 1).compare(L"c") != 0)
+        return -1;
+
+    chr_id_str = name.substr(lastCPos + 2, 4);
+
+    m_chrId = stoi(chr_id_str);
+
+    g_appLog->DebugMessage(MsgLevel_Debug, "Chr ID: %d\n", m_chrId);
+
+    return m_chrId;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 CharacterDefBasic* CharacterDefBasic::create(const char* filename)
 {
@@ -30,6 +49,8 @@ CharacterDefBasic* CharacterDefBasic::create(const char* filename)
 
   strcpy(instance->m_metadata.m_bundleDir, filepath.parent_path().string().c_str());
   strcpy(instance->m_filename, file_name.string().c_str());
+
+  instance->m_chrId = GetChrIdFromNmbFileName(filepath.c_str());
 
   //----------------------------
   // Load the given bundle file into memory and load the bundle.
@@ -210,7 +231,7 @@ void CharacterDefBasic::addAnimation(const char* filename)
 
     int idx = m_anims.size();
 
-    m_anims.push_back(new AnimSourceInterface(this->m_netDef->getRig(0), this->m_rigToAnimMaps[0], filename, idx));
+    m_anims.push_back(new AnimSourceInterface(this, this->m_netDef->getRig(0), this->m_rigToAnimMaps[0], filename, idx));
 }
 
 void CharacterDefBasic::sortAnimations()

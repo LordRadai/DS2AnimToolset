@@ -129,8 +129,6 @@ public:
 	
 	std::wstring m_gamePath;
 
-	int m_chrId = -1;
-
 	MorphemeSystem* m_morphemeSystem;
 	AnimPlayer* m_animPlayer;
 

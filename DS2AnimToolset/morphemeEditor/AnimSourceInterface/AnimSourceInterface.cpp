@@ -2,12 +2,15 @@
 #include <string>
 #include <filesystem>
 #include "utils/NMDX/NMDX.h"
+#include "utils/RString/RString.h"
+#include "MorphemeSystem/CharacterDef.h"
+#include "MorphemeSystem/MorphemeExport.h"
 
 AnimSourceInterface::AnimSourceInterface()
 {
 }
 
-AnimSourceInterface::AnimSourceInterface(MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id)
+AnimSourceInterface::AnimSourceInterface(CharacterDefBasic* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id)
 {	
     void* animData = NULL;
     int64_t animSize = 0;
@@ -61,7 +64,13 @@ AnimSourceInterface::AnimSourceInterface(MR::AnimRigDef* rig, MR::RigToAnimMap* 
         animHandle->setTime(0.f);
     }
 
+    wchar_t out_path[255];
+    swprintf_s(out_path, L"Export\\c%04d\\morphemeMarkup\\", owner->getCharacterId());
+
+    std::filesystem::path takeListPath = std::filesystem::path(out_path).string() + owner->getAnimFileLookUp()->getSourceFilename(id) + ".xml";
+
 	this->m_animHandle = animHandle;
+    this->m_takeList = MorphemeExport::ExportAnimXML(owner, id, takeListPath.c_str());
 	this->m_id = id;
 
     strcpy(this->m_animName, name.string().c_str());

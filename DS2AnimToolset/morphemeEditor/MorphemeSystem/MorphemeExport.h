@@ -10,5 +10,5 @@
 
 namespace MorphemeExport
 {
-	ME::TakeListXML* ExportAnimXML(CharacterDefBasic* character, int animId, std::wstring animName);
+	ME::TakeListXML* ExportAnimXML(CharacterDefBasic* character, int animId, std::wstring dstFileName);
 }
