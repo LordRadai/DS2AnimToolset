@@ -2290,8 +2290,10 @@ void Application::CheckFlags()
 			ME::TakeListXML* takeList = animSource->GetTakeXML();
 			if (takeList)
 			{
-				this->m_eventTrackEditor->m_frameMin = RMath::TimeToFrame(takeList->getTake(0)->getClipStart() * animSource->GetTakeXML()->getTake(0)->getCachedTakeSecondsDuration());
-				this->m_eventTrackEditor->m_frameMax = RMath::TimeToFrame(takeList->getTake(0)->getClipEnd() * animSource->GetTakeXML()->getTake(0)->getCachedTakeSecondsDuration());
+				float animLen = animSource->GetTakeXML()->getTake(0)->getCachedTakeSecondsDuration();
+
+				this->m_eventTrackEditor->m_frameMin = RMath::TimeToFrame(takeList->getTake(0)->getClipStart() * animLen);
+				this->m_eventTrackEditor->m_frameMax = RMath::TimeToFrame(takeList->getTake(0)->getClipEnd() * animLen);
 
 				this->m_eventTrackEditor->m_animIdx = -1;
 
