@@ -179,7 +179,7 @@ namespace ImSequencer
         static bool addTrackIsDuration = false;
 
         static float addEventStart = 0.f;
-        static float addEventDur = 0.f;
+        static float addEventDur = 1.f / 60.f;
         static int addEventUserData = 0;
 
         bool delEvent = false;
@@ -631,7 +631,10 @@ namespace ImSequencer
                 ImGui::Text((char*)eventTrackEditor->m_eventTracks[*selectedTrack].m_name.c_str());
                 ImGui::Separator();
 
-                ImGui::InputFloat("Start", &addEventDur, 1.f / 60.f);
+                ImGui::InputFloat("Start", &addEventStart, 1.f / 60.f);
+
+                if (addEventStart < 0.f)
+                    addEventStart = 0.f;
 
                 if (addEventDur < 0.f)
                     addEventDur = 0.f;

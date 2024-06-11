@@ -36,9 +36,9 @@ ME::TakeListXML* MorphemeExport::ExportAnimXML(CharacterDef* character, int anim
 
 	ME::ExportFactoryXML factory;
 
-	std::wstring dstFilename = dstFileName;
+	std::wstring dest = dstFileName;
 
-	ME::TakeListXML* takeList = (ME::TakeListXML*)factory.createTakeList(dstFileName.c_str(), dstFilename.c_str());
+	ME::TakeListXML* takeList = (ME::TakeListXML*)factory.createTakeList(dest.c_str(), dest.c_str());
 	ME::TakeExportXML* take = (ME::TakeExportXML*)takeList->createTake(RString::ToWide(character->getAnimFileLookUp()->getTakeName(sourceAnimId)).c_str(), sourceAnim->m_sourceAnimDuration, 30, false, sourceAnim->m_clipStartFraction, sourceAnim->m_clipEndFraction);
 
 	for (size_t i = 0; i < sourceEvents->m_numDiscreteEventTracks; i++)

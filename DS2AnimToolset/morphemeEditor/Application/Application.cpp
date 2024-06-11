@@ -1314,7 +1314,7 @@ void Application::EventTrackWindow(int* current_frame, int* first_frame, float* 
 				ImGui::Text("");
 
 			ImGui::BeginChild("sequencer");
-			ImSequencer::Sequencer(m_eventTrackEditor, current_frame, &this->m_eventTrackEditor->m_selectedTrack, &this->m_eventTrackEditor->m_selectedEvent, is_expanded, focused, first_frame, zoom_level, ImSequencer::EDITOR_CHANGE_FRAME | ImSequencer::EDITOR_TRACK_RENAME | ImSequencer::EDITOR_MARK_ACTIVE_EVENTS);
+			ImSequencer::Sequencer(m_eventTrackEditor, current_frame, &this->m_eventTrackEditor->m_selectedTrack, &this->m_eventTrackEditor->m_selectedEvent, is_expanded, focused, first_frame, zoom_level, ImSequencer::EDITOR_EDIT_ALL | ImSequencer::EDITOR_TRACK_ADD | ImSequencer::EDITOR_TRACK_RENAME | ImSequencer::EDITOR_EVENT_ADD | ImSequencer::EDITOR_MARK_ACTIVE_EVENTS);
 			ImGui::EndChild();
 		}
 	}
@@ -1354,7 +1354,10 @@ void Application::EventTrackInfoWindow()
 			}
 
 			ImGui::InputFloat("Start Time", &startTime, 0.f, 0.f, "%.3f", ImGuiInputTextFlags_ReadOnly);
-			ImGui::InputFloat("End Time", &endTime, 0.f, 0.f, "%.3f", ImGuiInputTextFlags_ReadOnly);
+
+			if (!track->m_discrete)
+				ImGui::InputFloat("End Time", &endTime, 0.f, 0.f, "%.3f", ImGuiInputTextFlags_ReadOnly);
+
 			ImGui::PopItemWidth();
 
 			if (this->m_eventTrackEditor->m_save)
@@ -1362,8 +1365,14 @@ void Application::EventTrackInfoWindow()
 				this->m_eventTrackEditor->m_save = false;
 				this->m_eventTrackEditor->SetEditedState(false);
 
-				//for (int i = 0; i < this->m_eventTrackEditor->GetTrackCount(); i++)
-					//this->m_eventTrackEditor->m_eventTracks[i].SaveEventTrackData(this->m_eventTrackEditor->m_lenMult);
+				try
+				{
+					this->m_eventTrackEditor->SaveEventTracks();
+				}
+				catch (const std::exception& e)
+				{
+					g_appLog->PanicMessage(e.what());
+				}
 			}
 		}
 	}
@@ -2221,7 +2230,7 @@ void Application::CheckFlags()
 				if (!this->ExportAnimationToFbx(anim_out, i))
 					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export animation %d\n", i);
 
-				ME::TakeListXML* takeListXML = characterDef->getAnimation(i)->GetTakeXML();
+				ME::TakeListXML* takeListXML = characterDef->getAnimation(i)->GetTakeList();
 
 				std::filesystem::path takeListPath = takeListXML->getDestFilename();
 				std::filesystem::create_directories(takeListPath.parent_path());
@@ -2287,10 +2296,10 @@ void Application::CheckFlags()
 			AnimSourceInterface* animSource = characterDef->getAnimationById(this->m_eventTrackEditor->m_targetAnimIdx);
 			this->m_eventTrackEditor->m_animSource = animSource;
 
-			ME::TakeListXML* takeList = animSource->GetTakeXML();
+			ME::TakeListXML* takeList = animSource->GetTakeList();
 			if (takeList)
 			{
-				float animLen = animSource->GetTakeXML()->getTake(0)->getCachedTakeSecondsDuration();
+				float animLen = animSource->GetTakeList()->getTake(0)->getCachedTakeSecondsDuration();
 
 				this->m_eventTrackEditor->m_frameMin = RMath::TimeToFrame(takeList->getTake(0)->getClipStart() * animLen);
 				this->m_eventTrackEditor->m_frameMax = RMath::TimeToFrame(takeList->getTake(0)->getClipEnd() * animLen);

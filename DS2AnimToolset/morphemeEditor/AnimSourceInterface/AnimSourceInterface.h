@@ -19,11 +19,13 @@ public:
 	int GetID() const { return this->m_id; }
 	const char* GetAnimName() const { return this->m_animName; };
 	MR::AnimationSourceHandle* GetHandle() const { return this->m_animHandle; }
-	ME::TakeListXML* GetTakeXML() const { return this->m_takeList; }
+	ME::TakeListXML* GetTakeList() const { return this->m_takeList; }
 
 	Matrix GetTransformAtTime(float time, int channelId);
 	Vector3 GetTransformPosAtTime(float time, int channelId);
 	Quaternion GetTransformQuatAtTime(float time, int channelId);
+
+	void SetTakeList(ME::TakeListXML* takeList) { this->m_takeList = takeList; }
 private:
 	MR::AnimationSourceHandle* m_animHandle;
 	ME::TakeListXML* m_takeList;

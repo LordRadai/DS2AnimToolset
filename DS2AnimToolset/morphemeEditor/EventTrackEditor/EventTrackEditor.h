@@ -91,6 +91,8 @@ struct EventTrackEditor
     void ReloadTracks();
     void SetEditedState(bool state);
 
+    void SaveEventTracks();
+
     void Clear();
 
     void ResetSelection();
