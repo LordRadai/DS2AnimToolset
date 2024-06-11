@@ -68,7 +68,7 @@ AnimSourceInterface::AnimSourceInterface(CharacterDefBasic* owner, MR::AnimRigDe
     wchar_t out_path[255];
     swprintf_s(out_path, L"Export\\c%04d\\morphemeMarkup\\", owner->getCharacterId());
 
-    std::filesystem::path takeListPath = std::filesystem::path(out_path).string() + RString::RemoveExtension(owner->getAnimFileLookUp()->getSourceFilename(id)) + "fbx.xml";
+    std::filesystem::path takeListPath = std::filesystem::path(out_path).string() + RString::RemoveExtension(owner->getAnimFileLookUp()->getSourceFilename(id)) + ".fbx.xml";
 
 	this->m_animHandle = animHandle;
     this->m_takeList = MorphemeExport::ExportAnimXML(owner, id, takeListPath.c_str());
