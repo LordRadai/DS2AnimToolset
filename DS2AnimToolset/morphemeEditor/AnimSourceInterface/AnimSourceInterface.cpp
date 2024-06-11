@@ -21,34 +21,34 @@ AnimSourceInterface::AnimSourceInterface(CharacterDefBasic* owner, MR::AnimRigDe
 
     bool found = false;
 
+    //Look for the NSA anim file in the same folder as the NMB file first
     if (fileSize > -1)
     {
         animHandle->openAnimation((unsigned char*)animData, fileSize, "nsa");
         found = true;
     }
 
-    while (true)
+    //If it's not found, look in the extended anim folder instead
+    if (!found)
     {
-        if (found)
-            break;
-
         std::filesystem::path parent_path = std::filesystem::path(filename).parent_path().parent_path().string() + "\\c0001\\";
 
-        for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(parent_path))
+        if (std::filesystem::exists(parent_path))
         {
-            std::string filepath = dirEntry.path().string() + "\\" + name.string();
-
-            fileSize = NMP::NMFile::allocAndLoad(filepath.c_str(), &animData, &animSize);
-
-            if (fileSize > -1)
+            for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(parent_path))
             {
-                animHandle->openAnimation((unsigned char*)animData, fileSize, "nsa");
-                found = true;
-                break;
+                std::string filepath = dirEntry.path().string() + "\\" + name.string();
+
+                fileSize = NMP::NMFile::allocAndLoad(filepath.c_str(), &animData, &animSize);
+
+                if (fileSize > -1)
+                {
+                    animHandle->openAnimation((unsigned char*)animData, fileSize, "nsa");
+                    found = true;
+                    break;
+                }
             }
         }
-
-        break;
     }
 
     if (!found)
@@ -64,6 +64,7 @@ AnimSourceInterface::AnimSourceInterface(CharacterDefBasic* owner, MR::AnimRigDe
         animHandle->setTime(0.f);
     }
 
+    //Create markup from EventTracks for the current animation
     wchar_t out_path[255];
     swprintf_s(out_path, L"Export\\c%04d\\morphemeMarkup\\", owner->getCharacterId());
 

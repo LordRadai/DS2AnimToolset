@@ -129,10 +129,9 @@ FbxAMatrix ConvertToFbxAMatrix(const DirectX::SimpleMath::Matrix& dxMatrix)
 //Creates an FbxNode object containing vertices, normals and bone weights
 FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverModel, std::vector<FbxNode*> skeletonNodes, int idx)
 {
-	/*
 	if (pFlverModel->m_flver == nullptr)
 		return nullptr;
-	*/
+
 	if (idx > pFlverModel->m_flver->header.meshCount)
 		return nullptr;
 
@@ -243,10 +242,8 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 
 FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverModel, std::vector<FbxNode*> skeletonNodes, int idx, std::vector<int> morphemeToFlverBoneMap)
 {
-	/*
 	if (pFlverModel->m_flver == nullptr)
 		return nullptr;
-	*/
 
 	if (idx > pFlverModel->m_flver->header.meshCount)
 		return nullptr;
@@ -453,6 +450,10 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 		curveRX->KeyModifyEnd();
 		curveRY->KeyModifyEnd();
 		curveRZ->KeyModifyEnd();
+
+		FbxAnimCurveFilterGimbleKiller gimblerFilter;
+		FbxAnimCurve* rotationCurves[] = { curveRX, curveRY, curveRZ };
+		gimblerFilter.Apply(rotationCurves, 3);
 	}
 
 	return true;
@@ -561,6 +562,10 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 		curveRX->KeyModifyEnd();
 		curveRY->KeyModifyEnd();
 		curveRZ->KeyModifyEnd();
+
+		FbxAnimCurveFilterGimbleKiller gimblerFilter;
+		FbxAnimCurve* rotationCurves[] = { curveRX, curveRY, curveRZ };
+		gimblerFilter.Apply(rotationCurves, 3);
 	}
 
 	return true;
