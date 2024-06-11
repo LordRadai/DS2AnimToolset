@@ -10,7 +10,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 #include "Character.h"
 
-#include "MorphemeSystem.h"
+#include "../MorphemeSystem.h"
 #include "morpheme/mrBlendOps.h"
 #include "NMPlatform/NMFreelistMemoryAllocator.h"
 //----------------------------------------------------------------------------------------------------------------------

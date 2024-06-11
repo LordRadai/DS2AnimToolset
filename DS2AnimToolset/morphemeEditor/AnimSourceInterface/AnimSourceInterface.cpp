@@ -3,8 +3,8 @@
 #include <filesystem>
 #include "utils/NMDX/NMDX.h"
 #include "utils/RString/RString.h"
-#include "MorphemeSystem/CharacterDef.h"
-#include "MorphemeSystem/MorphemeExport.h"
+#include "MorphemeSystem/CharacterDef/CharacterDef.h"
+#include "MorphemeSystem/MorphemeExport/MorphemeExport.h"
 
 AnimSourceInterface::AnimSourceInterface()
 {

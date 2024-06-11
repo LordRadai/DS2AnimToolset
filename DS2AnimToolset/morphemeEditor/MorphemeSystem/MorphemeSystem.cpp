@@ -1,10 +1,10 @@
 #include "MorphemeSystem.h"
-#include "AssetLoader.h"
+#include "AssetLoader/AssetLoader.h"
 #include "simpleBundle/simpleBundle.h"
 #include "NMPlatform/NMFile.h"
 #include "morpheme/Nodes/mrNodes.h"
 #include "morpheme/Nodes/mrNodeAnimSyncEvents.h"
-#include "AnimLoader.h"
+#include "AnimLoader/AnimLoader.h"
 
 #include "extern.h"
 #include "utils/RLog/RLog.h"
@@ -37,8 +37,8 @@ void MorphemeSystem::initMorpheme()
     //----------------------------
     // Initialise animation file handling functions
     MR::Manager::getInstance().setAnimFileHandlingFunctions(
-        AnimLoaderBasic::requestAnim,
-        AnimLoaderBasic::releaseAnim);
+        AnimLoader::requestAnim,
+        AnimLoader::releaseAnim);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

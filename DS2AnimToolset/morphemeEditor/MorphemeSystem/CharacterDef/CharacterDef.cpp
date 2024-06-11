@@ -13,8 +13,8 @@
 #include "extern.h"
 #include "utils/RLog/RLog.h"
 
-#include "MorphemeSystem.h"
-#include "AssetLoader.h"
+#include "../MorphemeSystem.h"
+#include "../AssetLoader/AssetLoader.h"
 //----------------------------------------------------------------------------------------------------------------------
 
 int GetChrIdFromNmbFileName(std::wstring name)
@@ -127,7 +127,7 @@ bool CharacterDef::init(void* bundle, size_t bundleSize)
 
   //----------------------------
   // Evaluate the number of registered (core) and client assets and allocate appropriate storage.
-  AssetLoaderBasic::evalBundleRequirements(m_numRegisteredAssets,
+  AssetLoader::evalBundleRequirements(m_numRegisteredAssets,
     m_numClientAssets,
     bundle,
     bundleSize);
@@ -142,7 +142,7 @@ bool CharacterDef::init(void* bundle, size_t bundleSize)
 
   //----------------------------
   // Process the bundle and extract the contents into memory
-  m_netDef = AssetLoaderBasic::loadBundle(
+  m_netDef = AssetLoader::loadBundle(
                    bundle,
                    bundleSize,
                    m_registeredAssetIDs,
@@ -181,7 +181,7 @@ bool CharacterDef::term()
 
     //----------------------------
     // In the same theme as loadBundle above we call a function that can be cut-and-paste into any program.
-    AssetLoaderBasic::unLoadBundle(m_registeredAssetIDs, m_numRegisteredAssets, m_clientAssets, m_numClientAssets);
+    AssetLoader::unLoadBundle(m_registeredAssetIDs, m_numRegisteredAssets, m_clientAssets, m_numClientAssets);
   }
 
   if (m_registeredAssetIDs)
