@@ -27,7 +27,7 @@
 // Game::World::initMorpheme() registers this animation loader with MR::Manager for use with the tutorials. As this 
 // class has little outside dependencies it should serve well as a starting point for your own implementations.
 //----------------------------------------------------------------------------------------------------------------------
-class AnimLoaderBasic
+class AnimLoader
 {
 public:
 
@@ -45,7 +45,7 @@ protected:
 
   //----------------------------
   // AnimLoader is a static class.
-  AnimLoaderBasic() {}
+  AnimLoader() {}
 
 };
 

@@ -831,7 +831,7 @@ void Application::RenderGUI(const char* title)
 void Application::ModelPreviewWindow()
 {
 	ImGui::Begin("Preview", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar);
-	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
+	CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 	if (ImGui::BeginMenuBar())
 	{
@@ -925,7 +925,7 @@ void Application::AssetsWindow()
 {
 	ImGui::Begin("Assets");
 
-	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
+	CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 	if (characterDef)
 	{
@@ -1042,7 +1042,7 @@ void Application::AssetsWindow()
 		ImGui::BeginTabBar("assets");
 		if (ImGui::BeginTabItem("Animations"))
 		{
-			CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
+			CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 			if (characterDef)
 			{
@@ -2187,7 +2187,7 @@ void Application::CheckFlags()
 	{
 		this->m_flags.m_exportAll = false;
 
-		CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
+		CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 		if (characterDef)
 		{
@@ -2237,7 +2237,7 @@ void Application::CheckFlags()
 		}
 	}
 
-	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
+	CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 	if (characterDef)
 	{
@@ -2276,7 +2276,7 @@ void Application::CheckFlags()
 		this->m_eventTrackEditor->m_load = false;
 		this->m_eventTrackEditor->Clear();
 
-		CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
+		CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 		if ((characterDef) && characterDef->isLoaded() && (this->m_eventTrackEditor->m_targetAnimIdx != -1))
 		{
@@ -2529,14 +2529,14 @@ void Application::LoadFile()
 
 							this->m_animPlayer->Clear();
 
-							CharacterDefBasic* characterDef = m_morphemeSystem->createCharacterDef(filepath.string().c_str());
+							CharacterDef* characterDef = m_morphemeSystem->createCharacterDef(filepath.string().c_str());
 							
 							if (!characterDef)
 								return;
 
 							characterDef->loadAnimations();
 
-							CharacterBasic* character = CharacterBasic::create(characterDef);
+							Character* character = Character::create(characterDef);
 
 							if (!character)
 								return;
@@ -2918,7 +2918,7 @@ bool Application::ExportAnimationToFbx(std::filesystem::path export_path, int an
 {
 	bool status = true;
 
-	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
+	CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 	g_appLog->DebugMessage(MsgLevel_Debug, "Exporting animation %d (%s)\n", anim_id, export_path.filename().string().c_str());
 
@@ -2960,7 +2960,7 @@ bool Application::ExportModelToFbx(std::filesystem::path export_path)
 {
 	bool status = true;
 
-	CharacterDefBasic* characterDef = this->m_morphemeSystem->GetCharacterDef();
+	CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
 
 	if (characterDef == nullptr)
 		return false;

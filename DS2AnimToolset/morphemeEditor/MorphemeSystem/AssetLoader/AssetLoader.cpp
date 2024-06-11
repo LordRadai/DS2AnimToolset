@@ -17,7 +17,7 @@
 #include "utils/RLog/RLog.h"
 #include "extern.h"
 //----------------------------------------------------------------------------------------------------------------------
-void AssetLoaderBasic::evalBundleRequirements(
+void AssetLoader::evalBundleRequirements(
   UINT& numRegisteredAssets,
   UINT& numClientAssets,
   void*     buffer,
@@ -64,7 +64,7 @@ void AssetLoaderBasic::evalBundleRequirements(
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-MR::NetworkDef* AssetLoaderBasic::loadBundle(
+MR::NetworkDef* AssetLoader::loadBundle(
   void*            bundle,
   size_t           bundleSize,
   UINT*        registeredAssetIDs,
@@ -234,7 +234,7 @@ MR::NetworkDef* AssetLoaderBasic::loadBundle(
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void AssetLoaderBasic::unLoadBundle(
+void AssetLoader::unLoadBundle(
   const UINT* registeredAssetIDs,
   UINT        numRegisteredAssets,
   void* const*    clientAssets,

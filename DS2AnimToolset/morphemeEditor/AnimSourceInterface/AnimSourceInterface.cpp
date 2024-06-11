@@ -10,7 +10,7 @@ AnimSourceInterface::AnimSourceInterface()
 {
 }
 
-AnimSourceInterface::AnimSourceInterface(CharacterDefBasic* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id)
+AnimSourceInterface::AnimSourceInterface(CharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id)
 {	
     void* animData = NULL;
     int64_t animSize = 0;

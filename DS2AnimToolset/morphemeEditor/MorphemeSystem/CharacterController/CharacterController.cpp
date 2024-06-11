@@ -15,18 +15,18 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-CharacterControllerBasic* CharacterControllerBasic::create()
+CharacterController* CharacterController::create()
 {
-  CharacterControllerBasic* const instance = 
-    static_cast<CharacterControllerBasic*>(NMPMemoryAlloc(sizeof(CharacterControllerBasic)));
+  CharacterController* const instance = 
+    static_cast<CharacterController*>(NMPMemoryAlloc(sizeof(CharacterController)));
 
-  new(instance) CharacterControllerBasic();
+  new(instance) CharacterController();
 
   return instance;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void CharacterControllerBasic::destroy(CharacterControllerBasic* characterController)
+void CharacterController::destroy(CharacterController* characterController)
 {
   NMP_ASSERT(characterController);
 
@@ -35,7 +35,7 @@ void CharacterControllerBasic::destroy(CharacterControllerBasic* characterContro
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-int32_t CharacterControllerBasic::init(MR::Network* network)
+int32_t CharacterController::init(MR::Network* network)
 {
   m_net = network;
 
@@ -46,7 +46,7 @@ int32_t CharacterControllerBasic::init(MR::Network* network)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void CharacterControllerBasic::updateTransform(
+void CharacterController::updateTransform(
   const NMP::Vector3* requestedDeltaWorldTranslation,
   const NMP::Quat*    requestedDeltaWorldOrientation)
 {
@@ -74,19 +74,19 @@ void CharacterControllerBasic::updateTransform(
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void CharacterControllerBasic::setPosition(const NMP::Vector3& position)
+void CharacterController::setPosition(const NMP::Vector3& position)
 {
   m_characterPosition = position;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void CharacterControllerBasic::setOrientation(const NMP::Quat& orientation)
+void CharacterController::setOrientation(const NMP::Quat& orientation)
 {
   m_characterOrientation = orientation;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-CharacterControllerBasic::CharacterControllerBasic():
+CharacterController::CharacterController():
 m_characterPosition(NMP::Vector3::InitZero),
 m_characterOrientation(NMP::Quat::kIdentity),
 m_net(NULL)

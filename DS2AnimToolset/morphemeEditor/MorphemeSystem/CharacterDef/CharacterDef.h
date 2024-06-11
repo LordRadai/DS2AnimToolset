@@ -27,7 +27,7 @@
 // CharacterDef should contain a unique set of definitions of which to create network/character instances from. In a
 // game scenario CharacterDef could also be used for other character definition data (model/texture assets for
 // example).
-class CharacterDefBasic
+class CharacterDef
 {
 public:
     struct AnimData
@@ -36,17 +36,17 @@ public:
         MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* m_animFileLookUp;
     };
 
-  virtual ~CharacterDefBasic() {};
+  virtual ~CharacterDef() {};
 
   //----------------------------
   // Static method to load the network file (a SimpleBundle), relocate the objects and pointers it contains, and register
   // them with morpheme. This information is then stored in the CharacterDef instance that is passed in - A pointer to
   // the gameCharacterDef is stored in this Game::World for management.
-  static CharacterDefBasic* create(const char* filename);
+  static CharacterDef* create(const char* filename);
 
   //----------------------------
   // term and free a game character def instance
-  static bool destroy(CharacterDefBasic* characterDef);  
+  static bool destroy(CharacterDef* characterDef);  
 
   //----------------------------
   // Load the animations listed for this character definition
@@ -75,7 +75,7 @@ public:
 
 protected:
 
-  CharacterDefBasic():
+  CharacterDef():
     m_isLoaded(false),
     m_netDef(NULL),
     m_metadata{ "", NULL},

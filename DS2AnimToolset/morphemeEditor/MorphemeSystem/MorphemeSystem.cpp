@@ -59,14 +59,14 @@ void MorphemeSystem::termMorpheme()
     {
         //----------------------------
         // Once we've finished with the binary file release it.
-        CharacterBasic::destroy(m_characterData);
+        Character::destroy(m_characterData);
     }
 
     if (m_characterDef && m_characterDef->isLoaded())
     {
         //----------------------------
         // Once we've finished with the binary file release it.
-        CharacterDefBasic::destroy(m_characterDef);
+        CharacterDef::destroy(m_characterDef);
     }
 
     //----------------------------
@@ -80,16 +80,16 @@ void MorphemeSystem::termMorpheme()
 
 //----------------------------------------------------------------------------------------------------------------------
 // Creates a CharacterDef and registers it with the manager.
-CharacterDefBasic* MorphemeSystem::createCharacterDef(const char* filename)
+CharacterDef* MorphemeSystem::createCharacterDef(const char* filename)
 {
     if (this->m_characterDef)
-        CharacterDefBasic::destroy(this->m_characterDef);
+        CharacterDef::destroy(this->m_characterDef);
 
     this->m_characterDef = nullptr;
 
     g_appLog->DebugMessage(MsgLevel_Info, "Creating CharacterDefBasic from file %s\n", filename);
 
-    CharacterDefBasic* gameCharacterDef = CharacterDefBasic::create(filename);
+    CharacterDef* gameCharacterDef = CharacterDef::create(filename);
     if (!gameCharacterDef || !gameCharacterDef->isLoaded())
     {
         NMP_ASSERT_FAIL();
@@ -100,7 +100,7 @@ CharacterDefBasic* MorphemeSystem::createCharacterDef(const char* filename)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void MorphemeSystem::registerCharacterDef(CharacterDefBasic* characterDef)
+void MorphemeSystem::registerCharacterDef(CharacterDef* characterDef)
 {
     //----------------------------
     // store a pointer to the character for use later
@@ -108,7 +108,7 @@ void MorphemeSystem::registerCharacterDef(CharacterDefBasic* characterDef)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void MorphemeSystem::registerCharacter(CharacterBasic* characterData)
+void MorphemeSystem::registerCharacter(Character* characterData)
 {
     //----------------------------
     // store a pointer to the character for use later
@@ -124,12 +124,12 @@ void MorphemeSystem::update(float timeDelta)
     }
 }
 
-CharacterDefBasic* MorphemeSystem::GetCharacterDef()
+CharacterDef* MorphemeSystem::GetCharacterDef()
 {
     return this->m_characterDef;
 }
 
-CharacterBasic* MorphemeSystem::GetCharacter()
+Character* MorphemeSystem::GetCharacter()
 {
     return this->m_characterData;
 }

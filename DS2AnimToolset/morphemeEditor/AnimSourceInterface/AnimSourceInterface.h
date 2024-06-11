@@ -5,13 +5,13 @@
 
 using namespace DirectX::SimpleMath;
 
-class CharacterDefBasic;
+class CharacterDef;
 
 class AnimSourceInterface
 {
 public:
 	AnimSourceInterface();
-	AnimSourceInterface(CharacterDefBasic* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id);
+	AnimSourceInterface(CharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id);
 	~AnimSourceInterface();
 
 	static bool lessThan(AnimSourceInterface* a, AnimSourceInterface* b);

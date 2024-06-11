@@ -17,9 +17,9 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-MR::AnimSourceBase* AnimLoaderBasic::requestAnim(const MR::RuntimeAnimAssetID animAssetID, void* userdata)
+MR::AnimSourceBase* AnimLoader::requestAnim(const MR::RuntimeAnimAssetID animAssetID, void* userdata)
 {
-    CharacterDefBasic::AnimData* metadata = (CharacterDefBasic::AnimData*)userdata;
+    CharacterDef::AnimData* metadata = (CharacterDef::AnimData*)userdata;
 
   MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* info = metadata->m_animFileLookUp;
   const char* dir = metadata->m_bundleDir;
@@ -68,7 +68,7 @@ MR::AnimSourceBase* AnimLoaderBasic::requestAnim(const MR::RuntimeAnimAssetID an
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void AnimLoaderBasic::releaseAnim(
+void AnimLoader::releaseAnim(
   const MR::RuntimeAnimAssetID animAssetID,
   MR::AnimSourceBase*          loadedAnimation,
   void*                        NMP_UNUSED(userdata))

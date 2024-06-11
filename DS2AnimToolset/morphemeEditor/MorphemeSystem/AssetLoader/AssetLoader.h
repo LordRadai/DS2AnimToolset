@@ -16,11 +16,11 @@
 #define GAME_ASSET_LOADER_H
 
 //----------------------------------------------------------------------------------------------------------------------
-#include "CharacterDef.h"
+#include "../CharacterDef/CharacterDef.h"
 #include <vector>
 //----------------------------------------------------------------------------------------------------------------------
 
-class AssetLoaderBasic
+class AssetLoader
 {
 public:
 

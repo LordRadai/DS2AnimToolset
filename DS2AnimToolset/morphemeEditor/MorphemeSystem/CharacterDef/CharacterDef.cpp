@@ -37,12 +37,12 @@ int GetChrIdFromNmbFileName(std::wstring name)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-CharacterDefBasic* CharacterDefBasic::create(const char* filename)
+CharacterDef* CharacterDef::create(const char* filename)
 {
   //----------------------------
   // Create and initialise an instance of our character definition
-  CharacterDefBasic* const instance = static_cast<CharacterDefBasic*>(NMPMemoryAlloc(sizeof(CharacterDefBasic)));
-  new(instance) CharacterDefBasic();
+  CharacterDef* const instance = static_cast<CharacterDef*>(NMPMemoryAlloc(sizeof(CharacterDef)));
+  new(instance) CharacterDef();
 
   std::filesystem::path filepath(filename);
   std::filesystem::path file_name = filepath.filename();
@@ -78,7 +78,7 @@ CharacterDefBasic* CharacterDefBasic::create(const char* filename)
     // Allocate memory and unpack bundle
     if(!(instance->init(bundle, (size_t)bundleSize)))
     {
-      CharacterDefBasic::destroy(instance);
+      CharacterDef::destroy(instance);
 
       NMP_ASSERT_FAIL();
     }
@@ -92,7 +92,7 @@ CharacterDefBasic* CharacterDefBasic::create(const char* filename)
 }
 
 //--------------------------------------------------------------------------------------------------------------------
-bool CharacterDefBasic::destroy(CharacterDefBasic* characterDef)
+bool CharacterDef::destroy(CharacterDef* characterDef)
 {
   NMP_ASSERT(characterDef);
 
@@ -105,7 +105,7 @@ bool CharacterDefBasic::destroy(CharacterDefBasic* characterDef)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-bool CharacterDefBasic::loadAnimations()
+bool CharacterDef::loadAnimations()
 {  
   //----------------------------
   // Load animations listed in this network definition
@@ -118,7 +118,7 @@ bool CharacterDefBasic::loadAnimations()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-bool CharacterDefBasic::init(void* bundle, size_t bundleSize)
+bool CharacterDef::init(void* bundle, size_t bundleSize)
 {  
   if (!bundle || !bundleSize)
   {
@@ -163,7 +163,7 @@ bool CharacterDefBasic::init(void* bundle, size_t bundleSize)
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-bool CharacterDefBasic::term()
+bool CharacterDef::term()
 {
   if( m_isLoaded )
   {
@@ -198,7 +198,7 @@ bool CharacterDefBasic::term()
   return true;
 }
 
-MR::RigToAnimMap* CharacterDefBasic::getRigToAnimMap(int idx)
+MR::RigToAnimMap* CharacterDef::getRigToAnimMap(int idx)
 {
     if (idx < m_rigToAnimMaps.size())
         return m_rigToAnimMaps[idx];
@@ -206,7 +206,7 @@ MR::RigToAnimMap* CharacterDefBasic::getRigToAnimMap(int idx)
     return nullptr;
 }
 
-AnimSourceInterface* CharacterDefBasic::getAnimation(int idx)
+AnimSourceInterface* CharacterDef::getAnimation(int idx)
 {
     if (idx < m_anims.size())
         return m_anims[idx];
@@ -214,7 +214,7 @@ AnimSourceInterface* CharacterDefBasic::getAnimation(int idx)
     return nullptr;
 }
 
-AnimSourceInterface* CharacterDefBasic::getAnimationById(int id)
+AnimSourceInterface* CharacterDef::getAnimationById(int id)
 {
     for (size_t i = 0; i < this->m_anims.size(); i++)
     {
@@ -225,7 +225,7 @@ AnimSourceInterface* CharacterDefBasic::getAnimationById(int id)
     return nullptr;
 }
 
-void CharacterDefBasic::addAnimation(const char* filename)
+void CharacterDef::addAnimation(const char* filename)
 {
     g_appLog->DebugMessage(MsgLevel_Debug, "Register animation %s\n", filename);
 
@@ -234,7 +234,7 @@ void CharacterDefBasic::addAnimation(const char* filename)
     m_anims.push_back(new AnimSourceInterface(this, this->m_netDef->getRig(0), this->m_rigToAnimMaps[0], filename, idx));
 }
 
-void CharacterDefBasic::sortAnimations()
+void CharacterDef::sortAnimations()
 {
     std::sort(m_anims.begin(), m_anims.end(), AnimSourceInterface::lessThan);
 }

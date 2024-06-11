@@ -26,21 +26,21 @@
 
 //----------------------------------------------------------------------------------------------------------------------
 // CharacterControllerNoPhysics maintains the position and rotation of an instantiated character network
-class CharacterControllerBasic : public MR::CharacterControllerInterfaceBase
+class CharacterController : public MR::CharacterControllerInterfaceBase
 {
 public:
 
-  ~CharacterControllerBasic() {};
+  ~CharacterController() {};
 
   //----------------------------
   // Allocate and initialise a CharacterController instance, setting its initial position and orientation.
   // This sets the worldRootTransform to the origin, you can call setCharacterPosition() and setCharacterOrientation()
   //  after init to move the character.
-  static CharacterControllerBasic* create();
+  static CharacterController* create();
 
   //----------------------------
   // Release a CharacterController instance.
-  static void destroy(CharacterControllerBasic* characterController);
+  static void destroy(CharacterController* characterController);
 
   //----------------------------
   // Set the network instance and set it's root.
@@ -68,7 +68,7 @@ public:
 
 protected:
 
-  CharacterControllerBasic();
+  CharacterController();
 
 protected: 
 

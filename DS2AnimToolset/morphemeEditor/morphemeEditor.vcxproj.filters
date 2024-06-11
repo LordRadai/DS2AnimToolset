@@ -153,24 +153,6 @@
     <ClCompile Include="MorphemeEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\AnimLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeSystem\AssetLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeSystem\Character.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeSystem\CharacterController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeSystem\CharacterDef.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AnimSourceInterface\AnimSourceInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -201,7 +183,25 @@
     <ClCompile Include="INI\INI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport.cpp">
+    <ClCompile Include="MorphemeSystem\AnimLoader\AnimLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\AssetLoader\AssetLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\Character\Character.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\CharacterController\CharacterController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\CharacterDef\CharacterDef.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\MorphemeExport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -392,24 +392,6 @@
     <ClInclude Include="utils\MorphemeToDirectX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\AnimLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MorphemeSystem\AssetLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MorphemeSystem\Character.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MorphemeSystem\CharacterController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MorphemeSystem\CharacterDef.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resources\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -452,7 +434,25 @@
     <ClInclude Include="INI\INI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport.h">
+    <ClInclude Include="MorphemeSystem\AnimLoader\AnimLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\AssetLoader\AssetLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\Character\Character.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\CharacterController\CharacterController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\CharacterDef\CharacterDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\MorphemeExport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

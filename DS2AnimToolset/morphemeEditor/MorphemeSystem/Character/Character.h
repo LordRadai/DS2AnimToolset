@@ -16,8 +16,8 @@
 #define GAME_CHARACTER_H
 //----------------------------------------------------------------------------------------------------------------------
 #include "morpheme/mrDispatcher.h"
-#include "CharacterController.h"
-#include "CharacterDef.h"
+#include "../CharacterController/CharacterController.h"
+#include "../CharacterDef/CharacterDef.h"
 //----------------------------------------------------------------------------------------------------------------------
 // 
 //----------------------------------------------------------------------------------------------------------------------
@@ -26,19 +26,19 @@
 // network and the information required to update and run an individual character. In a game scenario a GameCharacter
 // Class could also store data for a character instance (current health/ammo etc).
 //----------------------------------------------------------------------------------------------------------------------
-class CharacterBasic
+class Character
 {
 public:
   
-  ~CharacterBasic() {};
+  ~Character() {};
 
   //----------------------------
   // Static function to create an instance of a morpheme network (GameCharacter)
-  static CharacterBasic* create(CharacterDefBasic* gameCharacterDef);
+  static Character* create(CharacterDef* gameCharacterDef);
 
   //----------------------------
   // Static function to release an instance of Character
-  static void destroy(CharacterBasic* character);  
+  static void destroy(Character* character);  
 
   //----------------------------
   // Update the world transforms from the network transforms. Root position and root rotation are just taken from the
@@ -68,7 +68,7 @@ public:
 
 protected:
 
-  CharacterBasic(CharacterDefBasic* gameCharacterDef):
+  Character(CharacterDef* gameCharacterDef):
     m_characterDef(gameCharacterDef),
     m_net(NULL),
     m_worldTransforms(NULL),
@@ -79,7 +79,7 @@ protected:
 
   //----------------------------
   // Initialise the Game Character, allocate memory etc
-  bool init(CharacterDefBasic* characterDef);
+  bool init(CharacterDef* characterDef);
 
   //----------------------------
   // Release any memory allocated by this class
@@ -87,7 +87,7 @@ protected:
 
 protected:
 
-  CharacterDefBasic*    m_characterDef;    // The character definition that this class is an instance of.
+  CharacterDef*    m_characterDef;    // The character definition that this class is an instance of.
   MR::Network*          m_net;             // The network instance for this character.
 
   NMP::DataBuffer* m_worldTransforms; // The transforms buffer (pose) of the character.

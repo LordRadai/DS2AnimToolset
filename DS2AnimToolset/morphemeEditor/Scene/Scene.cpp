@@ -329,7 +329,7 @@ void Scene::Render()
         
         prim.End();
 
-        CharacterDefBasic* characterDef = g_appRootWindow->m_morphemeSystem->GetCharacterDef();
+        CharacterDef* characterDef = g_appRootWindow->m_morphemeSystem->GetCharacterDef();
 
         if (characterDef)
         {

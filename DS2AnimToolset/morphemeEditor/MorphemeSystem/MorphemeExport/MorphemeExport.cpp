@@ -3,7 +3,7 @@
 
 using namespace MR;
 
-ME::TakeListXML* MorphemeExport::ExportAnimXML(CharacterDefBasic* character, int animId, std::wstring dstFileName)
+ME::TakeListXML* MorphemeExport::ExportAnimXML(CharacterDef* character, int animId, std::wstring dstFileName)
 {
 	MR::NodeDef* animNode = nullptr;
 

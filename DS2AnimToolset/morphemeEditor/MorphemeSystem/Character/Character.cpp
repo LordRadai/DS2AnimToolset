@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-CharacterBasic* CharacterBasic::create(CharacterDefBasic* networkDef)
+Character* Character::create(CharacterDef* networkDef)
 {
   //----------------------------
   // Make sure the networkDef and charCtrl have been initialised
@@ -27,25 +27,25 @@ CharacterBasic* CharacterBasic::create(CharacterDefBasic* networkDef)
 
   //----------------------------
   // Create and initialise an instance of our character
-  CharacterBasic* const instance = static_cast<CharacterBasic*>(NMPMemoryAlloc(sizeof(CharacterBasic)));
-  new(instance) CharacterBasic(networkDef);
+  Character* const instance = static_cast<Character*>(NMPMemoryAlloc(sizeof(Character)));
+  new(instance) Character(networkDef);
 
   //----------------------------
   // Initialise Game Character, allocate memory etc
   if (!instance->init(networkDef))
   {
-    CharacterBasic::destroy(instance);
+    Character::destroy(instance);
     NMP_DEBUG_MSG("error: Failed to create Game Character!");
     return NULL;
   }
 
   //----------------------------
   // Create the Game Character Controller and initialise it
-  CharacterControllerBasic* const characterController = CharacterControllerBasic::create();
+  CharacterController* const characterController = CharacterController::create();
   if (!characterController)
   {
-    CharacterControllerBasic::destroy(characterController);
-    CharacterBasic::destroy(instance);
+    CharacterController::destroy(characterController);
+    Character::destroy(instance);
     NMP_DEBUG_MSG("error: Failed to create Character Controller!");
     return NULL;
   }
@@ -67,14 +67,14 @@ CharacterBasic* CharacterBasic::create(CharacterDefBasic* networkDef)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void CharacterBasic::destroy(CharacterBasic* character)
+void Character::destroy(Character* character)
 {
   //----------------------------
   // First destroy the character controller
-  CharacterControllerBasic* characterController = static_cast<CharacterControllerBasic*>(character->getNetwork()->getCharacterController());
+  CharacterController* characterController = static_cast<CharacterController*>(character->getNetwork()->getCharacterController());
   if (characterController)
   {
-    CharacterControllerBasic::destroy(characterController);
+    CharacterController::destroy(characterController);
     character->getNetwork()->setCharacterController(NULL);
   }
 
@@ -89,7 +89,7 @@ void CharacterBasic::destroy(CharacterBasic* character)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void CharacterBasic::updateWorldTransforms(const NMP::Matrix34& rootTransform)
+void Character::updateWorldTransforms(const NMP::Matrix34& rootTransform)
 {
   NMP::DataBuffer* const transforms = m_net->getTransforms();
   MR::AnimRigDef* const animRig = m_net->getActiveRig();
@@ -102,7 +102,7 @@ void CharacterBasic::updateWorldTransforms(const NMP::Matrix34& rootTransform)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void CharacterBasic::runInitialisingUpdateStep()
+void Character::runInitialisingUpdateStep()
 {
   MR::Task* task;
   MR::ExecuteResult execResult;
@@ -127,7 +127,7 @@ void CharacterBasic::runInitialisingUpdateStep()
 
 //----------------------------------------------------------------------------------------------------------------------
 // Update the morpheme network (this GameCharacter instance)
-bool CharacterBasic::update(float timeDelta)
+bool Character::update(float timeDelta)
 {
   m_net->startUpdate(timeDelta);
 
@@ -145,7 +145,7 @@ bool CharacterBasic::update(float timeDelta)
 
   //----------------------------
   // Update the characterController
-  CharacterControllerBasic* characterController = static_cast<CharacterControllerBasic*>(m_net->getCharacterController());
+  CharacterController* characterController = static_cast<CharacterController*>(m_net->getCharacterController());
   NMP_ASSERT(characterController);
 
   characterController->updateTransform();
@@ -162,7 +162,7 @@ bool CharacterBasic::update(float timeDelta)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-bool CharacterBasic::init(CharacterDefBasic* characterDef)
+bool Character::init(CharacterDef* characterDef)
 {
   m_characterDef = characterDef;
   MR::NetworkDef *networkDef = m_characterDef->getNetworkDef();
@@ -242,7 +242,7 @@ bool CharacterBasic::init(CharacterDefBasic* characterDef)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-bool CharacterBasic::term()
+bool Character::term()
 {
   NMP::Memory::memFree(m_worldTransforms);
 

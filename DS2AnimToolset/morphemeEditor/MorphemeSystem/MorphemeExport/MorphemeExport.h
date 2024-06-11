@@ -6,9 +6,9 @@
 #include "morpheme/mrNodeDef.h"
 #include "morpheme/mrAttribData.h"
 #include "morpheme/AnimSource/mrAnimSource.h"
-#include "CharacterDef.h"
+#include "../CharacterDef/CharacterDef.h"
 
 namespace MorphemeExport
 {
-	ME::TakeListXML* ExportAnimXML(CharacterDefBasic* character, int animId, std::wstring dstFileName);
+	ME::TakeListXML* ExportAnimXML(CharacterDef* character, int animId, std::wstring dstFileName);
 }
