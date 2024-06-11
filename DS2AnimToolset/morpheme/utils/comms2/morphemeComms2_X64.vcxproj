@@ -69,22 +69,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>morphemeComms2_debug</TargetName>
     <IntDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\</OutDir>
+    <OutDir>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>morphemeComms2</TargetName>
     <IntDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\</OutDir>
+    <OutDir>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Tool|x64'">
     <TargetName>morphemeComms2_tool_debug</TargetName>
     <IntDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\</OutDir>
+    <OutDir>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Tool|x64'">
     <TargetName>morphemeComms2_tool</TargetName>
     <IntDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\</OutDir>
+    <OutDir>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

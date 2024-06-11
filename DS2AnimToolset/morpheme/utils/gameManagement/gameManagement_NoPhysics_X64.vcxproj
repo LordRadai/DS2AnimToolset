@@ -43,12 +43,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>gameManagement_NoPhysics_debug</TargetName>
     <IntDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\</OutDir>
+    <OutDir>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>gameManagement_NoPhysics</TargetName>
     <IntDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\</OutDir>
+    <OutDir>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

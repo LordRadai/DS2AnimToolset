@@ -46,6 +46,7 @@
     <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>NMTL</TargetName>
@@ -53,6 +54,7 @@
     <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -69,7 +71,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>..\..\lib\x64\vs$(VisualStudioVersion)\NMTL_debug.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\NMTL_debug.lib</ImportLibrary>
       <ManifestFile>$(IntDir)intermediate.manifest</ManifestFile>
       <ProgramDatabaseFile>$(OutDir)NMTL_debug.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -97,7 +99,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>..\..\lib\x64\vs$(VisualStudioVersion)\NMTL.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\NMTL.lib</ImportLibrary>
       <ManifestFile>$(IntDir)intermediate.manifest</ManifestFile>
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)NMTL.pdb</ProgramDatabaseFile>

@@ -74,13 +74,13 @@
     <OutDir>$(SolutionDir)DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
     <IntDir>$(SolutionDir)DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
     <ExternalIncludePath>$(SolutionDir)DS2AnimToolset\include;$(SolutionDir)DS2AnimToolset\include\zlib;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\Release;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
     <IntDir>$(SolutionDir)DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
     <ExternalIncludePath>$(SolutionDir)DS2AnimToolset\include;$(SolutionDir)DS2AnimToolset\include\zlib;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\Debug\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <TargetName>$(ProjectName)_debug</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
