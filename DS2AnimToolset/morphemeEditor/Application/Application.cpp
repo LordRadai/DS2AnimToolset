@@ -2284,7 +2284,7 @@ void Application::CheckFlags()
 			this->m_eventTrackEditor->m_eventTrackActionTimeActStart = 0.f;
 			this->m_eventTrackEditor->m_eventTrackActionTimeActDuration = 0.f;
 
-			AnimSourceInterface* animSource = characterDef->getAnimation(this->m_eventTrackEditor->m_targetAnimIdx);
+			AnimSourceInterface* animSource = characterDef->getAnimationById(this->m_eventTrackEditor->m_targetAnimIdx);
 			this->m_eventTrackEditor->m_animSource = animSource;
 
 			ME::TakeListXML* takeList = animSource->GetTakeXML();
