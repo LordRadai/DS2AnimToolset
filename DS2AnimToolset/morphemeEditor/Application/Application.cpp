@@ -2146,13 +2146,6 @@ void Application::CheckFlags()
 	if (this->m_flags.m_saveNmb)
 	{
 		this->m_flags.m_saveNmb = false;
-
-		/*
-		if (this->m_nmb.IsInitialised())
-			this->SaveNmbFile();
-		else
-			g_appLog->AlertMessage(MsgLevel_Error, "Application.cpp", "No NMB file is loaded\n");
-		*/
 	}
 
 	if (this->m_flags.m_saveTae)
@@ -2168,18 +2161,6 @@ void Application::CheckFlags()
 	if (this->m_flags.m_saveAll)
 	{
 		this->m_flags.m_saveAll = false;
-
-		/*
-		if (this->m_nmb.IsInitialised())
-		{
-			bool status = m_nmb.SaveToFile(this->m_nmb.GetFilePath());
-
-			if (status)
-				g_appLog->DebugMessage(MsgLevel_Debug, "Save file %ls (bundles=%d, len=%d)\n", m_nmb.GetOutFilePath(), m_nmb.GetBundleCount(), m_nmb.GetOutFileSize());
-			else
-				g_appLog->AlertMessage(MsgLevel_Error, "Failed to generate file\n", "NMBReader.cpp");
-		}
-		*/
 
 		if (this->m_timeAct->m_init)
 		{
