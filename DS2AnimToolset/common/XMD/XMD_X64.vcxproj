@@ -72,7 +72,7 @@
     <Link>
       <AdditionalDependencies>NMTL_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\XMD_debug.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\XMD_debug.lib</ImportLibrary>
       <ManifestFile>$(IntDir)intermediate.manifest</ManifestFile>
       <ProgramDatabaseFile>$(OutDir)XMD_debug.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -101,7 +101,7 @@
       <AdditionalDependencies>NMTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\XMD.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\XMD.lib</ImportLibrary>
       <ManifestFile>$(IntDir)intermediate.manifest</ManifestFile>
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)XMD.pdb</ProgramDatabaseFile>
