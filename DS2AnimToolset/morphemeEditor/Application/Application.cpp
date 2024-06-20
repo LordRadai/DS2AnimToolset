@@ -2534,174 +2534,192 @@ void Application::LoadFile()
 
 						if (filepath.extension() == ".nmb")
 						{
-							this->m_fileNameMapPairList->Clear();
+							g_appLog->DebugMessage(MsgLevel_Info, "Loading NMB file %ws\n", filepath.c_str());
 
-							this->m_animPlayer->Clear();
-
-							CharacterDef* characterDef = m_morphemeSystem->createCharacterDef(filepath.string().c_str());
-							
-							if (!characterDef)
-								return;
-
-							characterDef->loadAnimations();
-
-							Character* character = Character::create(characterDef);
-
-							if (!character)
-								return;
-
-							this->m_morphemeSystem->registerCharacter(character);
-
-							if (m_morphemeSystem->GetCharacterDef()->isLoaded())
+							try
 							{
-								int animCount = m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getNumAnims();
+								this->m_fileNameMapPairList->Clear();
 
-								for (int i = 0; i < animCount; i++)
+								this->m_animPlayer->Clear();
+
+								CharacterDef* characterDef = m_morphemeSystem->createCharacterDef(filepath.string().c_str());
+
+								if (!characterDef)
+									return;
+
+								characterDef->loadAnimations();
+
+								Character* character = Character::create(characterDef);
+
+								if (!character)
+									return;
+
+								this->m_morphemeSystem->registerCharacter(character);
+
+								if (m_morphemeSystem->GetCharacterDef()->isLoaded())
 								{
-									std::filesystem::path animFolder = pszFilePath;
-									std::wstring parent_path = animFolder.parent_path();
+									int animCount = m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getNumAnims();
 
-									std::wstring anim_name = RString::ToWide(this->m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getFilename(i));
-
-									std::wstring anim_path_str = parent_path + L"\\" + anim_name;
-
-									characterDef->addAnimation(RString::ToNarrow(anim_path_str.c_str()).c_str());
-								}
-
-								characterDef->sortAnimations();
-
-								this->m_eventTrackEditor->m_targetAnimIdx = -1;
-								this->m_eventTrackEditor->m_selectedAnimIdx = -1;
-
-								this->m_eventTrackEditor->m_edited.clear();
-								this->m_eventTrackEditor->m_edited.reserve(m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getNumAnims());
-
-								for (int i = 0; i < m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getNumAnims(); i++)
-									this->m_eventTrackEditor->m_edited.push_back(false);
-
-								if (characterDef->getCharacterId() != -1)
-								{
-									std::filesystem::path gamepath = FindGamePath(pszFilePath);
-									this->m_gamePath = gamepath;
-
-									this->m_fileNameMapPairList->Create(this->m_gamePath);
-
-									std::filesystem::path filepath_tae = "";
-									std::filesystem::path filepath_dcx = "";
-									std::filesystem::path filepath_parts = "";
-
-									if (gamepath.compare("") != 0)
+									for (int i = 0; i < animCount; i++)
 									{
-										filepath_tae = gamepath;
-										filepath_dcx = gamepath;
-										filepath_parts = gamepath;
+										std::filesystem::path animFolder = pszFilePath;
+										std::wstring parent_path = animFolder.parent_path();
 
-										filepath_tae += "\\timeact\\chr";
-										filepath_dcx += "\\model\\chr";
-										filepath_parts += "\\model\\parts";
+										std::wstring anim_name = RString::ToWide(this->m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getFilename(i));
 
-										wchar_t chr_id_str[50];
-										swprintf_s(chr_id_str, L"%04d", characterDef->getCharacterId());
+										std::wstring anim_path_str = parent_path + L"\\" + anim_name;
 
-										std::wstring string = std::wstring(chr_id_str);
-
-										this->m_eventTrackEditor->m_taeList = getTaeFileListFromChrId(filepath_tae, chr_id_str);
-										this->m_eventTrackEditor->m_loadTae = true;
-
-										std::wstring model_path = getModelNameFromChrId(filepath_dcx, chr_id_str);
-
-										FlverModel* model = FlverModel::CreateFromBnd(model_path);
-
-										if (model)
-										{
-											this->m_animPlayer->SetModel(model);
-											this->m_animPlayer->GetModel()->CreateFlverToMorphemeBoneMap(this->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
-										}
-
-										//Load external parts for the player character
-										if (characterDef->getCharacterId() == 1)
-										{
-											LoadPlayerModelParts(this, filepath_parts);
-										}
+										characterDef->addAnimation(RString::ToNarrow(anim_path_str.c_str()).c_str());
 									}
-									else
-										g_appLog->DebugMessage(MsgLevel_Debug, "Could not find Game folder\n");
+
+									characterDef->sortAnimations();
+
+									this->m_eventTrackEditor->m_targetAnimIdx = -1;
+									this->m_eventTrackEditor->m_selectedAnimIdx = -1;
+
+									this->m_eventTrackEditor->m_edited.clear();
+									this->m_eventTrackEditor->m_edited.reserve(m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getNumAnims());
+
+									for (int i = 0; i < m_morphemeSystem->GetCharacterDef()->getAnimFileLookUp()->getNumAnims(); i++)
+										this->m_eventTrackEditor->m_edited.push_back(false);
+
+									if (characterDef->getCharacterId() != -1)
+									{
+										std::filesystem::path gamepath = FindGamePath(pszFilePath);
+										this->m_gamePath = gamepath;
+
+										this->m_fileNameMapPairList->Create(this->m_gamePath);
+
+										std::filesystem::path filepath_tae = "";
+										std::filesystem::path filepath_dcx = "";
+										std::filesystem::path filepath_parts = "";
+
+										if (gamepath.compare("") != 0)
+										{
+											filepath_tae = gamepath;
+											filepath_dcx = gamepath;
+											filepath_parts = gamepath;
+
+											filepath_tae += "\\timeact\\chr";
+											filepath_dcx += "\\model\\chr";
+											filepath_parts += "\\model\\parts";
+
+											wchar_t chr_id_str[50];
+											swprintf_s(chr_id_str, L"%04d", characterDef->getCharacterId());
+
+											std::wstring string = std::wstring(chr_id_str);
+
+											this->m_eventTrackEditor->m_taeList = getTaeFileListFromChrId(filepath_tae, chr_id_str);
+											this->m_eventTrackEditor->m_loadTae = true;
+
+											std::wstring model_path = getModelNameFromChrId(filepath_dcx, chr_id_str);
+
+											FlverModel* model = FlverModel::CreateFromBnd(model_path);
+
+											if (model)
+											{
+												this->m_animPlayer->SetModel(model);
+												this->m_animPlayer->GetModel()->CreateFlverToMorphemeBoneMap(this->m_morphemeSystem->GetCharacterDef()->getNetworkDef()->getRig(0));
+											}
+
+											//Load external parts for the player character
+											if (characterDef->getCharacterId() == 1)
+											{
+												LoadPlayerModelParts(this, filepath_parts);
+											}
+										}
+										else
+											g_appLog->DebugMessage(MsgLevel_Debug, "Could not find Game folder\n");
+									}
 								}
+							}
+							catch (const std::exception& e)
+							{
+								g_appLog->PanicMessage(e.what());
 							}
 						}
 						else if (filepath.extension() == ".tae")
 						{
-							this->m_fileNameMapPairList->Clear();
+							g_appLog->DebugMessage(MsgLevel_Info, "Loading TimeAct file %ws\n", filepath.c_str());
 
-							if (this->m_timeAct)
+							try
 							{
-								delete this->m_timeAct;
-								this->m_timeAct = nullptr;
-							}
+								this->m_fileNameMapPairList->Clear();
 
-							m_timeAct = new TimeActReader(pszFilePath);
-
-							if (m_timeAct->m_init)
-							{
-								this->m_timeActEditor->m_selectedTimeActIdx = -1;
-
-								this->m_timeActEditor->m_edited.clear();
-								this->m_timeActEditor->m_edited.reserve(m_timeAct->m_tae.size());
-
-								for (int i = 0; i < m_timeAct->m_tae.size(); i++)
-									this->m_timeActEditor->m_edited.push_back(false);
-
-								g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_timeAct->m_filePath, m_timeAct->m_fileSize);
-
-								std::wstring obj_id = GetObjIdFromTaeFileName(pszFilePath);
-
-								if (obj_id.compare(L"") != 0)
+								if (this->m_timeAct)
 								{
-									std::filesystem::path gamepath = FindGamePath(pszFilePath);
-									std::filesystem::path filepath_dcx;
+									delete this->m_timeAct;
+									this->m_timeAct = nullptr;
+								}
 
-									this->m_fileNameMapPairList->Create(this->m_gamePath);
+								m_timeAct = new TimeActReader(pszFilePath);
 
-									if (gamepath.compare("") != 0)
+								if (m_timeAct->m_init)
+								{
+									this->m_timeActEditor->m_selectedTimeActIdx = -1;
+
+									this->m_timeActEditor->m_edited.clear();
+									this->m_timeActEditor->m_edited.reserve(m_timeAct->m_tae.size());
+
+									for (int i = 0; i < m_timeAct->m_tae.size(); i++)
+										this->m_timeActEditor->m_edited.push_back(false);
+
+									g_appLog->DebugMessage(MsgLevel_Debug, "Open file %ls (len=%d)\n", m_timeAct->m_filePath, m_timeAct->m_fileSize);
+
+									std::wstring obj_id = GetObjIdFromTaeFileName(pszFilePath);
+
+									if (obj_id.compare(L"") != 0)
 									{
-										filepath_dcx = gamepath;
+										std::filesystem::path gamepath = FindGamePath(pszFilePath);
+										std::filesystem::path filepath_dcx;
 
-										filepath_dcx += "\\model\\obj";
+										this->m_fileNameMapPairList->Create(this->m_gamePath);
 
-										std::wstring obj_path = getModelNameFromObjId(filepath_dcx, obj_id);
-
-										if (obj_path.compare(L"") != 0)
+										if (gamepath.compare("") != 0)
 										{
-											PWSTR dcx_path = (wchar_t*)obj_path.c_str();
+											filepath_dcx = gamepath;
 
-											BNDReader bnd(dcx_path);
+											filepath_dcx += "\\model\\obj";
 
-											std::string filename = RString::ToNarrow(obj_id.c_str()) + ".flv";
+											std::wstring obj_path = getModelNameFromObjId(filepath_dcx, obj_id);
 
-											bool found_model = false;
-
-											for (size_t i = 0; i < bnd.m_fileCount; i++)
+											if (obj_path.compare(L"") != 0)
 											{
-												if (bnd.m_files[i].m_name == filename)
+												PWSTR dcx_path = (wchar_t*)obj_path.c_str();
+
+												BNDReader bnd(dcx_path);
+
+												std::string filename = RString::ToNarrow(obj_id.c_str()) + ".flv";
+
+												bool found_model = false;
+
+												for (size_t i = 0; i < bnd.m_fileCount; i++)
 												{
-													UMEM* umem = uopenMem(bnd.m_files[i].m_data, bnd.m_files[i].m_uncompressedSize);
-													FLVER2 flver_model = FLVER2(umem);
+													if (bnd.m_files[i].m_name == filename)
+													{
+														UMEM* umem = uopenMem(bnd.m_files[i].m_data, bnd.m_files[i].m_uncompressedSize);
+														FLVER2 flver_model = FLVER2(umem);
 
-													this->m_animPlayer->SetModel(new FlverModel(umem));
+														this->m_animPlayer->SetModel(new FlverModel(umem));
 
-													g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
+														g_appLog->DebugMessage(MsgLevel_Debug, "Loaded model %s\n", filename.c_str());
 
-													found_model = true;
+														found_model = true;
 
-													break;
+														break;
+													}
 												}
 											}
 										}
+										else
+											g_appLog->DebugMessage(MsgLevel_Debug, "Could not find Game folder\n");
 									}
-									else
-										g_appLog->DebugMessage(MsgLevel_Debug, "Could not find Game folder\n");
 								}
-							}						
+							}
+							catch (const std::exception& e)
+							{
+								g_appLog->PanicMessage(e.what());
+							}
 						}
 					}
 					pItem->Release();

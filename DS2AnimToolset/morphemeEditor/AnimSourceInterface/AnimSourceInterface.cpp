@@ -138,3 +138,9 @@ Quaternion AnimSourceInterface::GetTransformQuatAtTime(float time, int channelId
 
     return NMDX::CreateFrom(animHandle->getChannelData()[channelId].m_quat);
 }
+
+void AnimSourceInterface::SetAnimTime(float time)
+{
+    if (this->m_animHandle)
+        this->m_animHandle->setTime(time);
+}

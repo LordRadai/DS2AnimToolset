@@ -270,11 +270,12 @@ void AnimPlayer::SetPause(bool status)
 
 void AnimPlayer::SetTime(float time)
 {
+	this->m_time = time;
+
 	if (this->m_anim == nullptr)
 		return;
 
-	this->m_time = time;
-	this->m_anim->GetHandle()->setTime(this->m_time);
+	this->m_anim->SetAnimTime(this->m_time);
 }
 
 void AnimPlayer::SetModel(FlverModel* model)

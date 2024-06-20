@@ -82,4 +82,3 @@ ME::TakeListXML* MorphemeExport::ExportAnimXML(CharacterDef* character, int anim
 
 	return takeList;
 }
-

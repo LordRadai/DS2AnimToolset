@@ -26,6 +26,10 @@ public:
 	Quaternion GetTransformQuatAtTime(float time, int channelId);
 
 	void SetTakeList(ME::TakeListXML* takeList) { this->m_takeList = takeList; }
+
+	void SetAnimTime(float time);
+
+	bool isLoaded() const { return this->m_animHandle != nullptr; }
 private:
 	MR::AnimationSourceHandle* m_animHandle;
 	ME::TakeListXML* m_takeList;
