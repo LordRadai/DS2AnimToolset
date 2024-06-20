@@ -71,7 +71,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\NMTL_debug.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\NMTL_debug.lib</ImportLibrary>
       <ManifestFile>$(IntDir)intermediate.manifest</ManifestFile>
       <ProgramDatabaseFile>$(OutDir)NMTL_debug.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -99,7 +99,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\lib\NMTL.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\NMTL.lib</ImportLibrary>
       <ManifestFile>$(IntDir)intermediate.manifest</ManifestFile>
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)NMTL.pdb</ProgramDatabaseFile>
