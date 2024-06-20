@@ -165,10 +165,33 @@ void EventTrackEditor::DeleteTrack(int idx)
 
     for (size_t i = 0; i < this->m_animSource->GetTakeList()->getTake(0)->getNumEventTracks(); i++)
     {
-        ME::EventTrackExport* eventTrack = this->m_animSource->GetTakeList()->getTake(0)->getEventTrack(i);
+        if (i != idx)
+        {
+            if (!this->m_eventTracks[i].m_discrete)
+            {
+                ME::DurationEventTrackExportXML* track = (ME::DurationEventTrackExportXML*)this->m_animSource->GetTakeList()->getTake(0)->getEventTrack(i);
+                ME::DurationEventTrackExportXML* newTrack = (ME::DurationEventTrackExportXML*)take->createEventTrack(track->getEventTrackType(), track->getGUID(), RString::ToWide(track->getName()).c_str(), track->getEventTrackChannelID(), track->getUserData());
 
-        if (eventTrack != toDelete)
-            take->createEventTrack(eventTrack->getEventTrackType(), eventTrack->getGUID(), RString::ToWide(eventTrack->getName()).c_str(), eventTrack->getEventTrackChannelID(), eventTrack->getUserData());
+                for (size_t j = 0; j < track->getNumEvents(); j++)
+                {
+                    ME::DurationEventExport* event = track->getEvent(j);
+
+                    newTrack->createEvent(j, RMath::FrameToTime(this->m_eventTracks[i].m_event[j].m_frameStart) / RMath::FrameToTime(this->m_frameMax), RMath::FrameToTime(this->m_eventTracks[i].m_event[j].m_duration) / RMath::FrameToTime(this->m_frameMax), this->m_eventTracks[i].m_event[j].m_value);
+                }
+            }
+            else
+            {
+                ME::DiscreteEventTrackExportXML* track = (ME::DiscreteEventTrackExportXML*)this->m_animSource->GetTakeList()->getTake(0)->getEventTrack(i);
+                ME::DiscreteEventTrackExportXML* newTrack = (ME::DiscreteEventTrackExportXML*)take->createEventTrack(track->getEventTrackType(), track->getGUID(), RString::ToWide(track->getName()).c_str(), i, track->getUserData());
+
+                for (size_t j = 0; j < track->getNumEvents(); j++)
+                {
+                    ME::DiscreteEventExport* event = track->getEvent(j);
+
+                    newTrack->createEvent(j, RMath::FrameToTime(this->m_eventTracks[i].m_event[j].m_frameStart) / RMath::FrameToTime(this->m_frameMax), this->m_eventTracks[i].m_event[j].m_value);
+                }
+            }
+        }
     }
 
     this->m_animSource->SetTakeList(newTakeList);
@@ -207,16 +230,28 @@ void EventTrackEditor::DeleteEvent(int track_idx, int event_idx)
         ME::DurationEventTrackExportXML* track = (ME::DurationEventTrackExportXML*)this->m_animSource->GetTakeList()->getTake(0)->getEventTrack(track_idx);
         ME::DurationEventExport* toDelete = track->getEvent(event_idx);
 
-        g_appLog->DebugMessage(MsgLevel_Debug, "Delete duration event for track %s (%.3f, %.3f, %d)\n", track->getName(), toDelete->getNormalisedStartTime(), toDelete->getNormalisedDuration(), toDelete->getUserData());
+        g_appLog->DebugMessage(MsgLevel_Debug, "Delete duration event for track %s (%.3f, %.3f, %d)\n", track->getName(), toDelete->getNormalisedStartTime(), toDelete->getNormalisedDuration(), toDelete->getUserData());       
+    }
+    else
+    {
+        ME::DiscreteEventTrackExportXML* track = (ME::DiscreteEventTrackExportXML*)this->m_animSource->GetTakeList()->getTake(0)->getEventTrack(track_idx);
+        ME::DiscreteEventExport* toDelete = track->getEvent(event_idx);
 
-        ME::ExportFactoryXML factory;
+        g_appLog->DebugMessage(MsgLevel_Debug, "Delete duration event for track %s (%.3f, %d)\n", track->getName(), toDelete->getNormalisedTime(), toDelete->getUserData());
+    }
 
-        std::wstring dstFilename = RString::ToWide(this->m_animSource->GetTakeList()->getDestFilename());
+    ME::ExportFactoryXML factory;
 
-        ME::TakeListXML* newTakeList = (ME::TakeListXML*)factory.createTakeList(dstFilename.c_str(), dstFilename.c_str());
-        ME::TakeExportXML* take = (ME::TakeExportXML*)newTakeList->createTake(RString::ToWide(this->m_animSource->GetTakeList()->getTake(0)->getName()).c_str(), this->m_animSource->GetTakeList()->getTake(0)->getCachedTakeSecondsDuration(), 30, this->m_animSource->GetTakeList()->getTake(0)->getCachedTakeFPS(), this->m_animSource->GetTakeList()->getTake(0)->getClipStart(), this->m_animSource->GetTakeList()->getTake(0)->getClipEnd());
+    std::wstring dstFilename = RString::ToWide(this->m_animSource->GetTakeList()->getDestFilename());
 
-        for (size_t i = 0; i < this->m_animSource->GetTakeList()->getTake(0)->getNumEventTracks(); i++)
+    ME::TakeListXML* newTakeList = (ME::TakeListXML*)factory.createTakeList(dstFilename.c_str(), dstFilename.c_str());
+    ME::TakeExportXML* take = (ME::TakeExportXML*)newTakeList->createTake(RString::ToWide(this->m_animSource->GetTakeList()->getTake(0)->getName()).c_str(), this->m_animSource->GetTakeList()->getTake(0)->getCachedTakeSecondsDuration(), 30, this->m_animSource->GetTakeList()->getTake(0)->getCachedTakeFPS(), this->m_animSource->GetTakeList()->getTake(0)->getClipStart(), this->m_animSource->GetTakeList()->getTake(0)->getClipEnd());
+
+    for (size_t i = 0; i < this->m_animSource->GetTakeList()->getTake(0)->getNumEventTracks(); i++)
+    {
+        int idx = 0;
+
+        if (!this->m_eventTracks[i].m_discrete)
         {
             ME::DurationEventTrackExportXML* track = (ME::DurationEventTrackExportXML*)this->m_animSource->GetTakeList()->getTake(0)->getEventTrack(i);
             ME::DurationEventTrackExportXML* newTrack = (ME::DurationEventTrackExportXML*)take->createEventTrack(track->getEventTrackType(), track->getGUID(), RString::ToWide(track->getName()).c_str(), track->getEventTrackChannelID(), track->getUserData());
@@ -225,28 +260,14 @@ void EventTrackEditor::DeleteEvent(int track_idx, int event_idx)
             {
                 ME::DurationEventExport* event = track->getEvent(j);
 
-                if ((i != track_idx) || (event != toDelete))
-                    newTrack->createEvent(j, event->getNormalisedStartTime(), event->getNormalisedDuration(), event->getUserData());
+                if ((i != track_idx) || (j != event_idx))
+                {
+                    newTrack->createEvent(idx, RMath::FrameToTime(this->m_eventTracks[i].m_event[j].m_frameStart) / RMath::FrameToTime(this->m_frameMax), RMath::FrameToTime(this->m_eventTracks[i].m_event[j].m_duration) / RMath::FrameToTime(this->m_frameMax), this->m_eventTracks[i].m_event[j].m_value);
+                    idx++;
+                }
             }
         }
-
-        this->m_animSource->SetTakeList(newTakeList);
-    }
-    else
-    {
-        ME::DiscreteEventTrackExportXML* track = (ME::DiscreteEventTrackExportXML*)this->m_animSource->GetTakeList()->getTake(0)->getEventTrack(track_idx);
-        ME::DiscreteEventExport* toDelete = track->getEvent(event_idx);
-
-        g_appLog->DebugMessage(MsgLevel_Debug, "Delete duration event for track %s (%.3f, %d)\n", track->getName(), toDelete->getNormalisedTime(), toDelete->getUserData());
-
-        ME::ExportFactoryXML factory;
-
-        std::wstring dstFilename = RString::ToWide(this->m_animSource->GetTakeList()->getDestFilename());
-
-        ME::TakeListXML* newTakeList = (ME::TakeListXML*)factory.createTakeList(dstFilename.c_str(), dstFilename.c_str());
-        ME::TakeExportXML* take = (ME::TakeExportXML*)newTakeList->createTake(RString::ToWide(this->m_animSource->GetTakeList()->getTake(0)->getName()).c_str(), this->m_animSource->GetTakeList()->getTake(0)->getCachedTakeSecondsDuration(), 30, this->m_animSource->GetTakeList()->getTake(0)->getCachedTakeFPS(), this->m_animSource->GetTakeList()->getTake(0)->getClipStart(), this->m_animSource->GetTakeList()->getTake(0)->getClipEnd());
-
-        for (size_t i = 0; i < this->m_animSource->GetTakeList()->getTake(0)->getNumEventTracks(); i++)
+        else
         {
             ME::DiscreteEventTrackExportXML* track = (ME::DiscreteEventTrackExportXML*)this->m_animSource->GetTakeList()->getTake(0)->getEventTrack(i);
             ME::DiscreteEventTrackExportXML* newTrack = (ME::DiscreteEventTrackExportXML*)take->createEventTrack(track->getEventTrackType(), track->getGUID(), RString::ToWide(track->getName()).c_str(), i, track->getUserData());
@@ -255,14 +276,16 @@ void EventTrackEditor::DeleteEvent(int track_idx, int event_idx)
             {
                 ME::DiscreteEventExport* event = track->getEvent(j);
 
-                if ((i != track_idx) || (event != toDelete))
-                    newTrack->createEvent(j, event->getNormalisedTime(), event->getUserData());
-
+                if ((i != track_idx) || (j != event_idx))
+                {
+                    newTrack->createEvent(idx, RMath::FrameToTime(this->m_eventTracks[i].m_event[j].m_frameStart) / RMath::FrameToTime(this->m_frameMax), this->m_eventTracks[i].m_event[j].m_value);
+                    idx++;
+                }
             }
         }
-
-        this->m_animSource->SetTakeList(newTakeList);
     }
+
+    this->m_animSource->SetTakeList(newTakeList);
 
     this->m_reload = true;
 }

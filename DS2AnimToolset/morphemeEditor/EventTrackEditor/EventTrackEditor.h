@@ -14,7 +14,7 @@ struct EventTrackEditor
     bool m_load = false;
     bool m_save = false;
     int m_selectedAnimIdx = -1;
-    std::vector<BYTE> m_edited;
+    std::vector<bool> m_edited;
 
     int m_targetAnimIdx = -1;
     float m_lenMult = 1.f;
