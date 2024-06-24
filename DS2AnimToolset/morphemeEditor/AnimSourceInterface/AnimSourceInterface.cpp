@@ -74,6 +74,7 @@ AnimSourceInterface::AnimSourceInterface(CharacterDef* owner, MR::AnimRigDef* ri
     this->m_takeList = MorphemeExport::ExportAnimXML(owner, id, takeListPath.c_str());
 	this->m_id = id;
 
+    strcpy(this->m_animFileName, filename);
     strcpy(this->m_animName, name.string().c_str());
 }
 

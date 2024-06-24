@@ -114,7 +114,7 @@ FlverModel* FlverModel::CreateFromBnd(std::wstring path)
 }
 
 //Gets the vertices for the FLVER mesh at index idx
-std::vector<FbxVector4> FlverModel::GetModelMeshVertices(int idx, bool flip)
+std::vector<FbxVector4> FlverModel::GetFbxModelMeshVertices(int idx, bool flip)
 {
 	std::vector<FbxVector4> vertices;
 
@@ -172,7 +172,7 @@ std::vector<FbxVector4> FlverModel::GetModelMeshVertices(int idx, bool flip)
 }
 
 //Gets the normals for the FLVER mesh at index idx
-std::vector<FbxVector4> FlverModel::GetModelMeshNormals(int idx, bool flip)
+std::vector<FbxVector4> FlverModel::GetFbxModelMeshNormals(int idx, bool flip)
 {
 	std::vector<FbxVector4> normals;
 
@@ -226,7 +226,7 @@ std::vector<FbxVector4> FlverModel::GetModelMeshNormals(int idx, bool flip)
 }
 
 //Gets the bone weights for the FLVER mesh at index idx
-std::vector<FbxVector4> FlverModel::GetModelMeshBoneWeights(int idx)
+std::vector<FbxVector4> FlverModel::GetFbxModelMeshBoneWeights(int idx)
 {
 	std::vector<FbxVector4> weights;
 

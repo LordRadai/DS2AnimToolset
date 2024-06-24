@@ -67,9 +67,9 @@ public:
 
 	static FlverModel* CreateFromBnd(std::wstring path);
 
-	std::vector<FbxVector4> GetModelMeshVertices(int idx, bool flip);
-	std::vector<FbxVector4> GetModelMeshNormals(int idx, bool flip);
-	std::vector<FbxVector4> GetModelMeshBoneWeights(int idx);
+	std::vector<FbxVector4> GetFbxModelMeshVertices(int idx, bool flip);
+	std::vector<FbxVector4> GetFbxModelMeshNormals(int idx, bool flip);
+	std::vector<FbxVector4> GetFbxModelMeshBoneWeights(int idx);
 	void GetModelMeshBoneIndices(std::vector<int*>& buffer, int idx);
 
 	void GetModelData();
