@@ -142,7 +142,7 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	pMesh->CreateLayer();
 
 	//Add vertices
-	std::vector<FbxVector4> vertices = pFlverModel->GetModelMeshVertices(idx, true);
+	std::vector<FbxVector4> vertices = pFlverModel->GetFbxModelMeshVertices(idx, true);
 
 	pMesh->InitControlPoints(vertices.size());
 
@@ -150,7 +150,7 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 		pMesh->SetControlPointAt(vertices[i], i);
 
 	//Add normals
-	std::vector<FbxVector4> normals = pFlverModel->GetModelMeshNormals(idx, true);
+	std::vector<FbxVector4> normals = pFlverModel->GetFbxModelMeshNormals(idx, true);
 
 	FbxLayerElementNormal* pLayerNormal = (FbxLayerElementNormal*)pMesh->GetLayer(0)->CreateLayerElementOfType(FbxLayerElement::eNormal);
 	pLayerNormal->SetMappingMode(FbxLayerElement::eByControlPoint);
@@ -174,7 +174,7 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	FbxSkin* pSkin = nullptr;
 
 	//Add bone weights
-	std::vector<FbxVector4> bone_weights = pFlverModel->GetModelMeshBoneWeights(idx);
+	std::vector<FbxVector4> bone_weights = pFlverModel->GetFbxModelMeshBoneWeights(idx);
 	std::vector<int*> bone_indices;
 
 	bone_indices.reserve(bone_weights.size());
@@ -255,7 +255,7 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	pMesh->CreateLayer();
 
 	//Add vertices
-	std::vector<FbxVector4> vertices = pFlverModel->GetModelMeshVertices(idx, true);
+	std::vector<FbxVector4> vertices = pFlverModel->GetFbxModelMeshVertices(idx, true);
 
 	pMesh->InitControlPoints(vertices.size());
 
@@ -263,7 +263,7 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 		pMesh->SetControlPointAt(vertices[i], i);
 
 	//Add normals
-	std::vector<FbxVector4> normals = pFlverModel->GetModelMeshNormals(idx, true);
+	std::vector<FbxVector4> normals = pFlverModel->GetFbxModelMeshNormals(idx, true);
 
 	FbxLayerElementNormal* pLayerNormal = (FbxLayerElementNormal*)pMesh->GetLayer(0)->CreateLayerElementOfType(FbxLayerElement::eNormal);
 	pLayerNormal->SetMappingMode(FbxLayerElement::eByControlPoint);
