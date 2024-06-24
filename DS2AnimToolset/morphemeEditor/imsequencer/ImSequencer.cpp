@@ -581,6 +581,7 @@ namespace ImSequencer
                 ImGui::Separator();
 
                 ImGui::InputText("Name", (char*)eventTrackEditor->m_eventTracks[*selectedTrack].m_name.c_str(), 50);
+                ImGui::InputInt("User Data", &eventTrackEditor->m_eventTracks[*selectedTrack].m_eventId);
 
                 if (GetAsyncKeyState(VK_RETURN))
                     ImGui::CloseCurrentPopup();
@@ -652,6 +653,9 @@ namespace ImSequencer
                 {
                     eventTrackEditor->AddEvent(*selectedTrack, EventTrackEditor::EventTrack::Event{ RMath::TimeToFrame(addEventStart), RMath::TimeToFrame(addEventDur), addEventUserData});
                     ImGui::CloseCurrentPopup();
+
+                    addEventDur = 1.f / 60.f;
+                    addEventStart = RMath::FrameToTime(*currentFrame);
 
                     reload = true;
                 }
@@ -1747,7 +1751,7 @@ namespace ImSequencer
                 ImGui::Text(header.c_str());
                 ImGui::Separator();
 
-                ImGui::InputInt("ID", &timeActEditor->m_tracks[*selectedTrack].m_eventGroup);
+                ImGui::InputInt("Event Group", &timeActEditor->m_tracks[*selectedTrack].m_eventGroup);
 
                 if (GetAsyncKeyState(VK_RETURN))
                     ImGui::CloseCurrentPopup();

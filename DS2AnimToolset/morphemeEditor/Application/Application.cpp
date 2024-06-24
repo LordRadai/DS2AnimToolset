@@ -1333,17 +1333,8 @@ void Application::EventTrackInfoWindow()
 
 			ImGui::Text(track->m_name.c_str());
 			ImGui::PushItemWidth(100);
-			ImGui::InputInt("Event ID", &track->m_eventId, 1, 0);
-			if (ImGui::IsItemHovered())
-			{
-				ImGui::SeparatorText("Info");
 
-				ImGui::PushTextWrapPos(ImGui::GetWindowContentWidth());
-				ImGui::Text(getEventTrackCategoryTooltip(track->m_eventId).c_str());
-				ImGui::PopTextWrapPos();
-			}
-
-			ImGui::InputInt("Event Value", &track->m_event[this->m_eventTrackEditor->m_selectedEvent].m_value, 1, 0);
+			ImGui::InputInt("User Data", &track->m_event[this->m_eventTrackEditor->m_selectedEvent].m_value, 1, 0);
 			if (ImGui::IsItemHovered())
 			{
 				ImGui::SeparatorText("Info");
@@ -1435,15 +1426,6 @@ void Application::TimeActInfoWindow()
 
 			ImGui::Text(m_timeActEditor->GetEventLabel(this->m_timeActEditor->m_selectedTrack, this->m_timeActEditor->m_selectedEvent, false).c_str());
 			ImGui::PushItemWidth(100);
-			ImGui::InputInt("Event Group", &track->m_eventGroup, 1, 0);
-			if (ImGui::IsItemHovered())
-			{
-				ImGui::SeparatorText("Info");
-
-				ImGui::PushTextWrapPos(ImGui::GetWindowContentWidth());
-				ImGui::Text(getTaeCategoryTooltip(track->m_eventGroup).c_str());
-				ImGui::PopTextWrapPos();
-			}
 
 			ImGui::InputInt("Event ID", &track->m_event[this->m_timeActEditor->m_selectedEvent].m_value, 1, 0);
 			if (ImGui::IsItemHovered())
