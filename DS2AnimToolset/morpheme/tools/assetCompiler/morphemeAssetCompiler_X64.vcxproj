@@ -46,6 +46,7 @@
     <OutDir>$(SolutionDir)DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>morphemeAssetCompiler</TargetName>
@@ -53,6 +54,7 @@
     <OutDir>$(SolutionDir)DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LibraryPath>$(SolutionDir)DS2AnimToolset\lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -68,7 +70,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>"..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeSimpleBundle_target_LE64_debug.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\acCore_target_LE64_debug.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeAssetProcessor_target_LE64_debug.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeCore_target_LE64_debug.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\NMRuntimeUtils_target_LE64_debug.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeExport_debug.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\NMTinyXML_debug.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\NMNumerics_debug.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\NMPlatform_target_LE64_debug.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\XMD_debug.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\NMTL_debug.lib";shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>"morphemeSimpleBundle_debug.lib";"acCore_target_debug.lib";"morphemeAssetProcessor_debug.lib";"morphemeCore_debug.lib";"NMRuntimeUtils_debug.lib";"morphemeExport_debug.lib";"NMTinyXML_debug.lib";"NMNumerics_debug.lib";"NMPlatform_debug.lib";"XMD_debug.lib";"NMTL_debug.lib";shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ManifestFile>$(IntDir)intermediate.manifest</ManifestFile>
       <ProgramDatabaseFile>$(OutDir)morphemeAssetCompiler_target_LE64_debug.pdb</ProgramDatabaseFile>
@@ -79,7 +81,7 @@
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
     <PostBuildEvent>
-      <Command>if exist $(ProjectDir)configs\ ( xcopy /I /Y $(ProjectDir)configs\*.cfg $(ProjectDir)$(OutDir) )</Command>
+      <Command>if exist $(ProjectDir)configs\ ( xcopy /I /Y $(ProjectDir)configs\*.cfg $(OutDir) )</Command>
       <Message>Copying configs...</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -99,7 +101,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>"..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeSimpleBundle_target_LE64.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\acCore_target_LE64.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeAssetProcessor_target_LE64.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeCore_target_LE64.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\NMRuntimeUtils_target_LE64.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeExport.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\NMTinyXML.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\NMNumerics.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\NMPlatform_target_LE64.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\XMD.lib";"..\..\..\lib\x64\vs$(VisualStudioVersion)\NMTL.lib";shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>"morphemeSimpleBundle.lib";"acCore.lib";"morphemeAssetProcessor.lib";"morphemeCore.lib";"NMRuntimeUtils.lib";"morphemeExport.lib";"NMTinyXML.lib";"NMNumerics.lib";"NMPlatform.lib";"XMD.lib";"NMTL.lib";shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ManifestFile>$(IntDir)intermediate.manifest</ManifestFile>
@@ -112,7 +114,7 @@
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
     <PostBuildEvent>
-      <Command>if exist $(ProjectDir)configs\ ( xcopy /I /Y $(ProjectDir)configs\*.cfg $(ProjectDir)$(OutDir) )</Command>
+      <Command>if exist $(ProjectDir)configs\ ( xcopy /I /Y $(ProjectDir)configs\*.cfg $(OutDir) )</Command>
       <Message>Copying configs...</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
