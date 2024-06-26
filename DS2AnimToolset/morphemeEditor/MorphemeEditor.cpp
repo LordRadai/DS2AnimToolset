@@ -111,6 +111,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     ::ShowWindow(hwnd, SW_SHOWDEFAULT);
     ::UpdateWindow(hwnd);
 
+    g_appLog->DebugMessage(MsgLevel_Info, "Application startup\n");
+
     try
     {
         g_appLog->DebugMessage(MsgLevel_Info, "Loading TimeAct template\n");
@@ -133,10 +135,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     g_appLog->DebugMessage(MsgLevel_Info, "Initialising preview module\n");
     g_scene->Initialise(hwnd, g_pSwapChain, g_pd3dDevice, g_pd3dDeviceContext, nullptr);
 
-    g_appLog->DebugMessage(MsgLevel_Info, "Create FBXManager\n");
+    g_appLog->DebugMessage(MsgLevel_Info, "Creating FBXManager\n");
     g_pFbxManager = FbxManager::Create();
 
-    // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop
