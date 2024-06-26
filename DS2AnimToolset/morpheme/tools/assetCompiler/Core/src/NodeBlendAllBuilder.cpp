@@ -228,12 +228,6 @@ void NodeBlendAllBuilder::initTaskQueuingFns(
 
   nodeDef->setTaskQueuingFnId(taskQueuingFns, MR::ATTRIB_SEMANTIC_OUTPUT_MASK, FN_NAME(grouperQueuePassThroughFromParent), logger);
 
-  //---------------------------
-  if (nodeDef->getNumReflexiveCPPins() > 0)
-  {
-    nodeDef->setInitNodeInstanceFnId(FN_NAME(nodeInitPinAttribDataInstance), logger);
-  }
-
   //-----------
   // MATCH EVENTS
   if (timeStretchMode == kNodeTimeStretchMatchEvents)

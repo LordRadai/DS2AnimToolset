@@ -446,12 +446,6 @@ void NodeBasicUnevenTerrainBuilder::initTaskQueuingFns(
   MR::SharedTaskFnTables* outputCPTaskFnTables = netDefCompilationInfo->getOutputCPTaskFnTables();
   MR::QueueAttrTaskFn* taskQueuingFns = (MR::QueueAttrTaskFn*)MR::SharedTaskFnTables::createSharedTaskFnTable();
 
-  //---------------------------
-  if (nodeDef->getNumReflexiveCPPins() > 0)
-  {
-    nodeDef->setInitNodeInstanceFnId(FN_NAME(nodeInitPinAttribDataInstance), logger);
-  }
-
   for (uint32_t i = 0; i < MR::ATTRIB_SEMANTIC_NM_MAX; ++i)
   {
     // Most queuing requests get passed on to our child.

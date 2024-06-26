@@ -245,12 +245,6 @@ void NodeBlend2x2Builder::initTaskQueuingFns(
   MR::SharedTaskFnTables* outputCPTaskFnTables = netDefCompilationInfo->getOutputCPTaskFnTables();
   MR::QueueAttrTaskFn* taskQueuingFns = (MR::QueueAttrTaskFn*)MR::SharedTaskFnTables::createSharedTaskFnTable();
 
-  //---------------------------
-  if (nodeDef->getNumReflexiveCPPins() > 0)
-  {
-    nodeDef->setInitNodeInstanceFnId(FN_NAME(nodeInitPinAttribDataInstance), logger);
-  }
-
   //------------------------------------
   // Update connections
   if (timeStretchMode == kNodeTimeStretchMatchEvents)

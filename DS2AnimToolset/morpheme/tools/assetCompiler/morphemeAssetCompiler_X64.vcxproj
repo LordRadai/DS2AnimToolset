@@ -70,7 +70,7 @@
       <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>"morphemeSimpleBundle_debug.lib";"acCore_target_debug.lib";"morphemeAssetProcessor_debug.lib";"morphemeCore_debug.lib";"NMRuntimeUtils_debug.lib";"morphemeExport_debug.lib";"NMTinyXML_debug.lib";"NMNumerics_debug.lib";"NMPlatform_debug.lib";"XMD_debug.lib";"NMTL_debug.lib";shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>"morphemeSimpleBundle_debug.lib";"acCore_debug.lib";"morphemeAssetProcessor_debug.lib";"morphemeCore_debug.lib";"NMRuntimeUtils_debug.lib";"morphemeExport_debug.lib";"NMTinyXML_debug.lib";"NMNumerics_debug.lib";"NMPlatform_debug.lib";"XMD_debug.lib";"NMTL_debug.lib";shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ManifestFile>$(IntDir)intermediate.manifest</ManifestFile>
       <ProgramDatabaseFile>$(OutDir)morphemeAssetCompiler_target_LE64_debug.pdb</ProgramDatabaseFile>

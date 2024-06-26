@@ -2289,7 +2289,6 @@ void NetworkDefBuilder::buildNetworkNodeDef(
   networkNodeDef->m_emittedControlParamsInfo = NULL;
   networkNodeDef->m_stateMachineNodeIDs = NULL;
   networkNodeDef->m_messageEmitterNodeIDs = NULL;
-  networkNodeDef->m_stateMachineStateIDStringTable = NULL;
   networkNodeDef->m_nodeIDNamesTable = NULL;
   networkNodeDef->m_messageIDNamesTable = NULL;
   networkNodeDef->m_eventTrackIDNamesTable = NULL;
@@ -3344,18 +3343,6 @@ NMP::Memory::Resource NetworkDefBuilder::buildSubNetworkDef(
   }
 
   //---------------------------
-  // State machine state to state ID.
-  if (sm_stateMachineStateIDStringTable)
-  {
-    networkDef->m_stateMachineStateIDStringTable = (NMP::IDMappedStringTable*)memRes.alignAndIncrement(memReqsStateMachineStateStringTable);
-    memcpy(
-      networkDef->m_stateMachineStateIDStringTable,
-      sm_stateMachineStateIDStringTable,
-      memReqsStateMachineStateStringTable.size);
-    networkDef->m_stateMachineStateIDStringTable->relocate();
-  }
-
-  //---------------------------
   // NodeID to Node name mapping table.
   if (sm_nodeIDNamesTable)
   {
@@ -3371,7 +3358,7 @@ NMP::Memory::Resource NetworkDefBuilder::buildSubNetworkDef(
   // MessageID to Message name mapping table.
   if (sm_messageIDNamesTable)
   {
-    networkDef->m_messageIDNamesTable = (NMP::OrderedStringTable*)memRes.alignAndIncrement(memReqsMessageIDNamesTable);
+    networkDef->m_messageIDNamesTable = (NMP::IDMappedStringTable*)memRes.alignAndIncrement(memReqsMessageIDNamesTable);
     memcpy(
       networkDef->m_messageIDNamesTable,
       sm_messageIDNamesTable,
@@ -3383,7 +3370,7 @@ NMP::Memory::Resource NetworkDefBuilder::buildSubNetworkDef(
   // Mapping table between event track names and runtime IDs.
   if (sm_eventTrackIDNamesTable)
   {
-    networkDef->m_eventTrackIDNamesTable = (NMP::OrderedStringTable*)memRes.alignAndIncrement(memReqsEventTrackIDNamesTable);
+    networkDef->m_eventTrackIDNamesTable = (NMP::IDMappedStringTable*)memRes.alignAndIncrement(memReqsEventTrackIDNamesTable);
     memcpy(
       networkDef->m_eventTrackIDNamesTable,
       sm_eventTrackIDNamesTable,

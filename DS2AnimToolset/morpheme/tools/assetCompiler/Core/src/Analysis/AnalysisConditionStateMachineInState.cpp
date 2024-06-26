@@ -70,7 +70,7 @@ AnalysisCondition* AnalysisConditionStateMachineInStateBuilder::init(
     stateNodeID = netDef->getNodeIDFromNodeName(nodeName.c_str());
     if(stateNodeID == MR::INVALID_NODE_ID)
     {
-      stateNodeID = netDef->getNodeIDFromStateName(nodeName.c_str());
+      //stateNodeID = netDef->getNodeIDFromStateName(nodeName.c_str());
     }
   }
   NMP_VERIFY_MSG(stateNodeID != MR::INVALID_NODE_ID, "The State node is invalid");

@@ -174,7 +174,7 @@ bool NetworkControlPlayer::init(
   analysisNodeDataBlock->readString(startStateName, "StartState");
   if (!startStateName.empty())
   {
-    m_startStateNodeID = m_processedNetDef->getNodeIDFromStateName(startStateName.c_str());
+    //m_startStateNodeID = m_processedNetDef->getNodeIDFromStateName(startStateName.c_str());
   }
 
   //---------------------------
