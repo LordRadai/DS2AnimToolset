@@ -25,7 +25,7 @@ namespace Game
 //----------------------------------------------------------------------------------------------------------------------
 /// \brief A function pointer supplied to the loadBundle function that verifies that the bundle was built with the expected
 ///  asset compiler plugins and that they are specified in the correct order (usually specific physics plugins)
-typedef bool (*ValidatePluginListFn)(const NMP::OrderedStringTable& pluginList);
+typedef bool (*ValidatePluginListFn)(const NMP::IDMappedStringTable& pluginList);
 
 //----------------------------------------------------------------------------------------------------------------------
 /// GameAssetLoader:

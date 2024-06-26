@@ -40,14 +40,15 @@ public:
   //
   // This would be replaced with your own bundle loader and unloader if you do not use the simple bundle file format.
   static MR::NetworkDef* loadBundle(
-    void*            bundle,
-    size_t           bundleSize,
-    UINT*        registeredAssetIDs,
-    void**           clientAssets,
-    UINT         NMP_USED_FOR_ASSERTS(numRegisteredAssets),
-    UINT         NMP_USED_FOR_ASSERTS(numClientAssets),
-    std::vector<MR::RigToAnimMap*>& rigToAnimMaps,
-    MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup*& animFileLookup);
+      void* bundle,
+      size_t           bundleSize,
+      UINT* registeredAssetIDs,
+      void** clientAssets,
+      UINT         NMP_USED_FOR_ASSERTS(numRegisteredAssets),
+      UINT         NMP_USED_FOR_ASSERTS(numClientAssets),
+      std::vector<MR::RigToAnimMap*>& rigToAnimMaps,
+      std::vector<MR::CharacterControllerDef*>& characterControllerDefs,
+        MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup*& animFileLookup);
 
   //----------------------------
   // This unloads the objects loaded in the GameAnimModule::loadBundle. We could avoid an iteration over the bundle file

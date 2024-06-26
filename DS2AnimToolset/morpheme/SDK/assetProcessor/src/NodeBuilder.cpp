@@ -175,31 +175,6 @@ uint32_t NodeDefBuilder::initAttribEntry(
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-MR::PinIndex NodeDefBuilder::newPinAttribEntry(
-  MR::NodeDef*               nodeDef,
-  MR::AttribDataSemantic     semantic,
-  bool                       perAnimSet)
-{
-  return nodeDef->newPinAttribDataInfo(perAnimSet, semantic);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void NodeDefBuilder::addPinAttribAnimSetEntry(
-  uint32_t                   pin,
-  MR::NodeDef*               nodeDef,
-  MR::AnimSetIndex           animSetIndex,
-  MR::AttribData*            attribData,
-  const NMP::Memory::Format& attribMemReqs)
-{
-  nodeDef->addPinAttribDataAnimSetEntry(pin, animSetIndex);
-  uint32_t lookupIndex  = nodeDef->getPinAttribIndex(pin, animSetIndex);
-
-  MR::AttribDataHandle* pinAttribDataArray = nodeDef->getPinAttribDataHandles();
-  NMP_ASSERT(!pinAttribDataArray[lookupIndex].m_attribData);
-  pinAttribDataArray[lookupIndex].set(attribData, attribMemReqs);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 NMP::Memory::Format NodeDefBuilder::getCoreNodeDefMemoryRequirements(
   NetworkDefCompilationInfo*  netDefCompilationInfo,
   uint32_t                    numChildren,

@@ -67,7 +67,12 @@ public:
   const char* getBundleFilepath() const { return m_metadata.m_bundleDir; }
   const char* getFilename() const { return m_filename; }
   int getCharacterId() const { return m_chrId; }
+  int getNumRigToAnimMaps() { return this->m_rigToAnimMaps.size(); }
+  int getNumCharacterControllers() { return this->m_rigToAnimMaps.size(); }
+  int getNumAnims() { return this->m_anims.size(); }
+
   MR::RigToAnimMap* getRigToAnimMap(int idx);
+  MR::CharacterControllerDef* getCharacterController(int idx);
   AnimSourceInterface* getAnimation(int idx);
   AnimSourceInterface* getAnimationById(int id);
   void addAnimation(const char* filename);
@@ -98,6 +103,7 @@ protected:
 
   bool  m_isLoaded;
 
+  std::vector<MR::CharacterControllerDef*> m_characterControllerDefs;
   std::vector<MR::RigToAnimMap*> m_rigToAnimMaps;
   MR::NetworkDef* m_netDef;
 

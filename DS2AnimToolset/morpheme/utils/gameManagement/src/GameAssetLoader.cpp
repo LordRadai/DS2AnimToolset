@@ -115,7 +115,7 @@ MR::NetworkDef* AssetLoader::loadBundle(
       // Special case for plugin list. If validation fails the bundle is unsuitable for the this runtime.
       if (assetType == MR::Manager::kAsset_PluginList)
       {
-        NMP::OrderedStringTable* pluginList = (NMP::OrderedStringTable*)asset;
+        NMP::IDMappedStringTable* pluginList = (NMP::IDMappedStringTable*)asset;
         pluginList->locate();
         if (validatePluginList && !validatePluginList(*pluginList))
         {

@@ -114,6 +114,7 @@ MR::MessageDistributor* MessageDistributorBuilder::init(
   }
 
   nmtl::pod_vector<const char*> presetNames(numMessagePresets, "");
+  nmtl::pod_vector<uint32_t> messagePresetIDs(numMessagePresets, 0);
 
   //-------------------------
   // initialise the distributor
@@ -155,13 +156,14 @@ MR::MessageDistributor* MessageDistributorBuilder::init(
 
       distributor->m_messagePresets[i] = messageBuilder->init(memRes, messageExport, messagePresetExport, processor);
 
+      messagePresetIDs[i] = i;
       presetNames[i] = messagePresetExport->getName();
     }
 
     //-------------------------
     // build the string table
     distributor->m_messagePresetIndexNamesTable =
-      NMP::OrderedStringTable::init(memRes, numMessagePresets, &presetNames[0]);
+      NMP::IDMappedStringTable::init(memRes, numMessagePresets, &messagePresetIDs[0], &presetNames[0]);
   }
 
   return distributor;

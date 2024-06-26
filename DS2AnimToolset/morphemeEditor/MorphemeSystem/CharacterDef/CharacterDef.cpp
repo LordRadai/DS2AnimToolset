@@ -150,6 +150,7 @@ bool CharacterDef::init(void* bundle, size_t bundleSize)
                    m_numRegisteredAssets,
                    m_numClientAssets,
                    m_rigToAnimMaps,
+                   m_characterControllerDefs,
                    m_metadata.m_animFileLookUp);
 
   if (!m_netDef)
@@ -202,6 +203,14 @@ MR::RigToAnimMap* CharacterDef::getRigToAnimMap(int idx)
 {
     if (idx < m_rigToAnimMaps.size())
         return m_rigToAnimMaps[idx];
+
+    return nullptr;
+}
+
+MR::CharacterControllerDef* CharacterDef::getCharacterController(int idx)
+{
+    if (idx < m_characterControllerDefs.size())
+        return m_characterControllerDefs[idx];
 
     return nullptr;
 }

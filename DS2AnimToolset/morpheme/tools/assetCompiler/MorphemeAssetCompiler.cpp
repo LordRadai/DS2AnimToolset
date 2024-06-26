@@ -1926,15 +1926,15 @@ bool macProcessAnimFunc(
       humanReadable.erase(humanReadable.begin() + trim, humanReadable.end());
     }
     outputFileString = humanReadable + "_" + identifier + "." + extension;
-    const char* outputFileName = outputFileString.c_str();
+    const char* outputName = outputFileString.c_str();
 
     g_animIDtoFilename->addAnimation(animData->m_animFileName, animData->m_animTakeName,
-                                     animData->m_animFormatType, animAssetID, animFileCRC, outputFileName);
+                                     animData->m_animFormatType, animAssetID, animFileCRC, outputName);
 
-    stringLength = strlen(g_acGlobals.m_outputDir) + strlen(outputFileName) + 10;
+    stringLength = strlen(g_acGlobals.m_outputDir) + strlen(outputName) + 10;
     char* outputFilePath = (char*) NMPMemoryAlloc(stringLength);
     NMP_ASSERT(outputFilePath);
-    NMP_SPRINTF(outputFilePath, stringLength, "%s\\%s", g_acGlobals.m_outputDir, outputFileName);
+    NMP_SPRINTF(outputFilePath, stringLength, "%s\\%s", g_acGlobals.m_outputDir, outputName);
 
     // the instance will be recycled later anyway, so we just allocate it here
     NMP::Memory::Resource animCopy = NMPMemoryAllocateFromFormat(animResource.format);
@@ -1965,7 +1965,7 @@ bool macProcessAnimFunc(
       "Animation file '%s' take '%s' compiled into binary '%s' @ %4.1f bytes/bone/sec \n",
       animData->m_animFileName,
       animData->m_animTakeName,
-      outputFileName,
+      outputName,
       compression);
 
     if (buffer)
@@ -1980,24 +1980,24 @@ bool macProcessAnimFunc(
   if (g_acGlobals.m_copyToAnimBrowserOutFile)
   {
     stringLength = strlen(g_acGlobals.m_outputDir) + strlen(ANIM_BROWSER_ANIM_FILE_NAME) + strlen(animData->m_animFormatType) + 10;
-    char* outputFileName = (char*) NMPMemoryAlloc(stringLength);
-    NMP_ASSERT(outputFileName);
+    char* outputName = (char*) NMPMemoryAlloc(stringLength);
+    NMP_ASSERT(outputName);
     NMP_SPRINTF(
-      outputFileName,
+      outputName,
       stringLength,
       "%s/%s.%s",
       g_acGlobals.m_outputDir,
       ANIM_BROWSER_ANIM_FILE_NAME,
       animData->m_animFormatType);
 
-    if (NMP::NMFile::save(outputFileName, animResource.ptr, animResource.format.size) <= 0)
+    if (NMP::NMFile::save(outputName, animResource.ptr, animResource.format.size) <= 0)
     {
       // File write failed
       NMP::Memory::memFree(animResource.ptr);
-      NMP_THROW_ERROR("Saving of animation file %s for resource browser failed", outputFileName);
+      NMP_THROW_ERROR("Saving of animation file %s for resource browser failed", outputName);
     }
 
-    NMP::Memory::memFree(outputFileName);
+    NMP::Memory::memFree(outputName);
   }
 
   // Finished with the memory for the animation now.
@@ -2403,20 +2403,20 @@ bool macChangeNetworkAnimSetFunc(AP::AssetProcessor* assetProc, uint32_t animSet
 /// \brief Generate an output filename for the asset bundle.
 /// \ingroup AssetCompilerModule
 void generateOutputBundleFileName(
-  char*            outputFileName,
+  char*            outputName,
   uint32_t         NMP_UNUSED(maxNameLength),
   ME::AssetExport* primarySourceAsset)
 {
   // The output directory first.
-  strcpy(outputFileName, g_acGlobals.m_outputDir);
-  if (outputFileName[strlen(outputFileName)-1] != '/')
-    strcat(outputFileName, "/");
+  strcpy(outputName, g_acGlobals.m_outputDir);
+  if (outputName[strlen(outputName)-1] != '/')
+    strcat(outputName, "/");
 
   // Followed by the file name.
   if (g_acGlobals.m_copyToAnimBrowserOutFile)
   {
     // Animation browser output generates fixed bundle filename.
-    strcat(outputFileName, ANIM_BROWSER_BUNDLE_FILE_NAME);
+    strcat(outputName, ANIM_BROWSER_BUNDLE_FILE_NAME);
   }
   else
   {
@@ -2425,7 +2425,7 @@ void generateOutputBundleFileName(
     if (fname)
     {
       // Use the specified output filename
-      strcat(outputFileName, fname);
+      strcat(outputName, fname);
     }
     else
     {
@@ -2433,13 +2433,13 @@ void generateOutputBundleFileName(
       if (primarySourceAsset)
       {
         // Generate a filename based on the name of the first asset in the command line args.
-        strcat(outputFileName, primarySourceAsset->getName());
-        strcat(outputFileName, ".nmb");
+        strcat(outputName, primarySourceAsset->getName());
+        strcat(outputName, ".nmb");
       }
       else
       {
         // Fallback to something reasonable
-        strcat(outputFileName, "outputBundle.nmb");
+        strcat(outputName, "outputBundle.nmb");
       }
     }
   }

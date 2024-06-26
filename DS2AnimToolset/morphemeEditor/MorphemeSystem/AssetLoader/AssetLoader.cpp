@@ -72,6 +72,7 @@ MR::NetworkDef* AssetLoader::loadBundle(
   UINT         NMP_USED_FOR_ASSERTS(numRegisteredAssets),
   UINT         NMP_USED_FOR_ASSERTS(numClientAssets),
   std::vector<MR::RigToAnimMap*>& rigToAnimMaps,
+  std::vector<MR::CharacterControllerDef*>& characterControllerDefs,
   MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup*& animFileLookup)
 {
   animFileLookup = NULL;
@@ -179,6 +180,7 @@ MR::NetworkDef* AssetLoader::loadBundle(
       case MR::Manager::kAsset_PhysicsRigDef:
           break;
       case MR::Manager::kAsset_CharacterControllerDef:
+          characterControllerDefs.push_back((MR::CharacterControllerDef*)asset);
           break;
       case MR::Manager::kAsset_InteractionProxyDef:
           break;

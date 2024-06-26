@@ -355,23 +355,6 @@ public:
     MR::AttribData*            attribData,      ///< Attrib data to store on the nodes AttribDataHandle.
     const NMP::Memory::Format& attribMemReqs    ///< Memory requirements to store on the nodes AttribDataHandle.
     );
-
-  /// \brief Add a reflexive CP Pin AttribDataHandle entry on the supplied NodeDef.
-  ///        Returns the outputCPPin pin index
-  static MR::PinIndex newPinAttribEntry(
-    MR::NodeDef*               nodeDef,
-    MR::AttribDataSemantic     semantic,
-    bool                       perAnimSet
-    );
-  
-  /// \brief Add another animSet entry for the last reflexive CP Pin added to the NodeDef.
-  static void addPinAttribAnimSetEntry(
-    uint32_t                   pin,
-    MR::NodeDef*               nodeDef,
-    MR::AnimSetIndex           animSetIndex,
-    MR::AttribData*            attribData,
-    const NMP::Memory::Format& attribMemReqs
-    );
 };
 
 //----------------------------------------------------------------------------------------------------------------------

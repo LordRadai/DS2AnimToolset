@@ -3,11 +3,8 @@
 
 using namespace MR;
 
-ME::TakeListXML* MorphemeExport::ExportAnimXML(CharacterDef* character, int animId, std::wstring dstFileName)
+MR::NodeDef* getAnimNodeByAnimID(MR::NetworkDef* netDef, int assetId)
 {
-	MR::NodeDef* animNode = nullptr;
-
-	MR::NetworkDef* netDef = character->getNetworkDef();
 	int numNodes = netDef->getNumNodeDefs();
 
 	for (int idx = 0; idx < numNodes; idx++)
@@ -18,13 +15,19 @@ ME::TakeListXML* MorphemeExport::ExportAnimXML(CharacterDef* character, int anim
 		{
 			MR::AttribDataSourceAnim* source_anim = (MR::AttribDataSourceAnim*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM);
 
-			if (source_anim && (source_anim->m_animAssetID == animId))
-			{
-				animNode = node;
-				break;
-			}
+			if (source_anim && (source_anim->m_animAssetID == assetId))
+				return node;
 		}
 	}
+
+	return nullptr;
+}
+
+ME::TakeListXML* MorphemeExport::ExportAnimMarkup(CharacterDef* character, int animId, std::wstring dstFileName)
+{
+	MR::NetworkDef* netDef = character->getNetworkDef();
+
+	MR::NodeDef* animNode = getAnimNodeByAnimID(netDef, animId);
 
 	if (animNode == nullptr)
 		return nullptr;

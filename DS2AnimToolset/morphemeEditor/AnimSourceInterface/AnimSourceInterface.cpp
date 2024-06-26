@@ -71,7 +71,7 @@ AnimSourceInterface::AnimSourceInterface(CharacterDef* owner, MR::AnimRigDef* ri
     std::filesystem::path takeListPath = std::filesystem::path(out_path).string() + RString::RemoveExtension(owner->getAnimFileLookUp()->getSourceFilename(id)) + ".fbx.xml";
 
 	this->m_animHandle = animHandle;
-    this->m_takeList = MorphemeExport::ExportAnimXML(owner, id, takeListPath.c_str());
+    this->m_takeList = MorphemeExport::ExportAnimMarkup(owner, id, takeListPath.c_str());
 	this->m_id = id;
 
     strcpy(this->m_animFileName, filename);

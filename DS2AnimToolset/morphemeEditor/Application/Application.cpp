@@ -2085,6 +2085,136 @@ void SetModelFlags(FlverModel* model, DisplayMode mode, bool showDummies)
 	}
 }
 
+EventTrackEditor::EventTrack* getTimeActTrackActionCtrl(EventTrackEditor* trackList)
+{
+	for (size_t i = 0; i < trackList->m_eventTracks.size(); i++)
+	{
+		if (trackList->m_eventTracks[i].m_eventId == 1000)
+			return &trackList->m_eventTracks[i];
+	}
+
+	return nullptr;
+}
+
+void LoadMorphemeMarkup(Application* pApplication)
+{
+	pApplication->m_eventTrackEditor->m_load = false;
+	pApplication->m_eventTrackEditor->Clear();
+
+	CharacterDef* characterDef = pApplication->m_morphemeSystem->GetCharacterDef();
+
+	if ((characterDef) && characterDef->isLoaded() && (pApplication->m_eventTrackEditor->m_targetAnimIdx != -1))
+	{
+		pApplication->m_eventTrackEditor->m_eventTrackActionTimeActValue = -1;
+		pApplication->m_eventTrackEditor->m_eventTrackActionTimeActStart = 0.f;
+		pApplication->m_eventTrackEditor->m_eventTrackActionTimeActDuration = 0.f;
+
+		AnimSourceInterface* animSource = characterDef->getAnimationById(pApplication->m_eventTrackEditor->m_targetAnimIdx);
+		pApplication->m_eventTrackEditor->m_animSource = animSource;
+
+		ME::TakeListXML* takeList = animSource->GetTakeList();
+		if (takeList)
+		{
+			float animLen = animSource->GetTakeList()->getTake(0)->getCachedTakeSecondsDuration();
+
+			pApplication->m_eventTrackEditor->m_frameMin = RMath::TimeToFrame(takeList->getTake(0)->getClipStart() * animLen);
+			pApplication->m_eventTrackEditor->m_frameMax = RMath::TimeToFrame(takeList->getTake(0)->getClipEnd() * animLen);
+
+			pApplication->m_eventTrackEditor->m_animIdx = -1;
+
+			for (int i = 0; i < characterDef->getAnimFileLookUp()->getNumAnims(); i++)
+			{
+				if (characterDef->getAnimation(i)->GetID() == animSource->GetID())
+					pApplication->m_eventTrackEditor->m_animIdx = i;
+			}
+
+			pApplication->m_eventTrackEditor->m_lenMult = takeList->getTake(0)->getCachedTakeSecondsDuration() / (takeList->getTake(0)->getClipEnd() - takeList->getTake(0)->getClipStart());
+			int track_count = takeList->getTake(0)->getNumEventTracks();
+
+			pApplication->m_eventTrackEditor->m_eventTracks.reserve(track_count);
+
+			for (size_t i = 0; i < track_count; i++)
+			{
+				ME::EventTrackExport* eventTrackXML = takeList->getTake(0)->getEventTrack(i);
+
+				pApplication->m_eventTrackEditor->m_eventTracks.push_back(EventTrackEditor::EventTrack(eventTrackXML, pApplication->m_eventTrackEditor->m_lenMult));
+			}
+
+			pApplication->m_eventTrackEditor->SetEditedState(false);
+
+			if (pApplication->m_timeAct)
+			{
+				EventTrackEditor::EventTrack* timeActTrackAction = getTimeActTrackActionCtrl(pApplication->m_eventTrackEditor);
+
+				if (timeActTrackAction)
+				{
+					pApplication->m_eventTrackEditor->m_eventTrackActionTimeActValue = timeActTrackAction->m_event[0].m_value;
+					pApplication->m_eventTrackEditor->m_eventTrackActionTimeActStart = RMath::FrameToTime(timeActTrackAction->m_event[0].m_frameStart);
+					pApplication->m_eventTrackEditor->m_eventTrackActionTimeActDuration = RMath::FrameToTime(timeActTrackAction->m_event[0].m_duration);
+
+					pApplication->m_timeActEditor->m_taeId = pApplication->m_eventTrackEditor->m_eventTrackActionTimeActValue;
+
+					for (size_t j = 0; j < pApplication->m_timeAct->m_tae.size(); j++)
+					{
+						if (pApplication->m_timeAct->m_tae[j].m_id == pApplication->m_timeActEditor->m_taeId)
+							pApplication->m_timeActEditor->m_selectedTimeActIdx = j;
+					}
+
+					pApplication->m_timeActEditor->m_load = true;
+				}
+				else
+				{
+					g_appLog->DebugMessage(MsgLevel_Warn, "Animation %d has no TimeAct associated to it\n", animSource->GetID());
+				}
+			}
+		}
+		else
+		{
+			g_appLog->DebugMessage(MsgLevel_Debug, "Animation %d has no event tracks associated to it\n", animSource->GetID());
+		}
+
+		g_appLog->DebugMessage(MsgLevel_Debug, "\n");
+	}
+
+}
+
+void LoadTimeActTracks(Application* pApplication)
+{
+	pApplication->m_timeActEditor->m_load = false;
+	pApplication->m_timeActEditor->Clear();
+
+	pApplication->m_timeActEditor->m_taeIdx = pApplication->m_timeActEditor->m_selectedTimeActIdx;
+
+	if (pApplication->m_timeAct && pApplication->m_timeActEditor->m_taeId > -1)
+	{
+		if (pApplication->m_timeAct->m_tae.size() > 0)
+		{
+			TimeAct* timeact = pApplication->m_timeAct->TimeActLookup(pApplication->m_timeActEditor->m_taeId);
+			pApplication->m_timeActEditor->m_source = timeact;
+
+			if (timeact)
+			{
+				float trackLen = (float)timeact->m_taeData->m_animData->m_lenght / (float)timeact->m_taeData->m_animData->m_fps;
+
+				pApplication->m_timeActEditor->m_frameMax = RMath::TimeToFrame(trackLen, 30);
+				pApplication->m_timeActEditor->m_frameMin = 0;
+
+				pApplication->m_timeActEditor->SetEditedState(false);
+
+				if (timeact->m_taeData->m_eventGroupCount > 0)
+				{
+					for (int j = 0; j < timeact->m_taeData->m_eventGroupCount; j++)
+						pApplication->m_timeActEditor->m_tracks.push_back(&timeact->m_taeData->m_groups[j]);
+				}
+			}
+			else
+				g_appLog->DebugMessage(MsgLevel_Info, "Application.cpp", "TimeAct %d not found\n", pApplication->m_timeActEditor->m_taeId);
+		}
+		else
+			g_appLog->DebugMessage(MsgLevel_Info, "Application.cpp", "No TimeAct is loaded\n");
+	}
+}
+
 void Application::CheckFlags()
 {
 	if (this->m_windowStates.m_settingWindow)
@@ -2244,84 +2374,7 @@ void Application::CheckFlags()
 		this->m_eventTrackEditor->ReloadTracks();
 
 	if (this->m_eventTrackEditor->m_load)
-	{
-		this->m_eventTrackEditor->m_load = false;
-		this->m_eventTrackEditor->Clear();
-
-		CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
-
-		if ((characterDef) && characterDef->isLoaded() && (this->m_eventTrackEditor->m_targetAnimIdx != -1))
-		{
-			this->m_eventTrackEditor->m_eventTrackActionTimeActValue = -1;
-			this->m_eventTrackEditor->m_eventTrackActionTimeActStart = 0.f;
-			this->m_eventTrackEditor->m_eventTrackActionTimeActDuration = 0.f;
-
-			AnimSourceInterface* animSource = characterDef->getAnimationById(this->m_eventTrackEditor->m_targetAnimIdx);
-			this->m_eventTrackEditor->m_animSource = animSource;
-
-			ME::TakeListXML* takeList = animSource->GetTakeList();
-			if (takeList)
-			{
-				float animLen = animSource->GetTakeList()->getTake(0)->getCachedTakeSecondsDuration();
-
-				this->m_eventTrackEditor->m_frameMin = RMath::TimeToFrame(takeList->getTake(0)->getClipStart() * animLen);
-				this->m_eventTrackEditor->m_frameMax = RMath::TimeToFrame(takeList->getTake(0)->getClipEnd() * animLen);
-
-				this->m_eventTrackEditor->m_animIdx = -1;
-
-				for (int i = 0; i < characterDef->getAnimFileLookUp()->getNumAnims(); i++)
-				{
-					if (characterDef->getAnimation(i)->GetID() == animSource->GetID())
-						this->m_eventTrackEditor->m_animIdx = i;
-				}
-
-				this->m_eventTrackEditor->m_lenMult = takeList->getTake(0)->getCachedTakeSecondsDuration() / (takeList->getTake(0)->getClipEnd() - takeList->getTake(0)->getClipStart());
-				int track_count = takeList->getTake(0)->getNumEventTracks();
-
-				this->m_eventTrackEditor->m_eventTracks.reserve(track_count);
-
-				for (size_t i = 0; i < track_count; i++)
-				{
-					ME::EventTrackExport* eventTrackXML = takeList->getTake(0)->getEventTrack(i);
-
-					this->m_eventTrackEditor->m_eventTracks.push_back(EventTrackEditor::EventTrack(eventTrackXML, this->m_eventTrackEditor->m_lenMult));
-				}
-
-				this->m_eventTrackEditor->SetEditedState(false);
-
-				if (this->m_timeAct)
-				{
-					for (size_t i = 0; i < this->m_eventTrackEditor->m_eventTracks.size(); i++)
-					{
-						if (this->m_eventTrackEditor->m_eventTracks[i].m_eventId == 1000)
-						{
-							this->m_eventTrackEditor->m_eventTrackActionTimeActValue = this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_value;
-							this->m_eventTrackEditor->m_eventTrackActionTimeActStart = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_frameStart);
-							this->m_eventTrackEditor->m_eventTrackActionTimeActDuration = RMath::FrameToTime(this->m_eventTrackEditor->m_eventTracks[i].m_event[0].m_duration);
-
-							this->m_timeActEditor->m_taeId = this->m_eventTrackEditor->m_eventTrackActionTimeActValue;
-
-							for (size_t j = 0; j < this->m_timeAct->m_tae.size(); j++)
-							{
-								if (this->m_timeAct->m_tae[j].m_id == this->m_timeActEditor->m_taeId)
-									this->m_timeActEditor->m_selectedTimeActIdx = j;
-							}
-
-							this->m_timeActEditor->m_load = true;
-
-							break;
-						}
-					}
-				}
-			}
-			else
-			{
-				g_appLog->DebugMessage(MsgLevel_Debug, "Animation %d has no event tracks associated to it\n", animSource->GetID());
-			}
-
-			g_appLog->DebugMessage(MsgLevel_Debug, "\n");
-		}
-	}
+		LoadMorphemeMarkup(this);
 
 	if (this->m_timeAct == nullptr)
 	{
@@ -2335,41 +2388,7 @@ void Application::CheckFlags()
 		this->m_timeActEditor->ReloadTracks();
 
 	if (this->m_timeActEditor->m_load)
-	{
-		this->m_timeActEditor->m_load = false;
-		this->m_timeActEditor->Clear();
-
-		this->m_timeActEditor->m_taeIdx = this->m_timeActEditor->m_selectedTimeActIdx;
-
-		if (this->m_timeAct && this->m_timeActEditor->m_taeId > -1)
-		{
-			if (m_timeAct->m_tae.size() > 0)
-			{
-				TimeAct* timeact = this->m_timeAct->TimeActLookup(this->m_timeActEditor->m_taeId);
-				this->m_timeActEditor->m_source = timeact;
-
-				if (timeact)
-				{
-					float trackLen = (float)timeact->m_taeData->m_animData->m_lenght / (float)timeact->m_taeData->m_animData->m_fps;
-
-					this->m_timeActEditor->m_frameMax = RMath::TimeToFrame(trackLen, 30);
-					this->m_timeActEditor->m_frameMin = 0;
-
-					this->m_timeActEditor->SetEditedState(false);
-
-					if (timeact->m_taeData->m_eventGroupCount > 0)
-					{
-						for (int j = 0; j < timeact->m_taeData->m_eventGroupCount; j++)
-							this->m_timeActEditor->m_tracks.push_back(&timeact->m_taeData->m_groups[j]);
-					}
-				}
-				else
-					g_appLog->DebugMessage(MsgLevel_Info, "Application.cpp", "TimeAct %d not found\n", this->m_timeActEditor->m_taeId);
-			}
-			else
-				g_appLog->DebugMessage(MsgLevel_Info, "Application.cpp", "No TimeAct is loaded\n");
-		}
-	}
+		LoadTimeActTracks(this);
 
 	if (this->m_animPlayer)
 	{
