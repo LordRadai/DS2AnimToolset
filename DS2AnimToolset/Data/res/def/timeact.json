@@ -824,37 +824,37 @@
 					"arguments": []
 				},
 				{
-					"name": "ChrModelCtrl_260004",
+					"name": "ModelFadeOut",
 					"id": 260004,
 					"arguments": [
 						{
-							"name": "Unk00",
-							"type": "s32"
+							"name": "FadeOut Speed",
+							"type": "f32"
 						},
 						{
-							"name": "Unk04",
-							"type": "s32"
+							"name": "FadeIn Speed",
+							"type": "f32"
 						}
 					]
 				},
 				{
-					"name": "ModelFadeOut",
+					"name": "ModelFadeOutOnFlagSet",
 					"id": 260005,
 					"arguments": [
 						{
-							"name": "FadeIn Duration",
+							"name": "FadeOut Speed",
 							"type": "f32"
 						},
 						{
-							"name": "FadeOut Duration",
+							"name": "FadeIn Speed",
 							"type": "f32"
 						},
 						{
-							"name": "Unk05",
+							"name": "Index",
 							"type": "s8"
 						},
 						{
-							"name": "Condition",
+							"name": "State",
 							"type": "s8"
 						}
 					]
