@@ -134,11 +134,6 @@ void AP::NodePlaySpeedModifierBuilder::initTaskQueuingFns(
     nodeDef->setTaskQueuingFnId(taskQueuingFns, i, FN_NAME(queuePassThroughChild0), logger);
   }
 
-  if (nodeDef->getNumReflexiveCPPins() > 0)
-  {
-    nodeDef->setInitNodeInstanceFnId(FN_NAME(nodeInitPinAttribDataInstance), logger);
-  }
-
   // We either scale the update time or the sync track depending on how time is updated.
   nodeDef->setTaskQueuingFnId(taskQueuingFns, MR::ATTRIB_SEMANTIC_UPDATE_TIME_POS, FN_NAME(nodePlaySpeedModifierQueueUpdateTime), logger);
   nodeDef->setTaskQueuingFnId(taskQueuingFns, MR::ATTRIB_SEMANTIC_SYNC_EVENT_TRACK, FN_NAME(nodePlaySpeedModifierQueueEventTrack), logger);

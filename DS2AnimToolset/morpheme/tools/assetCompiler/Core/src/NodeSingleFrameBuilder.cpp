@@ -140,12 +140,6 @@ void NodeSingleFrameBuilder::initTaskQueuingFns(
   nodeDef->registerTaskQueuingFns(taskQueuingFnTables, taskQueuingFns);
   nodeDef->registerEmptyOutputCPTasks(outputCPTaskFnTables);
 
-  // Handle Data Pins
-  if (nodeDef->getNumReflexiveCPPins() > 0)
-  {
-    nodeDef->setInitNodeInstanceFnId(FN_NAME(nodeInitPinAttribDataInstance), logger);
-  }
-
   // Tidy up
   NMP::Memory::memFree(taskQueuingFns);
 

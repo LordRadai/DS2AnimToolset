@@ -539,12 +539,6 @@ void NodeFeatherBlend2Builder::initTaskQueuingFns(
   MR::QueueAttrTaskFn* taskQueuingFns = (MR::QueueAttrTaskFn*)MR::SharedTaskFnTables::createSharedTaskFnTable();
 
   //---------------------------
-  if (nodeDef->getNumReflexiveCPPins() > 0)
-  {
-    nodeDef->setInitNodeInstanceFnId(FN_NAME(nodeInitPinAttribDataInstance), logger);
-  }
-
-  //---------------------------
   // Pass through
   const uint32_t numEntries = MR::Manager::getInstance().getNumRegisteredAttribSemantics();
   switch (passThroughMode)

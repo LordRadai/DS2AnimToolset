@@ -300,11 +300,6 @@ void NodePredictiveUnevenTerrainBuilder::initTaskQueuingFns(
   nodeDef->setTaskQueuingFnId(taskQueuingFns, MR::ATTRIB_SEMANTIC_UNEVEN_TERRAIN_FOOT_LIFTING_TARGET, FN_NAME(nodePredictiveUnevenTerrainQueueFootLiftingTargets), logger);
   nodeDef->setTaskQueuingFnId(taskQueuingFns, MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER, FN_NAME(nodePredictiveUnevenTerrainQueueTransformBuffs), logger);
 
-  if (nodeDef->getNumReflexiveCPPins() > 0)
-  {
-    nodeDef->setInitNodeInstanceFnId(FN_NAME(nodeInitPinAttribDataInstance), logger);
-  }
-
   // Register the shared task function tables
   nodeDef->registerTaskQueuingFns(taskQueuingFnTables, taskQueuingFns);
   nodeDef->registerEmptyOutputCPTasks(outputCPTaskFnTables);

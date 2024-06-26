@@ -1473,12 +1473,6 @@ void NodeScatterBlendBuilder::initTaskQueuingFnsBase(
   }
 
   //---------------------------
-  // Handle Data Pins
-  if (nodeDef->getNumReflexiveCPPins() > 0)
-  {
-    nodeDef->setInitNodeInstanceFnId(FN_NAME(nodeInitPinAttribDataInstance), logger);
-  }
-  //---------------------------
   // Register the shared task function tables
   nodeDef->registerTaskQueuingFns(taskQueuingFnTables, taskQueuingFns);
   nodeDef->registerEmptyOutputCPTasks(outputCPTaskFnTables);

@@ -74,8 +74,6 @@
 #include "NodeOperatorArithmeticVector3Builder.h"
 #include "NodeOperatorOneInputArithmeticBuilder.h"
 #include "NodeOperatorOneInputArithmeticVector3Builder.h"
-#include "NodeOperatorBooleanBuilder.h"
-#include "NodeOperatorCPCompareBuilder.h"
 
 #include "NodeOperatorNoiseGenBuilder.h"
 #include "NodeOperatorSmoothFloatBuilder.h"
@@ -304,12 +302,6 @@ void initBuilders(AssetProcessor& assetProc)
 
   nodeBuilder = new NodeOperatorOneInputArithmeticVector3Builder();
   assetProc.registerNodeBuilder(NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC_VECTOR3, nodeBuilder);
-
-  nodeBuilder = new NodeOperatorBooleanBuilder();
-  assetProc.registerNodeBuilder(NODE_TYPE_CP_OP_BOOLEAN, nodeBuilder);
-
-  nodeBuilder = new NodeOperatorCPCompareBuilder();
-  assetProc.registerNodeBuilder(NODE_TYPE_CP_OP_COND_CP_COMPARE, nodeBuilder);
   
   nodeBuilder = new NodeOperatorNoiseGenBuilder();
   assetProc.registerNodeBuilder(NODE_TYPE_CP_OP_NOISE_GEN, nodeBuilder);

@@ -269,12 +269,6 @@
     <ClInclude Include="include\core\NodeOperatorArithmeticVector3Builder.h">
       <Filter>include\core</Filter>
     </ClInclude>
-    <ClInclude Include="include\core\NodeOperatorBooleanBuilder.h">
-      <Filter>include\core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\core\NodeOperatorCPCompareBuilder.h">
-      <Filter>include\core</Filter>
-    </ClInclude>
     <ClInclude Include="include\core\NodeOperatorFloatsToVector3Builder.h">
       <Filter>include\core</Filter>
     </ClInclude>
@@ -696,12 +690,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\NodeOperatorArithmeticVector3Builder.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\NodeOperatorBooleanBuilder.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\NodeOperatorCPCompareBuilder.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\NodeOperatorFloatsToVector3Builder.cpp">

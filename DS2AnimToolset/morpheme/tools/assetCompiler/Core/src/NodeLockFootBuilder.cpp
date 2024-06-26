@@ -413,11 +413,6 @@ void NodeLockFootBuilder::initTaskQueuingFns(
   nodeDef->registerTaskQueuingFns(taskQueuingFnTables, taskQueuingFns);
   nodeDef->registerEmptyOutputCPTasks(outputCPTaskFnTables);
 
-  if (nodeDef->getNumReflexiveCPPins() > 0)
-  {
-    nodeDef->setInitNodeInstanceFnId(FN_NAME(nodeInitPinAttribDataInstance), logger);
-  }
-
   // Tidy up
   NMP::Memory::memFree(taskQueuingFns);
 

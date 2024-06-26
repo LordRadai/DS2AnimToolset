@@ -42,8 +42,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>morphemeAssetProcessor_debug</TargetName>
-    <IntDir>..\..\..\obj\x64\vs$(VisualStudioVersion)\morphemeAssetProcessor\target_le64_debug\</IntDir>
-    <OutDir>..\..\..\lib\x64\vs$(VisualStudioVersion)\</OutDir>
+    <IntDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>morphemeAssetProcessor</TargetName>

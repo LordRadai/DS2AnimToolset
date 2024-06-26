@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Target LE64 Debug|x64">
-      <Configuration>Target LE64 Debug</Configuration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Target LE64 Release|x64">
-      <Configuration>Target LE64 Release</Configuration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -15,15 +15,16 @@
     <ProjectGuid>{E02BF743-2306-4EB6-D5B9-ABF6A67628A6}</ProjectGuid>
     <RootNamespace>acCore</RootNamespace>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Target LE64 Debug|x64'">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Target LE64 Release|x64'">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CharacterSet>Unicode</CharacterSet>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
@@ -32,28 +33,28 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Target LE64 Debug|x64'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Target LE64 Release|x64'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Target LE64 Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>acCore_target_LE64_debug</TargetName>
-    <IntDir>..\..\..\..\obj\x64\vs$(VisualStudioVersion)\acCore\target_le64_debug\</IntDir>
-    <OutDir>..\..\..\..\bin\x64\vs$(VisualStudioVersion)\</OutDir>
+    <IntDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Target LE64 Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>acCore_target_LE64</TargetName>
-    <IntDir>..\..\..\..\obj\x64\vs$(VisualStudioVersion)\acCore\target_le64_release\</IntDir>
-    <OutDir>..\..\..\..\bin\x64\vs$(VisualStudioVersion)\</OutDir>
+    <IntDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)\DS2AnimToolset\build\$(Platform)\$(Configuration)\bin\</OutDir>
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Target LE64 Debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>.;include\core;..\..\..\SDK\assetProcessor\include;..\..\..\SDK\core\include;..\..\..\SDK;..\..\..\..\common\NMRuntimeUtils\include;..\..\..\SDK\export\include;..\..\..\..\common\tinyxml;..\..\..\..\common\NMNumerics\include;..\..\..\..\common\NMPlatform\include;..\..\..\..\common\NMPlatform\include\NMPlatform\win32;..\..\..\..\common\qhull\src;..\..\..\..\common\XMD\include;..\..\..\..\common\NMTL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>Default</CompileAs>
@@ -69,7 +70,7 @@
     <Link>
       <AdditionalDependencies>"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeAssetProcessor_target_LE64_debug.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeCore_target_LE64_debug.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\NMRuntimeUtils_target_LE64_debug.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeExport_debug.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\NMTinyXML_debug.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\NMNumerics_debug.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\NMPlatform_target_LE64_debug.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\qhull_debug.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\XMD_debug.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\NMTL_debug.lib";%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>..\..\..\..\lib\x64\vs$(VisualStudioVersion)\acCore_target_LE64_debug.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\acCore_target_LE64_debug.lib</ImportLibrary>
       <ManifestFile>$(IntDir)intermediate.manifest</ManifestFile>
       <ProgramDatabaseFile>$(OutDir)acCore_target_LE64_debug.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -79,7 +80,7 @@
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Target LE64 Release|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <AdditionalIncludeDirectories>.;include\core;..\..\..\SDK\assetProcessor\include;..\..\..\SDK\core\include;..\..\..\SDK;..\..\..\..\common\NMRuntimeUtils\include;..\..\..\SDK\export\include;..\..\..\..\common\tinyxml;..\..\..\..\common\NMNumerics\include;..\..\..\..\common\NMPlatform\include;..\..\..\..\common\NMPlatform\include\NMPlatform\win32;..\..\..\..\common\qhull\src;..\..\..\..\common\XMD\include;..\..\..\..\common\NMTL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>Default</CompileAs>
@@ -98,7 +99,7 @@
       <AdditionalDependencies>"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeAssetProcessor_target_LE64.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeCore_target_LE64.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\NMRuntimeUtils_target_LE64.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\morphemeExport.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\NMTinyXML.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\NMNumerics.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\NMPlatform_target_LE64.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\qhull.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\XMD.lib";"..\..\..\..\lib\x64\vs$(VisualStudioVersion)\NMTL.lib";%(AdditionalDependencies)</AdditionalDependencies>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ImportLibrary>..\..\..\..\lib\x64\vs$(VisualStudioVersion)\acCore_target_LE64.lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)\DS2AnimToolset\lib\$(Platform)\$(Configuration)\acCore_target_LE64.lib</ImportLibrary>
       <ManifestFile>$(IntDir)intermediate.manifest</ManifestFile>
       <OptimizeReferences>true</OptimizeReferences>
       <ProgramDatabaseFile>$(OutDir)acCore_target_LE64.pdb</ProgramDatabaseFile>
@@ -197,8 +198,6 @@
     <ClInclude Include="include\core\NodeModifyTrajectoryTransformBuilder.h" />
     <ClInclude Include="include\core\NodeOperatorArithmeticBuilder.h" />
     <ClInclude Include="include\core\NodeOperatorArithmeticVector3Builder.h" />
-    <ClInclude Include="include\core\NodeOperatorBooleanBuilder.h" />
-    <ClInclude Include="include\core\NodeOperatorCPCompareBuilder.h" />
     <ClInclude Include="include\core\NodeOperatorFloatsToVector3Builder.h" />
     <ClInclude Include="include\core\NodeOperatorFloatToIntBuilder.h" />
     <ClInclude Include="include\core\NodeOperatorFunctionBuilder.h" />
@@ -340,8 +339,6 @@
     <ClCompile Include="src\NodeModifyTrajectoryTransformBuilder.cpp" />
     <ClCompile Include="src\NodeOperatorArithmeticBuilder.cpp" />
     <ClCompile Include="src\NodeOperatorArithmeticVector3Builder.cpp" />
-    <ClCompile Include="src\NodeOperatorBooleanBuilder.cpp" />
-    <ClCompile Include="src\NodeOperatorCPCompareBuilder.cpp" />
     <ClCompile Include="src\NodeOperatorFloatsToVector3Builder.cpp" />
     <ClCompile Include="src\NodeOperatorFloatToIntBuilder.cpp" />
     <ClCompile Include="src\NodeOperatorFunctionBuilder.cpp" />

@@ -40,13 +40,10 @@ MR::AttribData* TransitDeadBlendDefBuilderDefault::initAttribData(
 
   bool useDeadReckoningWhenDeadBlending = true;
   bool blendToDestinationPhysicsBones = false;
-  float deadReckoningAngularVelocityDamping = 0.0f;
   deadBlendDataBlock->readBool(useDeadReckoningWhenDeadBlending, "UseDeadReckoningWhenDeadBlending");
-  deadBlendDataBlock->readFloat(deadReckoningAngularVelocityDamping, "DeadReckoningAngularVelocityDamping");
   deadBlendDataBlock->readBool(blendToDestinationPhysicsBones, "BlendToDestinationPhysicsBones");
 
   result->m_useDeadReckoningWhenDeadBlending = useDeadReckoningWhenDeadBlending;
-  result->m_deadReckoningAngularVelocityDamping = deadReckoningAngularVelocityDamping;
   result->m_blendToDestinationPhysicsBones = blendToDestinationPhysicsBones;
 
   return result;

@@ -332,12 +332,6 @@ void NodeHeadLookBuilder::initTaskQueuingFns(
   MR::SharedTaskFnTables* outputCPTaskFnTables = netDefCompilationInfo->getOutputCPTaskFnTables();
   MR::QueueAttrTaskFn* taskQueuingFns = (MR::QueueAttrTaskFn*)MR::SharedTaskFnTables::createSharedTaskFnTable();
 
-  //---------------------------
-  if (nodeDef->getNumReflexiveCPPins() > 0)
-  {
-    nodeDef->setInitNodeInstanceFnId(FN_NAME(nodeInitPinAttribDataInstance), logger);
-  }
-
   const uint32_t numEntries = MR::Manager::getInstance().getNumRegisteredAttribSemantics();
   for (uint32_t i = 0; i < numEntries; ++i)
   {

@@ -338,6 +338,12 @@ NMP::Memory::Resource AnimRigDefBuilder::init(
   uint32_t* stringOffset = (uint32_t*)NMPMemoryAlloc(sizeof(uint32_t) * numStrings);
   NMP_ASSERT(stringOffset);
 
+  uint32_t* idsOffset = (uint32_t*)NMPMemoryAlloc(sizeof(uint32_t) * numStrings);
+  NMP_ASSERT(idsOffset);
+
+  for (uint32_t i = 0; i < numStrings; ++i)
+      idsOffset[i] = i;
+
   // Now create the table input data
   char* debugStrings = (char*)NMPMemoryAlloc(tableSize);
   NMP_ASSERT(debugStrings);
@@ -354,11 +360,11 @@ NMP::Memory::Resource AnimRigDefBuilder::init(
   }
 
   // Create a memory desc to place this table into.
-  format = NMP::OrderedStringTable::getMemoryRequirements(numStrings, tableSize);
+  format = NMP::IDMappedStringTable::getMemoryRequirements(numStrings, tableSize);
 
   // initialise the table from the stream.
   resource.align(format);
-  rig->m_boneNameMap = NMP::OrderedStringTable::init(resource, numStrings, stringOffset, debugStrings, tableSize);
+  rig->m_boneNameMap = NMP::IDMappedStringTable::init(resource, numStrings, idsOffset, stringOffset, debugStrings, tableSize);
 
   NMP::Memory::memFree(stringOffset);
   NMP::Memory::memFree(debugStrings);
@@ -514,6 +520,12 @@ NMP::Memory::Resource AnimRigDefBuilder::createRigDef(
   uint32_t* stringOffset = (uint32_t*)NMPMemoryAlloc(sizeof(uint32_t) * numStrings);
   NMP_ASSERT(stringOffset);
 
+  uint32_t* idsOffset = (uint32_t*)NMPMemoryAlloc(sizeof(uint32_t) * numStrings);
+  NMP_ASSERT(idsOffset);
+
+  for (uint32_t i = 0; i < numStrings; ++i)
+      idsOffset[i] = i;
+
   // Now create the table input data
   char* debugStrings = (char*)NMPMemoryAlloc(tableSize);
   NMP_ASSERT(debugStrings);
@@ -534,7 +546,7 @@ NMP::Memory::Resource AnimRigDefBuilder::createRigDef(
 
   // initialise the table from the stream.
   resource.align(format);
-  rig->m_boneNameMap = NMP::OrderedStringTable::init(resource, numStrings, stringOffset, debugStrings, tableSize);
+  rig->m_boneNameMap = NMP::IDMappedStringTable::init(resource, numStrings, idsOffset, stringOffset, debugStrings, tableSize);
 
   NMP::Memory::memFree(stringOffset);
   NMP::Memory::memFree(debugStrings);
