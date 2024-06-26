@@ -206,7 +206,7 @@
 					"arguments": []
 				},
 				{
-					"name": "ChrParryCtrl3",
+					"name": "ChrParryCtrl_1230",
 					"id": 1230,
 					"arguments": []
 				}
@@ -217,7 +217,7 @@
 			"id": 1500,
 			"events": [
 				{
-					"name": "ChrCameraCtrl0",
+					"name": "ChrCameraCtrl_1500",
 					"id": 1500,
 					"arguments": [
 						{
@@ -227,7 +227,7 @@
 					]
 				},
 				{
-					"name": "ChrCameraCtrl1",
+					"name": "ChrCameraCtrl_1501",
 					"id": 1501,
 					"arguments": [
 						{
@@ -237,7 +237,7 @@
 					]
 				},
 				{
-					"name": "ChrCameraCtrl2",
+					"name": "ChrCameraCtrl_1502",
 					"id": 1502,
 					"arguments": [
 						{
@@ -247,7 +247,7 @@
 					]
 				},
 				{
-					"name": "ChrCameraCtrl3",
+					"name": "ChrCameraCtrl_1503",
 					"id": 1503,
 					"arguments": [
 						{
@@ -257,11 +257,11 @@
 					]
 				},
 				{
-					"name": "InvokeCameraExFollowImpact",
+					"name": "LoadCameraExFollowImpactParameters",
 					"id": 1504,
 					"arguments": [
 						{
-							"name": "CameraExFollowImpact ID",
+							"name": "CameraExFollowImpactParam ID",
 							"type": "s32"
 						}
 					]
@@ -273,7 +273,7 @@
 			"id": 2100,
 			"events": [
 				{
-					"name": "ChrSfxCtrl0",
+					"name": "ChrSfxCtrl_2100",
 					"id": 2100,
 					"arguments": [
 						{
@@ -307,7 +307,7 @@
 					]
 				},
 				{
-					"name": "ChrSfxCtrl1",
+					"name": "ChrSfxCtrl_2101",
 					"id": 2101,
 					"arguments": [
 						{
@@ -321,7 +321,7 @@
 					]
 				},
 				{
-					"name": "ChrSfxCtrl2",
+					"name": "ChrSfxCtrl_2102",
 					"id": 2102,
 					"arguments": [
 						{
@@ -383,7 +383,7 @@
 					]
 				},
 				{
-					"name": "ChrSfxCtrl5",
+					"name": "ChrSfxCtrl_2105",
 					"id": 2105,
 					"arguments": [
 						{
@@ -393,7 +393,7 @@
 					]
 				},
 				{
-					"name": "SimpletonRingSfx",
+					"name": "InvokeSimpletonRingSfx",
 					"id": 2106,
 					"arguments": [
 						{
@@ -437,17 +437,17 @@
 			"id": 2200,
 			"events": [
 				{
-					"name": "Unusued100",
+					"name": "Unusued_100",
 					"id": 100,
 					"arguments": []
 				},
 				{
-					"name": "ChrFootEffectCtrl0",
+					"name": "ChrFootEffectCtrl_2400",
 					"id": 2400,
 					"arguments": []
 				},
 				{
-					"name": "ChrFootEffectCtrl1",
+					"name": "ChrFootEffectCtrl_2401",
 					"id": 2401,
 					"arguments": []
 				},
@@ -462,7 +462,7 @@
 					]
 				},
 				{
-					"name": "ChrFootEffectCtrl4",
+					"name": "ChrFootEffectCtrl_2403",
 					"id": 2403,
 					"arguments": []
 				}
@@ -483,7 +483,7 @@
 					]
 				},
 				{
-					"name": "ChrWeaponCtrl1",
+					"name": "ChrWeaponCtrl_2501",
 					"id": 2501,
 					"arguments": [
 						{
@@ -525,7 +525,7 @@
 			"id": 110000,
 			"events": [
 				{
-					"name": "InvokeDefaultDamageState",
+					"name": "InvokeDefaultDamageActionState",
 					"id": 110000,
 					"arguments": []
 				},
@@ -535,7 +535,7 @@
 					"arguments": []
 				},
 				{
-					"name": "Unusued110200",
+					"name": "Unusued_110200",
 					"id": 110200,
 					"arguments": []
 				},
@@ -555,7 +555,7 @@
 					"arguments": []
 				},
 				{
-					"name": "InvokeSuperArmor2",
+					"name": "InvokeSuperArmor_2",
 					"id": 110500,
 					"arguments": []
 				},
@@ -565,17 +565,17 @@
 					"arguments": []
 				},
 				{
-					"name": "ChrDamageActionCtrl7",
+					"name": "ChrDamageActionCtrl_110700",
 					"id": 110700,
 					"arguments": []
 				},
 				{
-					"name": "ChrDamageActionCtrl8",
+					"name": "ChrDamageActionCtrl_110800",
 					"id": 110800,
 					"arguments": []
 				},
 				{
-					"name": "ChrDamageActionCtrl9",
+					"name": "ChrDamageActionCtrl_110900",
 					"id": 110900,
 					"arguments": []
 				},
@@ -594,7 +594,7 @@
 					]
 				},
 				{
-					"name": "InvokeDamageReduction",
+					"name": "ApplyDamageReduction",
 					"id": 111100,
 					"arguments": []
 				},
@@ -655,7 +655,7 @@
 					"arguments": []
 				},
 				{
-					"name": "ChrAttackCtrl3",
+					"name": "ChrAttackCtrl_120300",
 					"id": 120300,
 					"arguments": []
 				}
@@ -681,7 +681,7 @@
 					"arguments": []
 				},
 				{
-					"name": "ChrGimmickCtrl20",
+					"name": "ChrGimmickCtrl_210200",
 					"id": 210200,
 					"arguments": []
 				}
@@ -732,7 +732,7 @@
 					]
 				},
 				{
-					"name": "GiveItem",
+					"name": "InvokeItemPickUp",
 					"id": 220300,
 					"arguments": [
 						{
@@ -748,12 +748,12 @@
 			"id": 230000,
 			"events": [
 				{
-					"name": "ChrGenerateCtrl0",
+					"name": "ChrGenerateCtrl_230000",
 					"id": 230000,
 					"arguments": []
 				},
 				{
-					"name": "ChrGenerateCtrl1",
+					"name": "ChrGenerateCtrl_230001",
 					"id": 230001,
 					"arguments": []
 				}
@@ -791,7 +791,7 @@
 					"arguments": []
 				},
 				{
-					"name": "ChrModelCtrl1",
+					"name": "ChrModelCtrl_260001",
 					"id": 260001,
 					"arguments": [
 						{
@@ -819,12 +819,12 @@
 					]
 				},
 				{
-					"name": "ChrModelCtrl3",
+					"name": "ChrModelCtrl_260003",
 					"id": 260003,
 					"arguments": []
 				},
 				{
-					"name": "ChrModelCtrl4",
+					"name": "ChrModelCtrl_260004",
 					"id": 260004,
 					"arguments": [
 						{
@@ -838,7 +838,7 @@
 					]
 				},
 				{
-					"name": "AdjustChrOpacity",
+					"name": "ModelFadeOut",
 					"id": 260005,
 					"arguments": [
 						{
@@ -860,7 +860,7 @@
 					]
 				},
 				{
-					"name": "ChrModelCtrl6",
+					"name": "ChrModelCtrl_260006",
 					"id": 260006,
 					"arguments": []
 				}
@@ -881,12 +881,12 @@
 					]
 				},
 				{
-					"name": "Dismember",
+					"name": "InvokeDismemberment",
 					"id": 270001,
 					"arguments": []
 				},
 				{
-					"name": "ChrPartsCtrl2",
+					"name": "ChrPartsCtrl_270002",
 					"id": 270002,
 					"arguments": []
 				}
@@ -939,7 +939,7 @@
 			"id": 300000,
 			"events": [
 				{
-					"name": "ChrEventCtrl0",
+					"name": "ChrEventCtrl_300000",
 					"id": 300000,
 					"arguments": [
 						{
@@ -975,7 +975,7 @@
 					]
 				},
 				{
-					"name": "ChrEventCtrl2",
+					"name": "ChrEventCtrl_300200",
 					"id": 300200,
 					"arguments": [
 						{
@@ -985,7 +985,7 @@
 					]
 				},
 				{
-					"name": "ChrEventCtrl3",
+					"name": "ChrEventCtrl_300300",
 					"id": 300300,
 					"arguments": [
 						{
@@ -1025,7 +1025,7 @@
 			"id": 500000,
 			"events": [
 				{
-					"name": "MapGimmick0",
+					"name": "MapGimmick_500000",
 					"id": 500000,
 					"arguments": [
 						{
@@ -1047,22 +1047,22 @@
 					]
 				},
 				{
-					"name": "MapGimmick1",
+					"name": "MapGimmick_500001",
 					"id": 500001,
 					"arguments": []
 				},
 				{
-					"name": "MapGimmick2",
+					"name": "MapGimmick_500002",
 					"id": 500002,
 					"arguments": []
 				},
 				{
-					"name": "MapGimmick3",
+					"name": "MapGimmick_500003",
 					"id": 500003,
 					"arguments": []
 				},
 				{
-					"name": "MapGimmick4",
+					"name": "MapGimmick_500004",
 					"id": 500004,
 					"arguments": []
 				}
@@ -1107,7 +1107,7 @@
 					]
 				},
 				{
-					"name": "MapSound1",
+					"name": "MapSound_502001",
 					"id": 502001,
 					"arguments": []
 				}
@@ -1118,27 +1118,27 @@
 			"id": 503000,
 			"events": [
 				{
-					"name": "MapExtra1",
+					"name": "MapExtra_503001",
 					"id": 503001,
 					"arguments": []
 				},
 				{
-					"name": "MapExtra2",
+					"name": "MapExtra_503002",
 					"id": 503002,
 					"arguments": []
 				},
 				{
-					"name": "MapExtra3",
+					"name": "MapExtra_503003",
 					"id": 503003,
 					"arguments": []
 				},
 				{
-					"name": "MapExtra4",
+					"name": "MapExtra_503004",
 					"id": 503004,
 					"arguments": []
 				},
 				{
-					"name": "MapExtra5",
+					"name": "MapExtra_503005",
 					"id": 503005,
 					"arguments": []
 				}
