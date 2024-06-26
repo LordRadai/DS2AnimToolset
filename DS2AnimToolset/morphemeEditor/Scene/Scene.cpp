@@ -357,9 +357,8 @@ void Scene::Render()
 
         m_sprite.get()->Begin();
 
-        std::string frametime = RString::FloatToString(this->m_deltaTime) + " ms";
-
-        DX::AddOverlayText(m_sprite.get(), m_font.get(), frametime.c_str(), Vector2(10, 40), 0, 0.5f, Colors::White, TextFlags_Shadow);
+        //std::string frametime = RString::FloatToString(this->m_deltaTime) + " ms";
+        //DX::AddOverlayText(m_sprite.get(), m_font.get(), frametime.c_str(), Vector2(10, 40), 0, 0.5f, Colors::White, TextFlags_Shadow);
 
         for (size_t i = 0; i < this->m_texts.size(); i++)
             DX::AddWorldSpaceText(m_sprite.get(), m_font.get(), this->m_texts[i].m_text, Vector3::Zero, this->m_texts[i].m_position, this->m_camera, this->m_texts[i].m_color);
