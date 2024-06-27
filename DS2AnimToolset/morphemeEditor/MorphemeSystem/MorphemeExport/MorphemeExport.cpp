@@ -38,7 +38,6 @@ ME::TakeListXML* MorphemeExport::ExportAnimMarkup(CharacterDef* character, int a
 	int sourceAnimId = sourceAnim->m_animAssetID;
 
 	ME::ExportFactoryXML factory;
-
 	std::wstring dest = dstFileName;
 
 	ME::TakeListXML* takeList = (ME::TakeListXML*)factory.createTakeList(dest.c_str(), dest.c_str());
@@ -84,4 +83,54 @@ ME::TakeListXML* MorphemeExport::ExportAnimMarkup(CharacterDef* character, int a
 	}
 
 	return takeList;
+}
+
+ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, int chrId, std::wstring dstFileName)
+{
+	ME::ExportFactoryXML factory;
+
+	GUID gidReference;
+	CoCreateGuid(&gidReference);
+
+	wchar_t netName[260];
+	swprintf_s(netName, L"%04d", chrId);
+
+	ME::NetworkDefExportXML* netDefExport = static_cast<ME::NetworkDefExportXML*>(factory.createNetworkDef(RString::GuidToString(gidReference).c_str(), netName, dstFileName.c_str()));
+
+	netDefExport->setNetworkWorldOrientation(NMP::Vector3XAxis(), NMP::Vector3ZAxis(), NMP::Vector3XAxis());
+
+	for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
+	{
+		MorphemeExport::ExportNode(netDefExport, netDef, i);
+	}
+
+	const NMP::IDMappedStringTable* messageTable = netDef->getMessageIDNamesTable();
+
+	for (size_t i = 0; i < netDef->getNumMessages(); i++)
+	{
+		int messageId = netDef->getMessageDistributor(i)->m_messageID;
+		int messageType = netDef->getMessageDistributor(i)->m_messageType;
+
+		netDefExport->createMessage(RString::ToWide(netDef->getMessageNameFromMessageID(messageId)).c_str(), messageType, messageId);
+	}
+
+	netDefExport->setRootNodeNetworkID(netDef->getRootNodeID());
+
+	return netDefExport;
+}
+
+ME::NodeExportXML* MorphemeExport::ExportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId)
+{
+	MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
+
+	ME::NodeExportXML* nodeExportXML = static_cast<ME::NodeExportXML*>(netDefExport->createNode(nodeDef->getNodeID(), nodeDef->getNodeTypeID(), nodeDef->getParentNodeID(), false, netDef->getNodeNameFromNodeID(nodeDef->getNodeID())));
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
+
+	switch (nodeTypeID)
+	{
+	default:
+		break;
+	}
 }

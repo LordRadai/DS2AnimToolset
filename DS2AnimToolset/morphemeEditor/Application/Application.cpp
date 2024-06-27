@@ -726,6 +726,9 @@ void Application::RenderGUI(const char* title)
 				if (ImGui::MenuItem("Export Model"))
 					this->m_flags.m_exportModel = true;
 
+				if (ImGui::MenuItem("Export Network"))
+					this->m_flags.m_exportNetwork = true;
+
 				ImGui::EndMenu();
 			}
 
@@ -2285,14 +2288,38 @@ void Application::CheckFlags()
 		}
 	}
 
-	if (this->m_flags.m_exportAll)
+	CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
+
+	if (characterDef)
 	{
-		this->m_flags.m_exportAll = false;
-
-		CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
-
-		if (characterDef)
+		if (this->m_flags.m_exportNetwork)
 		{
+			this->m_flags.m_exportNetwork = false;
+
+			std::wstring out_path = L"Export";
+
+			wchar_t chr_id_str[50];
+			swprintf_s(chr_id_str, L"c%04d", characterDef->getCharacterId());
+
+			out_path += L"\\" + std::wstring(chr_id_str) + L"\\";
+
+			std::filesystem::create_directories(out_path);
+
+			ME::NetworkDefExportXML* netDefExport = MorphemeExport::ExportNetwork(characterDef->getNetworkDef(), characterDef->getCharacterId(), (out_path + chr_id_str + L".xml").c_str());
+			
+			bool state = false;
+
+			if (netDefExport)
+				state = netDefExport->write();
+
+			if (!state)
+				g_appLog->DebugMessage(MsgLevel_Error, "Failed to export network to XML for %ws\n", chr_id_str);
+		}
+
+		if (this->m_flags.m_exportAll)
+		{
+			this->m_flags.m_exportAll = false;
+
 			int numAnims = characterDef->getAnimFileLookUp()->getNumAnims();
 
 			if (numAnims == 0)
@@ -2314,7 +2341,7 @@ void Application::CheckFlags()
 				if (!this->ExportModelToFbx(export_path))
 					g_appLog->AlertMessage(MsgLevel_Error, "Failed to export FBX model (chrId=c%04d)\n", characterDef->getCharacterId());
 			}
-			
+
 			for (int i = 0; i < numAnims; i++)
 			{
 				std::filesystem::path anim_out = std::filesystem::path(RString::ToNarrow(export_path) + "Animations\\" + RString::RemoveExtension(characterDef->getAnimFileLookUp()->getSourceFilename(i)) + ".fbx");
@@ -2337,12 +2364,7 @@ void Application::CheckFlags()
 					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export event track to XML for animation %d\n", i);
 			}
 		}
-	}
 
-	CharacterDef* characterDef = this->m_morphemeSystem->GetCharacterDef();
-
-	if (characterDef)
-	{
 		if (this->m_flags.m_exportModel)
 		{
 			this->m_flags.m_exportModel = false;
