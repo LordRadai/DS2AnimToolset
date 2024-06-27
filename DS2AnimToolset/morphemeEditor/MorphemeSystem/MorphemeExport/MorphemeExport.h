@@ -14,6 +14,7 @@ namespace MorphemeExport
 	ME::NetworkDefExportXML* ExportNetwork(MR::NetworkDef* netDef, int chrId, std::wstring dstFileName);
 	ME::NodeExportXML* ExportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId);
 	ME::NodeExportXML* ExportNodeCore(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
+	ME::NodeExportXML* ExportNodeUnhandled(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 	ME::NodeExportXML* ExportNetworkNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 	ME::NodeExportXML* ExportStateMachineNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 	ME::NodeExportXML* ExportCPFloatNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
@@ -22,5 +23,4 @@ namespace MorphemeExport
 	ME::NodeExportXML* ExportCPBoolNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 	ME::NodeExportXML* ExportCPIntNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 	ME::NodeExportXML* ExportCPUIntNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
-
 }
