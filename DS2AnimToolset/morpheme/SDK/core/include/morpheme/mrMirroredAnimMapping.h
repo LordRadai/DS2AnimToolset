@@ -37,6 +37,16 @@ public:
     uint32_t  rightIndex;   ///< right index
   };
 
+  struct AdvancedMapping
+  {
+      NMP::Quat leftUp;
+      NMP::Quat rightUp;
+      uint32_t  leftIndex;    ///< left index
+      uint32_t  rightIndex;   ///< right index
+      uint32_t  leftUnk;    ///< left index
+      uint32_t  rightUnk;   ///< right index
+  };
+
   static NMP::Memory::Format getMemoryRequirements(uint32_t numValues, uint32_t numEvents, uint32_t numTracks, uint32_t numBones);
   static AttribDataMirroredAnimMapping* init(
     NMP::Memory::Resource& resource,
@@ -86,15 +96,16 @@ public:
   /// \return Fount mapped event ID or the input event ID if not found.
   uint32_t findEventMappingID(uint32_t eventID) const;
 
-  uint32_t       m_axis;            ///< 0=YZ plane, 1=ZX, 2=XY.
-  uint32_t       m_numBoneMappings; ///< Number of bone mapping pairs.
-  SimpleMapping* m_boneMappings;    ///< The bone mapping pairs array.
-  uint32_t       m_numTrackIds;     ///< Number of event track ID's to be re-mapped.
-  SimpleMapping* m_trackIds;        ///< The track ID's to be re-mapped.
-  uint32_t       m_numEventIds;     ///< Number of event user data ID's to be re-mapped.
-  SimpleMapping* m_eventIds;        ///< The event user data ID's to be re-mapped.
-  uint32_t       m_numBones;        ///< The number of bones in the rig.
-  NMP::Quat*     m_quatOffsets;     ///< The event user data ID's to be re-mapped.
+  uint32_t         m_axis;            ///< 0=YZ plane, 1=ZX, 2=XY.
+  uint32_t         m_numBoneMappings; ///< Number of bone mapping pairs.
+  AdvancedMapping* m_boneMappings;    ///< The bone mapping pairs array.
+  uint32_t         m_numTrackIds;     ///< Number of event track ID's to be re-mapped.
+  SimpleMapping*   m_trackIds;        ///< The track ID's to be re-mapped.
+  uint32_t         m_numEventIds;     ///< Number of event user data ID's to be re-mapped.
+  SimpleMapping*   m_eventIds;        ///< The event user data ID's to be re-mapped.
+  uint32_t         m_numBones;        ///< The number of bones in the rig.
+  NMP::Quat*       m_quatOffsets;     ///< The event user data ID's to be re-mapped.
+  uint32_t*        m_unkIndices;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

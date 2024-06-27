@@ -2334,6 +2334,17 @@ void Application::CheckFlags()
 				if (!characterControllerExport->write())
 					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export CharacterController to XML for %ws (animSet=%d)\n", chr_id_str, i);
 			}
+
+			for (size_t i = 0; i < characterDef->getNetworkDef()->getNumAnimSets(); i++)
+			{
+				wchar_t filename[260];
+				swprintf_s(filename, L"c%04d_%d.mrarig", characterDef->getCharacterId(), i);
+
+				ME::RigExportXML* rigExport = MorphemeExport::ExportRig(characterDef->getNetworkDef(), characterDef->getNetworkDef()->getRig(i), out_path + filename);
+
+				if (!rigExport->write())
+					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export rig to XML for %ws (animSet=%d)\n", chr_id_str, i);
+			}
 		}
 
 		if (this->m_flags.m_exportAnimations)

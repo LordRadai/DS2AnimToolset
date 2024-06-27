@@ -5,6 +5,7 @@
 #include "extern.h"
 #include "morpheme/Nodes/mrNodeStateMachine.h"
 #include "morpheme/mrCharacterControllerDef.h"
+#include "morpheme/mrMirroredAnimMapping.h"
 
 using namespace MR;
 
@@ -140,6 +141,49 @@ ME::CharacterControllerExportXML* MorphemeExport::ExportCharacterController(MR::
 	}
 
 	return characterControllerExport;
+}
+
+ME::RigExportXML* MorphemeExport::ExportRig(MR::NetworkDef* netDef, MR::AnimRigDef* rig, std::wstring dstFileName)
+{
+	ME::ExportFactoryXML factory;
+
+	GUID gidReference;
+	CoCreateGuid(&gidReference);
+
+	ME::RigExportXML* rigExport = static_cast<ME::RigExportXML*>(factory.createRig(RString::GuidToString(gidReference).c_str(), dstFileName.c_str(), "Rig"));
+
+	for (size_t i = 0; i < rig->getNumBones(); i++)
+	{
+		ME::JointExportXML* jointExport = static_cast<ME::JointExportXML*>(rigExport->createJoint(i, RString::ToWide(rig->getBoneName(i)).c_str(), rig->getParentBoneIndex(i)));
+
+		jointExport->setBodyPlanTag(rig->getBoneName(i));
+		jointExport->setRetargetingTag(rig->getBoneName(i));
+
+		const NMP::Vector3* translation = rig->getBindPoseBonePos(i);
+		jointExport->setTranslation(translation->x, translation->y, translation->z);
+
+		const NMP::Quat* rotation = rig->getBindPoseBoneQuat(i);
+		jointExport->setRotation(rotation->x, rotation->y, rotation->z, rotation->w);
+	}
+
+	rigExport->setHipIndex(rig->getCharacterRootBoneIndex());
+	rigExport->setTrajectoryIndex(rig->getTrajectoryBoneIndex());
+
+	const NMP::Vector3* blendFrameTranslation = rig->getBlendFrameTranslation();
+	rigExport->setBlendFramePositionVec(blendFrameTranslation->x, blendFrameTranslation->y, blendFrameTranslation->z);
+
+	const NMP::Quat* blendFrameOrientation = rig->getBlendFrameOrientation();
+	rigExport->setBlendFrameOrientationQuat(blendFrameOrientation->x, blendFrameOrientation->y, blendFrameOrientation->z, blendFrameOrientation->w);
+
+	rigExport->setRigRetargetScale(1.f);
+	rigExport->setMirrorPlane(0);
+
+	MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+
+	for (size_t i = 0; i < mirroredMapping->getNumMappings(); i++)
+		rigExport->createJointMapping(i, mirroredMapping->getLeftBone(i), mirroredMapping->getRightBone(i));
+
+	return rigExport;
 }
 
 ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, int chrId, std::wstring dstFileName)
