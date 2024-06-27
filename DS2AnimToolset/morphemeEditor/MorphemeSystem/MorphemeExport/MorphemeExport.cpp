@@ -1,5 +1,8 @@
 #include "MorphemeExport.h"
 #include "utils/RString/RString.h"
+#include "utils/RLog/RLog.h"
+#include "extern.h"
+#include "morpheme/Nodes/mrNodeStateMachine.h"
 
 using namespace MR;
 
@@ -123,14 +126,264 @@ ME::NodeExportXML* MorphemeExport::ExportNode(ME::NetworkDefExportXML* netDefExp
 {
 	MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
 
-	ME::NodeExportXML* nodeExportXML = static_cast<ME::NodeExportXML*>(netDefExport->createNode(nodeDef->getNodeID(), nodeDef->getNodeTypeID(), nodeDef->getParentNodeID(), false, netDef->getNodeNameFromNodeID(nodeDef->getNodeID())));
-	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
-
 	MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
 
 	switch (nodeTypeID)
 	{
+	case NODE_TYPE_NETWORK:
+		return MorphemeExport::ExportNetworkNode(netDefExport, netDef, nodeDef);
+	case NODE_TYPE_STATE_MACHINE:
+		return MorphemeExport::ExportStateMachineNode(netDefExport, netDef, nodeDef);
+	case NODE_TYPE_CP_FLOAT:
+		return MorphemeExport::ExportCPFloatNode(netDefExport, netDef, nodeDef);
+	case NODE_TYPE_CP_VECTOR3:
+		return MorphemeExport::ExportCPVector3Node(netDefExport, netDef, nodeDef);
+	case NODE_TYPE_CP_VECTOR4:
+		return MorphemeExport::ExportCPVector4Node(netDefExport, netDef, nodeDef);
+	case NODE_TYPE_CP_BOOL:
+		return MorphemeExport::ExportCPBoolNode(netDefExport, netDef, nodeDef);
+	case NODE_TYPE_CP_INT:
+		return MorphemeExport::ExportCPIntNode(netDefExport, netDef, nodeDef);
+	case NODE_TYPE_CP_UINT:
+		return MorphemeExport::ExportCPIntNode(netDefExport, netDef, nodeDef);
 	default:
+		return MorphemeExport::ExportNodeCore(netDefExport, netDef, nodeDef);
 		break;
 	}
+}
+
+ME::NodeExportXML* MorphemeExport::ExportNodeCore(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	ME::NodeExportXML* nodeExportXML = static_cast<ME::NodeExportXML*>(netDefExport->createNode(nodeDef->getNodeID(), nodeDef->getNodeTypeID(), nodeDef->getParentNodeID(), false, netDef->getNodeNameFromNodeID(nodeDef->getNodeID())));
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	return nodeExportXML;
+}
+
+ME::NodeExportXML* MorphemeExport::ExportNetworkNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_NETWORK)
+		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_NETWORK, nodeDef->getNodeTypeID());
+
+	return ExportNodeCore(netDefExport, netDef, nodeDef);
+}
+
+std::vector<StateDef*> getStateMachineNodeChildNodes(MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	std::vector<StateDef*> childStates;
+
+	MR::AttribDataStateMachineDef* attribData = static_cast<MR::AttribDataStateMachineDef*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+	if (attribData == nullptr)
+		return childStates;
+
+	int childStateCount = nodeDef->getNumChildNodes();
+	
+	for (size_t i = 0; i < childStateCount; i++)
+	{
+		StateDef* stateDef = attribData->getStateDef(i);
+
+		int nodeID = stateDef->getNodeID();
+
+		MR::NodeDef* def = netDef->getNodeDef(nodeID);
+
+		int nodeType = def->getNodeTypeID();
+
+		if ((nodeType != NODE_TYPE_TRANSIT) && (nodeType != NODE_TYPE_TRANSIT_PHYSICS) && (nodeType != NODE_TYPE_TRANSIT_SYNC_EVENTS) && (nodeType != NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS))
+			childStates.push_back(stateDef);
+	}
+
+	return childStates;
+}
+
+std::vector<StateDef*> getStateMachineNodeChildTransitNodes(MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	std::vector<StateDef*> childStates;
+
+	MR::AttribDataStateMachineDef* attribData = static_cast<MR::AttribDataStateMachineDef*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+	if (attribData == nullptr)
+		return childStates;
+
+	int childStateCount = nodeDef->getNumChildNodes();
+
+	for (size_t i = 0; i < childStateCount; i++)
+	{
+		StateDef* stateDef = attribData->getStateDef(i);
+
+		int nodeID = stateDef->getNodeID();
+
+		MR::NodeDef* def = netDef->getNodeDef(nodeID);
+
+		int nodeType = def->getNodeTypeID();
+
+		if ((nodeType == NODE_TYPE_TRANSIT) || (nodeType == NODE_TYPE_TRANSIT_PHYSICS) || (nodeType == NODE_TYPE_TRANSIT_SYNC_EVENTS) || (nodeType == NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS))
+			childStates.push_back(stateDef);
+	}
+
+	return childStates;
+}
+
+ME::NodeExportXML* MorphemeExport::ExportStateMachineNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_STATE_MACHINE, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	MR::AttribDataStateMachineDef* attribData = static_cast<MR::AttribDataStateMachineDef*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+	std::vector<StateDef*> childNodes = getStateMachineNodeChildNodes(netDef, nodeDef);
+
+	int childNodeCount = childNodes.size();
+	nodeDataBlock->writeUInt(childNodeCount, "ChildNodeCount");
+
+	if (childNodeCount)
+	{
+		for (size_t i = 0; i < childNodeCount; i++)
+		{
+			char paramName[256];
+			sprintf_s(paramName, "RuntimeChildNodeID_%i", i);
+
+			nodeDataBlock->writeNetworkNodeId(childNodes[i]->getNodeID(), paramName);
+		}
+	}
+
+	std::vector<StateDef*> childTransitNodes = getStateMachineNodeChildTransitNodes(netDef, nodeDef);
+
+	int childTransitCount = childTransitNodes.size();
+	nodeDataBlock->writeUInt(childTransitCount, "ChildTransitCount");
+
+	if (childTransitCount)
+	{
+		for (size_t i = 0; i < childTransitCount; i++)
+		{
+			char paramName[256];
+			sprintf_s(paramName, "RuntimeChildTransitID_%i", i);
+
+			nodeDataBlock->writeNetworkNodeId(childTransitNodes[i]->getNodeID(), paramName);
+		}
+	}
+
+	int defaultStateID = attribData->getStateDef(attribData->getDefaultStartingStateID())->getNodeID();
+	nodeDataBlock->writeUInt(defaultStateID, "DefaultNodeID");
+
+	if ((childTransitCount + childNodeCount) != nodeDef->getNumChildNodes())
+		g_appLog->PanicMessage("Total parsed node count is different from the total node children count (expected %d, got %d)\n", nodeDef->getNumChildNodes(), childTransitCount + childNodeCount);
+	
+	return nodeExportXML;
+}
+
+ME::NodeExportXML* MorphemeExport::ExportCPFloatNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_FLOAT)
+		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_FLOAT, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	MR::AttribDataFloat* attribData = static_cast<MR::AttribDataFloat*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_FLOAT));
+
+	if (attribData == nullptr)
+		return nullptr;
+
+	nodeDataBlock->writeFloat(attribData->m_value, "DefaultValue_0");
+
+	return nodeExportXML;
+}
+
+ME::NodeExportXML* MorphemeExport::ExportCPVector3Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_VECTOR3)
+		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_VECTOR3, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	MR::AttribDataVector3* attribData = static_cast<MR::AttribDataVector3*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_VECTOR3));
+
+	if (attribData == nullptr)
+		return nullptr;
+
+	nodeDataBlock->writeFloat(attribData->m_value[0], "DefaultValue_0");
+	nodeDataBlock->writeFloat(attribData->m_value[1], "DefaultValue_1");
+	nodeDataBlock->writeFloat(attribData->m_value[2], "DefaultValue_2");
+
+	return nodeExportXML;
+}
+
+ME::NodeExportXML* MorphemeExport::ExportCPVector4Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_VECTOR4)
+		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_VECTOR4, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	MR::AttribDataVector4* attribData = static_cast<MR::AttribDataVector4*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_VECTOR4));
+
+	if (attribData == nullptr)
+		return nullptr;
+
+	nodeDataBlock->writeFloat(attribData->m_value[0], "DefaultValue_0");
+	nodeDataBlock->writeFloat(attribData->m_value[1], "DefaultValue_1");
+	nodeDataBlock->writeFloat(attribData->m_value[2], "DefaultValue_2");
+	nodeDataBlock->writeFloat(attribData->m_value[3], "DefaultValue_3");
+
+	return nodeExportXML;
+}
+
+ME::NodeExportXML* MorphemeExport::ExportCPBoolNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_BOOL)
+		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_BOOL, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	MR::AttribDataBool* attribData = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_BOOL));
+
+	if (attribData == nullptr)
+		return nullptr;
+
+	nodeDataBlock->writeBool(attribData->m_value, "DefaultFlag");
+
+	return nodeExportXML;
+}
+
+ME::NodeExportXML* MorphemeExport::ExportCPIntNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_INT)
+		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_INT, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	MR::AttribDataInt* attribData = static_cast<MR::AttribDataInt*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_INT));
+
+	if (attribData == nullptr)
+		return nullptr;
+
+	nodeDataBlock->writeInt(attribData->m_value, "DefaultValue_0");
+
+	return nodeExportXML;
+}
+
+ME::NodeExportXML* MorphemeExport::ExportCPUIntNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_UINT)
+		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_UINT, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	MR::AttribDataUInt* attribData = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_UINT));
+
+	if (attribData == nullptr)
+		return nullptr;
+
+	nodeDataBlock->writeUInt(attribData->m_value, "DefaultValue_0");
+
+	return nodeExportXML;
 }
