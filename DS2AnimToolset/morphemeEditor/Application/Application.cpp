@@ -2366,16 +2366,14 @@ void Application::CheckFlags()
 
 				ME::TakeListXML* takeListXML = characterDef->getAnimation(i)->GetTakeList();
 
-				std::filesystem::path takeListPath = takeListXML->getDestFilename();
-				std::filesystem::create_directories(takeListPath.parent_path());
-
-				bool state = false;
-
 				if (takeListXML)
-					state = takeListXML->write();
+				{
+					std::filesystem::path takeListPath = takeListXML->getDestFilename();
+					std::filesystem::create_directories(takeListPath.parent_path());
 
-				if (!state)
-					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export event track to XML for animation %d\n", i);
+					if (takeListXML->write())
+						g_appLog->DebugMessage(MsgLevel_Error, "Failed to export event track to XML for animation %d\n", i);
+				}
 			}
 		}
 
