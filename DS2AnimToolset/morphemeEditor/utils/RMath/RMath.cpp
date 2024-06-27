@@ -89,21 +89,19 @@ DirectX::SimpleMath::Vector3 RMath::ConvertQuatToEulerAngles(const DirectX::Simp
 	return eulerAngles;
 }
 
-inline float RMath::ConvertDegAngleToRad(float angle)
+float RMath::ConvertDegAngleToRad(float angle)
 {
 	return ((angle / 360.f) * XM_2PI);
 }
 
-inline float RMath::ConvertRadAngleToDeg(float angle)
+float RMath::ConvertRadAngleToDeg(float angle)
 {
 	return ((angle / XM_2PI) * 360.f);
 }
 
 UINT RMath::ExtractBits(int value, int shiftValue, int mask)
 {
-	UINT extractedBits = (UINT)(value >> shiftValue) & mask;
-
-	return (int)extractedBits;
+	return (UINT)(value >> shiftValue) & mask;
 }
 
 UINT RMath::ConvertFloatColorToInt(DirectX::SimpleMath::Vector4 color)

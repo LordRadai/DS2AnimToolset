@@ -1,6 +1,7 @@
 #include "MorphemeExport.h"
 #include "utils/RString/RString.h"
 #include "utils/RLog/RLog.h"
+#include "utils/RMath/RMath.h"
 #include "extern.h"
 #include "morpheme/Nodes/mrNodeStateMachine.h"
 #include "morpheme/mrCharacterControllerDef.h"
@@ -98,7 +99,45 @@ ME::CharacterControllerExportXML* MorphemeExport::ExportCharacterController(MR::
 
 	ME::CharacterControllerExportXML* characterControllerExport = static_cast<ME::CharacterControllerExportXML*>(factory.createCharacterController(RString::GuidToString(gidReference).c_str(), dstFileName.c_str(), "Controller"));
 
-	characterControllerExport->getAttributeBlock()->createStringAttribute("Shape", "Capsule");
+	ME::AttributeBlockExport* attributes = characterControllerExport->getAttributeBlock();
+
+	if (attributes)
+	{
+		MR::CharacterControllerDef::ShapeType shapeType = characterController->getShape();
+
+		switch (shapeType)
+		{
+		case MR::CharacterControllerDef::BoxShape:
+			attributes->createStringAttribute("Shape", "Box");
+			attributes->createDoubleAttribute("Height", characterController->getHeight());
+			attributes->createDoubleAttribute("Width", characterController->getWidth());
+			attributes->createDoubleAttribute("Depth", characterController->getDepth());
+			break;
+		case MR::CharacterControllerDef::CapsuleShape:
+			attributes->createStringAttribute("Shape", "Capsule");
+			attributes->createDoubleAttribute("Height", characterController->getHeight());
+			attributes->createDoubleAttribute("Radius", characterController->getRadius());
+			break;
+		case MR::CharacterControllerDef::CylinderShape:
+			attributes->createStringAttribute("Shape", "Cylinder");
+			attributes->createDoubleAttribute("Height", characterController->getHeight());
+			attributes->createDoubleAttribute("Radius", characterController->getRadius());
+			break;
+		case MR::CharacterControllerDef::SphereShape:
+			attributes->createStringAttribute("Shape", "Sphere");
+			attributes->createDoubleAttribute("Radius", characterController->getRadius());
+			break;
+		default:
+			break;
+		}
+
+		attributes->createVector3Attribute("Colour", NMP::Vector3(characterController->getColour().getRf(), characterController->getColour().getGf(), characterController->getColour().getBf()));
+		attributes->createBoolAttribute("Visible", characterController->getVisible());
+		attributes->createDoubleAttribute("SkinWidth", characterController->getSkinWidth());
+		attributes->createDoubleAttribute("MaxPushForce", characterController->getMaxPushForce());
+		attributes->createDoubleAttribute("MaxSlopeAngle", RMath::ConvertDegAngleToRad(characterController->getMaxSlopeAngle()));
+		attributes->createDoubleAttribute("StepHeight", characterController->getStepHeight());
+	}
 
 	return characterControllerExport;
 }

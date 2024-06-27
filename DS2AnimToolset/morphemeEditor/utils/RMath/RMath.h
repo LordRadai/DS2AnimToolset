@@ -35,7 +35,7 @@ namespace RMath
 	inline float ConvertDegAngleToRad(float angle);
 	inline float ConvertRadAngleToDeg(float angle);
 
-	UINT ExtractBits(int value, int startBit, int numBits);
+	inline UINT ExtractBits(int value, int startBit, int numBits);
 
 	UINT ConvertFloatColorToInt(DirectX::SimpleMath::Vector4 color);
 

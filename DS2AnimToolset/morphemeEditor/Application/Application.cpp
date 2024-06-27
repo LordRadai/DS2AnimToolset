@@ -2319,15 +2319,21 @@ void Application::CheckFlags()
 
 			std::filesystem::create_directories(out_path);
 
-			ME::NetworkDefExportXML* netDefExport = MorphemeExport::ExportNetwork(characterDef->getNetworkDef(), characterDef->getCharacterId(), (out_path + chr_id_str + L".xml").c_str());
-			
-			bool state = false;
+			ME::NetworkDefExportXML* netDefExport = MorphemeExport::ExportNetwork(characterDef->getNetworkDef(), characterDef->getCharacterId(), out_path + chr_id_str + L".xml");
 
-			if (netDefExport)
-				state = netDefExport->write();
-
-			if (!state)
+			if (!netDefExport->write())
 				g_appLog->DebugMessage(MsgLevel_Error, "Failed to export network to XML for %ws\n", chr_id_str);
+
+			for (size_t i = 0; i < characterDef->getNumCharacterControllers(); i++)
+			{
+				wchar_t filename[260];
+				swprintf_s(filename, L"c%04d_%d.mrctrl", characterDef->getCharacterId(), i);
+
+				ME::CharacterControllerExportXML* characterControllerExport = MorphemeExport::ExportCharacterController(characterDef->getCharacterController(i), out_path + filename);
+				
+				if (!characterControllerExport->write())
+					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export CharacterController to XML for %ws (animSet=%d)\n", chr_id_str, i);
+			}
 		}
 
 		if (this->m_flags.m_exportAnimations)

@@ -12,6 +12,7 @@
 namespace MorphemeExport
 {
 	ME::TakeListXML* ExportAnimMarkup(CharacterDef* character, int animId, std::wstring dstFileName);
+
 	ME::CharacterControllerExportXML* ExportCharacterController(MR::CharacterControllerDef* characterController, std::wstring dstFileName);
 	ME::NetworkDefExportXML* ExportNetwork(MR::NetworkDef* netDef, int chrId, std::wstring dstFileName);
 
