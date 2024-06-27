@@ -3,6 +3,7 @@
 #include "utils/RLog/RLog.h"
 #include "extern.h"
 #include "morpheme/Nodes/mrNodeStateMachine.h"
+#include "morpheme/mrCharacterControllerDef.h"
 
 using namespace MR;
 
@@ -86,6 +87,20 @@ ME::TakeListXML* MorphemeExport::ExportAnimMarkup(CharacterDef* character, int a
 	}
 
 	return takeList;
+}
+
+ME::CharacterControllerExportXML* MorphemeExport::ExportCharacterController(MR::CharacterControllerDef* characterController, std::wstring dstFileName)
+{
+	ME::ExportFactoryXML factory;
+
+	GUID gidReference;
+	CoCreateGuid(&gidReference);
+
+	ME::CharacterControllerExportXML* characterControllerExport = static_cast<ME::CharacterControllerExportXML*>(factory.createCharacterController(RString::GuidToString(gidReference).c_str(), dstFileName.c_str(), "Controller"));
+
+	characterControllerExport->getAttributeBlock()->createStringAttribute("Shape", "Capsule");
+
+	return characterControllerExport;
 }
 
 ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, int chrId, std::wstring dstFileName)
