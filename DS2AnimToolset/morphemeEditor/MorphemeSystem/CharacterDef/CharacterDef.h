@@ -68,7 +68,7 @@ public:
   const char* getFilename() const { return m_filename; }
   int getCharacterId() const { return m_chrId; }
   int getNumRigToAnimMaps() { return this->m_rigToAnimMaps.size(); }
-  int getNumCharacterControllers() { return this->m_rigToAnimMaps.size(); }
+  int getNumCharacterControllers() { return this->m_characterControllerDefs.size(); }
   int getNumAnims() { return this->m_anims.size(); }
 
   MR::RigToAnimMap* getRigToAnimMap(int idx);
