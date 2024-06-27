@@ -551,7 +551,7 @@ ME::NodeExportXML* MorphemeExport::ExportCPIntNode(ME::NetworkDefExportXML* netD
 	if (attribData == nullptr)
 		return nullptr;
 
-	nodeDataBlock->writeInt(attribData->m_value, "DefaultValue_0");
+	nodeDataBlock->writeInt(attribData->m_value, "DefaultInt");
 
 	return nodeExportXML;
 }
@@ -569,7 +569,7 @@ ME::NodeExportXML* MorphemeExport::ExportCPUIntNode(ME::NetworkDefExportXML* net
 	if (attribData == nullptr)
 		return nullptr;
 
-	nodeDataBlock->writeUInt(attribData->m_value, "DefaultValue_0");
+	nodeDataBlock->writeUInt(attribData->m_value, "DefaultInt");
 
 	return nodeExportXML;
 }

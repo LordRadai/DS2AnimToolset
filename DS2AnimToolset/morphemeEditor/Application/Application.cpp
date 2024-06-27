@@ -720,8 +720,13 @@ void Application::RenderGUI(const char* title)
 
 			if (ImGui::BeginMenu("Export"))
 			{
-				if (ImGui::MenuItem("Export Animations"))
+				if (ImGui::MenuItem("Export"))
 					this->m_flags.m_exportAll = true;
+
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Export Animations"))
+					this->m_flags.m_exportAnimations = true;
 
 				if (ImGui::MenuItem("Export Model"))
 					this->m_flags.m_exportModel = true;
@@ -2292,6 +2297,15 @@ void Application::CheckFlags()
 
 	if (characterDef)
 	{
+		if (this->m_flags.m_exportAll)
+		{
+			this->m_flags.m_exportAll = false;
+
+			this->m_flags.m_exportAnimations = true;
+			this->m_flags.m_exportModel = true;
+			this->m_flags.m_exportNetwork = true;
+		}
+
 		if (this->m_flags.m_exportNetwork)
 		{
 			this->m_flags.m_exportNetwork = false;
@@ -2316,9 +2330,9 @@ void Application::CheckFlags()
 				g_appLog->DebugMessage(MsgLevel_Error, "Failed to export network to XML for %ws\n", chr_id_str);
 		}
 
-		if (this->m_flags.m_exportAll)
+		if (this->m_flags.m_exportAnimations)
 		{
-			this->m_flags.m_exportAll = false;
+			this->m_flags.m_exportAnimations = false;
 
 			int numAnims = characterDef->getAnimFileLookUp()->getNumAnims();
 

@@ -101,6 +101,7 @@ public:
 		bool m_saveTae = false;
 		bool m_saveAll = false;
 		bool m_exportAll = false;
+		bool m_exportAnimations = false;
 		bool m_exportModel = false;
 		bool m_exportNetwork = false;
 	} m_flags;
