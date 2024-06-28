@@ -2319,11 +2319,8 @@ void Application::CheckFlags()
 
 			std::filesystem::create_directories(out_path);
 
-			ME::NetworkDefExportXML* netDefExport = MorphemeExport::ExportNetwork(characterDef->getNetworkDef(), characterDef->getCharacterId(), out_path + chr_id_str + L".xml");
-
-			if (!netDefExport->write())
-				g_appLog->DebugMessage(MsgLevel_Error, "Failed to export network to XML for %ws\n", chr_id_str);
-
+			std::vector<ME::CharacterControllerExportXML*> controllerExports;
+			controllerExports.reserve(characterDef->getNumCharacterControllers());
 			for (size_t i = 0; i < characterDef->getNumCharacterControllers(); i++)
 			{
 				wchar_t filename[260];
@@ -2333,7 +2330,12 @@ void Application::CheckFlags()
 				
 				if (!characterControllerExport->write())
 					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export CharacterController to XML for %ws (animSet=%d)\n", chr_id_str, i);
+			
+				controllerExports.push_back(characterControllerExport);
 			}
+
+			std::vector< ME::RigExportXML*> rigExports;
+			rigExports.reserve(characterDef->getNetworkDef()->getNumAnimSets());
 
 			for (size_t i = 0; i < characterDef->getNetworkDef()->getNumAnimSets(); i++)
 			{
@@ -2344,7 +2346,30 @@ void Application::CheckFlags()
 
 				if (!rigExport->write())
 					g_appLog->DebugMessage(MsgLevel_Error, "Failed to export rig to XML for %ws (animSet=%d)\n", chr_id_str, i);
+			
+				rigExports.push_back(rigExport);
 			}
+
+			wchar_t libraryFilename[260];
+			swprintf_s(libraryFilename, L"c%04d_Library.xml", characterDef->getCharacterId());
+
+			ME::AnimationLibraryXML* animLibraryExport = MorphemeExport::ExportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, characterDef->getCharacterId(), libraryFilename);
+			
+			if (!animLibraryExport->write())
+				g_appLog->DebugMessage(MsgLevel_Error, "Failed to export animation library to XML for %ws\n", chr_id_str);
+
+			wchar_t messagePresetFilename[260];
+			swprintf_s(messagePresetFilename, L"c%04d_Preset.xml", characterDef->getCharacterId());
+
+			ME::MessagePresetLibraryExportXML* messagePresetExport = MorphemeExport::ExportMessagePresetLibrary(characterDef->getNetworkDef(), characterDef->getCharacterId(), messagePresetFilename);
+
+			if (!messagePresetExport->write())
+				g_appLog->DebugMessage(MsgLevel_Error, "Failed to export message library to XML for %ws\n", chr_id_str);
+
+			ME::NetworkDefExportXML* netDefExport = MorphemeExport::ExportNetwork(characterDef->getNetworkDef(), animLibraryExport, messagePresetExport, characterDef->getCharacterId(), out_path + chr_id_str + L".xml");
+
+			if (!netDefExport->write())
+				g_appLog->DebugMessage(MsgLevel_Error, "Failed to export network to XML for %ws\n", chr_id_str);
 		}
 
 		if (this->m_flags.m_exportAnimations)

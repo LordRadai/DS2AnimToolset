@@ -1,11 +1,13 @@
 #pragma once
 #include <string>
 #include "export/include/export/mcExportXML.h"
+#include "export/include/export/mcExportMessagePresetsXml.h"
 #include "morpheme/mrEventTrackDuration.h"
 #include "morpheme/mrEventTrackDiscrete.h"
 #include "morpheme/mrNodeDef.h"
 #include "morpheme/mrAttribData.h"
 #include "morpheme/AnimSource/mrAnimSource.h"
+#include "simpleBundle/simpleAnimRuntimeIDtoFilenameLookup.h"
 #include "export/include/export/mcExportControllerXml.h"
 #include "../CharacterDef/CharacterDef.h"
 
@@ -15,7 +17,10 @@ namespace MorphemeExport
 
 	ME::CharacterControllerExportXML* ExportCharacterController(MR::CharacterControllerDef* characterController, std::wstring dstFileName);
 	ME::RigExportXML* ExportRig(MR::NetworkDef* netDef, MR::AnimRigDef* rig, std::wstring dstFileName);
-	ME::NetworkDefExportXML* ExportNetwork(MR::NetworkDef* netDef, int chrId, std::wstring dstFileName);
+	ME::AnimationLibraryXML* ExportAnimLibrary(MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* filenameLookup, MR::NetworkDef* netDef, std::vector<ME::RigExportXML*> rigExport, std::vector<ME::CharacterControllerExportXML*> controllerExport, int chrId, std::wstring dstFileName);
+	ME::MessagePresetLibraryExportXML* ExportMessagePresetLibrary(MR::NetworkDef* netDef, int chrId, std::wstring dstFileName);
+
+	ME::NetworkDefExportXML* ExportNetwork(MR::NetworkDef* netDef, ME::AnimationLibraryXML* animLibraryExport, ME::MessagePresetLibraryExportXML* messagePresetLibraryExport, int chrId, std::wstring dstFileName);
 
 	ME::NodeExportXML* ExportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId);
 	ME::NodeExportXML* ExportNodeCore(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);

@@ -186,7 +186,64 @@ ME::RigExportXML* MorphemeExport::ExportRig(MR::NetworkDef* netDef, MR::AnimRigD
 	return rigExport;
 }
 
-ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, int chrId, std::wstring dstFileName)
+ME::AnimationLibraryXML* MorphemeExport::ExportAnimLibrary(MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* filenameLookup, MR::NetworkDef* netDef, std::vector<ME::RigExportXML*> rigExport, std::vector<ME::CharacterControllerExportXML*> controllerExport, int chrId, std::wstring dstFileName)
+{
+	ME::ExportFactoryXML factory;
+
+	GUID gidReference;
+	CoCreateGuid(&gidReference);
+
+	ME::AnimationLibraryXML* animLibraryExport = static_cast<ME::AnimationLibraryXML*>(factory.createAnimationLibrary(RString::GuidToString(gidReference).c_str(), L"ConnectLibrary", dstFileName.c_str()));
+
+	for (size_t i = 0; i < netDef->getNumAnimSets(); i++)
+	{
+		wchar_t setName[260];
+		swprintf_s(setName, L"%04d_%d", chrId, i);
+
+		ME::AnimationSetExportXML* animSetExport = static_cast<ME::AnimationSetExportXML*>(animLibraryExport->createAnimationSet(i, setName));
+		
+		if (controllerExport[i])
+			animSetExport->setCharacterController(controllerExport[i]);
+
+		if (rigExport[i])
+			animSetExport->setRig(rigExport[i]);
+
+		MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+
+		if (mirroredMapping)
+		{
+			for (size_t i = 0; i < mirroredMapping->getNumEventIdsToRemap(); i++)
+				animSetExport->createEventUserdataMirrorMapping(i, mirroredMapping->getLeftEventIdMapping(i), mirroredMapping->getRightEventIdMapping(i));
+		
+			for (size_t i = 0; i < mirroredMapping->getNumTrackIdsToRemap(); i++)
+				animSetExport->createEventTrackMirrorMapping(i, mirroredMapping->getLeftTrackIdMapping(i), mirroredMapping->getRightTrackIdMapping(i));			
+		}
+
+		for (size_t i = 0; i < filenameLookup->getNumAnims(); i++)
+		{
+			wchar_t takeFile[260];
+			swprintf_s(takeFile, L"%s.xml", filenameLookup->getSourceFilename(i));
+
+			animSetExport->createAnimationEntry(i, RString::ToWide(filenameLookup->getSourceFilename(i)).c_str(), takeFile, RString::ToWide(filenameLookup->getTakeName(i)).c_str(), L"Footsteps", "nsa", "");
+		}
+	}
+
+	return animLibraryExport;
+}
+
+ME::MessagePresetLibraryExportXML* MorphemeExport::ExportMessagePresetLibrary(MR::NetworkDef* netDef, int chrId, std::wstring dstFileName)
+{
+	ME::ExportFactoryXML factory;
+
+	GUID gidReference;
+	CoCreateGuid(&gidReference);
+
+	ME::MessagePresetLibraryExportXML* messagePresetLibraryExport = static_cast<ME::MessagePresetLibraryExportXML*>(factory.createMessagePresetLibrary(RString::GuidToString(gidReference).c_str(), dstFileName.c_str()));
+
+	return messagePresetLibraryExport;
+}
+
+ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, ME::AnimationLibraryXML* animLibraryExport, ME::MessagePresetLibraryExportXML* messagePresetLibraryExport, int chrId, std::wstring dstFileName)
 {
 	ME::ExportFactoryXML factory;
 
@@ -201,9 +258,7 @@ ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, i
 	netDefExport->setNetworkWorldOrientation(NMP::Vector3XAxis(), NMP::Vector3ZAxis(), NMP::Vector3XAxis());
 
 	for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
-	{
 		MorphemeExport::ExportNode(netDefExport, netDef, i);
-	}
 
 	const NMP::IDMappedStringTable* messageTable = netDef->getMessageIDNamesTable();
 
@@ -216,6 +271,12 @@ ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, i
 	}
 
 	netDefExport->setRootNodeNetworkID(netDef->getRootNodeID());
+
+	if (animLibraryExport)
+		netDefExport->setAnimationLibrary(animLibraryExport);
+
+	if (messagePresetLibraryExport)
+		netDefExport->setMessagePresetLibrary(messagePresetLibraryExport);
 
 	return netDefExport;
 }

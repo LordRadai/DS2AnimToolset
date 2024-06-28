@@ -118,7 +118,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DS2AnimToolset\morpheme\utils\comms2\include\;$(SolutionDir)DS2AnimToolset\morpheme\utils\simpleBundle\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\core\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\NMPlatform\win32\;$(ProjectDir);$(SolutionDir)DS2AnimToolset\common\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DS2AnimToolset\morpheme\utils\comms2\include\;$(SolutionDir)DS2AnimToolset\morpheme\utils\simpleBundle\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\core\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\NMPlatform\win32\;$(ProjectDir);$(SolutionDir)DS2AnimToolset\common\tinyxml;$(SolutionDir)DS2AnimToolset\morpheme\SDK\export\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>false</IntrinsicFunctions>
@@ -144,7 +144,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;NM_ENABLE_EXCEPTIONS=1</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)DS2AnimToolset\morpheme\utils\comms2\include\;$(SolutionDir)DS2AnimToolset\morpheme\utils\simpleBundle\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\core\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\NMPlatform\win32\;$(ProjectDir);$(SolutionDir)DS2AnimToolset\common\tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DS2AnimToolset\morpheme\utils\comms2\include\;$(SolutionDir)DS2AnimToolset\morpheme\utils\simpleBundle\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\core\include\;$(SolutionDir)DS2AnimToolset\morpheme\SDK\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\;$(SolutionDir)DS2AnimToolset\common\NMPlatform\include\NMPlatform\win32\;$(ProjectDir);$(SolutionDir)DS2AnimToolset\common\tinyxml;$(SolutionDir)DS2AnimToolset\morpheme\SDK\export\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <ExceptionHandling>false</ExceptionHandling>
