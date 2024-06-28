@@ -2393,10 +2393,7 @@ void Application::CheckFlags()
 			PWSTR export_path = (wchar_t*)out_path.c_str();
 
 			if (this->m_fbxExportFlags.m_exportModelWithAnims)
-			{
-				if (!this->ExportModelToFbx(export_path))
-					g_appLog->AlertMessage(MsgLevel_Error, "Failed to export FBX model (chrId=c%04d)\n", characterDef->getCharacterId());
-			}
+				this->m_flags.m_exportModel = true;
 
 			for (int i = 0; i < numAnims; i++)
 			{

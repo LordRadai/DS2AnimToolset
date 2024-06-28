@@ -150,7 +150,7 @@ ME::RigExportXML* MorphemeExport::ExportRig(MR::NetworkDef* netDef, MR::AnimRigD
 	GUID gidReference;
 	CoCreateGuid(&gidReference);
 
-	ME::RigExportXML* rigExport = static_cast<ME::RigExportXML*>(factory.createRig(RString::GuidToString(gidReference).c_str(), dstFileName.c_str(), "Rig"));
+	ME::RigExportXML* rigExport = static_cast<ME::RigExportXML*>(factory.createRig(RString::GuidToString(gidReference).c_str(), dstFileName.c_str(), RString::RemoveExtension(RString::ToNarrow(dstFileName.c_str())).c_str()));
 
 	for (size_t i = 0; i < rig->getNumBones(); i++)
 	{
