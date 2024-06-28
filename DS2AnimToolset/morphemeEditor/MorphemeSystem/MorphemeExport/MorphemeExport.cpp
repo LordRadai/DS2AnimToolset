@@ -221,10 +221,12 @@ ME::AnimationLibraryXML* MorphemeExport::ExportAnimLibrary(MR::UTILS::SimpleAnim
 
 		for (size_t i = 0; i < filenameLookup->getNumAnims(); i++)
 		{
-			wchar_t takeFile[260];
-			swprintf_s(takeFile, L"%s.xml", filenameLookup->getSourceFilename(i));
+			const char* sourceFileName = filenameLookup->getSourceFilename(i);
 
-			animSetExport->createAnimationEntry(i, RString::ToWide(filenameLookup->getSourceFilename(i)).c_str(), takeFile, RString::ToWide(filenameLookup->getTakeName(i)).c_str(), L"Footsteps", "nsa", "");
+			wchar_t takeFile[260];
+			swprintf_s(takeFile, L"$(RootDir)\\morphemeMarkup\\%s.xml", std::filesystem::path(sourceFileName).filename().c_str());
+
+			animSetExport->createAnimationEntry(i, RString::ToWide(sourceFileName).c_str(), takeFile, RString::ToWide(filenameLookup->getTakeName(i)).c_str(), L"Footsteps", "nsa", "");
 		}
 	}
 

@@ -2353,7 +2353,7 @@ void Application::CheckFlags()
 			wchar_t libraryFilename[260];
 			swprintf_s(libraryFilename, L"c%04d_Library.xml", characterDef->getCharacterId());
 
-			ME::AnimationLibraryXML* animLibraryExport = MorphemeExport::ExportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, characterDef->getCharacterId(), libraryFilename);
+			ME::AnimationLibraryXML* animLibraryExport = MorphemeExport::ExportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, characterDef->getCharacterId(), out_path + libraryFilename);
 			
 			if (!animLibraryExport->write())
 				g_appLog->DebugMessage(MsgLevel_Error, "Failed to export animation library to XML for %ws\n", chr_id_str);
@@ -2361,7 +2361,7 @@ void Application::CheckFlags()
 			wchar_t messagePresetFilename[260];
 			swprintf_s(messagePresetFilename, L"c%04d_Preset.xml", characterDef->getCharacterId());
 
-			ME::MessagePresetLibraryExportXML* messagePresetExport = MorphemeExport::ExportMessagePresetLibrary(characterDef->getNetworkDef(), characterDef->getCharacterId(), messagePresetFilename);
+			ME::MessagePresetLibraryExportXML* messagePresetExport = MorphemeExport::ExportMessagePresetLibrary(characterDef->getNetworkDef(), characterDef->getCharacterId(), out_path + messagePresetFilename);
 
 			if (!messagePresetExport->write())
 				g_appLog->DebugMessage(MsgLevel_Error, "Failed to export message library to XML for %ws\n", chr_id_str);
