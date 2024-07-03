@@ -253,7 +253,7 @@ ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, M
 	CoCreateGuid(&gidReference);
 
 	wchar_t netName[260];
-	swprintf_s(netName, L"%04d", chrId);
+	swprintf_s(netName, L"c%04d", chrId);
 
 	ME::NetworkDefExportXML* netDefExport = static_cast<ME::NetworkDefExportXML*>(factory.createNetworkDef(RString::GuidToString(gidReference).c_str(), netName, dstFileName.c_str()));
 
