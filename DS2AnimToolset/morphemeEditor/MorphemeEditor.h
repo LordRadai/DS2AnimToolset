@@ -1,6 +1,5 @@
 #pragma once
-#define APPNAME_W L"morphemeEditor 1.1.0"
-#define APPNAME_A "morphemeEditor 1.1.0"
+#define APPNAME_W L"MorphemeEditor 1.1.0"
+#define APPNAME_A "MorphemeEditor 1.1.0"
 
-#include "resources/resource.h"
-#include <d3d11.h>
+#include "resource.h"

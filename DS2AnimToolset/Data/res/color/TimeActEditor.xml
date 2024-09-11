@@ -1,0 +1,50 @@
+<Colors>
+    <Track type="vector4">
+        <x type="float">0.33</x>
+        <y type="float">0.33</y>
+        <z type="float">0.33</z>
+        <w type="float">1.00</w>
+    </Track>
+    <TrackInactive type="vector4">
+        <x type="float">0.33</x>
+        <y type="float">0.33</y>
+        <z type="float">0.33</z>
+        <w type="float">1.00</w>
+    </TrackInactive>
+    <TrackActive type="vector4">
+        <x type="float">0.00</x>
+        <y type="float">0.40</y>
+        <z type="float">0.80</z>
+        <w type="float">1.00</w>
+    </TrackActive>
+    <TrackBoundingBox type="vector4">
+        <x type="float">0.00</x>
+        <y type="float">0.00</y>
+        <z type="float">0.00</z>
+        <w type="float">1.00</w>
+    </TrackBoundingBox>
+    <TrackActiveBoundingBox type="vector4">
+        <x type="float">1.00</x>
+        <y type="float">1.00</y>
+        <z type="float">0.00</z>
+        <w type="float">1.00</w>
+    </TrackActiveBoundingBox>
+    <Highlight type="vector4">
+        <x type="float">1.00</x>
+        <y type="float">0.00</y>
+        <z type="float">0.00</z>
+        <w type="float">1.00</w>
+    </Highlight>
+    <TrackText type="vector4">
+        <x type="float">1.00</x>
+        <y type="float">1.00</y>
+        <z type="float">1.00</z>
+        <w type="float">1.00</w>
+    </TrackText>
+    <TrackCursor type="vector4">
+        <x type="float">1.00</x>
+        <y type="float">1.00</y>
+        <z type="float">1.00</z>
+        <w type="float">1.00</w>
+    </TrackCursor>
+</Colors>

@@ -1,0 +1,46 @@
+<TakeList sourceAnimFile="Export\c1020\morphemeMarkup\a00_03_7041_Wep01_WalkToIdle.xmd.xml" version="1">
+  <Take name="untitled">
+    <Attributes>
+      <secondDuration type="double">1.5</secondDuration>
+      <fps type="double">30</fps>
+      <clipStart type="double">0</clipStart>
+      <clipEnd type="double">1</clipEnd>
+      <loop type="bool">false</loop>
+    </Attributes>
+    <DiscreteEventTrack name="Footsteps" guid="4615c5b4-04f6-4e23-b6c7-029010869045" channelID="1">
+      <Attributes>
+        <userData type="uint">0</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DurationEventTrack name="TimeAct" guid="8001cf20-5f9b-4502-929d-50959320e52e" channelID="4">
+      <Attributes>
+        <userData type="uint">1000</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">37041</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="StateControl" guid="a180022c-f3da-45c4-8090-6820a90d5205" channelID="13">
+      <Attributes>
+        <userData type="uint">80</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">80</userData>
+          <startTime type="double">0.666667</startTime>
+          <duration type="double">0.333333</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+  </Take>
+</TakeList>

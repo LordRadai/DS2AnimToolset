@@ -1,0 +1,118 @@
+<TakeList sourceAnimFile="Export\c1020\morphemeMarkup\a00_09_7022_Wep02_Guard_HitHeavy.xmd.xml" version="1">
+  <Take name="untitled">
+    <Attributes>
+      <secondDuration type="double">1</secondDuration>
+      <fps type="double">30</fps>
+      <clipStart type="double">0</clipStart>
+      <clipEnd type="double">1</clipEnd>
+      <loop type="bool">false</loop>
+    </Attributes>
+    <DiscreteEventTrack name="Footsteps" guid="9ac17d55-60dd-48db-9b43-a3fabc1f5bad" channelID="1">
+      <Attributes>
+        <userData type="uint">0</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DurationEventTrack name="LeftSteps" guid="33b71517-4854-4e1e-8255-1d2f16e4af97" channelID="2">
+      <Attributes>
+        <userData type="uint">10</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">10</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="RightSteps" guid="67d7002f-cb42-451a-93b0-093ef656887a" channelID="3">
+      <Attributes>
+        <userData type="uint">11</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">11</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="StateControl" guid="a29d0634-dce6-47b1-99a4-3419e7f8c00f" channelID="13">
+      <Attributes>
+        <userData type="uint">80</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">80</userData>
+          <startTime type="double">0.833333</startTime>
+          <duration type="double">0.166667</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="TimeAct" guid="f708a83d-09b4-47e9-9106-e12740dac709" channelID="4">
+      <Attributes>
+        <userData type="uint">1000</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">97022</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="Guard" guid="ffdc6c71-e222-46aa-ae1d-f7d6a489a2f8" channelID="16">
+      <Attributes>
+        <userData type="uint">500</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">520</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="GuardSpeedControl" guid="7bd6214e-64c6-4772-8f80-810351a04f78" channelID="17">
+      <Attributes>
+        <userData type="uint">500</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">550</userData>
+          <startTime type="double">0.666667</startTime>
+          <duration type="double">0.333333</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="GuardDistanceControl" guid="6222ea53-718f-48ef-b27b-e7b5892aefa8" channelID="18">
+      <Attributes>
+        <userData type="uint">500</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">560</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.333333</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="DamageDuration" guid="0e5e52de-e0c4-46d7-8488-a14055aee9b5" channelID="8">
+      <Attributes>
+        <userData type="uint">200</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">250</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.833333</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+  </Take>
+</TakeList>

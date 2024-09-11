@@ -1,0 +1,40 @@
+<TakeList sourceAnimFile="Export\c1020\morphemeMarkup\a00_06_7033_Wep03_SideWalkLeft.xmd.xml" version="1">
+  <Take name="untitled">
+    <Attributes>
+      <secondDuration type="double">1.5</secondDuration>
+      <fps type="double">30</fps>
+      <clipStart type="double">0</clipStart>
+      <clipEnd type="double">1</clipEnd>
+      <loop type="bool">false</loop>
+    </Attributes>
+    <DiscreteEventTrack name="Footsteps" guid="8cbb5f6d-a82d-42d4-b382-989255294789" channelID="1">
+      <Attributes>
+        <userData type="uint">0</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+      <DiscreteEvent index="1">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0.488889</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DurationEventTrack name="TimeAct" guid="b76dd64a-e456-4003-ab6d-2bfb4640c992" channelID="4">
+      <Attributes>
+        <userData type="uint">1000</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">67033</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+  </Take>
+</TakeList>

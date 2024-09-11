@@ -1,0 +1,88 @@
+<TakeList sourceAnimFile="Export\c1020\morphemeMarkup\a00_04_0010_Jog.xmd.xml" version="1">
+  <Take name="untitled">
+    <Attributes>
+      <secondDuration type="double">1</secondDuration>
+      <fps type="double">30</fps>
+      <clipStart type="double">0</clipStart>
+      <clipEnd type="double">1</clipEnd>
+      <loop type="bool">false</loop>
+    </Attributes>
+    <DiscreteEventTrack name="Footsteps" guid="eb9b705b-fc21-4485-a61b-ae944c24529d" channelID="1">
+      <Attributes>
+        <userData type="uint">0</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+      <DiscreteEvent index="1">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0.5</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DurationEventTrack name="LeftSteps" guid="6342e55c-8259-4a8a-a1a6-104bdae87781" channelID="2">
+      <Attributes>
+        <userData type="uint">10</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">10</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.166667</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="RightSteps" guid="e3f3d1db-dcf1-465b-9a1f-de2315e0a047" channelID="3">
+      <Attributes>
+        <userData type="uint">11</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">11</userData>
+          <startTime type="double">0.5</startTime>
+          <duration type="double">0.2</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="FootEffect01" guid="0105638a-0b08-4fa9-8630-8bf30611ff8a" channelID="24">
+      <Attributes>
+        <userData type="uint">5</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">10</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.166667</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="FootEffect02" guid="94046fdc-4ffe-4784-9f74-944eb455dc0d" channelID="25">
+      <Attributes>
+        <userData type="uint">5</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">11</userData>
+          <startTime type="double">0.5</startTime>
+          <duration type="double">0.2</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="TimeAct" guid="accbee9c-21e9-44b1-a5b2-622fd0e3d375" channelID="4">
+      <Attributes>
+        <userData type="uint">1000</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">40010</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+  </Take>
+</TakeList>

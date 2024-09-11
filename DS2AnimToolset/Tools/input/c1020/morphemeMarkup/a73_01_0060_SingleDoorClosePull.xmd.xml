@@ -1,0 +1,120 @@
+<TakeList sourceAnimFile="Export\c1020\morphemeMarkup\a73_01_0060_SingleDoorClosePull.xmd.xml" version="1">
+  <Take name="untitled">
+    <Attributes>
+      <secondDuration type="double">2</secondDuration>
+      <fps type="double">30</fps>
+      <clipStart type="double">0</clipStart>
+      <clipEnd type="double">1</clipEnd>
+      <loop type="bool">false</loop>
+    </Attributes>
+    <DiscreteEventTrack name="Footsteps" guid="4c990083-3407-4387-822b-a911c559ffd6" channelID="1">
+      <Attributes>
+        <userData type="uint">0</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DiscreteEventTrack name="DoorSpeed" guid="d411ffe1-2c2b-4f23-9689-a3e1cf007042" channelID="47">
+      <Attributes>
+        <userData type="uint">415</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">415</userData>
+          <startTime type="double">0.166667</startTime>
+        </Attributes>
+      </DiscreteEvent>
+      <DiscreteEvent index="1">
+        <Attributes>
+          <userData type="uint">416</userData>
+          <startTime type="double">0.666667</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DurationEventTrack name="Leftsteps" guid="1e773c34-b33b-48af-b851-9a8aa2266386" channelID="45">
+      <Attributes>
+        <userData type="uint">10</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">10</userData>
+          <startTime type="double">0.1</startTime>
+          <duration type="double">0.133333</duration>
+        </Attributes>
+      </DurationEvent>
+      <DurationEvent index="1">
+        <Attributes>
+          <userData type="uint">10</userData>
+          <startTime type="double">0.45</startTime>
+          <duration type="double">0.2</duration>
+        </Attributes>
+      </DurationEvent>
+      <DurationEvent index="2">
+        <Attributes>
+          <userData type="uint">10</userData>
+          <startTime type="double">0.85</startTime>
+          <duration type="double">0.15</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="Rightsteps" guid="85a6cc65-66e3-432f-9885-9eba1eca78f2" channelID="46">
+      <Attributes>
+        <userData type="uint">11</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">11</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.433333</duration>
+        </Attributes>
+      </DurationEvent>
+      <DurationEvent index="1">
+        <Attributes>
+          <userData type="uint">11</userData>
+          <startTime type="double">0.733333</startTime>
+          <duration type="double">0.266667</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="Door_LHandIK" guid="da139647-004d-4f51-9c81-e872238b4bae" channelID="48">
+      <Attributes>
+        <userData type="uint">410</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">411</userData>
+          <startTime type="double">0.166667</startTime>
+          <duration type="double">0.5</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="StateControll" guid="5398d24c-2d66-46a7-b099-7143abdf2de2" channelID="40">
+      <Attributes>
+        <userData type="uint">80</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">80</userData>
+          <startTime type="double">0.863637</startTime>
+          <duration type="double">0.136364</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="TimeAct" guid="2af66cbb-4f3d-413a-bf13-f2b60c7cc164" channelID="4">
+      <Attributes>
+        <userData type="uint">1000</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">73010060</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+  </Take>
+</TakeList>

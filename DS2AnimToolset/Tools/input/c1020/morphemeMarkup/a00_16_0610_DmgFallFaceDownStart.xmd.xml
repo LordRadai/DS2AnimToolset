@@ -1,0 +1,87 @@
+<TakeList sourceAnimFile="Export\c1020\morphemeMarkup\a00_16_0610_DmgFallFaceDownStart.xmd.xml" version="1">
+  <Take name="untitled">
+    <Attributes>
+      <secondDuration type="double">0.666667</secondDuration>
+      <fps type="double">30</fps>
+      <clipStart type="double">0</clipStart>
+      <clipEnd type="double">1</clipEnd>
+      <loop type="bool">false</loop>
+    </Attributes>
+    <DiscreteEventTrack name="Footsteps" guid="fb1f86ed-db06-4809-a94f-fdfea98955df" channelID="1">
+      <Attributes>
+        <userData type="uint">0</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DiscreteEventTrack name="DamageControl" guid="1f9b5b6b-b511-42ab-bc03-bd53d7429b87" channelID="7">
+      <Attributes>
+        <userData type="uint">200</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">200</userData>
+          <startTime type="double">0.166667</startTime>
+        </Attributes>
+      </DiscreteEvent>
+      <DiscreteEvent index="1">
+        <Attributes>
+          <userData type="uint">201</userData>
+          <startTime type="double">0.766667</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DurationEventTrack name="DamageDuration" guid="b2c5932e-e570-499b-8e46-34fd467b2140" channelID="8">
+      <Attributes>
+        <userData type="uint">200</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">250</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="TimeAct" guid="7d5fa8f1-330d-45e1-b500-44ccfca4fc4d" channelID="4">
+      <Attributes>
+        <userData type="uint">1000</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">160610</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="StateControl" guid="459203f1-57e6-48b0-b558-d329eff9457d" channelID="13">
+      <Attributes>
+        <userData type="uint">80</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">96</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="IK" guid="af1b1dc1-97e5-48f3-9fb9-87bade9f69b0" channelID="12">
+      <Attributes>
+        <userData type="uint">9500</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">9550</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+  </Take>
+</TakeList>

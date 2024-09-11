@@ -1,0 +1,81 @@
+<TakeList sourceAnimFile="Export\c1020\morphemeMarkup\a00_13_0020_JumpTakeoff.xmd.xml" version="1">
+  <Take name="untitled">
+    <Attributes>
+      <secondDuration type="double">1.66667</secondDuration>
+      <fps type="double">30</fps>
+      <clipStart type="double">0</clipStart>
+      <clipEnd type="double">1</clipEnd>
+      <loop type="bool">false</loop>
+    </Attributes>
+    <DiscreteEventTrack name="Footsteps" guid="ac7ae181-2f7f-467d-a9aa-8aead5101b40" channelID="1">
+      <Attributes>
+        <userData type="uint">0</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DiscreteEventTrack name="StateControl" guid="3de92d39-9ff0-4322-858b-123e0352f586" channelID="13">
+      <Attributes>
+        <userData type="uint">80</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">92</userData>
+          <startTime type="double">0.06</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DurationEventTrack name="IK" guid="5a53aa80-30a9-4305-9683-1547531c223a" channelID="12">
+      <Attributes>
+        <userData type="uint">9500</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">9510</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="IK_1" guid="b4756cd3-f542-4b3d-8148-472a2b8ac324" channelID="19">
+      <Attributes>
+        <userData type="uint">9500</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">9520</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="JumpDuration" guid="15d69100-5c46-499d-b446-b1e251d9db86" channelID="42">
+      <Attributes>
+        <userData type="uint">80</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">95</userData>
+          <startTime type="double">0.3</startTime>
+          <duration type="double">0.7</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="TimeAct" guid="5290b171-10d2-426f-a23b-3e74fe62d3aa" channelID="4">
+      <Attributes>
+        <userData type="uint">1000</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">130020</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+  </Take>
+</TakeList>

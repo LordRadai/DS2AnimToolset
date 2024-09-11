@@ -1,472 +1,503 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
+    <Filter Include="File di origine">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
+    <Filter Include="File di intestazione">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
+    <Filter Include="File di risorse">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="fromloader\src\util\stringio\simple_sjis_table.bin">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="TimeActEditor\TimeActEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EventTrackEditor\EventTrackEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FlverModel\FlverModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\binder\bnd\bnd3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\binder\bnd\bnd4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\binder\binder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\dcx\dcx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\flver\flver0\flver0.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\flver\flver2\flver2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\flver\flver2\flver2_helpers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\flver\flver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\mtd\mtd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\paramdef\paramdef.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\endian\endian.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\file\file.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\fileio\fileio.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\inflate\inflate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\stringio\stringio.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\types\types.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\validate\validate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\open.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\cmem.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\umem.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FromsoftFormat\BNDReader\BNDReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FromsoftFormat\FlverReader\FlverReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FromsoftFormat\TimeActReader\TimeActEvent\TimeActEventData\TimeActEventData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FromsoftFormat\TimeActReader\TimeActEvent\TimeActEvent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FromsoftFormat\TimeActReader\TimeActReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\custom\imgui_custom_logic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\custom\imgui_custom_widget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_demo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_draw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_dx11.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_win32.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_tables.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imsequencer\ImSequencer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\Camera\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\DebugDraw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TaeTemplate\TaeTemplate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeSystem\AnimLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeSystem\AssetLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeSystem\Character.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeSystem\CharacterController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeSystem\CharacterDef.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimSourceInterface\AnimSourceInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimPlayer\AnimPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FBXTranslator\FBXTranslator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\NMDX\NMDX.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\RLog\RDebug\RDebug.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\RLog\TextLog\TextLog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\RLog\RLog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\RMath\RMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\RString\RString.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="INI\INI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="TimeActEditor\TimeActEditor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EventTrackEditor\EventTrackEditor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FlverModel\FlverModel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\common\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bdf\bdf3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bdf\bdf4.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bhd\bhd5_0.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bhd\bhd5_1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bnd\bnd3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bnd\bnd4.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\binder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\include.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\dcx\dcx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\flver\flver0\flver0.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\flver\flver2\flver2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\flver\flver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\flver\include.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\mtd\mtd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\paramdef\paramdef.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\include.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\endian\endian.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\file\file.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\fileio\fileio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\inflate\inflate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\math\math.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\stringio\stringio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\types\types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\validate\validate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\include.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\open.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\cmem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\fromloader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\umem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FromsoftFormat\BNDReader\BNDReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FromsoftFormat\FlverReader\FlverReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FromsoftFormat\TimeActReader\TimeActEvent\TimeActEventData\TimeActEventData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FromsoftFormat\TimeActReader\TimeActEvent\TimeActEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FromsoftFormat\TimeActReader\TimeActReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FromsoftFormat\Utils\MemReader\MemReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\custom\imgui_custom_logic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\custom\imgui_custom_widget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imconfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_dx11.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_impl_win32.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imgui_internal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_rectpack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_textedit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui\imstb_truetype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="imsequencer\ImSequencer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\Camera\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\DebugDraw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\StepTimer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TaeTemplate\TaeTemplate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="extern.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="framework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MorphemeEditor.h">
-      <Filter>Header Files</Filter>
+      <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="utils\MorphemeToDirectX.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Resource.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\AnimLoader.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="morphemeEditor.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\AssetLoader.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="imgui_custom\imgui_custom_logic.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\Character.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="imgui_custom\imgui_custom_widget.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\CharacterController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MorphemeSystem\CharacterDef.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resources\resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimSourceInterface\AnimSourceInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resources\resource1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimPlayer\AnimPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FBXTranslator\FBXTranslator.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="extern.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="utils\NMDX\NMDX.h">
-      <Filter>Header Files</Filter>
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="utils\RLog\RDebug\RDebug.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="AnimPlayer\AnimPlayer.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="utils\RLog\TextLog\TextLog.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="AnimObject\AnimObject.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="utils\RLog\RLog.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="FBXTranslator\FBXTranslator.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="utils\RMath\RMath.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="fromloader\src\common\common.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="utils\RString\RString.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="fromloader\src\formats\binder\bdf\bdf3.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="IconsFontAwesome6.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="fromloader\src\formats\binder\bdf\bdf4.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="INI\mini\ini.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="fromloader\src\formats\binder\bhd\bhd5_0.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="INI\INI.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="fromloader\src\formats\binder\bhd\bhd5_1.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\bnd\bnd3.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\bnd\bnd4.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\binder.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\include.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\dcx\dcx.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\flver\flver0\flver0.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\flver\flver2\flver2.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\flver\flver.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\flver\include.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\mtd\mtd.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\paramdef\paramdef.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\include.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\stdafx.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\endian\endian.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\file\file.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\fileio\fileio.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\inflate\inflate.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\math\math.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\stringio\stringio.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\types\types.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\validate\validate.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\include.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\open.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\cmem.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\fromloader.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\umem.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\AnimLoader\AnimLoader.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\AssetLoader\AssetLoader.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\MorphemeExport.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeSystem.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Application.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeEditorApp\MorphemeEditorApp.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager\RenderManager.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager\DebugDraw\DebugDraw.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugDraw\DebugDraw.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="StepTimer\StepTimer.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imconfig.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_dx11.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_win32.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_rectpack.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_textedit.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\Camera.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiManager\GuiManager.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\CharacterController\CharacterController.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeCharacter\MorphemeCharacter.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeCharacterDef\MorphemeCharacterDef.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Character.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterModelCtrl\CharacterModelCtrl.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FlverModel\FlverModel.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FromSoftware\BND4\BND4.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FromSoftware\TimeAct\TimeAct.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FromSoftware\TimeAct\TimeActEvent\TimeActEventData\TimeActEventData.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FromSoftware\TimeAct\TimeActEvent\TimeActEvent.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FromSoftware\TimeAct\TAE3\TAE3.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplate.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackEditor\TrackEditorBase.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackEditor\Track\Track.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackEditor\Track\Event\Event.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackEditor\TimeActEditor.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackEditor\EventTrackEditor.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="XMDTranslator\XMDTranslator.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FromSoftware\TimeAct\TaeExport\TaeExport.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplateXML\TaeTemplateXML.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkerThread\ProgressIndicator\ProgressIndicator.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkerThread\WorkerThread.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FileIDNamesTable\FileIDNamesTable.h">
+      <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="resources\morphemeEditor.rc">
-      <Filter>Resource Files</Filter>
+    <ClCompile Include="morphemeEditor.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_custom\imgui_custom_logic.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_custom\imgui_custom_widget.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\NMDX\NMDX.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimPlayer\AnimPlayer.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimObject\AnimObject.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FBXTranslator\FBXTranslator.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\binder\bnd\bnd3.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\binder\bnd\bnd4.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\binder\binder.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\dcx\dcx.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\flver\flver0\flver0.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\flver\flver2\flver2.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\flver\flver2\flver2_helpers.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\flver\flver.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\mtd\mtd.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\paramdef\paramdef.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\endian\endian.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\file\file.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\fileio\fileio.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\inflate\inflate.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\stringio\stringio.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\types\types.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\validate\validate.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\open.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\cmem.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\umem.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\AnimLoader\AnimLoader.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\AssetLoader\AssetLoader.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\MorphemeExport.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Application.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeEditorApp\MorphemeEditorApp.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderManager\RenderManager.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugDraw\DebugDraw.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_win32.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\Camera.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiManager\GuiManager.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\CharacterController\CharacterController.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeCharacter\MorphemeCharacter.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeCharacterDef\MorphemeCharacterDef.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="Character\Character.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterModelCtrl\CharacterModelCtrl.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FlverModel\FlverModel.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FromSoftware\BND4\BND4.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FromSoftware\TimeAct\TimeAct.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FromSoftware\TimeAct\TimeActEvent\TimeActEventData\TimeActEventData.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FromSoftware\TimeAct\TimeActEvent\TimeActEvent.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FromSoftware\TimeAct\TAE3\TAE3.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplate.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackEditor\TrackEditorBase.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackEditor\Track\Track.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackEditor\Track\Event\Event.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackEditor\TimeActEditor.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackEditor\EventTrackEditor.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="XMDTranslator\XMDTranslator.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FromSoftware\TimeAct\TaeExport\TaeExport.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplateXML\TaeTemplateXML.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="WorkerThread\ProgressIndicator\ProgressIndicator.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="WorkerThread\WorkerThread.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FileIDNamesTable\FileIDNamesTable.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="morphemeEditor.rc">
+      <Filter>File di risorse</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
-      <Filter>Resource Files</Filter>
+      <Filter>File di risorse</Filter>
     </Image>
-    <Image Include="resources\morphemeEditor.ico">
-      <Filter>Resource Files</Filter>
+    <Image Include="morphemeEditor.ico">
+      <Filter>File di risorse</Filter>
     </Image>
-    <Image Include="resources\small.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="resources\DS2AnimToolset.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fromloader\src\util\stringio\simple_sjis_table.bin">
+      <Filter>File di risorse</Filter>
+    </None>
+    <None Include="ClassDiagram.cd" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

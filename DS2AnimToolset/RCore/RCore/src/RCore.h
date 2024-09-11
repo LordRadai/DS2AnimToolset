@@ -1,0 +1,9 @@
+#pragma once
+#include "RFile/RFile.h"
+#include "RINI/RINI.h"
+#include "RInput/RInput.h"
+#include "RLog/RLog.h"
+#include "RMath/RMath.h"
+#include "RMemory/RMemory.h"
+#include "RString/RString.h"
+#include "RXML/RXML.h"

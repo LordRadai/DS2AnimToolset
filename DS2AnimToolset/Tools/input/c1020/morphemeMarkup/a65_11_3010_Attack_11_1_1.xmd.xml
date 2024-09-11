@@ -1,0 +1,215 @@
+<TakeList sourceAnimFile="Export\c1020\morphemeMarkup\a65_11_3010_Attack_11_1_1.xmd.xml" version="1">
+  <Take name="untitled">
+    <Attributes>
+      <secondDuration type="double">3.16667</secondDuration>
+      <fps type="double">30</fps>
+      <clipStart type="double">0</clipStart>
+      <clipEnd type="double">1</clipEnd>
+      <loop type="bool">false</loop>
+    </Attributes>
+    <DiscreteEventTrack name="Footsteps" guid="3416a9b6-c784-4b79-8203-4d7b782282e5" channelID="1">
+      <Attributes>
+        <userData type="uint">0</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+      <DiscreteEvent index="1">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0.157895</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DiscreteEventTrack name="AttackStateControl" guid="5c3f1c0a-601e-4018-aec9-cf2f5e03a2a8" channelID="28">
+      <Attributes>
+        <userData type="uint">100</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">106</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+      <DiscreteEvent index="1">
+        <Attributes>
+          <userData type="uint">100</userData>
+          <startTime type="double">0.157895</startTime>
+        </Attributes>
+      </DiscreteEvent>
+      <DiscreteEvent index="2">
+        <Attributes>
+          <userData type="uint">101</userData>
+          <startTime type="double">0.315789</startTime>
+        </Attributes>
+      </DiscreteEvent>
+      <DiscreteEvent index="3">
+        <Attributes>
+          <userData type="uint">102</userData>
+          <startTime type="double">0.571429</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DurationEventTrack name="LeftSteps" guid="18ef343b-e7e7-468b-bcce-7b20ebe4710f" channelID="2">
+      <Attributes>
+        <userData type="uint">10</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">10</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.125</duration>
+        </Attributes>
+      </DurationEvent>
+      <DurationEvent index="1">
+        <Attributes>
+          <userData type="uint">10</userData>
+          <startTime type="double">0.25</startTime>
+          <duration type="double">0.624998</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="RightSteps" guid="4861b964-378c-40b9-8895-584e5d196409" channelID="3">
+      <Attributes>
+        <userData type="uint">11</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">11</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.5</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="AttackSpeedControl" guid="2be72c31-4775-477f-a9f3-4246b99350f4" channelID="29">
+      <Attributes>
+        <userData type="uint">100</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">150</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.157895</duration>
+        </Attributes>
+      </DurationEvent>
+      <DurationEvent index="1">
+        <Attributes>
+          <userData type="uint">151</userData>
+          <startTime type="double">0.315789</startTime>
+          <duration type="double">0.684211</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="AttackSpeedControl_1" guid="6ed1e56d-3587-48fd-974d-7388dcbe7057" channelID="30">
+      <Attributes>
+        <userData type="uint">100</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">155</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.999999</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="AttackCancelControl_Avoid" guid="eeffc6c7-b419-4cbc-8733-dc8e03229a32" channelID="31">
+      <Attributes>
+        <userData type="uint">100</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">110</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.571429</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="AttackCancelControl_Move" guid="3af01537-f254-4f9c-b5ea-597ebf5dabfa" channelID="32">
+      <Attributes>
+        <userData type="uint">100</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">111</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.947367</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="AttackCancelControl_Attack" guid="5dcf9461-1e28-46a7-b60e-26ecf8ca0bd0" channelID="33">
+      <Attributes>
+        <userData type="uint">100</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">112</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.56842</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="StateControl" guid="868e4f86-47ce-4398-a559-f332390ba674" channelID="13">
+      <Attributes>
+        <userData type="uint">80</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">80</userData>
+          <startTime type="double">0.894736</startTime>
+          <duration type="double">0.105265</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="TimeAct" guid="73f22b53-ac08-48ef-a04e-3581da268b46" channelID="4">
+      <Attributes>
+        <userData type="uint">1000</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">65113010</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="AttackDuration" guid="1d22601f-0dce-4b90-82e8-84333ae5c8c6" channelID="26">
+      <Attributes>
+        <userData type="uint">100</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">120</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.56842</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="HitDuration" guid="9004e419-0dea-41a3-bc19-9869de200df8" channelID="34">
+      <Attributes>
+        <userData type="uint">100</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">123</userData>
+          <startTime type="double">0.157895</startTime>
+          <duration type="double">0.157895</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="IK" guid="ffed712f-7e89-4e4b-84d7-6a669b9a1cc6" channelID="12">
+      <Attributes>
+        <userData type="uint">9500</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">9550</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.894736</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+  </Take>
+</TakeList>

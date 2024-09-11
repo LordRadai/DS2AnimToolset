@@ -1,56 +1,7 @@
 #pragma once
-#include "AnimSourceInterface/AnimSourceInterface.h"
+#include "AnimObject/AnimObject.h"
 #include "FlverModel/FlverModel.h"
-
-enum PartType
-{
-	Parts_Head,
-	Parts_Face,
-	Parts_Body,
-	Parts_Arm,
-	Parts_Leg,
-	Parts_WeaponLeft,
-	Parts_WeaponRight,
-	Parts_MaxValue,		//This must always be the last value
-	Parts_Invalid = -1,
-};
-
-enum FgPartType
-{
-	FaceGen_Face,
-	FaceGen_Head,
-	FaceGen_Eyes,
-	FaceGen_EyeBrows,
-	FaceGen_Beard,
-	FaceGen_Hair,
-	FaceGen_MaxValue,	//This must always be the last value
-	FaceGen_Invalid = -1,
-};
-
-struct ModelFaceGen
-{
-	FlverModel* m_fgFace;
-	FlverModel* m_fgHead;
-	FlverModel* m_fgEyes;
-	FlverModel* m_fgEyeBrows;
-	FlverModel* m_fgBeard;
-	FlverModel* m_fgHair;
-};
-
-struct ModelParts
-{
-	FlverModel* m_model;
-
-	FlverModel* m_head;
-	FlverModel* m_face;
-	ModelFaceGen m_faceGen;
-	FlverModel* m_body;
-	FlverModel* m_arm;
-	FlverModel* m_leg;
-
-	FlverModel* m_weaponLeft;
-	FlverModel* m_weaponRight;
-};
+#include "Character/Character.h"
 
 class AnimPlayer
 {
@@ -58,36 +9,31 @@ public:
 	AnimPlayer();
 	~AnimPlayer();
 	
-	void Clear();
-	void ClearModelParts();
+	void clear();
+	void update(float dt);
+	void reset();
 
-	void Update(float dt);
-	void Reset();
-	void TogglePause();
+	void togglePause() { this->m_pause = !this->m_pause; }
 
-	void SetAnimation(AnimSourceInterface* anim);
-	void SetPause(bool status);
-	void SetTime(float time);
-	void SetModel(FlverModel* model);
-	void SetModelPart(PartType partType, FlverModel* model);
-	void SetModelPartFacegen(FgPartType fgType, FlverModel* model);
-	void SetPlaySpeed(float speed);
-	void StepPlay(float step);
+	void setCharacter(Character* character);
+	void setAnim(AnimObject* anim);
+	void setPause(bool status) { this->m_pause = status; }
+	void setTime(float time);
+	void setPlaySpeed(float speed) { this->m_playSpeed = speed; };
+	void stepPlay(float step);
 
-	AnimSourceInterface* GetAnimation();
-	bool IsPlaybackPaused();
-	bool IsPlaybackLoop();
-	float GetTime();
-	FlverModel* GetModel();
-	FlverModel* GetModelPart(PartType partType);
-	FlverModel* GetModelPartFacegen(FgPartType fgType);
-	float GetPlaySpeed();
+	Character* getCharacter() const { return this->m_character; }
+	AnimObject* getAnim() const { return this->m_anim; }
+	bool isPaused() const { return this->m_pause; }
+	bool isLoop() const { return this->m_loop; }
+	float getTime() const { return this->m_time; }
+	float getPlaySpeed() const { return this->m_playSpeed; }
 
 private:
-	AnimSourceInterface* m_anim;
+	Character* m_character;
+	AnimObject* m_anim;
 	float m_time;
 	bool m_pause;
 	bool m_loop;
-	ModelParts m_modelParts;
 	float m_playSpeed = 1.f;
 };

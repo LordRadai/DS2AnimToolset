@@ -24,10 +24,10 @@
 // SOFTWARE.
 //
 #include "ImSequencer.h"
-#include "../imgui/imgui.h"
-#include "../imgui/imgui_internal.h"
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 #include <cstdlib>
-#include "../Application/Application.h"
+#include "MorphemeEditorApp/MorphemeEditorApp.h"
 
 namespace ImSequencer
 {
@@ -179,7 +179,7 @@ namespace ImSequencer
         static bool addTrackIsDuration = false;
 
         static float addEventStart = 0.f;
-        static float addEventDur = 0.f;
+        static float addEventDur = 1.f / 60.f;
         static int addEventUserData = 0;
 
         bool delEvent = false;
@@ -306,7 +306,7 @@ namespace ImSequencer
 
             //header
             draw_list->AddRectFilled(canvas_pos, ImVec2(canvas_size.x + canvas_pos.x, canvas_pos.y + ItemHeight), 0xFF404040, 0);
-            if (sequenceOptions & EDITOR_TRACK_ADD && (eventTrackEditor->m_nodeSource))
+            if (sequenceOptions & EDITOR_TRACK_ADD && (eventTrackEditor->m_animSource))
             {
                 if (SequencerAddTrackButton(draw_list, ImVec2(canvas_pos.x + legendWidth - 8, canvas_pos.y + 2), ImVec2(4, ItemHeight * 0.8f)) && focused && ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && !popupOpened && !MovingCurrentFrame && !MovingScrollBar && movingTrack == -1 && !legendResizeRect.Contains(io.MousePos))
                 {
@@ -581,6 +581,7 @@ namespace ImSequencer
                 ImGui::Separator();
 
                 ImGui::InputText("Name", (char*)eventTrackEditor->m_eventTracks[*selectedTrack].m_name.c_str(), 50);
+                ImGui::InputInt("User Data", &eventTrackEditor->m_eventTracks[*selectedTrack].m_eventId);
 
                 if (GetAsyncKeyState(VK_RETURN))
                     ImGui::CloseCurrentPopup();
@@ -631,7 +632,10 @@ namespace ImSequencer
                 ImGui::Text((char*)eventTrackEditor->m_eventTracks[*selectedTrack].m_name.c_str());
                 ImGui::Separator();
 
-                ImGui::InputFloat("Start", &addEventDur, 1.f / 60.f);
+                ImGui::InputFloat("Start", &addEventStart, 1.f / 60.f);
+
+                if (addEventStart < 0.f)
+                    addEventStart = 0.f;
 
                 if (addEventDur < 0.f)
                     addEventDur = 0.f;
@@ -649,6 +653,9 @@ namespace ImSequencer
                 {
                     eventTrackEditor->AddEvent(*selectedTrack, EventTrackEditor::EventTrack::Event{ RMath::TimeToFrame(addEventStart), RMath::TimeToFrame(addEventDur), addEventUserData});
                     ImGui::CloseCurrentPopup();
+
+                    addEventDur = 1.f / 60.f;
+                    addEventStart = RMath::FrameToTime(*currentFrame);
 
                     reload = true;
                 }
@@ -1744,7 +1751,7 @@ namespace ImSequencer
                 ImGui::Text(header.c_str());
                 ImGui::Separator();
 
-                ImGui::InputInt("ID", &timeActEditor->m_tracks[*selectedTrack].m_eventGroup);
+                ImGui::InputInt("Event Group", &timeActEditor->m_tracks[*selectedTrack].m_eventGroup);
 
                 if (GetAsyncKeyState(VK_RETURN))
                     ImGui::CloseCurrentPopup();

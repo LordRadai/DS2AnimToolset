@@ -1,13 +1,14 @@
 #include "MorphemeSystem.h"
-#include "AssetLoader.h"
+#include "AssetLoader/AssetLoader.h"
 #include "simpleBundle/simpleBundle.h"
 #include "NMPlatform/NMFile.h"
 #include "morpheme/Nodes/mrNodes.h"
 #include "morpheme/Nodes/mrNodeAnimSyncEvents.h"
-#include "AnimLoader.h"
+#include "AnimLoader/AnimLoader.h"
+#include "XMD/Model.h"
 
 #include "extern.h"
-#include "utils/RLog/RLog.h"
+#include "RCore.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 void MorphemeSystem::initMorpheme()
@@ -16,7 +17,7 @@ void MorphemeSystem::initMorpheme()
 
     //----------------------------
     // Initialise morpheme library
-    g_appLog->DebugMessage(MsgLevel_Info, "Initialising Morpheme\n");
+    g_appLog->debugMessage(MsgLevel_Info, "Initialising Morpheme\n");
     MR::Manager::initMorphemeLib();
 
     //----------------------------
@@ -37,8 +38,10 @@ void MorphemeSystem::initMorpheme()
     //----------------------------
     // Initialise animation file handling functions
     MR::Manager::getInstance().setAnimFileHandlingFunctions(
-        AnimLoaderBasic::requestAnim,
-        AnimLoaderBasic::releaseAnim);
+        AnimLoader::requestAnim,
+        AnimLoader::releaseAnim);
+
+    XMD::XMDInit();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -53,83 +56,30 @@ void MorphemeSystem::initMorpheme()
 // details.
 void MorphemeSystem::termMorpheme()
 {
-    g_appLog->DebugMessage(MsgLevel_Info, "Terminating Morpheme\n");
-
-    if (m_characterData)
-    {
-        //----------------------------
-        // Once we've finished with the binary file release it.
-        CharacterBasic::destroy(m_characterData);
-    }
-
-    if (m_characterDef && m_characterDef->isLoaded())
-    {
-        //----------------------------
-        // Once we've finished with the binary file release it.
-        CharacterDefBasic::destroy(m_characterDef);
-    }
+    g_appLog->debugMessage(MsgLevel_Info, "Terminating Morpheme\n");
 
     //----------------------------
     // Terminate morpheme library
+    XMD::XMDCleanup();
     MR::DispatcherBasic::term();
     MR::Manager::termMorphemeLib();
     NMP::Memory::shutdown();
 
-    g_appLog->DebugMessage(MsgLevel_Info, "Morpheme shutdown\n");
+    g_appLog->debugMessage(MsgLevel_Info, "Morpheme shutdown\n");
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 // Creates a CharacterDef and registers it with the manager.
-CharacterDefBasic* MorphemeSystem::createCharacterDef(const char* filename)
+MorphemeCharacterDef* MorphemeSystem::createCharacterDef(const char* filename)
 {
-    if (this->m_characterDef)
-        CharacterDefBasic::destroy(this->m_characterDef);
+    g_appLog->debugMessage(MsgLevel_Info, "Creating CharacterDefBasic from file %s\n", filename);
 
-    this->m_characterDef = nullptr;
-
-    g_appLog->DebugMessage(MsgLevel_Info, "Creating CharacterDefBasic from file %s\n", filename);
-
-    CharacterDefBasic* gameCharacterDef = CharacterDefBasic::create(filename);
+    MorphemeCharacterDef* gameCharacterDef = MorphemeCharacterDef::create(filename);
     if (!gameCharacterDef || !gameCharacterDef->isLoaded())
     {
         NMP_ASSERT_FAIL();
         return NULL;
     }
-    registerCharacterDef(gameCharacterDef); // The management of this gameCharacterDefs memory is is this CharacterManagers responsibility.
+
     return gameCharacterDef;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void MorphemeSystem::registerCharacterDef(CharacterDefBasic* characterDef)
-{
-    //----------------------------
-    // store a pointer to the character for use later
-    m_characterDef = characterDef;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void MorphemeSystem::registerCharacter(CharacterBasic* characterData)
-{
-    //----------------------------
-    // store a pointer to the character for use later
-    m_characterData = characterData;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void MorphemeSystem::update(float timeDelta)
-{
-    if (m_characterData)
-    {
-        m_characterData->update(timeDelta);
-    }
-}
-
-CharacterDefBasic* MorphemeSystem::GetCharacterDef()
-{
-    return this->m_characterDef;
-}
-
-CharacterBasic* MorphemeSystem::GetCharacter()
-{
-    return this->m_characterData;
 }

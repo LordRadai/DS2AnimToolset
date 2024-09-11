@@ -1,70 +1,25 @@
+#include <fstream>
+#include <fbxsdk.h>
+
 #include "framework.h"
 #include "MorphemeEditor.h"
 #include "extern.h"
-#include "Application/Application.h"
-#include "Scene/Scene.h"
-#include "TaeTemplate/TaeTemplate.h"
-#include "IconsFontAwesome6.h"
+#include "MorphemeEditorApp/MorphemeEditorApp.h"
+#include "GuiManager/GuiManager.h"
+#include "RenderManager/RenderManager.h"
+#include "WorkerThread/WorkerThread.h"
+#include "FromSoftware/TimeAct/TaeTemplate/TaeTemplate.h"
 
-// Data
-static ID3D11Device* g_pd3dDevice = nullptr;
-static ID3D11DeviceContext* g_pd3dDeviceContext = nullptr;
-static IDXGISwapChain* g_pSwapChain = nullptr;
-static UINT                     g_ResizeWidth = 0, g_ResizeHeight = 0;
-static ID3D11RenderTargetView* g_mainRenderTargetView = nullptr;
+static UINT g_ResizeWidth = 0, g_ResizeHeight = 0;
 
 // Forward declarations of helper functions
-bool CreateDeviceD3D(HWND hWnd);
-void CleanupDeviceD3D();
-void CreateRenderTarget();
-void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+std::atomic<WorkerThread*> g_workerThread;
 MsgLevel g_logLevel = MsgLevel_Debug;
-Application* g_appRootWindow = nullptr;
-Scene* g_scene = nullptr;
-TaeTemplate* g_taeTemplate = nullptr;
+TimeAct::TaeTemplate* g_taeTemplate = nullptr;
 fbxsdk::FbxManager* g_pFbxManager = nullptr;
-
 RLog* g_appLog;
-
-using namespace fbxsdk;
-
-void initImGui(HWND hwnd)
-{
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-
-    // Setup Platform/Scene backends
-    ImGui_ImplWin32_Init(hwnd);
-    ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
-
-    g_appLog->DebugMessage(MsgLevel_Info, "Add ImGui fonts\n");
-    io.Fonts->AddFontDefault();
-
-    float baseFontSize = 13.0f; // 13.0f is the size of the default font. Change to the font size you use.
-    float iconFontSize = baseFontSize * 2.0f / 3.0f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
-
-    // merge in icons from Font Awesome
-    static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
-    ImFontConfig icons_config;
-    icons_config.MergeMode = true;
-    icons_config.PixelSnapH = true;
-    icons_config.GlyphMinAdvanceX = iconFontSize;
-    io.Fonts->AddFontFromFileTTF("Data//font//" FONT_ICON_FILE_NAME_FAS, iconFontSize, &icons_config, icons_ranges);
-    // use FONT_ICON_FILE_NAME_FAR if you want regular instead of solid
-
-    g_appLog->DebugMessage(MsgLevel_Info, "Initialising ImGui style\n");
-    g_appRootWindow->GUIStyle();
-}
 
 // Main code
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -72,13 +27,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_ LPWSTR    lpCmdLine,
     _In_ int       nCmdShow)
 {
-    g_appLog = new RLog(MsgLevel_Debug, ".//Data//out//morphemeEditor.log", "morphemeEditor");
-    g_appRootWindow = new Application();
-    g_scene = new Scene();
+    MorphemeEditorApp* morphemeEditorApp = MorphemeEditorApp::getInstance();
+    GuiManager* guiManager = GuiManager::getInstance();
+    RenderManager* renderManager = RenderManager::getInstance();
+    g_workerThread.store(WorkerThread::getInstance());
+
+    DX::StepTimer timer;
+    //timer.SetFixedTimeStep(true);
+    //timer.SetTargetElapsedSeconds(1.f / 60.f);
+
+    g_appLog = new RLog(MsgLevel_Debug, "morphemeEditor.log", APPNAME_A);
 
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
-    WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, hInstance, LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON)), LoadCursor(nullptr, IDC_ARROW), nullptr, nullptr, MAKEINTRESOURCEW(IDI_ICON),  LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SMALL)) };
+    WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, hInstance, LoadIcon(hInstance, MAKEINTRESOURCE(IDC_ICON)), LoadCursor(nullptr, IDC_ARROW), nullptr, nullptr, MAKEINTRESOURCEW(IDC_ICON),  LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SMALL)) };
     ::RegisterClassExW(&wc);
 
     HWND hwnd = ::CreateWindowW(wc.lpszClassName, APPNAME_W, WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
@@ -96,48 +58,71 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     std::cin.clear();
 #endif
 
-    // Initialize Direct3D
-    if (!CreateDeviceD3D(hwnd))
-    {
-        CleanupDeviceD3D();
-        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
-
-        g_appLog->DebugMessage(MsgLevel_Error, "Failed to create D3D device\n");
-
-        return 1;
-    }
-
     // Show the window
     ::ShowWindow(hwnd, SW_SHOWDEFAULT);
     ::UpdateWindow(hwnd);
 
+    g_appLog->debugMessage(MsgLevel_Info, "Application startup\n");
+
     try
     {
-        g_appLog->DebugMessage(MsgLevel_Info, "Loading TimeAct template\n");
+        g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct template\n");
 
-        ifstream jsonSrc(".//Data//res//def//timeact.json");
-
-        g_taeTemplate = new TaeTemplate(jsonSrc);
+        g_taeTemplate = TimeAct::TaeTemplate::load(L"Data\\res\\TimeActTemplate.xml");
     }
     catch (const std::exception& exc)
     {
-        g_appLog->AlertMessage(MsgLevel_Error, exc.what());
+        g_appLog->alertMessage(MsgLevel_Error, exc.what());
     }
 
-    g_appLog->DebugMessage(MsgLevel_Info, "Initialising ImGui\n");
-    initImGui(hwnd);
+    try
+    {
+        g_appLog->debugMessage(MsgLevel_Info, "Initialising application core module\n");
+        morphemeEditorApp->initialise();
+    }
+    catch (const std::exception& e)
+    {
+        morphemeEditorApp->shutdown();
+        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
-    g_appLog->DebugMessage(MsgLevel_Info, "Initialising application core module\n");
-    g_appRootWindow->Initialise();
+        g_appLog->panicMessage(e.what());
 
-    g_appLog->DebugMessage(MsgLevel_Info, "Initialising preview module\n");
-    g_scene->Initialise(hwnd, g_pSwapChain, g_pd3dDevice, g_pd3dDeviceContext, nullptr);
+        return 1;
+    }
 
-    g_appLog->DebugMessage(MsgLevel_Info, "Create FBXManager\n");
+    try
+    {
+        // Initialize Direct3D
+        g_appLog->debugMessage(MsgLevel_Info, "Initialising rendering module\n");
+
+        renderManager->initialise(hwnd);
+    }
+    catch (const std::exception& e)
+    {
+        renderManager->shutdown();
+        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+
+        g_appLog->panicMessage(e.what());
+
+        return 1;
+    }
+
+    try
+    {
+        g_appLog->debugMessage(MsgLevel_Info, "Initialising GUI module\n");
+        guiManager->initialise(hwnd, renderManager->getDeviceContext(), renderManager->getDevice());
+    }
+    catch (const std::exception& e)
+    {
+        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+
+        g_appLog->panicMessage(e.what());
+
+        return 1;
+    }
+
+    g_appLog->debugMessage(MsgLevel_Info, "Creating FBX Manager\n");
     g_pFbxManager = FbxManager::Create();
-
-    // Our state
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop
     bool done = false;
@@ -159,125 +144,48 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         // Handle window resize (we don't resize directly in the WM_SIZE handler)
         if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
         {
-            CleanupRenderTarget();
-
-            g_pSwapChain->ResizeBuffers(0, g_ResizeWidth, g_ResizeHeight, DXGI_FORMAT_UNKNOWN, 0);
+            renderManager->resize(g_ResizeWidth, g_ResizeHeight);
             g_ResizeWidth = g_ResizeHeight = 0;
-            CreateRenderTarget();
-
-            g_scene->CreateResources();
         }
 
-        // Start the Dear ImGui frame
-        ImGui_ImplDX11_NewFrame();
-        ImGui_ImplWin32_NewFrame();
-        ImGui::NewFrame();
+        WorkerThread::getInstance()->update();
 
-        g_scene->Update();
-        g_appRootWindow->Update(g_scene->m_deltaTime);
+        timer.Tick([&]()
+        {
+            float dt = float(timer.GetElapsedSeconds());
+
+            renderManager->update(dt);
+            guiManager->update(dt);
+            morphemeEditorApp->update(dt);
+        });
 
         // Rendering
-        g_scene->Render();
-        ImGui::Render();
-        const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
-        g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
-        g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clear_color_with_alpha);
-        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+        if (timer.GetFrameCount() > 0)
+            renderManager->render();
 
-        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-        {
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-        }
-
-        HRESULT hr = g_pSwapChain->Present(1, 0);
-
-        try
-        {
-            DX::ThrowIfFailed(hr);
-        }
-        catch (const std::exception& e)
-        {
-            g_appLog->AlertMessage(MsgLevel_Error, e.what());
-        }
+        renderManager->present();
     }
 
-    g_appRootWindow->Shutdown();
+    WorkerThread::getInstance()->join();
 
     // Cleanup
-    g_appLog->DebugMessage(MsgLevel_Info, "ImGui shutdown\n");
-    ImGui_ImplDX11_Shutdown();
-    ImGui_ImplWin32_Shutdown();
-    ImGui::DestroyContext();
+    g_appLog->debugMessage(MsgLevel_Info, "Main app module shutdown\n");
+    morphemeEditorApp->shutdown();
 
-    g_appLog->DebugMessage(MsgLevel_Info, "DirectX 11 shutdown\n");
-    CleanupDeviceD3D();
+    g_appLog->debugMessage(MsgLevel_Info, "Gui module shutdown\n");
+    guiManager->shutdown();
+
+    g_appLog->debugMessage(MsgLevel_Info, "Rendering module shutdown\n");
+    renderManager->shutdown();
+
     ::DestroyWindow(hwnd);
     ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
-    g_appLog->DebugMessage(MsgLevel_Info, "Exit\n");
+    g_appLog->debugMessage(MsgLevel_Info, "Exit\n");
 
     delete g_appLog;
-    delete g_appRootWindow;
-    delete g_scene;
 
     return 0;
-}
-
-// Helper functions
-
-bool CreateDeviceD3D(HWND hWnd)
-{
-    // Setup swap chain
-    DXGI_SWAP_CHAIN_DESC sd;
-    ZeroMemory(&sd, sizeof(sd));
-    sd.BufferCount = 2;
-    sd.BufferDesc.Width = 0;
-    sd.BufferDesc.Height = 0;
-    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    sd.BufferDesc.RefreshRate.Numerator = 60;
-    sd.BufferDesc.RefreshRate.Denominator = 1;
-    sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    sd.OutputWindow = hWnd;
-    sd.SampleDesc.Count = 1;
-    sd.SampleDesc.Quality = 0;
-    sd.Windowed = TRUE;
-    sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-
-    UINT createDeviceFlags = 0;
-    //createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-    D3D_FEATURE_LEVEL featureLevel;
-    const D3D_FEATURE_LEVEL featureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
-    HRESULT res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext);
-    if (res == DXGI_ERROR_UNSUPPORTED) // Try high-performance WARP software driver if hardware is not available.
-        res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext);
-    if (res != S_OK)
-        return false;
-
-    CreateRenderTarget();
-    return true;
-}
-
-void CleanupDeviceD3D()
-{
-    CleanupRenderTarget();
-    if (g_pSwapChain) { g_pSwapChain->Release(); g_pSwapChain = nullptr; }
-    if (g_pd3dDeviceContext) { g_pd3dDeviceContext->Release(); g_pd3dDeviceContext = nullptr; }
-    if (g_pd3dDevice) { g_pd3dDevice->Release(); g_pd3dDevice = nullptr; }
-}
-
-void CreateRenderTarget()
-{
-    ID3D11Texture2D* pBackBuffer;
-    g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-    if (g_pd3dDevice) { g_pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &g_mainRenderTargetView); }
-    pBackBuffer->Release();
-}
-
-void CleanupRenderTarget()
-{
-    if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = nullptr; }
 }
 
 // Forward declare message handler from imgui_impl_win32.cpp

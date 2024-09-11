@@ -1,10 +1,21 @@
 #include "FBXTranslator.h"
-#include "utils/RLog/RLog.h"
-#include "utils/RMath/RMath.h"
-#include "utils/RString/RString.h"
 #include "utils/NMDX/NMDX.h"
 #include "morpheme/AnimSource/mrAnimSourceNSA.h"
 #include "extern.h"
+#include "RCore.h"
+
+namespace
+{
+	inline FbxVector4 getFbxVector4(Vector3 vec)
+	{
+		return FbxVector4(vec.x, vec.y, vec.z, 0.f);
+	}
+
+	inline FbxVector4 getFbxVector4(Vector4 vec)
+	{
+		return FbxVector4(vec.x, vec.y, vec.z, vec.w);
+	}
+}
 
 //Converts a DirectX::XMMATRIX to an FbxAMatrix
 FbxAMatrix CreateFbxMatrixFromDXMatrix(DirectX::XMMATRIX m)
@@ -48,7 +59,7 @@ FbxAMatrix GetBoneLocalTransform(cfr::FLVER2::Bone bone)
 
 FbxNode* CreateFlverBoneNode(FbxScene* pScene, FbxPose* pBindPoses, cfr::FLVER2::Bone bone, int id)
 {
-	FbxNode* pBoneNode = FbxNode::Create(pScene, RString::ToNarrow(bone.name).c_str());
+	FbxNode* pBoneNode = FbxNode::Create(pScene, RString::toNarrow(bone.name).c_str());
 
 	FbxAMatrix boneTransform = GetBoneLocalTransform(bone);
 
@@ -56,7 +67,7 @@ FbxNode* CreateFlverBoneNode(FbxScene* pScene, FbxPose* pBindPoses, cfr::FLVER2:
 	pBoneNode->LclRotation.Set(boneTransform.GetR());
 	pBoneNode->LclScaling.Set(boneTransform.GetS());
 
-	FbxSkeleton* pBone = FbxSkeleton::Create(pScene, RString::ToNarrow(bone.name).c_str());
+	FbxSkeleton* pBone = FbxSkeleton::Create(pScene, RString::toNarrow(bone.name).c_str());
 	pBone->SetSkeletonType(FbxSkeleton::eLimbNode);
 	pBone->Color.Set(FbxDouble3(0, 0.769, 0.769));
 	pBone->LimbLength = 0.1;
@@ -71,7 +82,7 @@ FbxNode* CreateMorphemeBoneNode(FbxScene* pScene, FbxPose* pBindPoses, MR::AnimR
 {
 	FbxNode* pBoneNode = FbxNode::Create(pScene, pRig->getBoneName(id));
 
-	Matrix bonePose = NMDX::GetWorldMatrix(*pRig->getBindPoseBoneQuat(id), *pRig->getBindPoseBonePos(id));
+	Matrix bonePose = NMDX::getWorldMatrix(*pRig->getBindPoseBoneQuat(id), *pRig->getBindPoseBonePos(id));
 	FbxAMatrix boneTransform = CreateFbxMatrixFromDXMatrix(bonePose);
 
 	pBoneNode->LclTranslation.Set(boneTransform.GetT());
@@ -127,13 +138,9 @@ FbxAMatrix ConvertToFbxAMatrix(const DirectX::SimpleMath::Matrix& dxMatrix)
 }
 
 //Creates an FbxNode object containing vertices, normals and bone weights
-FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverModel, std::vector<FbxNode*> skeletonNodes, int idx)
+FbxNode* FBXTranslator::createModelFbxMesh(FbxScene* pScene, FlverModel* pFlverModel, std::vector<FbxNode*> skeletonNodes, int idx)
 {
-	/*
-	if (pFlverModel->m_flver == nullptr)
-		return nullptr;
-	*/
-	if (idx > pFlverModel->m_flver->header.meshCount)
+	if (idx > pFlverModel->getNumFlverMeshes())
 		return nullptr;
 
 	std::string mesh_node_name = "mesh[" + std::to_string(idx) + "]";
@@ -143,22 +150,22 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	pMesh->CreateLayer();
 
 	//Add vertices
-	std::vector<FbxVector4> vertices = pFlverModel->GetModelMeshVertices(idx, true);
+	std::vector<Vector3> vertices = pFlverModel->getFlverMeshVertices(idx, true);
 
 	pMesh->InitControlPoints(vertices.size());
 
 	for (int i = 0; i < vertices.size(); i++)
-		pMesh->SetControlPointAt(vertices[i], i);
+		pMesh->SetControlPointAt(getFbxVector4(vertices[i]), i);
 
 	//Add normals
-	std::vector<FbxVector4> normals = pFlverModel->GetModelMeshNormals(idx, true);
+	std::vector<Vector3> normals = pFlverModel->getFlverMeshNormals(idx, true);
 
 	FbxLayerElementNormal* pLayerNormal = (FbxLayerElementNormal*)pMesh->GetLayer(0)->CreateLayerElementOfType(FbxLayerElement::eNormal);
 	pLayerNormal->SetMappingMode(FbxLayerElement::eByControlPoint);
 	pLayerNormal->SetReferenceMode(FbxLayerElement::eDirect);
 
 	for (int i = 0; i < normals.size(); i++)
-		pLayerNormal->GetDirectArray().Add(normals[i]);
+		pLayerNormal->GetDirectArray().Add(getFbxVector4(normals[i]));
 
 	//Create polygons
 	for (int i = 0; i < vertices.size(); i += 3)
@@ -175,27 +182,26 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	FbxSkin* pSkin = nullptr;
 
 	//Add bone weights
-	std::vector<FbxVector4> bone_weights = pFlverModel->GetModelMeshBoneWeights(idx);
-	std::vector<int*> bone_indices;
-
-	bone_indices.reserve(bone_weights.size());
-	pFlverModel->GetModelMeshBoneIndices(bone_indices, idx);
+	std::vector<Vector4> bone_weights = pFlverModel->getFlverMeshBoneWeights(idx);
+	std::vector<std::vector<int>> bone_indices = pFlverModel->getFlverMeshBoneIndices(idx);
 
 	if (bone_weights.size() > 0)
 		pSkin = FbxSkin::Create(pScene, std::string(mesh_node_name + "_skin").c_str());
 
 	if (pSkin)
 	{
-		for (int i = 0; i < pFlverModel->m_flver->meshes[idx].header.boneCount; i++)
+		cfr::FLVER2::Mesh mesh = pFlverModel->getFlverMesh(idx);
+
+		for (int i = 0; i < mesh.header.boneCount; i++)
 		{
-			int boneIndex = pFlverModel->m_flver->meshes[idx].boneIndices[i];
+			int boneIndex = mesh.boneIndices[i];
 
 			if (boneIndex == -1)
 				continue;
 
 			FbxNode* pBoneNode = skeletonNodes[boneIndex];
 
-			FbxCluster* pCluster = FbxCluster::Create(pScene, (mesh_node_name + "_" + RString::ToNarrow(pFlverModel->m_flver->bones[boneIndex].name) + "_cluster").c_str());
+			FbxCluster* pCluster = FbxCluster::Create(pScene, (mesh_node_name + "_" + pFlverModel->getFlverBoneName(boneIndex) + "_cluster").c_str());
 			pCluster->SetLink(pBoneNode);
 			pCluster->SetLinkMode(FbxCluster::eTotalOne);
 
@@ -203,29 +209,28 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 
 			for (int vertexIndex = 0; vertexIndex < vertices.size(); vertexIndex++)
 			{
-				int* indices = bone_indices[vertexIndex];
-				FbxVector4 weights = bone_weights[vertexIndex];
+				std::vector<int> indices = bone_indices[vertexIndex];
+				Vector4 weights = bone_weights[vertexIndex];
 
 				for (int wt = 0; wt < 4; wt++)
 				{
-					switch (wt)
+					if (indices[wt] == boneIndex)
 					{
-					case 0:
-						if (indices[0] == boneIndex)
-							pCluster->AddControlPointIndex(vertexIndex, weights[0]);
-						break;
-					case 1:
-						if (indices[1] == boneIndex)
-							pCluster->AddControlPointIndex(vertexIndex, weights[1]);
-						break;
-					case 2:
-						if (indices[2] == boneIndex)
-							pCluster->AddControlPointIndex(vertexIndex, weights[2]);
-						break;
-					case 3:
-						if (indices[3] == boneIndex)
-							pCluster->AddControlPointIndex(vertexIndex, weights[3]);
-						break;
+						switch (wt)
+						{
+						case 0:
+							pCluster->AddControlPointIndex(vertexIndex, weights.x);
+							break;
+						case 1:
+							pCluster->AddControlPointIndex(vertexIndex, weights.y);
+							break;
+						case 2:
+							pCluster->AddControlPointIndex(vertexIndex, weights.z);
+							break;
+						case 3:
+							pCluster->AddControlPointIndex(vertexIndex, weights.w);
+							break;
+						}
 					}
 				}
 			}
@@ -241,14 +246,9 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	return pMeshNode;
 }
 
-FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverModel, std::vector<FbxNode*> skeletonNodes, int idx, std::vector<int> morphemeToFlverBoneMap)
+FbxNode* FBXTranslator::createModelFbxMesh(FbxScene* pScene, FlverModel* pFlverModel, std::vector<FbxNode*> skeletonNodes, int idx, std::vector<int> flverToMorphemeBoneMap)
 {
-	/*
-	if (pFlverModel->m_flver == nullptr)
-		return nullptr;
-	*/
-
-	if (idx > pFlverModel->m_flver->header.meshCount)
+	if (idx > pFlverModel->getNumFlverMeshes())
 		return nullptr;
 
 	std::string mesh_node_name = "mesh[" + std::to_string(idx) + "]";
@@ -258,22 +258,22 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	pMesh->CreateLayer();
 
 	//Add vertices
-	std::vector<FbxVector4> vertices = pFlverModel->GetModelMeshVertices(idx, true);
+	std::vector<Vector3> vertices = pFlverModel->getFlverMeshVertices(idx, true);
 
 	pMesh->InitControlPoints(vertices.size());
 
 	for (int i = 0; i < vertices.size(); i++)
-		pMesh->SetControlPointAt(vertices[i], i);
+		pMesh->SetControlPointAt(getFbxVector4(vertices[i]), i);
 
 	//Add normals
-	std::vector<FbxVector4> normals = pFlverModel->GetModelMeshNormals(idx, true);
+	std::vector<Vector3> normals = pFlverModel->getFlverMeshNormals(idx, true);
 
 	FbxLayerElementNormal* pLayerNormal = (FbxLayerElementNormal*)pMesh->GetLayer(0)->CreateLayerElementOfType(FbxLayerElement::eNormal);
 	pLayerNormal->SetMappingMode(FbxLayerElement::eByControlPoint);
 	pLayerNormal->SetReferenceMode(FbxLayerElement::eDirect);
 
 	for (int i = 0; i < normals.size(); i++)
-		pLayerNormal->GetDirectArray().Add(normals[i]);
+		pLayerNormal->GetDirectArray().Add(getFbxVector4(normals[i]));
 
 	//Create polygons
 	for (int i = 0; i < vertices.size(); i += 3)
@@ -287,6 +287,70 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 		pMesh->EndPolygon();
 	}
 
+	FbxSkin* pSkin = nullptr;
+
+	//Add bone weights
+	std::vector<Vector4> bone_weights = pFlverModel->getFlverMeshBoneWeights(idx);
+	std::vector<std::vector<int>> bone_indices = pFlverModel->getFlverMeshBoneIndices(idx);
+
+	if (bone_weights.size() > 0)
+		pSkin = FbxSkin::Create(pScene, std::string(mesh_node_name + "_skin").c_str());
+
+	if (pSkin)
+	{
+		cfr::FLVER2::Mesh mesh = pFlverModel->getFlverMesh(idx);
+
+		for (int i = 0; i < mesh.header.boneCount; i++)
+		{
+			int boneIndex = flverToMorphemeBoneMap[mesh.boneIndices[i]];
+
+			if (boneIndex == -1)
+				continue;
+
+			FbxNode* pBoneNode = skeletonNodes[boneIndex];
+
+			FbxCluster* pCluster = FbxCluster::Create(pScene, (mesh_node_name + "_" + pFlverModel->getFlverBoneName(boneIndex) + "_cluster").c_str());
+			pCluster->SetLink(pBoneNode);
+			pCluster->SetLinkMode(FbxCluster::eTotalOne);
+
+			pCluster->SetTransformLinkMatrix(skeletonNodes[boneIndex]->EvaluateGlobalTransform());
+
+			for (int vertexIndex = 0; vertexIndex < vertices.size(); vertexIndex++)
+			{
+				std::vector<int> indices = bone_indices[vertexIndex];
+				Vector4 weights = bone_weights[vertexIndex];
+
+				for (int wt = 0; wt < 4; wt++)
+				{
+					int boneID = flverToMorphemeBoneMap[indices[wt]];
+
+					if (boneID == boneIndex)
+					{
+						switch (wt)
+						{
+						case 0:
+							pCluster->AddControlPointIndex(vertexIndex, weights.x);
+							break;
+						case 1:
+							pCluster->AddControlPointIndex(vertexIndex, weights.y);
+							break;
+						case 2:
+							pCluster->AddControlPointIndex(vertexIndex, weights.z);
+							break;
+						case 3:
+							pCluster->AddControlPointIndex(vertexIndex, weights.w);
+							break;
+						}
+					}
+				}
+			}
+
+			pSkin->AddCluster(pCluster);
+		}
+	}
+
+	pMesh->AddDeformer(pSkin);
+
 	pMesh->BuildMeshEdgeArray();
 	pMeshNode->SetNodeAttribute(pMesh);
 
@@ -294,21 +358,21 @@ FbxNode* FBXTranslator::CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 }
 
 //The skeleton has a fake root node. Take this into account when exporting animations
-std::vector<FbxNode*> FBXTranslator::CreateFbxFlverSkeleton(FbxScene* pScene, FlverModel* pFlverModel, FbxPose* pBindPoses)
+std::vector<FbxNode*> FBXTranslator::createFbxFlverSkeleton(FbxScene* pScene, FlverModel* pFlverModel, FbxPose* pBindPoses)
 {
 	std::vector<FbxNode*> boneNodes;
-	boneNodes.reserve(pFlverModel->m_flver->header.boneCount);
+	boneNodes.reserve(pFlverModel->getNumFlverBones());
 
-	for (int i = 0; i < pFlverModel->m_flver->header.boneCount; i++)
+	for (int i = 0; i < pFlverModel->getNumFlverBones(); i++)
 	{
-		cfr::FLVER2::Bone bone = pFlverModel->m_flver->bones[i];
+		cfr::FLVER2::Bone bone = pFlverModel->getFlverBone(i);
 
 		boneNodes.push_back(CreateFlverBoneNode(pScene, pBindPoses, bone, i));
 	}
 
-	for (int i = 0; i < pFlverModel->m_flver->header.boneCount; i++)
+	for (int i = 0; i < pFlverModel->getNumFlverBones(); i++)
 	{
-		cfr::FLVER2::Bone bone = pFlverModel->m_flver->bones[i];
+		cfr::FLVER2::Bone bone = pFlverModel->getFlverBone(i);
 
 		if (bone.parentIndex != -1)
 			boneNodes[bone.parentIndex]->AddChild(boneNodes[i]);
@@ -319,7 +383,7 @@ std::vector<FbxNode*> FBXTranslator::CreateFbxFlverSkeleton(FbxScene* pScene, Fl
 	return boneNodes;
 }
 
-std::vector<FbxNode*> FBXTranslator::CreateFbxMorphemeSkeleton(FbxScene* pScene, MR::AnimRigDef* pRig, FbxPose* pBindPoses)
+std::vector<FbxNode*> FBXTranslator::createFbxMorphemeSkeleton(FbxScene* pScene, MR::AnimRigDef* pRig, FbxPose* pBindPoses)
 {
 	std::vector<FbxNode*> pMorphemeBoneList;
 	pMorphemeBoneList.reserve(pRig->getNumBones());
@@ -345,9 +409,9 @@ std::vector<FbxNode*> FBXTranslator::CreateFbxMorphemeSkeleton(FbxScene* pScene,
 }
 
 //Creates FBX animation take from an NSA file input
-bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimSourceInterface* pAnim, std::string name, std::vector<int> flverToMorphemeBoneMap)
+bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimObject* pAnim, std::string name, std::vector<int> morphemeToFlverBoneMap)
 {
-	MR::AnimationSourceHandle* animHandle = pAnim->GetHandle();
+	MR::AnimationSourceHandle* animHandle = pAnim->getHandle();
 
 	if (animHandle == nullptr)
 		return false;
@@ -356,7 +420,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 
 	if (animSourceNSA->getType() != ANIM_TYPE_NSA)
 	{
-		g_appLog->AlertMessage(MsgLevel_Error, "Unsupported animation format");
+		g_appLog->alertMessage(MsgLevel_Error, "Unsupported animation format");
 		return false;
 	}
 
@@ -374,7 +438,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 	float animDuration = animSourceNSA->getDuration(animSourceNSA);
 
 	FbxTime end;
-	end.SetFrame(RMath::TimeToFrame(animDuration, 30));
+	end.SetFrame(RMath::timeToFrame(animDuration, 30));
 
 	FbxTimeSpan timeSpan = FbxTimeSpan(start, end);
 	pAnimStack->SetLocalTimeSpan(timeSpan);
@@ -384,7 +448,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 
 	for (int boneIndex = 0; boneIndex < boneCount; boneIndex++)
 	{
-		int flverBoneIdx = flverToMorphemeBoneMap[boneIndex];
+		int flverBoneIdx = morphemeToFlverBoneMap[boneIndex];
 
 		if (flverBoneIdx == -1)
 			continue;
@@ -412,10 +476,10 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 			int keyIndex;
 
 			float animTime = GetTimeByAnimFrame(animDuration, animSampleRate, frame);
-			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->GetTransformAtTime(animTime, boneIndex));
+			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
 
 			FbxTime keyTime;
-			keyTime.SetFrame(RMath::TimeToFrame(animTime, 30));
+			keyTime.SetFrame(RMath::timeToFrame(animTime, 30));
 
 			FbxVector4 translation = transform.GetT();
 
@@ -453,14 +517,18 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 		curveRX->KeyModifyEnd();
 		curveRY->KeyModifyEnd();
 		curveRZ->KeyModifyEnd();
+
+		FbxAnimCurveFilterGimbleKiller gimblerFilter;
+		FbxAnimCurve* rotationCurves[] = { curveRX, curveRY, curveRZ };
+		gimblerFilter.Apply(rotationCurves, 3);
 	}
 
 	return true;
 }
 
-bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimSourceInterface* pAnim, std::string name)
+bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimObject* pAnim, std::string name)
 {
-	MR::AnimationSourceHandle* animHandle = pAnim->GetHandle();
+	MR::AnimationSourceHandle* animHandle = pAnim->getHandle();
 
 	if (animHandle == nullptr)
 		return false;
@@ -469,7 +537,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 
 	if (animSourceNSA->getType() != ANIM_TYPE_NSA)
 	{
-		g_appLog->AlertMessage(MsgLevel_Error, "Unsupported animation format");
+		g_appLog->alertMessage(MsgLevel_Error, "Unsupported animation format");
 		return false;
 	}
 
@@ -520,7 +588,7 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 			int keyIndex;
 
 			float animTime = GetTimeByAnimFrame(animDuration, animSampleRate, frame);
-			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->GetTransformAtTime(animTime, boneIndex));
+			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
 
 			FbxTime keyTime;
 			keyTime.SetSecondDouble(animTime);
@@ -561,28 +629,32 @@ bool FBXTranslator::CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 		curveRX->KeyModifyEnd();
 		curveRY->KeyModifyEnd();
 		curveRZ->KeyModifyEnd();
+
+		FbxAnimCurveFilterGimbleKiller gimblerFilter;
+		FbxAnimCurve* rotationCurves[] = { curveRX, curveRY, curveRZ };
+		gimblerFilter.Apply(rotationCurves, 3);
 	}
 
 	return true;
 }
 
 //Adds flver meshes to the scene
-bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, int chrId, FbxPose* pBindPoses, std::vector<FbxNode*> pBoneList, std::filesystem::path export_path)
+bool FBXTranslator::createFbxModel(FbxScene* pScene, FlverModel* pFlverModel, std::string modelName, FbxPose* pBindPoses, std::vector<FbxNode*> pBoneList, std::filesystem::path export_path)
 {
-	std::string model_node_name = "c" + std::to_string(chrId) + "_model";
+	std::string model_node_name = modelName + "_model";
 
 	FbxNode* pModelNode = FbxNode::Create(pScene, model_node_name.c_str());
 	pScene->GetRootNode()->AddChild(pModelNode);
 
 	std::vector<FbxNode*> pMeshNodesList;
 
-	pMeshNodesList.reserve(pFlverModel->m_flver->header.meshCount);
+	pMeshNodesList.reserve(pFlverModel->getNumMeshes());
 
-	for (int i = 0; i < pFlverModel->m_flver->header.meshCount; i++)
+	for (int i = 0; i < pFlverModel->getNumMeshes(); i++)
 	{
 		FbxNode* pMeshNode = nullptr;
 
-		pMeshNode = FBXTranslator::CreateModelFbxMesh(pScene, pFlverModel, pBoneList, i);
+		pMeshNode = FBXTranslator::createModelFbxMesh(pScene, pFlverModel, pBoneList, i);
 
 		if (pMeshNode)
 		{
@@ -592,28 +664,28 @@ bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, in
 			pMeshNodesList.push_back(pMeshNode);
 		}
 		else
-			g_appLog->DebugMessage(MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
+			g_appLog->debugMessage(MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
 	}
 
 	return true;
 }
 
-bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, int chrId, FbxPose* pBindPoses, std::vector<FbxNode*> pBoneList, std::filesystem::path export_path, std::vector<int> morphemeToFlverBoneMap)
+bool FBXTranslator::createFbxModel(FbxScene* pScene, FlverModel* pFlverModel, std::string modelName, FbxPose* pBindPoses, std::vector<FbxNode*> pBoneList, std::filesystem::path export_path, std::vector<int> flverToMorphemeBoneMap)
 {
-	std::string model_node_name = "c" + std::to_string(chrId) + "_model";
+	std::string model_node_name = modelName + "_model";
 
 	FbxNode* pModelNode = FbxNode::Create(pScene, model_node_name.c_str());
 	pScene->GetRootNode()->AddChild(pModelNode);
 
 	std::vector<FbxNode*> pMeshNodesList;
 
-	pMeshNodesList.reserve(pFlverModel->m_flver->header.meshCount);
+	pMeshNodesList.reserve(pFlverModel->getNumMeshes());
 
-	for (int i = 0; i < pFlverModel->m_flver->header.meshCount; i++)
+	for (int i = 0; i < pFlverModel->getNumMeshes(); i++)
 	{
 		FbxNode* pMeshNode = nullptr;
 
-		pMeshNode = FBXTranslator::CreateModelFbxMesh(pScene, pFlverModel, pBoneList, i, morphemeToFlverBoneMap);
+		pMeshNode = FBXTranslator::createModelFbxMesh(pScene, pFlverModel, pBoneList, i, flverToMorphemeBoneMap);
 
 		if (pMeshNode)
 		{
@@ -623,8 +695,25 @@ bool FBXTranslator::CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, in
 			pMeshNodesList.push_back(pMeshNode);
 		}
 		else
-			g_appLog->DebugMessage(MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
+			g_appLog->debugMessage(MsgLevel_Error, "Failed to create MeshNode object for mesh %d (file=%s)\n", i, export_path.filename().c_str());
 	}
 
 	return true;
+}
+
+FbxNode* FBXTranslator::createLightNode(FbxScene* pScene, FbxVector4 position, const char* name)
+{
+	// Create a light
+	FbxLight* lLight = FbxLight::Create(pScene, name);
+	lLight->LightType.Set(FbxLight::ePoint); // Point light
+
+	char nodeName[256];
+	sprintf_s(nodeName, "%s_node", name);
+
+	FbxNode* lLightNode = FbxNode::Create(pScene, nodeName);
+	lLightNode->SetNodeAttribute(lLight);
+
+	lLightNode->LclTranslation.Set(position);
+
+	return lLightNode;
 }
