@@ -1,0 +1,6 @@
+[submodule "DS2AnimToolset/Morpheme4"]
+	path = DS2AnimToolset/Morpheme4
+	url = https://github.com/LordRadai/Morpheme4
+[submodule "DS2AnimToolset/RCore"]
+	path = DS2AnimToolset/RCore
+	url = https://github.com/LordRadai/RCore

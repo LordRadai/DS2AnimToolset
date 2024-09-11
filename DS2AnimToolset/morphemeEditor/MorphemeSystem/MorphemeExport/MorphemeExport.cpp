@@ -1,7 +1,5 @@
 #include "MorphemeExport.h"
-#include "utils/RString/RString.h"
-#include "utils/RLog/RLog.h"
-#include "utils/RMath/RMath.h"
+#include "RCore.h"
 #include "extern.h"
 #include "morpheme/Nodes/mrNodeStateMachine.h"
 #include "morpheme/mrCharacterControllerDef.h"
@@ -29,7 +27,7 @@ MR::NodeDef* getAnimNodeByAnimID(MR::NetworkDef* netDef, int assetId)
 	return nullptr;
 }
 
-ME::TakeListXML* MorphemeExport::ExportAnimMarkup(CharacterDef* character, int animId, std::wstring dstFileName)
+ME::TakeListXML* MorphemeExport::exportAnimMarkup(MorphemeCharacterDef* character, int animId, std::wstring dstFileName)
 {
 	MR::NetworkDef* netDef = character->getNetworkDef();
 
@@ -38,8 +36,14 @@ ME::TakeListXML* MorphemeExport::ExportAnimMarkup(CharacterDef* character, int a
 	if (animNode == nullptr)
 		return nullptr;
 
-	MR::AttribDataSourceAnim* sourceAnim = (MR::AttribDataSourceAnim*)animNode->getAttribData(ATTRIB_SEMANTIC_SOURCE_ANIM);
-	MR::AttribDataSourceEventTrackSet* sourceEvents = (MR::AttribDataSourceEventTrackSet*)animNode->getAttribData(ATTRIB_SEMANTIC_SOURCE_EVENT_TRACKS);
+	MR::AttribDataBool* loopAttr = static_cast<MR::AttribDataBool*>(animNode->getAttribData(ATTRIB_SEMANTIC_LOOP));
+	MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(animNode->getAttribData(ATTRIB_SEMANTIC_SOURCE_ANIM));
+	MR::AttribDataSourceEventTrackSet* sourceEvents = static_cast<MR::AttribDataSourceEventTrackSet*>(animNode->getAttribData(ATTRIB_SEMANTIC_SOURCE_EVENT_TRACKS));
+
+	bool loop = false;
+
+	if (loopAttr != nullptr)
+		loop = loopAttr->m_value;
 
 	int sourceAnimId = sourceAnim->m_animAssetID;
 
@@ -47,7 +51,7 @@ ME::TakeListXML* MorphemeExport::ExportAnimMarkup(CharacterDef* character, int a
 	std::wstring dest = dstFileName;
 
 	ME::TakeListXML* takeList = (ME::TakeListXML*)factory.createTakeList(dest.c_str(), dest.c_str());
-	ME::TakeExportXML* take = (ME::TakeExportXML*)takeList->createTake(RString::ToWide(character->getAnimFileLookUp()->getTakeName(sourceAnimId)).c_str(), sourceAnim->m_sourceAnimDuration, 30, false, sourceAnim->m_clipStartFraction, sourceAnim->m_clipEndFraction);
+	ME::TakeExportXML* take = (ME::TakeExportXML*)takeList->createTake(RString::toWide(character->getAnimFileLookUp()->getTakeName(sourceAnimId)).c_str(), sourceAnim->m_sourceAnimDuration, 30, loop, sourceAnim->m_clipStartFraction, sourceAnim->m_clipEndFraction);
 
 	for (size_t i = 0; i < sourceEvents->m_numDiscreteEventTracks; i++)
 	{
@@ -56,7 +60,7 @@ ME::TakeListXML* MorphemeExport::ExportAnimMarkup(CharacterDef* character, int a
 
 		MR::EventTrackDefDiscrete* track = sourceEvents->m_sourceDiscreteEventTracks[i];
 
-		ME::DiscreteEventTrackExportXML* trackXML = (ME::DiscreteEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE, RString::GuidToString(gidReference).c_str(), RString::ToWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
+		ME::DiscreteEventTrackExportXML* trackXML = (ME::DiscreteEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE, RString::guidToString(gidReference).c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
 
 		for (size_t j = 0; j < track->getNumEvents(); j++)
 			trackXML->createEvent(j, track->getEvent(j)->getStartTime(), track->getEvent(j)->getUserData());
@@ -69,7 +73,7 @@ ME::TakeListXML* MorphemeExport::ExportAnimMarkup(CharacterDef* character, int a
 
 		MR::EventTrackDefCurve* track = sourceEvents->m_sourceCurveEventTracks[i];
 
-		ME::CurveEventTrackExportXML* trackXML = (ME::CurveEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_CURVE, RString::GuidToString(gidReference).c_str(), RString::ToWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
+		ME::CurveEventTrackExportXML* trackXML = (ME::CurveEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_CURVE, RString::guidToString(gidReference).c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
 
 		for (size_t j = 0; j < track->getNumEvents(); j++)
 			trackXML->createEvent(j, track->getEvent(j)->getTime(), track->getEvent(j)->getValue(), track->getEvent(j)->getUserData());
@@ -82,7 +86,7 @@ ME::TakeListXML* MorphemeExport::ExportAnimMarkup(CharacterDef* character, int a
 
 		MR::EventTrackDefDuration* track = sourceEvents->m_sourceDurEventTracks[i];
 
-		ME::DurationEventTrackExportXML* trackXML = (ME::DurationEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DURATION, RString::GuidToString(gidReference).c_str(), RString::ToWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
+		ME::DurationEventTrackExportXML* trackXML = (ME::DurationEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DURATION, RString::guidToString(gidReference).c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
 
 		for (size_t j = 0; j < track->getNumEvents(); j++)
 			trackXML->createEvent(j, track->getEvent(j)->getStartTime(), track->getEvent(j)->getDuration(), track->getEvent(j)->getUserData());
@@ -91,14 +95,14 @@ ME::TakeListXML* MorphemeExport::ExportAnimMarkup(CharacterDef* character, int a
 	return takeList;
 }
 
-ME::CharacterControllerExportXML* MorphemeExport::ExportCharacterController(MR::CharacterControllerDef* characterController, std::wstring dstFileName)
+ME::CharacterControllerExportXML* MorphemeExport::exportCharacterController(MR::CharacterControllerDef* characterController, std::wstring dstFileName)
 {
 	ME::ExportFactoryXML factory;
 
 	GUID gidReference;
 	CoCreateGuid(&gidReference);
 
-	ME::CharacterControllerExportXML* characterControllerExport = static_cast<ME::CharacterControllerExportXML*>(factory.createCharacterController(RString::GuidToString(gidReference).c_str(), dstFileName.c_str(), "Controller"));
+	ME::CharacterControllerExportXML* characterControllerExport = static_cast<ME::CharacterControllerExportXML*>(factory.createCharacterController(RString::guidToString(gidReference).c_str(), dstFileName.c_str(), "Controller"));
 
 	ME::AttributeBlockExport* attributes = characterControllerExport->getAttributeBlock();
 
@@ -136,25 +140,25 @@ ME::CharacterControllerExportXML* MorphemeExport::ExportCharacterController(MR::
 		attributes->createBoolAttribute("Visible", characterController->getVisible());
 		attributes->createDoubleAttribute("SkinWidth", characterController->getSkinWidth());
 		attributes->createDoubleAttribute("MaxPushForce", characterController->getMaxPushForce());
-		attributes->createDoubleAttribute("MaxSlopeAngle", RMath::ConvertDegAngleToRad(characterController->getMaxSlopeAngle()));
+		attributes->createDoubleAttribute("MaxSlopeAngle", RMath::degToRad(characterController->getMaxSlopeAngle()));
 		attributes->createDoubleAttribute("StepHeight", characterController->getStepHeight());
 	}
 
 	return characterControllerExport;
 }
 
-ME::RigExportXML* MorphemeExport::ExportRig(MR::NetworkDef* netDef, MR::AnimRigDef* rig, std::wstring dstFileName)
+ME::RigExportXML* MorphemeExport::exportRig(MR::NetworkDef* netDef, MR::AnimRigDef* rig, std::wstring dstFileName)
 {
 	ME::ExportFactoryXML factory;
 
 	GUID gidReference;
 	CoCreateGuid(&gidReference);
 
-	ME::RigExportXML* rigExport = static_cast<ME::RigExportXML*>(factory.createRig(RString::GuidToString(gidReference).c_str(), dstFileName.c_str(), RString::RemoveExtension(RString::ToNarrow(dstFileName.c_str())).c_str()));
+	ME::RigExportXML* rigExport = static_cast<ME::RigExportXML*>(factory.createRig(RString::guidToString(gidReference).c_str(), dstFileName.c_str(), RString::removeExtension(RString::toNarrow(dstFileName.c_str())).c_str()));
 
 	for (size_t i = 0; i < rig->getNumBones(); i++)
 	{
-		ME::JointExportXML* jointExport = static_cast<ME::JointExportXML*>(rigExport->createJoint(i, RString::ToWide(rig->getBoneName(i)).c_str(), rig->getParentBoneIndex(i)));
+		ME::JointExportXML* jointExport = static_cast<ME::JointExportXML*>(rigExport->createJoint(i, RString::toWide(rig->getBoneName(i)).c_str(), rig->getParentBoneIndex(i)));
 
 		jointExport->setBodyPlanTag(rig->getBoneName(i));
 		jointExport->setRetargetingTag(rig->getBoneName(i));
@@ -178,27 +182,30 @@ ME::RigExportXML* MorphemeExport::ExportRig(MR::NetworkDef* netDef, MR::AnimRigD
 	rigExport->setRigRetargetScale(1.f);
 	rigExport->setMirrorPlane(0);
 
-	MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+	if (netDef->getNodeDef(0)->getNumAttribDataHandles() == 4)
+	{
+		MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
 
-	for (size_t i = 0; i < mirroredMapping->getNumMappings(); i++)
-		rigExport->createJointMapping(i, mirroredMapping->getLeftBone(i), mirroredMapping->getRightBone(i));
+		for (size_t i = 0; i < mirroredMapping->getNumMappings(); i++)
+			rigExport->createJointMapping(i, mirroredMapping->getLeftBone(i), mirroredMapping->getRightBone(i));
+	}
 
 	return rigExport;
 }
 
-ME::AnimationLibraryXML* MorphemeExport::ExportAnimLibrary(MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* filenameLookup, MR::NetworkDef* netDef, std::vector<ME::RigExportXML*> rigExport, std::vector<ME::CharacterControllerExportXML*> controllerExport, int chrId, std::wstring dstFileName)
+ME::AnimationLibraryXML* MorphemeExport::exportAnimLibrary(MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* filenameLookup, MR::NetworkDef* netDef, std::vector<ME::RigExportXML*> rigExport, std::vector<ME::CharacterControllerExportXML*> controllerExport, std::wstring chrName, std::wstring dstFileName)
 {
 	ME::ExportFactoryXML factory;
 
 	GUID gidReference;
 	CoCreateGuid(&gidReference);
 
-	ME::AnimationLibraryXML* animLibraryExport = static_cast<ME::AnimationLibraryXML*>(factory.createAnimationLibrary(RString::GuidToString(gidReference).c_str(), L"ConnectLibrary", dstFileName.c_str()));
+	ME::AnimationLibraryXML* animLibraryExport = static_cast<ME::AnimationLibraryXML*>(factory.createAnimationLibrary(RString::guidToString(gidReference).c_str(), L"ConnectLibrary", dstFileName.c_str()));
 
 	for (size_t i = 0; i < netDef->getNumAnimSets(); i++)
 	{
 		wchar_t setName[260];
-		swprintf_s(setName, L"%04d_%d", chrId, i);
+		swprintf_s(setName, L"%ws_%d", chrName.c_str(), i);
 
 		ME::AnimationSetExportXML* animSetExport = static_cast<ME::AnimationSetExportXML*>(animLibraryExport->createAnimationSet(i, setName));
 		
@@ -208,15 +215,18 @@ ME::AnimationLibraryXML* MorphemeExport::ExportAnimLibrary(MR::UTILS::SimpleAnim
 		if (rigExport[i])
 			animSetExport->setRig(rigExport[i]);
 
-		MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
-
-		if (mirroredMapping)
+		if (netDef->getNodeDef(0)->getNumAttribDataHandles() == 4)
 		{
-			for (size_t i = 0; i < mirroredMapping->getNumEventIdsToRemap(); i++)
-				animSetExport->createEventUserdataMirrorMapping(i, mirroredMapping->getLeftEventIdMapping(i), mirroredMapping->getRightEventIdMapping(i));
-		
-			for (size_t i = 0; i < mirroredMapping->getNumTrackIdsToRemap(); i++)
-				animSetExport->createEventTrackMirrorMapping(i, mirroredMapping->getLeftTrackIdMapping(i), mirroredMapping->getRightTrackIdMapping(i));			
+			MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+
+			if (mirroredMapping)
+			{
+				for (size_t i = 0; i < mirroredMapping->getNumEventIdsToRemap(); i++)
+					animSetExport->createEventUserdataMirrorMapping(i, mirroredMapping->getLeftEventIdMapping(i), mirroredMapping->getRightEventIdMapping(i));
+
+				for (size_t i = 0; i < mirroredMapping->getNumTrackIdsToRemap(); i++)
+					animSetExport->createEventTrackMirrorMapping(i, mirroredMapping->getLeftTrackIdMapping(i), mirroredMapping->getRightTrackIdMapping(i));
+			}
 		}
 
 		for (size_t i = 0; i < filenameLookup->getNumAnims(); i++)
@@ -226,26 +236,26 @@ ME::AnimationLibraryXML* MorphemeExport::ExportAnimLibrary(MR::UTILS::SimpleAnim
 			wchar_t takeFile[260];
 			swprintf_s(takeFile, L"$(RootDir)\\morphemeMarkup\\%s.xml", std::filesystem::path(sourceFileName).filename().c_str());
 
-			animSetExport->createAnimationEntry(i, RString::ToWide(sourceFileName).c_str(), takeFile, RString::ToWide(filenameLookup->getTakeName(i)).c_str(), L"Footsteps", "nsa", "");
+			animSetExport->createAnimationEntry(i, RString::toWide(sourceFileName).c_str(), takeFile, RString::toWide(filenameLookup->getTakeName(i)).c_str(), L"Footsteps", "nsa", "");
 		}
 	}
 
 	return animLibraryExport;
 }
 
-ME::MessagePresetLibraryExportXML* MorphemeExport::ExportMessagePresetLibrary(MR::NetworkDef* netDef, int chrId, std::wstring dstFileName)
+ME::MessagePresetLibraryExportXML* MorphemeExport::exportMessagePresetLibrary(MR::NetworkDef* netDef, std::wstring chrName, std::wstring dstFileName)
 {
 	ME::ExportFactoryXML factory;
 
 	GUID gidReference;
 	CoCreateGuid(&gidReference);
 
-	ME::MessagePresetLibraryExportXML* messagePresetLibraryExport = static_cast<ME::MessagePresetLibraryExportXML*>(factory.createMessagePresetLibrary(RString::GuidToString(gidReference).c_str(), dstFileName.c_str()));
+	ME::MessagePresetLibraryExportXML* messagePresetLibraryExport = static_cast<ME::MessagePresetLibraryExportXML*>(factory.createMessagePresetLibrary(RString::guidToString(gidReference).c_str(), dstFileName.c_str()));
 
 	return messagePresetLibraryExport;
 }
 
-ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, ME::AnimationLibraryXML* animLibraryExport, ME::MessagePresetLibraryExportXML* messagePresetLibraryExport, int chrId, std::wstring dstFileName)
+ME::NetworkDefExportXML* MorphemeExport::exportNetwork(MR::NetworkDef* netDef, ME::AnimationLibraryXML* animLibraryExport, ME::MessagePresetLibraryExportXML* messagePresetLibraryExport, std::wstring chrName, std::wstring dstFileName)
 {
 	ME::ExportFactoryXML factory;
 
@@ -253,14 +263,14 @@ ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, M
 	CoCreateGuid(&gidReference);
 
 	wchar_t netName[260];
-	swprintf_s(netName, L"c%04d", chrId);
+	swprintf_s(netName, L"%ws", chrName.c_str());
 
-	ME::NetworkDefExportXML* netDefExport = static_cast<ME::NetworkDefExportXML*>(factory.createNetworkDef(RString::GuidToString(gidReference).c_str(), netName, dstFileName.c_str()));
+	ME::NetworkDefExportXML* netDefExport = static_cast<ME::NetworkDefExportXML*>(factory.createNetworkDef(RString::guidToString(gidReference).c_str(), netName, dstFileName.c_str()));
 
 	netDefExport->setNetworkWorldOrientation(NMP::Vector3XAxis(), NMP::Vector3ZAxis(), NMP::Vector3XAxis());
 
 	for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
-		MorphemeExport::ExportNode(netDefExport, netDef, i);
+		MorphemeExport::exportNode(netDefExport, netDef, i);
 
 	const NMP::IDMappedStringTable* messageTable = netDef->getMessageIDNamesTable();
 
@@ -269,7 +279,7 @@ ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, M
 		int messageId = netDef->getMessageDistributor(i)->m_messageID;
 		int messageType = netDef->getMessageDistributor(i)->m_messageType;
 
-		netDefExport->createMessage(RString::ToWide(netDef->getMessageNameFromMessageID(messageId)).c_str(), messageType, messageId);
+		netDefExport->createMessage(RString::toWide(netDef->getMessageNameFromMessageID(messageId)).c_str(), messageType, messageId);
 	}
 
 	netDefExport->setRootNodeNetworkID(netDef->getRootNodeID());
@@ -283,7 +293,7 @@ ME::NetworkDefExportXML* MorphemeExport::ExportNetwork(MR::NetworkDef* netDef, M
 	return netDefExport;
 }
 
-ME::NodeExportXML* MorphemeExport::ExportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId)
+ME::NodeExportXML* MorphemeExport::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId)
 {
 	MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
 
@@ -292,205 +302,205 @@ ME::NodeExportXML* MorphemeExport::ExportNode(ME::NetworkDefExportXML* netDefExp
     switch (nodeTypeID) 
     {
     case NODE_TYPE_NETWORK:
-        return MorphemeExport::ExportNetworkNode(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNetworkNode(netDefExport, netDef, nodeDef);
     case NODE_TYPE_STATE_MACHINE:
-        return MorphemeExport::ExportStateMachineNode(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportStateMachineNode(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_FLOAT:
-        return MorphemeExport::ExportCPFloatNode(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportCPFloatNode(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_VECTOR3:
-        return MorphemeExport::ExportCPVector3Node(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportCPVector3Node(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_VECTOR4:
-        return MorphemeExport::ExportCPVector4Node(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportCPVector4Node(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_BOOL:
-        return MorphemeExport::ExportCPBoolNode(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportCPBoolNode(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_INT:
-        return MorphemeExport::ExportCPIntNode(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportCPIntNode(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_UINT:
-        return MorphemeExport::ExportCPUIntNode(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportCPUIntNode(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_PHYSICS_OBJECT_POINTER:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_ANIMATION:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_ANIM_EVENTS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_FILTER_TRANSFORMS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BLEND_2:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BLEND_N:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SINGLEFRAME:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_FREEZE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BLEND_2X2:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BLEND_NXM:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BLEND_ALL:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SUBTRACTIVE_BLEND:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SCATTER_BLEND_1D:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SCATTER_BLEND_2D:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SCATTER_BLEND_3D:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_BOOLEAN:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_FUNCTION:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_ARITHMETIC:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_ARITHMETIC_VECTOR3:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC_VECTOR3:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_NOISE_GEN:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_FEATHER_BLEND_2:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_APPLY_BIND_POSE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_PHYSICS_GROUPER:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BEHAVIOUR_GROUPER:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_APPLY_GLOBAL_TIME:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_APPLY_PHYSICS_JOINT_LIMITS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SET_NON_PHYSICS_TRANSFORMS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_TWO_BONE_IK:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_LOCK_FOOT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_HEAD_LOOK:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_PHYSICS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BEHAVIOUR:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_HIPS_IK:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_PERFORMANCE_BEHAVIOUR:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_PLAY_SPEED_MODIFIER:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SCALE_TO_DURATION:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_EMIT_JOINT_CP_INFO:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_EMIT_MESSAGE_ON_DISCRETE_EVENT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CLOSEST_ANIM:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SWITCH:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SEQUENCE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_PASSTHROUGH:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_MIRROR_TRANSFORMS_ID:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BASIC_UNEVEN_TERRAIN:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_ACTIVE_STATE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_INT_TO_FLOAT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_RAY_CAST:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_SMOOTH_FLOAT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_RAMP_FLOAT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_FLOATS_TO_VECTOR3:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_FLOAT_TO_INT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_RANDOM_FLOAT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_PHYSICS_INFO:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_CONVERT_TO_CHARACTER_SPACE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_VECTOR3_TO_FLOATS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_VECTOR3_DOT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_ORIENTATIONINFREEFALL:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_HIT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_ROLLDOWNSTAIRS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_APPLYIMPULSE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_CONTACTREPORTER:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_VECTOR3_DISTANCE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_VECTOR3_CROSSPRODUCT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_RATE_OF_CHANGE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_VECTOR3_ANGLE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_VECTOR3_NORMALISE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_PHYSICALCONSTRAINT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_FALLOVERWALL:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_RETARGET:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SCALE_CHARACTER:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_GUN_AIM_IK:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_TRANSIT_SYNC_EVENTS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_TRANSIT:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_TRANSIT_PHYSICS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_MODIFY_JOINT_TRANSFORM:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_MODIFY_TRAJECTORY_TRANSFORM:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SMOOTH_TRANSFORMS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_EMIT_MESSAGE_AND_CP:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_TRAJECTORY_OVERRIDE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_C_C_OVERRIDE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_LIMB_INFO:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_EXPAND_LIMITS:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_COND_ON_MESSAGE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_COND_CP_COMPARE:
-        return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_CP_OP_TIME_LAG_CP:
-		return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+		return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     default:
-		return MorphemeExport::ExportNodeUnhandled(netDefExport, netDef, nodeDef);
+		return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     }
 }
 
-ME::NodeExportXML* MorphemeExport::ExportNodeCore(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+ME::NodeExportXML* MorphemeExport::exportNodeCore(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
 	ME::NodeExportXML* nodeExportXML = static_cast<ME::NodeExportXML*>(netDefExport->createNode(nodeDef->getNodeID(), nodeDef->getNodeTypeID(), nodeDef->getParentNodeID(), false, netDef->getNodeNameFromNodeID(nodeDef->getNodeID())));
 	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -498,21 +508,21 @@ ME::NodeExportXML* MorphemeExport::ExportNodeCore(ME::NetworkDefExportXML* netDe
 	return nodeExportXML;
 }
 
-ME::NodeExportXML* MorphemeExport::ExportNodeUnhandled(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+ME::NodeExportXML* MorphemeExport::exportNodeUnhandled(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
-    ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+    ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 
-    g_appLog->DebugMessage(MsgLevel_Warn, "Unhandled node exporter for node type %d\n", nodeDef->getNodeTypeID());
+    g_appLog->debugMessage(MsgLevel_Warn, "Unhandled node exporter for node type %d\n", nodeDef->getNodeTypeID());
 
     return nodeExportXML;
 }
 
-ME::NodeExportXML* MorphemeExport::ExportNetworkNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+ME::NodeExportXML* MorphemeExport::exportNetworkNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
 	if (nodeDef->getNodeTypeID() != NODE_TYPE_NETWORK)
-		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_NETWORK, nodeDef->getNodeTypeID());
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_NETWORK, nodeDef->getNodeTypeID());
 
-	return ExportNodeCore(netDefExport, netDef, nodeDef);
+	return exportNodeCore(netDefExport, netDef, nodeDef);
 }
 
 std::vector<StateDef*> getStateMachineNodeChildNodes(MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
@@ -571,12 +581,12 @@ std::vector<StateDef*> getStateMachineNodeChildTransitNodes(MR::NetworkDef* netD
 	return childStates;
 }
 
-ME::NodeExportXML* MorphemeExport::ExportStateMachineNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+ME::NodeExportXML* MorphemeExport::exportStateMachineNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
 	if (nodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
-		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_STATE_MACHINE, nodeDef->getNodeTypeID());
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_STATE_MACHINE, nodeDef->getNodeTypeID());
 
-	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 	MR::AttribDataStateMachineDef* attribData = static_cast<MR::AttribDataStateMachineDef*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
@@ -617,17 +627,17 @@ ME::NodeExportXML* MorphemeExport::ExportStateMachineNode(ME::NetworkDefExportXM
 	nodeDataBlock->writeUInt(defaultStateID, "DefaultNodeID");
 
 	if ((childTransitCount + childNodeCount) != nodeDef->getNumChildNodes())
-		g_appLog->PanicMessage("Total parsed node count is different from the total node children count (expected %d, got %d)\n", nodeDef->getNumChildNodes(), childTransitCount + childNodeCount);
+		g_appLog->panicMessage("Total parsed node count is different from the total node children count (expected %d, got %d)\n", nodeDef->getNumChildNodes(), childTransitCount + childNodeCount);
 	
 	return nodeExportXML;
 }
 
-ME::NodeExportXML* MorphemeExport::ExportCPFloatNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+ME::NodeExportXML* MorphemeExport::exportCPFloatNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
 	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_FLOAT)
-		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_FLOAT, nodeDef->getNodeTypeID());
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_FLOAT, nodeDef->getNodeTypeID());
 
-	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 	MR::AttribDataFloat* attribData = static_cast<MR::AttribDataFloat*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_FLOAT));
@@ -640,12 +650,12 @@ ME::NodeExportXML* MorphemeExport::ExportCPFloatNode(ME::NetworkDefExportXML* ne
 	return nodeExportXML;
 }
 
-ME::NodeExportXML* MorphemeExport::ExportCPVector3Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+ME::NodeExportXML* MorphemeExport::exportCPVector3Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
 	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_VECTOR3)
-		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_VECTOR3, nodeDef->getNodeTypeID());
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_VECTOR3, nodeDef->getNodeTypeID());
 
-	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 	MR::AttribDataVector3* attribData = static_cast<MR::AttribDataVector3*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_VECTOR3));
@@ -660,12 +670,12 @@ ME::NodeExportXML* MorphemeExport::ExportCPVector3Node(ME::NetworkDefExportXML* 
 	return nodeExportXML;
 }
 
-ME::NodeExportXML* MorphemeExport::ExportCPVector4Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+ME::NodeExportXML* MorphemeExport::exportCPVector4Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
 	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_VECTOR4)
-		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_VECTOR4, nodeDef->getNodeTypeID());
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_VECTOR4, nodeDef->getNodeTypeID());
 
-	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 	MR::AttribDataVector4* attribData = static_cast<MR::AttribDataVector4*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_VECTOR4));
@@ -681,12 +691,12 @@ ME::NodeExportXML* MorphemeExport::ExportCPVector4Node(ME::NetworkDefExportXML* 
 	return nodeExportXML;
 }
 
-ME::NodeExportXML* MorphemeExport::ExportCPBoolNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+ME::NodeExportXML* MorphemeExport::exportCPBoolNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
 	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_BOOL)
-		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_BOOL, nodeDef->getNodeTypeID());
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_BOOL, nodeDef->getNodeTypeID());
 
-	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 	MR::AttribDataBool* attribData = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_BOOL));
@@ -699,12 +709,12 @@ ME::NodeExportXML* MorphemeExport::ExportCPBoolNode(ME::NetworkDefExportXML* net
 	return nodeExportXML;
 }
 
-ME::NodeExportXML* MorphemeExport::ExportCPIntNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+ME::NodeExportXML* MorphemeExport::exportCPIntNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
 	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_INT)
-		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_INT, nodeDef->getNodeTypeID());
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_INT, nodeDef->getNodeTypeID());
 
-	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 	MR::AttribDataInt* attribData = static_cast<MR::AttribDataInt*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_INT));
@@ -717,12 +727,12 @@ ME::NodeExportXML* MorphemeExport::ExportCPIntNode(ME::NetworkDefExportXML* netD
 	return nodeExportXML;
 }
 
-ME::NodeExportXML* MorphemeExport::ExportCPUIntNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+ME::NodeExportXML* MorphemeExport::exportCPUIntNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
 	if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_UINT)
-		g_appLog->PanicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_UINT, nodeDef->getNodeTypeID());
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_UINT, nodeDef->getNodeTypeID());
 
-	ME::NodeExportXML* nodeExportXML = ExportNodeCore(netDefExport, netDef, nodeDef);
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 	MR::AttribDataUInt* attribData = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CP_UINT));

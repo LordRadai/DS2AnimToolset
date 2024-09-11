@@ -24,10 +24,10 @@
 // SOFTWARE.
 //
 #include "ImSequencer.h"
-#include "../imgui/imgui.h"
-#include "../imgui/imgui_internal.h"
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 #include <cstdlib>
-#include "../Application/Application.h"
+#include "MorphemeEditorApp/MorphemeEditorApp.h"
 
 namespace ImSequencer
 {

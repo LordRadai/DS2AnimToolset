@@ -1,19 +1,22 @@
 #pragma once
+#include <fbxsdk.h>
 #include "FlverModel/FlverModel.h"
 #include "MorphemeSystem/MorphemeSystem.h"
-#include "AnimSourceInterface/AnimSourceInterface.h"
+#include "AnimObject/AnimObject.h"
 
 namespace FBXTranslator
 {
-	FbxNode* CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverModel, std::vector<FbxNode*> skeletonNodes, int idx);
-	FbxNode* CreateModelFbxMesh(FbxScene* pScene, FlverModel* pFlverModel, std::vector<FbxNode*> skeletonNodes, int idx, std::vector<int> morphemeToFlverBoneMap);
+	FbxNode* createModelFbxMesh(FbxScene* pScene, FlverModel* pModel, std::vector<FbxNode*> skeletonNodes, int idx);
+	FbxNode* createModelFbxMesh(FbxScene* pScene, FlverModel* pModel, std::vector<FbxNode*> skeletonNodes, int idx, std::vector<int> flverToMorphemeBoneMap);
 
-	std::vector<FbxNode*> CreateFbxFlverSkeleton(FbxScene* pScene, FlverModel* pFlverModel, FbxPose* pBindPoses);
-	std::vector<FbxNode*> CreateFbxMorphemeSkeleton(FbxScene* pScene, MR::AnimRigDef* pRig, FbxPose* pBindPoses);
+	std::vector<FbxNode*> createFbxFlverSkeleton(FbxScene* pScene, FlverModel* pModel, FbxPose* pBindPoses);
+	std::vector<FbxNode*> createFbxMorphemeSkeleton(FbxScene* pScene, MR::AnimRigDef* pRig, FbxPose* pBindPoses);
 
-	bool CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimSourceInterface* pAnim, std::string name, std::vector<int> morphemeToFlverBoneMap);
-	bool CreateFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimSourceInterface* pAnim, std::string name);
+	bool createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimObject* pAnim, std::string name, std::vector<int> morphemeToFlverBoneMap);
+	bool createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimObject* pAnim, std::string name);
 
-	bool CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, int chrId, FbxPose* pBindPoses, std::vector<FbxNode*> pBoneList, std::filesystem::path export_path);
-	bool CreateFbxModel(FbxScene* pScene, FlverModel* pFlverModel, int chrId, FbxPose* pBindPoses, std::vector<FbxNode*> pBoneList, std::filesystem::path export_path, std::vector<int> morphemeToFlverBoneMap);
+	bool createFbxModel(FbxScene* pScene, FlverModel* pModel, std::string modelName, FbxPose* pBindPoses, std::vector<FbxNode*> pBoneList, std::filesystem::path export_path);
+	bool createFbxModel(FbxScene* pScene, FlverModel* pModel, std::string modelName, FbxPose* pBindPoses, std::vector<FbxNode*> pBoneList, std::filesystem::path export_path, std::vector<int> flverToMorphemeBoneMap);
+
+	FbxNode* createLightNode(FbxScene* pScene, FbxVector4 position, const char* name);
 }

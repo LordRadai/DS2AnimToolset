@@ -1,0 +1,1 @@
+Copy MorphemeEditor output folders you wish to process in the input folder, then execute create_morph_setups.sh

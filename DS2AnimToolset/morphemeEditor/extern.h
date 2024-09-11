@@ -1,19 +1,24 @@
 #pragma once
+#include <atomic>
 
 namespace fbxsdk
 {
 	class FbxManager;
 }
 
-class Application;
+
+namespace TimeAct
+{
+	class TaeTemplate;
+}
+
+class WorkerThread;
 class RLog;
-class Scene;
 class TaeTemplate;
 enum MsgLevel;
 
+extern std::atomic<WorkerThread*> g_workerThread;
 extern MsgLevel g_logLevel;
-extern Application* g_appRootWindow;
 extern RLog* g_appLog;
-extern Scene* g_scene;
-extern TaeTemplate* g_taeTemplate;
+extern TimeAct::TaeTemplate* g_taeTemplate;
 extern fbxsdk::FbxManager* g_pFbxManager;

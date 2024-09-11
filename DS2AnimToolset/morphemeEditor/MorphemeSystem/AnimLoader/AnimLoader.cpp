@@ -19,7 +19,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 MR::AnimSourceBase* AnimLoader::requestAnim(const MR::RuntimeAnimAssetID animAssetID, void* userdata)
 {
-    CharacterDef::AnimData* metadata = (CharacterDef::AnimData*)userdata;
+    MorphemeCharacterDef::AnimData* metadata = (MorphemeCharacterDef::AnimData*)userdata;
 
   MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* info = metadata->m_animFileLookUp;
   const char* dir = metadata->m_bundleDir;

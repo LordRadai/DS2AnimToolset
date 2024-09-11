@@ -14,7 +14,7 @@
 #include "../MorphemeSystem.h"
 #include "simpleBundle/simpleBundle.h"
 //----------------------------------------------------------------------------------------------------------------------
-#include "utils/RLog/RLog.h"
+#include "RCore.h"
 #include "extern.h"
 //----------------------------------------------------------------------------------------------------------------------
 void AssetLoader::evalBundleRequirements(
@@ -44,7 +44,7 @@ void AssetLoader::evalBundleRequirements(
 
   while (bundleReader.readNextAsset(assetType, assetID, fileGuid, asset, assetMemReqs))
   {
-    g_appLog->DebugMessage(MsgLevel_Info, "Found assetType %d (size=%d, alignment=%d)\n", assetType, assetMemReqs.size, assetMemReqs.alignment & 0xFFFFFFFF);
+    g_appLog->debugMessage(MsgLevel_Info, "Found assetType %d (size=%d, alignment=%d)\n", assetType, assetMemReqs.size, assetMemReqs.alignment & 0xFFFFFFFF);
     
     if (assetType < MR::Manager::kAsset_NumAssetTypes)
     {
@@ -60,7 +60,7 @@ void AssetLoader::evalBundleRequirements(
     }
   }
 
-  g_appLog->DebugMessage(MsgLevel_Info, "Finished parsing bundle file with a total of registered %d assets\n", numRegisteredAssets);
+  g_appLog->debugMessage(MsgLevel_Info, "Finished parsing bundle file with a total of registered %d assets\n", numRegisteredAssets);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

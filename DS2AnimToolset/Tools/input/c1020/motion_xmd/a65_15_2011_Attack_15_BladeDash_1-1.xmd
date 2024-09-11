@@ -1,0 +1,4164 @@
+|XMD_004A#0000#00000000|
+INFO info
+{
+	user "marco"
+	host "DESKTOP-74H24LO"
+	texture_file "none"
+	format_version XMD_004A
+	send_bug_reports_to support@naturalmotion.com
+	application "MorphemeEditor 1.1.0"
+	original_file "$(RootDir)\motion_xmd\a65_15_2011_Attack_15_BladeDash_1-1.xmd"
+	date 21/9/3924
+	time 15.45:56
+}
+JOINT Bow_01
+{
+	id 23
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.073984 0.020978 5e-06
+	rotation_orient	0 0 0 1
+	rotation	0.638689 -0.290038 -0.241408 0.670579
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.7152 -0.694254 0.0806175 0
+		-0.0467218 0.0675972 0.996618 0
+		-0.697356 -0.716548 0.0159087 0
+		0.073984 0.020978 5e-06 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 12
+	child_joints 3
+		24 27 30 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Bow_02
+{
+	id 27
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	-0 0.000557 0.083088
+	rotation_orient	0 0 0 1
+	rotation	0.000166 0.000176 -3.9e-05 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 -7.79416e-05 -0.000352013 0
+		7.80584e-05 1 0.000331986 0
+		0.000351987 -0.000332014 1 0
+		-0 0.000557 0.083088 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 23
+	child_joints 1
+		28 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Bow_03
+{
+	id 24
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	-0 0.001019 -0.086354
+	rotation_orient	0 0 0 1
+	rotation	-0.000139 -0.000182 -4.1e-05 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 -8.19494e-05 0.000364011 0
+		8.20506e-05 1 -0.000277985 0
+		-0.000363989 0.000278015 1 0
+		-0 0.001019 -0.086354 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 23
+	child_joints 1
+		25 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Bow_04
+{
+	id 28
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	-3e-05 0.0418 0.397527
+	rotation_orient	0 0 0 1
+	rotation	0 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 0 0
+		0 1 0 0
+		0 0 1 0
+		-3e-05 0.0418 0.397527 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 27
+	child_joints 1
+		29 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Bow_05
+{
+	id 25
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	-1e-05 0.041449 -0.400606
+	rotation_orient	0 0 0 1
+	rotation	0 0.011448 0.003777 0.999927
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.999709 0.00755345 -0.0228943 0
+		-0.00755345 0.999971 8.64782e-05 0
+		0.0228943 8.64782e-05 0.999738 0
+		-1e-05 0.041449 -0.400606 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 24
+	child_joints 1
+		26 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Bow_06
+{
+	id 29
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	1.3e-05 0.140435 0.431661
+	rotation_orient	0 0 0 1
+	rotation	0 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 0 0
+		0 1 0 0
+		0 0 1 0
+		1.3e-05 0.140435 0.431661 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 28
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Bow_07
+{
+	id 26
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.010652 0.140562 -0.42601
+	rotation_orient	0 0 0 1
+	rotation	0 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 0 0
+		0 1 0 0
+		0 0 1 0
+		0.010652 0.140562 -0.42601 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 25
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Bow_08
+{
+	id 30
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0 0.182792 0.014598
+	rotation_orient	0 0 0 1
+	rotation	0 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 0 0
+		0 1 0 0
+		0 0 1 0
+		0 0.182792 0.014598 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 23
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Character
+{
+	id 1
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0 0 0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 0 0
+		0 1 0 0
+		0 0 1 0
+		0 0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 0
+	child_joints 2
+		2 3 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Head
+{
+	id 8
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.080358 -0.02758 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.09836 0.995151
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.980651 0.195766 0 0
+		-0.195766 0.980651 0 0
+		0 0 1 0
+		0.080358 -0.02758 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 7
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Calf
+{
+	id 48
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.422791 0 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 -0.025843 0.999666
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.998664 -0.0516687 -0 0
+		0.0516687 0.998664 0 0
+		0 -0 1 0
+		0.422791 0 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 47
+	child_joints 1
+		49 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Clavicle
+{
+	id 9
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.157296 -0.016934 0.027096
+	rotation_orient	0 0 0 1
+	rotation	0.679698 -0.000272 0.733492 0.000291
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		-0.0760212 5.71366e-05 0.997106 0
+		-0.000796648 -1 -3.43542e-06 0
+		0.997106 -0.000794604 0.0760211 0
+		0.157296 -0.016934 0.027096 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 6
+	child_joints 1
+		10 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Finger0
+{
+	id 13
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.023303 0.014607 -0.041199
+	rotation_orient	0 0 0 1
+	rotation	0.483917 0.366026 -0.09479 0.789217
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.71408 0.204633 -0.669489 0
+		0.503872 0.513678 0.69444 0
+		0.486007 -0.833222 0.263699 0
+		0.023303 0.014607 -0.041199 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 12
+	child_joints 1
+		14 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Finger01
+{
+	id 14
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.038241 0 0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.174327 0.984688
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.93922 0.343315 0 0
+		-0.343315 0.93922 0 0
+		0 0 1 0
+		0.038241 0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 13
+	child_joints 1
+		15 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Finger02
+{
+	id 15
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.032627 -0 0
+	rotation_orient	0 0 0 1
+	rotation	0 0 -0.027688 0.999617
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.998467 -0.0553548 -0 0
+		0.0553548 0.998467 0 0
+		0 -0 1 0
+		0.032627 -0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 14
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Finger1
+{
+	id 16
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.086178 -0.006978 -0.036942
+	rotation_orient	0 0 0 1
+	rotation	-0.000398 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 -0 0
+		-0 1 -0.000796 0
+		0 0.000796 1 0
+		0.086178 -0.006978 -0.036942 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 12
+	child_joints 1
+		17 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Finger11
+{
+	id 17
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.032206 0 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.031959 0.999489
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.997957 0.0638853 0 0
+		-0.0638853 0.997957 0 0
+		0 0 1 0
+		0.032206 0 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 16
+	child_joints 1
+		18 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Finger12
+{
+	id 18
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.029917 -0 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.046286 0.998928
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.995715 0.0924728 0 0
+		-0.0924728 0.995715 0 0
+		0 0 1 0
+		0.029917 -0 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 17
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Finger2
+{
+	id 19
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.08576 -0.006073 0.004705
+	rotation_orient	0 0 0 1
+	rotation	-0.000398 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 -0 0
+		-0 1 -0.000796 0
+		0 0.000796 1 0
+		0.08576 -0.006073 0.004705 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 12
+	child_joints 1
+		20 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Finger21
+{
+	id 20
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.029514 -0 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.015992 0.999872
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.999489 0.0319799 0 0
+		-0.0319799 0.999489 0 0
+		0 0 1 0
+		0.029514 -0 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 19
+	child_joints 1
+		21 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Finger22
+{
+	id 21
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.038205 -0 0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.03361 0.999435
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.997741 0.067182 0 0
+		-0.067182 0.997741 0 0
+		0 0 1 0
+		0.038205 -0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 20
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Foot
+{
+	id 49
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.441695 -0 0
+	rotation_orient	0 0 0 1
+	rotation	-0.08405 -0.003788 0.044861 0.995444
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.995946 0.08995 3.49712e-07 0
+		-0.0886765 0.981846 -0.167674 0
+		-0.0150826 0.166994 0.985843 0
+		0.441695 -0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 48
+	child_joints 1
+		50 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Forearm
+{
+	id 11
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.265017 0 0
+	rotation_orient	0 0 0 1
+	rotation	0 0 -0.058208 0.998304
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.993224 -0.116219 -0 0
+		0.116219 0.993224 0 0
+		0 -0 1 0
+		0.265017 0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 10
+	child_joints 1
+		12 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Hand
+{
+	id 12
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.277656 0 -0
+	rotation_orient	0 0 0 1
+	rotation	-0.706657 -0.015424 -0.015411 0.70722
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.999049 1.02073e-06 0.0435969 0
+		0.0435969 0.000796795 -0.999049 0
+		-3.57404e-05 0.999999 0.00079596 0
+		0.277656 0 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 11
+	child_joints 5
+		13 16 19 22 23 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Thigh
+{
+	id 47
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	-0 0 0.130154
+	rotation_orient	0 0 0 1
+	rotation	-0.019188 0.999816 -1e-06 1e-06
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		-0.999264 -0.0383689 -1.96126e-06 0
+		-0.0383689 0.999264 -2.03801e-06 0
+		2.03801e-06 -1.96126e-06 -1 0
+		-0 0 0.130154 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 4
+	child_joints 1
+		48 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Toe0
+{
+	id 50
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.112724 0.130742 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.707107 0.707106
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		-5.96046e-07 0.999999 0 0
+		-0.999999 -5.96046e-07 0 0
+		0 0 1 0
+		0.112724 0.130742 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 49
+	child_joints 1
+		51 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_Toe0Nub
+{
+	id 51
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.073981 -0 0
+	rotation_orient	0 0 0 1
+	rotation	0 1 0 0
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		-1 0 0 0
+		0 1 0 0
+		0 0 -1 0
+		0.073981 -0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 50
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_UpperArm
+{
+	id 10
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.177438 0 0
+	rotation_orient	0 0 0 1
+	rotation	0.045145 0.358697 0.021444 0.932115
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.741753 0.0723633 -0.666758 0
+		-0.00758979 0.995004 0.0995445 0
+		0.67063 -0.0687769 0.738597 0
+		0.177438 0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 9
+	child_joints 2
+		11 31 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_pad
+{
+	id 31
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	-0.000223 3.1e-05 0.000211
+	rotation_orient	0 0 0 1
+	rotation	-0.045928 -0.393894 -0.019712 0.917796
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.688918 -1.66148e-06 0.724839 0
+		0.0723647 0.995004 -0.0687762 0
+		-0.721218 0.099834 0.685476 0
+		-0.000223 3.1e-05 0.000211 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 10
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT L_shield
+{
+	id 22
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.073984 0.020978 5e-06
+	rotation_orient	0 0 0 1
+	rotation	0.638689 -0.290038 -0.241409 0.670579
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.715199 -0.694256 0.0806162 0
+		-0.0467205 0.0675962 0.996618 0
+		-0.697357 -0.716547 0.0159087 0
+		0.073984 0.020978 5e-06 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 12
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Master
+{
+	id 2
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0 0 0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 0 0
+		0 1 0 0
+		0 0 1 0
+		0 0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 1
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Neck
+{
+	id 7
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.202039 -5e-05 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 0 0
+		0 1 0 0
+		0 0 1 0
+		0.202039 -5e-05 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 6
+	child_joints 1
+		8 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Pelvis
+{
+	id 4
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0 0 0
+	rotation_orient	0 0 0 1
+	rotation	-0.499999 -0.5 -0.5 0.500001
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0 -2.02656e-06 1 0
+		1 2.02656e-06 0 0
+		-2.02656e-06 1 2.02656e-06 0
+		0 0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 3
+	child_joints 4
+		5 47 52 57 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Calf
+{
+	id 53
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.422791 0 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 -0.025843 0.999666
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.998664 -0.0516687 -0 0
+		0.0516687 0.998664 0 0
+		0 -0 1 0
+		0.422791 0 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 52
+	child_joints 1
+		54 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Clavicle
+{
+	id 32
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.157296 -0.016933 -0.027097
+	rotation_orient	0 0 0 1
+	rotation	-0.679698 0.00027 0.733492 0.000293
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		-0.0760212 6.27894e-05 -0.997106 0
+		-0.000796863 -1 -2.21733e-06 0
+		-0.997106 0.000794389 0.0760211 0
+		0.157296 -0.016933 -0.027097 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 6
+	child_joints 1
+		33 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Finger0
+{
+	id 36
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.023303 0.014607 0.041199
+	rotation_orient	0 0 0 1
+	rotation	-0.483917 -0.366026 -0.09479 0.789217
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.71408 0.204633 0.669489 0
+		0.503872 0.513678 -0.69444 0
+		-0.486007 0.833222 0.263699 0
+		0.023303 0.014607 0.041199 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 35
+	child_joints 1
+		37 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Finger01
+{
+	id 37
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.038241 0 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.174327 0.984688
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.93922 0.343315 0 0
+		-0.343315 0.93922 0 0
+		0 0 1 0
+		0.038241 0 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 36
+	child_joints 1
+		38 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Finger02
+{
+	id 38
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.032627 -0 0
+	rotation_orient	0 0 0 1
+	rotation	0 0 -0.027688 0.999617
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.998467 -0.0553548 -0 0
+		0.0553548 0.998467 0 0
+		0 -0 1 0
+		0.032627 -0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 37
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Finger1
+{
+	id 39
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.086178 -0.006978 0.036942
+	rotation_orient	0 0 0 1
+	rotation	0.000398 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 0 0
+		0 1 0.000796 0
+		0 -0.000796 1 0
+		0.086178 -0.006978 0.036942 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 35
+	child_joints 1
+		40 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Finger11
+{
+	id 40
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.032206 0 0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.031959 0.999489
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.997957 0.0638853 0 0
+		-0.0638853 0.997957 0 0
+		0 0 1 0
+		0.032206 0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 39
+	child_joints 1
+		41 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Finger12
+{
+	id 41
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.029917 -0 0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.046286 0.998928
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.995715 0.0924728 0 0
+		-0.0924728 0.995715 0 0
+		0 0 1 0
+		0.029917 -0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 40
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Finger2
+{
+	id 42
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.08576 -0.006073 -0.004705
+	rotation_orient	0 0 0 1
+	rotation	0.000398 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 0 0
+		0 1 0.000796 0
+		0 -0.000796 1 0
+		0.08576 -0.006073 -0.004705 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 35
+	child_joints 1
+		43 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Finger21
+{
+	id 43
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.029514 -0 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.015992 0.999872
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.999489 0.0319799 0 0
+		-0.0319799 0.999489 0 0
+		0 0 1 0
+		0.029514 -0 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 42
+	child_joints 1
+		44 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Finger22
+{
+	id 44
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.038205 -0 0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.03361 0.999435
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.997741 0.067182 0 0
+		-0.067182 0.997741 0 0
+		0 0 1 0
+		0.038205 -0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 43
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Foot
+{
+	id 54
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.441695 -0 0
+	rotation_orient	0 0 0 1
+	rotation	0.08405 0.003788 0.044861 0.995444
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.995946 0.08995 -3.49712e-07 0
+		-0.0886765 0.981846 0.167674 0
+		0.0150826 -0.166994 0.985843 0
+		0.441695 -0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 53
+	child_joints 1
+		55 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Forearm
+{
+	id 34
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.265017 0 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 -0.058208 0.998304
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.993224 -0.116219 -0 0
+		0.116219 0.993224 0 0
+		0 -0 1 0
+		0.265017 0 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 33
+	child_joints 1
+		35 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Hand
+{
+	id 35
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.277656 -0 0
+	rotation_orient	0 0 0 1
+	rotation	0.706657 0.015424 -0.015411 0.70722
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.999049 1.02073e-06 -0.0435969 0
+		0.0435969 0.000796795 0.999049 0
+		3.57404e-05 -0.999999 0.00079596 0
+		0.277656 -0 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 34
+	child_joints 4
+		36 39 42 45 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Thigh
+{
+	id 52
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0 -0 -0.130154
+	rotation_orient	0 0 0 1
+	rotation	-0.019188 0.999816 -1e-06 1e-06
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		-0.999264 -0.0383689 -1.96126e-06 0
+		-0.0383689 0.999264 -2.03801e-06 0
+		2.03801e-06 -1.96126e-06 -1 0
+		0 -0 -0.130154 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 4
+	child_joints 1
+		53 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Toe0
+{
+	id 55
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.112724 0.130742 0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0.707107 0.707106
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		-5.96046e-07 0.999999 0 0
+		-0.999999 -5.96046e-07 0 0
+		0 0 1 0
+		0.112724 0.130742 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 54
+	child_joints 1
+		56 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_Toe0Nub
+{
+	id 56
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.073981 -0 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 0 0
+		0 1 0 0
+		0 0 1 0
+		0.073981 -0 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 55
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_UpperArm
+{
+	id 33
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.177438 0 -0
+	rotation_orient	0 0 0 1
+	rotation	-0.045145 -0.358697 0.021444 0.932115
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		0.741753 0.0723633 0.666758 0
+		-0.00758979 0.995004 -0.0995445 0
+		-0.67063 0.0687769 0.738597 0
+		0.177438 0 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 32
+	child_joints 2
+		34 46 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_pad
+{
+	id 46
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	-0.000223 3.1e-05 -0.000212
+	rotation_orient	0 0 0 1
+	rotation	-0.019711 -0.917796 -0.045928 0.393893
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		-0.688918 -7.82311e-08 0.724837 0
+		0.0723628 0.995004 0.068777 0
+		-0.721216 0.0998331 -0.685476 0
+		-0.000223 3.1e-05 -0.000212 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 33
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT R_weapon
+{
+	id 45
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.073984 0.020979 -5e-06
+	rotation_orient	0 0 0 1
+	rotation	-0.241408 -0.670579 0.638689 0.290039
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		-0.7152 0.694256 0.0806189 0
+		-0.0467231 0.0675972 -0.996618 0
+		-0.697357 -0.716547 -0.0159081 0
+		0.073984 0.020979 -5e-06 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 35
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Root
+{
+	id 3
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0 0 0.980257
+	rotation_orient	0 0 0 1
+	rotation	0 0 -0.707105 0.707108
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		4.23193e-06 -1 -0 0
+		1 4.23193e-06 0 0
+		0 -0 1 0
+		0 0 0.980257 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 1
+	child_joints 1
+		4 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Spine
+{
+	id 5
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.129234 -0.023045 0
+	rotation_orient	0 0 0 1
+	rotation	-2e-06 -1e-06 0.000398 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0.000796 1.99841e-06 0
+		-0.000796 1 -4.0008e-06 0
+		-2.00159e-06 3.9992e-06 1 0
+		0.129234 -0.023045 0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 4
+	child_joints 1
+		6 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT Spine1
+{
+	id 6
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	0.229681 -0.000183 -0
+	rotation_orient	0 0 0 1
+	rotation	0 0 0 1
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		1 0 0 0
+		0 1 0 0
+		0 0 1 0
+		0.229681 -0.000183 -0 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 5
+	child_joints 3
+		7 9 32 
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+JOINT saya
+{
+	id 57
+	visible	1
+	scale_pivot	0 0 0
+	rotate_pivot	0 0 0
+	min_bound	0 0 0
+	max_bound	0 0 0
+	scale	1 1 1
+	translate	-0.105421 -0.045805 0.257759
+	rotation_orient	0 0 0 1
+	rotation	0.707107 1e-06 0.707107 1e-06
+	joint_orient	0 0 0 1
+	bind_pose_matrix
+		-5.96046e-07 2.82843e-06 1 0
+		0 -1 2.82843e-06 0
+		1 0 -5.96046e-07 0
+		-0.105421 -0.045805 0.257759 1
+	rotation_order xyz
+	inherits_transform 1
+	shearing 0 0 0
+	rotate_pivot_translate	0 0 0
+	scale_pivot_translate	0 0 0
+	translate_limit_x -INF +INF
+	translate_limit_y -INF +INF
+	translate_limit_z -INF +INF
+	rotate_limit_x -INF +INF
+	rotate_limit_y -INF +INF
+	rotate_limit_z -INF +INF
+	scale_limit_x -INF +INF
+	scale_limit_y -INF +INF
+	scale_limit_z -INF +INF
+	parent 4
+	child_joints 0
+	INSTANCE_LIST
+	{
+	}
+	segment_scale_compensate 1
+}
+ANIM_CYCLE "untitled"
+{
+	num_bones 57
+	start 0
+	end 30
+	num_frames 30
+	fps 30
+	BONE_ANIM 1
+	{
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 2
+	{
+		0 0 0 1	0 0 0	1 1 1
+		0 0 0 1	0 -0.176063 0	1 1 1
+		0 0 0 1	0 -0.352125 0	1 1 1
+		0 0 0 1	0 -0.530777 0	1 1 1
+		0 0 0 1	0 -0.706839 0	1 1 1
+		0 0 0 1	0 -0.882902 0	1 1 1
+		0 0 0 1	0 -1.05896 0	1 1 1
+		0 0 0 1	0 -1.23762 0	1 1 1
+		0 0 0 1	0 -1.41368 0	1 1 1
+		0 0 0 1	0 -1.58974 0	1 1 1
+		0 0 0 1	0 -1.7658 0	1 1 1
+		0 0 0 1	0 -1.94446 0	1 1 1
+		0 0 0 1	0 -2.12052 0	1 1 1
+		0 0 0 1	0 -2.29658 0	1 1 1
+		0 0 0 1	0 -2.47264 0	1 1 1
+		0 0 0 1	0 -2.64871 0	1 1 1
+		0 0 0 1	0 -2.82736 0	1 1 1
+		0 0 0 1	0 -3.00342 0	1 1 1
+		0 0 0 1	0 -3.17948 0	1 1 1
+		0 0 0 1	0 -3.35554 0	1 1 1
+		0 0 0 1	0 -3.5342 0	1 1 1
+		0 0 0 1	0 -3.71026 0	1 1 1
+		0 0 0 1	0 -3.88632 0	1 1 1
+		0 0 0 1	0 -4.06238 0	1 1 1
+		0 0 0 1	0 -4.24104 0	1 1 1
+		0 0 0 1	0 -4.4171 0	1 1 1
+		0 0 0 1	0 -4.59316 0	1 1 1
+		0 0 0 1	0 -4.76922 0	1 1 1
+		0 0 0 1	0 -4.94788 0	1 1 1
+		0 0 0 1	0 -5.12394 0	1 1 1
+	}
+	BONE_ANIM 3
+	{
+		0.104147 0.0328913 -0.680855 0.72423	0.0328287 0 0.839069	1 1 1
+		0.0996349 0.0414321 -0.678774 0.726376	0.0443468 -0.154771 0.850474	1 1 1
+		0.0953086 0.0498384 -0.676166 0.728857	0.0559217 -0.309496 0.855671	1 1 1
+		0.0908741 0.0583051 -0.673719 0.731058	0.0655674 -0.468855 0.867077	1 1 1
+		0.0860407 0.067025 -0.672129 0.732357	0.0730571 -0.627857 0.891619	1 1 1
+		0.0805115 0.0761897 -0.672086 0.732129	0.0731138 -0.794575 0.923525	1 1 1
+		0.0727777 0.0874915 -0.675078 0.728916	0.0660781 -0.968685 0.954997	1 1 1
+		0.0636617 0.0996661 -0.681075 0.7226	0.0585317 -1.14576 0.978529	1 1 1
+		0.0563919 0.108489 -0.688618 0.714742	0.0505314 -1.32061 0.986758	1 1 1
+		0.05178 0.113006 -0.697312 0.705906	0.042134 -1.49579 0.982283	1 1 1
+		0.0482984 0.115439 -0.707101 0.695952	0.0335095 -1.67125 0.972754	1 1 1
+		0.0456713 0.116364 -0.71721 0.685553	0.0247149 -1.84953 0.958173	1 1 1
+		0.0436288 0.116354 -0.726889 0.675418	0.01575 -2.0254 0.937961	1 1 1
+		0.043801 0.112852 -0.73587 0.666214	0.00678518 -2.20142 0.912119	1 1 1
+		0.0454134 0.106939 -0.744839 0.657052	-0.00217967 -2.37758 0.880214	1 1 1
+		0.0467678 0.10107 -0.75467 0.646584	-0.0109743 -2.55373 0.841956	1 1 1
+		0.0508575 0.0920515 -0.762355 0.638557	-0.0195987 -2.73252 0.851629	1 1 1
+		0.0554462 0.0823687 -0.769249 0.631187	-0.0278827 -2.90872 0.856104	1 1 1
+		0.0599451 0.0717862 -0.771994 0.628712	-0.0358263 -3.08483 0.864622	1 1 1
+		0.0634334 0.0585543 -0.764464 0.638861	-0.0428052 -3.26206 0.881513	1 1 1
+		0.068046 0.0455366 -0.752462 0.653527	-0.0430322 -3.44587 0.90288	1 1 1
+		0.0758734 0.0338732 -0.742987 0.664128	-0.0369611 -3.62998 0.925257	1 1 1
+		0.0849608 0.0219519 -0.73325 0.674273	-0.0302658 -3.81445 0.945035	1 1 1
+		0.0933106 0.0123795 -0.723911 0.683442	-0.0230031 -3.99916 0.958606	1 1 1
+		0.0989331 0.00776669 -0.715777 0.691242	-0.0153433 -4.18669 0.962504	1 1 1
+		0.101704 0.00816441 -0.708987 0.697802	-0.00739972 -4.37173 0.957596	1 1 1
+		0.103111 0.011294 -0.702939 0.703645	0.000714045 -4.5569 0.946912	1 1 1
+		0.103609 0.0162415 -0.697372 0.708994	0.00894129 -4.74212 0.930166	1 1 1
+		0.103645 0.0220985 -0.692015 0.714062	0.0171118 -4.92988 0.906778	1 1 1
+		0.103676 0.0279509 -0.686598 0.719064	0.0251121 -5.11501 0.87646	1 1 1
+	}
+	BONE_ANIM 4
+	{
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.499999 -0.499998 -0.500012 0.499991	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 5
+	{
+		-0.182458 -0.04818 0.12449 0.97411	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.179453 -0.0402308 0.12722 0.974676	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.176128 -0.0314833 0.130212 0.975209	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.172556 -0.0221304 0.133395 0.975675	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.168812 -0.0123776 0.1367 0.976044	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.16497 -0.00242421 0.140056 0.976301	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.161109 0.00753004 0.143394 0.976435	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.157304 0.0172809 0.146646 0.976449	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.153638 0.0266356 0.149748 0.976351	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.15019 0.0353867 0.152637 0.976162	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.147045 0.0433358 0.155251 0.975908	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.144285 0.0502853 0.157525 0.975622	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.141993 0.0560345 0.1594 0.975341	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.140254 0.0603857 0.160817 0.9751	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.139151 0.0631423 0.161711 0.974936	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.138765 0.0641071 0.162025 0.974875	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.139151 0.0631423 0.161711 0.974936	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.140254 0.0603857 0.160817 0.9751	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.141993 0.0560345 0.1594 0.975341	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.144285 0.0502853 0.157525 0.975622	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.147045 0.0433358 0.155251 0.975909	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.15019 0.0353867 0.152637 0.976162	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.153638 0.0266356 0.149748 0.976351	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.157304 0.0172809 0.146646 0.976448	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.161109 0.00753004 0.143394 0.976435	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.16497 -0.00242421 0.140056 0.976301	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.168812 -0.0123776 0.1367 0.976044	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.172556 -0.0221304 0.133395 0.975675	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.176128 -0.0314833 0.130212 0.975209	0.129278 -0.0230272 7.06613e-05	1 1 1
+		-0.179453 -0.0402308 0.12722 0.974676	0.129278 -0.0230272 7.06613e-05	1 1 1
+	}
+	BONE_ANIM 6
+	{
+		-0.454467 -0.118846 0.254236 0.845399	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.44876 -0.12452 0.251069 0.848572	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.442508 -0.130681 0.247603 0.85194	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.435801 -0.137226 0.243883 0.855434	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.428736 -0.144055 0.239965 0.858982	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.421413 -0.151059 0.235902 0.862521	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.413926 -0.158146 0.231747 0.865996	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.406374 -0.165221 0.227563 0.869354	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.398898 -0.172149 0.22341 0.872544	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.391567 -0.178875 0.219341 0.875539	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.384512 -0.185288 0.215425 0.8783	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.377845 -0.191291 0.211726 0.880803	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.371684 -0.196791 0.208305 0.883025	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.366146 -0.201698 0.205233 0.884949	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.361353 -0.205916 0.202571 0.88656	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.357418 -0.209358 0.20039 0.887843	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.354466 -0.21193 0.19875 0.888785	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.35261 -0.21354 0.19772 0.889367	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.351965 -0.2141 0.197363 0.889568	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.353393 -0.212861 0.198155 0.889122	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.357418 -0.209358 0.20039 0.887843	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.363649 -0.203897 0.203847 0.885794	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.371684 -0.196791 0.208305 0.883025	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.381122 -0.188346 0.213545 0.879586	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.391567 -0.178875 0.219341 0.875539	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.402625 -0.168699 0.225471 0.870975	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.413926 -0.158146 0.231747 0.865996	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.425101 -0.147541 0.237947 0.860757	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.435801 -0.137226 0.243883 0.855434	0.229742 -8.20309e-05 0.000149161	1 1 1
+		-0.445697 -0.127546 0.249371 0.850236	0.229742 -8.20309e-05 0.000149161	1 1 1
+	}
+	BONE_ANIM 7
+	{
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+		0.130423 -0.0356532 -0.00466968 0.990806	0.202043 -4.7151e-05 -2.0951e-05	1 1 1
+	}
+	BONE_ANIM 8
+	{
+		0.28913 -0.228516 -0.56721 0.736517	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.277403 -0.230426 -0.565667 0.741601	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.264565 -0.232642 -0.56377 0.747025	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.250875 -0.235106 -0.56148 0.75268	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.236603 -0.237748 -0.558774 0.758464	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.222008 -0.240491 -0.555652 0.764282	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.207357 -0.243262 -0.552132 0.77005	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.192909 -0.245971 -0.548258 0.775692	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.178927 -0.248528 -0.544094 0.781141	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.165664 -0.250837 -0.539726 0.786341	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.153365 -0.252796 -0.535256 0.791249	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.142278 -0.2543 -0.530802 0.795826	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.132639 -0.255237 -0.526494 0.800041	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.124685 -0.255498 -0.522473 0.803864	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.118646 -0.254973 -0.518869 0.807272	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.11475 -0.25355 -0.515818 0.810232	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.11318 -0.251171 -0.513447 0.812697	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.113906 -0.247996 -0.511863 0.814567	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.116856 -0.244237 -0.511167 0.815722	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.122567 -0.240538 -0.512005 0.815457	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.131335 -0.237389 -0.514724 0.8133	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.142741 -0.234766 -0.518931 0.809457	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.156346 -0.232648 -0.524224 0.804127	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.171711 -0.231007 -0.530219 0.797508	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.18838 -0.229805 -0.53655 0.78982	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.205887 -0.228998 -0.542902 0.781299	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.223756 -0.228528 -0.548995 0.772213	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.241503 -0.228331 -0.554612 0.762855	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.258638 -0.228326 -0.559588 0.753549	0.0803619 -0.0275792 5.21541e-06	1 1 1
+		0.274673 -0.228419 -0.563811 0.744645	0.0803619 -0.0275792 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 9
+	{
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+		0.694487 0.0511982 0.715922 0.0502218	0.157295 -0.0169334 0.0270958	1 1 1
+	}
+	BONE_ANIM 10
+	{
+		0.352523 0.239342 -0.531994 0.731727	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.352161 0.227116 -0.535793 0.733026	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.350897 0.213719 -0.540635 0.734105	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.349561 0.199831 -0.546387 0.734395	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.349091 0.186078 -0.552739 0.733478	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.350468 0.173004 -0.559216 0.731108	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.353524 0.160941 -0.565838 0.727287	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.357377 0.149805 -0.572664 0.722424	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.361932 0.139488 -0.579171 0.717014	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.367102 0.12987 -0.584865 0.71155	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.372809 0.120844 -0.589282 0.706511	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.378693 0.112664 -0.592855 0.701728	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.384286 0.105887 -0.59628 0.696822	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.389359 0.100841 -0.599516 0.691962	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.393716 0.097801 -0.602429 0.687388	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.396631 0.0975883 -0.606322 0.6823	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.398009 0.100055 -0.610753 0.67717	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.398664 0.103861 -0.61316 0.674029	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.399404 0.107377 -0.610602 0.675361	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.399341 0.110859 -0.603992 0.680758	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.39742 0.11551 -0.595927 0.688175	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.393783 0.121742 -0.58722 0.696625	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.388714 0.12963 -0.578379 0.70539	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.382461 0.139301 -0.570028 0.713713	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.375746 0.150451 -0.561856 0.721455	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.369372 0.162711 -0.553461 0.72854	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.363669 0.176084 -0.545519 0.734267	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.358937 0.190533 -0.538726 0.737995	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.355411 0.205961 -0.533768 0.739158	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.353254 0.222261 -0.531312 0.737237	0.177434 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 11
+	{
+		7.48783e-07 8.01287e-07 -0.5228 0.852456	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.35042e-08 -7.567e-08 -0.524472 0.851428	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.10408e-06 1.0496e-06 -0.525096 0.851043	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		-1.32248e-07 -1.7893e-07 -0.524478 0.851424	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.46404e-06 1.35368e-06 -0.522716 0.852507	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		-2.79397e-07 -2.69851e-07 -0.52028 0.853996	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.27917e-06 1.26078e-06 -0.517277 0.855818	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		2.23983e-07 3.95929e-07 -0.51361 0.858024	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.41049e-06 1.3297e-06 -0.509595 0.860415	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		2.45543e-06 2.37662e-06 -0.505553 0.862795	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		-6.23986e-07 -6.36326e-07 -0.50181 0.864978	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		8.49366e-07 7.67293e-07 -0.496677 0.867936	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.76439e-06 1.65694e-06 -0.489136 0.872208	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		7.25966e-07 8.1386e-07 -0.480558 0.876963	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		2.91038e-07 2.71481e-07 -0.472448 0.881358	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		2.65427e-07 2.79397e-07 -0.462359 0.886693	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.38301e-07 1.82772e-07 -0.450811 0.89262	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		3.44589e-08 4.36557e-08 -0.443568 0.896241	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.74157e-07 5.72763e-08 -0.448324 0.893871	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.14553e-07 4.84288e-08 -0.460765 0.887522	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		8.19564e-08 1.88127e-07 -0.473088 0.881015	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		6.00703e-08 -7.567e-09 -0.484748 0.874654	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		-1.02445e-08 -6.63567e-08 -0.494996 0.868895	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		6.56722e-06 6.47281e-06 -0.503129 0.864211	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		3.98559e-06 3.89491e-06 -0.510401 0.859937	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		4.40981e-07 5.77071e-07 -0.517969 0.855399	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		3.83705e-07 4.25265e-07 -0.524835 0.851204	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		0 5.6345e-08 -0.52992 0.848048	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		-6.37956e-08 -1.17812e-07 -0.532092 0.846687	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		6.10016e-07 6.75209e-07 -0.530147 0.847906	0.265017 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 12
+	{
+		0.864911 0.251092 0.323887 0.289791	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.869092 0.25385 0.308552 0.291607	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.874168 0.255721 0.290444 0.293394	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.878914 0.256574 0.272141 0.296005	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.882219 0.256588 0.256342 0.300236	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.883038 0.256288 0.245791 0.306834	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.880805 0.256772 0.241417 0.316177	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.876399 0.257969 0.241402 0.327263	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.870924 0.258827 0.244397 0.338778	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.865524 0.258245 0.249123 0.349451	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.861391 0.255068 0.254414 0.358077	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.859878 0.246736 0.26023 0.363333	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.860485 0.233391 0.26718 0.365663	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.861708 0.217906 0.275072 0.366485	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.862224 0.203146 0.283686 0.367183	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.86206 0.187052 0.293775 0.368185	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.861882 0.169532 0.304153 0.368659	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.861961 0.156035 0.31169 0.368138	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.861919 0.153795 0.313533 0.367613	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.863737 0.156956 0.310399 0.364659	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.869578 0.155358 0.303741 0.356985	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.877249 0.151362 0.295254 0.346914	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.884376 0.149644 0.287632 0.335788	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.888658 0.154766 0.284009 0.325075	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.889349 0.168391 0.284813 0.315569	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.88748 0.187209 0.288074 0.307157	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.883479 0.208128 0.293451 0.300055	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.878067 0.228018 0.30044 0.294519	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.872289 0.243804 0.30837 0.290825	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.867451 0.252471 0.316462 0.289201	0.277655 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 13
+	{
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+		0.586809 0.347872 0.216802 0.69831	0.0233014 0.0146066 -0.0411934	1 1 1
+	}
+	BONE_ANIM 14
+	{
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.61096e-06 2.402e-05 0.434039 0.900894	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 15
+	{
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.13895e-06 2.27034e-05 0.604381 0.796695	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 16
+	{
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+		-0.000379381 0.000173888 0.405101 0.914272	0.0861757 -0.00697814 -0.03694	1 1 1
+	}
+	BONE_ANIM 17
+	{
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.14352e-06 2.27161e-05 0.603049 0.797704	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 18
+	{
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-7.89906e-06 2.20342e-05 0.668468 0.74374	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 19
+	{
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+		-0.000378288 0.000173387 0.417324 0.908758	0.0857581 -0.00607121 0.00470352	1 1 1
+	}
+	BONE_ANIM 20
+	{
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 21
+	{
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.15346e-06 2.27439e-05 0.600135 0.799899	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 22
+	{
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+		-0.0923139 0.701057 0.0922948 0.701056	0.0741973 0.0211993 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 23
+	{
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+		0.638696 -0.290018 -0.241395 0.670586	0.0741973 0.0211993 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 24
+	{
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.00102023 -0.0863574	1 1 1
+	}
+	BONE_ANIM 25
+	{
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-1.22711e-05 0.0414481 -0.400608	1 1 1
+	}
+	BONE_ANIM 26
+	{
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0106547 0.140561 -0.42601	1 1 1
+	}
+	BONE_ANIM 27
+	{
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.000556301 0.0830829	1 1 1
+	}
+	BONE_ANIM 28
+	{
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-2.89753e-05 0.0418004 0.39753	1 1 1
+	}
+	BONE_ANIM 29
+	{
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	1.27852e-05 0.140435 0.431661	1 1 1
+	}
+	BONE_ANIM 30
+	{
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	-3.91901e-06 0.182792 0.0145975	1 1 1
+	}
+	BONE_ANIM 31
+	{
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0459355 -0.393882 -0.0196934 0.917801	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 32
+	{
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+		-0.666609 -0.168911 0.708285 0.159481	0.157295 -0.0169334 -0.0270984	1 1 1
+	}
+	BONE_ANIM 33
+	{
+		-0.0494008 -0.479626 -0.337972 0.808265	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		-0.0389792 -0.483788 -0.330222 0.809557	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		-0.027005 -0.487855 -0.321181 0.81124	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		-0.0148692 -0.492141 -0.311451 0.812757	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		-0.00392161 -0.49702 -0.301715 0.813587	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.00452768 -0.502934 -0.292731 0.813232	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.0105057 -0.509819 -0.284768 0.811715	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.0149759 -0.517211 -0.277577 0.809456	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.0180964 -0.524948 -0.271179 0.806576	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.0200157 -0.532871 -0.265587 0.803188	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.0208769 -0.540821 -0.260809 0.79941	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.0208078 -0.548642 -0.256844 0.795356	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.0199351 -0.556171 -0.25368 0.791153	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.0183764 -0.563253 -0.251292 0.786932	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.0162353 -0.569722 -0.249668 0.782828	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.0136103 -0.575424 -0.248765 0.778985	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.010645 -0.580163 -0.248523 0.775586	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.00770196 -0.583646 -0.24874 0.772933	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.00551453 -0.585438 -0.249685 0.771291	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.00408951 -0.584598 -0.252485 0.771025	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.00293497 -0.580727 -0.257557 0.772277	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.00179385 -0.574315 -0.264481 0.774731	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		0.000416965 -0.565841 -0.272832 0.778066	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		-0.00144439 -0.555774 -0.282178 0.781977	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		-0.00404124 -0.54458 -0.292083 0.786195	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		-0.00762821 -0.532724 -0.302106 0.790493	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		-0.0124617 -0.520662 -0.311792 0.794696	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		-0.0187968 -0.508859 -0.320683 0.798669	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		-0.0268953 -0.497776 -0.328317 0.802312	0.177434 1.68383e-06 5.21541e-06	1 1 1
+		-0.0370092 -0.487876 -0.334231 0.805541	0.177434 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 34
+	{
+		3.1013e-06 3.06123e-06 -0.653856 0.756619	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		8.79634e-07 1.02576e-06 -0.653896 0.756585	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		4.59468e-06 4.589e-06 -0.654009 0.756487	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		-4.42378e-08 3.18978e-08 -0.654188 0.756332	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.21538e-07 1.77795e-07 -0.654424 0.756128	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.15624e-06 1.06668e-06 -0.654709 0.755881	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		7.46315e-06 7.36921e-06 -0.655034 0.755599	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		5.73415e-06 5.77437e-06 -0.655393 0.755288	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		3.34345e-06 3.4041e-06 -0.655776 0.754955	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		6.06524e-06 6.01559e-06 -0.656174 0.754609	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		5.50319e-06 5.49827e-06 -0.656581 0.754255	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		8.31671e-07 7.6415e-07 -0.65699 0.753899	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		6.06291e-07 4.8065e-07 -0.657388 0.753552	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		4.60539e-07 4.64701e-07 -0.657771 0.753218	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		5.33694e-06 5.45764e-06 -0.658125 0.752909	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		-4.34928e-07 -4.00352e-07 -0.658453 0.752622	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		3.0091e-06 2.99409e-06 -0.658735 0.752375	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		4.75207e-06 4.69171e-06 -0.658969 0.752171	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		4.56022e-06 4.52934e-06 -0.659146 0.752015	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		2.68035e-06 2.64254e-06 -0.65926 0.751915	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.82213e-06 1.93797e-06 -0.6593 0.75188	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		4.1998e-06 4.31351e-06 -0.659256 0.751919	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		4.39398e-06 4.41022e-06 -0.659125 0.752034	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.38534e-06 1.36142e-06 -0.658897 0.752233	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		-1.53994e-06 -1.46535e-06 -0.658564 0.752525	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		-3.38536e-07 -3.49944e-07 -0.658113 0.752919	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.26893e-06 1.28578e-06 -0.65754 0.753419	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		1.86218e-06 1.90103e-06 -0.656837 0.754032	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		-1.15018e-07 2.38651e-08 -0.655995 0.754765	0.265017 1.68383e-06 5.21541e-06	1 1 1
+		4.68316e-06 4.5351e-06 -0.655004 0.755626	0.265017 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 35
+	{
+		0.744848 0.12507 0.326639 0.568214	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.748148 0.126909 0.325937 0.563856	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.752024 0.129101 0.325082 0.558672	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.755566 0.13111 0.324284 0.553869	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.757899 0.132403 0.323762 0.55067	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.758155 0.132451 0.323742 0.550317	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.755966 0.130259 0.324974 0.553119	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.751889 0.12617 0.327295 0.558232	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.746435 0.12168 0.329568 0.565166	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.740151 0.118287 0.330667 0.57345	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.73361 0.117496 0.329477 0.582628	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.726485 0.120502 0.324395 0.593689	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.718139 0.12649 0.316058 0.606946	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.708751 0.133924 0.306766 0.620992	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.698632 0.141297 0.298868 0.634528	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.686319 0.149011 0.292769 0.648883	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.672674 0.157531 0.287824 0.663212	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.661884 0.16552 0.284976 0.673277	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.658118 0.171436 0.287641 0.674354	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.660272 0.178042 0.292075 0.668607	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.664759 0.189943 0.293399 0.660253	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.670251 0.204356 0.293903 0.650095	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.676697 0.215387 0.294683 0.639415	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.684227 0.21722 0.296899 0.629683	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.693425 0.208908 0.301045 0.620396	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.704022 0.194951 0.306329 0.610336	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.714928 0.177723 0.312024 0.599946	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.725179 0.159648 0.317463 0.589784	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.73399 0.143182 0.322056 0.58055	0.277655 1.68383e-06 5.21541e-06	1 1 1
+		0.740727 0.130825 0.325274 0.573066	0.277655 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 36
+	{
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+		-0.506757 -0.57697 0.0416635 0.639192	0.0233014 0.0146066 0.0412038	1 1 1
+	}
+	BONE_ANIM 37
+	{
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+		-8.98744e-06 2.50702e-05 0.178154 0.984003	0.0382452 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 38
+	{
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+		-8.55957e-06 2.38767e-05 0.45684 0.889549	0.0326236 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 39
+	{
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+		0.000363247 -0.000175897 0.388924 0.92127	0.0861757 -0.00697814 0.0369374	1 1 1
+	}
+	BONE_ANIM 40
+	{
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+		-8.55119e-06 2.38533e-05 0.460421 0.887701	0.0322059 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 41
+	{
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+		-8.48447e-06 2.36672e-05 0.487774 0.87297	0.0299171 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 42
+	{
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+		0.000346302 -0.000215402 0.555303 0.831648	0.0857581 -0.00607121 -0.00470617	1 1 1
+	}
+	BONE_ANIM 43
+	{
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+		-8.07219e-06 2.25171e-05 0.623331 0.781958	0.0295162 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 44
+	{
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+		-8.35685e-06 2.33112e-05 0.535084 0.844799	0.0382035 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 45
+	{
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+		0.707107 0.707107 -3.57628e-07 1.19209e-07	0.0648752 0.022305 0.0161679	1 1 1
+	}
+	BONE_ANIM 46
+	{
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197105 -0.917801 -0.0459138 0.393884	-3.91901e-06 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 47
+	{
+		-0.467607 -0.883775 -0.0116064 -0.0122798	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.468894 -0.882572 -0.0336296 -0.00867153	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.427132 -0.902963 -0.0470385 0.00196806	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.305931 -0.950996 -0.0423607 0.0147594	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.159305 -0.986412 -0.0308079 0.0257921	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		0.0454618 -0.998064 -0.018446 0.0382412	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		0.157788 -0.98594 -0.00754112 0.0544892	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		0.177455 -0.982197 -0.00896974 0.0609733	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		0.209992 -0.975586 -0.0211751 0.0607165	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		0.22267 -0.972689 -0.0303282 0.058094	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		0.2661 -0.961649 -0.042814 0.0508792	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		0.261548 -0.962588 -0.0536506 0.0462394	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		0.189315 -0.978781 -0.0609029 0.049375	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		0.111163 -0.990008 -0.0674609 0.0545437	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		0.047276 -0.994357 -0.0752189 0.0579784	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.00284959 -0.99443 -0.085621 0.0613997	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.0646424 -0.991107 -0.0969229 0.0642918	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.134785 -0.983474 -0.103168 0.0629925	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.250499 -0.963771 -0.0824176 0.0400363	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.297879 -0.951887 -0.0689685 0.0205808	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.347136 -0.935807 -0.0612328 0.00350047	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.447293 -0.892337 -0.0596695 -0.0102033	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.53737 -0.840842 -0.0601613 -0.0244863	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.588815 -0.805263 -0.0590845 -0.0368498	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.601813 -0.795529 -0.0550597 -0.0438542	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.594102 -0.801573 -0.0499442 -0.0450392	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.570424 -0.819021 -0.0445848 -0.0428321	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.548443 -0.83428 -0.0390743 -0.0407402	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.510586 -0.858437 -0.032054 -0.0368861	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+		-0.451533 -0.891349 -0.0236245 -0.0325058	-3.91901e-06 1.68383e-06 0.130158	1 1 1
+	}
+	BONE_ANIM 48
+	{
+		-2.91038e-08 6.42613e-08 -0.298767 0.954326	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		4.10248e-07 4.25847e-07 -0.453277 0.89137	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		1.83471e-07 1.28406e-07 -0.527623 0.849479	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		5.25266e-07 4.68339e-07 -0.490141 0.871643	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		7.03149e-08 3.14321e-09 -0.383032 0.923735	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-2.8871e-08 5.02914e-08 -0.133689 0.991023	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-2.39816e-08 8.14907e-09 -0.00590868 0.999983	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		1.234e-08 3.39933e-08 -0.0244641 0.999701	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		2.77068e-08 -5.58794e-09 -0.0060668 0.999981	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-8.9407e-08 7.66013e-08 -0.0763276 0.997083	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-5.93718e-08 1.21072e-08 -0.0794534 0.996839	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		5.6345e-08 -2.14204e-08 -0.15858 0.987346	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		6.98492e-09 1.89757e-08 -0.328126 0.944634	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		6.5621e-06 6.46466e-06 -0.476748 0.87904	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		5.54137e-08 -7.31088e-08 -0.588761 0.808307	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-2.7474e-08 -9.31323e-10 -0.676802 0.736166	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		2.28174e-08 -1.0943e-08 -0.721915 0.691981	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		6.33299e-08 -4.47035e-08 -0.76543 0.643519	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-5.58794e-09 -9.54606e-09 -0.806908 0.590677	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		1.21072e-08 8.84756e-09 -0.826195 0.563385	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		5.68107e-08 -7.45058e-09 -0.833944 0.55185	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-7.45058e-09 1.21072e-08 -0.837808 0.545964	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-8.3819e-09 3.25963e-09 -0.819358 0.573283	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		2.00234e-08 -3.25963e-09 -0.772985 0.634424	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-4.00469e-08 1.30385e-08 -0.707923 0.70629	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-7.26432e-08 6.79865e-08 -0.635684 0.771949	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		4.09782e-08 1.07219e-07 -0.547827 0.836592	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		2.58908e-07 3.6147e-07 -0.453906 0.891049	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		1.90921e-08 -2.23517e-08 -0.336461 0.941698	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		1.93249e-08 -2.98023e-08 -0.176238 0.984348	0.422792 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 49
+	{
+		0.0249512 -0.00744112 -0.0745273 0.996879	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0430371 0.0165464 0.0666862 0.996708	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.055103 0.0307694 0.162593 0.984673	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.057605 0.0227031 0.289596 0.955144	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0521438 0.0111351 0.292014 0.954927	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0423377 -0.00593101 0.140926 0.989097	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0268211 -0.0135874 -0.0954132 0.994984	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0293436 -0.0157831 -0.134325 0.990377	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.036076 -0.0125881 -0.193906 0.980276	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0255676 -0.00882009 -0.173855 0.9844	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.00810486 -0.00330326 -0.222571 0.974877	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.000690501 0.00167507 -0.223153 0.974782	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0135005 0.0159188 -0.194453 0.98069	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0347759 0.0385715 -0.177577 0.982736	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0431975 0.0503979 -0.159052 0.985036	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0291331 0.0370064 -0.118932 0.991785	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.00857409 0.0107311 -0.123877 0.992203	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0103246 -0.02411 -0.135582 0.990419	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0116684 -0.102267 -0.194773 0.975433	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0135949 -0.106286 -0.071404 0.991676	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0134531 -0.080794 0.0441492 0.995662	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.00786438 -0.0505928 0.0638444 0.996646	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.00750933 -0.0209989 0.0433292 0.998812	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0284278 -0.0021956 0.0126665 0.999513	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0451544 0.00436187 -0.00144183 0.99897	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0527124 0.00342864 0.00483561 0.998592	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0563407 -0.00468813 0.0355526 0.997767	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0478258 -0.00573174 0.0191791 0.998655	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0389822 -0.0100465 0.00726551 0.999163	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0301764 -0.0127713 -0.0381298 0.998735	0.441695 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 50
+	{
+		-0.00362291 -0.00220054 0.715167 0.698941	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.00276459 -0.012321 0.715074 0.698935	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.00126349 -0.0181923 0.723202 0.690396	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.0019831 -0.0187306 0.690254 0.723322	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.00249985 -0.0145484 0.702205 0.711822	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.00160609 -0.00532063 0.762269 0.647237	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.000810738 -0.000307994 0.884048 0.467395	0.112722 0.130742 5.21541e-06	1 1 1
+		0.000750758 0.00189438 0.827797 0.561025	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.000879545 -0.000188203 0.759495 0.650513	0.112722 0.130742 5.21541e-06	1 1 1
+		0.000649745 0.00227669 0.74901 0.662554	0.112722 0.130742 5.21541e-06	1 1 1
+		0.00180706 0.00268265 0.708027 0.706178	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.00126642 0.000751122 0.705173 0.709034	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0370488 -0.0209849 0.671737 0.739566	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0220336 -0.0212587 0.707906 0.705643	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0243726 -0.0170051 0.729788 0.683028	0.112722 0.130742 5.21541e-06	1 1 1
+		0.041738 0.0106549 0.739719 0.671536	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0706711 0.0673285 0.734826 0.671196	0.112722 0.130742 5.21541e-06	1 1 1
+		0.102425 0.107128 0.731461 0.665581	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.0115967 -0.00107381 0.725788 0.68782	0.112722 0.130742 5.21541e-06	1 1 1
+		0.000587386 -0.00212122 0.708283 0.705925	0.112722 0.130742 5.21541e-06	1 1 1
+		-2.39862e-05 -0.0175515 0.680332 0.732693	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.0142585 -0.0111217 0.640388 0.767839	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.00380515 2.03839e-05 0.677888 0.735155	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0129287 0.0102756 0.718793 0.695028	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0139404 0.0106381 0.698084 0.715801	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0057599 0.00712545 0.658418 0.752597	0.112722 0.130742 5.21541e-06	1 1 1
+		0.00191654 0.0119268 0.651691 0.758388	0.112722 0.130742 5.21541e-06	1 1 1
+		0.00126075 0.0108364 0.69617 0.717794	0.112722 0.130742 5.21541e-06	1 1 1
+		0.00111555 0.00904697 0.718542 0.695424	0.112722 0.130742 5.21541e-06	1 1 1
+		0.000767208 0.00100836 0.710968 0.703223	0.112722 0.130742 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 51
+	{
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-4.52995e-06 -1 -3.57628e-07 0	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 52
+	{
+		0.160943 0.982141 -0.0410252 0.0883979	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.242065 0.967497 -0.0414736 0.0602908	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.31163 0.948585 -0.0451588 0.0321376	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.361127 0.9308 -0.0562133 0.00621707	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.403168 0.912309 -0.0694309 -0.0181228	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.450914 0.888508 -0.0757893 -0.0385436	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.552485 0.833019 -0.0264525 -0.0118444	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.586858 0.809165 -0.0289435 -0.00349078	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.60514 0.795254 -0.0367922 -0.00482284	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.609437 0.792186 -0.0297448 -0.011918	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.590642 0.80642 -0.0187461 -0.0218377	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.546748 0.836676 -0.00783077 -0.0312752	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.478685 0.877132 -0.000938276 -0.0387198	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.353594 0.934392 -0.00193924 -0.0433589	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.372855 0.926459 -0.0159053 -0.048999	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.372663 0.926081 -0.0243354 -0.0538919	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.470838 0.880929 -0.0330023 -0.0344471	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.435944 0.899361 -0.0318084 -0.00959347	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.327776 0.944413 -0.0195303 0.0163032	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.176184 0.983611 -0.00420937 0.0381	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.055894 0.99664 0.0023491 0.0598221	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		-0.0421591 0.995908 -0.01044 0.0792584	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		-0.135465 0.985502 -0.0343785 0.0961971	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		-0.196704 0.973156 -0.0569034 0.105057	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		-0.156114 0.980863 -0.0649068 0.0965622	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		-0.0976344 0.988693 -0.0618158 0.0955684	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		-0.0422769 0.992951 -0.0585017 0.094009	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.0115942 0.994157 -0.0548192 0.0922594	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.0640101 0.992531 -0.0507242 0.0906162	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+		0.114251 0.988348 -0.0462008 0.0893396	-3.91901e-06 -1.80304e-06 -0.13016	1 1 1
+	}
+	BONE_ANIM 53
+	{
+		7.91624e-09 -1.05938e-08 -0.704271 0.709931	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-1.02445e-07 7.22939e-08 -0.77908 0.626925	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-2.70084e-08 2.45636e-08 -0.831549 0.555452	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-8.56817e-08 7.69505e-08 -0.856836 0.515589	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-4.37722e-08 3.45754e-08 -0.86569 0.500581	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		1.76951e-08 -2.01399e-08 -0.865106 0.501588	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-5.58794e-08 4.45871e-08 -0.840395 0.541974	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		4.28408e-08 -2.72412e-08 -0.806605 0.591091	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-3.11993e-08 8.03266e-09 -0.772683 0.634792	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-1.67638e-08 4.41214e-08 -0.725167 0.688573	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		2.32831e-08 3.72529e-08 -0.642224 0.766517	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		1.70432e-07 2.54833e-07 -0.508122 0.861285	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		1.02445e-08 1.19908e-08 -0.320386 0.947287	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-4.19095e-08 3.1665e-08 -0.00590493 0.999983	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-4.19095e-08 3.21306e-08 -0.00590493 0.999982	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-2.51457e-08 3.72529e-09 -0.00604382 0.999982	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		3.95812e-08 6.98492e-10 -0.397819 0.917464	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		3.0268e-08 -2.42144e-08 -0.510508 0.859873	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		2.64961e-07 2.71015e-07 -0.514102 0.857729	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		7.07805e-08 -4.04543e-08 -0.44188 0.897074	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-1.09663e-07 7.32252e-08 -0.36794 0.929849	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-2.09548e-09 3.86499e-08 -0.311797 0.950149	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		2.23517e-08 6.98492e-10 -0.259135 0.965841	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-1.55997e-08 3.84171e-08 -0.22048 0.975391	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		1.46683e-08 -3.52738e-08 -0.307324 0.951605	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		-3.60887e-08 7.36909e-08 -0.390386 0.920651	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		6.23986e-08 -7.70669e-08 -0.462057 0.88685	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		6.00703e-07 6.2515e-07 -0.527702 0.84943	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		3.77186e-08 1.50874e-07 -0.589482 0.807781	0.422792 1.68383e-06 5.21541e-06	1 1 1
+		5.26197e-08 1.32713e-08 -0.648267 0.761413	0.422792 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 54
+	{
+		-0.0270526 0.0646317 -0.311226 0.947749	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0260386 0.0359511 -0.184289 0.981869	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0148832 0.00941437 -0.0875317 0.996006	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.012816 -0.0159381 -0.0626962 0.997823	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0445397 -0.0402095 -0.0791548 0.995055	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0658511 -0.0554246 -0.105888 0.990646	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.02135 0.00967055 -0.149697 0.988454	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.00851055 0.0195762 -0.148355 0.988704	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.00579891 0.0194629 -0.111506 0.993556	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0133212 0.0279972 -0.0274523 0.999142	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0254891 0.0335261 0.063645 0.997084	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0363094 0.0313041 0.115359 0.992166	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0396461 0.022232 0.0938278 0.99455	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0271634 0.00370763 -0.0922884 0.995355	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.000625753 -0.0179475 -0.193964 0.980844	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0218957 -0.0377946 -0.265022 0.963253	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0267111 -0.0383478 0.0189085 0.998728	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0361676 -0.0278814 0.145691 0.988275	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0203539 -0.013123 0.259672 0.965393	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0189188 0.00690842 0.279549 0.95992	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0458422 0.0310474 0.0949658 0.993939	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.0352358 0.0335498 0.0050583 0.998803	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		0.00478934 0.0259573 -0.0417394 0.99878	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0204307 0.01099 -0.168817 0.985374	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0268325 0.000899674 -0.23848 0.970776	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0221296 0.00860326 -0.255348 0.966558	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0194987 0.017933 -0.271355 0.962115	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0187258 0.0283693 -0.28497 0.957933	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0197107 0.0396659 -0.296036 0.954149	0.441695 1.68383e-06 5.21541e-06	1 1 1
+		-0.0224881 0.0516997 -0.304761 0.950759	0.441695 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 55
+	{
+		4.09782e-07 0.00711852 0.690822 0.72299	0.112722 0.130742 5.21541e-06	1 1 1
+		0.00474423 0.00333773 0.69214 0.72174	0.112722 0.130742 5.21541e-06	1 1 1
+		6.98073e-06 -1.32434e-06 0.707226 0.706987	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0115062 0.0112204 0.690343 0.723304	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0172424 0.0136175 0.687992 0.725386	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0181283 0.0189119 0.671488 0.740552	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.00345221 -0.0177412 0.691958 0.721711	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.0131527 -0.0395306 0.70608 0.706905	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.0250216 -0.0543485 0.710645 0.701002	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.0289162 -0.0497601 0.652287 0.755785	0.112722 0.130742 5.21541e-06	1 1 1
+		-0.0100309 -0.0452974 0.662926 0.747246	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0121238 -0.0453953 0.686165 0.725927	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0182743 -0.0447255 0.666599 0.74385	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0253246 -0.0427876 0.658834 0.750644	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0428012 -0.0325039 0.707032 0.705137	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0479346 -0.0262475 0.7134 0.698623	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0576122 -0.016636 0.711605 0.700016	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0632971 -0.00746096 0.731866 0.678461	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0675259 0.0134341 0.733673 0.676006	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0832079 0.0437565 0.763656 0.638742	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0827081 0.0805378 0.8829 0.455149	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0713246 0.0930221 0.870844 0.477379	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0505067 0.0932098 0.749101 0.653918	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0401997 0.0981209 0.750033 0.652846	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0343386 0.0848667 0.742198 0.663898	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0281138 0.0778612 0.760299 0.644277	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0205475 0.0651152 0.75058 0.657242	0.112722 0.130742 5.21541e-06	1 1 1
+		0.0132288 0.0482621 0.72353 0.688477	0.112722 0.130742 5.21541e-06	1 1 1
+		0.00725421 0.0304898 0.693697 0.719584	0.112722 0.130742 5.21541e-06	1 1 1
+		0.00299916 0.0157021 0.678185 0.734717	0.112722 0.130742 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 56
+	{
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+		-9.05991e-06 2.52724e-05 -7.15256e-07 1	0.0739801 1.68383e-06 5.21541e-06	1 1 1
+	}
+	BONE_ANIM 57
+	{
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+		-0.707083 -0.00585642 -0.707083 0.00586014	-0.10573 -0.0458049 0.257758	1 1 1
+	}
+}

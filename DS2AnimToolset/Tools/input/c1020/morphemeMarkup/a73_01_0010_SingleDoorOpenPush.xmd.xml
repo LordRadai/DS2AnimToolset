@@ -1,0 +1,111 @@
+<TakeList sourceAnimFile="Export\c1020\morphemeMarkup\a73_01_0010_SingleDoorOpenPush.xmd.xml" version="1">
+  <Take name="untitled">
+    <Attributes>
+      <secondDuration type="double">2</secondDuration>
+      <fps type="double">30</fps>
+      <clipStart type="double">0</clipStart>
+      <clipEnd type="double">1</clipEnd>
+      <loop type="bool">false</loop>
+    </Attributes>
+    <DiscreteEventTrack name="Footsteps" guid="c59dd514-4eb3-40b7-9f4f-18c915043cdb" channelID="1">
+      <Attributes>
+        <userData type="uint">0</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DiscreteEventTrack name="DoorSpeed" guid="4f853bf9-6ab2-4a84-bff2-be4135d9e2c3" channelID="47">
+      <Attributes>
+        <userData type="uint">415</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">415</userData>
+          <startTime type="double">0.166667</startTime>
+        </Attributes>
+      </DiscreteEvent>
+      <DiscreteEvent index="1">
+        <Attributes>
+          <userData type="uint">416</userData>
+          <startTime type="double">0.416667</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DurationEventTrack name="Leftsteps" guid="9b3c1306-f4d2-40bf-a8a2-170ab5b0b2da" channelID="45">
+      <Attributes>
+        <userData type="uint">10</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">10</userData>
+          <startTime type="double">0.183333</startTime>
+          <duration type="double">0.466667</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="Rightsteps" guid="87642ceb-f78b-45a0-88ac-842100e6d1bc" channelID="46">
+      <Attributes>
+        <userData type="uint">11</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">11</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="Door_LHandIK" guid="852294a3-b227-4372-8c29-6279dbb750b2" channelID="48">
+      <Attributes>
+        <userData type="uint">410</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">411</userData>
+          <startTime type="double">0.166667</startTime>
+          <duration type="double">0.25</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="DoorControl" guid="3afce005-98d1-4d89-9920-71ae1c0b26e5" channelID="50">
+      <Attributes>
+        <userData type="uint">410</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">413</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">0.416667</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="StateControll" guid="ac8c4a45-9e44-40e8-a4e6-ff4c9cbd1b68" channelID="40">
+      <Attributes>
+        <userData type="uint">80</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">80</userData>
+          <startTime type="double">0.863637</startTime>
+          <duration type="double">0.136364</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="TimeAct" guid="52dd0ae5-0ae3-4218-9c5e-235fcd1c4ed9" channelID="4">
+      <Attributes>
+        <userData type="uint">1000</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">73010010</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+  </Take>
+</TakeList>
