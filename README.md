@@ -16,7 +16,7 @@ When opening an NMB, the program will attempt to find the character model in the
 ![Immagine 2024-05-30 194747](https://github.com/LordRadai/DS2AnimToolset/assets/22768664/63fd3aad-6612-4b50-85ff-7b935350156b)
 
 # TimeAct Templates, Tooltips
-Templates are inside the `MorphemeConnect/res/def/timeact` folder. If you want to make changes to the templates, just edit `timeact.json`.
+Templates are inside the `MorphemeConnect/res` folder. If you want to make changes to the templates, just edit `TimeActTemplate.xml`.
 Tooltips are inside the `MorphemeConnect/res/tooltip folder`. They are shown when you hover an event in the editor windows.
 
 # Export
