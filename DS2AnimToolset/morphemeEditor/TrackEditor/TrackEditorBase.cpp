@@ -8,7 +8,7 @@
 
 namespace
 {
-    int drawDurationEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, int framePixelWidth, int frameStart, int frameEnd, std::string label, TrackEditor::LabelAlignment alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor)
+    int drawDurationEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, float framePixelWidth, int frameStart, int frameEnd, std::string label, TrackEditor::LabelAlignment alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor)
     {
         ImVec2 slotP1(startOffset.x + frameStart * framePixelWidth - 1, startOffset.y + 2);
         ImVec2 slotP2(startOffset.x + frameEnd * framePixelWidth - 1, startOffset.y + itemHeight - 2);
@@ -74,7 +74,7 @@ namespace
         return 0;
     }
 
-    int drawDiscreteEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, int framePixelWidth, int frameStart, std::string label, int idx, TrackEditor::LabelAlignment alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor)
+    int drawDiscreteEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, float framePixelWidth, int frameStart, std::string label, int idx, TrackEditor::LabelAlignment alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor)
     {
         ImVec2 slotD1(startOffset.x + frameStart * framePixelWidth - 6, startOffset.y + 2);
         ImVec2 slotD2(startOffset.x + frameStart * framePixelWidth + 4, startOffset.y + itemHeight - 7);
