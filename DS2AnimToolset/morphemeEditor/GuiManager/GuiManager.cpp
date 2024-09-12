@@ -8,6 +8,8 @@
 #include "WorkerThread/WorkerThread.h"
 #include "Camera/Camera.h"
 
+#define MSAA_SETTING_COUNT 4
+
 namespace
 {
 	void trackEditorColorSelector(TrackEditor::TrackEditorBase* trackEditor)
@@ -676,10 +678,12 @@ void GuiManager::rootWindow()
 		{
 			RenderManager* renderMan = RenderManager::getInstance();
 
-			const char* msaaQualitySettings[6] = { "Off", "2x", "4x", "8x", "16x" };
+			const char* msaaQualitySettings[5] = { "Off", "2x", "4x", "8x", "16x" };
 			int selectedSetting = 0;
 
-			switch (renderMan->getSettings()->msaaCount)
+			int msaaCountSetting = renderMan->getSettings()->msaaCount;
+
+			switch (msaaCountSetting)
 			{
 			case 1:
 				selectedSetting = 0;
@@ -696,11 +700,14 @@ void GuiManager::rootWindow()
 			case 16:
 				selectedSetting = 4;
 				break;
+			default:
+				g_appLog->panicMessage("Unsupported MSAA count %d (maximum handled is 16, recommended maximum is 8)\n", msaaCountSetting);
+				break;
 			}
 
 			if (ImGui::BeginCombo("MSAA", msaaQualitySettings[selectedSetting]))
 			{
-				for (size_t i = 0; i < 5; i++)
+				for (size_t i = 0; i < MSAA_SETTING_COUNT; i++)
 				{
 					ImGui::Selectable(msaaQualitySettings[i]);
 
