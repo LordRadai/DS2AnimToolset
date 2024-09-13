@@ -1645,13 +1645,13 @@ void GuiManager::searchQueryWindow()
 			g_appLog->alertMessage(MsgLevel_Info, "Could not find any event with the specified ID\n");
 	}
 
-	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_ContextMenuInBody;
+	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_ContextMenuInBody;
 
 	if (ImGui::BeginTable("result_list", columnCount, flags))
 	{
-		ImGui::TableSetupColumn("TimeAct");
-		ImGui::TableSetupColumn("Track");
-		ImGui::TableSetupColumn("Event");
+		ImGui::TableSetupColumn("TimeAct", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Track", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Event", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableHeadersRow();
 
 		if (queryResult.size())
