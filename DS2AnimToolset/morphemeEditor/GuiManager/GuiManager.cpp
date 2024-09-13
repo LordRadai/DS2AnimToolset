@@ -1391,12 +1391,14 @@ void GuiManager::colorSettingsWindow()
 
 	ImGui::BeginTabBar("color_categories");
 
+#ifdef _DEBUG
 	if (ImGui::BeginTabItem("ImGui"))
 	{
 		ImGui::ShowStyleEditor();
 
 		ImGui::EndTabItem();
 	}
+#endif
 
 	if (ImGui::BeginTabItem("EventTrack Editor"))
 	{
