@@ -1273,10 +1273,16 @@ void GuiManager::timeActInfoWindow()
 	TrackEditor::TimeActEditor* timeActEditor = editorApp->getTimeActEditor();
 
 	TrackEditor::Track* selectedTrack = timeActEditor->getSelectedTrack();
+	TrackEditor::Event* selectedEvent = timeActEditor->getSelectedEvent();
 
 	if (selectedTrack != nullptr)
 	{
-		ImGui::Text(selectedTrack->name);
+		std::string label = selectedTrack->name;
+
+		if (selectedEvent)
+			label = g_taeTemplate->getEventName(selectedTrack->userData, selectedEvent->userData) + selectedEvent->getArgumentsString(selectedTrack->userData, g_taeTemplate);
+
+		ImGui::Text(label.c_str());
 		ImGui::InputInt("Group ID", &selectedTrack->userData, 0, 0, ImGuiInputTextFlags_ReadOnly);
 
 		if (ImGui::IsItemHovered())
@@ -1288,8 +1294,6 @@ void GuiManager::timeActInfoWindow()
 
 		ImGui::SeparatorText("Event Data");
 
-		TrackEditor::Event* selectedEvent = timeActEditor->getSelectedEvent();
-
 		if (selectedEvent != nullptr)
 		{
 			float fps = timeActEditor->getFps();
@@ -1300,6 +1304,7 @@ void GuiManager::timeActInfoWindow()
 
 			ImGui::InputFloat("Start Time", &startTime, step);
 			ImGui::InputFloat("End Time", &endTime, step);
+
 			ImGui::InputInt("Event ID", &selectedEvent->userData, 0, 0, ImGuiInputTextFlags_ReadOnly);
 
 			if (ImGui::IsItemHovered())
@@ -1312,9 +1317,12 @@ void GuiManager::timeActInfoWindow()
 			selectedEvent->frameStart = RMath::timeToFrame(startTime, fps);
 			selectedEvent->frameEnd = RMath::timeToFrame(endTime, fps);
 
-			ImGui::SeparatorText("Arguments");
+			if (selectedEvent->arguments.size() > 0)
+			{
+				ImGui::SeparatorText("Arguments");
 
-			selectedEvent->argsEditorGUI(selectedTrack->userData, g_taeTemplate);
+				selectedEvent->argsEditorGUI(selectedTrack->userData, g_taeTemplate);
+			}
 		}
 	}
 
