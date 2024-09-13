@@ -796,16 +796,26 @@ void GuiManager::modelViewerWindow()
 
 		if (ImGui::BeginMenu("Window"))
 		{
-			bool disabled = true;
+			bool disabled_explorer = true;
 
 			Character* character = editorApp->getCharacter();
 
-			if (character && character->getCharacterId() == 1)
-				disabled = false;
+			if (character)
+				disabled_explorer = false;
 
-			ImGui::BeginDisabled(disabled);
+			ImGui::BeginDisabled(disabled_explorer);
 
 			if (ImGui::MenuItem("Scene Explorer", nullptr, windowStates->sceneExplorer)) { windowStates->sceneExplorer = !windowStates->sceneExplorer; }
+
+			ImGui::EndDisabled();
+
+			bool disabled_parts = true;
+
+			if (character && character->getCharacterId() == 1)
+				disabled_parts = false;
+
+			ImGui::BeginDisabled(disabled_parts);
+
 			if (ImGui::MenuItem("Player Parts", nullptr, windowStates->playerPartsManager)) { windowStates->playerPartsManager = !windowStates->playerPartsManager; }
 
 			ImGui::EndDisabled();
