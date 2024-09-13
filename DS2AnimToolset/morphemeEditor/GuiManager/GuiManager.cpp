@@ -1621,7 +1621,7 @@ void GuiManager::searchQueryWindow()
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 	TimeAct::TaeExport::TimeActExportXML* timeAct = editorApp->getCharacter()->getTimeAct();
 
-	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
+	ImGui::SetNextWindowSize(ImVec2(600, 500), ImGuiCond_Appearing);
 
 	ImGui::Begin("Find", &editorApp->getWindowFlags()->searchQuery);
 
