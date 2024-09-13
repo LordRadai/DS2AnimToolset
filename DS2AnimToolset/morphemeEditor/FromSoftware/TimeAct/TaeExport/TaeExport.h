@@ -47,6 +47,9 @@ namespace TimeAct
 			INT64 getAsInt64();
 			UINT64 getAsUInt64();
 			float getAsFloat();
+
+			std::string getAsString();
+
 		protected:
 			TimeActArgumentExportXML() {}
 			~TimeActArgumentExportXML() {}
@@ -69,6 +72,7 @@ namespace TimeAct
 			TimeActArgumentExportXML* addArgument(std::string name);
 
 			void deleteArgument(int idx);
+
 			void clear();
 		protected:
 			TimeActArgumentListExportXML() {}
@@ -93,6 +97,8 @@ namespace TimeAct
 			TimeActGroupExportXML* getOwner() const { return this->m_owner; }
 
 			TimeActArgumentListExportXML* createArgumentList();
+
+			std::string getArgumentsString();
 
 			void clear();
 		protected:

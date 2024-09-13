@@ -1,4 +1,5 @@
 #include "TaeExport.h"
+#include "../TaeTemplate/TaeTemplate.h"
 #include "RCore.h"
 #include "extern.h"
 
@@ -173,6 +174,51 @@ namespace TimeAct
 			return std::stof(this->m_xmlElement->GetText());
 		}
 
+		std::string TimeActArgumentExportXML::getAsString()
+		{
+			char buffer[256];
+			bool value = false;
+
+			switch (this->getType())
+			{
+			case kBool:
+				sprintf_s(buffer, "%d", getAsBool());
+				break;
+			case kByte:
+				sprintf_s(buffer, "%d", getAsByte());
+				break;
+			case kUByte:
+				sprintf_s(buffer, "%d", getAsUByte());
+				break;
+			case kShort:
+				sprintf_s(buffer, "%d", getAsShort());
+				break;
+			case kUShort:
+				sprintf_s(buffer, "%d", getAsUShort());
+				break;
+			case kInt:
+				sprintf_s(buffer, "%d", getAsInt());
+				break;
+			case kUInt:
+				sprintf_s(buffer, "%d", getAsUInt());
+				break;
+			case kFloat:
+				sprintf_s(buffer, "%.3f", getAsFloat());
+				break;
+			case kInt64:
+				sprintf_s(buffer, "%d", getAsInt64());
+				break;
+			case kUInt64:
+				sprintf_s(buffer, "%d", getAsUInt64());
+				break;
+			default:
+				throw("Invalid data type");
+				break;
+			}
+
+			return std::string(buffer);
+		}
+
 		TimeActArgumentListExportXML* TimeActArgumentListExportXML::create(TimeActEventExportXML* owner, tinyxml2::XMLElement* parent)
 		{
 			TimeActArgumentListExportXML* argList = new TimeActArgumentListExportXML;
@@ -253,6 +299,33 @@ namespace TimeAct
 			this->m_argumentList = TimeActArgumentListExportXML::create(this, this->m_xmlElement);
 
 			return this->m_argumentList;
+		}
+
+		std::string TimeActEventExportXML::getArgumentsString()
+		{
+			const int numArgs = this->m_argumentList->getNumArguments();
+
+			if (numArgs == 0)
+				return "";
+
+			std::string str = "(";
+
+			for (size_t i = 0; i < numArgs; i++)
+			{
+				TaeTemplate::Group::Event::Arg argTemplate = g_taeTemplate->getEvent(this->m_owner->getGroupId(), this->getEventId())->args[i];
+
+				if (!argTemplate.hidden)
+				{
+					str += this->m_argumentList->m_arguments[i]->getAsString();
+
+					if (i < numArgs - 1)
+						str += ", ";
+				}
+			}
+
+			str += ")";
+
+			return str;
 		}
 
 		void TimeActEventExportXML::clear()

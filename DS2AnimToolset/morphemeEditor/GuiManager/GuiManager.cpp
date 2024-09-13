@@ -1661,9 +1661,13 @@ void GuiManager::searchQueryWindow()
 				ImGui::TableNextRow(ImGuiTableRowFlags_None, 20.f);
 
 				TimeAct::TaeExport::TimeActEventExportXML* result = queryResult[row];
+
+				int groupId = result->getOwner()->getGroupId();
+				int eventId = result->getEventId();
+
 				std::string col0 = std::to_string(result->getOwner()->getOwner()->getTrackId());
-				std::string col1 = std::to_string(result->getOwner()->getGroupId());
-				std::string col2 = std::to_string(result->getEventId());
+				std::string col1 = g_taeTemplate->getGroupName(groupId);
+				std::string col2 = g_taeTemplate->getEventName(groupId, eventId) + result->getArgumentsString();
 
 				for (size_t column = 0; column < columnCount; column++)
 				{
