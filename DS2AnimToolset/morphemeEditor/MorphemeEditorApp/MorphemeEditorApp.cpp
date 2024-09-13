@@ -614,7 +614,7 @@ void MorphemeEditorApp::update(float dt)
 				Matrix characterRoot = (*model->getFlverRootBoneTransform()) * model->getWorldMatrix();
 
 				this->m_camera->setTarget(Vector3::Transform(Vector3::Zero, characterRoot));
-			}
+			} 
 		}
 
 		if (this->m_taskFlags.resetCamera)
