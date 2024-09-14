@@ -786,14 +786,18 @@ void GuiManager::modelViewerWindow()
 			if (ImGui::MenuItem("X-Ray", nullptr, previewFlags->displayMode == kDispXRay)) { previewFlags->displayMode = kDispXRay; }
 			if (ImGui::MenuItem("Wireframe", nullptr, previewFlags->displayMode == kDispWireframe)) { previewFlags->displayMode = kDispWireframe; }
 
-			ImGui::SeparatorText("Model");
+			ImGui::EndMenu();
+		}
 
+		if (ImGui::BeginMenu("Model"))
+		{
 			if (ImGui::MenuItem("Draw Bones", nullptr, previewFlags->drawBones)) { previewFlags->drawBones = !previewFlags->drawBones; }
 			if (ImGui::MenuItem("Draw Dummies", nullptr, previewFlags->drawDummies)) { previewFlags->drawDummies = !previewFlags->drawDummies; }
 
 #ifdef _DEBUG
 			if (ImGui::MenuItem("Draw Bounding Boxes", nullptr, previewFlags->drawBoundingBoxes)) { previewFlags->drawBoundingBoxes = !previewFlags->drawBoundingBoxes; }
 #endif
+
 			ImGui::EndMenu();
 		}
 

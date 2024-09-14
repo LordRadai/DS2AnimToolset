@@ -1352,7 +1352,7 @@ bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
 
 	std::wstring taeName = RString::toWide(taeXML->getName());
 
-	g_workerThread.load()->setProcessStepName("playback");
+	g_workerThread.load()->setProcessStepName("pl");
 	taePl->save(path + taeName + L"_pl.tae");
 	g_workerThread.load()->increaseProgressStep();
 
