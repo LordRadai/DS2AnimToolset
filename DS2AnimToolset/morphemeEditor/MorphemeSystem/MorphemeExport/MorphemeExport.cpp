@@ -322,7 +322,7 @@ ME::NodeExportXML* MorphemeExport::exportNode(ME::NetworkDefExportXML* netDefExp
     case NODE_TYPE_ANIMATION:
         return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_ANIM_EVENTS:
-        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportAnimSyncEventsNode(netDefExport, netDef, nodeDef);
     case NODE_TYPE_FILTER_TRANSFORMS:
         return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BLEND_2:
@@ -741,6 +741,49 @@ ME::NodeExportXML* MorphemeExport::exportCPUIntNode(ME::NetworkDefExportXML* net
 		return nullptr;
 
 	nodeDataBlock->writeUInt(attribData->m_value, "DefaultInt");
+
+	return nodeExportXML;
+}
+
+ME::NodeExportXML* MorphemeExport::exportAnimSyncEventsNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_ANIM_EVENTS)
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_ANIM_EVENTS, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_SOURCE_ANIM));
+	MR::AttribDataBool* isLoop = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_LOOP));
+
+	if (sourceAnim)
+	{
+		nodeDataBlock->writeAnimationId(sourceAnim->m_animAssetID, "AnimIndex");
+		nodeDataBlock->writeBool(false, "GenerateAnimationDeltas");
+		nodeDataBlock->writeBool(sourceAnim->m_playBackwards, "PlayBackwards");
+		nodeDataBlock->writeBool(isLoop->m_value, "Loop");
+
+		for (size_t i = 0; i < netDef->getNumAnimSets(); i++)
+		{
+			char paramName[256];
+
+			sprintf_s(paramName, "DefaultClip_%d", i);
+			nodeDataBlock->writeBool(true, paramName);
+
+			sprintf_s(paramName, "ClipRangeMode_%d", i);
+			nodeDataBlock->writeInt(3, paramName);
+
+			sprintf_s(paramName, "ClipStartFraction_%d", i);
+			nodeDataBlock->writeFloat(sourceAnim->m_clipStartFraction, paramName);
+
+			sprintf_s(paramName, "ClipEndFraction_%d", i);
+			nodeDataBlock->writeFloat(sourceAnim->m_clipEndFraction, paramName);
+
+			sprintf_s(paramName, "StartEventIndex_%d", i);
+			nodeDataBlock->writeFloat(sourceAnim->m_startSyncEventIndex, paramName);
+		}
+
+	}
 
 	return nodeExportXML;
 }
