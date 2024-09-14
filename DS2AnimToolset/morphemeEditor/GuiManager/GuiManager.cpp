@@ -368,10 +368,10 @@ namespace
 			preset->setLegId(equipId);
 			break;
 		case kPartsWeaponLeft:
-			preset->setRightHandEquipId(equipId, shield);
+			preset->setLeftHandEquipId(equipId, shield);
 			break;
 		case kPartsWeaponRight:
-			preset->setLeftHandEquipId(equipId, shield);
+			preset->setRightHandEquipId(equipId, shield);
 			break;
 		}
 	}
@@ -440,8 +440,6 @@ namespace
 
 					if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
 					{
-						setPresetModelPartId(preset, character->getCharacterModelCtrl(), type);
-
 						if (path.compare(L"") == 0)
 							character->getCharacterModelCtrl()->setModelPart(type, nullptr);
 						else
@@ -450,6 +448,8 @@ namespace
 
 							character->getCharacterModelCtrl()->setModelPart(type, model);
 						}
+
+						setPresetModelPartId(preset, character->getCharacterModelCtrl(), type);
 					}
 				}
 			}
@@ -478,8 +478,6 @@ namespace
 
 				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
 				{
-					setPresetModelPartId(preset, character->getCharacterModelCtrl(), type);
-
 					if (path.compare(L"") == 0)
 						character->getCharacterModelCtrl()->setModelPart(type, nullptr);
 					else
@@ -488,6 +486,8 @@ namespace
 
 						character->getCharacterModelCtrl()->setModelPart(type, model);
 					}
+
+					setPresetModelPartId(preset, character->getCharacterModelCtrl(), type);
 				}
 			}
 
@@ -974,7 +974,7 @@ void GuiManager::modelViewerWindow()
 
 			ImGui::BeginDisabled(disabled_parts);
 
-			if (ImGui::MenuItem("Parts", nullptr, windowStates->playerPartsManager)) { windowStates->playerPartsManager = !windowStates->playerPartsManager; }
+			if (ImGui::MenuItem("Parts Manager", nullptr, windowStates->playerPartsManager)) { windowStates->playerPartsManager = !windowStates->playerPartsManager; }
 
 			ImGui::EndDisabled();
 
