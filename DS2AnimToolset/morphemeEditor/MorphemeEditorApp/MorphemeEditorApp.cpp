@@ -662,7 +662,6 @@ void MorphemeEditorApp::update(float dt)
 
 	if (this->m_taskFlags.exportTae)
 	{
-		this->m_taskFlags.compileTaes = true;
 		this->m_taskFlags.exportTae = false;
 
 		wchar_t exportPath[256];
@@ -670,7 +669,7 @@ void MorphemeEditorApp::update(float dt)
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->startThread("Export TimeAct", &MorphemeEditorApp::exportTimeAct, this, std::wstring(exportPath));
+		g_workerThread.load()->startThread("Export TimeAct", &MorphemeEditorApp::compileAndExportTae, this, std::wstring(exportPath));
 	}
 
 	if (this->m_taskFlags.exportModel)
@@ -732,15 +731,12 @@ void MorphemeEditorApp::update(float dt)
 	{
 		this->m_taskFlags.compileTaes = false;
 
-		if (!g_workerThread.load()->isDone())
-		{
-			wchar_t exportPath[256];
-			swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+		wchar_t exportPath[256];
+		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
 
-			std::filesystem::create_directories(exportPath);
+		std::filesystem::create_directories(exportPath);
 
-			g_workerThread.load()->startThread("Compile TimeAct", &MorphemeEditorApp::compileTimeActFiles, this, std::wstring(exportPath));
-		}
+		g_workerThread.load()->startThread("Compile TimeAct", &MorphemeEditorApp::compileTimeActFiles, this, std::wstring(exportPath));
 	}
 }
 
@@ -1121,6 +1117,23 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	g_workerThread.load()->increaseProgressStep();
 
 	return true;
+}
+
+bool MorphemeEditorApp::compileAndExportTae(std::wstring path)
+{
+	bool status = true;
+
+	g_workerThread.load()->addProcess("Exporting and compiling TimeAct files...", 2);
+
+	g_workerThread.load()->setProcessStepName("Exporting TimeAct to XML...");
+	status = this->exportTimeAct(path);
+	g_workerThread.load()->increaseProgressStep();
+
+	g_workerThread.load()->setProcessStepName("Compiling TimeAct files...");
+	status = this->compileTimeActFiles(path);
+	g_workerThread.load()->increaseProgressStep();
+
+	return status;
 }
 
 bool MorphemeEditorApp::exportAll()

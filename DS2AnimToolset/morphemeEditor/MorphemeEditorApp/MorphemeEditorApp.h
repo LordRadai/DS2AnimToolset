@@ -125,6 +125,7 @@ private:
 	void loadPlayerModelPreset();
 	void savePlayerModelPreset();
 
+	bool compileAndExportTae(std::wstring path);
 	bool exportAll();
 	bool exportAnimations(std::wstring path);
 	bool exportAnimMarkups(std::wstring path);
