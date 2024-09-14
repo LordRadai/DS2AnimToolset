@@ -15,12 +15,12 @@ namespace
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
 
 		if (model == nullptr)
-			return 10.f;
+			return 5.f;
 
 		float aabbDiagonalLenght = Vector3(Vector3::Transform(model->getBoundingBoxMax(), model->getWorldMatrix()) - Vector3::Transform(model->getBoundingBoxMin(), model->getWorldMatrix())).Length();
 
 		if (aabbDiagonalLenght > (FLT_MAX / 2))
-			return 10.f;
+			return 5.f;
 
 		return (aabbDiagonalLenght / 2.f) / std::tanf(camera->getFov() / 2.f);
 	}
@@ -662,7 +662,6 @@ void MorphemeEditorApp::update(float dt)
 
 	if (this->m_taskFlags.exportTae)
 	{
-		this->m_taskFlags.compileTaes = true;
 		this->m_taskFlags.exportTae = false;
 
 		wchar_t exportPath[256];
@@ -670,7 +669,7 @@ void MorphemeEditorApp::update(float dt)
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->startThread("Export TimeAct", &MorphemeEditorApp::exportTimeAct, this, std::wstring(exportPath));
+		g_workerThread.load()->startThread("Export TimeAct", &MorphemeEditorApp::compileAndExportTae, this, std::wstring(exportPath));
 	}
 
 	if (this->m_taskFlags.exportModel)
@@ -732,15 +731,12 @@ void MorphemeEditorApp::update(float dt)
 	{
 		this->m_taskFlags.compileTaes = false;
 
-		if (!g_workerThread.load()->isDone())
-		{
-			wchar_t exportPath[256];
-			swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+		wchar_t exportPath[256];
+		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
 
-			std::filesystem::create_directories(exportPath);
+		std::filesystem::create_directories(exportPath);
 
-			g_workerThread.load()->startThread("Compile TimeAct", &MorphemeEditorApp::compileTimeActFiles, this, std::wstring(exportPath));
-		}
+		g_workerThread.load()->startThread("Compile TimeAct", &MorphemeEditorApp::compileTimeActFiles, this, std::wstring(exportPath));
 	}
 }
 
@@ -824,7 +820,7 @@ void MorphemeEditorApp::saveSettings()
 
 void MorphemeEditorApp::loadPlayerModelPreset()
 {
-	this->m_playerModelPreset = RINI::open("Data\\res\\c0001.ini");
+	this->m_playerModelPreset = PlayerModelPreset::loadFromFile("Data\\res\\c0001.ini");
 
 	if (this->m_playerModelPreset == nullptr)
 		g_appLog->panicMessage("Failed to read player model preset at Data\\res\\c0001.ini\n");
@@ -832,8 +828,7 @@ void MorphemeEditorApp::loadPlayerModelPreset()
 
 void MorphemeEditorApp::savePlayerModelPreset()
 {
-	this->m_playerModelPreset->write();
-	this->m_playerModelPreset->destroy();
+	this->m_playerModelPreset->save();
 }
 
 MorphemeEditorApp::MorphemeEditorApp() : Application()
@@ -895,6 +890,8 @@ void MorphemeEditorApp::loadFile()
 
 						this->m_timeActFileList.clear();
 
+						this->m_gamePath = findGamePath(filepath);
+
 						if (filepath.extension() == ".nmb")
 							this->m_character = Character::createFromNmb(this->m_timeActFileList, RString::toNarrow(filepath).c_str());
 						else if (filepath.extension() == ".tae")
@@ -902,10 +899,8 @@ void MorphemeEditorApp::loadFile()
 
 						if ((this->m_character != nullptr) && (this->m_character->getCharacterId() == 1))
 						{
-							std::wstring gamePath = findGamePath(filepath);
-
-							if (gamePath.compare(L"") != 0)
-								fillFlverResources(this->getFlverResources(), gamePath);
+							if (this->m_gamePath.compare(L"") != 0)
+								fillFlverResources(this->getFlverResources(), this->m_gamePath);
 						}
 
 						this->m_animPlayer->setCharacter(this->m_character);
@@ -1121,6 +1116,23 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	g_workerThread.load()->increaseProgressStep();
 
 	return true;
+}
+
+bool MorphemeEditorApp::compileAndExportTae(std::wstring path)
+{
+	bool status = true;
+
+	g_workerThread.load()->addProcess("Exporting and compiling TimeAct files...", 2);
+
+	g_workerThread.load()->setProcessStepName("Exporting TimeAct to XML...");
+	status = this->exportTimeAct(path);
+	g_workerThread.load()->increaseProgressStep();
+
+	g_workerThread.load()->setProcessStepName("Compiling TimeAct files...");
+	status = this->compileTimeActFiles(path);
+	g_workerThread.load()->increaseProgressStep();
+
+	return status;
 }
 
 bool MorphemeEditorApp::exportAll()
@@ -1339,7 +1351,7 @@ bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
 
 	std::wstring taeName = RString::toWide(taeXML->getName());
 
-	g_workerThread.load()->setProcessStepName("playback");
+	g_workerThread.load()->setProcessStepName("pl");
 	taePl->save(path + taeName + L"_pl.tae");
 	g_workerThread.load()->increaseProgressStep();
 

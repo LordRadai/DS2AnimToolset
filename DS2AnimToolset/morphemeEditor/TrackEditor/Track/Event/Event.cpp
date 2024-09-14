@@ -226,7 +226,7 @@ namespace TrackEditor
 						ImGui::InputUInt(name.c_str(), static_cast<ImU32*>(arg->m_data));
 						break;
 					case TimeAct::kFloat:
-						ImGui::InputFloat(name.c_str(), static_cast<float*>(arg->m_data));
+						ImGui::InputFloat(name.c_str(), static_cast<float*>(arg->m_data), 0.001f, 0.01f);
 						break;
 					case TimeAct::kInt64:
 						ImGui::InputInt64(name.c_str(), static_cast<ImS64*>(arg->m_data));

@@ -48,99 +48,6 @@
     <ClInclude Include="FBXTranslator\FBXTranslator.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="fromloader\src\common\common.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bdf\bdf3.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bdf\bdf4.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bhd\bhd5_0.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bhd\bhd5_1.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bnd\bnd3.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\bnd\bnd4.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\binder.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\binder\include.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\dcx\dcx.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\flver\flver0\flver0.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\flver\flver2\flver2.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\flver\flver.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\flver\include.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\mtd\mtd.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\paramdef\paramdef.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\include.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\formats\stdafx.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\endian\endian.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\file\file.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\fileio\fileio.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\inflate\inflate.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\math\math.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\stringio\stringio.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\types\types.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\validate\validate.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\util\include.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\src\open.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\cmem.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\fromloader.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="fromloader\umem.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="MorphemeSystem\AnimLoader\AnimLoader.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
@@ -273,6 +180,102 @@
     <ClInclude Include="FileIDNamesTable\FileIDNamesTable.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerModelPreset\PlayerModelPreset.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\common\common.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\bdf\bdf3.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\bdf\bdf4.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\bhd\bhd5_0.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\bhd\bhd5_1.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\bnd\bnd3.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\bnd\bnd4.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\binder.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\binder\include.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\dcx\dcx.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\flver\flver0\flver0.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\flver\flver2\flver2.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\flver\flver.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\flver\include.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\mtd\mtd.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\paramdef\paramdef.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\include.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\formats\stdafx.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\endian\endian.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\file\file.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\fileio\fileio.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\inflate\inflate.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\math\math.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\stringio\stringio.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\types\types.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\validate\validate.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\util\include.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\src\open.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\cmem.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\fromloader.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="fromloader\umem.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -294,66 +297,6 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="FBXTranslator\FBXTranslator.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\binder\bnd\bnd3.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\binder\bnd\bnd4.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\binder\binder.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\dcx\dcx.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\flver\flver0\flver0.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\flver\flver2\flver2.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\flver\flver2\flver2_helpers.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\flver\flver.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\mtd\mtd.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\formats\paramdef\paramdef.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\endian\endian.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\file\file.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\fileio\fileio.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\inflate\inflate.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\stringio\stringio.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\types\types.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\util\validate\validate.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\src\open.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\cmem.c">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="fromloader\umem.c">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\AnimLoader\AnimLoader.cpp">
@@ -479,6 +422,69 @@
     <ClCompile Include="FileIDNamesTable\FileIDNamesTable.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerModelPreset\PlayerModelPreset.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\binder\bnd\bnd3.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\binder\bnd\bnd4.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\binder\binder.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\dcx\dcx.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\flver\flver0\flver0.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\flver\flver2\flver2.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\flver\flver2\flver2_helpers.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\flver\flver.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\mtd\mtd.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\formats\paramdef\paramdef.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\endian\endian.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\file\file.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\fileio\fileio.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\inflate\inflate.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\stringio\stringio.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\types\types.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\util\validate\validate.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\src\open.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\cmem.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="fromloader\umem.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="morphemeEditor.rc">
@@ -494,10 +500,10 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="packages.config" />
     <None Include="fromloader\src\util\stringio\simple_sjis_table.bin">
       <Filter>File di risorse</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

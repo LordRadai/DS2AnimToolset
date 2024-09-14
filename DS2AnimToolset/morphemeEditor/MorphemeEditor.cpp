@@ -92,7 +92,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     try
     {
-        // Initialize Direct3D
         g_appLog->debugMessage(MsgLevel_Info, "Initialising rendering module\n");
 
         renderManager->initialise(hwnd);
@@ -128,63 +127,79 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     bool done = false;
     while (!done)
     {
-        // Poll and handle messages (inputs, window resize, etc.)
-        // See the WndProc() function below for our to dispatch events to the Win32 backend.
-        MSG msg;
-        while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
+        try
         {
-            ::TranslateMessage(&msg);
-            ::DispatchMessage(&msg);
-            if (msg.message == WM_QUIT)
-                done = true;
+            // Poll and handle messages (inputs, window resize, etc.)
+            // See the WndProc() function below for our to dispatch events to the Win32 backend.
+            MSG msg;
+            while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
+            {
+                ::TranslateMessage(&msg);
+                ::DispatchMessage(&msg);
+                if (msg.message == WM_QUIT)
+                    done = true;
+            }
+            if (done)
+                break;
+
+            // Handle window resize (we don't resize directly in the WM_SIZE handler)
+            if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
+            {
+                renderManager->resize(g_ResizeWidth, g_ResizeHeight);
+                g_ResizeWidth = g_ResizeHeight = 0;
+            }
+
+            WorkerThread::getInstance()->update();
+
+            timer.Tick([&]()
+                {
+                    float dt = float(timer.GetElapsedSeconds());
+
+                    renderManager->update(dt);
+                    guiManager->update(dt);
+                    morphemeEditorApp->update(dt);
+                });
+
+            // Rendering
+            if (timer.GetFrameCount() > 0)
+                renderManager->render();
+
+            renderManager->present();
         }
-        if (done)
-            break;
-
-        // Handle window resize (we don't resize directly in the WM_SIZE handler)
-        if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
+        catch (const std::exception& e)
         {
-            renderManager->resize(g_ResizeWidth, g_ResizeHeight);
-            g_ResizeWidth = g_ResizeHeight = 0;
+            g_appLog->panicMessage(e.what());
         }
-
-        WorkerThread::getInstance()->update();
-
-        timer.Tick([&]()
-        {
-            float dt = float(timer.GetElapsedSeconds());
-
-            renderManager->update(dt);
-            guiManager->update(dt);
-            morphemeEditorApp->update(dt);
-        });
-
-        // Rendering
-        if (timer.GetFrameCount() > 0)
-            renderManager->render();
-
-        renderManager->present();
     }
 
-    WorkerThread::getInstance()->join();
+    try
+    {
+        WorkerThread::getInstance()->join();
 
-    // Cleanup
-    g_appLog->debugMessage(MsgLevel_Info, "Main app module shutdown\n");
-    morphemeEditorApp->shutdown();
+        // Cleanup
+        g_appLog->debugMessage(MsgLevel_Info, "Main app module shutdown\n");
+        morphemeEditorApp->shutdown();
 
-    g_appLog->debugMessage(MsgLevel_Info, "Gui module shutdown\n");
-    guiManager->shutdown();
+        g_appLog->debugMessage(MsgLevel_Info, "Gui module shutdown\n");
+        guiManager->shutdown();
 
-    g_appLog->debugMessage(MsgLevel_Info, "Rendering module shutdown\n");
-    renderManager->shutdown();
+        g_appLog->debugMessage(MsgLevel_Info, "Rendering module shutdown\n");
+        renderManager->shutdown();
 
-    ::DestroyWindow(hwnd);
-    ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+        ::DestroyWindow(hwnd);
+        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
-    g_appLog->debugMessage(MsgLevel_Info, "Exit\n");
+        g_appLog->debugMessage(MsgLevel_Info, "Exit\n");
 
-    delete g_appLog;
+        delete g_appLog;
+    }
+    catch (const std::exception& e)
+    {
+        g_appLog->panicMessage(e.what());
 
+        return 1;
+    }
+    
     return 0;
 }
 

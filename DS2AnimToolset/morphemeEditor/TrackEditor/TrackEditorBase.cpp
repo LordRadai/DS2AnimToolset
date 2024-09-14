@@ -8,7 +8,7 @@
 
 namespace
 {
-    int drawDurationEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, float framePixelWidth, int frameStart, int frameEnd, std::string label, TrackEditor::LabelAlignment alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor)
+    int drawDurationEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, float framePixelWidth, int frameStart, int frameEnd, std::string label, TrackEditor::LabelAlignment alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor, bool interactable)
     {
         ImVec2 slotP1(startOffset.x + frameStart * framePixelWidth - 1, startOffset.y + 2);
         ImVec2 slotP2(startOffset.x + frameEnd * framePixelWidth - 1, startOffset.y + itemHeight - 2);
@@ -38,6 +38,9 @@ namespace
         draw_list->AddRectFilled(slotP1, slotP2, trackColor, 0);
         draw_list->AddRect(slotP1, slotP2, boundColor, 0);
         draw_list->AddText(textPos, textColor, label.c_str()); //Event Value
+
+        if (!interactable)
+            return 0;
 
         float resizeHandleWidth = std::fmax(framePixelWidth / 3, 3);
 
@@ -74,7 +77,7 @@ namespace
         return 0;
     }
 
-    int drawDiscreteEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, float framePixelWidth, int frameStart, std::string label, int idx, TrackEditor::LabelAlignment alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor)
+    int drawDiscreteEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, float framePixelWidth, int frameStart, std::string label, int idx, TrackEditor::LabelAlignment alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor, bool interactable)
     {
         ImVec2 slotD1(startOffset.x + frameStart * framePixelWidth - 6, startOffset.y + 2);
         ImVec2 slotD2(startOffset.x + frameStart * framePixelWidth + 4, startOffset.y + itemHeight - 7);
@@ -119,6 +122,9 @@ namespace
 
         draw_list->AddText(textPosIdx, textColor, std::to_string(idx).c_str()); //Event Value
         draw_list->AddText(textPos, textColor, label.c_str());           //Event Idx
+
+        if (!interactable)
+            return 0;
 
         ImRect rect_discrete = ImRect(slotD1, slotD2);
 
@@ -829,9 +835,9 @@ namespace TrackEditor
                         int movingPart = 0;
 
                         if (isDiscrete)
-                            movingPart = drawDiscreteEvent(draw_list, startPos, ItemHeight, framePixelWidth, this->m_tracks[trackIndex]->events[eventIdx]->frameStart, this->getEventLabel(trackIndex, eventIdx, true), eventIdx, this->m_eventLabelAlignment, slotColor, boundColor, textColor);
+                            movingPart = drawDiscreteEvent(draw_list, startPos, ItemHeight, framePixelWidth, this->m_tracks[trackIndex]->events[eventIdx]->frameStart, this->getEventLabel(trackIndex, eventIdx, true), eventIdx, this->m_eventLabelAlignment, slotColor, boundColor, textColor, focused && hovered);
                         else
-                            movingPart = drawDurationEvent(draw_list, startPos, ItemHeight, framePixelWidth, this->m_tracks[trackIndex]->events[eventIdx]->frameStart, this->m_tracks[trackIndex]->events[eventIdx]->frameEnd, this->getEventLabel(trackIndex, eventIdx, true), this->m_eventLabelAlignment, slotColor, boundColor, textColor);
+                            movingPart = drawDurationEvent(draw_list, startPos, ItemHeight, framePixelWidth, this->m_tracks[trackIndex]->events[eventIdx]->frameStart, this->m_tracks[trackIndex]->events[eventIdx]->frameEnd, this->getEventLabel(trackIndex, eventIdx, true), this->m_eventLabelAlignment, slotColor, boundColor, textColor, focused && hovered);
 
                         if (!this->m_popupOpened && !this->m_movingScrollBar && !this->m_movingCurrentFrame)
                         {

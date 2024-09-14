@@ -13,6 +13,7 @@
 #include "TrackEditor/TimeActEditor.h"
 #include "TrackEditor/EventTrackEditor.h"
 #include "FileIDNamesTable/FileIDNamesTable.h"
+#include "PlayerModelPreset/PlayerModelPreset.h"
 
 struct FlverResources
 {
@@ -97,12 +98,13 @@ public:
 	TrackEditor::TimeActEditor* getTimeActEditor() const { return this->m_timeActEditor; }
 	TrackEditor::EventTrackEditor* getEventTrackEditor() const { return this->m_eventTrackEditor; }
 	FlverResources* getFlverResources() const { return this->m_flverResources; }
-	RINI* getPlayerModelPreset() const { return this->m_playerModelPreset; }
+	PlayerModelPreset* getPlayerModelPreset() const { return this->m_playerModelPreset; }
 
 	WindowFlags* getWindowFlags() { return &this->m_windowFlags; }
 	TaskFlags* getTaskFlags() { return &this->m_taskFlags; }
 	PreviewFlags* getPreviewFlags() { return &this->m_previewFlags; }
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
+	std::wstring getGamePath() const { return this->m_gamePath; }
 
 	void loadFile();
 	void saveFile();
@@ -125,6 +127,7 @@ private:
 	void loadPlayerModelPreset();
 	void savePlayerModelPreset();
 
+	bool compileAndExportTae(std::wstring path);
 	bool exportAll();
 	bool exportAnimations(std::wstring path);
 	bool exportAnimMarkups(std::wstring path);
@@ -139,7 +142,7 @@ private:
 	PreviewFlags m_previewFlags;
 
 	FlverResources* m_flverResources = nullptr;
-	RINI* m_playerModelPreset = nullptr;
+	PlayerModelPreset* m_playerModelPreset = nullptr;
 	Camera* m_camera = nullptr;
 	AnimPlayer* m_animPlayer = nullptr;
 	Character* m_character = nullptr;
@@ -148,6 +151,8 @@ private:
 	TrackEditor::EventTrackEditor* m_eventTrackEditor = nullptr;
 
 	std::vector<std::wstring> m_timeActFileList;
+
+	std::wstring m_gamePath = L"";
 
 	inline static MorphemeEditorApp* _instance = nullptr;
 };
