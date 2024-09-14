@@ -15,7 +15,7 @@ Camera::Camera()
 	this->m_targetPos = Vector3::Zero;
 	this->m_offset = Vector3::Zero;
 
-	this->m_radius = 10.f;
+	this->m_radius = 5.f;
 
 	this->m_angles = Vector3(XM_PI / 3, 0.4f, 0);
 	this->m_position = m_targetPos + Vector3(m_radius * cosf(m_angles.y) * cosf(m_angles.x), m_radius * sinf(m_angles.y), m_radius * cosf(m_angles.y) * sinf(m_angles.x));

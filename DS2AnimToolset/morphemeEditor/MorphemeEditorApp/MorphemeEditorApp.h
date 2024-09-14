@@ -104,6 +104,7 @@ public:
 	TaskFlags* getTaskFlags() { return &this->m_taskFlags; }
 	PreviewFlags* getPreviewFlags() { return &this->m_previewFlags; }
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
+	std::wstring getGamePath() const { return this->m_gamePath; }
 
 	void loadFile();
 	void saveFile();
@@ -150,6 +151,8 @@ private:
 	TrackEditor::EventTrackEditor* m_eventTrackEditor = nullptr;
 
 	std::vector<std::wstring> m_timeActFileList;
+
+	std::wstring m_gamePath = L"";
 
 	inline static MorphemeEditorApp* _instance = nullptr;
 };

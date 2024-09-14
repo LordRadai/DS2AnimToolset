@@ -15,12 +15,12 @@ namespace
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
 
 		if (model == nullptr)
-			return 10.f;
+			return 5.f;
 
 		float aabbDiagonalLenght = Vector3(Vector3::Transform(model->getBoundingBoxMax(), model->getWorldMatrix()) - Vector3::Transform(model->getBoundingBoxMin(), model->getWorldMatrix())).Length();
 
 		if (aabbDiagonalLenght > (FLT_MAX / 2))
-			return 10.f;
+			return 5.f;
 
 		return (aabbDiagonalLenght / 2.f) / std::tanf(camera->getFov() / 2.f);
 	}
@@ -890,6 +890,8 @@ void MorphemeEditorApp::loadFile()
 
 						this->m_timeActFileList.clear();
 
+						this->m_gamePath = findGamePath(filepath);
+
 						if (filepath.extension() == ".nmb")
 							this->m_character = Character::createFromNmb(this->m_timeActFileList, RString::toNarrow(filepath).c_str());
 						else if (filepath.extension() == ".tae")
@@ -897,10 +899,8 @@ void MorphemeEditorApp::loadFile()
 
 						if ((this->m_character != nullptr) && (this->m_character->getCharacterId() == 1))
 						{
-							std::wstring gamePath = findGamePath(filepath);
-
-							if (gamePath.compare(L"") != 0)
-								fillFlverResources(this->getFlverResources(), gamePath);
+							if (this->m_gamePath.compare(L"") != 0)
+								fillFlverResources(this->getFlverResources(), this->m_gamePath);
 						}
 
 						this->m_animPlayer->setCharacter(this->m_character);

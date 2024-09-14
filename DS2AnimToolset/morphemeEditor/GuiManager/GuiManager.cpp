@@ -280,7 +280,135 @@ namespace
 		return tooltip;
 	}
 
-	void modelPartsSelectorGUI(const FileIDNamesTable list, bool female, Character* character, PartType type)
+	bool isEquipShield(std::wstring filename)
+	{
+		size_t first = filename.find_first_of(L"_");
+
+		std::wstring category = filename.substr(0, first);
+
+		if (category == L"sd")
+			return true;
+
+		return false;
+	}
+
+	int getEquipIDByName(std::wstring filename)
+	{
+		if (filename == L"")
+			return -1;
+
+		size_t first = filename.find_first_of(L"_") + 1;
+		size_t second = filename.find_last_of(L"_");
+
+		std::wstring modelIdStr = filename.substr(first, second - first);
+
+		return std::stoi(modelIdStr);
+	}
+
+	int getFgIDByName(std::wstring filename, FgPartType type)
+	{
+		int baseId = 0;
+
+		switch (type)
+		{
+		case kFgFace:
+			baseId = 1000;
+			break;
+		case kFgHead:
+			baseId = 2000;
+			break;
+		case kFgEyes:
+			baseId = 3000;
+			break;
+		case kFgEyeBrows:
+			baseId = 4000;
+			break;
+		case kFgBeard:
+			baseId = 5000;
+			break;
+		case kFgHair:
+			baseId = 7000;
+			break;
+		default:
+			break;
+		}
+
+		int id = getEquipIDByName(filename);
+
+		return id - baseId;
+	}
+
+	void setPresetModelPartId(PlayerModelPreset* preset, CharacterModelCtrl* modelCtrl, PartType type)
+	{
+		FlverModel* model = modelCtrl->getModelPart(type);
+		int equipId = -1;
+		bool shield = false;
+
+		if (model)
+		{
+			equipId = getEquipIDByName(RString::toWide(model->getModelName()));
+			shield = isEquipShield(RString::toWide(model->getModelName()));
+		}
+
+		switch (type)
+		{
+		case kPartsHead:
+			preset->setHeadId(equipId);
+			break;
+		case kPartsFace:
+			preset->setFaceId(equipId);
+			break;
+		case kPartsBody:
+			preset->setBodyId(equipId);
+			break;
+		case kPartsArm:
+			preset->setArmId(equipId);
+			break;
+		case kPartsLeg:
+			preset->setLegId(equipId);
+			break;
+		case kPartsWeaponLeft:
+			preset->setRightHandEquipId(equipId, shield);
+			break;
+		case kPartsWeaponRight:
+			preset->setLeftHandEquipId(equipId, shield);
+			break;
+		}
+	}
+
+	void setPresetModelFgId(PlayerModelPreset* preset, CharacterModelCtrl* modelCtrl, FgPartType type)
+	{
+		FlverModel* model = modelCtrl->getModelFg(type);
+		int equipId = -1;
+		bool shield = false;
+
+		if (model)
+			equipId = getFgIDByName(RString::toWide(model->getModelName()), type);
+
+		switch (type)
+		{
+		case kFgFace:
+			preset->setFgFaceId(equipId);
+			break;
+		case kFgHead:
+			preset->setFgHeadId(equipId);
+			break;
+		case kFgEyes:
+			preset->setFgEyeId(equipId);
+			break;
+		case kFgEyeBrows:
+			preset->setFgEyeBrowsId(equipId);
+			break;
+		case kFgBeard:
+			preset->setFgBeardId(equipId);
+			break;
+		case kFgHair:
+			preset->setFgHairId(equipId);
+			break;
+		}
+	}
+
+	void modelPartsSelectorGUI(const FileIDNamesTable list, bool female, PlayerModelPreset* preset, Character* character, PartType type)
 	{
 		ImGuiTextFilter filter;
 
@@ -312,6 +440,8 @@ namespace
 
 					if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
 					{
+						setPresetModelPartId(preset, character->getCharacterModelCtrl(), type);
+
 						if (path.compare(L"") == 0)
 							character->getCharacterModelCtrl()->setModelPart(type, nullptr);
 						else
@@ -328,7 +458,7 @@ namespace
 		}
 	}
 
-	void modelPartsSelectorGUI(const FileIDNamesTable list, Character* character, PartType type)
+	void modelPartsSelectorGUI(const FileIDNamesTable list, PlayerModelPreset* preset, Character* character, PartType type)
 	{
 		std::string childName = "resource_list##" + std::to_string(type);
 		if (ImGui::BeginChild(childName.c_str())) 
@@ -348,6 +478,8 @@ namespace
 
 				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
 				{
+					setPresetModelPartId(preset, character->getCharacterModelCtrl(), type);
+
 					if (path.compare(L"") == 0)
 						character->getCharacterModelCtrl()->setModelPart(type, nullptr);
 					else
@@ -363,7 +495,7 @@ namespace
 		}
 	}
 
-	void modelFgSelectorGUI(const FileIDNamesTable list, bool female, Character* character, FgPartType type)
+	void modelFgSelectorGUI(const FileIDNamesTable list, bool female, PlayerModelPreset* preset, Character* character, FgPartType type)
 	{
 		std::string childName = "resource_list_fg##" + std::to_string(type);
 		if (ImGui::BeginChild(childName.c_str()))
@@ -383,6 +515,8 @@ namespace
 
 				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
 				{
+					setPresetModelFgId(preset, character->getCharacterModelCtrl(), type);
+
 					if (path.compare(L"") == 0)
 						character->getCharacterModelCtrl()->setModelFg(type, nullptr);
 					else
@@ -396,6 +530,26 @@ namespace
 
 			ImGui::EndChild();
 		}
+	}
+
+	void reloadModelComponents(PlayerModelPreset* preset, std::wstring gamePath, Character* character, bool female)
+	{
+		std::wstring partsFolder = gamePath + L"\\model\\parts";
+
+		character->loadPartsFaceGenBnd(partsFolder, kFgHair, preset->getFgHairId(), female);
+		character->loadPartsFaceGenBnd(partsFolder, kFgFace, preset->getFgFaceId(), female);
+		character->loadPartsFaceGenBnd(partsFolder, kFgHead, preset->getFgHeadId(), female);
+		character->loadPartsFaceGenBnd(partsFolder, kFgEyeBrows, preset->getFgEyeBrowsId(), female);
+		character->loadPartsFaceGenBnd(partsFolder, kFgEyes, preset->getFgEyeId(), female);
+		character->loadPartsFaceGenBnd(partsFolder, kFgBeard, preset->getFgBeardId(), female);
+
+		character->loadPartsBnd(partsFolder, kPartsHead, preset->getHeadId(), female);
+		character->loadPartsBnd(partsFolder, kPartsBody, preset->getBodyId(), female);
+		character->loadPartsBnd(partsFolder, kPartsArm, preset->getArmId(), female);
+		character->loadPartsBnd(partsFolder, kPartsLeg, preset->getLegId(), female);
+
+		character->loadWeaponBnd(partsFolder, kPartsWeaponLeft, preset->getLeftHandEquipId(), preset->isLeftHandEquipShield());
+		character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getRightHandEquipId(), preset->isRightHandEquipShield());
 	}
 }
 
@@ -798,11 +952,8 @@ void GuiManager::modelViewerWindow()
 			if (ImGui::MenuItem("Draw Bounding Boxes", nullptr, previewFlags->drawBoundingBoxes)) { previewFlags->drawBoundingBoxes = !previewFlags->drawBoundingBoxes; }
 #endif
 
-			ImGui::EndMenu();
-		}
+			ImGui::Separator();
 
-		if (ImGui::BeginMenu("Window"))
-		{
 			bool disabled_explorer = true;
 
 			Character* character = editorApp->getCharacter();
@@ -823,7 +974,7 @@ void GuiManager::modelViewerWindow()
 
 			ImGui::BeginDisabled(disabled_parts);
 
-			if (ImGui::MenuItem("Player Parts", nullptr, windowStates->playerPartsManager)) { windowStates->playerPartsManager = !windowStates->playerPartsManager; }
+			if (ImGui::MenuItem("Parts", nullptr, windowStates->playerPartsManager)) { windowStates->playerPartsManager = !windowStates->playerPartsManager; }
 
 			ImGui::EndDisabled();
 
@@ -1481,6 +1632,7 @@ void GuiManager::partsManagerWindow()
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 	FlverResources* resources = editorApp->getFlverResources();
 	Character* character = editorApp->getCharacter();
+	PlayerModelPreset* preset = editorApp->getPlayerModelPreset();
 
 	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
 
@@ -1488,46 +1640,52 @@ void GuiManager::partsManagerWindow()
 
 	ImGui::BeginTabBar("parts_selector");
 
-	static bool female = editorApp->getPlayerModelPreset()->isFemale();
+	static bool female = preset->isFemale();
 
 	if (ImGui::BeginTabItem("Armour"))
 	{
 		ImGui::Checkbox("Female", &female);
-		editorApp->getPlayerModelPreset()->setFemale(female);
+
+		if (preset->isFemale() != female)
+		{
+			preset->setFemale(female);
+
+			reloadModelComponents(preset, editorApp->getGamePath(), character, female);
+		}
 
 		ImGui::Separator();
 
 		if (ImGui::TreeNode("Head"))
 		{
-			modelPartsSelectorGUI(resources->headModelResources, female, character, kPartsHead);
+			modelPartsSelectorGUI(resources->headModelResources, female, preset, character, kPartsHead);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Face"))
 		{
-			modelPartsSelectorGUI(resources->faceModelResources, female, character, kPartsFace);
+			modelPartsSelectorGUI(resources->faceModelResources, female, preset, character, kPartsFace);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Body"))
 		{
-			modelPartsSelectorGUI(resources->bodyModelResources, female, character, kPartsBody);
+			modelPartsSelectorGUI(resources->bodyModelResources, female, preset, character, kPartsBody);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Arm"))
 		{
-			modelPartsSelectorGUI(resources->armModelResources, female, character, kPartsArm);
+			modelPartsSelectorGUI(resources->armModelResources, female, preset, character, kPartsArm);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Leg"))
 		{
-			modelPartsSelectorGUI(resources->legModelResources, female, character, kPartsLeg);
+			modelPartsSelectorGUI(resources->legModelResources, female, preset, character, kPartsLeg);
 
 			ImGui::TreePop();
 		}
@@ -1543,9 +1701,9 @@ void GuiManager::partsManagerWindow()
 		ImGui::Separator();
 
 		if (rh_shield)
-			modelPartsSelectorGUI(resources->shieldModelResources, character, kPartsWeaponRight);
+			modelPartsSelectorGUI(resources->shieldModelResources, preset, character, kPartsWeaponRight);
 		else
-			modelPartsSelectorGUI(resources->weaponModelResources, character, kPartsWeaponRight);
+			modelPartsSelectorGUI(resources->weaponModelResources, preset, character, kPartsWeaponRight);
 
 		ImGui::EndTabItem();
 	}
@@ -1558,9 +1716,9 @@ void GuiManager::partsManagerWindow()
 		ImGui::Separator();
 
 		if (lh_shield)
-			modelPartsSelectorGUI(resources->shieldModelResources, character, kPartsWeaponLeft);
+			modelPartsSelectorGUI(resources->shieldModelResources, preset, character, kPartsWeaponLeft);
 		else
-			modelPartsSelectorGUI(resources->weaponModelResources, character, kPartsWeaponLeft);
+			modelPartsSelectorGUI(resources->weaponModelResources, preset, character, kPartsWeaponLeft);
 
 		ImGui::EndTabItem();
 	}
@@ -1568,48 +1726,54 @@ void GuiManager::partsManagerWindow()
 	if (ImGui::BeginTabItem("FaceGen"))
 	{
 		ImGui::Checkbox("Female", &female);
-		editorApp->getPlayerModelPreset()->setFemale(female);
+
+		if (preset->isFemale() != female)
+		{
+			preset->setFemale(female);
+
+			reloadModelComponents(preset, editorApp->getGamePath(), character, female);
+		}
 
 		ImGui::Separator();
 
 		if (ImGui::TreeNode("Hair"))
 		{
-			modelFgSelectorGUI(resources->fgHairModelResources, female, character, kFgHair);
+			modelFgSelectorGUI(resources->fgHairModelResources, female, preset, character, kFgHair);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Head"))
 		{
-			modelFgSelectorGUI(resources->fgHeadModelResources, female, character, kFgHead);
+			modelFgSelectorGUI(resources->fgHeadModelResources, female, preset, character, kFgHead);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Face"))
 		{
-			modelFgSelectorGUI(resources->fgFaceModelResources, female, character, kFgFace);
+			modelFgSelectorGUI(resources->fgFaceModelResources, female, preset, character, kFgFace);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Eyes"))
 		{
-			modelFgSelectorGUI(resources->fgEyesModelResources, female, character, kFgEyes);
+			modelFgSelectorGUI(resources->fgEyesModelResources, female, preset, character, kFgEyes);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("EyeBrows"))
 		{
-			modelFgSelectorGUI(resources->fgEyeBrowsModelResources, female, character, kFgEyeBrows);
+			modelFgSelectorGUI(resources->fgEyeBrowsModelResources, female, preset, character, kFgEyeBrows);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Beard"))
 		{
-			modelFgSelectorGUI(resources->fgBeardModelResources, female, character, kFgBeard);
+			modelFgSelectorGUI(resources->fgBeardModelResources, female, preset, character, kFgBeard);
 
 			ImGui::TreePop();
 		}
@@ -1643,7 +1807,7 @@ void GuiManager::searchQueryWindow()
 	}
 
 	constexpr int rowCount = 50;
-	constexpr int columnCount = 3;
+	constexpr int columnCount = 5;
 
 	ImGui::InputInt("Target Value", &targetValue, 0, 0);
 
@@ -1656,13 +1820,15 @@ void GuiManager::searchQueryWindow()
 			g_appLog->alertMessage(MsgLevel_Info, "Could not find any event with the specified ID\n");
 	}
 
-	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_ContextMenuInBody;
+	static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV;
 
 	if (ImGui::BeginTable("result_list", columnCount, flags))
 	{
-		ImGui::TableSetupColumn("TimeAct", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableSetupColumn("Track", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableSetupColumn("Event", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("TimeAct");
+		ImGui::TableSetupColumn("Group ID");
+		ImGui::TableSetupColumn("Group Name");
+		ImGui::TableSetupColumn("Event ID");
+		ImGui::TableSetupColumn("Event Name", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableHeadersRow();
 
 		if (queryResult.size())
@@ -1677,8 +1843,10 @@ void GuiManager::searchQueryWindow()
 				int eventId = result->getEventId();
 
 				std::string col0 = std::to_string(result->getOwner()->getOwner()->getTrackId());
-				std::string col1 = g_taeTemplate->getGroupName(groupId);
-				std::string col2 = g_taeTemplate->getEventName(groupId, eventId) + result->getArgumentsString();
+				std::string col1 = std::to_string(groupId);
+				std::string col2 = g_taeTemplate->getGroupName(groupId);
+				std::string col3 = std::to_string(eventId);
+				std::string col4 = g_taeTemplate->getEventName(groupId, eventId) + result->getArgumentsString();
 
 				for (size_t column = 0; column < columnCount; column++)
 				{
@@ -1705,6 +1873,24 @@ void GuiManager::searchQueryWindow()
 						break;
 					case 2:
 						ImGui::Selectable(col2.c_str(), selectedRow == row, ImGuiSelectableFlags_SpanAllColumns);
+
+						if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+						{
+							selectedRow = row;
+							editorApp->getTimeActEditor()->setTimeAct(result->getOwner()->getOwner());
+						}
+						break;
+					case 3:
+						ImGui::Selectable(col3.c_str(), selectedRow == row, ImGuiSelectableFlags_SpanAllColumns);
+
+						if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+						{
+							selectedRow = row;
+							editorApp->getTimeActEditor()->setTimeAct(result->getOwner()->getOwner());
+						}
+						break;
+					case 4:
+						ImGui::Selectable(col4.c_str(), selectedRow == row, ImGuiSelectableFlags_SpanAllColumns);
 
 						if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
 						{
