@@ -13,6 +13,7 @@
 #include "TrackEditor/TimeActEditor.h"
 #include "TrackEditor/EventTrackEditor.h"
 #include "FileIDNamesTable/FileIDNamesTable.h"
+#include "PlayerModelPreset/PlayerModelPreset.h"
 
 struct FlverResources
 {
@@ -97,7 +98,7 @@ public:
 	TrackEditor::TimeActEditor* getTimeActEditor() const { return this->m_timeActEditor; }
 	TrackEditor::EventTrackEditor* getEventTrackEditor() const { return this->m_eventTrackEditor; }
 	FlverResources* getFlverResources() const { return this->m_flverResources; }
-	RINI* getPlayerModelPreset() const { return this->m_playerModelPreset; }
+	PlayerModelPreset* getPlayerModelPreset() const { return this->m_playerModelPreset; }
 
 	WindowFlags* getWindowFlags() { return &this->m_windowFlags; }
 	TaskFlags* getTaskFlags() { return &this->m_taskFlags; }
@@ -140,7 +141,7 @@ private:
 	PreviewFlags m_previewFlags;
 
 	FlverResources* m_flverResources = nullptr;
-	RINI* m_playerModelPreset = nullptr;
+	PlayerModelPreset* m_playerModelPreset = nullptr;
 	Camera* m_camera = nullptr;
 	AnimPlayer* m_animPlayer = nullptr;
 	Character* m_character = nullptr;

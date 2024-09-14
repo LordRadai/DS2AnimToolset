@@ -273,6 +273,9 @@
     <ClInclude Include="FileIDNamesTable\FileIDNamesTable.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerModelPreset\PlayerModelPreset.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -477,6 +480,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="FileIDNamesTable\FileIDNamesTable.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerModelPreset\PlayerModelPreset.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

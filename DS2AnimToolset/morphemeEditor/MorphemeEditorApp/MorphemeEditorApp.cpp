@@ -820,7 +820,7 @@ void MorphemeEditorApp::saveSettings()
 
 void MorphemeEditorApp::loadPlayerModelPreset()
 {
-	this->m_playerModelPreset = RINI::open("Data\\res\\c0001.ini");
+	this->m_playerModelPreset = PlayerModelPreset::loadFromFile("Data\\res\\c0001.ini");
 
 	if (this->m_playerModelPreset == nullptr)
 		g_appLog->panicMessage("Failed to read player model preset at Data\\res\\c0001.ini\n");
@@ -828,8 +828,7 @@ void MorphemeEditorApp::loadPlayerModelPreset()
 
 void MorphemeEditorApp::savePlayerModelPreset()
 {
-	this->m_playerModelPreset->write();
-	this->m_playerModelPreset->destroy();
+	this->m_playerModelPreset->save();
 }
 
 MorphemeEditorApp::MorphemeEditorApp() : Application()

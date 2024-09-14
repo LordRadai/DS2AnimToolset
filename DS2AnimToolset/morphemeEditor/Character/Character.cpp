@@ -529,24 +529,26 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
 
         if (character->m_chrId == 1)
         {
-            RINI* preset = MorphemeEditorApp::getInstance()->getPlayerModelPreset();
+            PlayerModelPreset* preset = MorphemeEditorApp::getInstance()->getPlayerModelPreset();
 
             std::wstring partsFolder = modelFolder + L"\\parts";
 
-            character->loadPartsFaceGenBnd(partsFolder, kFgHair, preset->getInt("FaceGen", "hair", -1), preset->getBool("Gender", "is_female", false));
-            character->loadPartsFaceGenBnd(partsFolder, kFgFace, preset->getInt("FaceGen", "face", 1), preset->getBool("Gender", "is_female", false));
-            character->loadPartsFaceGenBnd(partsFolder, kFgHead, preset->getInt("FaceGen", "head", 1), preset->getBool("Gender", "is_female", false));
-            character->loadPartsFaceGenBnd(partsFolder, kFgEyeBrows, preset->getInt("FaceGen", "eye_brows", 1), preset->getBool("Gender", "is_female", false));
-            character->loadPartsFaceGenBnd(partsFolder, kFgEyes, preset->getInt("FaceGen", "eye", 1), preset->getBool("Gender", "is_female", false));
-            character->loadPartsFaceGenBnd(partsFolder, kFgBeard, preset->getInt("FaceGen", "beard", -1), preset->getBool("Gender", "is_female", false));
+            bool female = preset->isFemale();
 
-            character->loadPartsBnd(partsFolder, kPartsHead, preset->getInt("Armor", "head", 1010), preset->getBool("Gender", "is_female", false));
-            character->loadPartsBnd(partsFolder, kPartsBody, preset->getInt("Armor", "body", 1010), preset->getBool("Gender", "is_female", false));
-            character->loadPartsBnd(partsFolder, kPartsArm, preset->getInt("Armor", "arm", 1010), preset->getBool("Gender", "is_female", false));
-            character->loadPartsBnd(partsFolder, kPartsLeg, preset->getInt("Armor", "leg", 1010), preset->getBool("Gender", "is_female", false));
+            character->loadPartsFaceGenBnd(partsFolder, kFgHair, preset->getFgHairId(), female);
+            character->loadPartsFaceGenBnd(partsFolder, kFgFace, preset->getFgFaceId(), female);
+            character->loadPartsFaceGenBnd(partsFolder, kFgHead, preset->getFgHeadId(), female);
+            character->loadPartsFaceGenBnd(partsFolder, kFgEyeBrows, preset->getFgEyeBrowsId(), female);
+            character->loadPartsFaceGenBnd(partsFolder, kFgEyes, preset->getFgEyeId(), female);
+            character->loadPartsFaceGenBnd(partsFolder, kFgBeard, preset->getFgBeardId(), female);
 
-            character->loadWeaponBnd(partsFolder, kPartsWeaponLeft, preset->getInt("Left", "id", -1), preset->getBool("Left", "is_shield", false));
-            character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getInt("Right", "id", 1220), preset->getBool("Left", "is_shield", false));
+            character->loadPartsBnd(partsFolder, kPartsHead, preset->getHeadId(), female);
+            character->loadPartsBnd(partsFolder, kPartsBody, preset->getBodyId(), female);
+            character->loadPartsBnd(partsFolder, kPartsArm, preset->getArmId(), female);
+            character->loadPartsBnd(partsFolder, kPartsLeg, preset->getLegId(), female);
+
+            character->loadWeaponBnd(partsFolder, kPartsWeaponLeft, preset->getLeftHandEquipId(), preset->isLeftHandEquipShield());
+            character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getRightHandEquipId(), preset->isRightHandEquipShield());
         }
     }
 

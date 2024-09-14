@@ -1488,11 +1488,12 @@ void GuiManager::partsManagerWindow()
 
 	ImGui::BeginTabBar("parts_selector");
 
-	static bool female = editorApp->getPlayerModelPreset()->getBool("Gender", "is_female", false);
+	static bool female = editorApp->getPlayerModelPreset()->isFemale();
 
 	if (ImGui::BeginTabItem("Armour"))
 	{
 		ImGui::Checkbox("Female", &female);
+		editorApp->getPlayerModelPreset()->setFemale(female);
 
 		ImGui::Separator();
 
@@ -1536,7 +1537,7 @@ void GuiManager::partsManagerWindow()
 	
 	if (ImGui::BeginTabItem("Right Hand"))
 	{
-		static bool rh_shield = editorApp->getPlayerModelPreset()->getBool("Right", "is_shield", false);
+		static bool rh_shield = editorApp->getPlayerModelPreset()->isRightHandEquipShield();
 		ImGui::Checkbox("Shield", &rh_shield);
 
 		ImGui::Separator();
@@ -1551,7 +1552,7 @@ void GuiManager::partsManagerWindow()
 
 	if (ImGui::BeginTabItem("Left Hand"))
 	{
-		static bool lh_shield = editorApp->getPlayerModelPreset()->getBool("Left", "is_shield", false);
+		static bool lh_shield = editorApp->getPlayerModelPreset()->isLeftHandEquipShield();
 		ImGui::Checkbox("Shield", &lh_shield);
 
 		ImGui::Separator();
@@ -1567,6 +1568,7 @@ void GuiManager::partsManagerWindow()
 	if (ImGui::BeginTabItem("FaceGen"))
 	{
 		ImGui::Checkbox("Female", &female);
+		editorApp->getPlayerModelPreset()->setFemale(female);
 
 		ImGui::Separator();
 
