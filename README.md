@@ -13,7 +13,7 @@ It can be used in the following ways:
 # Preview Window
 When opening an NMB, the program will attempt to find the character model in the parent path. If it finds one and it has valid vertex data in it, it will show the model in the Preview window. Note that c0001 does not have a model, player equipments are not supported yet.
 
-![Immagine 2024-05-30 194747](https://github.com/LordRadai/DS2AnimToolset/assets/22768664/63fd3aad-6612-4b50-85ff-7b935350156b)
+![Immagine 2024-09-14 162335](https://github.com/user-attachments/assets/908844b3-0601-4ca9-9043-828d77658f34)
 
 # TimeAct Templates, Tooltips
 Templates are inside the `MorphemeConnect/res` folder. If you want to make changes to the templates, just edit `TimeActTemplate.xml`.
