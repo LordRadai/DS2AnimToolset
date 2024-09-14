@@ -11,7 +11,7 @@ It can be used in the following ways:
 **IMPORTANT NOTE**: This version will NOT let you modify Event Tracks. That feature had to be disabled because of the Morpheme SDK integration. If you wish to have this feature, use MorphemeConnect instead: https://github.com/LordRadai/MorphemeConnect
 
 # Preview Window
-When opening an NMB, the program will attempt to find the character model in the parent path. If it finds one and it has valid vertex data in it, it will show the model in the Preview window. Note that c0001 does not have a model, player equipments are not supported yet.
+When opening an NMB, the program will attempt to find the character model in the parent path. If it finds one and it has valid vertex data in it, it will show the model in the Preview window.
 
 ![Immagine 2024-09-14 162335](https://github.com/user-attachments/assets/908844b3-0601-4ca9-9043-828d77658f34)
 
