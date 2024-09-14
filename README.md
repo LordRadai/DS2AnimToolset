@@ -37,4 +37,4 @@ If you want to compile this project, you need the following things:
 # Bugs
 Report any bugs in the Discord server's bug report forum https://discord.gg/CJk2b5WMMF
 
-![Immagine 2024-05-30 194830](https://github.com/LordRadai/DS2AnimToolset/assets/22768664/218df726-5ad0-41d5-a885-fc955c4e3678)
+![Immagine 2024-09-14 162729](https://github.com/user-attachments/assets/a9401a1a-d1b3-48c3-949d-ad6aee3a710d)
