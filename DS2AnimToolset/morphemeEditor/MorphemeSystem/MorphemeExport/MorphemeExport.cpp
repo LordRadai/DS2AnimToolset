@@ -767,22 +767,21 @@ ME::NodeExportXML* MorphemeExport::exportAnimSyncEventsNode(ME::NetworkDefExport
 		{
 			char paramName[256];
 
-			sprintf_s(paramName, "DefaultClip_%d", i);
+			sprintf_s(paramName, "DefaultClip_%d", i + 1);
 			nodeDataBlock->writeBool(true, paramName);
 
-			sprintf_s(paramName, "ClipRangeMode_%d", i);
+			sprintf_s(paramName, "ClipRangeMode_%d", i + 1);
 			nodeDataBlock->writeInt(3, paramName);
 
-			sprintf_s(paramName, "ClipStartFraction_%d", i);
+			sprintf_s(paramName, "ClipStartFraction_%d", i + 1);
 			nodeDataBlock->writeFloat(sourceAnim->m_clipStartFraction, paramName);
 
-			sprintf_s(paramName, "ClipEndFraction_%d", i);
+			sprintf_s(paramName, "ClipEndFraction_%d", i + 1);
 			nodeDataBlock->writeFloat(sourceAnim->m_clipEndFraction, paramName);
 
-			sprintf_s(paramName, "StartEventIndex_%d", i);
+			sprintf_s(paramName, "StartEventIndex_%d", i + 1);
 			nodeDataBlock->writeFloat(sourceAnim->m_startSyncEventIndex, paramName);
 		}
-
 	}
 
 	return nodeExportXML;
