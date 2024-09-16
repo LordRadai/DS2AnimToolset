@@ -31,11 +31,36 @@ namespace
 		
 		std::vector<int> boneMap = model->getFlverToMorphemeBoneMap();
 
+		char line[256];
 		for (size_t i = 0; i < boneMap.size(); i++)
 		{
-			char line[256];
 			sprintf_s(line, "%d -> %d (%s -> %s)\n", i, boneMap[i], model->getFlverBoneName(i).c_str(), model->getMorphemeBoneName(boneMap[i]).c_str());
 			out << line;
+		}
+
+		out.close();
+	}
+
+	void exportNetworkDefFnTables(MR::NetworkDef* netDef, std::wstring path)
+	{
+		std::ofstream out(path, std::ios::out);
+
+		char tableBuf[256];
+		char lineBuf[256];
+
+		int numTables = netDef->getTaskQueuingFnTables()->getNumTaskFnTables();
+		for (int i = 0; i < numTables; i++)
+		{
+			const MR::SharedTaskFnTables::SharedTaskFn* table = netDef->getTaskQueuingFnTables()->getTaskFnTable(i);
+
+			sprintf_s(tableBuf, "TaskQueuingFnTable_%d", i);
+			out << tableBuf;
+
+			for (int sem = 0; sem < MR::Manager::getInstance().getNumRegisteredAttribSemantics(); sem++)
+			{
+				sprintf_s(lineBuf, "\t%d: %s\n", i, MR::Manager::getInstance().getTaskQueuingFnName(MR::QueueAttrTaskFn(table[sem])));
+				out << lineBuf;
+			}
 		}
 
 		out.close();
@@ -1105,9 +1130,13 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	wchar_t networkFilename[256];
 	swprintf_s(networkFilename, L"%ws.xml", chrName.c_str());
 
+	MR::NetworkDef* netDef = characterDef->getNetworkDef();
+
+	exportNetworkDefFnTables(netDef, path + L"fnTables.txt");
+
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for c%04d\n", chrName);
 
-	ME::NetworkDefExportXML* netDefExport = MorphemeExport::exportNetwork(characterDef->getNetworkDef(), animLibraryExport, messagePresetExport, chrName, path + networkFilename);
+	ME::NetworkDefExportXML* netDefExport = MorphemeExport::exportNetwork(netDef, animLibraryExport, messagePresetExport, chrName, path + networkFilename);
 
 	if (!netDefExport->write())
 		g_appLog->debugMessage(MsgLevel_Error, "Failed to export networkDef for c%04d\n", chrName);
