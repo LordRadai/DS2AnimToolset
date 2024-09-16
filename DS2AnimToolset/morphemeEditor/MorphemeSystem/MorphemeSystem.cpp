@@ -42,6 +42,12 @@ void MorphemeSystem::initMorpheme()
         AnimLoader::releaseAnim);
 
     XMD::XMDInit();
+
+    int numRegisteredAttribSemantics = MR::Manager::getInstance().getNumRegisteredAttribSemantics();
+
+    if (numRegisteredAttribSemantics != 74)
+        g_appLog->panicMessage("Invalid amount of registered ATTRIB_SEMANTIC (expecting 74, got %d)\n", numRegisteredAttribSemantics);
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------

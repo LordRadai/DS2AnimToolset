@@ -12,7 +12,7 @@ namespace MorphemeSystem
 	// Initialise function for MorphemeSystem. Any core morpheme or animation specific initialisation
 	// should occur in this functions.
 	void initMorpheme();
-
+	
 	//----------------------------
 	// Free allocated memory and shutdown
 	void termMorpheme();

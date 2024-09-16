@@ -506,6 +506,15 @@ ME::MessagePresetLibraryExportXML* MorphemeExport::exportMessagePresetLibrary(MR
 
 ME::NetworkDefExportXML* MorphemeExport::exportNetwork(MR::NetworkDef* netDef, ME::AnimationLibraryXML* animLibraryExport, ME::MessagePresetLibraryExportXML* messagePresetLibraryExport, std::wstring chrName, std::wstring dstFileName)
 {
+	for (size_t i = 0; i < netDef->getTaskQueuingFnTables()->getNumTaskFnTables(); i++)
+	{
+		g_appLog->debugMessage(MsgLevel_Debug, "TaskTable %d:\n", i);
+		const MR::SharedTaskFnTables::SharedTaskFn* table = netDef->getTaskQueuingFnTables()->getTaskFnTable(i);
+
+		for (size_t j = 0; j < 74; j++)
+			g_appLog->debugMessage(MsgLevel_Debug, "\t%s\n", MR::Manager::getInstance().getTaskQueuingFnName(MR::QueueAttrTaskFn(table[j])));
+	}
+
 	ME::ExportFactoryXML factory;
 
 	GUID gidReference;
