@@ -1064,7 +1064,6 @@ ME::NodeExportXML* MorphemeExport::exportBlend2Node(ME::NetworkDefExportXML* net
 	writePassThroughMode(nodeDef, nodeDataBlock);
 	writeNodeEventBlendMode(nodeDef, nodeDataBlock);
 	writeSlerpTrajPos(nodeDef, nodeDataBlock);
-	writeFeatherBlendModeFlags(nodeDef, nodeDataBlock);
 	writeBlend2BlendModeFlags(nodeDef, nodeDataBlock);
 
 	return nodeExportXML;
