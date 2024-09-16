@@ -53,7 +53,7 @@ namespace
 		{
 			const MR::SharedTaskFnTables::SharedTaskFn* table = netDef->getTaskQueuingFnTables()->getTaskFnTable(i);
 
-			sprintf_s(tableBuf, "TaskQueuingFnTable_%d", i);
+			sprintf_s(tableBuf, "TaskQueuingFnTable_%d\n", i);
 			out << tableBuf;
 
 			for (int sem = 0; sem < MR::Manager::getInstance().getNumRegisteredAttribSemantics(); sem++)
