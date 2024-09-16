@@ -75,7 +75,6 @@ public:
 	SkinnedVertex* getVertex(int meshIdx, int idx);
 	SkinnedVertex* getVertexBindPose(int meshIdx, int idx);
 
-	void initModelData();
 	void update(float dt);
 	void draw(RenderManager* renderManager);
 
@@ -131,6 +130,8 @@ private:
 	FlverModel();
 	FlverModel(UMEM* umem, MR::AnimRigDef* rig);
 	~FlverModel();
+
+	void initModelData();
 
 	std::wstring m_fileOrigin;
 	Settings m_settings;
