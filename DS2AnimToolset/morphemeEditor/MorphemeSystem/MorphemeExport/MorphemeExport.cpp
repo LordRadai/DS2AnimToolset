@@ -168,13 +168,13 @@ namespace
 		g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRANSFORM_BUFFER fn = %s\n", fnName);
 
 		if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttAddPos)
-			blendMode == AP::kAddQuatAddPos;
+			blendMode = AP::kAddQuatAddPos;
 		else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttInterpPos)
-			blendMode == AP::kAddQuatInterpPos;
+			blendMode = AP::kAddQuatInterpPos;
 		else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttAddPos)
-			blendMode == AP::kInterpQuatAddPos;
+			blendMode = AP::kInterpQuatAddPos;
 		else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttInterpPos)
-			blendMode == AP::kInterpQuatInterpPos;
+			blendMode = AP::kInterpQuatInterpPos;
 		else
 			g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
 
