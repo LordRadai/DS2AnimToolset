@@ -4,6 +4,220 @@
 #include "morpheme/Nodes/mrNodeStateMachine.h"
 #include "morpheme/mrCharacterControllerDef.h"
 #include "morpheme/mrMirroredAnimMapping.h"
+#include "morpheme/Nodes/mrNodeFeatherBlend2.h"
+#include "morpheme/Nodes/mrNodeFeatherBlend2SyncEvents.h"
+#include "morpheme/Nodes/mrNodeBlend2.h"
+#include "morpheme/Nodes/mrNodeBlend2SyncEvents.h"
+#include "assetProcessor/include/assetProcessor/BlendNodeBuilderUtils.h"
+
+namespace
+{
+	void writeDurationBlendFlags(MR::AttribDataUInt* durationEventMatchingOpAttrib, ME::DataBlockExportXML* attribDataBlock)
+	{
+		bool durationEventBlendPassThrough = false;
+		bool durationEventBlendInSequence = false;
+		bool durationEventBlendSameUserData = false;
+		bool durationEventBlendOnOverlap = false;
+		bool durationEventBlendWithinRange = false;
+
+		if (durationEventMatchingOpAttrib)
+		{
+			switch (durationEventMatchingOpAttrib->m_value)
+			{
+			case DURATION_EVENT_MATCH_PASS_THROUGH:
+				durationEventBlendPassThrough = true;
+				break;
+			case DURATION_EVENT_MATCH_IN_SEQUENCE_SAME_IDS_ON_OVERLAP:
+				durationEventBlendInSequence = true;
+				durationEventBlendSameUserData = true;
+				durationEventBlendOnOverlap = true;
+				break;
+			case DURATION_EVENT_MATCH_IN_SEQUENCE_SAME_IDS_WITHIN_RANGE:
+				durationEventBlendInSequence = true;
+				durationEventBlendSameUserData = true;
+				durationEventBlendWithinRange = true;
+				break;
+			case DURATION_EVENT_MATCH_IN_SEQUENCE_SAME_IDS:
+				durationEventBlendInSequence = true;
+				durationEventBlendSameUserData = true;
+				break;
+			case DURATION_EVENT_MATCH_IN_SEQUENCE_ON_OVERLAP:
+				durationEventBlendInSequence = true;
+				durationEventBlendOnOverlap = true;
+				break;
+			case DURATION_EVENT_MATCH_IN_SEQUENCE_WITHIN_RANGE:
+				durationEventBlendInSequence = true;
+				durationEventBlendWithinRange = true;
+				break;
+			case DURATION_EVENT_MATCH_IN_SEQUENCE:
+				durationEventBlendInSequence = true;
+				break;
+			case DURATION_EVENT_MATCH_SAME_IDS_ON_OVERLAP:
+				durationEventBlendSameUserData = true;
+				durationEventBlendOnOverlap = true;
+				break;
+			case DURATION_EVENT_MATCH_SAME_IDS_WITHIN_RANGE:
+				durationEventBlendSameUserData = true;
+				durationEventBlendWithinRange = true;
+				break;
+			case DURATION_EVENT_MATCH_SAME_IDS:
+				durationEventBlendSameUserData = true;
+				break;
+			case DURATION_EVENT_MATCH_ON_OVERLAP:
+				durationEventBlendOnOverlap = true;
+				break;
+			case DURATION_EVENT_MATCH_WITHIN_RANGE:
+				durationEventBlendWithinRange = true;
+				break;
+			default:
+				g_appLog->panicMessage("Invalid blend matching operation %d\n", durationEventMatchingOpAttrib->m_value);
+				break;
+			}
+		}
+
+		attribDataBlock->writeBool(durationEventBlendPassThrough, "DurationEventBlendPassThrough");
+		attribDataBlock->writeBool(durationEventBlendInSequence, "DurationEventBlendInSequence");
+		attribDataBlock->writeBool(durationEventBlendSameUserData, "DurationEventBlendSameUserData");
+		attribDataBlock->writeBool(durationEventBlendOnOverlap, "DurationEventBlendOnOverlap");
+		attribDataBlock->writeBool(durationEventBlendWithinRange, "DurationEventBlendWithinRange");
+	}
+
+	void writeTimeStretchMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+	{
+		int timeStretchMode = AP::kNodeTimeStretchNone;
+
+		MR::AttribDataUInt* startSyncEventIndex = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_START_SYNC_EVENT_INDEX));
+		MR::AttribDataUInt* durationEventMatchingOpAttrib = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_DURATION_EVENT_MATCHING_OP));
+		MR::AttribDataBool* loop = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_LOOP));
+
+		if (startSyncEventIndex && durationEventMatchingOpAttrib && loop)
+			timeStretchMode = AP::kNodeTimeStretchMatchEvents;
+
+		attribDataBlock->writeInt(timeStretchMode, "TimeStretchMode");
+
+		if (loop)
+			attribDataBlock->writeBool(loop->m_value, "Loop");
+		else
+			attribDataBlock->writeBool(true, "Loop");
+
+		writeDurationBlendFlags(durationEventMatchingOpAttrib, attribDataBlock);
+
+		if (startSyncEventIndex)
+			attribDataBlock->writeInt(startSyncEventIndex->m_value, "StartEventIndex");
+		else
+			attribDataBlock->writeInt(0, "StartEventIndex");
+	}
+
+	void writeFeatherBlendModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+	{
+		AP::NodeBlendModes blendMode = AP::kNodeBlendInvalid;
+
+		MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
+		const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+		
+		g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRANSFORM_BUFFER fn = %s\n", fnName);
+
+		if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsAddAttAddPos)
+			blendMode == AP::kAddQuatAddPos;
+		else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsAddAttInterpPos)
+			blendMode == AP::kAddQuatInterpPos;
+		else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsInterpAttAddPos)
+			blendMode == AP::kInterpQuatAddPos;
+		else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsInterpAttInterpPos)
+			blendMode == AP::kInterpQuatInterpPos;
+		else
+			g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
+
+		bool additiveBlendAtt = false;
+		bool additiveBlendPos = false;
+
+		switch (blendMode)
+		{
+		case AP::kInterpQuatInterpPos:
+			additiveBlendAtt = false;
+			additiveBlendPos = false;
+			break;
+		case AP::kInterpQuatAddPos:
+			additiveBlendAtt = false;
+			additiveBlendPos = true;
+			break;
+		case AP::kAddQuatInterpPos:
+			additiveBlendAtt = true;
+			additiveBlendPos = false;
+			break;
+		case AP::kAddQuatAddPos:
+			additiveBlendAtt = true;
+			additiveBlendPos = true;
+			break;
+		default:
+			break;
+		}
+
+		attribDataBlock->writeBool(additiveBlendAtt, "AdditiveBlendAttitude");
+		attribDataBlock->writeBool(additiveBlendPos, "AdditiveBlendPosition");
+	}
+
+	void writeBlend2EventBlendModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+	{
+		AP::NodeSampledEventBlendModes eventBlendMode = AP::kSampledEventBlendModeInvalid;
+
+		MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER);
+		const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+		g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER fn = %s\n", fnName);
+
+		if (taskQueueFn == MR::nodeBlend2SyncEventsQueueSampledEventsBuffers)
+			eventBlendMode = AP::kMergeSampledEvents;
+		else if (taskQueueFn == MR::nodeBlend2SyncEventsQueueAddSampledEventsBuffers)
+			eventBlendMode = AP::kAddSampledEvents;
+		else if (taskQueueFn == MR::nodeBlend2QueueSampledEventsBuffers)
+			eventBlendMode = AP::kMergeSampledEvents;
+		else if (taskQueueFn == MR::nodeBlend2QueueAddSampledEventsBuffers)
+			eventBlendMode = AP::kAddSampledEvents;
+		else
+			g_appLog->panicMessage("Unexpected task queing function %s\n", fnName);
+
+		attribDataBlock->writeInt(eventBlendMode, "EventsBlendMode");
+	}
+
+	void writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+	{
+		bool slerpTrajPos = false;
+
+		MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM);
+		const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+		g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM fn = %s\n", fnName);
+
+		if ((taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformAddAttSlerpPos) || (taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformInterpAttSlerpPos))
+			slerpTrajPos = true;
+
+		attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
+	}
+
+	void writePassThroughMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+	{
+		short passThroughChildIndex = nodeDef->getPassThroughChildIndex();
+
+		switch (passThroughChildIndex)
+		{
+		case 0:
+			attribDataBlock->writeInt(AP::kNodePassThroughSource0, "PassThroughMode");
+			break;
+		case 1:
+			attribDataBlock->writeInt(AP::kNodePassThroughSource1, "PassThroughMode");
+			break;
+		default:
+			attribDataBlock->writeInt(AP::kNodePassThroughNone, "PassThroughMode");
+			break;
+		}
+	}
+
+	void writeNumAnimSets(ME::DataBlockExportXML* attribDataBlock, int numAnimSets)
+	{
+		attribDataBlock->writeInt(numAnimSets, "NumAnimSets");
+	}
+}
 
 using namespace MR;
 
@@ -296,8 +510,9 @@ ME::NetworkDefExportXML* MorphemeExport::exportNetwork(MR::NetworkDef* netDef, M
 ME::NodeExportXML* MorphemeExport::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId)
 {
 	MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
-
 	MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
+
+	g_appLog->debugMessage(MsgLevel_Debug, "Exporting node %d (typeId=%d)\n", nodeId, nodeTypeID);
 
     switch (nodeTypeID) 
     {
@@ -362,7 +577,7 @@ ME::NodeExportXML* MorphemeExport::exportNode(ME::NetworkDefExportXML* netDefExp
     case NODE_TYPE_CP_OP_NOISE_GEN:
         return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_FEATHER_BLEND_2:
-        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportFeatherBlend2Node(netDefExport, netDef, nodeDef);
     case NODE_TYPE_APPLY_BIND_POSE:
         return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_PHYSICS_GROUPER:
@@ -753,34 +968,91 @@ ME::NodeExportXML* MorphemeExport::exportAnimSyncEventsNode(ME::NetworkDefExport
 	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-	MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_SOURCE_ANIM));
+	int numAnimSets = netDef->getNumAnimSets();
+
 	MR::AttribDataBool* isLoop = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_LOOP));
 
-	if (sourceAnim)
+	for (short setIndex = 0; setIndex < netDef->getNumAnimSets(); setIndex++)
 	{
-		nodeDataBlock->writeAnimationId(sourceAnim->m_animAssetID, "AnimIndex");
-		nodeDataBlock->writeBool(false, "GenerateAnimationDeltas");
-		nodeDataBlock->writeBool(sourceAnim->m_playBackwards, "PlayBackwards");
-		nodeDataBlock->writeBool(isLoop->m_value, "Loop");
+		MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_SOURCE_ANIM, setIndex));
 
-		for (size_t i = 0; i < netDef->getNumAnimSets(); i++)
+		if (sourceAnim)
 		{
+			if (setIndex == 0)
+			{
+				nodeDataBlock->writeAnimationId(sourceAnim->m_animAssetID, "AnimIndex");
+				nodeDataBlock->writeBool(false, "GenerateAnimationDeltas");
+				nodeDataBlock->writeBool(sourceAnim->m_playBackwards, "PlayBackwards");
+				nodeDataBlock->writeBool(isLoop->m_value, "Loop");
+			}
+
 			char paramName[256];
 
-			sprintf_s(paramName, "DefaultClip_%d", i + 1);
+			sprintf_s(paramName, "DefaultClip_%d", setIndex + 1);
 			nodeDataBlock->writeBool(true, paramName);
 
-			sprintf_s(paramName, "ClipRangeMode_%d", i + 1);
+			sprintf_s(paramName, "ClipRangeMode_%d", setIndex + 1);
 			nodeDataBlock->writeInt(3, paramName);
 
-			sprintf_s(paramName, "ClipStartFraction_%d", i + 1);
+			sprintf_s(paramName, "ClipStartFraction_%d", setIndex + 1);
 			nodeDataBlock->writeFloat(sourceAnim->m_clipStartFraction, paramName);
 
-			sprintf_s(paramName, "ClipEndFraction_%d", i + 1);
+			sprintf_s(paramName, "ClipEndFraction_%d", setIndex + 1);
 			nodeDataBlock->writeFloat(sourceAnim->m_clipEndFraction, paramName);
 
-			sprintf_s(paramName, "StartEventIndex_%d", i + 1);
+			sprintf_s(paramName, "StartEventIndex_%d", setIndex + 1);
 			nodeDataBlock->writeFloat(sourceAnim->m_startSyncEventIndex, paramName);
+		}
+	}
+
+	return nodeExportXML;
+}
+
+ME::NodeExportXML* MorphemeExport::exportFeatherBlend2Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_FEATHER_BLEND_2)
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_FEATHER_BLEND_2, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	int numAnimSets = netDef->getNumAnimSets();
+
+	nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
+	nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
+	nodeDataBlock->writeNetworkNodeId(nodeDef->getInputCPConnectionSourceNodeID(0), "Weight");
+
+	MR::AttribDataFloatArray* childWeights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+
+	nodeDataBlock->writeFloat(childWeights->m_values[0], "BlendWeight_0");
+	nodeDataBlock->writeFloat(childWeights->m_values[1], "BlendWeight_1");
+
+	writePassThroughMode(nodeDef, nodeDataBlock);
+	writeTimeStretchMode(nodeDef, nodeDataBlock);
+	writeFeatherBlendModeFlags(nodeDef, nodeDataBlock);
+	writeBlend2EventBlendModeFlags(nodeDef, nodeDataBlock);
+	writeSlerpTrajPos(nodeDef, nodeDataBlock);
+
+	MR::AttribDataBlendFlags* blendFlags = static_cast<MR::AttribDataBlendFlags*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BLEND_FLAGS));
+	nodeDataBlock->writeBool(blendFlags->m_alwaysCombineSampledEvents, "AlwaysCombineSampledEvents");
+
+	writeNumAnimSets(nodeDataBlock, numAnimSets);
+
+	char paramNumAlphas[256];
+	char paramAlpha[256];
+	for (short setIndex = 0; setIndex < numAnimSets; setIndex++)
+	{
+		MR::AttribDataFeatherBlend2ChannelAlphas* channelAlphas = static_cast<MR::AttribDataFeatherBlend2ChannelAlphas*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_BONE_WEIGHTS, setIndex));
+
+		int numAlphaValues = channelAlphas->m_numChannelAlphas;
+
+		sprintf_s(paramNumAlphas, "ChannelAlphasSet%dCount", setIndex);
+		nodeDataBlock->writeInt(numAlphaValues, paramNumAlphas);
+
+		for (size_t j = 0; j < numAlphaValues; j++)
+		{
+			sprintf_s(paramAlpha, "ChannelAlphasSet%d_Value%d", setIndex, j);
+			nodeDataBlock->writeFloat(channelAlphas->m_channelAlphas[j], paramAlpha);
 		}
 	}
 
