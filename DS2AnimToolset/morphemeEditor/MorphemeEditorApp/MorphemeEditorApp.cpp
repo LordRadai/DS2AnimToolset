@@ -53,14 +53,22 @@ namespace
 		{
 			const MR::SharedTaskFnTables::SharedTaskFn* table = netDef->getTaskQueuingFnTables()->getTaskFnTable(i);
 
-			sprintf_s(tableBuf, "TaskQueuingFnTable_%d\n", i);
+			sprintf_s(tableBuf, "TaskQueuingFnTable_%d:\n", i);
 			out << tableBuf;
 
 			for (int sem = 0; sem < MR::Manager::getInstance().getNumRegisteredAttribSemantics(); sem++)
 			{
-				sprintf_s(lineBuf, "\t%s\t\t\t\t:\t%s\n", MR::Manager::getInstance().getAttributeSemanticName(sem), MR::Manager::getInstance().getTaskQueuingFnName(MR::QueueAttrTaskFn(table[sem])));
+				const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(MR::QueueAttrTaskFn(table[sem]));
+				int fnID = -1;
+
+				if (fnName)
+					fnID = MR::Manager::getInstance().getTaskQueuingFnID(fnName);
+
+				sprintf_s(lineBuf, "\t%s (%d) -> %s (%d)\n", MR::Manager::getInstance().getAttributeSemanticName(sem), sem, fnName, fnID);
 				out << lineBuf;
 			}
+
+			out << "\n";
 		}
 
 		out.close();
