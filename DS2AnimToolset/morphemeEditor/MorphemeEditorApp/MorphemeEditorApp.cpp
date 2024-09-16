@@ -58,7 +58,7 @@ namespace
 
 			for (int sem = 0; sem < MR::Manager::getInstance().getNumRegisteredAttribSemantics(); sem++)
 			{
-				sprintf_s(lineBuf, "\t%s\t:\t%s\n", MR::Manager::getInstance().getAttributeSemanticName(sem), MR::Manager::getInstance().getTaskQueuingFnName(MR::QueueAttrTaskFn(table[sem])));
+				sprintf_s(lineBuf, "\t%s\t\t\t\t:\t%s\n", MR::Manager::getInstance().getAttributeSemanticName(sem), MR::Manager::getInstance().getTaskQueuingFnName(MR::QueueAttrTaskFn(table[sem])));
 				out << lineBuf;
 			}
 		}
