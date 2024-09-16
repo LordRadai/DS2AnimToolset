@@ -157,7 +157,30 @@ namespace
 		attribDataBlock->writeBool(additiveBlendPos, "AdditiveBlendPosition");
 	}
 
-	void writeBlend2EventBlendModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+	void writeBlend2BlendModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+	{
+		AP::NodeBlendModes blendMode = AP::kNodeBlendInvalid;
+
+		MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
+		const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+		g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRANSFORM_BUFFER fn = %s\n", fnName);
+
+		if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttAddPos)
+			blendMode == AP::kAddQuatAddPos;
+		else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttInterpPos)
+			blendMode == AP::kAddQuatInterpPos;
+		else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttAddPos)
+			blendMode == AP::kInterpQuatAddPos;
+		else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttInterpPos)
+			blendMode == AP::kInterpQuatInterpPos;
+		else
+			g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
+
+		attribDataBlock->writeInt(blendMode, "BlendMode");
+	}
+
+	void writeNodeEventBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 	{
 		AP::NodeSampledEventBlendModes eventBlendMode = AP::kSampledEventBlendModeInvalid;
 
@@ -553,7 +576,7 @@ ME::NodeExportXML* MorphemeExport::exportNode(ME::NetworkDefExportXML* netDefExp
     case NODE_TYPE_FILTER_TRANSFORMS:
         return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BLEND_2:
-        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportBlend2Node(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BLEND_N:
         return MorphemeExport::exportBlendNNode(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SINGLEFRAME:
@@ -1020,6 +1043,33 @@ ME::NodeExportXML* MorphemeExport::exportAnimSyncEventsNode(ME::NetworkDefExport
 	return nodeExportXML;
 }
 
+ME::NodeExportXML* MorphemeExport::exportBlend2Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_BLEND_2)
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_BLEND_2, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	nodeDataBlock->writeInt(nodeDef->getChildNodeID(0), "Source0NodeID");
+	nodeDataBlock->writeInt(nodeDef->getChildNodeID(1), "Source1NodeID");
+
+	MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+
+	assert(weights->m_numValues == 2);
+
+	nodeDataBlock->readFloat(weights->m_values[0], "BlendWeight_0");
+	nodeDataBlock->readFloat(weights->m_values[1], "BlendWeight_1");
+
+	writePassThroughMode(nodeDef, nodeDataBlock);
+	writeNodeEventBlendMode(nodeDef, nodeDataBlock);
+	writeSlerpTrajPos(nodeDef, nodeDataBlock);
+	writeFeatherBlendModeFlags(nodeDef, nodeDataBlock);
+	writeBlend2BlendModeFlags(nodeDef, nodeDataBlock);
+
+	return nodeExportXML;
+}
+
 ME::NodeExportXML* MorphemeExport::exportBlendNNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
 	if (nodeDef->getNodeTypeID() != NODE_TYPE_BLEND_N)
@@ -1085,7 +1135,7 @@ ME::NodeExportXML* MorphemeExport::exportFeatherBlend2Node(ME::NetworkDefExportX
 	writePassThroughMode(nodeDef, nodeDataBlock);
 	writeTimeStretchMode(nodeDef, nodeDataBlock);
 	writeFeatherBlendModeFlags(nodeDef, nodeDataBlock);
-	writeBlend2EventBlendModeFlags(nodeDef, nodeDataBlock);
+	writeNodeEventBlendMode(nodeDef, nodeDataBlock);
 	writeSlerpTrajPos(nodeDef, nodeDataBlock);
 
 	MR::AttribDataBlendFlags* blendFlags = static_cast<MR::AttribDataBlendFlags*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BLEND_FLAGS));
