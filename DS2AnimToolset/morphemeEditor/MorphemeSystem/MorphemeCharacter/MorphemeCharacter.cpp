@@ -61,7 +61,7 @@ MorphemeCharacter* MorphemeCharacter::create(MorphemeCharacterDef* networkDef)
 
   //----------------------
   // Perform an initial update of the network with start time of zero
-  //instance->runInitialisingUpdateStep();
+  instance->runInitialisingUpdateStep();
 
   return instance;
 }
