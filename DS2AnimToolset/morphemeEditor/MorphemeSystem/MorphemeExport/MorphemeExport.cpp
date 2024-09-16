@@ -1069,6 +1069,9 @@ ME::NodeExportXML* MorphemeExport::exportBlend2Node(ME::NetworkDefExportXML* net
 	writeSlerpTrajPos(nodeDef, nodeDataBlock);
 	writeBlend2BlendModeFlags(nodeDef, nodeDataBlock);
 
+	MR::AttribDataBlendFlags* blendFlags = static_cast<MR::AttribDataBlendFlags*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BLEND_FLAGS));
+	nodeDataBlock->writeBool(blendFlags->m_alwaysCombineSampledEvents, "AlwaysCombineSampledEvents");
+
 	return nodeExportXML;
 }
 
