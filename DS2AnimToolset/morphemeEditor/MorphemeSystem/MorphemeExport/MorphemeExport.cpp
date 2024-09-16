@@ -217,6 +217,18 @@ namespace
 	{
 		attribDataBlock->writeInt(numAnimSets, "NumAnimSets");
 	}
+
+	bool isBlendNodeWrapWeights(MR::NodeDef* nodeDef)
+	{
+		int numSourceNodes = nodeDef->getNumChildNodes();
+
+		MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+
+		if (weights->m_numValues == numSourceNodes)
+			return false;
+
+		return true;
+	}
 }
 
 using namespace MR;
@@ -543,7 +555,7 @@ ME::NodeExportXML* MorphemeExport::exportNode(ME::NetworkDefExportXML* netDefExp
     case NODE_TYPE_BLEND_2:
         return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BLEND_N:
-        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportBlendNNode(netDefExport, netDef, nodeDef);
     case NODE_TYPE_SINGLEFRAME:
         return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_FREEZE:
@@ -1004,6 +1016,49 @@ ME::NodeExportXML* MorphemeExport::exportAnimSyncEventsNode(ME::NetworkDefExport
 			nodeDataBlock->writeFloat(sourceAnim->m_startSyncEventIndex, paramName);
 		}
 	}
+
+	return nodeExportXML;
+}
+
+ME::NodeExportXML* MorphemeExport::exportBlendNNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_BLEND_N)
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_BLEND_N, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	int sourceNodeCount = nodeDef->getNumChildNodes();
+
+	nodeDataBlock->writeInt(sourceNodeCount, "SourceNodeCount");
+
+	CHAR paramName[256];
+	for (int i = 0; i < sourceNodeCount; i++)
+	{
+		sprintf_s(paramName, "Source%dNodeID", i);
+
+		nodeDataBlock->writeInt(nodeDef->getChildNodeID(i), paramName);
+	}
+
+	MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+	for (int i = 0; i < sourceNodeCount; i++)
+	{
+		sprintf_s(paramName, "SourceWeight_%d", i);
+
+		nodeDataBlock->writeFloat(weights->m_values[i], paramName);
+	}
+
+	bool wrapWeights = isBlendNodeWrapWeights(nodeDef);
+	nodeDataBlock->writeBool(wrapWeights, "WrapWeights");
+
+	if (wrapWeights)
+		nodeDataBlock->writeFloat(weights->m_values[sourceNodeCount], "WrapWeight");
+
+	writeTimeStretchMode(nodeDef, nodeDataBlock);
+	writeSlerpTrajPos(nodeDef, nodeDataBlock);
+
+	MR::AttribDataBlendFlags* blendFlags = static_cast<MR::AttribDataBlendFlags*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BLEND_FLAGS));
+	nodeDataBlock->writeBool(blendFlags->m_alwaysCombineSampledEvents, "AlwaysCombineSampledEvents");
 
 	return nodeExportXML;
 }
