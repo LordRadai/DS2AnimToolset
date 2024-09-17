@@ -49,12 +49,12 @@ namespace
 			{
 				MR::StateDef* stateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
 
-				int numIndices = stateDef->getNumExitTransitionStates();
+				int numIndices = stateDef->getNumEntryConditions();
 
 				std::vector<unsigned int> indices;
 				indices.reserve(numIndices);
 				for (size_t j = 0; j < numIndices; j++)
-					indices.push_back(stateDef->getExitConditionStateMachineIndex(j));
+					indices.push_back(stateDef->getEntryConditionStateMachineIndex(j));
 
 				MorphemeExport::exportTransitConditionSet(nodeExport, stateDef->getNodeID(), indices);
 			}
@@ -606,7 +606,7 @@ ME::NetworkDefExportXML* MorphemeExport::exportNetwork(MR::NetworkDef* netDef, M
 	return netDefExport;
 }
 
-ME::ConditionSetExportXML* MorphemeExport::exportTransitConditionSet(ME::NodeExportXML* nodeExport, int targetNodeID, std::vector<unsigned int> indices)
+ME::ConditionSetExportXML* MorphemeExport::exportTransitConditionSet(ME::NodeExportXML* nodeExport, int targetNodeID, std::vector<unsigned int>& indices)
 {
 	int idx = nodeExport->getNumConditionSets();
 	ME::ConditionSetExportXML* conditionSet = static_cast<ME::ConditionSetExportXML*>(nodeExport->createConditionSet(idx, targetNodeID, indices));
