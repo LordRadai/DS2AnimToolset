@@ -629,200 +629,298 @@ ME::NodeExportXML* MorphemeExport::exportNode(ME::NetworkDefExportXML* netDefExp
     {
     case NODE_TYPE_NETWORK:
         nodeExport = MorphemeExport::exportNetworkNode(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_STATE_MACHINE:
         nodeExport = MorphemeExport::exportStateMachineNode(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_FLOAT:
         nodeExport = MorphemeExport::exportCPFloatNode(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_VECTOR3:
         nodeExport = MorphemeExport::exportCPVector3Node(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_VECTOR4:
         nodeExport = MorphemeExport::exportCPVector4Node(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_BOOL:
         nodeExport = MorphemeExport::exportCPBoolNode(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_INT:
         nodeExport = MorphemeExport::exportCPIntNode(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_UINT:
         nodeExport = MorphemeExport::exportCPUIntNode(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_PHYSICS_OBJECT_POINTER:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_ANIMATION:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_ANIM_EVENTS:
         nodeExport = MorphemeExport::exportAnimSyncEventsNode(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_FILTER_TRANSFORMS:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_BLEND_2:
         nodeExport = MorphemeExport::exportBlend2Node(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_BLEND_N:
         nodeExport = MorphemeExport::exportBlendNNode(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_SINGLEFRAME:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_FREEZE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_BLEND_2X2:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_BLEND_NXM:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_BLEND_ALL:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_SUBTRACTIVE_BLEND:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_SCATTER_BLEND_1D:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_SCATTER_BLEND_2D:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_SCATTER_BLEND_3D:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_BOOLEAN:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_FUNCTION:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_ARITHMETIC:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_ARITHMETIC_VECTOR3:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC_VECTOR3:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_NOISE_GEN:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_FEATHER_BLEND_2:
         nodeExport = MorphemeExport::exportFeatherBlend2Node(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_APPLY_BIND_POSE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_PHYSICS_GROUPER:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_BEHAVIOUR_GROUPER:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_APPLY_GLOBAL_TIME:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_APPLY_PHYSICS_JOINT_LIMITS:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_SET_NON_PHYSICS_TRANSFORMS:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_TWO_BONE_IK:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_LOCK_FOOT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_HEAD_LOOK:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_PHYSICS:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_BEHAVIOUR:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_HIPS_IK:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_PERFORMANCE_BEHAVIOUR:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_PLAY_SPEED_MODIFIER:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_SCALE_TO_DURATION:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_EMIT_JOINT_CP_INFO:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_EMIT_MESSAGE_ON_DISCRETE_EVENT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CLOSEST_ANIM:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_SWITCH:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_SEQUENCE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_PASSTHROUGH:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_MIRROR_TRANSFORMS_ID:
         nodeExport = MorphemeExport::exportMirrorTransformNode(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_BASIC_UNEVEN_TERRAIN:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_ACTIVE_STATE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_INT_TO_FLOAT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_RAY_CAST:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_SMOOTH_FLOAT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_RAMP_FLOAT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_FLOATS_TO_VECTOR3:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_FLOAT_TO_INT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_RANDOM_FLOAT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_PHYSICS_INFO:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_CONVERT_TO_CHARACTER_SPACE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_VECTOR3_TO_FLOATS:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_VECTOR3_DOT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_ORIENTATIONINFREEFALL:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_HIT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_ROLLDOWNSTAIRS:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_APPLYIMPULSE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_CONTACTREPORTER:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_VECTOR3_DISTANCE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_VECTOR3_CROSSPRODUCT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_RATE_OF_CHANGE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_VECTOR3_ANGLE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_VECTOR3_NORMALISE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_PHYSICALCONSTRAINT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_FALLOVERWALL:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_RETARGET:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_SCALE_CHARACTER:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_GUN_AIM_IK:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_TRANSIT_SYNC_EVENTS:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_TRANSIT:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_TRANSIT_PHYSICS:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_MODIFY_JOINT_TRANSFORM:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_MODIFY_TRAJECTORY_TRANSFORM:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_SMOOTH_TRANSFORMS:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_EMIT_MESSAGE_AND_CP:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_TRAJECTORY_OVERRIDE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_C_C_OVERRIDE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_LIMB_INFO:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_EXPAND_LIMITS:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_COND_ON_MESSAGE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_COND_CP_COMPARE:
         nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     case NODE_TYPE_CP_OP_TIME_LAG_CP:
 		nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     default:
 		nodeExport = MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+		break;
     }
 
 	setTransitReferences(nodeDef, nodeExport);
