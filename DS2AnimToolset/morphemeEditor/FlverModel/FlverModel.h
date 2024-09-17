@@ -52,6 +52,7 @@ public:
 
 	static FlverModel* createFromBnd(std::wstring path, MR::AnimRigDef* rig);
 
+	void initModelData();
 	void destroy();
 
 	std::string getModelName() const { return this->m_name; }
@@ -91,9 +92,9 @@ public:
 	int getNumFlverDummies() const { return this->m_flver->header.dummyCount; }
 	int getNumFlverBones() const { return this->m_flver->header.boneCount; }
 
-	cfr::FLVER2::Mesh getFlverMesh(int idx) const { return this->m_flver->meshes[idx]; }
-	cfr::FLVER2::Dummy getFlverDummy(int idx) const { return this->m_flver->dummies[idx]; }
-	cfr::FLVER2::Bone getFlverBone(int idx) const { return this->m_flver->bones[idx]; }
+	cfr::FLVER2::Mesh* getFlverMesh(int idx) const { return this->m_flver->meshes[idx].get(); }
+	cfr::FLVER2::Dummy* getFlverDummy(int idx) const { return this->m_flver->dummies[idx].get(); }
+	cfr::FLVER2::Bone* getFlverBone(int idx) const { return this->m_flver->bones[idx].get(); }
 	std::string getFlverBoneName(int idx);
 	Matrix* getFlverBoneTransform(int idx);
 	Matrix* getFlverBoneBindPose(int idx);
@@ -130,8 +131,6 @@ private:
 	FlverModel();
 	FlverModel(UMEM* umem, MR::AnimRigDef* rig);
 	~FlverModel();
-
-	void initModelData();
 
 	std::wstring m_fileOrigin;
 	Settings m_settings;
