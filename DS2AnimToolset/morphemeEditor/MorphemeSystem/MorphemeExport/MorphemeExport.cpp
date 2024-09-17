@@ -1000,6 +1000,7 @@ ME::NodeExportXML* MorphemeExport::exportCPIntNode(ME::NetworkDefExportXML* netD
 	if (attribData == nullptr)
 		return nullptr;
 
+	nodeDataBlock->writeUInt(0, "InputPathCount");
 	nodeDataBlock->writeInt(attribData->m_value, "DefaultInt");
 
 	return nodeExportXML;
@@ -1019,7 +1020,6 @@ ME::NodeExportXML* MorphemeExport::exportCPUIntNode(ME::NetworkDefExportXML* net
 		return nullptr;
 
 	nodeDataBlock->writeUInt(0, "InputPathCount");
-
 	nodeDataBlock->writeUInt(attribData->m_value, "DefaultInt");
 
 	return nodeExportXML;
