@@ -559,19 +559,116 @@ ME::NetworkDefExportXML* MorphemeExport::exportNetwork(MR::NetworkDef* netDef, M
 	return netDefExport;
 }
 
-void writeCondition(MR::TransitConditionDef* transitCondDef, ME::NodeExportXML* nodeExportXML, int idx)
+ME::ConditionSetExportXML* MorphemeExport::exportTransitConditionSet(ME::NodeExportXML* nodeExport, int targetNodeID, std::vector<unsigned int> indices)
 {
-	nodeExportXML->createCondition(idx, transitCondDef->getType());
+	int idx = nodeExport->getNumConditionSets();
+	ME::ConditionSetExportXML* conditionSet = static_cast<ME::ConditionSetExportXML*>(nodeExport->createConditionSet(idx, targetNodeID, indices));
+
+	return conditionSet;
 }
 
-void writeConditionSet(MR::AttribDataStateMachineDef* stateMachineDef, MR::StateDef* stateDef, ME::NodeExportXML* nodeExportXML, int idx)
+ME::ConditionExportXML* MorphemeExport::exportTransitCondition(ME::NodeExportXML* nodeExport, MR::TransitConditionDef* transitCondDef)
 {
-	int targetNodeID = stateMachineDef->getStateDef(stateDef->m_destinationStateID)->getNodeID();
+	int idx = nodeExport->getNumCommonConditions();
 
-	std::vector<ConditionIndex> conditionIndices;
-	conditionIndices.reserve(stateDef->getNumEntryConditions());
+	MR::TransitConditType type = transitCondDef->getType();
+	ME::ConditionExportXML* conditionExport = static_cast<ME::ConditionExportXML*>(nodeExport->createCondition(idx, type));
 
-	//nodeExportXML->createCommonConditionSet(idx, targetNodeID, conditionIndices);
+	switch (type)
+	{
+	case TRANSCOND_ON_MESSAGE_ID:
+
+		break;
+	case TRANSCOND_DISCRETE_EVENT_TRIGGERED_ID:
+		// Handle case for TRANSCOND_DISCRETE_EVENT_TRIGGERED_ID
+		break;
+	case TRANSCOND_CROSSED_DURATION_FRACTION_ID:
+		// Handle case for TRANSCOND_CROSSED_DURATION_FRACTION_ID
+		break;
+	case TRANSCOND_CROSSED_SYNC_EVENT_BOUNDARY_ID:
+		// Handle case for TRANSCOND_CROSSED_SYNC_EVENT_BOUNDARY_ID
+		break;
+	case TRANSCOND_IN_SYNC_EVENT_SEGMENT_ID:
+		// Handle case for TRANSCOND_IN_SYNC_EVENT_SEGMENT_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_FLOAT_GREATER_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_FLOAT_GREATER_ID
+		break;
+	case TRANSCOND_FALSE_ID:
+		// Handle case for TRANSCOND_FALSE_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_FLOAT_LESS_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_FLOAT_LESS_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_IN_RANGE_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_IN_RANGE_ID
+		break;
+	case TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID:
+		// Handle case for TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID
+		break;
+	case TRANSCOND_IN_SYNC_EVENT_RANGE_ID:
+		// Handle case for TRANSCOND_IN_SYNC_EVENT_RANGE_ID
+		break;
+	case TRANSCOND_PHYSICS_AVAILABLE_ID:
+		// Handle case for TRANSCOND_PHYSICS_AVAILABLE_ID
+		break;
+	case TRANSCOND_PHYSICS_IN_USE_ID:
+		// Handle case for TRANSCOND_PHYSICS_IN_USE_ID
+		break;
+	case TRANSCOND_GROUND_CONTACT_ID:
+		// Handle case for TRANSCOND_GROUND_CONTACT_ID
+		break;
+	case TRANSCOND_RAY_HIT_ID:
+		// Handle case for TRANSCOND_RAY_HIT_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_TEST_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_TEST_ID
+		break;
+	case TRANSCOND_NODE_ACTIVE_ID:
+		// Handle case for TRANSCOND_NODE_ACTIVE_ID
+		break;
+	case TRANSCOND_IN_DURATION_EVENT_ID:
+		// Handle case for TRANSCOND_IN_DURATION_EVENT_ID
+		break;
+	case TRANSCOND_PHYSICS_MOVING_ID:
+		// Handle case for TRANSCOND_PHYSICS_MOVING_ID
+		break;
+	case TRANSCOND_SK_DEVIATION_ID:
+		// Handle case for TRANSCOND_SK_DEVIATION_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_UINT_GREATER_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_UINT_GREATER_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_UINT_LESS_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_UINT_LESS_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_INT_GREATER_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_INT_GREATER_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_INT_LESS_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_INT_LESS_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_INT_IN_RANGE_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_INT_IN_RANGE_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID
+		break;
+	case TRANSCOND_CONTROL_PARAM_BOOL_SET_ID:
+		// Handle case for TRANSCOND_CONTROL_PARAM_BOOL_SET_ID
+		break;
+	default:
+		// Handle default case
+		break;
+	}
+}
+
+void writeConditionSet(MR::StateDef* stateDef, ME::NodeExportXML* nodeExportXML, int idx)
+{
+
 }
 
 void setTransitReferences(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
@@ -580,38 +677,43 @@ void setTransitReferences(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
 
 	MR::NodeDef* parent = nodeDef->getParentNodeDef();
 
-	if (parent->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+	if ((parent == nullptr) || (parent->getNodeTypeID() != NODE_TYPE_STATE_MACHINE))
 		return;
 	
 	MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(parent->getAttribData(ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 	
-	int targetStateID = -1;
+	MR::StateDef* targetStateDef = nullptr;
 	for (int i = 0; i < stateMachineDef->getNumStates(); i++)
 	{
 		MR::StateDef* stateDef = stateMachineDef->getStateDef(i);
 
 		if (stateDef->getNodeID() == nodeDef->getNodeID())
 		{
-			targetStateID = i;
+			targetStateDef = stateDef;
 			break;
 		}
 	}
 
-	int idx = 0;
-	for (int i = 0; i < stateMachineDef->getNumStates(); i++)
+	if (targetStateDef)
 	{
-		MR::StateDef* stateDef = stateMachineDef->getStateDef(i);
-		
-		if (stateDef->getNumEntryConditions() > 0)
+		for (size_t i = 0; i < targetStateDef->getNumExitConditions(); i++)
 		{
-			if (stateDef->getTransitDestinationStateID() == targetStateID)
-			{
-				for (size_t j = 0; j < stateDef->getNumEntryConditions(); j++)
-				{
-					MR::TransitConditionDef* transitConditionDef = stateMachineDef->getConditionDef(stateDef->getEntryConditionStateMachineIndex(j));
-					writeCondition(transitConditionDef, nodeExport, idx++);
-				}
-			}
+			MR::TransitConditionDef* transitConditionDef = stateMachineDef->getConditionDef(targetStateDef->getExitConditionStateMachineIndex(i));
+			MorphemeExport::exportTransitCondition(nodeExport, transitConditionDef);
+		}
+
+		for (size_t i = 0; i < targetStateDef->getNumExitTransitionStates(); i++)
+		{
+			MR::StateDef* stateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
+
+			int numIndices = stateDef->getNumExitTransitionStates();
+
+			std::vector<unsigned int> indices;
+			indices.reserve(numIndices);
+			for (size_t j = 0; j < numIndices; j++)
+				indices.push_back(stateDef->getExitConditionStateMachineIndex(j));
+
+			MorphemeExport::exportTransitConditionSet(nodeExport, stateDef->getNodeID(), indices);
 		}
 	}
 }
