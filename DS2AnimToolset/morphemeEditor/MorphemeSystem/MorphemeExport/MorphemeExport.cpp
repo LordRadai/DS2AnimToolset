@@ -20,7 +20,15 @@ namespace
 
 		MR::NodeDef* parent = nodeDef->getParentNodeDef();
 
-		if ((parent == nullptr) || (parent->getNodeTypeID() != NODE_TYPE_STATE_MACHINE))
+		while (true)
+		{
+			if (parent == nullptr || (parent->getNodeTypeID() == NODE_TYPE_STATE_MACHINE))
+				break;
+
+			parent = parent->getParentNodeDef();
+		}
+
+		if (parent == nullptr)
 			return;
 
 		MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(parent->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
