@@ -772,6 +772,9 @@ ME::NodeExportXML* MorphemeExport::exportNodeCore(ME::NetworkDefExportXML* netDe
 	ME::NodeExportXML* nodeExportXML = static_cast<ME::NodeExportXML*>(netDefExport->createNode(nodeDef->getNodeID(), nodeDef->getNodeTypeID(), nodeDef->getParentNodeID(), false, netDef->getNodeNameFromNodeID(nodeDef->getNodeID())));
 	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
+	nodeDataBlock->writeUInt(nodeDef->getNumOnEnterMessages(), "NumOnEnterInternalMessageIDs");
+	nodeDataBlock->writeUInt(0, "NumOnEnterExternalMessageIDs");
+
 	return nodeExportXML;
 }
 
@@ -848,6 +851,7 @@ std::vector<StateDef*> getStateMachineNodeChildTransitNodes(MR::NetworkDef* netD
 	return childStates;
 }
 
+//TODO: Revise
 ME::NodeExportXML* MorphemeExport::exportStateMachineNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 {
 	if (nodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
@@ -912,6 +916,8 @@ ME::NodeExportXML* MorphemeExport::exportCPFloatNode(ME::NetworkDefExportXML* ne
 	if (attribData == nullptr)
 		return nullptr;
 
+	nodeDataBlock->writeUInt(0, "InputPathCount");
+
 	nodeDataBlock->writeFloat(attribData->m_value, "DefaultValue_0");
 
 	return nodeExportXML;
@@ -929,6 +935,8 @@ ME::NodeExportXML* MorphemeExport::exportCPVector3Node(ME::NetworkDefExportXML* 
 
 	if (attribData == nullptr)
 		return nullptr;
+
+	nodeDataBlock->writeUInt(0, "InputPathCount");
 
 	nodeDataBlock->writeFloat(attribData->m_value[0], "DefaultValue_0");
 	nodeDataBlock->writeFloat(attribData->m_value[1], "DefaultValue_1");
@@ -949,6 +957,8 @@ ME::NodeExportXML* MorphemeExport::exportCPVector4Node(ME::NetworkDefExportXML* 
 
 	if (attribData == nullptr)
 		return nullptr;
+
+	nodeDataBlock->writeUInt(0, "InputPathCount");
 
 	nodeDataBlock->writeFloat(attribData->m_value[0], "DefaultValue_0");
 	nodeDataBlock->writeFloat(attribData->m_value[1], "DefaultValue_1");
@@ -971,6 +981,7 @@ ME::NodeExportXML* MorphemeExport::exportCPBoolNode(ME::NetworkDefExportXML* net
 	if (attribData == nullptr)
 		return nullptr;
 
+	nodeDataBlock->writeUInt(0, "InputPathCount");
 	nodeDataBlock->writeBool(attribData->m_value, "DefaultFlag");
 
 	return nodeExportXML;
@@ -1006,6 +1017,8 @@ ME::NodeExportXML* MorphemeExport::exportCPUIntNode(ME::NetworkDefExportXML* net
 
 	if (attribData == nullptr)
 		return nullptr;
+
+	nodeDataBlock->writeUInt(0, "InputPathCount");
 
 	nodeDataBlock->writeUInt(attribData->m_value, "DefaultInt");
 
