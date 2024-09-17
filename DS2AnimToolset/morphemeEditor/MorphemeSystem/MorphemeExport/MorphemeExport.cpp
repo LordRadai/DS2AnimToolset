@@ -559,6 +559,35 @@ ME::NetworkDefExportXML* MorphemeExport::exportNetwork(MR::NetworkDef* netDef, M
 	return netDefExport;
 }
 
+void setTransitReferences(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
+{
+	MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
+
+	MR::NodeDef* parent = nodeDef->getParentNodeDef();
+
+	if (parent->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+		return;
+	
+	MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(parent->getAttribData(ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+	
+	MR::StateDef* targetStateDef = nullptr;
+	for (size_t i = 0; i < stateMachineDef->getNumStates(); i++)
+	{
+		MR::StateDef* stateDef = stateMachineDef->getStateDef(i);
+
+		if (stateDef->getNodeID() == nodeDef->getNodeID())
+		{
+			targetStateDef = stateDef;
+			break;
+		}
+	}
+
+	if (targetStateDef)
+	{
+		int numTransitToTarget = targetStateDef->getNumExitTransitionStates();
+	}
+}
+
 ME::NodeExportXML* MorphemeExport::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId)
 {
 	MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
@@ -851,16 +880,9 @@ std::vector<StateDef*> getStateMachineNodeChildTransitNodes(MR::NetworkDef* netD
 	return childStates;
 }
 
-//TODO: Revise
-ME::NodeExportXML* MorphemeExport::exportStateMachineNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+void writeStateMachineStatesInfo(MR::NodeDef* nodeDef, ME::DataBlockExportXML* nodeDataBlock)
 {
-	if (nodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
-		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_STATE_MACHINE, nodeDef->getNodeTypeID());
-
-	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
-	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
-
-	MR::AttribDataStateMachineDef* attribData = static_cast<MR::AttribDataStateMachineDef*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+	MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
 
 	std::vector<StateDef*> childNodes = getStateMachineNodeChildNodes(netDef, nodeDef);
 
@@ -869,7 +891,7 @@ ME::NodeExportXML* MorphemeExport::exportStateMachineNode(ME::NetworkDefExportXM
 
 	if (childNodeCount)
 	{
-		for (size_t i = 0; i < childNodeCount; i++)
+		for (int i = 0; i < childNodeCount; i++)
 		{
 			char paramName[256];
 			sprintf_s(paramName, "RuntimeChildNodeID_%i", i);
@@ -881,11 +903,11 @@ ME::NodeExportXML* MorphemeExport::exportStateMachineNode(ME::NetworkDefExportXM
 	std::vector<StateDef*> childTransitNodes = getStateMachineNodeChildTransitNodes(netDef, nodeDef);
 
 	int childTransitCount = childTransitNodes.size();
-	nodeDataBlock->writeUInt(childTransitCount, "ChildTransitCount");
+	nodeDataBlock->writeUInt(childTransitCount, "ChildTransitionCount");
 
 	if (childTransitCount)
 	{
-		for (size_t i = 0; i < childTransitCount; i++)
+		for (int i = 0; i < childTransitCount; i++)
 		{
 			char paramName[256];
 			sprintf_s(paramName, "RuntimeChildTransitID_%i", i);
@@ -894,11 +916,25 @@ ME::NodeExportXML* MorphemeExport::exportStateMachineNode(ME::NetworkDefExportXM
 		}
 	}
 
-	int defaultStateID = attribData->getStateDef(attribData->getDefaultStartingStateID())->getNodeID();
-	nodeDataBlock->writeUInt(defaultStateID, "DefaultNodeID");
-
 	if ((childTransitCount + childNodeCount) != nodeDef->getNumChildNodes())
 		g_appLog->panicMessage("Total parsed node count is different from the total node children count (expected %d, got %d)\n", nodeDef->getNumChildNodes(), childTransitCount + childNodeCount);
+}
+
+//TODO: Revise
+ME::NodeExportXML* MorphemeExport::exportStateMachineNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_STATE_MACHINE, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	MR::AttribDataStateMachineDef* attribData = static_cast<MR::AttribDataStateMachineDef*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+	writeStateMachineStatesInfo(nodeDef, nodeDataBlock);
+
+	int defaultStateID = attribData->getStateDef(attribData->getDefaultStartingStateID())->getNodeID();
+	nodeDataBlock->writeUInt(defaultStateID, "DefaultNodeID");
 	
 	return nodeExportXML;
 }
