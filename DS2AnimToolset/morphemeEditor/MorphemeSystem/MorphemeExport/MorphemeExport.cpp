@@ -14,6 +14,53 @@
 
 namespace
 {
+	void setTransitReferences(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
+	{
+		MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
+
+		MR::NodeDef* parent = nodeDef->getParentNodeDef();
+
+		if ((parent == nullptr) || (parent->getNodeTypeID() != NODE_TYPE_STATE_MACHINE))
+			return;
+
+		MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(parent->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+		MR::StateDef* targetStateDef = nullptr;
+		for (int i = 0; i < stateMachineDef->getNumStates(); i++)
+		{
+			MR::StateDef* stateDef = stateMachineDef->getStateDef(i);
+
+			if (stateDef->getNodeID() == nodeDef->getNodeID())
+			{
+				targetStateDef = stateDef;
+				break;
+			}
+		}
+
+		if (targetStateDef)
+		{
+			for (size_t i = 0; i < targetStateDef->getNumExitConditions(); i++)
+			{
+				MR::TransitConditionDef* transitConditionDef = stateMachineDef->getConditionDef(targetStateDef->getExitConditionStateMachineIndex(i));
+				MorphemeExport::exportTransitCondition(nodeExport, transitConditionDef);
+			}
+
+			for (size_t i = 0; i < targetStateDef->getNumExitTransitionStates(); i++)
+			{
+				MR::StateDef* stateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
+
+				int numIndices = stateDef->getNumExitTransitionStates();
+
+				std::vector<unsigned int> indices;
+				indices.reserve(numIndices);
+				for (size_t j = 0; j < numIndices; j++)
+					indices.push_back(stateDef->getExitConditionStateMachineIndex(j));
+
+				MorphemeExport::exportTransitConditionSet(nodeExport, stateDef->getNodeID(), indices);
+			}
+		}
+	}
+
 	void writeDurationBlendFlags(MR::AttribDataUInt* durationEventMatchingOpAttrib, ME::DataBlockExportXML* attribDataBlock)
 	{
 		bool durationEventBlendPassThrough = false;
@@ -664,58 +711,8 @@ ME::ConditionExportXML* MorphemeExport::exportTransitCondition(ME::NodeExportXML
 		// Handle default case
 		break;
 	}
-}
 
-void writeConditionSet(MR::StateDef* stateDef, ME::NodeExportXML* nodeExportXML, int idx)
-{
-
-}
-
-void setTransitReferences(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
-{
-	MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
-
-	MR::NodeDef* parent = nodeDef->getParentNodeDef();
-
-	if ((parent == nullptr) || (parent->getNodeTypeID() != NODE_TYPE_STATE_MACHINE))
-		return;
-	
-	MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(parent->getAttribData(ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
-	
-	MR::StateDef* targetStateDef = nullptr;
-	for (int i = 0; i < stateMachineDef->getNumStates(); i++)
-	{
-		MR::StateDef* stateDef = stateMachineDef->getStateDef(i);
-
-		if (stateDef->getNodeID() == nodeDef->getNodeID())
-		{
-			targetStateDef = stateDef;
-			break;
-		}
-	}
-
-	if (targetStateDef)
-	{
-		for (size_t i = 0; i < targetStateDef->getNumExitConditions(); i++)
-		{
-			MR::TransitConditionDef* transitConditionDef = stateMachineDef->getConditionDef(targetStateDef->getExitConditionStateMachineIndex(i));
-			MorphemeExport::exportTransitCondition(nodeExport, transitConditionDef);
-		}
-
-		for (size_t i = 0; i < targetStateDef->getNumExitTransitionStates(); i++)
-		{
-			MR::StateDef* stateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
-
-			int numIndices = stateDef->getNumExitTransitionStates();
-
-			std::vector<unsigned int> indices;
-			indices.reserve(numIndices);
-			for (size_t j = 0; j < numIndices; j++)
-				indices.push_back(stateDef->getExitConditionStateMachineIndex(j));
-
-			MorphemeExport::exportTransitConditionSet(nodeExport, stateDef->getNodeID(), indices);
-		}
-	}
+	return conditionExport;
 }
 
 ME::NodeExportXML* MorphemeExport::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId)
