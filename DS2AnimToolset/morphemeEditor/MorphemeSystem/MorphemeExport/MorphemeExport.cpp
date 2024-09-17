@@ -9,6 +9,7 @@
 #include "morpheme/Nodes/mrNodeBlend2.h"
 #include "morpheme/Nodes/mrNodeBlend2SyncEvents.h"
 #include "morpheme/Nodes/mrNodePassThrough.h"
+#include "morpheme/Nodes/mrNodeMirrorTransforms.h"
 #include "assetProcessor/include/assetProcessor/BlendNodeBuilderUtils.h"
 
 namespace
@@ -254,6 +255,19 @@ namespace
 			return false;
 
 		return true;
+	}
+
+	void writeMirrorTransformEventPassThrough(ME::DataBlockExportXML* attribDataBlock, MR::NodeDef* nodeDef)
+	{
+		bool eventPassThrough = false;
+
+		MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TIME_POS);
+		const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+		if (taskQueueFn == MR::nodeMirrorQueueTimePos)
+			eventPassThrough = true;
+
+		attribDataBlock->writeBool(eventPassThrough, "EventPassThrough");
 	}
 }
 
@@ -659,7 +673,7 @@ ME::NodeExportXML* MorphemeExport::exportNode(ME::NetworkDefExportXML* netDefExp
     case NODE_TYPE_PASSTHROUGH:
         return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_MIRROR_TRANSFORMS_ID:
-        return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+        return MorphemeExport::exportMirrorTransformNode(netDefExport, netDef, nodeDef);
     case NODE_TYPE_BASIC_UNEVEN_TERRAIN:
         return MorphemeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
     case NODE_TYPE_ACTIVE_STATE:
@@ -1042,6 +1056,44 @@ ME::NodeExportXML* MorphemeExport::exportAnimSyncEventsNode(ME::NetworkDefExport
 			nodeDataBlock->writeFloat(sourceAnim->m_startSyncEventIndex, paramName);
 		}
 	}
+
+	return nodeExportXML;
+}
+
+ME::NodeExportXML* MorphemeExport::exportMirrorTransformNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+{
+	if (nodeDef->getNodeTypeID() != NODE_MIRROR_TRANSFORMS_ID)
+		g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_MIRROR_TRANSFORMS_ID, nodeDef->getNodeTypeID());
+
+	ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+	ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+	int numAnimSets = netDef->getNumAnimSets();
+
+	nodeDataBlock->writeInt(nodeDef->getChildNodeID(0), "InputNodeID");
+	writeNumAnimSets(nodeDataBlock, numAnimSets);
+
+	for (MR::AnimSetIndex animSetIndex = 0; animSetIndex < numAnimSets; animSetIndex++)
+	{
+		CHAR paramName[256];
+
+		sprintf_s(paramName, "NonMirroredIdCount_%d", animSetIndex + 1); // We add one to the index as LUA arrays start at 1 and the manifest was written out using LUA array indices
+		
+		MR::AttribDataIntArray* unfilteredBonesArray = static_cast<MR::AttribDataIntArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BONE_IDS, animSetIndex));
+
+		nodeDataBlock->writeInt(unfilteredBonesArray->m_numValues, paramName);
+
+		for (int k = 0; k < unfilteredBonesArray->m_numValues; k++)
+		{
+			sprintf_s(paramName, "Id_%d_%d", animSetIndex + 1, k + 1);
+			nodeDataBlock->writeUInt(unfilteredBonesArray->m_values[k], paramName);
+		}
+
+		MR::AttribDataInt* eventOffset = static_cast<MR::AttribDataInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SYNC_EVENT_OFFSET, animSetIndex));
+		nodeDataBlock->writeUInt(eventOffset->m_value, "EventOffset");
+	}
+
+	writeMirrorTransformEventPassThrough(nodeDataBlock, nodeDef);
 
 	return nodeExportXML;
 }
