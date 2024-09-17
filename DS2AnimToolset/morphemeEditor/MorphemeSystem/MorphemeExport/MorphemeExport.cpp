@@ -616,7 +616,7 @@ ME::ConditionSetExportXML* MorphemeExport::exportTransitConditionSet(ME::NodeExp
 
 ME::ConditionExportXML* MorphemeExport::exportTransitCondition(ME::NodeExportXML* nodeExport, MR::TransitConditionDef* transitCondDef)
 {
-	int idx = nodeExport->getNumCommonConditions();
+	int idx = nodeExport->getNumConditions();
 
 	MR::TransitConditType type = transitCondDef->getType();
 	ME::ConditionExportXML* conditionExport = static_cast<ME::ConditionExportXML*>(nodeExport->createCondition(idx, type));
