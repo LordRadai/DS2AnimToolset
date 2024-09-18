@@ -208,6 +208,43 @@ namespace MorphemeExport
 			dataBlock->writeFloat(transitCondDef->getEventRangeStart(), "EventPosition");
 		}
 
+		void exportTransitConditionNodeActive(MR::TransitConditionDefNodeActive* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_NODE_ACTIVE_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_NODE_ACTIVE_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeUInt(transitCondDef->getNodeID(), "NodeID");
+		}
+
+		void exportTransitConditionDiscreteEventTrigger(MR::TransitConditionDefDiscreteEventTriggered* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_DISCRETE_EVENT_TRIGGERED_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_DISCRETE_EVENT_TRIGGERED_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeUInt(transitCondDef->getEventUserDataTrigger(), "EventUserTypeID");
+		}
+
+		void exportTransitConditionRayHit(MR::TransitConditionDefRayHit* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_RAY_HIT_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_RAY_HIT_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeInt(transitCondDef->m_hitMode, "HitMode");
+			dataBlock->writeBool(transitCondDef->m_useLocalOrientation, "UseLocalOrientation");
+			dataBlock->writeFloat(transitCondDef->m_rayStartX, "RayStartX");
+			dataBlock->writeFloat(transitCondDef->m_rayStartY, "RayStartY");
+			dataBlock->writeFloat(transitCondDef->m_rayStartZ, "RayStartZ");
+			dataBlock->writeFloat(transitCondDef->m_rayDeltaX, "RayDeltaX");
+			dataBlock->writeFloat(transitCondDef->m_rayDeltaY, "RayDeltaY");
+			dataBlock->writeFloat(transitCondDef->m_rayDeltaZ, "RayDeltaZ");
+		}
+
 		void exportTransitConditionOnMessage(MR::TransitConditionDefOnMessage* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
 			if (transitCondDef->getType() != TRANSCOND_ON_MESSAGE_ID)
@@ -227,7 +264,7 @@ namespace MorphemeExport
 				exportTransitConditionOnMessage(static_cast<MR::TransitConditionDefOnMessage*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_DISCRETE_EVENT_TRIGGERED_ID:
-				// Handle case for TRANSCOND_DISCRETE_EVENT_TRIGGERED_ID
+				exportTransitConditionDiscreteEventTrigger(static_cast<MR::TransitConditionDefDiscreteEventTriggered*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_CROSSED_DURATION_FRACTION_ID:
 				// Handle case for TRANSCOND_CROSSED_DURATION_FRACTION_ID
@@ -256,10 +293,10 @@ namespace MorphemeExport
 				// Handle case for TRANSCOND_GROUND_CONTACT_ID
 				break;
 			case TRANSCOND_RAY_HIT_ID:
-				// Handle case for TRANSCOND_RAY_HIT_ID
+				exportTransitConditionRayHit(static_cast<MR::TransitConditionDefRayHit*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_NODE_ACTIVE_ID:
-				// Handle case for TRANSCOND_NODE_ACTIVE_ID
+				exportTransitConditionNodeActive(static_cast<MR::TransitConditionDefNodeActive*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_IN_DURATION_EVENT_ID:
 				exportTransitConditionInDurationEvent(static_cast<MR::TransitConditionDefInDurationEvent*>(transitCondDef), conditionExport);

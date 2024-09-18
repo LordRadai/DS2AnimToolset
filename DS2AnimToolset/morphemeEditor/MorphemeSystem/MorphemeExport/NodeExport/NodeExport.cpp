@@ -49,7 +49,7 @@ namespace MorphemeExport
 						indices.push_back(MRUtils::getConditionIndexByID(targetStateDef, conditionID));
 					}
 
-					int targetNodeID = stateMachineDef->getStateDef(transitStateDef->getTransitDestinationStateID())->getNodeID();
+					int targetNodeID = transitStateDef->getNodeID();
 					MorphemeExport::TransitConditionExport::exportTransitConditionSet(nodeExport, targetNodeID, indices);
 				}
 			}
