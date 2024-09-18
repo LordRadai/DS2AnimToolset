@@ -484,6 +484,7 @@ namespace MorphemeExport
 				exportTransitConditionOnCPBoolSet(static_cast<MR::TransitConditionDefControlParamBoolSet*>(transitCondDef), conditionExport);
 				break;
 			default:
+				g_appLog->panicMessage("Unknown TransitConditType %d", transitCondDef->getType());
 				break;
 			}
 		}
