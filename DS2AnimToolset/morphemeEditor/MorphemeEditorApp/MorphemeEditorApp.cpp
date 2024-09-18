@@ -1140,7 +1140,9 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
+#ifdef _DEBUG
 	exportNetworkDefFnTables(netDef, path + L"fnTables.txt");
+#endif
 
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for c%04d\n", chrName);
 
@@ -1324,7 +1326,9 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 
 	g_workerThread.load()->addProcess("Exporting model", 1);
 
+#ifdef _DEBUG
 	exportFlverToMorphemeBoneMap(model, path + L"bone_map.txt");
+#endif
 
 	switch (this->m_taskFlags.exportFormat)
 	{

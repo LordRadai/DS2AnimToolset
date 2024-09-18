@@ -15,6 +15,26 @@ namespace MRUtils
 		}
 	}
 
+	MR::NodeDef* getAnimNodeByAnimID(MR::NetworkDef* netDef, int assetId)
+	{
+		int numNodes = netDef->getNumNodeDefs();
+
+		for (int idx = 0; idx < numNodes; idx++)
+		{
+			MR::NodeDef* node = netDef->getNodeDef(idx);
+
+			if (node->getNodeTypeID() == NODE_TYPE_ANIM_EVENTS)
+			{
+				MR::AttribDataSourceAnim* source_anim = (MR::AttribDataSourceAnim*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM);
+
+				if (source_anim && (source_anim->m_animAssetID == assetId))
+					return node;
+			}
+		}
+
+		return nullptr;
+	}
+
 	MR::StateDef* getTargetNodeStateDef(short nodeID, MR::AttribDataStateMachineDef* stateMachineDef)
 	{
 		for (int i = 0; i < stateMachineDef->getNumStates(); i++)

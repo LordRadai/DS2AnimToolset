@@ -1,6 +1,7 @@
 #include "MorphemeExport.h"
 #include "RCore.h"
 #include "extern.h"
+#include "MorphemeSystem/MRUtils/MRUtils.h"
 #include "morpheme/mrCharacterControllerDef.h"
 #include "morpheme/mrMirroredAnimMapping.h"
 
@@ -9,42 +10,20 @@
 #include "NodeExport/ControlParamNodeExport.h"
 #include "NodeExport/BlendNodeExport.h"
 
-using namespace MR;
-
-MR::NodeDef* getAnimNodeByAnimID(MR::NetworkDef* netDef, int assetId)
-{
-	int numNodes = netDef->getNumNodeDefs();
-
-	for (int idx = 0; idx < numNodes; idx++)
-	{
-		MR::NodeDef* node = netDef->getNodeDef(idx);
-
-		if (node->getNodeTypeID() == NODE_TYPE_ANIM_EVENTS)
-		{
-			MR::AttribDataSourceAnim* source_anim = (MR::AttribDataSourceAnim*)node->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM);
-
-			if (source_anim && (source_anim->m_animAssetID == assetId))
-				return node;
-		}
-	}
-
-	return nullptr;
-}
-
 namespace MorphemeExport
 {
 	ME::TakeListXML* exportAnimMarkup(MorphemeCharacterDef* character, int animId, std::wstring dstFileName)
 	{
 		MR::NetworkDef* netDef = character->getNetworkDef();
 
-		MR::NodeDef* animNode = getAnimNodeByAnimID(netDef, animId);
+		MR::NodeDef* animNode = MRUtils::getAnimNodeByAnimID(netDef, animId);
 
 		if (animNode == nullptr)
 			return nullptr;
 
-		MR::AttribDataBool* loopAttr = static_cast<MR::AttribDataBool*>(animNode->getAttribData(ATTRIB_SEMANTIC_LOOP));
-		MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(animNode->getAttribData(ATTRIB_SEMANTIC_SOURCE_ANIM));
-		MR::AttribDataSourceEventTrackSet* sourceEvents = static_cast<MR::AttribDataSourceEventTrackSet*>(animNode->getAttribData(ATTRIB_SEMANTIC_SOURCE_EVENT_TRACKS));
+		MR::AttribDataBool* loopAttr = static_cast<MR::AttribDataBool*>(animNode->getAttribData(MR::ATTRIB_SEMANTIC_LOOP));
+		MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(animNode->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM));
+		MR::AttribDataSourceEventTrackSet* sourceEvents = static_cast<MR::AttribDataSourceEventTrackSet*>(animNode->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_EVENT_TRACKS));
 
 		bool loop = false;
 
@@ -190,7 +169,7 @@ namespace MorphemeExport
 
 		if (netDef->getNodeDef(0)->getNumAttribDataHandles() == 4)
 		{
-			MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+			MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
 
 			for (size_t i = 0; i < mirroredMapping->getNumMappings(); i++)
 				rigExport->createJointMapping(i, mirroredMapping->getLeftBone(i), mirroredMapping->getRightBone(i));
@@ -223,7 +202,7 @@ namespace MorphemeExport
 
 			if (netDef->getNodeDef(0)->getNumAttribDataHandles() == 4)
 			{
-				MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+				MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
 
 				if (mirroredMapping)
 				{
