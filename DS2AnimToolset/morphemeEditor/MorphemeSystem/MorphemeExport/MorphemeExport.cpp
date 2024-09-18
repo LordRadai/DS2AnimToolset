@@ -18,29 +18,31 @@ namespace
 	{
 		MR::StateDef* globalStateDef = stateMachineDef->getGlobalStateDef();
 
+		int numConditions = globalStateDef->getNumExitConditions();
+
+		for (size_t i = 0; i < numConditions; i++)
+		{
+			int conditionIndex = globalStateDef->getExitConditionStateMachineIndex(i);
+			MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
+
+			MorphemeExport::TransitExport::exportTransitCommonCondition(nodeExport, transitCondDef);
+		}
+
 		for (int i = 0; i < globalStateDef->getNumExitTransitionStates(); i++)
 		{
-			MR::StateDef* stateDef = stateMachineDef->getStateDef(globalStateDef->getExitTransitionStateID(i));
+			MR::StateDef* transitStateDef = stateMachineDef->getStateDef(globalStateDef->getExitTransitionStateID(i));
 
-			//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
-			assert(stateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
-
-			int numConditions = stateDef->getNumEntryConditions();
+			assert(transitStateDef->getNumEntryConditions() != 0);
 
 			std::vector<unsigned int> indices;
 			indices.reserve(numConditions);
+			for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
+				indices.push_back(transitStateDef->getEntryConditionStateMachineIndex(j));
 
-			for (size_t j = 0; j < numConditions; j++)
-			{
-				int conditionIndex = stateDef->getEntryConditionStateMachineIndex(j);
+			//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
+			assert(transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
 
-				MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
-
-				indices.push_back(j);
-				MorphemeExport::TransitExport::exportTransitCommonCondition(nodeExport, transitCondDef);
-			}
-
-			MorphemeExport::TransitExport::exportTransitCommonConditionSet(nodeExport, stateDef->getTransitDestinationStateID(), indices);
+			MorphemeExport::TransitExport::exportTransitCommonConditionSet(nodeExport, transitStateDef->getTransitDestinationStateID(), indices);
 		}
 	}
 
@@ -77,26 +79,31 @@ namespace
 
 		if (targetStateDef)
 		{
-			for (size_t i = 0; i < targetStateDef->getNumExitTransitionStates(); i++)
-			{
-				MR::StateDef* stateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
+			int numConditions = targetStateDef->getNumExitConditions();
 
-				int numConditions = stateDef->getNumEntryConditions();
+			for (size_t i = 0; i < numConditions; i++)
+			{
+				int conditionIndex = targetStateDef->getExitConditionStateMachineIndex(i);
+				MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
+
+				MorphemeExport::TransitExport::exportTransitCommonCondition(nodeExport, transitCondDef);
+			}
+
+			for (int i = 0; i < targetStateDef->getNumExitTransitionStates(); i++)
+			{
+				MR::StateDef* transitStateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
+
+				assert(transitStateDef->getNumEntryConditions() != 0);
 
 				std::vector<unsigned int> indices;
 				indices.reserve(numConditions);
+				for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
+					indices.push_back(transitStateDef->getEntryConditionStateMachineIndex(j));
 
-				for (size_t j = 0; j < numConditions; j++)
-				{
-					int conditionIndex = stateDef->getEntryConditionStateMachineIndex(j);
+				//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
+				assert(transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
 
-					MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
-
-					indices.push_back(j);
-					MorphemeExport::TransitExport::exportTransitCommonCondition(nodeExport, transitCondDef);
-				}
-
-				MorphemeExport::TransitExport::exportTransitCommonConditionSet(nodeExport, stateDef->getTransitDestinationStateID(), indices);
+				MorphemeExport::TransitExport::exportTransitCommonConditionSet(nodeExport, transitStateDef->getTransitDestinationStateID(), indices);
 			}
 		}
 	}
@@ -766,7 +773,7 @@ namespace MorphemeExport
 
 		ME::ConditionSetExportXML* exportTransitCommonConditionSet(ME::NodeExportXML* nodeExport, int targetNodeID, std::vector<unsigned int>& indices)
 		{
-			int idx = nodeExport->getNumConditionSets();
+			int idx = nodeExport->getNumCommonConditionSets();
 			ME::ConditionSetExportXML* conditionSet = static_cast<ME::ConditionSetExportXML*>(nodeExport->createCommonConditionSet(idx, targetNodeID, indices));
 
 			return conditionSet;
@@ -774,7 +781,7 @@ namespace MorphemeExport
 
 		ME::ConditionExportXML* exportTransitCommonCondition(ME::NodeExportXML* nodeExport, MR::TransitConditionDef* transitCondDef)
 		{
-			int idx = nodeExport->getNumConditions();
+			int idx = nodeExport->getNumCommonConditions();
 
 			MR::TransitConditType type = transitCondDef->getType();
 			ME::ConditionExportXML* conditionExport = static_cast<ME::ConditionExportXML*>(nodeExport->createCommonCondition(idx, type));
