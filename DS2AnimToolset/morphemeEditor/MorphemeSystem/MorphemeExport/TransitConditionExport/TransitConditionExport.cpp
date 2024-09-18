@@ -228,6 +228,41 @@ namespace MorphemeExport
 			dataBlock->writeUInt(transitCondDef->getEventUserDataTrigger(), "EventUserTypeID");
 		}
 
+		void exportTransitConditionCrossedDurationFraction(MR::TransitConditionDefCrossedDurationFraction* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_CROSSED_DURATION_FRACTION_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CROSSED_DURATION_FRACTION_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeFloat(transitCondDef->getTriggerFraction(), "TestFraction");
+		}
+
+		void exportTransitConditionCrossedCurveEventValueDecreasing(MR::TransitConditionDefCrossedCurveEventValueDecreasing* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			int eventTrackUserData = transitCondDef->getEventTrackUserData();
+			int eventUserData = transitCondDef->getEventUserData();
+
+			bool useEventTrackUserData = true;
+			if (eventTrackUserData == MR::USER_DATA_UNSPECIFIED)
+				useEventTrackUserData = false;
+
+			bool useEventUserData = true;
+			if (eventTrackUserData == MR::USER_DATA_UNSPECIFIED)
+				useEventUserData = false;
+
+			dataBlock->writeBool(useEventTrackUserData, "UseEventTrackUserTypeID");
+			dataBlock->writeInt(eventTrackUserData, "EventTrackUserTypeID");
+			dataBlock->writeBool(useEventUserData, "UseEventUserTypeID");
+			dataBlock->writeInt(eventUserData, "EventUserTypeID");
+			dataBlock->writeFloat(transitCondDef->getMonitoringValue(), "TestValue");
+		}
+
 		void exportTransitConditionRayHit(MR::TransitConditionDefRayHit* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
 			if (transitCondDef->getType() != TRANSCOND_RAY_HIT_ID)
@@ -267,7 +302,7 @@ namespace MorphemeExport
 				exportTransitConditionDiscreteEventTrigger(static_cast<MR::TransitConditionDefDiscreteEventTriggered*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_CROSSED_DURATION_FRACTION_ID:
-				// Handle case for TRANSCOND_CROSSED_DURATION_FRACTION_ID
+				exportTransitConditionCrossedDurationFraction(static_cast<MR::TransitConditionDefCrossedDurationFraction*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_CROSSED_SYNC_EVENT_BOUNDARY_ID:
 				exportTransitConditionCrossedSyncEventBoundary(static_cast<MR::TransitConditionDefInSyncEventRange*>(transitCondDef), conditionExport);
@@ -278,19 +313,10 @@ namespace MorphemeExport
 			case TRANSCOND_FALSE_ID:
 				break;
 			case TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID:
-				// Handle case for TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID
+				exportTransitConditionCrossedCurveEventValueDecreasing(static_cast<MR::TransitConditionDefCrossedCurveEventValueDecreasing*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_IN_SYNC_EVENT_RANGE_ID:
 				exportTransitConditionInSyncEventRange(static_cast<MR::TransitConditionDefInSyncEventRange*>(transitCondDef), conditionExport);
-				break;
-			case TRANSCOND_PHYSICS_AVAILABLE_ID:
-				// Handle case for TRANSCOND_PHYSICS_AVAILABLE_ID
-				break;
-			case TRANSCOND_PHYSICS_IN_USE_ID:
-				// Handle case for TRANSCOND_PHYSICS_IN_USE_ID
-				break;
-			case TRANSCOND_GROUND_CONTACT_ID:
-				// Handle case for TRANSCOND_GROUND_CONTACT_ID
 				break;
 			case TRANSCOND_RAY_HIT_ID:
 				exportTransitConditionRayHit(static_cast<MR::TransitConditionDefRayHit*>(transitCondDef), conditionExport);
@@ -300,12 +326,6 @@ namespace MorphemeExport
 				break;
 			case TRANSCOND_IN_DURATION_EVENT_ID:
 				exportTransitConditionInDurationEvent(static_cast<MR::TransitConditionDefInDurationEvent*>(transitCondDef), conditionExport);
-				break;
-			case TRANSCOND_PHYSICS_MOVING_ID:
-				// Handle case for TRANSCOND_PHYSICS_MOVING_ID
-				break;
-			case TRANSCOND_SK_DEVIATION_ID:
-				// Handle case for TRANSCOND_SK_DEVIATION_ID
 				break;
 			case TRANSCOND_CONTROL_PARAM_FLOAT_GREATER_ID:
 				exportTransitConditionCPFloatGreater(static_cast<MR::TransitConditionDefControlParamFloatGreater*>(transitCondDef), conditionExport);
