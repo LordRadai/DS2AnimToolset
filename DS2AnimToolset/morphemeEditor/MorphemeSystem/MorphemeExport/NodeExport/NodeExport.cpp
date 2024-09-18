@@ -160,8 +160,13 @@ namespace MorphemeExport
 					nodeDataBlock->writeUInt(unfilteredBonesArray->m_values[k], paramName);
 				}
 
-				MR::AttribDataInt* eventOffset = static_cast<MR::AttribDataInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SYNC_EVENT_OFFSET, animSetIndex));
-				nodeDataBlock->writeUInt(eventOffset->m_value, "EventOffset");
+				MR::AttribDataInt* attribDataEventOffset = static_cast<MR::AttribDataInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SYNC_EVENT_OFFSET, animSetIndex));
+				
+				int eventOffset = 0;
+				if (attribDataEventOffset != nullptr)
+					eventOffset = attribDataEventOffset->m_value;
+
+				nodeDataBlock->writeUInt(eventOffset, "EventOffset");
 			}
 
 			bool eventPassThrough = false;
