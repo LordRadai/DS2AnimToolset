@@ -42,7 +42,8 @@ namespace
 			//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
 			assert(transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
 
-			MorphemeExport::TransitExport::exportTransitCommonConditionSet(nodeExport, transitStateDef->getTransitDestinationStateID(), indices);
+			int targetNodeID = stateMachineDef->getStateDef(transitStateDef->getTransitDestinationStateID())->getNodeID();
+			MorphemeExport::TransitExport::exportTransitCommonConditionSet(nodeExport, targetNodeID, indices);
 		}
 	}
 
@@ -103,7 +104,8 @@ namespace
 				//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
 				assert(transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
 
-				MorphemeExport::TransitExport::exportTransitCommonConditionSet(nodeExport, transitStateDef->getTransitDestinationStateID(), indices);
+				int targetNodeID = stateMachineDef->getStateDef(transitStateDef->getTransitDestinationStateID())->getNodeID();
+				MorphemeExport::TransitExport::exportTransitCommonConditionSet(nodeExport, targetNodeID, indices);
 			}
 		}
 	}
