@@ -177,6 +177,37 @@ namespace MorphemeExport
 			dataBlock->writeBool(transitCondDef->getInvertFlag(), "OnNotSet");
 		}
 
+		void exportTransitConditionInSyncEventSegment(MR::TransitConditionDefInSyncEventRange* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_IN_SYNC_EVENT_SEGMENT_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_IN_SYNC_EVENT_SEGMENT_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeFloat(transitCondDef->getEventRangeStart(), "EventIndex");
+		}
+
+		void exportTransitConditionInSyncEventRange(MR::TransitConditionDefInSyncEventRange* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_IN_SYNC_EVENT_RANGE_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_IN_SYNC_EVENT_RANGE_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeFloat(transitCondDef->getEventRangeStart(), "EventRangeStart");
+			dataBlock->writeFloat(transitCondDef->getEventRangeEnd(), "EventRangeEnd");
+		}
+
+		void exportTransitConditionCrossedSyncEventBoundary(MR::TransitConditionDefInSyncEventRange* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_CROSSED_SYNC_EVENT_BOUNDARY_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CROSSED_SYNC_EVENT_BOUNDARY_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeFloat(transitCondDef->getEventRangeStart(), "EventPosition");
+		}
+
 		void exportTransitConditionOnMessage(MR::TransitConditionDefOnMessage* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
 			if (transitCondDef->getType() != TRANSCOND_ON_MESSAGE_ID)
@@ -202,19 +233,18 @@ namespace MorphemeExport
 				// Handle case for TRANSCOND_CROSSED_DURATION_FRACTION_ID
 				break;
 			case TRANSCOND_CROSSED_SYNC_EVENT_BOUNDARY_ID:
-				// Handle case for TRANSCOND_CROSSED_SYNC_EVENT_BOUNDARY_ID
+				exportTransitConditionCrossedSyncEventBoundary(static_cast<MR::TransitConditionDefInSyncEventRange*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_IN_SYNC_EVENT_SEGMENT_ID:
-				// Handle case for TRANSCOND_IN_SYNC_EVENT_SEGMENT_ID
+				exportTransitConditionInSyncEventSegment(static_cast<MR::TransitConditionDefInSyncEventRange*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_FALSE_ID:
-				//Do nothing, this has no conditions
 				break;
 			case TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID:
 				// Handle case for TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID
 				break;
 			case TRANSCOND_IN_SYNC_EVENT_RANGE_ID:
-				exportTransitConditionInDurationEvent(static_cast<MR::TransitConditionDefInDurationEvent*>(transitCondDef), conditionExport);
+				exportTransitConditionInSyncEventRange(static_cast<MR::TransitConditionDefInSyncEventRange*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_PHYSICS_AVAILABLE_ID:
 				// Handle case for TRANSCOND_PHYSICS_AVAILABLE_ID
@@ -228,14 +258,11 @@ namespace MorphemeExport
 			case TRANSCOND_RAY_HIT_ID:
 				// Handle case for TRANSCOND_RAY_HIT_ID
 				break;
-			case TRANSCOND_CONTROL_PARAM_TEST_ID:
-				// Handle case for TRANSCOND_CONTROL_PARAM_TEST_ID
-				break;
 			case TRANSCOND_NODE_ACTIVE_ID:
 				// Handle case for TRANSCOND_NODE_ACTIVE_ID
 				break;
 			case TRANSCOND_IN_DURATION_EVENT_ID:
-				// Handle case for TRANSCOND_IN_DURATION_EVENT_ID
+				exportTransitConditionInDurationEvent(static_cast<MR::TransitConditionDefInDurationEvent*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_PHYSICS_MOVING_ID:
 				// Handle case for TRANSCOND_PHYSICS_MOVING_ID
