@@ -354,6 +354,36 @@ namespace MorphemeExport
 			dataBlock->writeFloat(transitCondDef->getUpperTestValue(), "UpperTestValue");
 		}
 
+		void exportTransitConditionCPIntInRange(MR::TransitConditionDefControlParamIntInRange* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeNetworkNodeId(transitCondDef->getCPConnection()->m_sourceNodeID, "RuntimeNodeID");
+			dataBlock->writeBool(transitCondDef->getInvertFlag(), "NotInRange");
+
+			dataBlock->writeString("int", "DataType");
+			dataBlock->writeInt(transitCondDef->getLowerTestValue(), "LowerTestValue");
+			dataBlock->writeInt(transitCondDef->getUpperTestValue(), "UpperTestValue");
+		}
+
+		void exportTransitConditionCPUIntInRange(MR::TransitConditionDefControlParamUIntInRange* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeNetworkNodeId(transitCondDef->getCPConnection()->m_sourceNodeID, "RuntimeNodeID");
+			dataBlock->writeBool(transitCondDef->getInvertFlag(), "NotInRange");
+
+			dataBlock->writeString("int", "DataType");
+			dataBlock->writeUInt(transitCondDef->getLowerTestValue(), "LowerTestValue");
+			dataBlock->writeUInt(transitCondDef->getUpperTestValue(), "UpperTestValue");
+		}
+
 		void exportTransitConditionOnMessage(MR::TransitConditionDefOnMessage* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
 			if (transitCondDef->getType() != TRANSCOND_ON_MESSAGE_ID)
@@ -442,10 +472,10 @@ namespace MorphemeExport
 				// Handle case for TRANSCOND_CONTROL_PARAM_INT_LESS_ID
 				break;
 			case TRANSCOND_CONTROL_PARAM_INT_IN_RANGE_ID:
-				// Handle case for TRANSCOND_CONTROL_PARAM_INT_IN_RANGE_ID
+				exportTransitConditionCPIntInRange(static_cast<MR::TransitConditionDefControlParamIntInRange*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID:
-				// Handle case for TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID
+				exportTransitConditionCPUIntInRange(static_cast<MR::TransitConditionDefControlParamUIntInRange*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID:
 				exportTransitConditionCPFloatInRange(static_cast<MR::TransitConditionDefControlParamFloatInRange*>(transitCondDef), conditionExport);
@@ -454,7 +484,6 @@ namespace MorphemeExport
 				exportTransitConditionOnCPBoolSet(static_cast<MR::TransitConditionDefControlParamBoolSet*>(transitCondDef), conditionExport);
 				break;
 			default:
-				// Handle default case
 				break;
 			}
 		}
