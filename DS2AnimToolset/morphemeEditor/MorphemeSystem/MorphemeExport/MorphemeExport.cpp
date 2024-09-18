@@ -23,7 +23,7 @@ namespace
 			MR::StateDef* stateDef = stateMachineDef->getStateDef(globalStateDef->getExitTransitionStateID(i));
 
 			//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
-			assert(stateDef->getTransitSourceStateID() == INVALID_NODE_ID);
+			assert(stateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
 
 			int numConditions = stateDef->getNumEntryConditions();
 
@@ -82,7 +82,7 @@ namespace
 				MR::StateDef* stateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
 
 				//This is supposed to be a steady state. If this condition is not met then I'm doing something wrong
-				assert(stateDef->getTransitSourceStateID() != INVALID_NODE_ID);
+				assert(stateDef->getTransitSourceStateID() != MR::INVALID_NODE_ID);
 
 				int numConditions = stateDef->getNumEntryConditions();
 
