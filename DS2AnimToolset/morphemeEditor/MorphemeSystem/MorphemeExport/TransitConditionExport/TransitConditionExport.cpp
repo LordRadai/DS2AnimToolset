@@ -208,7 +208,7 @@ namespace MorphemeExport
 				// Handle case for TRANSCOND_IN_SYNC_EVENT_SEGMENT_ID
 				break;
 			case TRANSCOND_FALSE_ID:
-				// Handle case for TRANSCOND_FALSE_ID
+				//Do nothing, this has no conditions
 				break;
 			case TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID:
 				// Handle case for TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID
