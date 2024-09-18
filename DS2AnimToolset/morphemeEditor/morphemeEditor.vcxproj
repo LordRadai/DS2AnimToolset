@@ -226,6 +226,11 @@
     <ClInclude Include="MorphemeSystem\MorphemeCharacterDef\MorphemeCharacterDef.h" />
     <ClInclude Include="MorphemeSystem\MorphemeCharacter\MorphemeCharacter.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\MorphemeExport.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.h" />
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h" />
     <ClInclude Include="MorphemeSystem\MRUtils\MRUtils.h" />
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h" />
@@ -302,6 +307,11 @@
     <ClCompile Include="MorphemeSystem\MorphemeCharacterDef\MorphemeCharacterDef.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeCharacter\MorphemeCharacter.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\MorphemeExport.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp" />
     <ClCompile Include="MorphemeSystem\MRUtils\MRUtils.cpp" />
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp" />
