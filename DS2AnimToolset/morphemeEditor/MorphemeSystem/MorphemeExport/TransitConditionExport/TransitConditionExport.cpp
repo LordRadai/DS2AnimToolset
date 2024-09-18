@@ -210,9 +210,6 @@ namespace MorphemeExport
 			case TRANSCOND_FALSE_ID:
 				// Handle case for TRANSCOND_FALSE_ID
 				break;
-			case TRANSCOND_CONTROL_PARAM_IN_RANGE_ID:
-				// Handle case for TRANSCOND_CONTROL_PARAM_IN_RANGE_ID
-				break;
 			case TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID:
 				// Handle case for TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID
 				break;
