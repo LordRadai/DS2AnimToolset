@@ -14,17 +14,6 @@
 
 namespace
 {
-	int getConditionIndexByID(MR::StateDef* stateDef, int conditionID)
-	{
-		for (size_t i = 0; i < stateDef->getNumExitConditions(); i++)
-		{
-			if (stateDef->getExitConditionStateMachineIndex(i) == conditionID)
-				return i;
-		}
-
-		return -1;
-	}
-
 	void setActiveStateTransitReferences(MR::AttribDataStateMachineDef* stateMachineDef, ME::NodeExportXML* nodeExport)
 	{
 		MR::StateDef* globalStateDef = stateMachineDef->getGlobalStateDef();
@@ -45,13 +34,12 @@ namespace
 
 			assert(transitStateDef->getNumEntryConditions() != 0);
 
-			//TODO: This needs to be fixed, the indexes are in local space relative to the number of previously exported conditions, not in StateMachine space
 			std::vector<unsigned int> indices;
 			indices.reserve(numConditions);
 			for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
 			{
 				int conditionID = transitStateDef->getEntryConditionStateMachineIndex(j);
-				indices.push_back(getConditionIndexByID(globalStateDef, conditionID));
+				indices.push_back(MRUtils::getConditionIndexByID(globalStateDef, conditionID));
 			}
 
 			//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
@@ -62,38 +50,20 @@ namespace
 		}
 	}
 
-	void setTransitReferences(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
+	void setNodeTransitReferences(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
 	{
 		MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
 
-		MR::NodeDef* parent = nodeDef->getParentNodeDef();
+		MR::NodeDef* parentSM = MRUtils::getParentStateMachineNode(nodeDef);
 
-		while (true)
-		{
-			if (parent == nullptr || (parent->getNodeTypeID() == NODE_TYPE_STATE_MACHINE))
-				break;
-
-			parent = parent->getParentNodeDef();
-		}
-
-		if (parent == nullptr)
+		if (parentSM == nullptr)
 			return;
 
-		MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(parent->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+		MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(parentSM->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
-		MR::StateDef* targetStateDef = nullptr;
-		for (int i = 0; i < stateMachineDef->getNumStates(); i++)
-		{
-			MR::StateDef* stateDef = stateMachineDef->getStateDef(i);
+		MR::StateDef* targetStateDef = MRUtils::getTargetNodeStateDef(nodeDef->getNodeID(), stateMachineDef);
 
-			if (stateDef->getNodeID() == nodeDef->getNodeID())
-			{
-				targetStateDef = stateDef;
-				break;
-			}
-		}
-
-		if (targetStateDef)
+		if (targetStateDef != nullptr)
 		{
 			int numConditions = targetStateDef->getNumExitConditions();
 
@@ -102,7 +72,7 @@ namespace
 				int conditionIndex = targetStateDef->getExitConditionStateMachineIndex(i);
 				MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
 
-				MorphemeExport::TransitExport::exportTransitCommonCondition(nodeExport, transitCondDef);
+				MorphemeExport::TransitExport::exportTransitCondition(nodeExport, transitCondDef);
 			}
 
 			for (int i = 0; i < targetStateDef->getNumExitTransitionStates(); i++)
@@ -111,20 +81,16 @@ namespace
 
 				assert(transitStateDef->getNumEntryConditions() != 0);
 
-				//TODO: This needs to be fixed, the indexes are in local space relative to the number of previously exported conditions, not in StateMachine space
 				std::vector<unsigned int> indices;
 				indices.reserve(numConditions);
 				for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
 				{
 					int conditionID = transitStateDef->getEntryConditionStateMachineIndex(j);
-					indices.push_back(getConditionIndexByID(targetStateDef, conditionID));
+					indices.push_back(MRUtils::getConditionIndexByID(targetStateDef, conditionID));
 				}
 
-				//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
-				assert(transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
-
 				int targetNodeID = stateMachineDef->getStateDef(transitStateDef->getTransitDestinationStateID())->getNodeID();
-				MorphemeExport::TransitExport::exportTransitCommonConditionSet(nodeExport, targetNodeID, indices);
+				MorphemeExport::TransitExport::exportTransitConditionSet(nodeExport, targetNodeID, indices);
 			}
 		}
 	}
@@ -1122,7 +1088,7 @@ namespace MorphemeExport
 				break;
 			}
 
-			setTransitReferences(nodeDef, nodeExport);
+			setNodeTransitReferences(nodeDef, nodeExport);
 
 			return nodeExport;
 		}

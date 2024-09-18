@@ -227,6 +227,7 @@
     <ClInclude Include="MorphemeSystem\MorphemeCharacter\MorphemeCharacter.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\MorphemeExport.h" />
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h" />
+    <ClInclude Include="MorphemeSystem\MRUtils\MRUtils.h" />
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h" />
     <ClInclude Include="PlayerModelPreset\PlayerModelPreset.h" />
     <ClInclude Include="RenderManager\DebugDraw\DebugDraw.h" />
@@ -302,6 +303,7 @@
     <ClCompile Include="MorphemeSystem\MorphemeCharacter\MorphemeCharacter.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\MorphemeExport.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp" />
+    <ClCompile Include="MorphemeSystem\MRUtils\MRUtils.cpp" />
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp" />
     <ClCompile Include="PlayerModelPreset\PlayerModelPreset.cpp" />
     <ClCompile Include="RenderManager\RenderManager.cpp" />
