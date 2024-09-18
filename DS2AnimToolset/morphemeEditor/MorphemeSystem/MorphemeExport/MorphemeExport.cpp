@@ -1,356 +1,40 @@
 #include "MorphemeExport.h"
 #include "RCore.h"
 #include "extern.h"
+
+//Transit conditions
+#include "morpheme/TransitConditions/mrTransitConditionControlParamBoolSet.h"
+#include "morpheme/TransitConditions/mrTransitConditionControlParamFloatGreater.h"
+#include "morpheme/TransitConditions/mrTransitConditionControlParamFloatInRange.h"
+#include "morpheme/TransitConditions/mrTransitConditionControlParamFloatLess.h"
+#include "morpheme/TransitConditions/mrTransitConditionControlParamIntGreater.h"
+#include "morpheme/TransitConditions/mrTransitConditionControlParamIntInRange.h"
+#include "morpheme/TransitConditions/mrTransitConditionControlParamIntLess.h"
+#include "morpheme/TransitConditions/mrTransitConditionControlParamUIntGreater.h"
+#include "morpheme/TransitConditions/mrTransitConditionControlParamUIntInRange.h"
+#include "morpheme/TransitConditions/mrTransitConditionControlParamUIntLess.h"
+#include "morpheme/TransitConditions/mrTransitConditionCrossedCurveEventValueDecreasing.h"
+#include "morpheme/TransitConditions/mrTransitConditionCrossedDurationFraction.h"
+#include "morpheme/TransitConditions/mrTransitConditionDiscreteEventTriggered.h"
+#include "morpheme/TransitConditions/mrTransitConditionFalse.h"
+#include "morpheme/TransitConditions/mrTransitConditionInDurationEvent.h"
+#include "morpheme/TransitConditions/mrTransitConditionInSyncEventRange.h"
+#include "morpheme/TransitConditions/mrTransitConditionNodeActive.h"
+#include "morpheme/TransitConditions/mrTransitConditionOnMessage.h"
+#include "morpheme/TransitConditions/mrTransitConditionRayHit.h"
+
+//Nodes
 #include "morpheme/Nodes/mrNodeStateMachine.h"
-#include "morpheme/mrCharacterControllerDef.h"
-#include "morpheme/mrMirroredAnimMapping.h"
 #include "morpheme/Nodes/mrNodeFeatherBlend2.h"
 #include "morpheme/Nodes/mrNodeFeatherBlend2SyncEvents.h"
 #include "morpheme/Nodes/mrNodeBlend2.h"
 #include "morpheme/Nodes/mrNodeBlend2SyncEvents.h"
 #include "morpheme/Nodes/mrNodePassThrough.h"
 #include "morpheme/Nodes/mrNodeMirrorTransforms.h"
+
+#include "morpheme/mrCharacterControllerDef.h"
+#include "morpheme/mrMirroredAnimMapping.h"
 #include "assetProcessor/include/assetProcessor/BlendNodeBuilderUtils.h"
-
-namespace
-{
-	void setActiveStateTransitReferences(MR::AttribDataStateMachineDef* stateMachineDef, ME::NodeExportXML* nodeExport)
-	{
-		MR::StateDef* globalStateDef = stateMachineDef->getGlobalStateDef();
-
-		int numConditions = globalStateDef->getNumExitConditions();
-
-		for (size_t i = 0; i < numConditions; i++)
-		{
-			int conditionIndex = globalStateDef->getExitConditionStateMachineIndex(i);
-			MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
-
-			MorphemeExport::TransitExport::exportTransitCommonCondition(nodeExport, transitCondDef);
-		}
-
-		for (int i = 0; i < globalStateDef->getNumExitTransitionStates(); i++)
-		{
-			MR::StateDef* transitStateDef = stateMachineDef->getStateDef(globalStateDef->getExitTransitionStateID(i));
-
-			assert(transitStateDef->getNumEntryConditions() != 0);
-
-			std::vector<unsigned int> indices;
-			indices.reserve(numConditions);
-			for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
-			{
-				int conditionID = transitStateDef->getEntryConditionStateMachineIndex(j);
-				indices.push_back(MRUtils::getConditionIndexByID(globalStateDef, conditionID));
-			}
-
-			//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
-			assert(transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
-
-			int targetNodeID = stateMachineDef->getStateDef(transitStateDef->getTransitDestinationStateID())->getNodeID();
-			MorphemeExport::TransitExport::exportTransitCommonConditionSet(nodeExport, targetNodeID, indices);
-		}
-	}
-
-	void setNodeTransitReferences(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
-	{
-		MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
-
-		MR::NodeDef* parentSM = MRUtils::getParentStateMachineNode(nodeDef);
-
-		if (parentSM == nullptr)
-			return;
-
-		MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(parentSM->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
-
-		MR::StateDef* targetStateDef = MRUtils::getTargetNodeStateDef(nodeDef->getNodeID(), stateMachineDef);
-
-		if (targetStateDef != nullptr)
-		{
-			int numConditions = targetStateDef->getNumExitConditions();
-
-			for (size_t i = 0; i < numConditions; i++)
-			{
-				int conditionIndex = targetStateDef->getExitConditionStateMachineIndex(i);
-				MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
-
-				MorphemeExport::TransitExport::exportTransitCondition(nodeExport, transitCondDef);
-			}
-
-			for (int i = 0; i < targetStateDef->getNumExitTransitionStates(); i++)
-			{
-				MR::StateDef* transitStateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
-
-				assert(transitStateDef->getNumEntryConditions() != 0);
-
-				std::vector<unsigned int> indices;
-				indices.reserve(numConditions);
-				for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
-				{
-					int conditionID = transitStateDef->getEntryConditionStateMachineIndex(j);
-					indices.push_back(MRUtils::getConditionIndexByID(targetStateDef, conditionID));
-				}
-
-				int targetNodeID = stateMachineDef->getStateDef(transitStateDef->getTransitDestinationStateID())->getNodeID();
-				MorphemeExport::TransitExport::exportTransitConditionSet(nodeExport, targetNodeID, indices);
-			}
-		}
-	}
-
-	void writeDurationBlendFlags(MR::AttribDataUInt* durationEventMatchingOpAttrib, ME::DataBlockExportXML* attribDataBlock)
-	{
-		bool durationEventBlendPassThrough = false;
-		bool durationEventBlendInSequence = false;
-		bool durationEventBlendSameUserData = false;
-		bool durationEventBlendOnOverlap = false;
-		bool durationEventBlendWithinRange = false;
-
-		if (durationEventMatchingOpAttrib)
-		{
-			switch (durationEventMatchingOpAttrib->m_value)
-			{
-			case DURATION_EVENT_MATCH_PASS_THROUGH:
-				durationEventBlendPassThrough = true;
-				break;
-			case DURATION_EVENT_MATCH_IN_SEQUENCE_SAME_IDS_ON_OVERLAP:
-				durationEventBlendInSequence = true;
-				durationEventBlendSameUserData = true;
-				durationEventBlendOnOverlap = true;
-				break;
-			case DURATION_EVENT_MATCH_IN_SEQUENCE_SAME_IDS_WITHIN_RANGE:
-				durationEventBlendInSequence = true;
-				durationEventBlendSameUserData = true;
-				durationEventBlendWithinRange = true;
-				break;
-			case DURATION_EVENT_MATCH_IN_SEQUENCE_SAME_IDS:
-				durationEventBlendInSequence = true;
-				durationEventBlendSameUserData = true;
-				break;
-			case DURATION_EVENT_MATCH_IN_SEQUENCE_ON_OVERLAP:
-				durationEventBlendInSequence = true;
-				durationEventBlendOnOverlap = true;
-				break;
-			case DURATION_EVENT_MATCH_IN_SEQUENCE_WITHIN_RANGE:
-				durationEventBlendInSequence = true;
-				durationEventBlendWithinRange = true;
-				break;
-			case DURATION_EVENT_MATCH_IN_SEQUENCE:
-				durationEventBlendInSequence = true;
-				break;
-			case DURATION_EVENT_MATCH_SAME_IDS_ON_OVERLAP:
-				durationEventBlendSameUserData = true;
-				durationEventBlendOnOverlap = true;
-				break;
-			case DURATION_EVENT_MATCH_SAME_IDS_WITHIN_RANGE:
-				durationEventBlendSameUserData = true;
-				durationEventBlendWithinRange = true;
-				break;
-			case DURATION_EVENT_MATCH_SAME_IDS:
-				durationEventBlendSameUserData = true;
-				break;
-			case DURATION_EVENT_MATCH_ON_OVERLAP:
-				durationEventBlendOnOverlap = true;
-				break;
-			case DURATION_EVENT_MATCH_WITHIN_RANGE:
-				durationEventBlendWithinRange = true;
-				break;
-			default:
-				g_appLog->panicMessage("Invalid blend matching operation %d\n", durationEventMatchingOpAttrib->m_value);
-				break;
-			}
-		}
-
-		attribDataBlock->writeBool(durationEventBlendPassThrough, "DurationEventBlendPassThrough");
-		attribDataBlock->writeBool(durationEventBlendInSequence, "DurationEventBlendInSequence");
-		attribDataBlock->writeBool(durationEventBlendSameUserData, "DurationEventBlendSameUserData");
-		attribDataBlock->writeBool(durationEventBlendOnOverlap, "DurationEventBlendOnOverlap");
-		attribDataBlock->writeBool(durationEventBlendWithinRange, "DurationEventBlendWithinRange");
-	}
-
-	void writeTimeStretchMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-	{
-		int timeStretchMode = AP::kNodeTimeStretchNone;
-
-		MR::AttribDataUInt* startSyncEventIndex = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_START_SYNC_EVENT_INDEX));
-		MR::AttribDataUInt* durationEventMatchingOpAttrib = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_DURATION_EVENT_MATCHING_OP));
-		MR::AttribDataBool* loop = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_LOOP));
-
-		if (startSyncEventIndex && durationEventMatchingOpAttrib && loop)
-			timeStretchMode = AP::kNodeTimeStretchMatchEvents;
-
-		attribDataBlock->writeInt(timeStretchMode, "TimeStretchMode");
-
-		if (loop)
-			attribDataBlock->writeBool(loop->m_value, "Loop");
-		else
-			attribDataBlock->writeBool(true, "Loop");
-
-		writeDurationBlendFlags(durationEventMatchingOpAttrib, attribDataBlock);
-
-		if (startSyncEventIndex)
-			attribDataBlock->writeInt(startSyncEventIndex->m_value, "StartEventIndex");
-		else
-			attribDataBlock->writeInt(0, "StartEventIndex");
-	}
-
-	void writeFeatherBlendModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-	{
-		AP::NodeBlendModes blendMode = AP::kNodeBlendInvalid;
-
-		MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
-		const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
-		
-		g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRANSFORM_BUFFER fn = %s\n", fnName);
-
-		if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsAddAttAddPos)
-			blendMode == AP::kAddQuatAddPos;
-		else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsAddAttInterpPos)
-			blendMode == AP::kAddQuatInterpPos;
-		else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsInterpAttAddPos)
-			blendMode == AP::kInterpQuatAddPos;
-		else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsInterpAttInterpPos)
-			blendMode == AP::kInterpQuatInterpPos;
-		else
-			g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
-
-		bool additiveBlendAtt = false;
-		bool additiveBlendPos = false;
-
-		switch (blendMode)
-		{
-		case AP::kInterpQuatInterpPos:
-			additiveBlendAtt = false;
-			additiveBlendPos = false;
-			break;
-		case AP::kInterpQuatAddPos:
-			additiveBlendAtt = false;
-			additiveBlendPos = true;
-			break;
-		case AP::kAddQuatInterpPos:
-			additiveBlendAtt = true;
-			additiveBlendPos = false;
-			break;
-		case AP::kAddQuatAddPos:
-			additiveBlendAtt = true;
-			additiveBlendPos = true;
-			break;
-		default:
-			break;
-		}
-
-		attribDataBlock->writeBool(additiveBlendAtt, "AdditiveBlendAttitude");
-		attribDataBlock->writeBool(additiveBlendPos, "AdditiveBlendPosition");
-	}
-
-	void writeBlend2BlendModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-	{
-		AP::NodeBlendModes blendMode = AP::kNodeBlendInvalid;
-
-		MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
-		const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
-
-		g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRANSFORM_BUFFER fn = %s\n", fnName);
-
-		if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttAddPos)
-			blendMode = AP::kAddQuatAddPos;
-		else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttInterpPos)
-			blendMode = AP::kAddQuatInterpPos;
-		else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttAddPos)
-			blendMode = AP::kInterpQuatAddPos;
-		else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttInterpPos)
-			blendMode = AP::kInterpQuatInterpPos;
-		else
-			g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
-
-		attribDataBlock->writeInt(blendMode, "BlendMode");
-	}
-
-	void writeNodeEventBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-	{
-		AP::NodeSampledEventBlendModes eventBlendMode = AP::kSampledEventBlendModeInvalid;
-
-		MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER);
-		const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
-
-		g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER fn = %s\n", fnName);
-
-		if (taskQueueFn == MR::nodeBlend2SyncEventsQueueSampledEventsBuffers)
-			eventBlendMode = AP::kMergeSampledEvents;
-		else if (taskQueueFn == MR::nodeBlend2SyncEventsQueueAddSampledEventsBuffers)
-			eventBlendMode = AP::kAddSampledEvents;
-		else if (taskQueueFn == MR::nodeBlend2QueueSampledEventsBuffers)
-			eventBlendMode = AP::kMergeSampledEvents;
-		else if (taskQueueFn == MR::nodeBlend2QueueAddSampledEventsBuffers)
-			eventBlendMode = AP::kAddSampledEvents;
-		else if (taskQueueFn == MR::queuePassThroughChild0)
-			eventBlendMode = AP::kMergeSampledEvents;
-		else
-			g_appLog->panicMessage("Unexpected task queing function %s\n", fnName);
-
-		attribDataBlock->writeInt(eventBlendMode, "EventsBlendMode");
-	}
-
-	void writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-	{
-		bool slerpTrajPos = false;
-
-		MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM);
-		const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
-
-		g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM fn = %s\n", fnName);
-
-		if ((taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformAddAttSlerpPos) || (taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformInterpAttSlerpPos))
-			slerpTrajPos = true;
-
-		attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
-	}
-
-	void writePassThroughMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-	{
-		short passThroughChildIndex = nodeDef->getPassThroughChildIndex();
-
-		switch (passThroughChildIndex)
-		{
-		case 0:
-			attribDataBlock->writeInt(AP::kNodePassThroughSource0, "PassThroughMode");
-			break;
-		case 1:
-			attribDataBlock->writeInt(AP::kNodePassThroughSource1, "PassThroughMode");
-			break;
-		default:
-			attribDataBlock->writeInt(AP::kNodePassThroughNone, "PassThroughMode");
-			break;
-		}
-	}
-
-	void writeNumAnimSets(ME::DataBlockExportXML* attribDataBlock, int numAnimSets)
-	{
-		attribDataBlock->writeInt(numAnimSets, "NumAnimSets");
-	}
-
-	bool isBlendNodeWrapWeights(MR::NodeDef* nodeDef)
-	{
-		int numSourceNodes = nodeDef->getNumChildNodes();
-
-		MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
-
-		if (weights->m_numValues == numSourceNodes)
-			return false;
-
-		return true;
-	}
-
-	void writeMirrorTransformEventPassThrough(ME::DataBlockExportXML* attribDataBlock, MR::NodeDef* nodeDef)
-	{
-		bool eventPassThrough = false;
-
-		MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TIME_POS);
-		const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
-
-		if (taskQueueFn == MR::nodeMirrorQueueTimePos)
-			eventPassThrough = true;
-
-		attribDataBlock->writeBool(eventPassThrough, "EventPassThrough");
-	}
-}
 
 using namespace MR;
 
@@ -644,12 +328,49 @@ namespace MorphemeExport
 
 	namespace TransitExport
 	{
-		void createConditionExportDataBlock(ME::ConditionExportXML* conditionExport, MR::TransitConditType type)
+		void exportTransitConditionOnCPBoolSet(MR::TransitConditionDefControlParamBoolSet* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			switch (type)
+			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_BOOL_SET_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_BOOL_SET_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeNetworkNodeId(transitCondDef->getCPConnection()->m_sourceNodeID, "RuntimeNodeID");
+			dataBlock->writeBool(transitCondDef->getTestValue(), "TestValue");
+		}
+
+		void exportTransitConditionCPFloatInRange(MR::TransitConditionDefControlParamFloatInRange* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeNetworkNodeId(transitCondDef->getCPConnection()->m_sourceNodeID, "RuntimeNodeID");
+			dataBlock->writeBool(transitCondDef->getInvertFlag(), "NotInRange");
+
+			dataBlock->writeString("float", "DataType");
+			dataBlock->writeFloat(transitCondDef->getLowerTestValue(), "LowerTestValue");
+			dataBlock->writeFloat(transitCondDef->getUpperTestValue(), "UpperTestValue");
+		}
+
+		void exportTransitConditionOnMessage(MR::TransitConditionDefOnMessage* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_ON_MESSAGE_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_ON_MESSAGE_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			dataBlock->writeUInt(transitCondDef->getMessageID(), "MessageID");
+			dataBlock->writeBool(transitCondDef->getInvertFlag(), "OnNotSet");
+		}
+
+		void exportTransitConditionDataBlock(MR::TransitConditionDef* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			switch (transitCondDef->getType())
 			{
 			case TRANSCOND_ON_MESSAGE_ID:
-
+				exportTransitConditionOnMessage(static_cast<MR::TransitConditionDefOnMessage*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_DISCRETE_EVENT_TRIGGERED_ID:
 				// Handle case for TRANSCOND_DISCRETE_EVENT_TRIGGERED_ID
@@ -727,10 +448,10 @@ namespace MorphemeExport
 				// Handle case for TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID
 				break;
 			case TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID:
-				// Handle case for TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID
+				exportTransitConditionCPFloatInRange(static_cast<MR::TransitConditionDefControlParamFloatInRange*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_CONTROL_PARAM_BOOL_SET_ID:
-				// Handle case for TRANSCOND_CONTROL_PARAM_BOOL_SET_ID
+				exportTransitConditionOnCPBoolSet(static_cast<MR::TransitConditionDefControlParamBoolSet*>(transitCondDef), conditionExport);
 				break;
 			default:
 				// Handle default case
@@ -753,7 +474,7 @@ namespace MorphemeExport
 			MR::TransitConditType type = transitCondDef->getType();
 			ME::ConditionExportXML* conditionExport = static_cast<ME::ConditionExportXML*>(nodeExport->createCondition(idx, type));
 
-			createConditionExportDataBlock(conditionExport, type);
+			exportTransitConditionDataBlock(transitCondDef, conditionExport);
 
 			return conditionExport;
 		}
@@ -773,7 +494,7 @@ namespace MorphemeExport
 			MR::TransitConditType type = transitCondDef->getType();
 			ME::ConditionExportXML* conditionExport = static_cast<ME::ConditionExportXML*>(nodeExport->createCommonCondition(idx, type));
 
-			createConditionExportDataBlock(conditionExport, type);
+			exportTransitConditionDataBlock(transitCondDef, conditionExport);
 
 			return conditionExport;
 		}
@@ -781,316 +502,341 @@ namespace MorphemeExport
 	
 	namespace NodeExport
 	{
-		ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId)
+		void setActiveStateTransitReferences(MR::AttribDataStateMachineDef* stateMachineDef, ME::NodeExportXML* nodeExport)
 		{
-			MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
-			MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
+			MR::StateDef* globalStateDef = stateMachineDef->getGlobalStateDef();
 
-			g_appLog->debugMessage(MsgLevel_Debug, "Exporting node %d (typeId=%d)\n", nodeId, nodeTypeID);
+			int numConditions = globalStateDef->getNumExitConditions();
 
-			ME::NodeExportXML* nodeExport = nullptr;
-
-			switch (nodeTypeID)
+			for (size_t i = 0; i < numConditions; i++)
 			{
-			case NODE_TYPE_NETWORK:
-				nodeExport = exportNetworkNode(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_STATE_MACHINE:
-				nodeExport = exportStateMachineNode(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_FLOAT:
-				nodeExport = exportCPFloatNode(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_VECTOR3:
-				nodeExport = exportCPVector3Node(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_VECTOR4:
-				nodeExport = exportCPVector4Node(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_BOOL:
-				nodeExport = exportCPBoolNode(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_INT:
-				nodeExport = exportCPIntNode(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_UINT:
-				nodeExport = exportCPUIntNode(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_PHYSICS_OBJECT_POINTER:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_ANIMATION:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_ANIM_EVENTS:
-				nodeExport = exportAnimSyncEventsNode(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_FILTER_TRANSFORMS:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_BLEND_2:
-				nodeExport = exportBlend2Node(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_BLEND_N:
-				nodeExport = exportBlendNNode(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_SINGLEFRAME:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_FREEZE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_BLEND_2X2:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_BLEND_NXM:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_BLEND_ALL:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_SUBTRACTIVE_BLEND:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_SCATTER_BLEND_1D:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_SCATTER_BLEND_2D:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_SCATTER_BLEND_3D:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_BOOLEAN:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_FUNCTION:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_ARITHMETIC:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_ARITHMETIC_VECTOR3:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC_VECTOR3:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_NOISE_GEN:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_FEATHER_BLEND_2:
-				nodeExport = exportFeatherBlend2Node(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_APPLY_BIND_POSE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_PHYSICS_GROUPER:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_BEHAVIOUR_GROUPER:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_APPLY_GLOBAL_TIME:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_APPLY_PHYSICS_JOINT_LIMITS:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_SET_NON_PHYSICS_TRANSFORMS:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_TWO_BONE_IK:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_LOCK_FOOT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_HEAD_LOOK:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_PHYSICS:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_BEHAVIOUR:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_HIPS_IK:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_PERFORMANCE_BEHAVIOUR:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_PLAY_SPEED_MODIFIER:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_SCALE_TO_DURATION:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_EMIT_JOINT_CP_INFO:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_EMIT_MESSAGE_ON_DISCRETE_EVENT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CLOSEST_ANIM:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_SWITCH:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_SEQUENCE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_PASSTHROUGH:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_MIRROR_TRANSFORMS_ID:
-				nodeExport = exportMirrorTransformNode(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_BASIC_UNEVEN_TERRAIN:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_ACTIVE_STATE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_INT_TO_FLOAT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_RAY_CAST:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_SMOOTH_FLOAT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_RAMP_FLOAT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_FLOATS_TO_VECTOR3:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_FLOAT_TO_INT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_RANDOM_FLOAT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_PHYSICS_INFO:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_CONVERT_TO_CHARACTER_SPACE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_VECTOR3_TO_FLOATS:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_VECTOR3_DOT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_ORIENTATIONINFREEFALL:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_HIT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_ROLLDOWNSTAIRS:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_APPLYIMPULSE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_CONTACTREPORTER:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_VECTOR3_DISTANCE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_VECTOR3_CROSSPRODUCT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_RATE_OF_CHANGE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_VECTOR3_ANGLE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_VECTOR3_NORMALISE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_PHYSICALCONSTRAINT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_FALLOVERWALL:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_RETARGET:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_SCALE_CHARACTER:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_GUN_AIM_IK:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_TRANSIT_SYNC_EVENTS:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_TRANSIT:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_TRANSIT_PHYSICS:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_MODIFY_JOINT_TRANSFORM:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_MODIFY_TRAJECTORY_TRANSFORM:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_SMOOTH_TRANSFORMS:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_EMIT_MESSAGE_AND_CP:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_TRAJECTORY_OVERRIDE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_C_C_OVERRIDE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_LIMB_INFO:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_EXPAND_LIMITS:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_COND_ON_MESSAGE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_COND_CP_COMPARE:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
-				break;
-			case NODE_TYPE_CP_OP_TIME_LAG_CP:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				int conditionIndex = globalStateDef->getExitConditionStateMachineIndex(i);
+				MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
+
+				MorphemeExport::TransitExport::exportTransitCommonCondition(nodeExport, transitCondDef);
+			}
+
+			for (int i = 0; i < globalStateDef->getNumExitTransitionStates(); i++)
+			{
+				MR::StateDef* transitStateDef = stateMachineDef->getStateDef(globalStateDef->getExitTransitionStateID(i));
+
+				assert(transitStateDef->getNumEntryConditions() != 0);
+
+				std::vector<unsigned int> indices;
+				indices.reserve(numConditions);
+				for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
+				{
+					int conditionID = transitStateDef->getEntryConditionStateMachineIndex(j);
+					indices.push_back(MRUtils::getConditionIndexByID(globalStateDef, conditionID));
+				}
+
+				//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
+				assert(transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
+
+				int targetNodeID = stateMachineDef->getStateDef(transitStateDef->getTransitDestinationStateID())->getNodeID();
+				MorphemeExport::TransitExport::exportTransitCommonConditionSet(nodeExport, targetNodeID, indices);
+			}
+		}
+
+		void setNodeTransitReferences(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
+		{
+			MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
+
+			MR::NodeDef* parentSM = MRUtils::getParentStateMachineNode(nodeDef);
+
+			if (parentSM == nullptr)
+				return;
+
+			MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(parentSM->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+			MR::StateDef* targetStateDef = MRUtils::getTargetNodeStateDef(nodeDef->getNodeID(), stateMachineDef);
+
+			if (targetStateDef != nullptr)
+			{
+				int numConditions = targetStateDef->getNumExitConditions();
+
+				for (size_t i = 0; i < numConditions; i++)
+				{
+					int conditionIndex = targetStateDef->getExitConditionStateMachineIndex(i);
+					MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
+
+					MorphemeExport::TransitExport::exportTransitCondition(nodeExport, transitCondDef);
+				}
+
+				for (int i = 0; i < targetStateDef->getNumExitTransitionStates(); i++)
+				{
+					MR::StateDef* transitStateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
+
+					assert(transitStateDef->getNumEntryConditions() != 0);
+
+					std::vector<unsigned int> indices;
+					indices.reserve(numConditions);
+					for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
+					{
+						int conditionID = transitStateDef->getEntryConditionStateMachineIndex(j);
+						indices.push_back(MRUtils::getConditionIndexByID(targetStateDef, conditionID));
+					}
+
+					int targetNodeID = stateMachineDef->getStateDef(transitStateDef->getTransitDestinationStateID())->getNodeID();
+					MorphemeExport::TransitExport::exportTransitConditionSet(nodeExport, targetNodeID, indices);
+				}
+			}
+		}
+
+		void writeDurationBlendFlags(MR::AttribDataUInt* durationEventMatchingOpAttrib, ME::DataBlockExportXML* attribDataBlock)
+		{
+			bool durationEventBlendPassThrough = false;
+			bool durationEventBlendInSequence = false;
+			bool durationEventBlendSameUserData = false;
+			bool durationEventBlendOnOverlap = false;
+			bool durationEventBlendWithinRange = false;
+
+			if (durationEventMatchingOpAttrib)
+			{
+				switch (durationEventMatchingOpAttrib->m_value)
+				{
+				case DURATION_EVENT_MATCH_PASS_THROUGH:
+					durationEventBlendPassThrough = true;
+					break;
+				case DURATION_EVENT_MATCH_IN_SEQUENCE_SAME_IDS_ON_OVERLAP:
+					durationEventBlendInSequence = true;
+					durationEventBlendSameUserData = true;
+					durationEventBlendOnOverlap = true;
+					break;
+				case DURATION_EVENT_MATCH_IN_SEQUENCE_SAME_IDS_WITHIN_RANGE:
+					durationEventBlendInSequence = true;
+					durationEventBlendSameUserData = true;
+					durationEventBlendWithinRange = true;
+					break;
+				case DURATION_EVENT_MATCH_IN_SEQUENCE_SAME_IDS:
+					durationEventBlendInSequence = true;
+					durationEventBlendSameUserData = true;
+					break;
+				case DURATION_EVENT_MATCH_IN_SEQUENCE_ON_OVERLAP:
+					durationEventBlendInSequence = true;
+					durationEventBlendOnOverlap = true;
+					break;
+				case DURATION_EVENT_MATCH_IN_SEQUENCE_WITHIN_RANGE:
+					durationEventBlendInSequence = true;
+					durationEventBlendWithinRange = true;
+					break;
+				case DURATION_EVENT_MATCH_IN_SEQUENCE:
+					durationEventBlendInSequence = true;
+					break;
+				case DURATION_EVENT_MATCH_SAME_IDS_ON_OVERLAP:
+					durationEventBlendSameUserData = true;
+					durationEventBlendOnOverlap = true;
+					break;
+				case DURATION_EVENT_MATCH_SAME_IDS_WITHIN_RANGE:
+					durationEventBlendSameUserData = true;
+					durationEventBlendWithinRange = true;
+					break;
+				case DURATION_EVENT_MATCH_SAME_IDS:
+					durationEventBlendSameUserData = true;
+					break;
+				case DURATION_EVENT_MATCH_ON_OVERLAP:
+					durationEventBlendOnOverlap = true;
+					break;
+				case DURATION_EVENT_MATCH_WITHIN_RANGE:
+					durationEventBlendWithinRange = true;
+					break;
+				default:
+					g_appLog->panicMessage("Invalid blend matching operation %d\n", durationEventMatchingOpAttrib->m_value);
+					break;
+				}
+			}
+
+			attribDataBlock->writeBool(durationEventBlendPassThrough, "DurationEventBlendPassThrough");
+			attribDataBlock->writeBool(durationEventBlendInSequence, "DurationEventBlendInSequence");
+			attribDataBlock->writeBool(durationEventBlendSameUserData, "DurationEventBlendSameUserData");
+			attribDataBlock->writeBool(durationEventBlendOnOverlap, "DurationEventBlendOnOverlap");
+			attribDataBlock->writeBool(durationEventBlendWithinRange, "DurationEventBlendWithinRange");
+		}
+
+		void writeTimeStretchMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			int timeStretchMode = AP::kNodeTimeStretchNone;
+
+			MR::AttribDataUInt* startSyncEventIndex = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_START_SYNC_EVENT_INDEX));
+			MR::AttribDataUInt* durationEventMatchingOpAttrib = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_DURATION_EVENT_MATCHING_OP));
+			MR::AttribDataBool* loop = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_LOOP));
+
+			if (startSyncEventIndex && durationEventMatchingOpAttrib && loop)
+				timeStretchMode = AP::kNodeTimeStretchMatchEvents;
+
+			attribDataBlock->writeInt(timeStretchMode, "TimeStretchMode");
+
+			if (loop)
+				attribDataBlock->writeBool(loop->m_value, "Loop");
+			else
+				attribDataBlock->writeBool(true, "Loop");
+
+			writeDurationBlendFlags(durationEventMatchingOpAttrib, attribDataBlock);
+
+			if (startSyncEventIndex)
+				attribDataBlock->writeInt(startSyncEventIndex->m_value, "StartEventIndex");
+			else
+				attribDataBlock->writeInt(0, "StartEventIndex");
+		}
+
+		void writeFeatherBlendModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			AP::NodeBlendModes blendMode = AP::kNodeBlendInvalid;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
+			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+			g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRANSFORM_BUFFER fn = %s\n", fnName);
+
+			if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsAddAttAddPos)
+				blendMode == AP::kAddQuatAddPos;
+			else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsAddAttInterpPos)
+				blendMode == AP::kAddQuatInterpPos;
+			else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsInterpAttAddPos)
+				blendMode == AP::kInterpQuatAddPos;
+			else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsInterpAttInterpPos)
+				blendMode == AP::kInterpQuatInterpPos;
+			else
+				g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
+
+			bool additiveBlendAtt = false;
+			bool additiveBlendPos = false;
+
+			switch (blendMode)
+			{
+			case AP::kInterpQuatInterpPos:
+				additiveBlendAtt = false;
+				additiveBlendPos = false;
+				break;
+			case AP::kInterpQuatAddPos:
+				additiveBlendAtt = false;
+				additiveBlendPos = true;
+				break;
+			case AP::kAddQuatInterpPos:
+				additiveBlendAtt = true;
+				additiveBlendPos = false;
+				break;
+			case AP::kAddQuatAddPos:
+				additiveBlendAtt = true;
+				additiveBlendPos = true;
 				break;
 			default:
-				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
 				break;
 			}
 
-			setNodeTransitReferences(nodeDef, nodeExport);
+			attribDataBlock->writeBool(additiveBlendAtt, "AdditiveBlendAttitude");
+			attribDataBlock->writeBool(additiveBlendPos, "AdditiveBlendPosition");
+		}
 
-			return nodeExport;
+		void writeBlend2BlendModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			AP::NodeBlendModes blendMode = AP::kNodeBlendInvalid;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
+			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+			g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRANSFORM_BUFFER fn = %s\n", fnName);
+
+			if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttAddPos)
+				blendMode = AP::kAddQuatAddPos;
+			else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttInterpPos)
+				blendMode = AP::kAddQuatInterpPos;
+			else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttAddPos)
+				blendMode = AP::kInterpQuatAddPos;
+			else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttInterpPos)
+				blendMode = AP::kInterpQuatInterpPos;
+			else
+				g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
+
+			attribDataBlock->writeInt(blendMode, "BlendMode");
+		}
+
+		void writeNodeEventBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			AP::NodeSampledEventBlendModes eventBlendMode = AP::kSampledEventBlendModeInvalid;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER);
+			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+			g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER fn = %s\n", fnName);
+
+			if (taskQueueFn == MR::nodeBlend2SyncEventsQueueSampledEventsBuffers)
+				eventBlendMode = AP::kMergeSampledEvents;
+			else if (taskQueueFn == MR::nodeBlend2SyncEventsQueueAddSampledEventsBuffers)
+				eventBlendMode = AP::kAddSampledEvents;
+			else if (taskQueueFn == MR::nodeBlend2QueueSampledEventsBuffers)
+				eventBlendMode = AP::kMergeSampledEvents;
+			else if (taskQueueFn == MR::nodeBlend2QueueAddSampledEventsBuffers)
+				eventBlendMode = AP::kAddSampledEvents;
+			else if (taskQueueFn == MR::queuePassThroughChild0)
+				eventBlendMode = AP::kMergeSampledEvents;
+			else
+				g_appLog->panicMessage("Unexpected task queing function %s\n", fnName);
+
+			attribDataBlock->writeInt(eventBlendMode, "EventsBlendMode");
+		}
+
+		void writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			bool slerpTrajPos = false;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM);
+			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+			g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM fn = %s\n", fnName);
+
+			if ((taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformAddAttSlerpPos) || (taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformInterpAttSlerpPos))
+				slerpTrajPos = true;
+
+			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
+		}
+
+		void writePassThroughMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			short passThroughChildIndex = nodeDef->getPassThroughChildIndex();
+
+			switch (passThroughChildIndex)
+			{
+			case 0:
+				attribDataBlock->writeInt(AP::kNodePassThroughSource0, "PassThroughMode");
+				break;
+			case 1:
+				attribDataBlock->writeInt(AP::kNodePassThroughSource1, "PassThroughMode");
+				break;
+			default:
+				attribDataBlock->writeInt(AP::kNodePassThroughNone, "PassThroughMode");
+				break;
+			}
+		}
+
+		void writeNumAnimSets(ME::DataBlockExportXML* attribDataBlock, int numAnimSets)
+		{
+			attribDataBlock->writeInt(numAnimSets, "NumAnimSets");
+		}
+
+		bool isBlendNodeWrapWeights(MR::NodeDef* nodeDef)
+		{
+			int numSourceNodes = nodeDef->getNumChildNodes();
+
+			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+
+			if (weights->m_numValues == numSourceNodes)
+				return false;
+
+			return true;
+		}
+
+		void writeMirrorTransformEventPassThrough(ME::DataBlockExportXML* attribDataBlock, MR::NodeDef* nodeDef)
+		{
+			bool eventPassThrough = false;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TIME_POS);
+			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+			if (taskQueueFn == MR::nodeMirrorQueueTimePos)
+				eventPassThrough = true;
+
+			attribDataBlock->writeBool(eventPassThrough, "EventPassThrough");
 		}
 
 		ME::NodeExportXML* exportNodeCore(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
@@ -1217,7 +963,6 @@ namespace MorphemeExport
 				g_appLog->panicMessage("Total parsed node count is different from the total node children count (expected %d, got %d)\n", nodeDef->getNumChildNodes(), childTransitCount + childNodeCount);
 		}
 
-		//TODO: Revise
 		ME::NodeExportXML* exportStateMachineNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
 			if (nodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
@@ -1567,6 +1312,318 @@ namespace MorphemeExport
 			}
 
 			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId)
+		{
+			MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
+			MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
+
+			g_appLog->debugMessage(MsgLevel_Debug, "Exporting node %d (typeId=%d)\n", nodeId, nodeTypeID);
+
+			ME::NodeExportXML* nodeExport = nullptr;
+
+			switch (nodeTypeID)
+			{
+			case NODE_TYPE_NETWORK:
+				nodeExport = exportNetworkNode(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_STATE_MACHINE:
+				nodeExport = exportStateMachineNode(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_FLOAT:
+				nodeExport = exportCPFloatNode(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_VECTOR3:
+				nodeExport = exportCPVector3Node(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_VECTOR4:
+				nodeExport = exportCPVector4Node(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_BOOL:
+				nodeExport = exportCPBoolNode(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_INT:
+				nodeExport = exportCPIntNode(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_UINT:
+				nodeExport = exportCPUIntNode(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_PHYSICS_OBJECT_POINTER:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_ANIMATION:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_ANIM_EVENTS:
+				nodeExport = exportAnimSyncEventsNode(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_FILTER_TRANSFORMS:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_BLEND_2:
+				nodeExport = exportBlend2Node(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_BLEND_N:
+				nodeExport = exportBlendNNode(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_SINGLEFRAME:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_FREEZE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_BLEND_2X2:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_BLEND_NXM:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_BLEND_ALL:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_SUBTRACTIVE_BLEND:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_SCATTER_BLEND_1D:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_SCATTER_BLEND_2D:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_SCATTER_BLEND_3D:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_BOOLEAN:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_FUNCTION:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_ARITHMETIC:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_ARITHMETIC_VECTOR3:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC_VECTOR3:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_NOISE_GEN:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_FEATHER_BLEND_2:
+				nodeExport = exportFeatherBlend2Node(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_APPLY_BIND_POSE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_PHYSICS_GROUPER:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_BEHAVIOUR_GROUPER:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_APPLY_GLOBAL_TIME:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_APPLY_PHYSICS_JOINT_LIMITS:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_SET_NON_PHYSICS_TRANSFORMS:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_TWO_BONE_IK:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_LOCK_FOOT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_HEAD_LOOK:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_PHYSICS:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_BEHAVIOUR:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_HIPS_IK:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_PERFORMANCE_BEHAVIOUR:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_PLAY_SPEED_MODIFIER:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_SCALE_TO_DURATION:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_EMIT_JOINT_CP_INFO:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_EMIT_MESSAGE_ON_DISCRETE_EVENT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CLOSEST_ANIM:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_SWITCH:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_SEQUENCE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_PASSTHROUGH:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_MIRROR_TRANSFORMS_ID:
+				nodeExport = exportMirrorTransformNode(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_BASIC_UNEVEN_TERRAIN:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_ACTIVE_STATE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_INT_TO_FLOAT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_RAY_CAST:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_SMOOTH_FLOAT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_RAMP_FLOAT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_FLOATS_TO_VECTOR3:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_FLOAT_TO_INT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_RANDOM_FLOAT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_PHYSICS_INFO:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_CONVERT_TO_CHARACTER_SPACE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_TO_FLOATS:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_DOT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_ORIENTATIONINFREEFALL:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_HIT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_ROLLDOWNSTAIRS:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_APPLYIMPULSE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_CONTACTREPORTER:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_DISTANCE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_CROSSPRODUCT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_RATE_OF_CHANGE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_ANGLE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_NORMALISE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_PHYSICALCONSTRAINT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_FALLOVERWALL:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_RETARGET:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_SCALE_CHARACTER:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_GUN_AIM_IK:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_TRANSIT_SYNC_EVENTS:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_TRANSIT:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_TRANSIT_PHYSICS:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_MODIFY_JOINT_TRANSFORM:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_MODIFY_TRAJECTORY_TRANSFORM:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_SMOOTH_TRANSFORMS:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_EMIT_MESSAGE_AND_CP:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_TRAJECTORY_OVERRIDE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_C_C_OVERRIDE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_LIMB_INFO:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_EXPAND_LIMITS:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_COND_ON_MESSAGE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_COND_CP_COMPARE:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			case NODE_TYPE_CP_OP_TIME_LAG_CP:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			default:
+				nodeExport = exportNodeUnhandled(netDefExport, netDef, nodeDef);
+				break;
+			}
+
+			setNodeTransitReferences(nodeDef, nodeExport);
+
+			return nodeExport;
 		}
 	}
 }
