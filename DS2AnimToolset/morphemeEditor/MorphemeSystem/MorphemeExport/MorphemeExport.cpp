@@ -356,8 +356,8 @@ namespace MorphemeExport
 
 		void exportTransitConditionCPIntInRange(MR::TransitConditionDefControlParamIntInRange* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID, transitCondDef->getType());
+			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_INT_IN_RANGE_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_INT_IN_RANGE_ID, transitCondDef->getType());
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -371,8 +371,8 @@ namespace MorphemeExport
 
 		void exportTransitConditionCPUIntInRange(MR::TransitConditionDefControlParamUIntInRange* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID, transitCondDef->getType());
+			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID, transitCondDef->getType());
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
