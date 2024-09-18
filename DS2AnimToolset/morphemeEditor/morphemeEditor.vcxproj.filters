@@ -294,6 +294,9 @@
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -519,6 +522,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
