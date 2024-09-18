@@ -77,12 +77,9 @@ namespace
 
 		if (targetStateDef)
 		{
-			for (size_t i = 0; i < targetStateDef->getNumExitConditions(); i++)
+			for (size_t i = 0; i < targetStateDef->getNumExitTransitionStates(); i++)
 			{
 				MR::StateDef* stateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
-
-				//This is supposed to be a steady state. If this condition is not met then I'm doing something wrong
-				assert(stateDef->getTransitSourceStateID() != MR::INVALID_NODE_ID);
 
 				int numConditions = stateDef->getNumEntryConditions();
 
