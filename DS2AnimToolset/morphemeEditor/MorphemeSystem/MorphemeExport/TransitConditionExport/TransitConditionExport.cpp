@@ -70,8 +70,8 @@ namespace MorphemeExport
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
 			dataBlock->writeNetworkNodeId(transitCondDef->getCPConnection()->m_sourceNodeID, "RuntimeNodeID");
-			dataBlock->writeBool(true, "LessThanOperation");
 			dataBlock->writeBool(transitCondDef->getOrEqual(), "OrEqual");
+			dataBlock->writeBool(true, "LessThanOperation");
 
 			dataBlock->writeString("float", "DataType");
 			dataBlock->writeUInt(transitCondDef->getTestValue(), "TestValue");
@@ -85,8 +85,8 @@ namespace MorphemeExport
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
 			dataBlock->writeNetworkNodeId(transitCondDef->getCPConnection()->m_sourceNodeID, "RuntimeNodeID");
-			dataBlock->writeBool(false, "LessThanOperation");
 			dataBlock->writeBool(transitCondDef->getOrEqual(), "OrEqual");
+			dataBlock->writeBool(false, "LessThanOperation");
 
 			dataBlock->writeString("float", "DataType");
 			dataBlock->writeUInt(transitCondDef->getTestValue(), "TestValue");
@@ -100,8 +100,8 @@ namespace MorphemeExport
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
 			dataBlock->writeNetworkNodeId(transitCondDef->getCPConnection()->m_sourceNodeID, "RuntimeNodeID");
-			dataBlock->writeBool(true, "LessThanOperation");
 			dataBlock->writeBool(transitCondDef->getOrEqual(), "OrEqual");
+			dataBlock->writeBool(true, "LessThanOperation");
 
 			dataBlock->writeString("int", "DataType");
 			dataBlock->writeUInt(transitCondDef->getTestValue(), "TestValue");
@@ -115,8 +115,8 @@ namespace MorphemeExport
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
 			dataBlock->writeNetworkNodeId(transitCondDef->getCPConnection()->m_sourceNodeID, "RuntimeNodeID");
-			dataBlock->writeBool(false, "LessThanOperation");
 			dataBlock->writeBool(transitCondDef->getOrEqual(), "OrEqual");
+			dataBlock->writeBool(false, "LessThanOperation");
 
 			dataBlock->writeString("int", "DataType");
 			dataBlock->writeUInt(transitCondDef->getTestValue(), "TestValue");
@@ -130,8 +130,8 @@ namespace MorphemeExport
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
 			dataBlock->writeNetworkNodeId(transitCondDef->getCPConnection()->m_sourceNodeID, "RuntimeNodeID");
-			dataBlock->writeBool(true, "LessThanOperation");
 			dataBlock->writeBool(transitCondDef->getOrEqual(), "OrEqual");
+			dataBlock->writeBool(true, "LessThanOperation");
 
 			dataBlock->writeString("uint", "DataType");
 			dataBlock->writeUInt(transitCondDef->getTestValue(), "TestValue");
@@ -145,11 +145,36 @@ namespace MorphemeExport
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
 			dataBlock->writeNetworkNodeId(transitCondDef->getCPConnection()->m_sourceNodeID, "RuntimeNodeID");
-			dataBlock->writeBool(false, "LessThanOperation");
 			dataBlock->writeBool(transitCondDef->getOrEqual(), "OrEqual");
+			dataBlock->writeBool(false, "LessThanOperation");
 
 			dataBlock->writeString("uint", "DataType");
 			dataBlock->writeUInt(transitCondDef->getTestValue(), "TestValue");
+		}
+
+		void exportTransitConditionInDurationEvent(MR::TransitConditionDefInDurationEvent* transitCondDef, ME::ConditionExportXML* conditionExport)
+		{
+			if (transitCondDef->getType() != TRANSCOND_IN_DURATION_EVENT_ID)
+				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_IN_DURATION_EVENT_ID, transitCondDef->getType());
+
+			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
+
+			int eventTrackUserData = transitCondDef->getEventTrackUserData();
+			int eventUserData = transitCondDef->getEventUserData();
+
+			bool useEventTrackUserData = true;
+			if (eventTrackUserData == MR::USER_DATA_UNSPECIFIED)
+				useEventTrackUserData = false;
+
+			bool useEventUserData = true;
+			if (eventTrackUserData == MR::USER_DATA_UNSPECIFIED)
+				useEventUserData = false;
+
+			dataBlock->writeBool(useEventTrackUserData, "UseEventTrackUserTypeID");
+			dataBlock->writeInt(eventTrackUserData, "EventTrackUserTypeID");
+			dataBlock->writeBool(useEventUserData, "UseEventUserTypeID");
+			dataBlock->writeInt(eventUserData, "EventUserTypeID");
+			dataBlock->writeBool(transitCondDef->getInvertFlag(), "OnNotSet");
 		}
 
 		void exportTransitConditionOnMessage(MR::TransitConditionDefOnMessage* transitCondDef, ME::ConditionExportXML* conditionExport)
@@ -192,7 +217,7 @@ namespace MorphemeExport
 				// Handle case for TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID
 				break;
 			case TRANSCOND_IN_SYNC_EVENT_RANGE_ID:
-				// Handle case for TRANSCOND_IN_SYNC_EVENT_RANGE_ID
+				exportTransitConditionInDurationEvent(static_cast<MR::TransitConditionDefInDurationEvent*>(transitCondDef), conditionExport);
 				break;
 			case TRANSCOND_PHYSICS_AVAILABLE_ID:
 				// Handle case for TRANSCOND_PHYSICS_AVAILABLE_ID
