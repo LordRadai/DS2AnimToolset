@@ -379,7 +379,7 @@ namespace MorphemeExport
 			dataBlock->writeNetworkNodeId(transitCondDef->getCPConnection()->m_sourceNodeID, "RuntimeNodeID");
 			dataBlock->writeBool(transitCondDef->getInvertFlag(), "NotInRange");
 
-			dataBlock->writeString("int", "DataType");
+			dataBlock->writeString("uint", "DataType");
 			dataBlock->writeUInt(transitCondDef->getLowerTestValue(), "LowerTestValue");
 			dataBlock->writeUInt(transitCondDef->getUpperTestValue(), "UpperTestValue");
 		}
