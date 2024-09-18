@@ -34,6 +34,7 @@ namespace
 
 			assert(transitStateDef->getNumEntryConditions() != 0);
 
+			//TODO: This needs to be fixed, the indexes are in local space relative to the number of previously exported conditions, not in StateMachine space
 			std::vector<unsigned int> indices;
 			indices.reserve(numConditions);
 			for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
@@ -96,6 +97,7 @@ namespace
 
 				assert(transitStateDef->getNumEntryConditions() != 0);
 
+				//TODO: This needs to be fixed, the indexes are in local space relative to the number of previously exported conditions, not in StateMachine space
 				std::vector<unsigned int> indices;
 				indices.reserve(numConditions);
 				for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
