@@ -193,7 +193,7 @@ namespace MorphemeExport
 				eventBlendMode = AP::kMergeSampledEvents;
 			else if (taskQueueFn == MR::nodeBlend2QueueAddSampledEventsBuffers)
 				eventBlendMode = AP::kAddSampledEvents;
-			else if (taskQueueFn == MR::queuePassThroughChild0)
+			else if (taskQueueFn == MR::queuePassThroughChild0 || taskQueueFn == MR::queuePassThroughChild1)
 				eventBlendMode = AP::kMergeSampledEvents;
 			else
 				g_appLog->panicMessage("Unexpected task queing function %s\n", fnName);
