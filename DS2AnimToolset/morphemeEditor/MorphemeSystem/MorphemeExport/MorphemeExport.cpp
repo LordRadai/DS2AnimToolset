@@ -14,6 +14,17 @@
 
 namespace
 {
+	int getConditionIndexByID(MR::StateDef* stateDef, int conditionID)
+	{
+		for (size_t i = 0; i < stateDef->getNumExitConditions(); i++)
+		{
+			if (stateDef->getExitConditionStateMachineIndex(i) == conditionID)
+				return i;
+		}
+
+		return -1;
+	}
+
 	void setActiveStateTransitReferences(MR::AttribDataStateMachineDef* stateMachineDef, ME::NodeExportXML* nodeExport)
 	{
 		MR::StateDef* globalStateDef = stateMachineDef->getGlobalStateDef();
@@ -38,7 +49,10 @@ namespace
 			std::vector<unsigned int> indices;
 			indices.reserve(numConditions);
 			for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
-				indices.push_back(transitStateDef->getEntryConditionStateMachineIndex(j));
+			{
+				int conditionID = transitStateDef->getEntryConditionStateMachineIndex(j);
+				indices.push_back(getConditionIndexByID(globalStateDef, conditionID));
+			}
 
 			//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
 			assert(transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
@@ -101,7 +115,10 @@ namespace
 				std::vector<unsigned int> indices;
 				indices.reserve(numConditions);
 				for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
-					indices.push_back(transitStateDef->getEntryConditionStateMachineIndex(j));
+				{
+					int conditionID = transitStateDef->getEntryConditionStateMachineIndex(j);
+					indices.push_back(getConditionIndexByID(targetStateDef, conditionID));
+				}
 
 				//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
 				assert(transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
