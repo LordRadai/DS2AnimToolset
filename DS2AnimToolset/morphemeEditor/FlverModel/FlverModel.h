@@ -92,9 +92,9 @@ public:
 	int getNumFlverDummies() const { return this->m_flver->header.dummyCount; }
 	int getNumFlverBones() const { return this->m_flver->header.boneCount; }
 
-	cfr::FLVER2::Mesh* getFlverMesh(int idx) const { return this->m_flver->meshes[idx].get(); }
-	cfr::FLVER2::Dummy* getFlverDummy(int idx) const { return this->m_flver->dummies[idx].get(); }
-	cfr::FLVER2::Bone* getFlverBone(int idx) const { return this->m_flver->bones[idx].get(); }
+	cfr::FLVER2::Mesh getFlverMesh(int idx) const { return this->m_flver->meshes[idx]; }
+	cfr::FLVER2::Dummy getFlverDummy(int idx) const { return this->m_flver->dummies[idx]; }
+	cfr::FLVER2::Bone getFlverBone(int idx) const { return this->m_flver->bones[idx]; }
 	std::string getFlverBoneName(int idx);
 	Matrix* getFlverBoneTransform(int idx);
 	Matrix* getFlverBoneBindPose(int idx);
