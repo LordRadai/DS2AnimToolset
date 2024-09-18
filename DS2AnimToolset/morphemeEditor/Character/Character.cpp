@@ -205,13 +205,11 @@ namespace
 
                 TimeAct::TaeExport::TimeActEventExportXML* eventExport = groupExport->addEvent(event->getStartTime(), event->getEndTime(), event->getEventValue());
 
-                TimeAct::TaeExport::TimeActArgumentListExportXML* argListExport = eventExport->createArgumentList();
-
                 for (size_t argIdx = 0; argIdx < event->getNumArguments(); argIdx++)
                 {
                     TimeAct::Argument* arg = event->getArgument(argIdx);
 
-                    TimeAct::TaeExport::TimeActArgumentExportXML* argExport = argListExport->addArgument(arg->getName());
+                    TimeAct::TaeExport::TimeActArgumentExportXML* argExport = eventExport->addArgument(arg->getName());
 
                     writeArgumentValue(arg, argExport);
                 }

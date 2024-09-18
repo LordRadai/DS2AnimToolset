@@ -266,14 +266,12 @@ namespace
 
 			TimeAct::TimeActEvent* event = group->addEvent(eventXML->getStartTime(), eventXML->getEndTime(), eventXML->getEventId(), g_taeTemplate);
 
-			TimeAct::TaeExport::TimeActArgumentListExportXML* argListXML = eventXML->getArgumentList();
-
-			if (argListXML->getNumArguments() != event->getNumArguments())
+			if (eventXML->getNumArguments() != event->getNumArguments())
 				throw("Argument count mismatch\n");
 
-			for (size_t argIdx = 0; argIdx < argListXML->getNumArguments(); argIdx++)
+			for (size_t argIdx = 0; argIdx < eventXML->getNumArguments(); argIdx++)
 			{
-				TimeAct::TaeExport::TimeActArgumentExportXML* argXML = argListXML->getArgument(argIdx);
+				TimeAct::TaeExport::TimeActArgumentExportXML* argXML = eventXML->getArgument(argIdx);
 				TimeAct::Argument* arg = event->getArgument(argIdx);
 
 				TimeAct::DataType type = argXML->getType();
