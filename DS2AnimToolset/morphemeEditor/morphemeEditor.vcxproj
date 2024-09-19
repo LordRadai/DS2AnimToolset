@@ -229,6 +229,7 @@
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.h" />

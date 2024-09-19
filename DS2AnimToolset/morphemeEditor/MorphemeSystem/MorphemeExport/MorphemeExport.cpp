@@ -9,6 +9,7 @@
 #include "NodeExport/StateMachineNodeExport.h"
 #include "NodeExport/ControlParamNodeExport.h"
 #include "NodeExport/BlendNodeExport.h"
+#include "NodeExport/TransitNodeExport.h"
 
 namespace MorphemeExport
 {
@@ -536,16 +537,16 @@ namespace MorphemeExport
 			nodeExport = NodeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_TRANSIT_SYNC_EVENTS:
-			nodeExport = NodeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = NodeExport::exportTransitSyncEventsNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS:
-			nodeExport = NodeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = NodeExport::exportTransitSyncEventsNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_TRANSIT:
-			nodeExport = NodeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = NodeExport::exportTransitNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_TRANSIT_PHYSICS:
-			nodeExport = NodeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = NodeExport::exportTransitNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_MODIFY_JOINT_TRANSFORM:
 			nodeExport = NodeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);

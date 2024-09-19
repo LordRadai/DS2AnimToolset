@@ -297,6 +297,9 @@
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
