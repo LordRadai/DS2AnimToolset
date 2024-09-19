@@ -63,7 +63,9 @@ namespace MorphemeExport
 			nodeDataBlock->writeBool(breakoutTransit, "BreakoutTransit");
 
 			nodeDataBlock->writeBool(transitDef->m_reversible, "isReversibleTransit");
-			nodeDataBlock->writeInt(transitDef->m_reverseInputCPConnection.m_sourceNodeID, "RuntimeNodeID");
+
+			if (transitDef->m_reversible)
+				nodeDataBlock->writeInt(transitDef->m_reverseInputCPConnection.m_sourceNodeID, "RuntimeNodeID");
 
 			nodeDataBlock->writeBool(transitDef->m_freezeSource, "FreezeSource");
 			nodeDataBlock->writeBool(transitDef->m_freezeDest, "FreezeDest");
@@ -100,6 +102,27 @@ namespace MorphemeExport
 
 			nodeDataBlock->writeBool(deadblendBreakoutToSource, "DeadblendBreakoutToSource");
 
+			if (transitDef->m_nodeInitData)
+			{
+				int numDestSubStates = transitDef->m_nodeInitData->m_numNodeInitDatas;
+				nodeDataBlock->writeInt(numDestSubStates, "DestinationSubStateCount");
+
+				int32_t subStateNodeID;
+				CHAR paramName[256];
+				for (int i = 0; i < numDestSubStates; i++)
+				{
+					MR::StateMachineInitData* nodeInitData = static_cast<MR::StateMachineInitData*>(transitDef->m_nodeInitData->m_nodeInitDataArray[i]);
+
+					sprintf_s(paramName, "DestinationSubStateID_%d", i);
+					nodeDataBlock->writeInt(nodeInitData->getTargetNodeID(), paramName);
+
+					sprintf_s(paramName, "DestinationSubStateParentID_%d", i);
+					nodeDataBlock->writeInt(nodeInitData->getInitialSubStateID(), paramName);
+				}
+			}
+			else
+				nodeDataBlock->writeInt(0, "DestinationSubStateCount");
+
 			MR::AttribDataDeadBlendDef* deadBlendDef = static_cast<MR::AttribDataDeadBlendDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_DEAD_BLEND_DEF));
 
 			nodeDataBlock->writeBool(deadBlendDef->m_useDeadReckoningWhenDeadBlending, "UseDeadReckoningWhenDeadBlending");
@@ -133,7 +156,9 @@ namespace MorphemeExport
 			nodeDataBlock->writeBool(breakoutTransit, "BreakoutTransit");
 
 			nodeDataBlock->writeBool(transitDef->m_reversible, "isReversibleTransit");
-			nodeDataBlock->writeInt(transitDef->m_reverseInputCPConnection.m_sourceNodeID, "RuntimeNodeID");
+
+			if (transitDef->m_reversible)
+				nodeDataBlock->writeInt(transitDef->m_reverseInputCPConnection.m_sourceNodeID, "RuntimeNodeID");
 
 			bool additiveBlendAtt = false;
 			bool additiveBlendPos = false;
@@ -166,6 +191,28 @@ namespace MorphemeExport
 				deadblendBreakoutToSource = true;
 
 			nodeDataBlock->writeBool(deadblendBreakoutToSource, "DeadblendBreakoutToSource");
+
+
+			if (transitDef->m_nodeInitData)
+			{
+				int numDestSubStates = transitDef->m_nodeInitData->m_numNodeInitDatas;
+				nodeDataBlock->writeInt(numDestSubStates, "DestinationSubStateCount");
+
+				int32_t subStateNodeID;
+				CHAR paramName[256];
+				for (int i = 0; i < numDestSubStates; i++)
+				{
+					MR::StateMachineInitData* nodeInitData = static_cast<MR::StateMachineInitData*>(transitDef->m_nodeInitData->m_nodeInitDataArray[i]);
+
+					sprintf_s(paramName, "DestinationSubStateID_%d", i);
+					nodeDataBlock->writeInt(nodeInitData->getTargetNodeID(), paramName);
+
+					sprintf_s(paramName, "DestinationSubStateParentID_%d", i);
+					nodeDataBlock->writeInt(nodeInitData->getInitialSubStateID(), paramName);
+				}
+			}
+			else
+				nodeDataBlock->writeInt(0, "DestinationSubStateCount");
 
 			MR::AttribDataUInt* durationEventMatchingOpAttrib = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_DURATION_EVENT_MATCHING_OP));
 			NodeExportHelpers::writeSyncEventFlagsFromAttribData(nodeDataBlock, durationEventMatchingOpAttrib);
