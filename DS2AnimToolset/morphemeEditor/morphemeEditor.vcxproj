@@ -312,6 +312,7 @@
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.cpp" />
