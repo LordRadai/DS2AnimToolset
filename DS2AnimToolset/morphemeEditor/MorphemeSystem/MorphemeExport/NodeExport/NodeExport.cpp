@@ -105,8 +105,9 @@ namespace MorphemeExport
 					{
 						nodeDataBlock->writeAnimationId(sourceAnim->m_animAssetID, "AnimIndex");
 						nodeDataBlock->writeBool(false, "GenerateAnimationDeltas");
-						nodeDataBlock->writeBool(sourceAnim->m_playBackwards, "PlayBackwards");
 						nodeDataBlock->writeBool(isLoop->m_value, "Loop");
+						nodeDataBlock->writeBool(sourceAnim->m_playBackwards, "PlayBackwards");
+						nodeDataBlock->writeBool(false, "PreComputeSyncEventTracks");
 					}
 
 					char paramName[256];
