@@ -573,8 +573,10 @@ void Character::update(float dt)
     if (model)
         this->m_position = Vector3::Transform(Vector3::Zero, model->getWorldMatrix());
 
-    //if (this->m_morphemeCharacter)
-        //this->m_morphemeCharacter->update(dt);
+#ifdef MR_SIMULATE_NETWORK
+    if (this->m_morphemeCharacter)
+        this->m_morphemeCharacter->update(dt);
+#endif
 }
 
 void Character::draw(RenderManager* renderManager)
