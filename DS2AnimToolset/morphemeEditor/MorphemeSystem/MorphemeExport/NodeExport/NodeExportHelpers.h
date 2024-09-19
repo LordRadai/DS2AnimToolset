@@ -1,7 +1,6 @@
 #pragma once
-#include "assetProcessor/include/assetProcessor/BlendNodeBuilderUtils.h"
-#include "extern.h"
-#include "RCore.h"
+#include "export/include/export/mcExportXML.h"
+#include "morpheme/mrAttribData.h"
 
 namespace MorphemeExport
 {

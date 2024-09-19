@@ -1,4 +1,7 @@
-#include "NodeExportHelpers.h"
+#include "BlendNodeExport.h"
+#include "assetProcessor/include/assetProcessor/BlendNodeBuilderUtils.h"
+#include "extern.h"
+#include "RCore.h"
 
 namespace MorphemeExport
 {
