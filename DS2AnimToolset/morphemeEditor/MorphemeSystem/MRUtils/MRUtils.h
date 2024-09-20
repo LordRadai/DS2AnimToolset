@@ -2,6 +2,7 @@
 #include "morpheme/mrNodeDef.h"
 #include "morpheme/Nodes/mrNodeStateMachine.h"
 #include "morpheme/mrAttribData.h"
+#include <vector>
 
 namespace MRUtils
 {

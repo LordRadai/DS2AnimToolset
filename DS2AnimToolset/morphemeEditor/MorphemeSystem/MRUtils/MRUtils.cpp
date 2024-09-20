@@ -1,5 +1,4 @@
 #include "MRUtils.h"
-#include <vector>
 
 namespace MRUtils
 {
