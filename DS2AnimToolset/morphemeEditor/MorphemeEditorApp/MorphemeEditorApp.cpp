@@ -786,7 +786,7 @@ void MorphemeEditorApp::update(float dt)
 
 		std::string fullPath = std::string(exePath) + "\\" + std::string(exportPath);
 
-		std::string assetCompilerName = std::string("\"") + fullPath + "\\" + std::string(ASSET_COMPILER_EXE) + std::string("\"");
+		std::string assetCompilerName = std::string("\"") + std::string(exePath) + "\\" + std::string(ASSET_COMPILER_EXE) + std::string("\"");
 		std::string assetPath = "-asset " + std::string("\"") + fullPath + std::string(networkFileName) + std::string("\"");
 		std::string baseDir = "-baseDir " + std::string("\"") + fullPath + std::string("\"");
 		std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "cache\\" + std::string("\"");
