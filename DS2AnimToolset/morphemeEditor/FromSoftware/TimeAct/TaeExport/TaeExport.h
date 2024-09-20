@@ -9,7 +9,6 @@ namespace TimeAct
 	{
 		class TimeActTrackListExportXML;
 		class TimeActArgumentExportXML;
-		class TimeActArgumentListExportXML;
 		class TimeActEventExportXML;
 		class TimeActGroupExportXML;
 		class TimeActTrackExportXML;
@@ -18,11 +17,10 @@ namespace TimeAct
 
 		class TimeActArgumentExportXML
 		{
-			friend class TimeActArgumentListExportXML;
 			friend class TimeActEventExportXML;
 
 		public:
-			TimeActArgumentListExportXML* getOwner() const { return this->m_owner; }
+			TimeActEventExportXML* getOwner() const { return this->m_owner; }
 			std::string getName();
 			DataType getType();
 
@@ -54,34 +52,9 @@ namespace TimeAct
 			TimeActArgumentExportXML() {}
 			~TimeActArgumentExportXML() {}
 
-			static TimeActArgumentExportXML* create(TimeActArgumentListExportXML* owner, tinyxml2::XMLElement* parent, std::string name);
-
-			TimeActArgumentListExportXML* m_owner = nullptr;
-			tinyxml2::XMLElement* m_xmlElement = nullptr;
-		};
-
-		class TimeActArgumentListExportXML
-		{
-			friend class TimeActEventExportXML;
-
-		public:
-			int getNumArguments();
-			TimeActArgumentExportXML* getArgument(int idx) const { return this->m_arguments[idx]; }
-			TimeActEventExportXML* getOwner() const { return this->m_owner; }
-
-			TimeActArgumentExportXML* addArgument(std::string name);
-
-			void deleteArgument(int idx);
-
-			void clear();
-		protected:
-			TimeActArgumentListExportXML() {}
-			~TimeActArgumentListExportXML() {}
-
-			static TimeActArgumentListExportXML* create(TimeActEventExportXML* owner, tinyxml2::XMLElement* parent);
+			static TimeActArgumentExportXML* create(TimeActEventExportXML* owner, tinyxml2::XMLElement* parent, std::string name);
 
 			TimeActEventExportXML* m_owner = nullptr;
-			std::vector<TimeActArgumentExportXML*> m_arguments;
 			tinyxml2::XMLElement* m_xmlElement = nullptr;
 		};
 
@@ -93,13 +66,15 @@ namespace TimeAct
 			float getStartTime();
 			float getEndTime();
 			int getEventId();
-			TimeActArgumentListExportXML* getArgumentList() const { return this->m_argumentList; }
+			TimeActArgumentExportXML* getArgument(int idx) const { return this->m_arguments[idx]; }
 			TimeActGroupExportXML* getOwner() const { return this->m_owner; }
 
-			TimeActArgumentListExportXML* createArgumentList();
+			int getNumArguments() const { return this->m_arguments.size(); }
 
 			std::string getArgumentsString();
 
+			TimeActArgumentExportXML* addArgument(std::string name);
+			void deleteArgument(int idx);
 			void clear();
 		protected:
 			TimeActEventExportXML() {}
@@ -108,7 +83,7 @@ namespace TimeAct
 			static TimeActEventExportXML* create(TimeActGroupExportXML* owner, tinyxml2::XMLElement* parent, int eventId, float startTime, float endTime);
 
 			TimeActGroupExportXML* m_owner = nullptr;
-			TimeActArgumentListExportXML* m_argumentList = nullptr;
+			std::vector<TimeActArgumentExportXML*> m_arguments;
 			tinyxml2::XMLElement* m_xmlElement = nullptr;
 		};
 

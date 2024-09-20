@@ -205,13 +205,11 @@ namespace
 
                 TimeAct::TaeExport::TimeActEventExportXML* eventExport = groupExport->addEvent(event->getStartTime(), event->getEndTime(), event->getEventValue());
 
-                TimeAct::TaeExport::TimeActArgumentListExportXML* argListExport = eventExport->createArgumentList();
-
                 for (size_t argIdx = 0; argIdx < event->getNumArguments(); argIdx++)
                 {
                     TimeAct::Argument* arg = event->getArgument(argIdx);
 
-                    TimeAct::TaeExport::TimeActArgumentExportXML* argExport = argListExport->addArgument(arg->getName());
+                    TimeAct::TaeExport::TimeActArgumentExportXML* argExport = eventExport->addArgument(arg->getName());
 
                     writeArgumentValue(arg, argExport);
                 }
@@ -575,8 +573,10 @@ void Character::update(float dt)
     if (model)
         this->m_position = Vector3::Transform(Vector3::Zero, model->getWorldMatrix());
 
-    //if (this->m_morphemeCharacter)
-        //this->m_morphemeCharacter->update(dt);
+#ifdef MR_SIMULATE_NETWORK
+    if (this->m_morphemeCharacter)
+        this->m_morphemeCharacter->update(dt);
+#endif
 }
 
 void Character::draw(RenderManager* renderManager)

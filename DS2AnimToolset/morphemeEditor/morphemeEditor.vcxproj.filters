@@ -276,6 +276,33 @@
     <ClInclude Include="fromloader\umem.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="MorphemeSystem\MRUtils\MRUtils.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -483,6 +510,33 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="fromloader\umem.c">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MRUtils\MRUtils.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

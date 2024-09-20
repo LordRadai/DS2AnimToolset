@@ -52,6 +52,7 @@ public:
 
 	static FlverModel* createFromBnd(std::wstring path, MR::AnimRigDef* rig);
 
+	void initModelData();
 	void destroy();
 
 	std::string getModelName() const { return this->m_name; }
@@ -75,7 +76,6 @@ public:
 	SkinnedVertex* getVertex(int meshIdx, int idx);
 	SkinnedVertex* getVertexBindPose(int meshIdx, int idx);
 
-	void initModelData();
 	void update(float dt);
 	void draw(RenderManager* renderManager);
 

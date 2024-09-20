@@ -830,7 +830,16 @@ void GuiManager::rootWindow()
 		ImGui::Separator();
 
 		if (ImGui::MenuItem("Colors")) { editorApp->getWindowFlags()->styleEditor = true; }
-		
+
+		if (ImGui::BeginMenu("Timecode Format"))
+		{
+			if (ImGui::MenuItem("Seconds", nullptr, editorApp->getTimeActEditor()->getTimeCodeFormat() == TrackEditor::kSeconds)) { editorApp->getTimeActEditor()->setTimeCodeFormat(TrackEditor::kSeconds); }
+			if (ImGui::MenuItem("Milliseconds", nullptr, editorApp->getTimeActEditor()->getTimeCodeFormat() == TrackEditor::kMilliseconds)) { editorApp->getTimeActEditor()->setTimeCodeFormat(TrackEditor::kMilliseconds); }
+			if (ImGui::MenuItem("Frames", nullptr, editorApp->getTimeActEditor()->getTimeCodeFormat() == TrackEditor::kFrames)) { editorApp->getTimeActEditor()->setTimeCodeFormat(TrackEditor::kFrames); }
+
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("Graphics"))
 		{
 			RenderManager* renderMan = RenderManager::getInstance();
@@ -902,6 +911,7 @@ void GuiManager::rootWindow()
 	{
 		if (ImGui::MenuItem("ImGui Demo", nullptr, editorApp->getWindowFlags()->imGuiDemo)) { editorApp->getWindowFlags()->imGuiDemo = !editorApp->getWindowFlags()->imGuiDemo; }
 		if (ImGui::MenuItem("Create Tae Template XML")) { editorApp->getTaskFlags()->exportTaeTemplateXml = true; }
+		if (ImGui::MenuItem("Process Assets")) { editorApp->getTaskFlags()->compileNetwork = true; }
 
 		ImGui::EndMenu();
 	}

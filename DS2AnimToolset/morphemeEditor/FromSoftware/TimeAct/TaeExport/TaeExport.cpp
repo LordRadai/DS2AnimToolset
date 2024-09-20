@@ -15,7 +15,7 @@ namespace TimeAct
 			}
 		}
 
-		TimeActArgumentExportXML* TimeActArgumentExportXML::create(TimeActArgumentListExportXML* owner, tinyxml2::XMLElement* parent, std::string name)
+		TimeActArgumentExportXML* TimeActArgumentExportXML::create(TimeActEventExportXML* owner, tinyxml2::XMLElement* parent, std::string name)
 		{
 			TimeActArgumentExportXML* argExport = new TimeActArgumentExportXML;
 			argExport->m_owner = owner;
@@ -219,25 +219,37 @@ namespace TimeAct
 			return std::string(buffer);
 		}
 
-		TimeActArgumentListExportXML* TimeActArgumentListExportXML::create(TimeActEventExportXML* owner, tinyxml2::XMLElement* parent)
+		TimeActEventExportXML* TimeActEventExportXML::create(TimeActGroupExportXML* owner, tinyxml2::XMLElement* parent, int eventId, float startTime, float endTime)
 		{
-			TimeActArgumentListExportXML* argList = new TimeActArgumentListExportXML;
-			argList->m_owner = owner;
-			argList->m_xmlElement = parent->InsertNewChildElement("ArgumentList");
-			argList->m_xmlElement->SetAttribute("numArguments", 0);
+			TimeActEventExportXML* eventExport = new TimeActEventExportXML;
+			eventExport->m_owner = owner;
+			eventExport->m_xmlElement = parent->InsertNewChildElement("Event");
 
-			return argList;
+			eventExport->m_xmlElement->SetAttribute("startTime", startTime);
+			eventExport->m_xmlElement->SetAttribute("endTime", endTime);
+			eventExport->m_xmlElement->SetAttribute("EventID", eventId);
+
+			return eventExport;
 		}
 
-		int TimeActArgumentListExportXML::getNumArguments()
+		float TimeActEventExportXML::getStartTime()
 		{
-			return this->m_xmlElement->FindAttribute("numArguments")->IntValue();
+			return this->m_xmlElement->FindAttribute("startTime")->FloatValue();
 		}
 
-		TimeActArgumentExportXML* TimeActArgumentListExportXML::addArgument(std::string name)
+		float TimeActEventExportXML::getEndTime()
+		{
+			return this->m_xmlElement->FindAttribute("endTime")->FloatValue();
+		}
+
+		int TimeActEventExportXML::getEventId()
+		{
+			return this->m_xmlElement->FindAttribute("EventID")->IntValue();
+		}
+
+		TimeActArgumentExportXML* TimeActEventExportXML::addArgument(std::string name)
 		{
 			int numArgs = this->getNumArguments();
-			this->m_xmlElement->SetAttribute("numArguments", ++numArgs);
 
 			TimeActArgumentExportXML* argExport = TimeActArgumentExportXML::create(this, this->m_xmlElement, name);
 			this->m_arguments.push_back(argExport);
@@ -245,16 +257,15 @@ namespace TimeAct
 			return argExport;
 		}
 
-		void TimeActArgumentListExportXML::deleteArgument(int idx)
+		void TimeActEventExportXML::deleteArgument(int idx)
 		{
 			this->m_arguments[idx]->m_xmlElement->DeleteChildren();
 			this->m_xmlElement->DeleteChild(this->m_arguments[idx]->m_xmlElement);
 
 			int numArgs = this->getNumArguments();
-			this->m_xmlElement->SetAttribute("numArguments", --numArgs);
 		}
 
-		void TimeActArgumentListExportXML::clear()
+		void TimeActEventExportXML::clear()
 		{
 			int numArgs = this->getNumArguments();
 
@@ -266,44 +277,9 @@ namespace TimeAct
 			}
 		}
 
-		TimeActEventExportXML* TimeActEventExportXML::create(TimeActGroupExportXML* owner, tinyxml2::XMLElement* parent, int eventId, float startTime, float endTime)
-		{
-			TimeActEventExportXML* eventExport = new TimeActEventExportXML;
-			eventExport->m_owner = owner;
-			eventExport->m_xmlElement = parent->InsertNewChildElement("Event");
-
-			RXML::createFloatElement(eventExport->m_xmlElement, "startTime", startTime);
-			RXML::createFloatElement(eventExport->m_xmlElement, "endTime", endTime);
-			RXML::createIntElement(eventExport->m_xmlElement, "EventID", eventId);
-
-			return eventExport;
-		}
-
-		float TimeActEventExportXML::getStartTime()
-		{
-			return RXML::getFloatElement(this->m_xmlElement, "startTime");
-		}
-
-		float TimeActEventExportXML::getEndTime()
-		{
-			return RXML::getFloatElement(this->m_xmlElement, "endTime");
-		}
-
-		int TimeActEventExportXML::getEventId()
-		{
-			return RXML::getIntElement(this->m_xmlElement, "EventID");
-		}
-
-		TimeActArgumentListExportXML* TimeActEventExportXML::createArgumentList()
-		{
-			this->m_argumentList = TimeActArgumentListExportXML::create(this, this->m_xmlElement);
-
-			return this->m_argumentList;
-		}
-
 		std::string TimeActEventExportXML::getArgumentsString()
 		{
-			const int numArgs = this->m_argumentList->getNumArguments();
+			const int numArgs = this->getNumArguments();
 
 			if (numArgs == 0)
 				return "";
@@ -316,7 +292,7 @@ namespace TimeAct
 
 				if (!argTemplate.hidden)
 				{
-					str += this->m_argumentList->m_arguments[i]->getAsString();
+					str += this->m_arguments[i]->getAsString();
 
 					if (i < numArgs - 1)
 						str += ", ";
@@ -328,39 +304,30 @@ namespace TimeAct
 			return str;
 		}
 
-		void TimeActEventExportXML::clear()
-		{
-			this->m_argumentList->clear();
-			
-			this->m_xmlElement->DeleteChildren();
-		}
-
 		TimeActGroupExportXML* TimeActGroupExportXML::create(TimeActTrackExportXML* owner, tinyxml2::XMLElement* parent, int groupId)
 		{
 			TimeActGroupExportXML* groupExport = new TimeActGroupExportXML;
 			groupExport->m_owner = owner;
 			groupExport->m_xmlElement = parent->InsertNewChildElement("EventGroup");
-			groupExport->m_xmlElement->SetAttribute("numEvents", 0);
 
-			RXML::createIntElement(groupExport->m_xmlElement, "GroupID", groupId);
+			groupExport->m_xmlElement->SetAttribute("GroupID", groupId);
 
 			return groupExport;
 		}
 
 		int TimeActGroupExportXML::getGroupId()
 		{
-			return RXML::getIntElement(this->m_xmlElement, "GroupID");
+			return this->m_xmlElement->FindAttribute("GroupID")->IntValue();
 		}
 
 		int TimeActGroupExportXML::getNumEvents()
 		{
-			return this->m_xmlElement->FindAttribute("numEvents")->IntValue();
+			return this->m_xmlElement->ChildElementCount();
 		}
 
 		TimeActEventExportXML* TimeActGroupExportXML::addEvent(float startTime, float endTime, int eventId)
 		{
 			int eventCount = this->getNumEvents();
-			this->m_xmlElement->SetAttribute("numEvents", ++eventCount);
 
 			TimeActEventExportXML* eventExport = TimeActEventExportXML::create(this, this->m_xmlElement, eventId, startTime, endTime);
 			this->m_events.push_back(eventExport);
@@ -375,7 +342,6 @@ namespace TimeAct
 			this->m_events.erase(this->m_events.begin() + idx);
 
 			int numEvents = this->getNumEvents();
-			this->m_xmlElement->SetAttribute("numEvents", --numEvents);
 		}
 
 		void TimeActGroupExportXML::clear()
@@ -403,7 +369,7 @@ namespace TimeAct
 			//Even though tracks **should** be in crescent order, tinyxml does not provide a handy way of performing an efficient binary search, so we loop over all elements instead
 			for (tinyxml2::XMLElement* child = parent->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
 			{
-				int trackId = RXML::getIntElement(child, "TrackID");
+				int trackId = child->FindAttribute("TrackID")->IntValue();
 
 				if (trackId < id)
 					insertionElem = child;
@@ -423,11 +389,9 @@ namespace TimeAct
 			else
 				trackExport->m_xmlElement = parent->InsertNewChildElement("TimeActTrack");
 
-			trackExport->m_xmlElement->SetAttribute("numEventGroups", 0);
-
-			RXML::createIntElement(trackExport->m_xmlElement, "TrackID", id);
-			RXML::createIntElement(trackExport->m_xmlElement, "numFrames", numFrames);
-			RXML::createIntElement(trackExport->m_xmlElement, "fps", fps);
+			trackExport->m_xmlElement->SetAttribute("TrackID", id);
+			trackExport->m_xmlElement->SetAttribute("numFrames", numFrames);
+			trackExport->m_xmlElement->SetAttribute("fps", fps);
 
 			return trackExport;
 		}
@@ -435,7 +399,6 @@ namespace TimeAct
 		TimeActGroupExportXML* TimeActTrackExportXML::addEventGroup(int groupId)
 		{
 			int eventGroupCount = this->getNumEventGroups();
-			this->m_xmlElement->SetAttribute("numEventGroups", ++eventGroupCount);
 
 			TimeActGroupExportXML* eventGroupExport = TimeActGroupExportXML::create(this, this->m_xmlElement, groupId);
 			this->m_eventGroups.push_back(eventGroupExport);
@@ -450,7 +413,6 @@ namespace TimeAct
 			this->m_eventGroups.erase(this->m_eventGroups.begin() + idx);
 
 			int numGroups = this->getNumEventGroups();
-			this->m_xmlElement->SetAttribute("numEventGroups", --numGroups);
 		}
 
 		void TimeActTrackExportXML::clear()
@@ -467,22 +429,22 @@ namespace TimeAct
 
 		int TimeActTrackExportXML::getTrackId()
 		{
-			return RXML::getIntElement(this->m_xmlElement, "TrackID");
+			return this->m_xmlElement->FindAttribute("TrackID")->IntValue();
 		}
 
 		int TimeActTrackExportXML::getFps()
 		{
-			return RXML::getIntElement(this->m_xmlElement, "fps");
+			return this->m_xmlElement->FindAttribute("fps")->IntValue();
 		}
 
 		int TimeActTrackExportXML::getFrameCount()
 		{
-			return RXML::getIntElement(this->m_xmlElement, "numFrames");
+			return this->m_xmlElement->FindAttribute("numFrames")->IntValue();
 		}
 
 		int TimeActTrackExportXML::getNumEventGroups()
 		{
-			return this->m_xmlElement->FindAttribute("numEventGroups")->IntValue();
+			return this->m_xmlElement->ChildElementCount();
 		}
 
 		TimeActTrackListExportXML* TimeActTrackListExportXML::create(TimeActExportXML* owner, tinyxml2::XMLElement* parent)
@@ -491,14 +453,12 @@ namespace TimeAct
 
 			trackListExport->m_xmlElement = parent->InsertNewChildElement("TimeActTrackList");
 
-			trackListExport->m_xmlElement->SetAttribute("numTracks", 0);
-
 			return trackListExport;
 		}
 
 		int TimeActTrackListExportXML::getNumTracks()
 		{
-			return this->m_xmlElement->FindAttribute("numTracks")->IntValue();
+			return this->m_xmlElement->ChildElementCount();
 		}
 
 		TimeActTrackExportXML* TimeActTrackListExportXML::timeActTrackLookup(int id)
@@ -517,7 +477,6 @@ namespace TimeAct
 		TimeActTrackExportXML* TimeActTrackListExportXML::addTrack(int id, int fps, int numFrames)
 		{
 			int numTracks = this->getNumTracks();
-			this->m_xmlElement->SetAttribute("numTracks", ++numTracks);
 
 			TimeActTrackExportXML* trackExport = TimeActTrackExportXML::create(this, this->m_xmlElement, id, fps, numFrames);
 
@@ -541,7 +500,6 @@ namespace TimeAct
 			this->m_tracks.erase(this->m_tracks.begin() + idx);
 
 			int numTracks = this->getNumTracks();
-			this->m_xmlElement->SetAttribute("numTracks", --numTracks);
 		}
 
 		TimeActExportXML* TimeActExportXML::create(std::string filepath, std::string name, int fileId)
@@ -556,7 +514,7 @@ namespace TimeAct
 			taeExport->m_xmlDoc->InsertEndChild(taeExport->m_xmlElement);
 
 			taeExport->m_xmlElement->SetAttribute("name", name.c_str());
-			RXML::createIntElement(taeExport->m_xmlElement, "fileID", fileId);
+			taeExport->m_xmlElement->SetAttribute("fileID", fileId);
 
 			taeExport->setSibFile(0, "");
 			taeExport->setSkeletonFile(0, "");
@@ -571,7 +529,7 @@ namespace TimeAct
 
 		int TimeActExportXML::getFileId()
 		{
-			return RXML::getIntElement(this->m_xmlElement, "fileID");
+			return this->m_xmlElement->FindAttribute("fileID")->IntValue();
 		}
 
 		int TimeActExportXML::getSibFileId()

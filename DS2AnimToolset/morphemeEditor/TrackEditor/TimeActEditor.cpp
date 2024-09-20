@@ -155,9 +155,9 @@ namespace TrackEditor
 
 				Event* event = Event::create(RMath::timeToFrame(timeActEvent->getStartTime(), this->m_fps), RMath::timeToFrame(timeActEvent->getEndTime(), this->m_fps), timeActEvent->getEventId());
 
-				for (size_t k = 0; k < timeActEvent->getArgumentList()->getNumArguments(); k++)
+				for (size_t k = 0; k < timeActEvent->getNumArguments(); k++)
 				{
-					TimeAct::TaeExport::TimeActArgumentExportXML* argXML = timeActEvent->getArgumentList()->getArgument(k);
+					TimeAct::TaeExport::TimeActArgumentExportXML* argXML = timeActEvent->getArgument(k);
 					Argument* arg = event->addArgument(argXML->getType(), argXML->getName());
 
 					TimeAct::DataType type = argXML->getType();
@@ -474,13 +474,12 @@ namespace TrackEditor
 				Event* event = track->events[j];
 
 				TimeAct::TaeExport::TimeActEventExportXML* eventXML = eventGroupXML->addEvent(RMath::frameToTime(event->frameStart, this->m_fps), RMath::frameToTime(event->frameEnd, this->m_fps), event->userData);
-				TimeAct::TaeExport::TimeActArgumentListExportXML* argList = eventXML->createArgumentList();
 
 				for (size_t k = 0; k < event->arguments.size(); k++)
 				{
 					Argument* arg = event->arguments[k];
 
-					TimeAct::TaeExport::TimeActArgumentExportXML* argXML = argList->addArgument(arg->name);
+					TimeAct::TaeExport::TimeActArgumentExportXML* argXML = eventXML->addArgument(arg->name);
 
 					switch (arg->type)
 					{
