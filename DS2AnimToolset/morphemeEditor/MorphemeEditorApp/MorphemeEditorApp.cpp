@@ -781,12 +781,13 @@ void MorphemeEditorApp::update(float dt)
 		char networkFileName[256];
 		sprintf_s(networkFileName, "%ws.xml", this->m_character->getCharacterName().c_str());
 
-		char exePath[256];
+		char exePath[MAX_PATH];
 		GetModuleFileNameA(NULL, exePath, MAX_PATH);
+		std::string exeParentPath = std::filesystem::path(exePath).parent_path().string();
 
-		std::string fullPath = std::string(exePath) + "\\" + std::string(exportPath);
+		std::string fullPath = exeParentPath + std::string("\\") + std::string(exportPath);
 
-		std::string assetCompilerName = std::string("\"") + std::string(exePath) + "\\" + std::string(ASSET_COMPILER_EXE) + std::string("\"");
+		std::string assetCompilerName = std::string("\"") + exeParentPath + "\\" + std::string(ASSET_COMPILER_EXE) + std::string("\"");
 		std::string assetPath = "-asset " + std::string("\"") + fullPath + std::string(networkFileName) + std::string("\"");
 		std::string baseDir = "-baseDir " + std::string("\"") + fullPath + std::string("\"");
 		std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "cache\\" + std::string("\"");
