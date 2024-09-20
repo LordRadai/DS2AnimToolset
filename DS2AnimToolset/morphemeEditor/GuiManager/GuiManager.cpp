@@ -833,9 +833,9 @@ void GuiManager::rootWindow()
 
 		if (ImGui::BeginMenu("Timecode Format"))
 		{
-			if (ImGui::MenuItem("Seconds"), nullptr, editorApp->getTimeActEditor()->getTimeCodeFormat() == TrackEditor::kSeconds) { editorApp->getTimeActEditor()->setTimeCodeFormat(TrackEditor::kSeconds); }
-			if (ImGui::MenuItem("Milliseconds"), nullptr, editorApp->getTimeActEditor()->getTimeCodeFormat() == TrackEditor::kMilliseconds) { editorApp->getTimeActEditor()->setTimeCodeFormat(TrackEditor::kMilliseconds); }
-			if (ImGui::MenuItem("Frames"), nullptr, editorApp->getTimeActEditor()->getTimeCodeFormat() == TrackEditor::kFrames) { editorApp->getTimeActEditor()->setTimeCodeFormat(TrackEditor::kFrames); }
+			if (ImGui::MenuItem("Seconds", nullptr, editorApp->getTimeActEditor()->getTimeCodeFormat() == TrackEditor::kSeconds)) { editorApp->getTimeActEditor()->setTimeCodeFormat(TrackEditor::kSeconds); }
+			if (ImGui::MenuItem("Milliseconds", nullptr, editorApp->getTimeActEditor()->getTimeCodeFormat() == TrackEditor::kMilliseconds)) { editorApp->getTimeActEditor()->setTimeCodeFormat(TrackEditor::kMilliseconds); }
+			if (ImGui::MenuItem("Frames", nullptr, editorApp->getTimeActEditor()->getTimeCodeFormat() == TrackEditor::kFrames)) { editorApp->getTimeActEditor()->setTimeCodeFormat(TrackEditor::kFrames); }
 
 			ImGui::EndMenu();
 		}
