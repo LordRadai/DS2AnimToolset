@@ -18,7 +18,9 @@ namespace MorphemeExport
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			nodeDataBlock->writeInt(nodeDef->getChildNodeID(0), "SourceNodeID");
+			if (nodeDef->getChildNodeID(0) != MR::INVALID_NODE_ID)
+				nodeDataBlock->writeInt(nodeDef->getChildNodeID(0), "SourceNodeID");
+
 			nodeDataBlock->writeInt(nodeDef->getChildNodeID(1), "DestNodeID");
 
 			MR::AttribDataTransitDef* transitDef = static_cast<MR::AttribDataTransitDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
@@ -139,7 +141,9 @@ namespace MorphemeExport
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			nodeDataBlock->writeInt(nodeDef->getChildNodeID(0), "SourceNodeID");
+			if (nodeDef->getChildNodeID(0) != MR::INVALID_NODE_ID)
+				nodeDataBlock->writeInt(nodeDef->getChildNodeID(0), "SourceNodeID");
+
 			nodeDataBlock->writeInt(nodeDef->getChildNodeID(1), "DestNodeID");
 
 			MR::AttribDataTransitSyncEventsDef* transitDef = static_cast<MR::AttribDataTransitSyncEventsDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
