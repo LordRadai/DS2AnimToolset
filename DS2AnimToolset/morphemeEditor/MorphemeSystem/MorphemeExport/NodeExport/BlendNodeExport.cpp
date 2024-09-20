@@ -188,8 +188,8 @@ namespace MorphemeExport
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getInputCPConnectionSourceNodeID(0), "Weight");
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getInputCPConnectionSourceNodeID(1), "EventBlendingWeight");
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "Weight");
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(1)->m_sourceNodeID, nodeDef->getInputCPConnection(1)->m_sourcePinIndex, "EventBlendingWeight");
 
 			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
 
@@ -229,7 +229,7 @@ namespace MorphemeExport
 				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
 			}
 
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getInputCPConnectionSourceNodeID(0), "Weight");
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "Weight");
 
 			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
 			for (int i = 0; i < sourceNodeCount; i++)
@@ -266,7 +266,7 @@ namespace MorphemeExport
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getInputCPConnectionSourceNodeID(0), "Weight");
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "Weight");
 
 			MR::AttribDataFloatArray* childWeights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
 
