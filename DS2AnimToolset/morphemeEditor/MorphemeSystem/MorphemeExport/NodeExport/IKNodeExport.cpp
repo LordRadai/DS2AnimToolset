@@ -24,10 +24,6 @@ namespace MorphemeExport
 			nodeDataBlock->writeBool(headLookSetup->m_updateTargetByDeltas, "UpdateTargetByDeltas");
 			nodeDataBlock->writeBool(headLookSetup->m_worldSpaceTarget, "WorldSpaceTarget");
 
-			bool applyJointLimits = false;
-			bool minimiseRotation = false;
-			bool keepUpright = false;
-
 			CHAR paramName[256];
 			for (int animSetIndex = 0; animSetIndex < netDef->getNumAnimSets(); animSetIndex++)
 			{
@@ -35,12 +31,13 @@ namespace MorphemeExport
 
 				if (animSetIndex == 0)
 				{
+					nodeDataBlock->writeBool(true, "ApplyJointLimits");
+					nodeDataBlock->writeBool(headLookChain->m_ikParams->minimiseRotation, "MinimiseRotation");
+					nodeDataBlock->writeBool(headLookChain->m_ikParams->keepUpright, "KeepUpright");
+
 					nodeDataBlock->writeFloat(headLookChain->m_ikParams->worldUpAxis.x, "WorldUpAxisX");
 					nodeDataBlock->writeFloat(headLookChain->m_ikParams->worldUpAxis.y, "WorldUpAxisY");
 					nodeDataBlock->writeFloat(headLookChain->m_ikParams->worldUpAxis.z, "WorldUpAxisZ");
-
-					minimiseRotation = headLookChain->m_ikParams->minimiseRotation;
-					keepUpright = headLookChain->m_ikParams->keepUpright;
 				}
 
 				sprintf_s(paramName, "PointingVectorX_%d", animSetIndex + 1);
@@ -66,10 +63,6 @@ namespace MorphemeExport
 				sprintf_s(paramName, "RootJointIndex_%d", animSetIndex + 1);
 				nodeDataBlock->writeUInt(headLookChain->m_rootJointIndex, paramName);
 			}
-
-			nodeDataBlock->writeBool(applyJointLimits, "ApplyJointLimits");
-			nodeDataBlock->writeBool(minimiseRotation, "MinimiseRotation");
-			nodeDataBlock->writeBool(keepUpright, "KeepUpright");
 
 			return nodeExportXML;
 		}

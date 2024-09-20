@@ -8,6 +8,12 @@
 #include "FromSoftware/TimeAct/TaeTemplate/TaeTemplateXML/TaeTemplateXML.h"
 #include <thread>
 
+#ifndef _DEBUG
+#define ASSET_COMPILER_EXE "morphemeAssetCompiler.exe"
+#else
+#define ASSET_COMPILER_EXE "morphemeAssetCompiler_debug.exe"
+#endif
+
 namespace
 {
 	float calculateOptimalCameraDistance(Camera* camera, Character* character)
@@ -756,6 +762,38 @@ void MorphemeEditorApp::update(float dt)
 		{
 			g_appLog->alertMessage(MsgLevel_Error, "No character is loaded");
 		}
+	}
+
+	if (this->m_taskFlags.compileNetwork)
+	{
+		this->m_taskFlags.compileNetwork = false;
+
+		char exportPath[256];
+		sprintf_s(exportPath, "Export\\%ws\\", this->m_character->getCharacterName().c_str());
+
+		char networkFileName[256];
+		sprintf_s(networkFileName, "%ws.xml", this->m_character->getCharacterName().c_str());
+
+		std::string assetPath = "-asset " + std::string("\"") + std::string(exportPath) + std::string(networkFileName) + std::string("\"");
+		std::string baseDir = "-baseDir " + std::string("\"") + std::string(exportPath) + std::string("\"");
+		std::string cacheDir = "-cacheDir " + std::string("\"") + std::string(exportPath) + "cache\\" + std::string("\"");
+		std::string outputDir = "-outputFileName" + std::string("\"") + std::string(exportPath) + "runtimeBinary\\" + std::string("\"");
+		std::string logFile = "-logFile " + std::string("\"") + std::string(exportPath) + "tempOutput\\assetManager\\assetCompiler.log" + std::string("\"");
+		std::string errFile = "-errFile " + std::string("\"") + std::string(exportPath) + "tempOutput\\assetManager\\assetCompilerError.log" + std::string("\"");
+
+		std::string assetCompilerCommand = std::string(ASSET_COMPILER_EXE) + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
+		
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+		ZeroMemory(&si, sizeof(si));
+		si.cb = sizeof(si);
+		ZeroMemory(&pi, sizeof(pi));
+		CreateProcess(nullptr, LPWSTR(RString::toWide(assetCompilerCommand).c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
+
+		WaitForSingleObject(pi.hProcess, INFINITE);
+
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
 	}
 
 	if (this->m_taskFlags.compileTaes)

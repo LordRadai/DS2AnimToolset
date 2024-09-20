@@ -902,6 +902,7 @@ void GuiManager::rootWindow()
 	{
 		if (ImGui::MenuItem("ImGui Demo", nullptr, editorApp->getWindowFlags()->imGuiDemo)) { editorApp->getWindowFlags()->imGuiDemo = !editorApp->getWindowFlags()->imGuiDemo; }
 		if (ImGui::MenuItem("Create Tae Template XML")) { editorApp->getTaskFlags()->exportTaeTemplateXml = true; }
+		if (ImGui::MenuItem("Process Assets")) { editorApp->getTaskFlags()->compileNetwork = true; }
 
 		ImGui::EndMenu();
 	}

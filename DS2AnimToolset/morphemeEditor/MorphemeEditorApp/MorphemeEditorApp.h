@@ -52,7 +52,6 @@ public:
 		bool saveFile = false;
 
 		bool exportTaeTemplateXml = false;
-
 		bool exportTae = false;
 		bool exportModel = false;
 		bool exportAnimations = false;
@@ -60,6 +59,7 @@ public:
 		bool exportAll = false;
 		ExportFormat exportFormat = kFbx;
 
+		bool compileNetwork = false;
 		bool compileTaes = false;
 	};
 
