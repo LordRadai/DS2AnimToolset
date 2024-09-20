@@ -23,25 +23,26 @@ namespace
     {
         return std::string(first->getAnimName()) < std::string(second->getAnimName());
     }
-}
 
-int GetChrIdFromNmbFileName(std::wstring name)
-{
-    std::wstring chr_id_str;
-    int m_chrId = -1;
+    int getChrIdFromNmbFileName(std::wstring name)
+    {
+        std::wstring chr_id_str;
+        int m_chrId = -1;
 
-    int lastCPos = name.find_last_of(L"\\");
+        int lastCPos = name.find_last_of(L"\\");
 
-    if (name.substr(lastCPos + 1, 1).compare(L"c") != 0)
-        return -1;
+        if (name.substr(lastCPos + 1, 1).compare(L"c") != 0)
+            return -1;
 
-    chr_id_str = name.substr(lastCPos + 2, 4);
+        chr_id_str = name.substr(lastCPos + 2, 4);
 
-    m_chrId = stoi(chr_id_str);
+        m_chrId = stoi(chr_id_str);
 
-    g_appLog->debugMessage(MsgLevel_Debug, "Chr ID: %d\n", m_chrId);
+        g_appLog->debugMessage(MsgLevel_Debug, "Chr ID: %d\n", m_chrId);
 
-    return m_chrId;
+        return m_chrId;
+    }
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -58,7 +59,7 @@ MorphemeCharacterDef* MorphemeCharacterDef::create(const char* filename)
   strcpy(instance->m_metadata.m_bundleDir, filepath.parent_path().string().c_str());
   strcpy(instance->m_filename, file_name.string().c_str());
 
-  instance->m_chrId = GetChrIdFromNmbFileName(filepath.c_str());
+  instance->m_chrId = getChrIdFromNmbFileName(filepath.c_str());
 
   //----------------------------
   // Load the given bundle file into memory and load the bundle.
