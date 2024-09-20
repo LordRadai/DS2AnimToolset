@@ -3,6 +3,7 @@
 #include "extern.h"
 #include "RCore.h"
 #include "NodeExportHelpers.h"
+#include "morpheme/Nodes/mrNodePassThrough.h"
 #include "assetProcessor/include/assetProcessor/BlendNodeBuilderUtils.h"
 
 namespace MorphemeExport
