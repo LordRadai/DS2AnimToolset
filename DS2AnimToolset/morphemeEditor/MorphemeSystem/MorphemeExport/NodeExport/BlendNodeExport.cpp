@@ -186,8 +186,10 @@ namespace MorphemeExport
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			nodeDataBlock->writeInt(nodeDef->getChildNodeID(0), "Source0NodeID");
-			nodeDataBlock->writeInt(nodeDef->getChildNodeID(1), "Source1NodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getInputCPConnectionSourceNodeID(0), "Weight");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getInputCPConnectionSourceNodeID(1), "EventBlendingWeight");
 
 			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
 
@@ -224,8 +226,10 @@ namespace MorphemeExport
 			{
 				sprintf_s(paramName, "Source%dNodeID", i);
 
-				nodeDataBlock->writeInt(nodeDef->getChildNodeID(i), paramName);
+				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
 			}
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getInputCPConnectionSourceNodeID(0), "Weight");
 
 			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
 			for (int i = 0; i < sourceNodeCount; i++)

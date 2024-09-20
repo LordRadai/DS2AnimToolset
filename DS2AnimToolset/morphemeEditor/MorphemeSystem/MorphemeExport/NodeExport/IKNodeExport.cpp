@@ -17,7 +17,9 @@ namespace MorphemeExport
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			nodeDataBlock->writeInt(nodeDef->getChildNodeID(0), "InputNodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getInputCPConnection(0)->m_sourceNodeID, "Weight");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getInputCPConnection(1)->m_sourceNodeID, "BlendWeight");
 
 			MR::AttribDataHeadLookSetup* headLookSetup = static_cast<MR::AttribDataHeadLookSetup*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 			

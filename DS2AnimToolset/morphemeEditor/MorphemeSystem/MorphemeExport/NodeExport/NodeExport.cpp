@@ -143,7 +143,7 @@ namespace MorphemeExport
 
 			int numAnimSets = netDef->getNumAnimSets();
 
-			nodeDataBlock->writeInt(nodeDef->getChildNodeID(0), "InputNodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
 			nodeDataBlock->writeInt(numAnimSets, "NumAnimSets");
 
 			for (MR::AnimSetIndex animSetIndex = 0; animSetIndex < numAnimSets; animSetIndex++)
