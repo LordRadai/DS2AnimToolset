@@ -33,7 +33,10 @@ namespace MorphemeExport
 					int conditionIndex = targetStateDef->getExitConditionStateMachineIndex(i);
 					MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
 
-					MorphemeExport::TransitConditionExport::exportTransitCondition(nodeExport, transitCondDef);
+					MR::StateDef* referencingTransit = MRUtils::getStateDefReferencingCondition(conditionIndex, stateMachineDef);
+
+					if (referencingTransit == nullptr || referencingTransit->getTransitSourceStateID() != MR::INVALID_NODE_ID)
+						MorphemeExport::TransitConditionExport::exportTransitCondition(nodeExport, transitCondDef);
 				}
 
 				for (int i = 0; i < targetStateDef->getNumExitTransitionStates(); i++)
@@ -41,6 +44,9 @@ namespace MorphemeExport
 					MR::StateDef* transitStateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
 
 					assert(transitStateDef->getNumEntryConditions() != 0);
+
+					if (transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID)
+						continue;
 
 					std::vector<unsigned int> indices;
 					indices.reserve(numConditions);

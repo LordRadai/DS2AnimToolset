@@ -35,6 +35,22 @@ namespace MRUtils
 		return nullptr;
 	}
 
+	MR::StateDef* getStateDefReferencingCondition(int conditionIndex, MR::AttribDataStateMachineDef* stateMachineDef)
+	{
+		for (int i = 0; i < stateMachineDef->getNumStates(); i++)
+		{
+			MR::StateDef* stateDef = stateMachineDef->getStateDef(i);
+
+			for (size_t j = 0; j < stateDef->getNumEntryConditions(); j++)
+			{
+				if (stateDef->getEntryConditionStateMachineIndex(j) == conditionIndex)
+					return stateDef;
+			}
+		}
+
+		return nullptr;
+	}
+
 	MR::StateDef* getTargetNodeStateDef(short nodeID, MR::AttribDataStateMachineDef* stateMachineDef)
 	{
 		for (int i = 0; i < stateMachineDef->getNumStates(); i++)
