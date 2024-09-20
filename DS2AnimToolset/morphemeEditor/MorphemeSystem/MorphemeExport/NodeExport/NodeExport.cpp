@@ -35,7 +35,7 @@ namespace MorphemeExport
 
 					MR::StateDef* referencingTransit = MRUtils::getStateDefReferencingCondition(conditionIndex, stateMachineDef);
 
-					if (referencingTransit == nullptr || referencingTransit->getTransitSourceStateID() != MR::INVALID_NODE_ID)
+					if ((referencingTransit == nullptr) || (referencingTransit->getTransitSourceStateID() != MR::INVALID_NODE_ID))
 						MorphemeExport::TransitConditionExport::exportTransitCondition(nodeExport, transitCondDef);
 				}
 
