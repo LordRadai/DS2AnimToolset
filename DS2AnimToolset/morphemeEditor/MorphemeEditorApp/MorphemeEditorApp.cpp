@@ -791,7 +791,7 @@ void MorphemeEditorApp::update(float dt)
 		std::string assetPath = "-asset " + std::string("\"") + fullPath + std::string(networkFileName) + std::string("\"");
 		std::string baseDir = "-baseDir " + std::string("\"") + fullPath + std::string("\"");
 		std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "cache\\" + std::string("\"");
-		std::string outputDir = "-outputDir " + std::string("\"") + fullPath + "runtimeBinary\\" + std::string("\"");
+		std::string outputDir = "-outputDir " + std::string("\"") + fullPath + "runtimeBinary" + std::string("\"");
 		std::string logFile = "-logFile " + std::string("\"") + fullPath + "tempOutput\\assetManager\\assetCompiler.log" + std::string("\"");
 		std::string errFile = "-errFile " + std::string("\"") + fullPath + "tempOutput\\assetManager\\assetCompilerError.log" + std::string("\"");
 
@@ -1085,6 +1085,8 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	if (this->m_character->getMorphemeCharacter() == nullptr)
 		return false;
 
+	std::filesystem::current_path(path);
+
 	MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
 	std::wstring chrName = this->m_character->getCharacterName();
 
@@ -1106,7 +1108,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting character controller %d for %ws\n", i, chrName.c_str());
 
-		ME::CharacterControllerExportXML* characterControllerExport = MorphemeExport::exportCharacterController(characterDef->getCharacterController(i), path + filename);
+		ME::CharacterControllerExportXML* characterControllerExport = MorphemeExport::exportCharacterController(characterDef->getCharacterController(i), filename);
 	
 		char processName[256];
 		sprintf_s(processName, "Exporting character controller for anim set %d", i);
@@ -1136,7 +1138,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting rig for animation set %d for %ws\n", i, chrName.c_str());
 
-		ME::RigExportXML* rigExport = MorphemeExport::exportRig(characterDef->getNetworkDef(), characterDef->getNetworkDef()->getRig(i), path + filename);
+		ME::RigExportXML* rigExport = MorphemeExport::exportRig(characterDef->getNetworkDef(), characterDef->getNetworkDef()->getRig(i), filename);
 
 		char processName[256];
 		sprintf_s(processName, "Exporting rig for anim set %d", i);
@@ -1161,7 +1163,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting animation library for %ws\n", chrName.c_str());
 
-	ME::AnimationLibraryXML* animLibraryExport = MorphemeExport::exportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, chrName.c_str(), path + libraryFilename);
+	ME::AnimationLibraryXML* animLibraryExport = MorphemeExport::exportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, chrName.c_str(), libraryFilename);
 
 	if (!animLibraryExport->write())
 		g_appLog->debugMessage(MsgLevel_Error, "Failed to export animation library for %ws\n", chrName.c_str());
@@ -1178,7 +1180,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting message preset library for %ws\n", chrName.c_str());
 
-	ME::MessagePresetLibraryExportXML* messagePresetExport = MorphemeExport::exportMessagePresetLibrary(characterDef->getNetworkDef(), chrName, path + messagePresetFilename);
+	ME::MessagePresetLibraryExportXML* messagePresetExport = MorphemeExport::exportMessagePresetLibrary(characterDef->getNetworkDef(), chrName, messagePresetFilename);
 
 	if (!messagePresetExport->write())
 		g_appLog->debugMessage(MsgLevel_Error, "Failed to export message library for %ws\n", chrName.c_str());
@@ -1195,12 +1197,12 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
 #ifdef _DEBUG
-	exportNetworkDefFnTables(netDef, path + L"fnTables.txt");
+	exportNetworkDefFnTables(netDef, L"fnTables.txt");
 #endif
 
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for c%04d\n", chrName);
 
-	ME::NetworkDefExportXML* netDefExport = MorphemeExport::exportNetwork(netDef, animLibraryExport, messagePresetExport, chrName, path + networkFilename);
+	ME::NetworkDefExportXML* netDefExport = MorphemeExport::exportNetwork(netDef, animLibraryExport, messagePresetExport, chrName, networkFilename);
 
 	if (!netDefExport->write())
 		g_appLog->debugMessage(MsgLevel_Error, "Failed to export networkDef for c%04d\n", chrName);
