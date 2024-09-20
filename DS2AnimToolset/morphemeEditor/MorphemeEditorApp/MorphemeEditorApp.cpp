@@ -80,6 +80,13 @@ namespace
 		out.close();
 	}
 
+	void exportAssetCompilerCommand(const char* command, std::wstring path)
+	{
+		std::ofstream out(path, std::ios::out);
+		out << command;
+		out.close();
+	}
+
 	bool exportModelToFbx(std::wstring path, Character* character)
 	{
 		bool status = true;
@@ -774,15 +781,25 @@ void MorphemeEditorApp::update(float dt)
 		char networkFileName[256];
 		sprintf_s(networkFileName, "%ws.xml", this->m_character->getCharacterName().c_str());
 
-		std::string assetPath = "-asset " + std::string("\"") + std::string(exportPath) + std::string(networkFileName) + std::string("\"");
-		std::string baseDir = "-baseDir " + std::string("\"") + std::string(exportPath) + std::string("\"");
-		std::string cacheDir = "-cacheDir " + std::string("\"") + std::string(exportPath) + "cache\\" + std::string("\"");
-		std::string outputDir = "-outputDir " + std::string("\"") + std::string(exportPath) + "runtimeBinary\\" + std::string("\"");
-		std::string logFile = "-logFile " + std::string("\"") + std::string(exportPath) + "tempOutput\\assetManager\\assetCompiler.log" + std::string("\"");
-		std::string errFile = "-errFile " + std::string("\"") + std::string(exportPath) + "tempOutput\\assetManager\\assetCompilerError.log" + std::string("\"");
+		char exePath[256];
+		GetModuleFileNameA(NULL, exePath, MAX_PATH);
 
-		std::string assetCompilerCommand = std::string(ASSET_COMPILER_EXE) + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
+		std::string fullPath = std::string(exePath) + "\\" + std::string(exportPath);
+
+		std::string assetCompilerName = std::string("\"") + fullPath + "\\" + std::string(ASSET_COMPILER_EXE) + std::string("\"");
+		std::string assetPath = "-asset " + std::string("\"") + fullPath + std::string(networkFileName) + std::string("\"");
+		std::string baseDir = "-baseDir " + std::string("\"") + fullPath + std::string("\"");
+		std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "cache\\" + std::string("\"");
+		std::string outputDir = "-outputDir " + std::string("\"") + fullPath + "runtimeBinary\\" + std::string("\"");
+		std::string logFile = "-logFile " + std::string("\"") + fullPath + "tempOutput\\assetManager\\assetCompiler.log" + std::string("\"");
+		std::string errFile = "-errFile " + std::string("\"") + fullPath + "tempOutput\\assetManager\\assetCompilerError.log" + std::string("\"");
+
+		std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
 		
+		exportAssetCompilerCommand(assetCompilerCommand.c_str(), RString::toWide(std::string(exportPath) + "assetCompilerCommand.txt"));
+
+		g_appLog->debugMessage(MsgLevel_Info, "%s", assetCompilerCommand.c_str());
+
 		STARTUPINFO si;
 		PROCESS_INFORMATION pi;
 		ZeroMemory(&si, sizeof(si));
