@@ -77,7 +77,7 @@ AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR
 
     //Create markup from EventTracks for the current animation
     wchar_t out_path[255];
-    swprintf_s(out_path, L"Export\\c%04d\\morphemeMarkup\\", owner->getCharacterId());
+    swprintf_s(out_path, L"morphemeMarkup\\");
 
     std::filesystem::path takeListPath = std::filesystem::path(out_path).string() + RString::removeExtension(owner->getAnimFileLookUp()->getSourceFilename(id)) + ".xmd.xml";
 
