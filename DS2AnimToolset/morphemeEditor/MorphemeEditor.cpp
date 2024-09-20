@@ -191,6 +191,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
         g_appLog->debugMessage(MsgLevel_Info, "Exit\n");
 
+        g_appLog->shutdown();
+
         delete g_appLog;
     }
     catch (const std::exception& e)
