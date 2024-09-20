@@ -777,7 +777,7 @@ void MorphemeEditorApp::update(float dt)
 		std::string assetPath = "-asset " + std::string("\"") + std::string(exportPath) + std::string(networkFileName) + std::string("\"");
 		std::string baseDir = "-baseDir " + std::string("\"") + std::string(exportPath) + std::string("\"");
 		std::string cacheDir = "-cacheDir " + std::string("\"") + std::string(exportPath) + "cache\\" + std::string("\"");
-		std::string outputDir = "-outputFileName" + std::string("\"") + std::string(exportPath) + "runtimeBinary\\" + std::string("\"");
+		std::string outputDir = "-outputDir " + std::string("\"") + std::string(exportPath) + "runtimeBinary\\" + std::string("\"");
 		std::string logFile = "-logFile " + std::string("\"") + std::string(exportPath) + "tempOutput\\assetManager\\assetCompiler.log" + std::string("\"");
 		std::string errFile = "-errFile " + std::string("\"") + std::string(exportPath) + "tempOutput\\assetManager\\assetCompilerError.log" + std::string("\"");
 
