@@ -291,9 +291,9 @@ namespace MorphemeExport
 			dataBlock->writeBool(transitCondDef->getInvertFlag(), "OnNotSet");
 		}
 
-		void exportTransitConditionDataBlock(MR::TransitConditionDef* transitCondDef, ME::ConditionExportXML* conditionExport)
+		void exportTransitConditionDataBlock(MR::TransitConditionDef* transitCondDef, ME::ConditionExportXML* conditionExport, MR::TransitConditType type)
 		{
-			switch (transitCondDef->getType())
+			switch (type)
 			{
 			case TRANSCOND_ON_MESSAGE_ID:
 				exportTransitConditionOnMessage(static_cast<MR::TransitConditionDefOnMessage*>(transitCondDef), conditionExport);
@@ -376,9 +376,15 @@ namespace MorphemeExport
 			int idx = nodeExport->getNumConditions();
 
 			MR::TransitConditType type = transitCondDef->getType();
+
+			if ((type == TRANSCOND_CONTROL_PARAM_UINT_GREATER_ID) || (type == TRANSCOND_CONTROL_PARAM_UINT_LESS_ID) || (type == TRANSCOND_CONTROL_PARAM_INT_GREATER_ID) || (type == TRANSCOND_CONTROL_PARAM_INT_LESS_ID) || (type == TRANSCOND_CONTROL_PARAM_FLOAT_LESS_ID) || (type == TRANSCOND_CONTROL_PARAM_FLOAT_GREATER_ID))
+				type = TRANSCOND_CONTROL_PARAM_TEST_ID;
+			else if ((type == TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID) || (type == TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID) || (type == TRANSCOND_CONTROL_PARAM_INT_IN_RANGE_ID))
+				type = TRANSCOND_CONTROL_PARAM_IN_RANGE_ID;
+
 			ME::ConditionExportXML* conditionExport = static_cast<ME::ConditionExportXML*>(nodeExport->createCondition(idx, type));
 
-			exportTransitConditionDataBlock(transitCondDef, conditionExport);
+			exportTransitConditionDataBlock(transitCondDef, conditionExport, transitCondDef->getType());
 
 			return conditionExport;
 		}
@@ -396,9 +402,15 @@ namespace MorphemeExport
 			int idx = nodeExport->getNumCommonConditions();
 
 			MR::TransitConditType type = transitCondDef->getType();
+
+			if ((type == TRANSCOND_CONTROL_PARAM_UINT_GREATER_ID) || (type == TRANSCOND_CONTROL_PARAM_UINT_LESS_ID) || (type == TRANSCOND_CONTROL_PARAM_INT_GREATER_ID) || (type == TRANSCOND_CONTROL_PARAM_INT_LESS_ID) || (type == TRANSCOND_CONTROL_PARAM_FLOAT_LESS_ID) || (type == TRANSCOND_CONTROL_PARAM_FLOAT_GREATER_ID))
+				type = TRANSCOND_CONTROL_PARAM_TEST_ID;
+			else if ((type == TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID) || (type == TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID) || (type == TRANSCOND_CONTROL_PARAM_INT_IN_RANGE_ID))
+				type = TRANSCOND_CONTROL_PARAM_IN_RANGE_ID;
+
 			ME::ConditionExportXML* conditionExport = static_cast<ME::ConditionExportXML*>(nodeExport->createCommonCondition(idx, type));
 
-			exportTransitConditionDataBlock(transitCondDef, conditionExport);
+			exportTransitConditionDataBlock(transitCondDef, conditionExport, transitCondDef->getType());
 
 			return conditionExport;
 		}
