@@ -616,6 +616,8 @@ void MorphemeEditorApp::update(float dt)
 				this->m_eventTrackEditor->setCurrentTime(this->m_animPlayer->getTime());
 			else
 				this->m_animPlayer->setTime(this->m_eventTrackEditor->getCurrentTime());
+
+			this->m_eventTrackEditor->setTimeCodeFormat(this->m_timeActEditor->getTimeCodeFormat());
 		}
 
 		if (this->m_timeActEditor && this->m_timeActEditor->getSource())
@@ -879,7 +881,7 @@ void MorphemeEditorApp::loadSettings()
 	this->m_previewFlags.displayMode = (DisplayMode)settings->getInt("ModelViewer", "model_disp_mode", 0);
 
 	this->m_timeActEditor->setTimeCodeFormat((TrackEditor::TimeCodeFormat)settings->getInt("TimeActEditor", "time_code_format", 0));
-	this->m_timeActEditor->setTimeCodeFormat((TrackEditor::TimeCodeFormat)settings->getInt("EventTrackEditor", "time_code_format", 0));
+	this->m_eventTrackEditor->setTimeCodeFormat((TrackEditor::TimeCodeFormat)settings->getInt("EventTrackEditor", "time_code_format", 0));
 
 	settings->destroy();
 }
