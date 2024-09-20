@@ -1935,6 +1935,9 @@ void GuiManager::searchQueryWindow()
 
 void GuiManager::progressIndicatorPopup()
 {
+	const char* iniBak = ImGui::GetIO().IniFilename;
+	ImGui::GetIO().IniFilename = NULL;
+
 	if (!g_workerThread.load()->isDone())
 	{
 		ImGui::OpenPopup(g_workerThread.load()->getThreadName().c_str());
@@ -1955,4 +1958,6 @@ void GuiManager::progressIndicatorPopup()
 			ImGui::EndPopup();
 		}
 	}
+
+	ImGui::GetIO().IniFilename = iniBak;
 }

@@ -16,6 +16,14 @@
 
 namespace
 {
+	std::string getExeRootDir()
+	{
+		char filePath[256];
+		GetModuleFileNameA(NULL, filePath, 260);
+
+		return std::filesystem::path(filePath).parent_path().string();
+	}
+
 	float calculateOptimalCameraDistance(Camera* camera, Character* character)
 	{
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
@@ -96,7 +104,7 @@ namespace
 		FbxExporter* pExporter = FbxExporter::Create(g_pFbxManager, "Flver Exporter");
 		pExporter->SetFileExportVersion(FBX_2014_00_COMPATIBLE);
 
-		std::string modelOutPath = RString::toNarrow(path) + RString::toNarrow(character->getCharacterName()) + ".fbx";
+		std::string modelOutPath = RString::toNarrow(character->getCharacterName()) + ".fbx";
 
 		try
 		{
@@ -154,7 +162,7 @@ namespace
 		XMD::XModel* modelXmd = XMDTranslator::createModel(rig, model, RString::toNarrow(model->getFileOrigin()).c_str(), true);
 		XMDTranslator::createBindPoseAnimCycle(modelXmd, rig);
 
-		if (modelXmd->Save(RString::toNarrow(path) + "\\" + RString::toNarrow(character->getCharacterName()) + ".xmd") != XMD::XFileError::Success)
+		if (modelXmd->Save(RString::toNarrow(character->getCharacterName()) + ".xmd") != XMD::XFileError::Success)
 			status = false;
 
 		delete modelXmd;
@@ -174,14 +182,14 @@ namespace
 		if (characterDef == nullptr)
 			throw("characterDef was nullptr\n");
 
-		std::string animName = RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId));
+		std::string animName = RString::toNarrow(path) + RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId));
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting animation %s to FBX (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
 
 		FbxExporter* pExporter = FbxExporter::Create(g_pFbxManager, "Flver Exporter");
 		pExporter->SetFileExportVersion(FBX_2014_00_COMPATIBLE);
 
-		std::string outPath = RString::toNarrow(path) + animName + ".fbx";
+		std::string outPath = animName + ".fbx";
 
 		try
 		{
@@ -254,14 +262,14 @@ namespace
 
 		MR::AnimRigDef* rig = character->getRig(0);
 
-		std::string animName = RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId));
+		std::string animName = RString::toNarrow(path) + RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId)) + ".xmd";
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting animation %s to XMD (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
 
 		XMD::XModel* xmd = XMDTranslator::createModel(rig, character->getCharacterModelCtrl()->getModel(), characterDef->getAnimFileLookUp()->getSourceFilename(animId), false);
 		XMDTranslator::createAnimCycle(xmd, anim, characterDef->getAnimFileLookUp()->getTakeName(animId));
 
-		if (xmd->Save(RString::toNarrow(path) + animName + ".xmd") != XMD::XFileError::Success)
+		if (xmd->Save(animName) != XMD::XFileError::Success)
 			status = false;
 
 		delete xmd;
@@ -1069,6 +1077,8 @@ bool MorphemeEditorApp::exportTimeAct(std::wstring path)
 	if (this->m_character == nullptr)
 		return false;
 
+	std::filesystem::current_path(path);
+
 	TimeAct::TaeExport::TimeActExportXML* tae = this->m_character->getTimeAct();
 
 	if (tae == nullptr)
@@ -1077,9 +1087,10 @@ bool MorphemeEditorApp::exportTimeAct(std::wstring path)
 	wchar_t filename[256];
 	swprintf_s(filename, L"%ws_tae.xml", RString::toWide(tae->getName()).c_str());
 
-	tae->setDstFileName(RString::toNarrow(path + filename));
-
+	tae->setDstFileName(RString::toNarrow(filename));
 	tae->save();
+
+	std::filesystem::current_path(getExeRootDir());
 }
 
 bool MorphemeEditorApp::exportNetwork(std::wstring path)
@@ -1212,6 +1223,8 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	g_workerThread.load()->increaseProgressStep();
 	g_workerThread.load()->increaseProgressStep();
 
+	std::filesystem::current_path(getExeRootDir());
+
 	return true;
 }
 
@@ -1342,9 +1355,11 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 
 void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 {
+	std::filesystem::current_path(path);
+
 	g_workerThread.load()->addProcess("Export animations", 2);
 
-	std::wstring markupExportPath = path + L"morphemeMarkup\\";
+	std::wstring markupExportPath = L"morphemeMarkup\\";
 	std::filesystem::create_directories(markupExportPath);
 
 	g_workerThread.load()->setProcessStepName("Exporting anim markups...");
@@ -1357,10 +1372,10 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 	switch (this->m_taskFlags.exportFormat)
 	{
 	case kFbx:
-		animExportPath = path + L"FBX\\";
+		animExportPath = L"FBX\\";
 		break;
 	case kXmd:
-		animExportPath = path + L"motion_xmd\\";
+		animExportPath = L"motion_xmd\\";
 		break;
 	default:
 		break;
@@ -1373,6 +1388,8 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 	this->exportAnimations(animExportPath);
 
 	g_workerThread.load()->increaseProgressStep();
+
+	std::filesystem::current_path(getExeRootDir());
 }
 
 bool MorphemeEditorApp::exportModel(std::wstring path)
@@ -1383,6 +1400,8 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 		return false;
 
 	g_workerThread.load()->addProcess("Exporting model", 1);
+
+	std::filesystem::current_path(path);
 
 #ifdef _DEBUG
 	exportFlverToMorphemeBoneMap(model, path + L"bone_map.txt");
@@ -1398,6 +1417,8 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 	}
 
 	g_workerThread.load()->increaseProgressStep();
+
+	std::filesystem::current_path(getExeRootDir());
 }
 
 bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
@@ -1409,6 +1430,8 @@ bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
 
 	if (taeXML == nullptr)
 		return false;
+
+	std::filesystem::current_path(path);
 
 	g_workerThread.load()->addProcess("Compiling TimeAct files", 3);
 
@@ -1451,16 +1474,18 @@ bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
 	std::wstring taeName = RString::toWide(taeXML->getName());
 
 	g_workerThread.load()->setProcessStepName("pl");
-	taePl->save(path + taeName + L"_pl.tae");
+	taePl->save(taeName + L"_pl.tae");
 	g_workerThread.load()->increaseProgressStep();
 
 	g_workerThread.load()->setProcessStepName("sfx");
-	taeSfx->save(path + taeName + L"_sfx.tae");
+	taeSfx->save(taeName + L"_sfx.tae");
 	g_workerThread.load()->increaseProgressStep();
 
 	g_workerThread.load()->setProcessStepName("snd");
-	taeSnd->save(path + taeName + L"_snd.tae");
+	taeSnd->save(taeName + L"_snd.tae");
 	g_workerThread.load()->increaseProgressStep();
+
+	std::filesystem::current_path(getExeRootDir());
 
 	return true;
 }
