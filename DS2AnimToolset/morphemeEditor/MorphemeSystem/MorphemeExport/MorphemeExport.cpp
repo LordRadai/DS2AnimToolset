@@ -10,6 +10,7 @@
 #include "NodeExport/ControlParamNodeExport.h"
 #include "NodeExport/BlendNodeExport.h"
 #include "NodeExport/TransitNodeExport.h"
+#include "NodeExport/IKNodeExport.h"
 
 namespace MorphemeExport
 {
@@ -408,7 +409,7 @@ namespace MorphemeExport
 			nodeExport = NodeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_HEAD_LOOK:
-			nodeExport = NodeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = NodeExport::exportHeadLookNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_PHYSICS:
 			nodeExport = NodeExport::exportNodeUnhandled(netDefExport, netDef, nodeDef);

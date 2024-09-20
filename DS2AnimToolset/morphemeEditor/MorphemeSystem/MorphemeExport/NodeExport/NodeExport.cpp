@@ -1,4 +1,5 @@
 #include "NodeExport.h"
+#include "morpheme/Nodes/mrNodeMirrorTransforms.h"
 #include "../TransitConditionExport/TransitConditionExport.h"
 #include "../../MRUtils/MRUtils.h"
 #include "extern.h"

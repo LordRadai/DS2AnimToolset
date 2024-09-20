@@ -119,7 +119,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_USRDLL;_WIN64;_WINDLL;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)RCore\RCore\src;$(SolutionDir)Morpheme4\common\NMTL\include;$(SolutionDir)Morpheme4\common\tinyxml;$(SolutionDir)Morpheme4\common\XMD\include;$(SolutionDir)Morpheme4\morpheme\SDK\export\include;$(ProjectDir)\include\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)Morpheme4\common\NMRuntimeUtils\include;$(SolutionDir)RCore\RCore\src;$(SolutionDir)Morpheme4\common\NMTL\include;$(SolutionDir)Morpheme4\common\tinyxml;$(SolutionDir)Morpheme4\common\XMD\include;$(SolutionDir)Morpheme4\morpheme\SDK\export\include;$(ProjectDir)\include\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_USRDLL;_WIN64;_WINDLL;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)RCore\RCore\src;$(SolutionDir)Morpheme4\common\XMD\include;$(SolutionDir)Morpheme4\common\NMTL\include;$(SolutionDir)Morpheme4\common\tinyxml;$(SolutionDir)Morpheme4\morpheme\SDK\export\include;$(ProjectDir)\include\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)Morpheme4\common\NMRuntimeUtils\include;$(SolutionDir)RCore\RCore\src;$(SolutionDir)Morpheme4\common\XMD\include;$(SolutionDir)Morpheme4\common\NMTL\include;$(SolutionDir)Morpheme4\common\tinyxml;$(SolutionDir)Morpheme4\morpheme\SDK\export\include;$(ProjectDir)\include\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
@@ -228,6 +228,7 @@
     <ClInclude Include="MorphemeSystem\MorphemeExport\MorphemeExport.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.h" />
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.h" />
@@ -311,6 +312,7 @@
     <ClCompile Include="MorphemeSystem\MorphemeExport\MorphemeExport.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.cpp" />

@@ -1,8 +1,6 @@
 #pragma once
 #include "export/include/export/mcExportXML.h"
 #include "morpheme/mrNodeDef.h"
-#include "morpheme/Nodes/mrNodePassThrough.h"
-#include "morpheme/Nodes/mrNodeMirrorTransforms.h"
 
 namespace MorphemeExport
 {

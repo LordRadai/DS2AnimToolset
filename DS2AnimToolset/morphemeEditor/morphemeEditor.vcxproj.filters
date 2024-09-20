@@ -300,6 +300,9 @@
     <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -531,6 +534,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

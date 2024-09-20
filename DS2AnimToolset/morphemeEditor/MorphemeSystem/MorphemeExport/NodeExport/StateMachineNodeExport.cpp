@@ -45,67 +45,11 @@ namespace MorphemeExport
 			}
 		}
 
-		std::vector<MR::StateDef*> getStateMachineNodeChildNodes(MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
-		{
-			std::vector<MR::StateDef*> childStates;
-
-			MR::AttribDataStateMachineDef* attribData = static_cast<MR::AttribDataStateMachineDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
-
-			if (attribData == nullptr)
-				return childStates;
-
-			int childStateCount = nodeDef->getNumChildNodes();
-
-			for (size_t i = 0; i < childStateCount; i++)
-			{
-				MR::StateDef* stateDef = attribData->getStateDef(i);
-
-				int nodeID = stateDef->getNodeID();
-
-				MR::NodeDef* def = netDef->getNodeDef(nodeID);
-
-				int nodeType = def->getNodeTypeID();
-
-				if ((nodeType != NODE_TYPE_TRANSIT) && (nodeType != NODE_TYPE_TRANSIT_PHYSICS) && (nodeType != NODE_TYPE_TRANSIT_SYNC_EVENTS) && (nodeType != NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS))
-					childStates.push_back(stateDef);
-			}
-
-			return childStates;
-		}
-
-		std::vector<MR::StateDef*> getStateMachineNodeChildTransitNodes(MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
-		{
-			std::vector<MR::StateDef*> childStates;
-
-			MR::AttribDataStateMachineDef* attribData = static_cast<MR::AttribDataStateMachineDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
-
-			if (attribData == nullptr)
-				return childStates;
-
-			int childStateCount = nodeDef->getNumChildNodes();
-
-			for (size_t i = 0; i < childStateCount; i++)
-			{
-				MR::StateDef* stateDef = attribData->getStateDef(i);
-
-				int nodeID = stateDef->getNodeID();
-
-				MR::NodeDef* def = netDef->getNodeDef(nodeID);
-
-				int nodeType = def->getNodeTypeID();
-
-				if ((nodeType == NODE_TYPE_TRANSIT) || (nodeType == NODE_TYPE_TRANSIT_PHYSICS) || (nodeType == NODE_TYPE_TRANSIT_SYNC_EVENTS) || (nodeType == NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS))
-					childStates.push_back(stateDef);
-			}
-
-			return childStates;
-		}
-
 		void writeStateMachineChildStates(MR::NodeDef* nodeDef, ME::DataBlockExportXML* nodeDataBlock)
 		{
 			MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
 
-			std::vector<MR::StateDef*> childNodes = getStateMachineNodeChildNodes(netDef, nodeDef);
+			std::vector<MR::StateDef*> childNodes = MRUtils::getStateMachineSteadyChildNodes(netDef, nodeDef);
 
 			int childNodeCount = childNodes.size();
 			nodeDataBlock->writeUInt(childNodeCount, "ChildNodeCount");
@@ -121,7 +65,7 @@ namespace MorphemeExport
 				}
 			}
 
-			std::vector<MR::StateDef*> childTransitNodes = getStateMachineNodeChildTransitNodes(netDef, nodeDef);
+			std::vector<MR::StateDef*> childTransitNodes = MRUtils::getStateMachineTransitChildNodes(netDef, nodeDef);
 
 			int childTransitCount = childTransitNodes.size();
 			nodeDataBlock->writeUInt(childTransitCount, "ChildTransitionCount");
