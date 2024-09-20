@@ -70,6 +70,8 @@ namespace MorphemeExport
 			nodeDataBlock->writeBool(applyJointLimits, "ApplyJointLimits");
 			nodeDataBlock->writeBool(minimiseRotation, "MinimiseRotation");
 			nodeDataBlock->writeBool(keepUpright, "KeepUpright");
+
+			return nodeExportXML;
 		}
 	}
 }
