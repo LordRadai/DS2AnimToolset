@@ -1,14 +1,13 @@
-#include "TransitNodeExport.h"
+#include "TransitNode.h"
 #include "../../MRUtils/MRUtils.h"
-#include "NodeExport.h"
+#include "Node.h"
 #include "extern.h"
 #include "RCore.h"
-#include "NodeExportHelpers.h"
 #include "morpheme/mrBlendOps.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace NodeExport
+	namespace Node
 	{
 		ME::NodeExportXML* exportTransitNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{

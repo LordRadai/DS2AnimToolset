@@ -1,13 +1,13 @@
-#include "IKNodeExport.h"
-#include "NodeExport.h"
+#include "IKNode.h"
+#include "Node.h"
 #include "extern.h"
 #include "RCore.h"
 #include "morpheme/mrAttribData.h"
 #include "NMIK/NMPointIK.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace NodeExport
+	namespace Node
 	{
 		ME::NodeExportXML* exportHeadLookNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{

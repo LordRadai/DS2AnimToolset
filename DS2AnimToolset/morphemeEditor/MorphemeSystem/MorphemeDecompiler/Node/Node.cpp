@@ -1,15 +1,15 @@
-#include "NodeExport.h"
+#include "Node.h"
 #include "morpheme/Nodes/mrNodeMirrorTransforms.h"
-#include "../TransitConditionExport/TransitConditionExport.h"
+#include "../TransitCondition/TransitCondition.h"
 #include "../../MRUtils/MRUtils.h"
 #include "extern.h"
 #include "RCore.h"
 
 using namespace MR;
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace NodeExport
+	namespace Node
 	{
 		void exportNodeTransitions(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
 		{
@@ -35,10 +35,7 @@ namespace MorphemeExport
 
 					MR::StateDef* referencingTransit = MRUtils::getStateDefReferencingCondition(conditionIndex, stateMachineDef);
 
-					//if ((referencingTransit != nullptr) && (referencingTransit->getTransitSourceStateID() == MR::INVALID_NODE_ID))
-						//continue;
-
-					MorphemeExport::TransitConditionExport::exportTransitCondition(nodeExport, transitCondDef);
+					MD::TransitCondition::exportTransitCondition(nodeExport, transitCondDef);
 				}
 
 				for (int i = 0; i < targetStateDef->getNumExitTransitionStates(); i++)
@@ -46,9 +43,6 @@ namespace MorphemeExport
 					MR::StateDef* transitStateDef = stateMachineDef->getStateDef(targetStateDef->getExitTransitionStateID(i));
 
 					assert(transitStateDef->getNumEntryConditions() != 0);
-
-					//if (transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID)
-						//continue;
 
 					std::vector<unsigned int> indices;
 					indices.reserve(numConditions);
@@ -59,7 +53,7 @@ namespace MorphemeExport
 					}
 
 					int targetNodeID = transitStateDef->getNodeID();
-					MorphemeExport::TransitConditionExport::exportTransitConditionSet(nodeExport, targetNodeID, indices);
+					MD::TransitCondition::exportTransitConditionSet(nodeExport, targetNodeID, indices);
 				}
 			}
 		}

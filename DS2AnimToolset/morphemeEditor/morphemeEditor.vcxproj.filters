@@ -54,7 +54,7 @@
     <ClInclude Include="MorphemeSystem\AssetLoader\AssetLoader.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\MorphemeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\MorphemeDecompiler.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h">
@@ -279,28 +279,28 @@
     <ClInclude Include="MorphemeSystem\MRUtils\MRUtils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\Node.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\TransitCondition\TransitCondition.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\ControlParamNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\BlendNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\TransitNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -332,7 +332,7 @@
     <ClCompile Include="MorphemeSystem\AssetLoader\AssetLoader.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\MorphemeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\MorphemeDecompiler.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp">
@@ -515,28 +515,28 @@
     <ClCompile Include="MorphemeSystem\MRUtils\MRUtils.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\Node.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\TransitCondition\TransitCondition.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\ControlParamNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\BlendNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\TransitNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

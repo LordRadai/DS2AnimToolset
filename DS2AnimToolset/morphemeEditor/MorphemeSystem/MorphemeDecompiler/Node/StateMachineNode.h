@@ -2,9 +2,9 @@
 #include "morpheme/Nodes/mrNodeStateMachine.h"
 #include "../TransitConditionExport/TransitConditionExport.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace NodeExport
+	namespace Node
 	{
 		ME::NodeExportXML* exportStateMachineNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 	}

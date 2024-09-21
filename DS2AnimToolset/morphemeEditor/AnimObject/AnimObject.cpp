@@ -82,7 +82,7 @@ AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR
     std::filesystem::path takeListPath = std::filesystem::path(out_path).string() + RString::removeExtension(owner->getAnimFileLookUp()->getSourceFilename(id)) + ".xmd.xml";
 
     animObj->m_animHandle = animHandle;
-    animObj->m_takeList = MorphemeExport::exportAnimMarkup(owner, id, takeListPath.c_str());
+    animObj->m_takeList = MD::exportAnimMarkup(owner, id, takeListPath.c_str());
     animObj->m_id = id;
 
     animObj->m_animFileName = std::string(filename);

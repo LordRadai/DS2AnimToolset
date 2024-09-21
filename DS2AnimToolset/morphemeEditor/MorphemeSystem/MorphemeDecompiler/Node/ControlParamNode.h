@@ -2,9 +2,9 @@
 #include "export/include/export/mcExportXML.h"
 #include "morpheme/mrNodeDef.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace NodeExport
+	namespace Node
 	{
 		ME::NodeExportXML* exportCPFloatNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 		ME::NodeExportXML* exportCPVector3Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);

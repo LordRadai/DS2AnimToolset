@@ -2,9 +2,9 @@
 #include "extern.h"
 #include "RCore.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace TransitConditionExport
+	namespace TransitCondition
 	{
 		void exportTransitConditionOnCPBoolSet(MR::TransitConditionDefControlParamBoolSet* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{

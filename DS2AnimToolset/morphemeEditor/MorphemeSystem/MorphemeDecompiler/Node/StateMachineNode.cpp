@@ -1,13 +1,14 @@
-#include "StateMachineNodeExport.h"
-#include "../TransitConditionExport/TransitConditionExport.h"
+#include "StateMachineNode.h"
+#include "../TransitCondition/TransitCondition.h"
 #include "../../MRUtils/MRUtils.h"
-#include "NodeExport.h"
+#include "Node.h"
+#include "NodeUtils.h"
 #include "extern.h"
 #include "RCore.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace NodeExport
+	namespace Node
 	{
 		void writeActiveStateTransitions(MR::AttribDataStateMachineDef* stateMachineDef, ME::NodeExportXML* nodeExport)
 		{
@@ -20,7 +21,7 @@ namespace MorphemeExport
 				int conditionIndex = globalStateDef->getExitConditionStateMachineIndex(i);
 				MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
 
-				MorphemeExport::TransitConditionExport::exportTransitCommonCondition(nodeExport, transitCondDef);
+				MD::TransitCondition::exportTransitCommonCondition(nodeExport, transitCondDef);
 			}
 
 			for (int i = 0; i < globalStateDef->getNumExitTransitionStates(); i++)
@@ -41,7 +42,7 @@ namespace MorphemeExport
 				assert(transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
 
 				int targetNodeID = transitStateDef->getNodeID();
-				MorphemeExport::TransitConditionExport::exportTransitCommonConditionSet(nodeExport, targetNodeID, indices);
+				MD::TransitCondition::exportTransitCommonConditionSet(nodeExport, targetNodeID, indices);
 			}
 		}
 

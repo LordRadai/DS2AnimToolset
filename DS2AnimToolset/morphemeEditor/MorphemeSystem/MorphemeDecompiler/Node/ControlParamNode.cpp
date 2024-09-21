@@ -1,11 +1,11 @@
-#include "ControlParamNodeExport.h"
-#include "NodeExport.h"
+#include "ControlParamNode.h"
+#include "Node.h"
 #include "extern.h"
 #include "RCore.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace NodeExport
+	namespace Node
 	{
 		ME::NodeExportXML* exportCPFloatNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{

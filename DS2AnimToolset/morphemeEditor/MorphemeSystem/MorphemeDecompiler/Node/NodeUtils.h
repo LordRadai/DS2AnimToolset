@@ -2,9 +2,9 @@
 #include "export/include/export/mcExportXML.h"
 #include "morpheme/mrAttribData.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace NodeExportHelpers
+	namespace NodeUtils
 	{
 		void writeSyncEventFlagsFromAttribData(ME::DataBlockExportXML* attribDataBlock, MR::AttribDataUInt* durationEventMatchingOpAttrib);
 	}

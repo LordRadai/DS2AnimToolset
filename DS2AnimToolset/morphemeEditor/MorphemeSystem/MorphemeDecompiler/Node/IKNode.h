@@ -3,9 +3,9 @@
 #include "morpheme/mrNodeDef.h"
 #include "morpheme/mrNetworkDef.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace NodeExport
+	namespace Node
 	{
 		ME::NodeExportXML* exportHeadLookNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 

@@ -1,14 +1,14 @@
-#include "BlendNodeExport.h"
-#include "NodeExport.h"
+#include "BlendNode.h"
+#include "Node.h"
+#include "NodeUtils.h"
 #include "extern.h"
 #include "RCore.h"
-#include "NodeExportHelpers.h"
 #include "morpheme/Nodes/mrNodePassThrough.h"
 #include "assetProcessor/include/assetProcessor/BlendNodeBuilderUtils.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace NodeExport
+	namespace Node
 	{
 		void writeTimeStretchModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
@@ -28,7 +28,7 @@ namespace MorphemeExport
 			else
 				attribDataBlock->writeBool(true, "Loop");
 
-			NodeExportHelpers::writeSyncEventFlagsFromAttribData(attribDataBlock, durationEventMatchingOpAttrib);
+			NodeUtils::writeSyncEventFlagsFromAttribData(attribDataBlock, durationEventMatchingOpAttrib);
 
 			if (startSyncEventIndex)
 				attribDataBlock->writeInt(startSyncEventIndex->m_value, "StartEventIndex");

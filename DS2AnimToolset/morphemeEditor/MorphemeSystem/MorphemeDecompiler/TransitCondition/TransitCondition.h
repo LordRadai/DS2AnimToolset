@@ -21,9 +21,9 @@
 #include "morpheme/TransitConditions/mrTransitConditionOnMessage.h"
 #include "morpheme/TransitConditions/mrTransitConditionRayHit.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace TransitConditionExport
+	namespace TransitCondition
 	{
 		ME::ConditionSetExportXML* exportTransitConditionSet(ME::NodeExportXML* nodeExport, int targetNodeID, std::vector<unsigned int>& indices);
 		ME::ConditionExportXML* exportTransitCondition(ME::NodeExportXML* nodeExport, MR::TransitConditionDef* transitCondDef);

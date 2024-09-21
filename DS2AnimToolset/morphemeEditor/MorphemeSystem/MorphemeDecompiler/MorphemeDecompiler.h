@@ -12,7 +12,7 @@
 #include "export/include/export/mcExportControllerXml.h"
 #include "MorphemeSystem/MorphemeCharacterDef/MorphemeCharacterDef.h"
 
-namespace MorphemeExport
+namespace MD
 {
 	ME::TakeListXML* exportAnimMarkup(MorphemeCharacterDef* character, int animId, std::wstring dstFileName);
 

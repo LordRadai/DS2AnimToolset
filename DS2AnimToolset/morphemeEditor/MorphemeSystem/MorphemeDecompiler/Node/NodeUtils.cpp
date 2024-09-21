@@ -1,11 +1,12 @@
-#include "BlendNodeExport.h"
+#include "NodeHelpers.h"
+#include "BlendNode.h"
 #include "assetProcessor/include/assetProcessor/BlendNodeBuilderUtils.h"
 #include "extern.h"
 #include "RCore.h"
 
-namespace MorphemeExport
+namespace MD
 {
-	namespace NodeExportHelpers
+	namespace NodeUtils
 	{
 		void writeSyncEventFlagsFromAttribData(ME::DataBlockExportXML* attribDataBlock, MR::AttribDataUInt* durationEventMatchingOpAttrib)
 		{

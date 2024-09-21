@@ -1121,7 +1121,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting character controller %d for %ws\n", i, chrName.c_str());
 
-		ME::CharacterControllerExportXML* characterControllerExport = MorphemeExport::exportCharacterController(characterDef->getCharacterController(i), filename);
+		ME::CharacterControllerExportXML* characterControllerExport = MD::exportCharacterController(characterDef->getCharacterController(i), filename);
 	
 		char processName[256];
 		sprintf_s(processName, "Exporting character controller for anim set %d", i);
@@ -1151,7 +1151,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting rig for animation set %d for %ws\n", i, chrName.c_str());
 
-		ME::RigExportXML* rigExport = MorphemeExport::exportRig(characterDef->getNetworkDef(), characterDef->getNetworkDef()->getRig(i), filename);
+		ME::RigExportXML* rigExport = MD::exportRig(characterDef->getNetworkDef(), characterDef->getNetworkDef()->getRig(i), filename);
 
 		char processName[256];
 		sprintf_s(processName, "Exporting rig for anim set %d", i);
@@ -1176,7 +1176,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting animation library for %ws\n", chrName.c_str());
 
-	ME::AnimationLibraryXML* animLibraryExport = MorphemeExport::exportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, chrName.c_str(), libraryFilename);
+	ME::AnimationLibraryXML* animLibraryExport = MD::exportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, chrName.c_str(), libraryFilename);
 
 	if (!animLibraryExport->write())
 		g_appLog->debugMessage(MsgLevel_Error, "Failed to export animation library for %ws\n", chrName.c_str());
@@ -1193,7 +1193,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting message preset library for %ws\n", chrName.c_str());
 
-	ME::MessagePresetLibraryExportXML* messagePresetExport = MorphemeExport::exportMessagePresetLibrary(characterDef->getNetworkDef(), chrName, messagePresetFilename);
+	ME::MessagePresetLibraryExportXML* messagePresetExport = MD::exportMessagePresetLibrary(characterDef->getNetworkDef(), chrName, messagePresetFilename);
 
 	if (!messagePresetExport->write())
 		g_appLog->debugMessage(MsgLevel_Error, "Failed to export message library for %ws\n", chrName.c_str());
@@ -1215,7 +1215,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for c%04d\n", chrName);
 
-	ME::NetworkDefExportXML* netDefExport = MorphemeExport::exportNetwork(netDef, animLibraryExport, messagePresetExport, chrName, networkFilename);
+	ME::NetworkDefExportXML* netDefExport = MD::exportNetwork(netDef, animLibraryExport, messagePresetExport, chrName, networkFilename);
 
 	if (!netDefExport->write())
 		g_appLog->debugMessage(MsgLevel_Error, "Failed to export networkDef for c%04d\n", chrName);
