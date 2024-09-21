@@ -1,5 +1,5 @@
 #include "TransitNode.h"
-#include "../../MRUtils/MRUtils.h"
+#include "../../MorphemeUtils/MorphemeUtils.h"
 #include "Node.h"
 #include "NodeUtils.h"
 #include "extern.h"
