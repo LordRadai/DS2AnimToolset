@@ -1,6 +1,5 @@
 #pragma once
 #include "morpheme/Nodes/mrNodeStateMachine.h"
-#include "../TransitConditionExport/TransitConditionExport.h"
 
 namespace MD
 {

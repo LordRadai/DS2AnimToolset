@@ -1,7 +1,7 @@
 #pragma once
 #include "MorphemeCharacter/MorphemeCharacter.h"
 #include "MorphemeCharacterDef/MorphemeCharacterDef.h"
-#include "MorphemeExport/MorphemeExport.h"
+#include "MorphemeDecompiler/MorphemeDecompiler.h"
 
 #include <vector>
 #include <string>
