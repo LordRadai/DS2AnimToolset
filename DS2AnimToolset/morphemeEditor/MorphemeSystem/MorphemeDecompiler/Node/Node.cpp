@@ -63,9 +63,6 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = static_cast<ME::NodeExportXML*>(netDefExport->createNode(nodeDef->getNodeID(), nodeDef->getNodeTypeID(), nodeDef->getParentNodeID(), false, netDef->getNodeNameFromNodeID(nodeDef->getNodeID())));
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			nodeDataBlock->writeUInt(nodeDef->getNumOnEnterMessages(), "NumOnEnterInternalMessageIDs");
-			nodeDataBlock->writeUInt(0, "NumOnEnterExternalMessageIDs");
-
 			return nodeExportXML;
 		}
 
