@@ -1,4 +1,5 @@
 #pragma once
+#include "export/include/export/mcExportXML.h"
 #include "morpheme/Nodes/mrNodeStateMachine.h"
 
 namespace MD

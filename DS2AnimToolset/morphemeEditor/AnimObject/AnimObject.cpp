@@ -4,7 +4,7 @@
 #include "utils/NMDX/NMDX.h"
 #include "RCore.h"
 #include "MorphemeSystem/MorphemeCharacterDef/MorphemeCharacterDef.h"
-#include "MorphemeSystem/MorphemeExport/MorphemeExport.h"
+#include "MorphemeSystem/MorphemeDecompiler/MorphemeDecompiler.h"
 
 AnimObject::AnimObject()
 {

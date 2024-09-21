@@ -1,6 +1,7 @@
 #include "TransitNode.h"
 #include "../../MRUtils/MRUtils.h"
 #include "Node.h"
+#include "NodeUtils.h"
 #include "extern.h"
 #include "RCore.h"
 #include "morpheme/mrBlendOps.h"
@@ -218,7 +219,7 @@ namespace MD
 				nodeDataBlock->writeInt(0, "DestinationSubStateCount");
 
 			MR::AttribDataUInt* durationEventMatchingOpAttrib = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_DURATION_EVENT_MATCHING_OP));
-			NodeExportHelpers::writeSyncEventFlagsFromAttribData(nodeDataBlock, durationEventMatchingOpAttrib);
+			NodeUtils::writeSyncEventFlagsFromAttribData(nodeDataBlock, durationEventMatchingOpAttrib);
 
 			MR::AttribDataDeadBlendDef* deadBlendDef = static_cast<MR::AttribDataDeadBlendDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_DEAD_BLEND_DEF));
 
