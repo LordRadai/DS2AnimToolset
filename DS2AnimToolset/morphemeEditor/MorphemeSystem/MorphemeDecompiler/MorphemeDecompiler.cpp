@@ -1,7 +1,7 @@
 #include "MorphemeDecompiler.h"
 #include "RCore.h"
 #include "extern.h"
-#include "MorphemeSystem/MRUtils/MRUtils.h"
+#include "MorphemeSystem/MorphemeUtils/MorphemeUtils.h"
 #include "morpheme/mrCharacterControllerDef.h"
 #include "morpheme/mrMirroredAnimMapping.h"
 
@@ -18,7 +18,7 @@ namespace MD
 	{
 		MR::NetworkDef* netDef = character->getNetworkDef();
 
-		MR::NodeDef* animNode = MRUtils::getAnimNodeByAnimID(netDef, animId);
+		MR::NodeDef* animNode = MorphemeUtils::getAnimNodeByAnimID(netDef, animId);
 
 		if (animNode == nullptr)
 			return nullptr;

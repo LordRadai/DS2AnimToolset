@@ -4,7 +4,7 @@
 #include "morpheme/mrAttribData.h"
 #include <vector>
 
-namespace MRUtils
+namespace MorphemeUtils
 {
 	MR::NodeDef* getParentStateMachineNode(MR::NodeDef* nodeDef);
 	MR::StateDef* getStateDefReferencingCondition(int conditionIndex, MR::AttribDataStateMachineDef* stateMachineDef);

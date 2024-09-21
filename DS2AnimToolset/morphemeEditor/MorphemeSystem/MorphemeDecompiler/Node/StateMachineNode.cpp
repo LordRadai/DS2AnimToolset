@@ -1,6 +1,6 @@
 #include "StateMachineNode.h"
 #include "../TransitCondition/TransitCondition.h"
-#include "../../MRUtils/MRUtils.h"
+#include "../../MorphemeUtils/MorphemeUtils.h"
 #include "Node.h"
 #include "NodeUtils.h"
 #include "extern.h"
@@ -35,7 +35,7 @@ namespace MD
 				for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
 				{
 					int conditionID = transitStateDef->getEntryConditionStateMachineIndex(j);
-					indices.push_back(MRUtils::getConditionIndexByID(globalStateDef, conditionID));
+					indices.push_back(MorphemeUtils::getConditionIndexByID(globalStateDef, conditionID));
 				}
 
 				//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
@@ -50,7 +50,7 @@ namespace MD
 		{
 			MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
 
-			std::vector<MR::StateDef*> childNodes = MRUtils::getStateMachineSteadyChildNodes(netDef, nodeDef);
+			std::vector<MR::StateDef*> childNodes = MorphemeUtils::getStateMachineSteadyChildNodes(netDef, nodeDef);
 
 			int childNodeCount = childNodes.size();
 			nodeDataBlock->writeUInt(childNodeCount, "ChildNodeCount");
@@ -66,7 +66,7 @@ namespace MD
 				}
 			}
 
-			std::vector<MR::StateDef*> childTransitNodes = MRUtils::getStateMachineTransitChildNodes(netDef, nodeDef);
+			std::vector<MR::StateDef*> childTransitNodes = MorphemeUtils::getStateMachineTransitChildNodes(netDef, nodeDef);
 
 			int childTransitCount = childTransitNodes.size();
 			nodeDataBlock->writeUInt(childTransitCount, "ChildTransitionCount");

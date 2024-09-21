@@ -276,7 +276,7 @@
     <ClInclude Include="fromloader\umem.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MRUtils\MRUtils.h">
+    <ClInclude Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\Node.h">
@@ -512,7 +512,7 @@
     <ClCompile Include="fromloader\umem.c">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MRUtils\MRUtils.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\Node.cpp">

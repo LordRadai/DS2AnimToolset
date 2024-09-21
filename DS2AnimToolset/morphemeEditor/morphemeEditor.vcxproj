@@ -235,7 +235,7 @@
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\TransitNode.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\TransitCondition\TransitCondition.h" />
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h" />
-    <ClInclude Include="MorphemeSystem\MRUtils\MRUtils.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.h" />
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h" />
     <ClInclude Include="PlayerModelPreset\PlayerModelPreset.h" />
     <ClInclude Include="RenderManager\DebugDraw\DebugDraw.h" />
@@ -319,7 +319,7 @@
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\TransitNode.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\TransitCondition\TransitCondition.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp" />
-    <ClCompile Include="MorphemeSystem\MRUtils\MRUtils.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.cpp" />
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp" />
     <ClCompile Include="PlayerModelPreset\PlayerModelPreset.cpp" />
     <ClCompile Include="RenderManager\RenderManager.cpp" />

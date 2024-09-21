@@ -1,7 +1,7 @@
 #include "Node.h"
 #include "morpheme/Nodes/mrNodeMirrorTransforms.h"
 #include "../TransitCondition/TransitCondition.h"
-#include "../../MRUtils/MRUtils.h"
+#include "../../MorphemeUtils/MorphemeUtils.h"
 #include "extern.h"
 #include "RCore.h"
 
@@ -15,14 +15,14 @@ namespace MD
 		{
 			MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
 
-			MR::NodeDef* parentSM = MRUtils::getParentStateMachineNode(nodeDef);
+			MR::NodeDef* parentSM = MorphemeUtils::getParentStateMachineNode(nodeDef);
 
 			if (parentSM == nullptr)
 				return;
 
 			MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(parentSM->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
-			MR::StateDef* targetStateDef = MRUtils::getTargetNodeStateDef(nodeDef->getNodeID(), stateMachineDef);
+			MR::StateDef* targetStateDef = MorphemeUtils::getTargetNodeStateDef(nodeDef->getNodeID(), stateMachineDef);
 
 			if (targetStateDef != nullptr)
 			{
@@ -33,7 +33,7 @@ namespace MD
 					int conditionIndex = targetStateDef->getExitConditionStateMachineIndex(i);
 					MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);
 
-					MR::StateDef* referencingTransit = MRUtils::getStateDefReferencingCondition(conditionIndex, stateMachineDef);
+					MR::StateDef* referencingTransit = MorphemeUtils::getStateDefReferencingCondition(conditionIndex, stateMachineDef);
 
 					MD::TransitCondition::exportTransitCondition(nodeExport, transitCondDef);
 				}
@@ -49,7 +49,7 @@ namespace MD
 					for (int j = 0; j < transitStateDef->getNumEntryConditions(); j++)
 					{
 						int conditionID = transitStateDef->getEntryConditionStateMachineIndex(j);
-						indices.push_back(MRUtils::getConditionIndexByID(targetStateDef, conditionID));
+						indices.push_back(MorphemeUtils::getConditionIndexByID(targetStateDef, conditionID));
 					}
 
 					int targetNodeID = transitStateDef->getNodeID();

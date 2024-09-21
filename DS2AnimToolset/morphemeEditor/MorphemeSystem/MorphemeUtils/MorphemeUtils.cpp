@@ -1,6 +1,6 @@
-#include "MRUtils.h"
+#include "MorphemeUtils.h"
 
-namespace MRUtils
+namespace MorphemeUtils
 {
 	MR::NodeDef* getParentStateMachineNode(MR::NodeDef* nodeDef)
 	{
