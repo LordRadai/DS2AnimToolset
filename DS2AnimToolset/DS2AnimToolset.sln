@@ -37,6 +37,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qhull", "Morpheme4\common\q
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RCore", "RCore\RCore\src\RCore.vcxproj", "{1E248D65-A668-4A85-94B0-BD29524B180B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrTarget_NoPhysics", "Morpheme4\morpheme\tools\runtimeTarget\mrTarget_NoPhysics_X64.vcxproj", "{F06FA5C4-F809-42F7-22AA-634F3A057082}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Tool|x64 = Debug Tool|x64
@@ -461,6 +463,30 @@ Global
 		{1E248D65-A668-4A85-94B0-BD29524B180B}.Target LE64 Release|x64.Build.0 = Release|x64
 		{1E248D65-A668-4A85-94B0-BD29524B180B}.Target LE64 Release|x86.ActiveCfg = Release|Win32
 		{1E248D65-A668-4A85-94B0-BD29524B180B}.Target LE64 Release|x86.Build.0 = Release|Win32
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Debug Tool|x64.ActiveCfg = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Debug Tool|x64.Build.0 = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Debug Tool|x86.ActiveCfg = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Debug Tool|x86.Build.0 = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Debug|x64.ActiveCfg = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Debug|x64.Build.0 = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Debug|x86.ActiveCfg = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Debug|x86.Build.0 = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Release Tool|x64.ActiveCfg = Release|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Release Tool|x64.Build.0 = Release|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Release Tool|x86.ActiveCfg = Release|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Release Tool|x86.Build.0 = Release|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Release|x64.ActiveCfg = Release|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Release|x64.Build.0 = Release|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Release|x86.ActiveCfg = Release|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Release|x86.Build.0 = Release|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Target LE64 Debug|x64.ActiveCfg = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Target LE64 Debug|x64.Build.0 = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Target LE64 Debug|x86.ActiveCfg = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Target LE64 Debug|x86.Build.0 = Debug|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Target LE64 Release|x64.ActiveCfg = Release|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Target LE64 Release|x64.Build.0 = Release|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Target LE64 Release|x86.ActiveCfg = Release|x64
+		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Target LE64 Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
