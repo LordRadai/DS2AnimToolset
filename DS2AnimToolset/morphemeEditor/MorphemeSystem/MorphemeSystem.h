@@ -2,6 +2,7 @@
 #include "MorphemeCharacter/MorphemeCharacter.h"
 #include "MorphemeCharacterDef/MorphemeCharacterDef.h"
 #include "MorphemeDecompiler/MorphemeDecompiler.h"
+#include "MCN/MCN.h"
 
 #include <vector>
 #include <string>

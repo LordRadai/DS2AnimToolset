@@ -781,6 +781,19 @@ void MorphemeEditorApp::update(float dt)
 		}
 	}
 
+	if (this->m_taskFlags.exportMcn)
+	{
+		this->m_taskFlags.exportMcn = false;
+
+		wchar_t mcnPath[256];
+		swprintf_s(mcnPath, L"Export\\%ws\\%ws.mcn", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
+
+		MCN::MCNFile* mcn = MCN::MCNFile::createMcn(RString::toNarrow(mcnPath));
+		mcn->addAnimLocation("$(RootDir)\\motion_xmd\\", "$(RootDir)\\morphemeMarkup\\", true);
+		mcn->save();
+		mcn->destroy();
+	}
+
 	if (this->m_taskFlags.compileNetwork)
 	{
 		this->m_taskFlags.compileNetwork = false;
