@@ -1,0 +1,58 @@
+<TakeList sourceAnimFile="morphemeMarkup\a75_01_7120_Wep01_StartUp_03_In.xmd.xml" version="1">
+  <Take name="untitled">
+    <Attributes>
+      <secondDuration type="double">11</secondDuration>
+      <fps type="double">30</fps>
+      <clipStart type="double">0</clipStart>
+      <clipEnd type="double">1</clipEnd>
+      <loop type="bool">true</loop>
+    </Attributes>
+    <DiscreteEventTrack name="Footsteps" guid="e4ce44b8-3b4e-4089-baad-b90d75b3a867" channelID="1">
+      <Attributes>
+        <userData type="uint">0</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DurationEventTrack name="TimeAct" guid="6f37301c-528a-4e7a-a028-cf31ea45dc32" channelID="2">
+      <Attributes>
+        <userData type="uint">1000</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">75017120</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="TalkDuration" guid="933e1e74-09be-4050-865e-a004eb5bffb3" channelID="4">
+      <Attributes>
+        <userData type="uint">100</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">118</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="Gravity" guid="d0ec2282-1670-4b1f-886d-cfa452eb8307" channelID="3">
+      <Attributes>
+        <userData type="uint">9600</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">9610</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+  </Take>
+</TakeList>

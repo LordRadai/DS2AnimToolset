@@ -1,0 +1,325 @@
+<TimeAct name="c777000" fileID="100">
+    <sibFile fileID="100" name=""/>
+    <skeletonFile fileID="100" name=""/>
+    <TimeActTrackList>
+        <TimeActTrack TrackID="0" numFrames="120" fps="30"/>
+        <TimeActTrack TrackID="160015" numFrames="100" fps="30"/>
+        <TimeActTrack TrackID="65001010" numFrames="100" fps="30">
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="3.3666666" EventID="110100"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="3.3666666" EventID="290000"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="3.3666666" EventID="290001"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="65001020" numFrames="120" fps="30">
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="4.0333333" EventID="110100"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="-0.1" endTime="4.0333333" EventID="290000"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="4.0333333" EventID="290001"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="65001030" numFrames="90" fps="30">
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="3.0333333" EventID="110100"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="-0.1" endTime="3.0333333" EventID="290000"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="3.0333333" EventID="290001"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="65101010" numFrames="100" fps="30">
+            <EventGroup GroupID="200">
+                <Event startTime="0.26666668" endTime="0.60000002" EventID="201">
+                    <Argument name="Sound ID" type="int">1000</Argument>
+                    <Argument name="BodyPartSlot" type="int">0</Argument>
+                    <Argument name="Unk08" type="byte">0</Argument>
+                    <Argument name="bIsStatic" type="bool">false</Argument>
+                    <Argument name="Slot ID" type="short">-1</Argument>
+                    <Argument name="Unk0C" type="byte">0</Argument>
+                    <Argument name="Unk0D" type="byte">0</Argument>
+                    <Argument name="UnkType" type="byte">0</Argument>
+                    <Argument name="Unk0F" type="byte">0</Argument>
+                    <Argument name="Unk10" type="short">-1</Argument>
+                </Event>
+            </EventGroup>
+            <EventGroup GroupID="1100">
+                <Event startTime="0.06666667" endTime="0.2" EventID="2200">
+                    <Argument name="Index" type="int">0</Argument>
+                </Event>
+            </EventGroup>
+            <EventGroup GroupID="120000">
+                <Event startTime="0" endTime="0.06666667" EventID="120200"/>
+            </EventGroup>
+            <EventGroup GroupID="280000">
+                <Event startTime="0.2" endTime="0.36666667" EventID="280100">
+                    <Argument name="Turn Rate" type="float">0</Argument>
+                </Event>
+                <Event startTime="1.9333333" endTime="3.3666666" EventID="280100">
+                    <Argument name="Turn Rate" type="float">0</Argument>
+                </Event>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="75017100" numFrames="240" fps="30">
+            <EventGroup GroupID="200">
+                <Event startTime="1" endTime="1.0666667" EventID="201">
+                    <Argument name="Sound ID" type="int">1000</Argument>
+                    <Argument name="BodyPartSlot" type="int">0</Argument>
+                    <Argument name="Unk08" type="byte">0</Argument>
+                    <Argument name="bIsStatic" type="bool">false</Argument>
+                    <Argument name="Slot ID" type="short">-1</Argument>
+                    <Argument name="Unk0C" type="byte">0</Argument>
+                    <Argument name="Unk0D" type="byte">0</Argument>
+                    <Argument name="UnkType" type="byte">0</Argument>
+                    <Argument name="Unk0F" type="byte">0</Argument>
+                    <Argument name="Unk10" type="short">-1</Argument>
+                </Event>
+                <Event startTime="1.1666666" endTime="1.2333333" EventID="201">
+                    <Argument name="Sound ID" type="int">1000</Argument>
+                    <Argument name="BodyPartSlot" type="int">0</Argument>
+                    <Argument name="Unk08" type="byte">0</Argument>
+                    <Argument name="bIsStatic" type="bool">false</Argument>
+                    <Argument name="Slot ID" type="short">-1</Argument>
+                    <Argument name="Unk0C" type="byte">0</Argument>
+                    <Argument name="Unk0D" type="byte">0</Argument>
+                    <Argument name="UnkType" type="byte">0</Argument>
+                    <Argument name="Unk0F" type="byte">0</Argument>
+                    <Argument name="Unk10" type="short">-1</Argument>
+                </Event>
+            </EventGroup>
+            <EventGroup GroupID="2400">
+                <Event startTime="0" endTime="10.3" EventID="2600"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="8.333333" EventID="110210"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="75017110" numFrames="300" fps="30">
+            <EventGroup GroupID="2400">
+                <Event startTime="0" endTime="10.3" EventID="2600"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="10.366667" EventID="110210"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="75017120" numFrames="330" fps="30">
+            <EventGroup GroupID="2400">
+                <Event startTime="0" endTime="10.3" EventID="2600"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11.333333" EventID="110210"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="4.7666669" EventID="290001"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="75017130" numFrames="300" fps="30">
+            <EventGroup GroupID="2400">
+                <Event startTime="0" endTime="10.3" EventID="2600"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="10.366667" EventID="110210"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="4.7666669" EventID="290001"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="75017140" numFrames="100" fps="30">
+            <EventGroup GroupID="2400">
+                <Event startTime="0" endTime="10.3" EventID="2600"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="4.7666669" EventID="110210"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="4.7666669" EventID="290001"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="75017150" numFrames="100" fps="30">
+            <EventGroup GroupID="2400">
+                <Event startTime="0" endTime="10.3" EventID="2600"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="4" EventID="110210"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="75017160" numFrames="300" fps="30">
+            <EventGroup GroupID="200">
+                <Event startTime="0.36666667" endTime="0.69999999" EventID="201">
+                    <Argument name="Sound ID" type="int">6000</Argument>
+                    <Argument name="BodyPartSlot" type="int">0</Argument>
+                    <Argument name="Unk08" type="byte">0</Argument>
+                    <Argument name="bIsStatic" type="bool">false</Argument>
+                    <Argument name="Slot ID" type="short">-1</Argument>
+                    <Argument name="Unk0C" type="byte">0</Argument>
+                    <Argument name="Unk0D" type="byte">0</Argument>
+                    <Argument name="UnkType" type="byte">0</Argument>
+                    <Argument name="Unk0F" type="byte">0</Argument>
+                    <Argument name="Unk10" type="short">-1</Argument>
+                </Event>
+                <Event startTime="1.4666667" endTime="1.8" EventID="201">
+                    <Argument name="Sound ID" type="int">6000</Argument>
+                    <Argument name="BodyPartSlot" type="int">0</Argument>
+                    <Argument name="Unk08" type="byte">0</Argument>
+                    <Argument name="bIsStatic" type="bool">false</Argument>
+                    <Argument name="Slot ID" type="short">-1</Argument>
+                    <Argument name="Unk0C" type="byte">0</Argument>
+                    <Argument name="Unk0D" type="byte">0</Argument>
+                    <Argument name="UnkType" type="byte">0</Argument>
+                    <Argument name="Unk0F" type="byte">0</Argument>
+                    <Argument name="Unk10" type="short">-1</Argument>
+                </Event>
+                <Event startTime="3" endTime="3.3333333" EventID="201">
+                    <Argument name="Sound ID" type="int">6000</Argument>
+                    <Argument name="BodyPartSlot" type="int">0</Argument>
+                    <Argument name="Unk08" type="byte">0</Argument>
+                    <Argument name="bIsStatic" type="bool">false</Argument>
+                    <Argument name="Slot ID" type="short">-1</Argument>
+                    <Argument name="Unk0C" type="byte">0</Argument>
+                    <Argument name="Unk0D" type="byte">0</Argument>
+                    <Argument name="UnkType" type="byte">0</Argument>
+                    <Argument name="Unk0F" type="byte">0</Argument>
+                    <Argument name="Unk10" type="short">-1</Argument>
+                </Event>
+                <Event startTime="3.8333333" endTime="4.1666665" EventID="201">
+                    <Argument name="Sound ID" type="int">6000</Argument>
+                    <Argument name="BodyPartSlot" type="int">0</Argument>
+                    <Argument name="Unk08" type="byte">0</Argument>
+                    <Argument name="bIsStatic" type="bool">false</Argument>
+                    <Argument name="Slot ID" type="short">-1</Argument>
+                    <Argument name="Unk0C" type="byte">0</Argument>
+                    <Argument name="Unk0D" type="byte">0</Argument>
+                    <Argument name="UnkType" type="byte">0</Argument>
+                    <Argument name="Unk0F" type="byte">0</Argument>
+                    <Argument name="Unk10" type="short">-1</Argument>
+                </Event>
+            </EventGroup>
+            <EventGroup GroupID="2400">
+                <Event startTime="0" endTime="10.3" EventID="2600"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="10.333333" EventID="110210"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="10.3" EventID="290002"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="75017170" numFrames="300" fps="30">
+            <EventGroup GroupID="2400">
+                <Event startTime="0" endTime="10.3" EventID="2600"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="10.366667" EventID="110210"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="10.366667" EventID="290001"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="75017180" numFrames="300" fps="30">
+            <EventGroup GroupID="2400">
+                <Event startTime="0" endTime="10.3" EventID="2600"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="10.333333" EventID="110210"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="4.7666669" EventID="290001"/>
+            </EventGroup>
+        </TimeActTrack>
+        <TimeActTrack TrackID="75017190" numFrames="330" fps="30">
+            <EventGroup GroupID="2400">
+                <Event startTime="0" endTime="10.3" EventID="2600"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11.233334" EventID="110210"/>
+            </EventGroup>
+            <EventGroup GroupID="110000">
+                <Event startTime="0" endTime="11" EventID="111400"/>
+            </EventGroup>
+            <EventGroup GroupID="290000">
+                <Event startTime="0" endTime="6.3333335" EventID="290002"/>
+            </EventGroup>
+        </TimeActTrack>
+    </TimeActTrackList>
+</TimeAct>

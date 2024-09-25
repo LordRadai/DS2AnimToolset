@@ -788,8 +788,26 @@ void MorphemeEditorApp::update(float dt)
 		wchar_t mcnPath[256];
 		swprintf_s(mcnPath, L"Export\\%ws\\%ws.mcn", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
 
-		MCN::MCNFile* mcn = MCN::MCNFile::createMcn(RString::toNarrow(mcnPath));
-		mcn->addAnimLocation("$(RootDir)\\motion_xmd\\", "$(RootDir)\\morphemeMarkup\\", true);
+		wchar_t netDefPath[256];
+		swprintf_s(netDefPath, L"Export\\%ws\\%ws.xml", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
+
+		wchar_t rigPath[256];
+		swprintf_s(rigPath, L"Export\\%ws\\%ws_0.mrarig", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
+
+		wchar_t animLibPath[256];
+		swprintf_s(animLibPath, L"Export\\%ws\\%ws_Library.xml", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
+
+		wchar_t messageLibPath[256];
+		swprintf_s(messageLibPath, L"Export\\%ws\\%ws_Preset.xml", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
+
+		ME::ExportFactoryXML factory;
+
+		ME::NetworkDefExportXML* netDef = static_cast<ME::NetworkDefExportXML*>(factory.loadAsset(RString::toNarrow(netDefPath).c_str()));
+		ME::RigExportXML* rig = static_cast<ME::RigExportXML*>(factory.loadAsset(RString::toNarrow(rigPath).c_str()));
+		ME::AnimationLibraryXML* animLibrary = static_cast<ME::AnimationLibraryXML*>(factory.loadAsset(RString::toNarrow(animLibPath).c_str()));
+		ME::MessagePresetLibraryExportXML* messageLibrary = static_cast<ME::MessagePresetLibraryExportXML*>(factory.loadAsset(RString::toNarrow(messageLibPath).c_str()));
+
+		MCN::MCNFile* mcn = MCN::MCNFile::createMcn(RString::toNarrow(mcnPath), netDef, rig, animLibrary, messageLibrary);
 		mcn->save();
 		mcn->destroy();
 	}

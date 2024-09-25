@@ -1,0 +1,46 @@
+<TakeList sourceAnimFile="morphemeMarkup\a75_01_7190_Wep01_StartUp_10_In.xmd.xml" version="1">
+  <Take name="untitled">
+    <Attributes>
+      <secondDuration type="double">11</secondDuration>
+      <fps type="double">30</fps>
+      <clipStart type="double">0</clipStart>
+      <clipEnd type="double">1</clipEnd>
+      <loop type="bool">true</loop>
+    </Attributes>
+    <DiscreteEventTrack name="Footsteps" guid="f504986f-714d-4a8a-92f5-9ed40ec815ce" channelID="1">
+      <Attributes>
+        <userData type="uint">0</userData>
+      </Attributes>
+      <DiscreteEvent index="0">
+        <Attributes>
+          <userData type="uint">0</userData>
+          <startTime type="double">0</startTime>
+        </Attributes>
+      </DiscreteEvent>
+    </DiscreteEventTrack>
+    <DurationEventTrack name="TimeAct" guid="20e4bc1f-c971-4873-939d-de4980642541" channelID="2">
+      <Attributes>
+        <userData type="uint">1000</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">75017190</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+    <DurationEventTrack name="TalkDuration" guid="ce435d7f-5420-49e8-8602-b38c55e0cf4e" channelID="4">
+      <Attributes>
+        <userData type="uint">100</userData>
+      </Attributes>
+      <DurationEvent index="0">
+        <Attributes>
+          <userData type="uint">118</userData>
+          <startTime type="double">0</startTime>
+          <duration type="double">1</duration>
+        </Attributes>
+      </DurationEvent>
+    </DurationEventTrack>
+  </Take>
+</TakeList>

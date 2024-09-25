@@ -1,0 +1,13 @@
+<CharacterController guid="c39e7d9a-4220-4075-a70d-6f56ddd56a1f" name="Controller">
+  <Attributes>
+    <Shape type="string">Capsule</Shape>
+    <Height type="double">0.05625</Height>
+    <Radius type="double">0.0140625</Radius>
+    <Colour type="vector3">0.498039, 0.498039, 1.000000</Colour>
+    <Visible type="bool">true</Visible>
+    <SkinWidth type="double">0.01</SkinWidth>
+    <MaxPushForce type="double">0</MaxPushForce>
+    <MaxSlopeAngle type="double">0.785398</MaxSlopeAngle>
+    <StepHeight type="double">0</StepHeight>
+  </Attributes>
+</CharacterController>

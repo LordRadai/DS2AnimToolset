@@ -1,0 +1,84 @@
+<AnimationLibrary guid="1e673adc-c299-4ad7-9170-7201cec3a976" name="ConnectLibrary">
+  <AnimationSet index="0" name="c7770_0">
+    <CharacterControllerRef refGUID="c39e7d9a-4220-4075-a70d-6f56ddd56a1f" filename="c7770_0.mrctrl" refName="Controller"/>
+    <RigRef refGUID="d840442d-d01b-4807-8157-047a0dc75a83" filename="c7770_0.mrarig" refName="c7770_0"/>
+    <AnimationEntry index="0" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a00_16_0025_DmgKnockBackLightSlashUp_F.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a00_16_0025_DmgKnockBackLightSlashUp_F.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="1" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a75_01_7170_Wep01_StartUp_08_In.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a75_01_7170_Wep01_StartUp_08_In.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="2" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a00_16_0016_DmgKnockBackLightSlashDown_B.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a00_16_0016_DmgKnockBackLightSlashDown_B.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="3" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a75_01_7140_Wep01_StartUp_05_In.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a75_01_7140_Wep01_StartUp_05_In.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="4" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a75_01_7100_Wep01_StartUp_01_In.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a75_01_7100_Wep01_StartUp_01_In.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="5" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a75_01_7120_Wep01_StartUp_03_In.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a75_01_7120_Wep01_StartUp_03_In.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="6" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a75_01_7160_Wep01_StartUp_07_In.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a75_01_7160_Wep01_StartUp_07_In.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="7" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a75_01_7180_Wep01_StartUp_09_In.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a75_01_7180_Wep01_StartUp_09_In.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="8" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a75_01_7110_Wep01_StartUp_02_In.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a75_01_7110_Wep01_StartUp_02_In.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="9" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a75_01_7130_Wep01_StartUp_04_In.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a75_01_7130_Wep01_StartUp_04_In.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="10" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a75_01_7150_Wep01_StartUp_06_In.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a75_01_7150_Wep01_StartUp_06_In.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="11" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a75_01_7190_Wep01_StartUp_10_In.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a75_01_7190_Wep01_StartUp_10_In.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+    <AnimationEntry index="12" format="nsa" options="">
+      <animFile>$(RootDir)\motion_xmd\a00_16_0015_DmgKnockBackLightSlashDown_F.xmd</animFile>
+      <takeFile>$(RootDir)\morphemeMarkup\a00_16_0015_DmgKnockBackLightSlashDown_F.xmd.xml</takeFile>
+      <take>untitled</take>
+      <syncTrack>Footsteps</syncTrack>
+    </AnimationEntry>
+  </AnimationSet>
+</AnimationLibrary>
