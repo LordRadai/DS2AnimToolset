@@ -3,7 +3,7 @@
 #include "extern.h"
 #include "utils/NMDX/NMDX.h"
 #include "RenderManager/RenderManager.h"
-#include "FromSoftware/BND4/BND4.h"
+#include "RCore.h"
 
 namespace
 {
@@ -292,7 +292,7 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 {
 	FlverModel* model = nullptr;
 
-	Bnd4* bnd = Bnd4::loadFromFile(path);
+	BND4::Bnd4* bnd = BND4::Bnd4::loadFromFile(path);
 
 	if (bnd == nullptr)
 		return nullptr;

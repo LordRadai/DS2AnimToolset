@@ -8,7 +8,7 @@
 #include "GuiManager/GuiManager.h"
 #include "RenderManager/RenderManager.h"
 #include "WorkerThread/WorkerThread.h"
-#include "FromSoftware/TimeAct/TaeTemplate/TaeTemplate.h"
+#include "RCore.h"
 
 static UINT g_ResizeWidth = 0, g_ResizeHeight = 0;
 
@@ -67,8 +67,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     try
     {
         g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct template\n");
-
-        g_taeTemplate = TimeAct::TaeTemplate::load(L"Data\\res\\TimeActTemplate.xml");
+        g_taeTemplate = TimeAct::TaeTemplate::getInstance();
+        g_taeTemplate->load(L"Data\\res\\TimeActTemplate.xml");
     }
     catch (const std::exception& exc)
     {

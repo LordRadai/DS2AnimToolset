@@ -14,7 +14,6 @@ namespace TimeAct
 
 class WorkerThread;
 class RLog;
-class TaeTemplate;
 enum MsgLevel;
 
 extern std::atomic<WorkerThread*> g_workerThread;
