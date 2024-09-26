@@ -67,8 +67,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     try
     {
         g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct template\n");
-        g_taeTemplate = TimeAct::TaeTemplate::getInstance();
-        g_taeTemplate->load(L"Data\\res\\TimeActTemplate.xml");
+
+        g_taeTemplate = TimeAct::TaeTemplate::load(L"Data\\res\\TimeActTemplate.xml");
     }
     catch (const std::exception& exc)
     {
