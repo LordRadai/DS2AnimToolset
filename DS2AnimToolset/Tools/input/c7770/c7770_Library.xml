@@ -1,7 +1,7 @@
-<AnimationLibrary guid="1e673adc-c299-4ad7-9170-7201cec3a976" name="ConnectLibrary">
+<AnimationLibrary guid="1883595b-956a-4627-9e59-4a6ba64b1ecc" name="ConnectLibrary">
   <AnimationSet index="0" name="c7770_0">
-    <CharacterControllerRef refGUID="c39e7d9a-4220-4075-a70d-6f56ddd56a1f" filename="c7770_0.mrctrl" refName="Controller"/>
-    <RigRef refGUID="d840442d-d01b-4807-8157-047a0dc75a83" filename="c7770_0.mrarig" refName="c7770_0"/>
+    <CharacterControllerRef refGUID="2f00a4d3-83da-4d87-a446-fe65208994cc" filename="c7770_0.mrctrl" refName="Controller"/>
+    <RigRef refGUID="4e84b673-84c0-494c-9018-73c35aa9d711" filename="c7770_0.mrarig" refName="c7770_0"/>
     <AnimationEntry index="0" format="nsa" options="">
       <animFile>$(RootDir)\motion_xmd\a00_16_0025_DmgKnockBackLightSlashUp_F.xmd</animFile>
       <takeFile>$(RootDir)\morphemeMarkup\a00_16_0025_DmgKnockBackLightSlashUp_F.xmd.xml</takeFile>

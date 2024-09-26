@@ -6,9 +6,9 @@ for folder in input/*/; do
 		dir=$(basename "$folder")
 		
 		output_folder=output/"$dir"
-		mkdir -p "$output_folder"/XMD/Rigs
+		mkdir -p "$output_folder"/XMD/model_xmd
 		mkdir -p "$output_folder"/XMD/motion_xmd
-		mkdir -p "$output_folder"/morphemeMarkup/Rigs
+		mkdir -p "$output_folder"/morphemeMarkup/model_xmd
 		mkdir -p "$output_folder"/morphemeMarkup/motion_xmd
 		
 		scripts/create_morph_setup.sh "$folder" "$output_folder"

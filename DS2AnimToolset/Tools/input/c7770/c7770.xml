@@ -1,4 +1,4 @@
-<NetworkDefinition guid="235c509d-3f5a-4ab7-85fa-d2f28cb2536d" name="c7770">
+<NetworkDefinition guid="d34a85ee-c580-474b-af36-3f66ced845fb" name="c7770">
   <networkWorldForwardVector>1.000000, 0.000000, 0.000000</networkWorldForwardVector>
   <networkWorldRightVector>0.000000, 0.000000, 1.000000</networkWorldRightVector>
   <networkWorldUpVector>1.000000, 0.000000, 0.000000</networkWorldUpVector>
@@ -2270,6 +2270,6 @@
   <Message name="Start08" messageTypeID="10" messageID="42"/>
   <Message name="Start09" messageTypeID="10" messageID="43"/>
   <rootNodeNetworkID>117</rootNodeNetworkID>
-  <AnimLibraryRef refGUID="1e673adc-c299-4ad7-9170-7201cec3a976" filename="c7770_Library.xml"/>
-  <MessagePresetLibraryRef refGUID="5423bb61-b75b-4812-a786-209df22809ae" filename="c7770_Preset.xml"/>
+  <AnimLibraryRef refGUID="1883595b-956a-4627-9e59-4a6ba64b1ecc" filename="c7770_Library.xml"/>
+  <MessagePresetLibraryRef refGUID="5efb2ebd-3c85-4e5c-b7fe-ca017604f3f9" filename="c7770_Preset.xml"/>
 </NetworkDefinition>

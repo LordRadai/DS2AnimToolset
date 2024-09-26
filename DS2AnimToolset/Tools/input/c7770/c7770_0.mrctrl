@@ -1,4 +1,4 @@
-<CharacterController guid="c39e7d9a-4220-4075-a70d-6f56ddd56a1f" name="Controller">
+<CharacterController guid="2f00a4d3-83da-4d87-a446-fe65208994cc" name="Controller">
   <Attributes>
     <Shape type="string">Capsule</Shape>
     <Height type="double">0.05625</Height>

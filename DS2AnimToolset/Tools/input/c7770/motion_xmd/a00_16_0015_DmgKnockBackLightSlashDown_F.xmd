@@ -8,8 +8,8 @@ INFO info
 	send_bug_reports_to support@naturalmotion.com
 	application "MorphemeEditor 1.2.1"
 	original_file "$(RootDir)\motion_xmd\a00_16_0015_DmgKnockBackLightSlashDown_F.xmd"
-	date 25/10/3924
-	time 17.20:14
+	date 26/10/3924
+	time 19.24:53
 }
 JOINT Character
 {

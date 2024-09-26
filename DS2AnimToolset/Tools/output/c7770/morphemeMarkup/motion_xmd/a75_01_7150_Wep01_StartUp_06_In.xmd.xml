@@ -7,7 +7,7 @@
       <clipEnd type="double">1</clipEnd>
       <loop type="bool">true</loop>
     </Attributes>
-    <DiscreteEventTrack name="Footsteps" guid="4c7006c0-1a98-4d38-887d-1302e0997c1a" channelID="1">
+    <DiscreteEventTrack name="Footsteps" guid="54c42026-bd49-4a58-81a2-c507facf5b59" channelID="1">
       <Attributes>
         <userData type="uint">0</userData>
       </Attributes>
@@ -18,7 +18,7 @@
         </Attributes>
       </DiscreteEvent>
     </DiscreteEventTrack>
-    <DurationEventTrack name="TimeAct" guid="654c8038-869e-4212-a1fc-3665634babba" channelID="2">
+    <DurationEventTrack name="TimeAct" guid="09b53d56-643c-4565-ac8a-ebc3492c1509" channelID="2">
       <Attributes>
         <userData type="uint">1000</userData>
       </Attributes>
@@ -30,7 +30,7 @@
         </Attributes>
       </DurationEvent>
     </DurationEventTrack>
-    <DurationEventTrack name="TalkDuration" guid="405c4cd9-6a4d-4873-a72b-fa64c82b85ae" channelID="4">
+    <DurationEventTrack name="TalkDuration" guid="0c1e4dec-8437-46f2-b42e-d0398ff75672" channelID="4">
       <Attributes>
         <userData type="uint">100</userData>
       </Attributes>

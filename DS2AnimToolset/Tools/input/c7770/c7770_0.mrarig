@@ -1,4 +1,4 @@
-<Rig guid="d840442d-d01b-4807-8157-047a0dc75a83" name="c7770_0">
+<Rig guid="4e84b673-84c0-494c-9018-73c35aa9d711" name="c7770_0">
   <Joint index="0" name="CharacterWorldSpaceTM" parent="4294967295" BodyPlanTag="CharacterWorldSpaceTM" RetargetTag="CharacterWorldSpaceTM">
     <OrientationOffset>0.0, 0.0, 0.0, 1.0</OrientationOffset>
     <TranslationOffset>0.0, 0.0, 0.0</TranslationOffset>

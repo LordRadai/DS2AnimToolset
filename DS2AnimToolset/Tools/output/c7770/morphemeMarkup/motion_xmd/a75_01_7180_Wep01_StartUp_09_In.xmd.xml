@@ -7,7 +7,7 @@
       <clipEnd type="double">1</clipEnd>
       <loop type="bool">true</loop>
     </Attributes>
-    <DiscreteEventTrack name="Footsteps" guid="92148b9c-c584-473d-9044-7c41c497344b" channelID="1">
+    <DiscreteEventTrack name="Footsteps" guid="09bb1ee9-ee38-4d53-bd33-0b0198af92ce" channelID="1">
       <Attributes>
         <userData type="uint">0</userData>
       </Attributes>
@@ -18,7 +18,7 @@
         </Attributes>
       </DiscreteEvent>
     </DiscreteEventTrack>
-    <DurationEventTrack name="TimeAct" guid="035ecad4-4114-4425-9f29-95a5103fd7fd" channelID="2">
+    <DurationEventTrack name="TimeAct" guid="7a197513-e4b8-4040-894a-5d5ebdeec556" channelID="2">
       <Attributes>
         <userData type="uint">1000</userData>
       </Attributes>
@@ -30,7 +30,7 @@
         </Attributes>
       </DurationEvent>
     </DurationEventTrack>
-    <DurationEventTrack name="TalkDuration" guid="739b670d-d813-435d-aef5-51fc7026c75e" channelID="4">
+    <DurationEventTrack name="TalkDuration" guid="af9a8886-50d7-4ec5-a5ba-6c8073940e63" channelID="4">
       <Attributes>
         <userData type="uint">100</userData>
       </Attributes>
@@ -42,7 +42,7 @@
         </Attributes>
       </DurationEvent>
     </DurationEventTrack>
-    <DurationEventTrack name="Gravity" guid="310618b9-34a3-4ba2-b66f-90b7a570130d" channelID="3">
+    <DurationEventTrack name="Gravity" guid="30427322-adac-44fe-a58e-beffada9b4f7" channelID="3">
       <Attributes>
         <userData type="uint">9600</userData>
       </Attributes>

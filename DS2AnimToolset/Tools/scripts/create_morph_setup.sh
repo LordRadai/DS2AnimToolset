@@ -20,8 +20,8 @@ else
 fi
 
 if	[ -f "$input_folder"/*.xmd ]; then
-	echo "Copying "$input_folder"/*.xmd to "$output_folder"/XMD/Rigs"
-	cp "$input_folder"/*.xmd "$output_folder"/XMD/Rigs
+	echo "Copying "$input_folder"/*.xmd to "$output_folder"/XMD/model_xmd"
+	cp "$input_folder"/*.xmd "$output_folder"/XMD/model_xmd
 else
 	echo "Could not find .xmd model file"
 fi
