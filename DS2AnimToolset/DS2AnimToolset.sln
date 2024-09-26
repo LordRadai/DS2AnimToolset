@@ -39,6 +39,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RCore", "RCore\RCore\src\RC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrTarget_NoPhysics", "Morpheme4\morpheme\tools\runtimeTarget\mrTarget_NoPhysics_X64.vcxproj", "{F06FA5C4-F809-42F7-22AA-634F3A057082}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bndBuilder", "bndBuilder\bndBuilder\bndBuilder.vcxproj", "{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Tool|x64 = Debug Tool|x64
@@ -487,6 +489,30 @@ Global
 		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Target LE64 Release|x64.Build.0 = Release|x64
 		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Target LE64 Release|x86.ActiveCfg = Release|x64
 		{F06FA5C4-F809-42F7-22AA-634F3A057082}.Target LE64 Release|x86.Build.0 = Release|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Debug Tool|x64.ActiveCfg = Debug|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Debug Tool|x64.Build.0 = Debug|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Debug Tool|x86.ActiveCfg = Debug|Win32
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Debug Tool|x86.Build.0 = Debug|Win32
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Debug|x64.ActiveCfg = Debug|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Debug|x64.Build.0 = Debug|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Debug|x86.ActiveCfg = Debug|Win32
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Debug|x86.Build.0 = Debug|Win32
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Release Tool|x64.ActiveCfg = Release|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Release Tool|x64.Build.0 = Release|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Release Tool|x86.ActiveCfg = Release|Win32
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Release Tool|x86.Build.0 = Release|Win32
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Release|x64.ActiveCfg = Release|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Release|x64.Build.0 = Release|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Release|x86.ActiveCfg = Release|Win32
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Release|x86.Build.0 = Release|Win32
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Target LE64 Debug|x64.ActiveCfg = Debug|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Target LE64 Debug|x64.Build.0 = Debug|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Target LE64 Debug|x86.ActiveCfg = Debug|Win32
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Target LE64 Debug|x86.Build.0 = Debug|Win32
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Target LE64 Release|x64.ActiveCfg = Release|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Target LE64 Release|x64.Build.0 = Release|x64
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Target LE64 Release|x86.ActiveCfg = Release|Win32
+		{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}.Target LE64 Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
