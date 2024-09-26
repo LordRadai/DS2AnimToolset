@@ -1857,7 +1857,7 @@ void GuiManager::searchQueryWindow()
 				std::string col1 = std::to_string(groupId);
 				std::string col2 = g_taeTemplate->getGroupName(groupId);
 				std::string col3 = std::to_string(eventId);
-				std::string col4 = g_taeTemplate->getEventName(groupId, eventId) + result->getArgumentsString();
+				std::string col4 = g_taeTemplate->getEventName(groupId, eventId) + result->getArgumentsString(g_taeTemplate);
 
 				for (size_t column = 0; column < columnCount; column++)
 				{
