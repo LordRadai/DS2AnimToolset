@@ -126,24 +126,6 @@
     <ClInclude Include="FlverModel\FlverModel.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="FromSoftware\BND4\BND4.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TimeAct.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TimeActEvent\TimeActEventData\TimeActEventData.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TimeActEvent\TimeActEvent.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TAE3\TAE3.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplate.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="TrackEditor\TrackEditorBase.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
@@ -163,12 +145,6 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TaeExport\TaeExport.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplateXML\TaeTemplateXML.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="WorkerThread\ProgressIndicator\ProgressIndicator.h">
@@ -401,24 +377,6 @@
     <ClCompile Include="FlverModel\FlverModel.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="FromSoftware\BND4\BND4.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TimeAct.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TimeActEvent\TimeActEventData\TimeActEventData.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TimeActEvent\TimeActEvent.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TAE3\TAE3.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplate.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="TrackEditor\TrackEditorBase.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
@@ -438,12 +396,6 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TaeExport\TaeExport.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplateXML\TaeTemplateXML.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="WorkerThread\ProgressIndicator\ProgressIndicator.cpp">
