@@ -71,6 +71,7 @@ namespace MCN
 	class PreviewScript
 	{
 	public:
+		static PreviewScript* loadFromFile(Network* owner, const char* name);
 		static PreviewScript* create(Network* owner, const char* name, const char* filename);
 
 		void setScriptData(const char* filename);
@@ -93,6 +94,7 @@ namespace MCN
 		friend class PreviewScript;
 		friend class Networks;
 	public:
+		static Network* loadFromFile(Networks* owner, const char* name);
 		static Network* create(Networks* owner, const char* name, ME::AnimationLibraryXML* animLibrary, ME::RigExportXML* rig, ME::NetworkDefExportXML* netDef, ME::MessagePresetLibraryExportXML* messagePresets, const char* animSetName);
 
 		void addAnimLocation(const char* sourceDir, const char* markupDir, bool includeSubDirectories);
@@ -125,6 +127,7 @@ namespace MCN
 		friend class Network;
 
 	public:
+		static Networks* loadFromFile(MorphemeDB* owner);
 		static Networks* create(MorphemeDB* owner, const char* name, ME::AnimationLibraryXML* animLibrary, ME::RigExportXML* rig, ME::NetworkDefExportXML* netDef, ME::MessagePresetLibraryExportXML* messagePresets, const char* animSetName);
 
 		Network* addNetwork(const char* name, ME::AnimationLibraryXML* animLibrary, ME::RigExportXML* rig, ME::NetworkDefExportXML* netDef, ME::MessagePresetLibraryExportXML* messagePresets, const char* animSetName);
@@ -144,6 +147,7 @@ namespace MCN
 		friend class MCNFile;
 		friend class Networks;
 	public:
+		static MorphemeDB* loadFromFile(MCNFile* owner);
 		static MorphemeDB* create(MCNFile* owner, ME::NetworkDefExportXML* netDef, ME::RigExportXML* rig, ME::AnimationLibraryXML* animLibrary, ME::MessagePresetLibraryExportXML* messagePresets);
 
 	private:
@@ -162,9 +166,14 @@ namespace MCN
 		friend class MorphemeDB;
 
 	public:
+		static MCNFile* loadFile(std::string filename);
 		static MCNFile* createMcn(std::string filename, ME::NetworkDefExportXML* netDef, ME::RigExportXML* rig, ME::AnimationLibraryXML* animLibrary, ME::MessagePresetLibraryExportXML* messagePresets);
 
+		void setDestFileName(std::string filename) { this->m_fileName = filename; }
+
 		void addAnimLocation(std::string sourceDir, std::string markupDir, bool includeSubDirs);
+		void addControlParameter(ME::NodeExportXML* node);
+		void addRequest(ME::MessageExportXML* request);
 
 		bool save();
 		void destroy();

@@ -137,6 +137,7 @@ private:
 	bool exportAnimMarkup(std::wstring path, int animId);
 
 	void exportTaeTemplateXML();
+	void mergeMcn();
 
 	WindowFlags m_windowFlags;
 	TaskFlags m_taskFlags;

@@ -785,31 +785,7 @@ void MorphemeEditorApp::update(float dt)
 	{
 		this->m_taskFlags.exportMcn = false;
 
-		wchar_t mcnPath[256];
-		swprintf_s(mcnPath, L"Export\\%ws\\%ws.mcn", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
-
-		wchar_t netDefPath[256];
-		swprintf_s(netDefPath, L"Export\\%ws\\%ws.xml", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
-
-		wchar_t rigPath[256];
-		swprintf_s(rigPath, L"Export\\%ws\\%ws_0.mrarig", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
-
-		wchar_t animLibPath[256];
-		swprintf_s(animLibPath, L"Export\\%ws\\%ws_Library.xml", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
-
-		wchar_t messageLibPath[256];
-		swprintf_s(messageLibPath, L"Export\\%ws\\%ws_Preset.xml", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
-
-		ME::ExportFactoryXML factory;
-
-		ME::NetworkDefExportXML* netDef = static_cast<ME::NetworkDefExportXML*>(factory.loadAsset(RString::toNarrow(netDefPath).c_str()));
-		ME::RigExportXML* rig = static_cast<ME::RigExportXML*>(factory.loadAsset(RString::toNarrow(rigPath).c_str()));
-		ME::AnimationLibraryXML* animLibrary = static_cast<ME::AnimationLibraryXML*>(factory.loadAsset(RString::toNarrow(animLibPath).c_str()));
-		ME::MessagePresetLibraryExportXML* messageLibrary = static_cast<ME::MessagePresetLibraryExportXML*>(factory.loadAsset(RString::toNarrow(messageLibPath).c_str()));
-
-		MCN::MCNFile* mcn = MCN::MCNFile::createMcn(RString::toNarrow(mcnPath), netDef, rig, animLibrary, messageLibrary);
-		mcn->save();
-		mcn->destroy();
+		this->mergeMcn();
 	}
 
 	if (this->m_taskFlags.compileNetwork)
@@ -1594,4 +1570,107 @@ void MorphemeEditorApp::exportTaeTemplateXML()
 
 	templateXML->setDstFileName("Export\\TimeActTemplate.xml");
 	templateXML->save();
+}
+
+void MorphemeEditorApp::mergeMcn()
+{
+	COMDLG_FILTERSPEC ComDlgFS[] = { {L"morphemeConnect Project", L"*.mcn"}, {L"All Files",L"*.*"} };
+
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+		COINIT_DISABLE_OLE1DDE);
+
+	if (SUCCEEDED(hr))
+	{
+		IFileOpenDialog* pFileOpen = NULL;
+
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+		if (SUCCEEDED(hr))
+		{
+			pFileOpen->SetFileTypes(2, ComDlgFS);
+
+			// Show the Open dialog box.
+			hr = pFileOpen->Show(NULL);
+
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem* pItem;
+				hr = pFileOpen->GetResult(&pItem);
+
+				if (SUCCEEDED(hr))
+				{
+					PWSTR pszFilePath;
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+					// Display the file name to the user.
+					if (SUCCEEDED(hr))
+					{
+						std::filesystem::path mcnPath = std::wstring(pszFilePath);
+
+						wchar_t mcnOut[256];
+						swprintf_s(mcnOut, L"Export\\%ws\\%ws.mcn", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
+
+						wchar_t netDefPath[256];
+						swprintf_s(netDefPath, L"Export\\%ws\\%ws.xml", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
+
+						wchar_t rigPath[256];
+						swprintf_s(rigPath, L"Export\\%ws\\%ws_0.mrarig", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
+
+						wchar_t animLibPath[256];
+						swprintf_s(animLibPath, L"Export\\%ws\\%ws_Library.xml", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
+
+						wchar_t messageLibPath[256];
+						swprintf_s(messageLibPath, L"Export\\%ws\\%ws_Preset.xml", this->m_character->getCharacterName().c_str(), this->m_character->getCharacterName().c_str());
+
+						ME::ExportFactoryXML factory;
+
+						ME::NetworkDefExportXML* netDef = static_cast<ME::NetworkDefExportXML*>(factory.loadAsset(RString::toNarrow(netDefPath).c_str()));
+						ME::RigExportXML* rig = static_cast<ME::RigExportXML*>(factory.loadAsset(RString::toNarrow(rigPath).c_str()));
+						ME::AnimationLibraryXML* animLibrary = static_cast<ME::AnimationLibraryXML*>(factory.loadAsset(RString::toNarrow(animLibPath).c_str()));
+						ME::MessagePresetLibraryExportXML* messageLibrary = static_cast<ME::MessagePresetLibraryExportXML*>(factory.loadAsset(RString::toNarrow(messageLibPath).c_str()));
+
+						MCN::MCNFile* mcn = MCN::MCNFile::loadFile(RString::toNarrow(mcnPath));
+
+						for (size_t i = 0; i < netDef->getNumNodes(); i++)
+						{
+							ME::NodeExportXML* node = static_cast<ME::NodeExportXML*>(netDef->getNode(i));
+
+							switch (node->getTypeID())
+							{
+							case NODE_TYPE_CP_BOOL:
+							case NODE_TYPE_CP_INT:
+							case NODE_TYPE_CP_UINT:
+							case NODE_TYPE_CP_FLOAT:
+							case NODE_TYPE_CP_VECTOR3:
+							case NODE_TYPE_CP_VECTOR4:
+								mcn->addControlParameter(node);
+								break;
+							default:
+								break;
+							}
+						}
+
+						for (size_t i = 0; i < netDef->getNumMessages(); i++)
+						{
+							ME::MessageExportXML* message = static_cast<ME::MessageExportXML*>(netDef->getMessage(i));
+
+							mcn->addRequest(message);
+						}
+
+						mcn->setDestFileName(RString::toNarrow(mcnOut));
+						mcn->save();
+						mcn->destroy();
+					}
+					pItem->Release();
+				}
+				else
+					g_appLog->alertMessage(MsgLevel_Error, "Failed to open file");
+			}
+			pFileOpen->Release();
+		}
+		CoUninitialize();
+	}
 }

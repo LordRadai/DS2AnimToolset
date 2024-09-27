@@ -1,5 +1,7 @@
 #include "MCN.h"
 #include "MCNUtils.h"
+#include "extern.h"
+#include "RCore.h"
 
 namespace MCN
 {
@@ -275,6 +277,16 @@ namespace MCN
 		xmlElement->SetText((int)include);
 	}
 
+	PreviewScript* PreviewScript::loadFromFile(Network* owner, const char* name)
+	{
+		PreviewScript* script = new PreviewScript;
+		script->m_owner = owner;
+
+		script->m_xmlElement = owner->m_xmlElement->FirstChildElement("PreviewScripts")->FirstChildElement("PreviewScriptNode");
+
+		return script;
+	}
+
 	PreviewScript* PreviewScript::create(Network* owner, const char* name, const char* filename)
 	{
 		PreviewScript* script = new PreviewScript;
@@ -325,6 +337,23 @@ namespace MCN
 		}
 
 		return false;
+	}
+
+	Network* Network::loadFromFile(Networks* owner, const char* name)
+	{
+		Network* net = new Network;
+		net->m_owner = owner;
+		net->m_xmlElement = owner->m_xmlElement->FirstChildElement(name);
+
+		if (net->m_xmlElement == nullptr)
+		{
+			throw("Invalid mcn file");
+			return nullptr;
+		}
+
+		net->m_scripts.push_back(PreviewScript::loadFromFile(net, "Preview script"));
+
+		return net;
 	}
 
 	Network* Network::create(Networks* owner, const char* name, ME::AnimationLibraryXML* animLibrary, ME::RigExportXML* rig, ME::NetworkDefExportXML* netDef, ME::MessagePresetLibraryExportXML* messagePresets, const char* animSetName)
@@ -489,6 +518,24 @@ namespace MCN
 		MCNUtils::createBlendTree(cpNode, "ControlParameterBlendTree");
 	}
 
+	Networks* Networks::loadFromFile(MorphemeDB* owner)
+	{
+		Networks* nets = new Networks;
+		nets->m_owner = owner;
+		nets->m_xmlElement = owner->m_xmlElement->FirstChildElement("Networks");
+
+		if (nets->m_xmlElement == nullptr)
+		{
+			throw("Invalid mcn file");
+			return nullptr;
+		}
+
+		for (tinyxml2::XMLElement* child = nets->m_xmlElement->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
+			nets->m_network.push_back(Network::loadFromFile(nets, child->Attribute("name")));
+
+		return nets;
+	}
+
 	Networks* Networks::create(MorphemeDB* owner, const char* name, ME::AnimationLibraryXML* animLibrary, ME::RigExportXML* rig, ME::NetworkDefExportXML* netDef, ME::MessagePresetLibraryExportXML* messagePresets, const char* animSetName)
 	{
 		Networks* nets = new Networks;
@@ -509,6 +556,23 @@ namespace MCN
 		return net;
 	}
 
+	MorphemeDB* MorphemeDB::loadFromFile(MCNFile* owner)
+	{
+		MorphemeDB* db = new MorphemeDB;
+		db->m_owner = owner;
+		db->m_xmlElement = owner->m_xmlElement->FirstChildElement("MorphemeDB");
+
+		if (db->m_xmlElement == nullptr)
+		{
+			throw("Invalid mcn file");
+			return nullptr;
+		}
+
+		db->m_networks = Networks::loadFromFile(db);
+
+		return db;
+	}
+
 	MorphemeDB* MorphemeDB::create(MCNFile* owner, ME::NetworkDefExportXML* netDef, ME::RigExportXML* rig, ME::AnimationLibraryXML* animLibrary, ME::MessagePresetLibraryExportXML* messagePresets)
 	{
 		MorphemeDB* db = new MorphemeDB;
@@ -519,6 +583,32 @@ namespace MCN
 		db->m_networks = Networks::create(db, animLibrary->getDestFilename(), animLibrary, rig, netDef, messagePresets, "Character");
 
 		return db;
+	}
+
+	MCNFile* MCNFile::loadFile(std::string filename)
+	{
+		MCNFile* mcn = new MCNFile;
+
+		try
+		{
+			tinyxml2::XMLDocument* doc = new tinyxml2::XMLDocument;
+			doc->LoadFile(filename.c_str());
+
+			mcn->m_xmlDoc = doc;
+			mcn->m_xmlElement = doc->FirstChildElement("NaturalMotion");
+
+			if (mcn->m_xmlElement == nullptr)
+				throw("Invalid mcn file %s", filename.c_str());
+
+			mcn->m_morphemeDB = MorphemeDB::loadFromFile(mcn);
+		}
+		catch (const std::exception& e)
+		{
+			g_appLog->alertMessage(MsgLevel_Error, "Invalid mcn file %s", filename.c_str());
+			return nullptr;
+		}
+
+		return mcn;
 	}
 
 	MCNFile* MCNFile::createMcn(std::string filename, ME::NetworkDefExportXML* netDef, ME::RigExportXML* rig, ME::AnimationLibraryXML* animLibrary, ME::MessagePresetLibraryExportXML* messagePresets)
@@ -548,6 +638,16 @@ namespace MCN
 	void MCNFile::addAnimLocation(std::string sourceDir, std::string markupDir, bool includeSubDirs)
 	{
 		this->m_morphemeDB->m_networks->m_network[0]->addAnimLocation(sourceDir.c_str(), markupDir.c_str(), includeSubDirs);
+	}
+
+	void MCNFile::addControlParameter(ME::NodeExportXML* node)
+	{
+		this->m_morphemeDB->m_networks->m_network[0]->addControlParameter(node);
+	}
+
+	void MCNFile::addRequest(ME::MessageExportXML* request)
+	{
+		this->m_morphemeDB->m_networks->m_network[0]->addRequest(request);
 	}
 
 	bool MCNFile::save()
