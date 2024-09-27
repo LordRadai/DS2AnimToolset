@@ -8,8 +8,7 @@ for folder in input/*/; do
 		output_folder=output/"$dir"
 		mkdir -p "$output_folder"/XMD/model_xmd
 		mkdir -p "$output_folder"/XMD/motion_xmd
-		mkdir -p "$output_folder"/morphemeMarkup/model_xmd
-		mkdir -p "$output_folder"/morphemeMarkup/motion_xmd
+		mkdir -p "$output_folder"/morphemeMarkup
 		
 		scripts/create_morph_setup.sh "$folder" "$output_folder"
 	fi

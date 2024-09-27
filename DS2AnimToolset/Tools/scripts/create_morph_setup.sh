@@ -3,8 +3,8 @@ output_folder="$2"
 
 if	[ -d "$input_folder"/morphemeMarkup ]; then
 	for	xml_markup in "$input_folder"/morphemeMarkup/*.xml; do
-		echo "Copying "$xml_markup" to "$output_folder"/morphemeMarkup/motion_xmd"
-		cp "$xml_markup" "$output_folder"/morphemeMarkup/motion_xmd
+		echo "Copying "$xml_markup" to "$output_folder"/morphemeMarkup"
+		cp "$xml_markup" "$output_folder"/morphemeMarkup
 	done
 else
 	echo "Could not find morphemeMarkup folder"
