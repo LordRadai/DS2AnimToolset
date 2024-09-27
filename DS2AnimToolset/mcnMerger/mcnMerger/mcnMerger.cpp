@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 		mcn->addRequest(message);
 	}
 
-	std::string outMcn = mcnPath.replace_extension("").string() + std::string("_merge.mcn");
+	std::string outMcn = mcnPath.replace_extension("").string() + std::string("_merged.mcn");
 
 	log->debugMessage(MsgLevel_Info, "Saving mcn file to %s\n", outMcn.c_str());
 
