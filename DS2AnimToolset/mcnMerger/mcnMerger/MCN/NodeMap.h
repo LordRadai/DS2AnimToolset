@@ -1,3 +1,4 @@
+#pragma once
 #include "RCore.h"
 
 #include "export/mcExportXml.h"
@@ -32,6 +33,7 @@ namespace MCN
 		ME::NodeExportXML* getSourceNode() const { return this->m_nodeXml; }
 		tinyxml2::XMLElement* getDbEntry() const { return this->m_dbNodeEntry; }
 		std::string getName() const { return this->m_name; }
+		int getNodeID() const { return this->m_nodeID; }
 	private:
 		ME::NodeExportXML* m_nodeXml = nullptr;
 		int m_nodeID = -1;

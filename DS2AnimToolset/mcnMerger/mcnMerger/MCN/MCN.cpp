@@ -23,7 +23,7 @@ namespace MCN
 	ControlParameter* ControlParameter::createBoolCp(tinyxml2::XMLElement* parent, ME::NodeExportXML* cpNode)
 	{
 		ControlParameter* cp = new ControlParameter;
-		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeName(cpNode).c_str());
+		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeNameWithoutParent(cpNode).c_str());
 		tinyxml2::XMLElement* pinEntry = MCNUtils::createNodeContainerElement(cp->m_xmlElement, "DataPinEntry");
 		tinyxml2::XMLElement* dataPin = MCNUtils::createNodeElement(pinEntry, "DataPin", "Result");
 		MCNUtils::createEnumElement(dataPin, "Type", "bool");
@@ -39,7 +39,7 @@ namespace MCN
 	ControlParameter* ControlParameter::createFloatCp(tinyxml2::XMLElement* parent, ME::NodeExportXML* cpNode)
 	{
 		ControlParameter* cp = new ControlParameter;
-		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeName(cpNode).c_str());
+		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeNameWithoutParent(cpNode).c_str());
 		tinyxml2::XMLElement* pinEntry = MCNUtils::createNodeContainerElement(cp->m_xmlElement, "DataPinEntry");
 		tinyxml2::XMLElement* dataPin = MCNUtils::createNodeElement(pinEntry, "DataPin", "Result");
 
@@ -59,7 +59,7 @@ namespace MCN
 	ControlParameter* ControlParameter::createIntCp(tinyxml2::XMLElement* parent, ME::NodeExportXML* cpNode)
 	{
 		ControlParameter* cp = new ControlParameter;
-		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeName(cpNode).c_str());
+		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeNameWithoutParent(cpNode).c_str());
 		tinyxml2::XMLElement* pinEntry = MCNUtils::createNodeContainerElement(cp->m_xmlElement, "DataPinEntry");
 		tinyxml2::XMLElement* dataPin = MCNUtils::createNodeElement(pinEntry, "DataPin", "Result");
 		MCNUtils::createEnumElement(dataPin, "Type", "int");
@@ -80,7 +80,7 @@ namespace MCN
 	ControlParameter* ControlParameter::createUIntCp(tinyxml2::XMLElement* parent, ME::NodeExportXML* cpNode)
 	{
 		ControlParameter* cp = new ControlParameter;
-		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeName(cpNode).c_str());
+		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeNameWithoutParent(cpNode).c_str());
 		tinyxml2::XMLElement* pinEntry = MCNUtils::createNodeContainerElement(cp->m_xmlElement, "DataPinEntry");
 		tinyxml2::XMLElement* dataPin = MCNUtils::createNodeElement(pinEntry, "DataPin", "Result");
 		MCNUtils::createEnumElement(dataPin, "Type", "uint");
@@ -101,7 +101,7 @@ namespace MCN
 	ControlParameter* ControlParameter::createVector3Cp(tinyxml2::XMLElement* parent, ME::NodeExportXML* cpNode)
 	{
 		ControlParameter* cp = new ControlParameter;
-		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeName(cpNode).c_str());
+		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeNameWithoutParent(cpNode).c_str());
 		tinyxml2::XMLElement* pinEntry = MCNUtils::createNodeContainerElement(cp->m_xmlElement, "DataPinEntry");
 		tinyxml2::XMLElement* dataPin = MCNUtils::createNodeElement(pinEntry, "DataPin", "Result");
 		MCNUtils::createEnumElement(dataPin, "Type", "vector3");
@@ -130,7 +130,7 @@ namespace MCN
 	ControlParameter* ControlParameter::createVector4Cp(tinyxml2::XMLElement* parent, ME::NodeExportXML* cpNode)
 	{
 		ControlParameter* cp = new ControlParameter;
-		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeName(cpNode).c_str());
+		cp->m_xmlElement = MCNUtils::createNodeElement(parent, "ControlParameter", MCNUtils::getNodeNameWithoutParent(cpNode).c_str());
 		tinyxml2::XMLElement* pinEntry = MCNUtils::createNodeContainerElement(cp->m_xmlElement, "DataPinEntry");
 		tinyxml2::XMLElement* dataPin = MCNUtils::createNodeElement(pinEntry, "DataPin", "Result");
 		MCNUtils::createEnumElement(dataPin, "Type", "vector3");
@@ -458,7 +458,7 @@ namespace MCN
 		if (cpArray == nullptr)
 			cpArray = MCNUtils::createNodeContainerElement(cpNode, "ControlParameterArray");
 
-		if (cpArray->FirstChildElement(MCNUtils::getNodeName(cp).c_str()) == nullptr)
+		if (cpArray->FirstChildElement(MCNUtils::getNodeNameWithoutParent(cp).c_str()) == nullptr)
 		{
 			ControlParameter* controlParam = ControlParameter::create(this, cp);
 
@@ -478,7 +478,7 @@ namespace MCN
 			int nodeType = node->getTypeID();
 
 			//If the node is a control parameter then do nothing
-			if (nodeType < NODE_TYPE_ANIMATION)
+			if ((nodeType < NODE_TYPE_ANIMATION) && (nodeType != NODE_TYPE_STATE_MACHINE))
 				continue;
 
 			bool isBlendTree = MCNUtils::isNodeBlendTree(node);
@@ -492,8 +492,46 @@ namespace MCN
 			else
 				nodeCategory = kNode;
 
-			this->m_nodesMap.push_back(new NodeMap(node, nodeCategory, node->getName()));
+			std::string nodeName = node->getName();
+
+			if (nodeName == "")
+			{
+				if (nodeCategory == kNode)
+				{
+					nodeName = MCNUtils::getNodeName(node);
+
+					if (nodeType == NODE_TYPE_ANIM_EVENTS)
+						nodeName = MCNUtils::getAnimNodeName(node, animLibrary);
+				}
+				else if (nodeCategory == kBlendTree)
+				{
+					char name[256];
+					sprintf_s(name, "BlendTree_%d", node->getNodeID());
+
+					nodeName = name;
+				}
+				else
+				{
+					char name[256];
+					sprintf_s(name, "StateMachine_%d", node->getNodeID());
+
+					nodeName = name;
+				}
+			}
+
+			this->m_nodesMap.push_back(new NodeMap(node, nodeCategory, nodeName));
 		}
+	}
+
+	NodeMap* Network::getNodeMap(int nodeID)
+	{
+		for (size_t i = 0; i < this->m_nodesMap.size(); i++)
+		{
+			if (this->m_nodesMap[i]->getNodeID() == nodeID)
+				return this->m_nodesMap[i];
+		}
+
+		return nullptr;
 	}
 
 	void Network::createRootBlendTree()
@@ -670,6 +708,11 @@ namespace MCN
 	void MCNFile::buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary)
 	{
 		this->m_morphemeDB->m_networks->m_network[0]->buildNodeMap(netDef, animLibrary);
+	}
+
+	NodeMap* MCNFile::getNodeMap(int nodeId)
+	{
+		return this->m_morphemeDB->m_networks->m_network[0]->getNodeMap(nodeId);
 	}
 
 	bool MCNFile::save()

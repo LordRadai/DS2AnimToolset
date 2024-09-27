@@ -2,6 +2,8 @@
 #include <filesystem>
 #include "RCore.h"
 #include "MCN/MCN.h"
+#include "MCN/MCNUtils.h"
+#include "MCN/NodeMap.h"
 
 int main(int argc, char* argv[])
 {
@@ -43,11 +45,17 @@ int main(int argc, char* argv[])
 		case NODE_TYPE_CP_FLOAT:
 		case NODE_TYPE_CP_VECTOR3:
 		case NODE_TYPE_CP_VECTOR4:
-			log->debugMessage(MsgLevel_Info, "Adding ControlParameter node %d\n", i, typeID);
+			log->debugMessage(MsgLevel_Info, "Adding ControlParameter node %d (name=%s)\n", i, MCNUtils::getNodeNameWithoutParent(node).c_str());
 			mcn->addControlParameter(node);
 			break;
 		default:
-			log->debugMessage(MsgLevel_Info, "Adding node %d (typeId=%d)\n", i, typeID);
+			MCN::NodeMap* nodeMap = mcn->getNodeMap(node->getNodeID());
+
+			std::string nodeName = "";
+			if (nodeMap != nullptr)
+				nodeName = nodeMap->getName();
+
+			log->debugMessage(MsgLevel_Info, "Adding node %d (name=%s)\n", i, nodeName.c_str());
 			break;
 		}
 	}

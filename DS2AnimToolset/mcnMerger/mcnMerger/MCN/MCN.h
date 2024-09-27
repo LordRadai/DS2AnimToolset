@@ -138,6 +138,9 @@ namespace MCN
 		void addControlParameter(ME::NodeExportXML* cp);
 		void addNode(ME::NodeExportXML* node);
 		void buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary);
+
+		NodeMap* getNodeMap(int index);
+
 	private:
 		Network() {}
 		~Network() {}
@@ -212,6 +215,7 @@ namespace MCN
 		void addControlParameter(ME::NodeExportXML* node);
 		void addRequest(ME::MessageExportXML* request);
 		void buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary);
+		NodeMap* getNodeMap(int nodeId);
 
 		bool save();
 		void destroy();
