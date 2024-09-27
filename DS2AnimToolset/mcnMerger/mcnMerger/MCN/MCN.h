@@ -1,22 +1,46 @@
 #pragma once
 #include <vector>
-#include "RCore.h"
-#include "export/include/export/mcExportXML.h"
-#include "export/include/export/mcExportMessagePresetsXml.h"
-#include "morpheme/mrEventTrackDuration.h"
-#include "morpheme/mrEventTrackDiscrete.h"
-#include "morpheme/mrNodeDef.h"
-#include "morpheme/mrAttribData.h"
-#include "morpheme/AnimSource/mrAnimSource.h"
-#include "simpleBundle/simpleAnimRuntimeIDtoFilenameLookup.h"
-#include "export/include/export/mcExportControllerXml.h"
+#include "NodeMap.h"
 
 namespace MCN
 {
+	class Node;
 	class MCNFile;
 	class MorphemeDB;
 	class Networks;
 	class Network;
+
+	class TransitionEdge
+	{
+	public:
+		static TransitionEdge* create(Node* owner, ME::NodeExportXML* node);
+
+	private:
+		TransitionEdge() {}
+		~TransitionEdge() {}
+
+	protected:
+		Node* m_owner = nullptr;
+
+		tinyxml2::XMLElement* m_xmlElement = nullptr;
+	};
+
+	class Node
+	{
+	public:
+		static Node* create(Network* owner, ME::NodeExportXML* node);
+
+	private:
+		Node() {}
+		~Node() {}
+
+		static Node* createBlendTree(Network* owner, ME::NodeExportXML* node);
+		static Node* createStateMachine(Network* owner, ME::NodeExportXML* node);
+	protected:
+		Network* m_owner = nullptr;
+
+		tinyxml2::XMLElement* m_xmlElement = nullptr;
+	};
 
 	class ControlParameter
 	{
@@ -95,6 +119,7 @@ namespace MCN
 
 	class Network
 	{
+		friend class Node;
 		friend class ControlParameter;
 		friend class AnimationSet;
 		friend class MCNFile;
@@ -111,6 +136,8 @@ namespace MCN
 		void addStartPoint(const char* name);
 		void addRequest(ME::MessageExportXML* request);
 		void addControlParameter(ME::NodeExportXML* cp);
+		void addNode(ME::NodeExportXML* node);
+		void buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary);
 	private:
 		Network() {}
 		~Network() {}
@@ -125,6 +152,8 @@ namespace MCN
 		std::vector<PreviewScript*> m_scripts;
 		std::vector<AnimationSet*> m_animSets;
 		std::vector<ControlParameter*> m_controlParameters;
+		std::vector<Node*> m_nodes;
+		std::vector<NodeMap*> m_nodesMap;
 
 		tinyxml2::XMLElement* m_xmlElement = nullptr;
 	};
@@ -182,6 +211,7 @@ namespace MCN
 		void addAnimLocation(std::string sourceDir, std::string markupDir, bool includeSubDirs);
 		void addControlParameter(ME::NodeExportXML* node);
 		void addRequest(ME::MessageExportXML* request);
+		void buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary);
 
 		bool save();
 		void destroy();

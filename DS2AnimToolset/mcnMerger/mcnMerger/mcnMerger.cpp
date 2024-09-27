@@ -7,24 +7,28 @@ int main(int argc, char* argv[])
 {
     RLog* log = new RLog(MsgLevel_Debug, "mcnMerger.log", "mcnMerger");
 
-    if (argc < 3)
+    if (argc < 4)
     {
-        log->alertMessage(MsgLevel_Error, "This program needs at least %d arguments (usage mcnMerger <mcnPath> <netXmlPath>)", 3);
+        log->alertMessage(MsgLevel_Error, "This program needs at least %d arguments (usage mcnMerger <mcnPath> <netXmlPath> <animLibrary>)", 4);
         return 0;
     }
 
 	std::filesystem::path mcnPath = argv[1];
 	std::filesystem::path netXmlPath = argv[2];
+	std::filesystem::path animLibraryPath = argv[3];
 
-	log->debugMessage(MsgLevel_Info, "Adding entries from %s to %s\n", netXmlPath.c_str(), mcnPath.c_str());
+	log->debugMessage(MsgLevel_Info, "Adding entries from %ws to %ws\n", netXmlPath.c_str(), mcnPath.c_str());
 
 	NMP::Memory::init();
 
 	ME::ExportFactoryXML factory;
 
 	ME::NetworkDefExportXML* netDef = static_cast<ME::NetworkDefExportXML*>(factory.loadAsset(RString::toNarrow(netXmlPath).c_str()));
+	ME::AnimationLibraryXML* animLibrary = static_cast<ME::AnimationLibraryXML*>(factory.loadAsset(RString::toNarrow(animLibraryPath).c_str()));
 
 	MCN::MCNFile* mcn = MCN::MCNFile::loadFile(RString::toNarrow(mcnPath));
+
+	mcn->buildNodeMap(netDef, animLibrary);
 
 	for (size_t i = 0; i < netDef->getNumNodes(); i++)
 	{

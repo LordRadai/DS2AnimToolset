@@ -147,10 +147,12 @@
     <ClCompile Include="mcnMerger.cpp" />
     <ClCompile Include="MCN\MCN.cpp" />
     <ClCompile Include="MCN\MCNUtils.cpp" />
+    <ClCompile Include="MCN\NodeMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MCN\MCN.h" />
     <ClInclude Include="MCN\MCNUtils.h" />
+    <ClInclude Include="MCN\NodeMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

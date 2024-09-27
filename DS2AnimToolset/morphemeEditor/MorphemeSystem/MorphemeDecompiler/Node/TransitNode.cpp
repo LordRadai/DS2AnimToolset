@@ -19,9 +19,9 @@ namespace MD
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			if (nodeDef->getChildNodeID(0) != MR::INVALID_NODE_ID)
-				nodeDataBlock->writeInt(nodeDef->getChildNodeID(0), "SourceNodeID");
+				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "SourceNodeID");
 
-			nodeDataBlock->writeInt(nodeDef->getChildNodeID(1), "DestNodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "DestNodeID");
 
 			MR::AttribDataTransitDef* transitDef = static_cast<MR::AttribDataTransitDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
@@ -142,9 +142,9 @@ namespace MD
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			if (nodeDef->getChildNodeID(0) != MR::INVALID_NODE_ID)
-				nodeDataBlock->writeInt(nodeDef->getChildNodeID(0), "SourceNodeID");
+				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "SourceNodeID");
 
-			nodeDataBlock->writeInt(nodeDef->getChildNodeID(1), "DestNodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "DestNodeID");
 
 			MR::AttribDataTransitSyncEventsDef* transitDef = static_cast<MR::AttribDataTransitSyncEventsDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 

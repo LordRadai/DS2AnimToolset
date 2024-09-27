@@ -24,12 +24,18 @@
     <ClCompile Include="MCN\MCNUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MCN\NodeMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MCN\MCN.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MCN\MCNUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MCN\NodeMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,6 +3,64 @@
 
 namespace MCNUtils
 {
+	ME::NodeExportXML* getParentStateMachine(ME::NetworkDefExportXML* netDef, ME::NodeExportXML* node)
+	{
+		int parentIndex = node->getDownstreamParentID();
+
+		while (parentIndex != MR::INVALID_NODE_ID)
+		{
+			ME::NodeExportXML* parent = static_cast<ME::NodeExportXML*>(netDef->getNode(parentIndex));
+
+			if (parent->getTypeID() == NODE_TYPE_STATE_MACHINE)
+				return parent;
+
+			parentIndex = parent->getDownstreamParentID();
+		}
+
+		return nullptr;
+	}
+
+	std::string getNodeName(ME::NodeExportXML* node)
+	{
+		std::string input = node->getName();
+		std::string delimiter = "|";
+
+		size_t pos = input.find(delimiter);
+
+		if (pos != std::string::npos) {
+			std::string name = input.substr(pos + delimiter.length());
+			return name;
+		}
+
+		return input;
+	}
+
+	bool isNodeBlendTree(ME::NodeExportXML* nodeXml)
+	{
+		if (nodeXml->getNumCommonConditionSets() || nodeXml->getNumConditionSets())
+			return true;
+
+		return false;
+	}
+
+	bool isNodeControlParam(ME::NodeExportXML* nodeDef)
+	{
+		switch (nodeDef->getTypeID())
+		{
+		case NODE_TYPE_CP_BOOL:
+		case NODE_TYPE_CP_INT:
+		case NODE_TYPE_CP_UINT:
+		case NODE_TYPE_CP_FLOAT:
+		case NODE_TYPE_CP_VECTOR3:
+		case NODE_TYPE_CP_VECTOR4:
+			return true;
+		default:
+			return false;
+		}
+
+		return false;
+	}
+
 	tinyxml2::XMLElement* createBoolElement(tinyxml2::XMLElement* parent, const char* name, bool value)
 	{
 		tinyxml2::XMLElement* element = parent->InsertNewChildElement(name);
