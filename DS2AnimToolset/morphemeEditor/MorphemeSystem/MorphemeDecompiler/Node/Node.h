@@ -14,5 +14,7 @@ namespace MD
 		ME::NodeExportXML* exportMirrorTransformNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 
 		void exportNodeTransitions(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport);
+
+		void setNodeName(ME::NodeExportXML* node);
 	}
 }

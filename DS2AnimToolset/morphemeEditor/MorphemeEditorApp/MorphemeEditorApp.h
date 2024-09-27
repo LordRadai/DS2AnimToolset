@@ -57,7 +57,6 @@ public:
 		bool exportAnimations = false;
 		bool exportNetwork = false;
 		bool exportAll = false;
-		bool exportMcn = false;
 		ExportFormat exportFormat = kFbx;
 
 		bool compileNetwork = false;
@@ -137,7 +136,6 @@ private:
 	bool exportAnimMarkup(std::wstring path, int animId);
 
 	void exportTaeTemplateXML();
-	void mergeMcn();
 
 	WindowFlags m_windowFlags;
 	TaskFlags m_taskFlags;

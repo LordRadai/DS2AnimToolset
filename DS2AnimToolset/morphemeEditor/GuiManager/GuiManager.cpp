@@ -789,7 +789,6 @@ void GuiManager::rootWindow()
 			if (ImGui::MenuItem("Export Animations")) { editorApp->getTaskFlags()->exportAnimations = true; }
 			if (ImGui::MenuItem("Export Network")) { editorApp->getTaskFlags()->exportNetwork = true; }
 			if (ImGui::MenuItem("Export TimeAct")) { editorApp->getTaskFlags()->exportTae = true; }
-			if (ImGui::MenuItem("Export MCN")) { editorApp->getTaskFlags()->exportMcn = true; }
 
 			ImGui::EndDisabled();
 

@@ -1,6 +1,5 @@
 #include "MCN.h"
 #include "MCNUtils.h"
-#include "extern.h"
 #include "RCore.h"
 
 namespace MCN
@@ -464,7 +463,8 @@ namespace MCN
 		if (requests == nullptr)
 			requests = MCNUtils::createNodeContainerElement(requestNode, "RequestArray");
 
-		MCNUtils::createNodeElement(requests, "Request", request->getName());
+		if (requests->FirstChildElement(request->getName()) == nullptr)
+			MCNUtils::createNodeElement(requests, "Request", request->getName());
 	}
 
 	void Network::addControlParameter(ME::NodeExportXML* cp)
@@ -475,9 +475,12 @@ namespace MCN
 		if (cpArray == nullptr)
 			cpArray = MCNUtils::createNodeContainerElement(cpNode, "ControlParameterArray");
 
-		ControlParameter* controlParam = ControlParameter::create(this, cp);
+		if (cpArray->FirstChildElement(getControlParamName(cp).c_str()) == nullptr)
+		{
+			ControlParameter* controlParam = ControlParameter::create(this, cp);
 
-		this->m_controlParameters.push_back(controlParam);
+			this->m_controlParameters.push_back(controlParam);
+		}
 	}
 
 	void Network::createRootBlendTree()
@@ -594,6 +597,7 @@ namespace MCN
 			tinyxml2::XMLDocument* doc = new tinyxml2::XMLDocument;
 			doc->LoadFile(filename.c_str());
 
+			mcn->m_fileName = filename;
 			mcn->m_xmlDoc = doc;
 			mcn->m_xmlElement = doc->FirstChildElement("NaturalMotion");
 
@@ -604,7 +608,7 @@ namespace MCN
 		}
 		catch (const std::exception& e)
 		{
-			g_appLog->alertMessage(MsgLevel_Error, "Invalid mcn file %s", filename.c_str());
+			//g_appLog->alertMessage(MsgLevel_Error, "Invalid mcn file %s", filename.c_str());
 			return nullptr;
 		}
 

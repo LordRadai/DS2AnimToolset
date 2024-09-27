@@ -1,7 +1,15 @@
 #pragma once
 #include <vector>
 #include "RCore.h"
-#include "../MorphemeDecompiler/MorphemeDecompiler.h"
+#include "export/include/export/mcExportXML.h"
+#include "export/include/export/mcExportMessagePresetsXml.h"
+#include "morpheme/mrEventTrackDuration.h"
+#include "morpheme/mrEventTrackDiscrete.h"
+#include "morpheme/mrNodeDef.h"
+#include "morpheme/mrAttribData.h"
+#include "morpheme/AnimSource/mrAnimSource.h"
+#include "simpleBundle/simpleAnimRuntimeIDtoFilenameLookup.h"
+#include "export/include/export/mcExportControllerXml.h"
 
 namespace MCN
 {

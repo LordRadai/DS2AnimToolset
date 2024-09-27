@@ -215,8 +215,6 @@
     <ClInclude Include="MorphemeSystem\AnimLoader\AnimLoader.h" />
     <ClInclude Include="MorphemeSystem\AssetLoader\AssetLoader.h" />
     <ClInclude Include="MorphemeSystem\CharacterController\CharacterController.h" />
-    <ClInclude Include="MorphemeSystem\MCN\MCN.h" />
-    <ClInclude Include="MorphemeSystem\MCN\MCNUtils.h" />
     <ClInclude Include="MorphemeSystem\MorphemeCharacterDef\MorphemeCharacterDef.h" />
     <ClInclude Include="MorphemeSystem\MorphemeCharacter\MorphemeCharacter.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\MorphemeDecompiler.h" />
@@ -293,8 +291,6 @@
     <ClCompile Include="MorphemeSystem\AnimLoader\AnimLoader.cpp" />
     <ClCompile Include="MorphemeSystem\AssetLoader\AssetLoader.cpp" />
     <ClCompile Include="MorphemeSystem\CharacterController\CharacterController.cpp" />
-    <ClCompile Include="MorphemeSystem\MCN\MCN.cpp" />
-    <ClCompile Include="MorphemeSystem\MCN\MCNUtils.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeCharacterDef\MorphemeCharacterDef.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeCharacter\MorphemeCharacter.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\MorphemeDecompiler.cpp" />

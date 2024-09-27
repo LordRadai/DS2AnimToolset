@@ -259,6 +259,9 @@ namespace MD
 		for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
 			exportNode(netDefExport, netDef, i);
 
+		//for (size_t i = 0; i < netDefExport->getNumNodes(); i++)
+			//Node::setNodeName((ME::NodeExportXML*)netDefExport->getNode(i));
+
 		const NMP::IDMappedStringTable* messageTable = netDef->getMessageIDNamesTable();
 
 		for (size_t i = 0; i < netDef->getNumMessages(); i++)
