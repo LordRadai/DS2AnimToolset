@@ -67,6 +67,7 @@ int main(int argc, char* argv[])
 
 		//Once we built the DB, set all the default states
 		mcn->setStateMachinesDefaultStates();
+		mcn->setTransitions();
 	}
 	catch (const std::exception& e)
 	{

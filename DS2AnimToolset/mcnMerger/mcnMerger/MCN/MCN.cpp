@@ -9,7 +9,7 @@ namespace MCN
 	{
 		Node* node = new Node;
 		node->m_owner = owner;
-		node->m_xmlElement = owner->m_xmlElement->FirstChildElement("GraphEntry")->InsertNewChildElement("");
+		node->m_xmlElement = owner->m_xmlElement->FirstChildElement("GraphEntry");
 
 		return node;
 	}
@@ -207,7 +207,7 @@ namespace MCN
 		MCNUtils::createNodeContainerElement(animSet->m_xmlElement, "Skins");
 		tinyxml2::XMLElement* skin = animSet->addSkin(name, skinPath);
 
-		MCNUtils::craetePointerElement(animSet->m_xmlElement, "AssetManagerSkin", skin);
+		MCNUtils::createPointerElement(animSet->m_xmlElement, "AssetManagerSkin", skin);
 		MCNUtils::createStringElement(animSet->m_xmlElement, "Format", "nsa");
 		animSet->setRigChannels(rig);
 
@@ -345,10 +345,6 @@ namespace MCN
 		net->m_owner = owner;
 		net->m_xmlElement = MCNUtils::createNodeElement(owner->m_xmlElement, "Network", "Network");
 
-		tinyxml2::XMLElement* graphEntry = MCNUtils::createNodeContainerElement(net->m_xmlElement, "GraphEntry");
-
-		net->createRootBlendTree();
-
 		tinyxml2::XMLElement* animLocs = MCNUtils::createNodeContainerElement(net->m_xmlElement, "AnimationLocations");
 		tinyxml2::XMLElement* scripts = MCNUtils::createNodeContainerElement(net->m_xmlElement, "PreviewScripts");
 
@@ -436,7 +432,7 @@ namespace MCN
 			startPoints = startPointNode->InsertNewChildElement("CharacterStartPointsArray");
 
 		tinyxml2::XMLElement* linkNode = MCNUtils::createNodeElement(startPoints, "CharacterStartPointLinkNode", "StartPoint");
-		MCNUtils::craetePointerElement(linkNode, "AnimationSet", targetAnimSet);
+		MCNUtils::createPointerElement(linkNode, "AnimationSet", targetAnimSet);
 	}
 
 	void Network::addRequest(ME::MessageExportXML* request)
@@ -497,18 +493,76 @@ namespace MCN
 		}
 	}
 
-	void Network::writeBlendTreeOutputNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent)
+	int getManifestVersion(int nodeType)
 	{
-		g_appLog->debugMessage(MsgLevel_Info, "Adding node %s to %s as BlendTree output\n", nodeMap->getName().c_str(), MCNUtils::getMorphemeDBPointer(parent).c_str());
+		switch (nodeType)
+		{
+		case NODE_TYPE_STATE_MACHINE:
+			return 1;
+		case NODE_TYPE_HEAD_LOOK:
+			return 6;
+		case NODE_TYPE_ANIM_EVENTS:
+			return 9;
+		case NODE_TYPE_BLEND_N:
+			return 10;
+		default:
+			return 0;
+		}
+	}
 
-		//TODO: Implement
+	tinyxml2::XMLElement* createBlendTreeNodeEntry(tinyxml2::XMLElement* where, const char* name, const char* nodeType, float x, float y, float width, float height)
+	{
+		tinyxml2::XMLElement* node = MCNUtils::createNodeElement(where->FirstChildElement("BlendTreeNodes"), "BlendTreeNode", name);
+
+		tinyxml2::XMLElement* pins = MCNUtils::createNodeContainerElement(node, "Pins");
+		RXML::createFloatElement(node, "XPosition", x);
+		RXML::createFloatElement(node, "YPosition", y);
+		RXML::createFloatElement(node, "Width", x);
+		RXML::createFloatElement(node, "Height", y);
+		MCNUtils::createStringElement(node, "NodeType", nodeType);
+
+		return node;
+	}
+
+	tinyxml2::XMLElement* createStateMachineNodeEntry(tinyxml2::XMLElement* where, const char* name, const char* nodeType, float x, float y, float width, float height)
+	{
+		tinyxml2::XMLElement* node = MCNUtils::createNodeElement(where->FirstChildElement("StateMachineNodes"), "StateMachineNode", name);
+
+		MCNUtils::createNodeContainerElement(node, "Pins");
+		RXML::createFloatElement(node, "XPosition", x);
+		RXML::createFloatElement(node, "YPosition", y);
+		RXML::createFloatElement(node, "Width", x);
+		RXML::createFloatElement(node, "Height", y);
+		MCNUtils::createStringElement(node, "NodeType", nodeType);
+
+		return node;
+	}
+
+	void Network::writeActiveStateNode(tinyxml2::XMLElement* parent)
+	{
+		g_appLog->debugMessage(MsgLevel_Info, "Adding node ActiveState to %s\n", MCNUtils::getMorphemeDBPointer(parent).c_str());
+
+		tinyxml2::XMLElement* attributes = MCNUtils::createNodeContainerElement(parent, "Attributes");
+
+		tinyxml2::XMLElement* allStates = MCNUtils::createNodeElement(attributes, "BoolAttribute", "AllStates");
+		MCNUtils::createBoolElement(allStates, "Value", true);
+		MCNUtils::createNodeElement(attributes, "RefArrayAttribute", "States");
+
+		RXML::createIntElement(parent, "ManifestVersion", 1);
 	}
 
 	void Network::writeNonContainerNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent)
 	{
 		g_appLog->debugMessage(MsgLevel_Info, "Adding node %s to %s\n", nodeMap->getName().c_str(), MCNUtils::getMorphemeDBPointer(parent).c_str());
 
-		//TODO: Implement
+		tinyxml2::XMLElement* attributes = MCNUtils::createNodeContainerElement(parent, "Attributes");
+
+		RXML::createIntElement(parent, "ManifestVersion", getManifestVersion(nodeMap->getSourceNode()->getTypeID()));
+
+		//TODO: Finish
+
+		if (nodeMap->getDbEntry() == nullptr)
+			nodeMap->setDbEntry(attributes);
 	}
 
 	void Network::writeStateMachineNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent)
@@ -523,6 +577,9 @@ namespace MCN
 		RXML::createIntElement(nodeEntry, "ManifestVersion", 1);
 		MCNUtils::createNodeContainerElement(nodeEntry, "StateMachineNodes");
 		MCNUtils::createNodeContainerElement(nodeEntry, "TransitionEdges");
+
+		if (nodeMap->getSourceNode()->getNumCommonConditionSets())
+			writeActiveStateNode(createStateMachineNodeEntry(nodeEntry, "ActiveState", "ActiveState", 0, 0, 241, 28));
 
 		nodeMap->setDbEntry(nodeEntry);
 	}
@@ -555,21 +612,44 @@ namespace MCN
 	{
 		g_appLog->debugMessage(MsgLevel_Info, "Adding node %s to %s\n", nodeMap->getName().c_str(), MCNUtils::getMorphemeDBPointer(parent).c_str());
 
-		//TODO: Implement
-	}
+		int sourceNodeID = -1;
+		nodeMap->getSourceNode()->getDataBlock()->readNetworkNodeId(sourceNodeID, "SourceNodeID");
 
-	tinyxml2::XMLElement* createBlendTreeNodeEntry(tinyxml2::XMLElement* where, const char* name, float x, float y)
-	{
-		tinyxml2::XMLElement* node = MCNUtils::createNodeElement(where->FirstChildElement("BlendTreeNodes"), "BlendTreeNode", name);
+		int dstNodeID = -1;
+		nodeMap->getSourceNode()->getDataBlock()->readNetworkNodeId(dstNodeID, "DestNodeID");
 
-		return node;
-	}
+		NodeMap* dstNodeMap = this->getNodeMap(dstNodeID);
+		NodeMap* srcNodeMap = nullptr;
 
-	tinyxml2::XMLElement* createStateMachineNodeEntry(tinyxml2::XMLElement* where, const char* name, float x, float y)
-	{
-		tinyxml2::XMLElement* node = MCNUtils::createNodeElement(where->FirstChildElement("StateMachineNodes"), "StateMachineNode", name);
+		std::string dstName = dstNodeMap->getName();
+		std::string srcName = "ActiveState";
 
-		return node;
+		NodeMap* parentNodeMap = this->getNodeMap(nodeMap->getParentNodeID());
+
+		tinyxml2::XMLElement* srcPtr = static_cast<tinyxml2::XMLElement*>(parent->Parent()->FirstChildElement("StateMachineNodes")->FirstChildElement());
+		tinyxml2::XMLElement* dstPtr = static_cast<tinyxml2::XMLElement*>(dstNodeMap->getDbEntry()->Parent()->Parent());
+
+		if (sourceNodeID != -1)
+		{
+			srcNodeMap = this->getNodeMap(sourceNodeID);
+			srcPtr = static_cast<tinyxml2::XMLElement*>(srcNodeMap->getDbEntry()->Parent()->Parent());
+
+			srcName = srcNodeMap->getName();
+		}
+
+		char transitName[256];
+		sprintf_s(transitName, "%s_%s", srcName.c_str(), dstName.c_str());
+
+		tinyxml2::XMLElement* transitionEdge = MCNUtils::createNodeElement(parent, "TransitionEdge", transitName);
+
+		tinyxml2::XMLElement* conditions = MCNUtils::createNodeContainerElement(transitionEdge, "Conditions");
+		tinyxml2::XMLElement* attributes = MCNUtils::createNodeContainerElement(transitionEdge, "Attributes");
+		MCNUtils::createPointerElement(transitionEdge, "From", srcPtr);
+		MCNUtils::createPointerElement(transitionEdge, "To", dstPtr);
+		MCNUtils::createStringElement(transitionEdge, "EdgeType", "Transit");
+		RXML::createIntElement(transitionEdge, "ManifestVersion", 4);
+
+		//TODO: Finish
 	}
 
 	void Network::writeNode(NodeMap* nodeMap, NodeMap* parentNodeMap, ME::AnimationLibraryXML* animLibrary)
@@ -581,10 +661,10 @@ namespace MCN
 			switch (parentNodeMap->getNodeCategory())
 			{
 			case MCN::kBlendTree:
-				whereToAdd = createBlendTreeNodeEntry(whereToAdd, nodeMap->getName().c_str(), 0, 0);
+				whereToAdd = createBlendTreeNodeEntry(whereToAdd, nodeMap->getName().c_str(), getNodeEntryTypeName(nodeMap), 0, 0, 217.f, 69.f);
 				break;
 			case MCN::kStateMachine:
-				whereToAdd = createStateMachineNodeEntry(whereToAdd, nodeMap->getName().c_str(), 0, 0);
+				whereToAdd = createStateMachineNodeEntry(whereToAdd, nodeMap->getName().c_str(), getNodeEntryTypeName(nodeMap), 0, 0, 217.f, 69.f);
 				break;
 			default:
 				break;
@@ -602,13 +682,10 @@ namespace MCN
 		case MCN::kBlendTree:
 			writeBlendTreeNode(nodeMap, MCNUtils::createNodeContainerElement(whereToAdd, "GraphEntry"));
 
-			createBlendTreeNodeEntry(nodeMap->getDbEntry(), MCNUtils::getNodeName(nodeMap->getSourceNode(), animLibrary).c_str(), 0, 0);
+			writeNonContainerNode(nodeMap, createBlendTreeNodeEntry(nodeMap->getDbEntry(), MCNUtils::getNodeName(nodeMap->getSourceNode(), animLibrary).c_str(), MCNUtils::getNodeTypeName(nodeMap->getSourceNode()).c_str(), 0, 0, 217.f, 69.f));
 			break;
 		case MCN::kStateMachine:
 			writeStateMachineNode(nodeMap, MCNUtils::createNodeContainerElement(whereToAdd, "GraphEntry"));
-			break;
-		case MCN::kTransition:
-			writeTransitionNode(nodeMap, whereToAdd->FirstChildElement("TransitionEdges"));
 			break;
 		default:
 			break;
@@ -646,7 +723,25 @@ namespace MCN
 			{
 				int defaultStateId = 0;
 				nodeMap->getSourceNode()->getDataBlock()->readNetworkNodeId(defaultStateId, "DefaultNodeID");
-				MCNUtils::craetePointerElement(nodeMap->getDbEntry(), "DefaultState", (tinyxml2::XMLElement*)this->getNodeMap(defaultStateId)->getDbEntry()->Parent()->Parent());
+				MCNUtils::createPointerElement(nodeMap->getDbEntry(), "DefaultState", (tinyxml2::XMLElement*)this->getNodeMap(defaultStateId)->getDbEntry()->Parent()->Parent());
+			}
+		}
+	}
+
+	void Network::setTransitions()
+	{
+		for (size_t i = 0; i < this->m_nodesMap.size(); i++)
+		{
+			NodeMap* nodeMap = this->m_nodesMap[i];
+			NodeMap* parentNodeMap = this->getNodeMap(nodeMap->getParentNodeID());
+
+			switch (nodeMap->getNodeCategory())
+			{
+			case MCN::kTransition:
+				writeTransitionNode(nodeMap, parentNodeMap->getDbEntry()->FirstChildElement("TransitionEdges"));
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -702,6 +797,19 @@ namespace MCN
 				else if (nodeCategory == kTransition)
 				{
 					char name[256];
+
+					int sourceNodeID = -1;
+					node->getDataBlock()->readNetworkNodeId(sourceNodeID, "SourceNodeID");
+
+					int dstNodeID = -1;
+					node->getDataBlock()->readNetworkNodeId(dstNodeID, "DestNodeID");
+
+					std::string dstName = MCNUtils::getNodeName((ME::NodeExportXML*)netDef->getNode(dstNodeID), animLibrary);
+					std::string srcName = "ActiveState";
+
+					if (sourceNodeID != -1)
+						srcName = MCNUtils::getNodeName((ME::NodeExportXML*)netDef->getNode(sourceNodeID), animLibrary);
+
 					sprintf_s(name, "Transit_%d", node->getNodeID());
 
 					nodeName = name;
@@ -728,17 +836,6 @@ namespace MCN
 		}
 
 		return nullptr;
-	}
-
-	void Network::createRootBlendTree()
-	{
-		tinyxml2::XMLElement* graphEntry = this->m_xmlElement->FirstChildElement("GraphEntry");
-
-		tinyxml2::XMLElement* rootBt = MCNUtils::createBlendTree(graphEntry, "RootBlendTree");
-		RXML::createFloatElement(rootBt, "ControlParamWidth", 155.f);
-		RXML::createFloatElement(rootBt, "ControlParamHeight", 32.5f);
-		RXML::createFloatElement(rootBt, "OutputPinWidth", 121.f);
-		RXML::createFloatElement(rootBt, "OutputPinHeight", 45.f);
 	}
 
 	void Network::createAnimLibraryRef(ME::AnimationLibraryXML* animLibrary)
@@ -914,6 +1011,11 @@ namespace MCN
 	void MCNFile::setStateMachinesDefaultStates()
 	{
 		this->m_morphemeDB->m_networks->m_network[0]->setStateMachinesDefaultStates();
+	}
+
+	void MCNFile::setTransitions()
+	{
+		this->m_morphemeDB->m_networks->m_network[0]->setTransitions();
 	}
 
 	NodeMap* MCNFile::getNodeMap(int nodeId)

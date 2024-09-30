@@ -88,7 +88,7 @@ namespace MCNUtils
 		case NODE_TYPE_ANIMATION:
 			return "Animation";
 		case NODE_TYPE_ANIM_EVENTS:
-			return "AnimSyncEvents";
+			return "AnimWithEvents";
 		case NODE_TYPE_FILTER_TRANSFORMS:
 			return "FilterTransforms";
 		case NODE_TYPE_BLEND_2:
@@ -385,7 +385,7 @@ namespace MCNUtils
 		return element;
 	}
 
-	tinyxml2::XMLElement* craetePointerElement(tinyxml2::XMLElement* parent, const char* name, tinyxml2::XMLElement* ptrTo)
+	tinyxml2::XMLElement* createPointerElement(tinyxml2::XMLElement* parent, const char* name, tinyxml2::XMLElement* ptrTo)
 	{
 		tinyxml2::XMLElement* element = parent->InsertNewChildElement(name);
 		element->SetAttribute("type", "pointer");

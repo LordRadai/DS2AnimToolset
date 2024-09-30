@@ -10,6 +10,7 @@ namespace MCNUtils
 	std::string getNodeNameWithoutParent(ME::NodeExportXML* node);
 	bool isNodeBlendTree(ME::NodeExportXML* nodeXml);
 	bool isNodeControlParam(ME::NodeExportXML* nodeDef);
+	std::string getNodeTypeName(ME::NodeExportXML* node);
 	std::string getNodeName(ME::NodeExportXML* node, ME::AnimationLibraryXML* animLibrary);
 
 	tinyxml2::XMLElement* createBoolElement(tinyxml2::XMLElement* parent, const char* name, bool value);
@@ -22,7 +23,7 @@ namespace MCNUtils
 	tinyxml2::XMLElement* createBlendTree(tinyxml2::XMLElement* parent, const char* name);
 	tinyxml2::XMLElement* createNodeElement(tinyxml2::XMLElement* parent, const char* name, const char* nodeName);
 	tinyxml2::XMLElement* createNodeContainerElement(tinyxml2::XMLElement* parent, const char* name);
-	tinyxml2::XMLElement* craetePointerElement(tinyxml2::XMLElement* parent, const char* name, tinyxml2::XMLElement* ptrTo);
+	tinyxml2::XMLElement* createPointerElement(tinyxml2::XMLElement* parent, const char* name, tinyxml2::XMLElement* ptrTo);
 
 	std::string getMorphemeDBPointer(tinyxml2::XMLElement* element);
 }
