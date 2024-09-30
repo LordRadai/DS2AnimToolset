@@ -99,7 +99,7 @@ namespace MD
 			writeStateMachineChildStates(nodeDef, nodeDataBlock);
 
 			int defaultStateID = stateMachineDef->getStateDef(stateMachineDef->getDefaultStartingStateID())->getNodeID();
-			nodeDataBlock->writeUInt(defaultStateID, "DefaultNodeID");
+			nodeDataBlock->writeNetworkNodeId(defaultStateID, "DefaultNodeID");
 
 			writeActiveStateTransitions(stateMachineDef, nodeExportXML);
 

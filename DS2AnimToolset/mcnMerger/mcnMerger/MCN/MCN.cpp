@@ -1,6 +1,7 @@
 #include "MCN.h"
 #include "MCNUtils.h"
 #include "RCore.h"
+#include "extern.h"
 
 namespace MCN
 {
@@ -466,19 +467,219 @@ namespace MCN
 		}
 	}
 
-	void Network::addNode(ME::NodeExportXML* node)
+	NodeMap* Network::getParentNodeContainer(int nodeID)
 	{
+		int parentNodeID = this->getNodeMap(nodeID)->getParentBTNodeID();
+
+		if (parentNodeID == -1)
+			parentNodeID = this->getNodeMap(nodeID)->getParentSMNodeID();
+
+		while (parentNodeID != -1)
+		{
+			NodeMap* nodeMap = this->getBTNodeMap(parentNodeID);
+
+			if (nodeMap == nullptr)
+				nodeMap = this->getNodeMap(parentNodeID);
+
+			if ((nodeMap->getNodeCategory() == kNetwork) || (nodeMap->getNodeCategory() == kBlendTree) || (nodeMap->getNodeCategory() == kStateMachine))
+				return nodeMap;
+
+			parentNodeID = nodeMap->getParentBTNodeID();
+
+			if (parentNodeID == -1)
+				parentNodeID = nodeMap->getParentSMNodeID();
+		}
+
+		return nullptr;
+	}
+
+	const char* getNodeEntryTypeName(NodeMap* nodeMap)
+	{
+		switch (nodeMap->getNodeCategory())
+		{
+		case kBlendTree:
+			return "BlendTree";
+		case kStateMachine:
+			return "StateMachine";
+		default:
+			return "";
+		}
+	}
+
+	void Network::writeNonContainerNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent)
+	{
+		g_appLog->debugMessage(MsgLevel_Info, "Adding node %s to %s\n", nodeMap->getName().c_str(), MCNUtils::getMorphemeDBPointer(parent).c_str());
+
+		//TODO: Implement
+	}
+
+	void Network::writeStateMachineNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent)
+	{
+		g_appLog->debugMessage(MsgLevel_Info, "Adding node %s to %s\n", nodeMap->getName().c_str(), MCNUtils::getMorphemeDBPointer(parent).c_str());
+
+		tinyxml2::XMLElement* nodeEntry = MCNUtils::createNodeElement(parent, "StateMachine", "StateMachine");
+
+		RXML::createFloatElement(nodeEntry, "PanX", 441);
+		RXML::createFloatElement(nodeEntry, "PanY", 174);
+		MCNUtils::createStringElement(nodeEntry, "NodeType", "StateMachine");
+		RXML::createIntElement(nodeEntry, "ManifestVersion", 1);
+		MCNUtils::createNodeContainerElement(nodeEntry, "StateMachineNodes");
+		MCNUtils::createNodeContainerElement(nodeEntry, "TransitionEdges");
+
+		nodeMap->setDbEntry(nodeEntry);
+	}
+
+	void Network::writeBlendTreeNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent)
+	{
+		g_appLog->debugMessage(MsgLevel_Info, "Adding node %s to %s\n", nodeMap->getName().c_str(), MCNUtils::getMorphemeDBPointer(parent).c_str());
+
+		//TODO: Implement
+		tinyxml2::XMLElement* nodeEntry = MCNUtils::createNodeElement(parent, "BlendTree", "BlendTree");
+
+		MCNUtils::createNodeContainerElement(nodeEntry, "FlowEdges");
+		RXML::createFloatElement(nodeEntry, "ZoomFactor", 1.f);
+		RXML::createFloatElement(nodeEntry, "PanX", 513.f);
+		RXML::createFloatElement(nodeEntry, "PanY", 77.f);
+		MCNUtils::createNodeContainerElement(nodeEntry, "BlendTreeNodes");
+		RXML::createFloatElement(nodeEntry, "ControlParamXPosition", -420.f);
+		RXML::createFloatElement(nodeEntry, "ControlParamYPosition", 380.f);
+		RXML::createFloatElement(nodeEntry, "ControlParamWidth", 155.f);
+		RXML::createFloatElement(nodeEntry, "ControlParamHeight", 134.f);
+		RXML::createFloatElement(nodeEntry, "OutputPinXPosition", 450.f);
+		RXML::createFloatElement(nodeEntry, "OutputPinYPosition", 270.f);
+		RXML::createFloatElement(nodeEntry, "OutputPinWidth", 62.f);
+		RXML::createFloatElement(nodeEntry, "OutputPinHeight", 45.f);
+
+		nodeMap->setDbEntry(nodeEntry);
+	}
+
+	void Network::writeTransitionNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent)
+	{
+		g_appLog->debugMessage(MsgLevel_Info, "Adding node %s to %s\n", nodeMap->getName().c_str(), MCNUtils::getMorphemeDBPointer(parent).c_str());
+
+		//TODO: Implement
+	}
+
+	void Network::setNodeMapParentBTs()
+	{
+
+	}
+
+	int Network::getNumBTNodes()
+	{
+		int count = 0;
+
+		for (size_t i = 0; i < this->m_nodesMap.size(); i++)
+		{
+			if (this->m_nodesMap[i]->getNodeCategory() == kBlendTree)
+				count++;
+		}
+
+		return count;
+	}
+
+	tinyxml2::XMLElement* createBlendTreeNodeEntry(tinyxml2::XMLElement* where, const char* name, float x, float y)
+	{
+		tinyxml2::XMLElement* node = MCNUtils::createNodeContainerElement(MCNUtils::createNodeElement(where->FirstChildElement("BlendTreeNodes"), "BlendTreeNode", name), "GraphEntry");
+
+		return node;
+	}
+
+	tinyxml2::XMLElement* createStateMachineNodeEntry(tinyxml2::XMLElement* where, const char* name, float x, float y)
+	{
+		tinyxml2::XMLElement* node = MCNUtils::createNodeContainerElement(MCNUtils::createNodeElement(where->FirstChildElement("StateMachineNodes"), "StateMachineNode", name), "GraphEntry");
+
+		return node;
+	}
+
+	void Network::writeNode(NodeMap* nodeMap, NodeMap* parentNodeMap)
+	{
+		tinyxml2::XMLElement* whereToAdd = parentNodeMap->getDbEntry();
+
+		if (nodeMap->getNodeCategory() != kTransition)
+		{
+			switch (parentNodeMap->getNodeCategory())
+			{
+			case MCN::kBlendTree:
+				whereToAdd = createBlendTreeNodeEntry(whereToAdd, nodeMap->getName().c_str(), 0, 0);
+				break;
+			case MCN::kStateMachine:
+				whereToAdd = createStateMachineNodeEntry(whereToAdd, nodeMap->getName().c_str(), 0, 0);
+				break;
+			default:
+				break;
+			}
+		}
+
+		switch (nodeMap->getNodeCategory())
+		{
+		case MCN::kNode:
+			writeNonContainerNode(nodeMap, whereToAdd);
+			break;
+		case MCN::kNetwork:
+			throw("A node of type Network should already be a part of the MorphemeDB");
+			break;
+		case MCN::kBlendTree:
+			writeBlendTreeNode(nodeMap, whereToAdd);
+			break;
+		case MCN::kStateMachine:
+			writeStateMachineNode(nodeMap, whereToAdd);
+			break;
+		case MCN::kTransition:
+			writeTransitionNode(nodeMap, whereToAdd->FirstChildElement("TransitionEdges"));
+			break;
+		default:
+			break;
+		}
+	}
+
+	void Network::addNode(int nodeID)
+	{
+		NodeMap* nodeMap = getNodeMap(nodeID);
+
+		if (nodeMap == nullptr || nodeMap->getDbEntry() != nullptr)
+			return;
+
+		NodeMap* parentNodeMap = getParentNodeContainer(nodeID);
+
+		if (parentNodeMap == nullptr)
+		{
+			throw("Invalid Network hierarchy. Node %d has no valid parent", nodeMap->getNodeID());
+			return;
+		}
+
+		if (parentNodeMap->getDbEntry() == nullptr)
+			addNode(parentNodeMap->getNodeID());
+
+		writeNode(nodeMap, parentNodeMap);
+	}
+
+	void Network::setStateMachinesDefaultStates()
+	{
+		for (size_t i = 0; i < this->m_nodesMap.size(); i++)
+		{
+			NodeMap* nodeMap = this->m_nodesMap[i];
+
+			if (nodeMap->getNodeCategory() == kStateMachine)
+			{
+				int defaultStateId = 0;
+				nodeMap->getSourceNode()->getDataBlock()->readNetworkNodeId(defaultStateId, "DefaultNodeID");
+				MCNUtils::craetePointerElement(nodeMap->getDbEntry(), "DefaultState", (tinyxml2::XMLElement*)this->getNodeMap(defaultStateId)->getDbEntry()->Parent()->Parent());
+			}
+		}
 	}
 
 	void Network::buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary)
 	{
+		this->m_xmlElement->FirstChildElement("GraphEntry")->DeleteChildren();
+
 		for (size_t i = 0; i < netDef->getNumNodes(); i++)
 		{
 			ME::NodeExportXML* node = static_cast<ME::NodeExportXML*>(netDef->getNode(i));
 			int nodeType = node->getTypeID();
 
 			//If the node is a control parameter then do nothing
-			if ((nodeType < NODE_TYPE_ANIMATION) && (nodeType != NODE_TYPE_STATE_MACHINE))
+			if ((nodeType < NODE_TYPE_ANIMATION) && (nodeType != NODE_TYPE_STATE_MACHINE) && (nodeType != NODE_TYPE_NETWORK))
 				continue;
 
 			bool isBlendTree = MCNUtils::isNodeBlendTree(node);
@@ -487,39 +688,76 @@ namespace MCN
 
 			if (isBlendTree)
 				nodeCategory = kBlendTree;
+			else if (nodeType == NODE_TYPE_NETWORK)
+				nodeCategory = kNetwork;
 			else if (nodeType == NODE_TYPE_STATE_MACHINE)
 				nodeCategory = kStateMachine;
+			else if ((nodeType == NODE_TYPE_TRANSIT) || (nodeType == NODE_TYPE_TRANSIT_SYNC_EVENTS))
+				nodeCategory = kTransition;
 			else
 				nodeCategory = kNode;
 
 			std::string nodeName = node->getName();
+			int blendTreeID = this->getNumBTNodes();
 
 			if (nodeName == "")
 			{
-				if (nodeCategory == kNode)
+				if (nodeCategory == kNetwork)
 				{
-					nodeName = MCNUtils::getNodeName(node);
+					nodeName = "rootNetworkNode";
 
-					if (nodeType == NODE_TYPE_ANIM_EVENTS)
-						nodeName = MCNUtils::getAnimNodeName(node, animLibrary);
+					blendTreeID = -1;
 				}
-				else if (nodeCategory == kBlendTree)
-				{
-					char name[256];
-					sprintf_s(name, "BlendTree_%d", node->getNodeID());
-
-					nodeName = name;
-				}
-				else
+				else if (nodeCategory == kStateMachine)
 				{
 					char name[256];
 					sprintf_s(name, "StateMachine_%d", node->getNodeID());
 
 					nodeName = name;
+
+					blendTreeID = -1;
+				}
+				else if (nodeCategory == kBlendTree)
+				{
+					char name[256];
+					sprintf_s(name, "BlendTree_%d", blendTreeID);
+
+					nodeName = MCNUtils::getNodeName(node);
+
+					if (nodeType == NODE_TYPE_ANIM_EVENTS)
+						nodeName = MCNUtils::getAnimNodeName(node, animLibrary);
+
+					NodeMap* btNode = new NodeMap(node, blendTreeID, kBlendTree, -1, name);
+					this->m_nodesMap.push_back(btNode);
+
+					nodeCategory = kNode;
+				}
+				else if (nodeCategory == kTransition)
+				{
+					char name[256];
+					sprintf_s(name, "Transit_%d", node->getNodeID());
+
+					nodeName = name;
+
+					blendTreeID = -1;
+				}
+				else
+				{
+					nodeName = MCNUtils::getNodeName(node);
+
+					if (nodeType == NODE_TYPE_ANIM_EVENTS)
+						nodeName = MCNUtils::getAnimNodeName(node, animLibrary);
+
+					blendTreeID = -1;
 				}
 			}
 
-			this->m_nodesMap.push_back(new NodeMap(node, nodeCategory, nodeName));
+			NodeMap* nodeMap = new NodeMap(node, -1, nodeCategory, blendTreeID, nodeName);
+
+			if (nodeCategory == kNetwork)
+				nodeMap->setDbEntry(this->m_xmlElement->FirstChildElement("GraphEntry"));
+
+			this->m_nodesMap.push_back(nodeMap);
 		}
 	}
 
@@ -528,6 +766,17 @@ namespace MCN
 		for (size_t i = 0; i < this->m_nodesMap.size(); i++)
 		{
 			if (this->m_nodesMap[i]->getNodeID() == nodeID)
+				return this->m_nodesMap[i];
+		}
+
+		return nullptr;
+	}
+
+	NodeMap* Network::getBTNodeMap(int btID)
+	{
+		for (size_t i = 0; i < this->m_nodesMap.size(); i++)
+		{
+			if (this->m_nodesMap[i]->getBlendTreeID() == btID)
 				return this->m_nodesMap[i];
 		}
 
@@ -708,6 +957,16 @@ namespace MCN
 	void MCNFile::buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary)
 	{
 		this->m_morphemeDB->m_networks->m_network[0]->buildNodeMap(netDef, animLibrary);
+	}
+
+	void MCNFile::addNode(int nodeID)
+	{
+		this->m_morphemeDB->m_networks->m_network[0]->addNode(nodeID);
+	}
+
+	void MCNFile::setStateMachinesDefaultStates()
+	{
+		this->m_morphemeDB->m_networks->m_network[0]->setStateMachinesDefaultStates();
 	}
 
 	NodeMap* MCNFile::getNodeMap(int nodeId)

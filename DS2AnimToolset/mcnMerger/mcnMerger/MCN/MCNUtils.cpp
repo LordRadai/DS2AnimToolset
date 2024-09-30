@@ -37,7 +37,7 @@ namespace MCNUtils
 
 	bool isNodeBlendTree(ME::NodeExportXML* nodeXml)
 	{
-		if (nodeXml->getTypeID() == NODE_TYPE_STATE_MACHINE)
+		if ((nodeXml->getTypeID() == NODE_TYPE_STATE_MACHINE) || (nodeXml->getTypeID() == NODE_TYPE_NETWORK))
 			return false;
 
 		if (nodeXml->getNumCommonConditionSets() || nodeXml->getNumConditionSets())
@@ -394,10 +394,10 @@ namespace MCNUtils
 
 	std::string getElementName(tinyxml2::XMLElement* element)
 	{
-		if (strcmp(element->Attribute("type"), "nodeContainer") != 0)
-			return element->Attribute("name");
+		if (strcmp(element->Attribute("type"), "nodeContainer") == 0)
+			return element->Name();
 
-		return element->Name();
+		return element->Attribute("name");
 	}
 
 	std::string getMorphemeDBPointer(tinyxml2::XMLElement* element)

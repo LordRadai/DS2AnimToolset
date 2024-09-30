@@ -38,6 +38,9 @@
     <ClInclude Include="MCN\NodeMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="extern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

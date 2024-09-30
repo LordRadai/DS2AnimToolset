@@ -1,0 +1,216 @@
+[28-09-2024 12:08:08]	Adding entries from G:\GitHub\DS2AnimToolset\DS2AnimToolset\build\x64\Release\bin\Export\c7770\c7770.xml to C:\Users\marco\Documents\Morpheme\Projects\FRPG2_64\c7770\c7770.mcn
+[28-09-2024 12:08:08]	Adding ControlParameter node 1 (name=StartupType)
+[28-09-2024 12:08:08]	Adding ControlParameter node 2 (name=FB_Speed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 3 (name=FootLock_IK)
+[28-09-2024 12:08:08]	Adding ControlParameter node 4 (name=Banking)
+[28-09-2024 12:08:08]	Adding ControlParameter node 5 (name=Banking_Speed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 6 (name=FrontDirection)
+[28-09-2024 12:08:08]	Adding ControlParameter node 7 (name=PlaySpeed_0)
+[28-09-2024 12:08:08]	Adding ControlParameter node 8 (name=PlaySpeed_01)
+[28-09-2024 12:08:08]	Adding ControlParameter node 9 (name=PlaySpeed_05)
+[28-09-2024 12:08:08]	Adding ControlParameter node 10 (name=PlaySpeed_1)
+[28-09-2024 12:08:08]	Adding ControlParameter node 11 (name=PlaySpeed_1_5)
+[28-09-2024 12:08:08]	Adding ControlParameter node 12 (name=PlaySpeed_2)
+[28-09-2024 12:08:08]	Adding ControlParameter node 13 (name=PlaySpeed_3)
+[28-09-2024 12:08:08]	Adding ControlParameter node 14 (name=PlaySpeed_5)
+[28-09-2024 12:08:08]	Adding ControlParameter node 15 (name=WeaponCategory_Ene)
+[28-09-2024 12:08:08]	Adding ControlParameter node 16 (name=AttackCategory_Ene)
+[28-09-2024 12:08:08]	Adding ControlParameter node 17 (name=IsBladeDash)
+[28-09-2024 12:08:08]	Adding ControlParameter node 18 (name=Combo1_Route)
+[28-09-2024 12:08:08]	Adding ControlParameter node 19 (name=Combo2_Route)
+[28-09-2024 12:08:08]	Adding ControlParameter node 20 (name=Combo3_Route)
+[28-09-2024 12:08:08]	Adding ControlParameter node 21 (name=Shot1_Route)
+[28-09-2024 12:08:08]	Adding ControlParameter node 22 (name=Shot2_Route)
+[28-09-2024 12:08:08]	Adding ControlParameter node 23 (name=Shot3_Route)
+[28-09-2024 12:08:08]	Adding ControlParameter node 24 (name=Attack_SwingSpeed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 25 (name=Attack_SwingSpeed2)
+[28-09-2024 12:08:08]	Adding ControlParameter node 26 (name=Attack_SwingSpeed3)
+[28-09-2024 12:08:08]	Adding ControlParameter node 27 (name=Attack_SwingSpeed4)
+[28-09-2024 12:08:08]	Adding ControlParameter node 28 (name=LookAtTarget)
+[28-09-2024 12:08:08]	Adding ControlParameter node 29 (name=LookAtWeight)
+[28-09-2024 12:08:08]	Adding ControlParameter node 30 (name=IsSideWalk)
+[28-09-2024 12:08:08]	Adding ControlParameter node 31 (name=SideWalkRotation)
+[28-09-2024 12:08:08]	Adding ControlParameter node 32 (name=BlendWeight_SideWalk)
+[28-09-2024 12:08:08]	Adding ControlParameter node 33 (name=HipPosotion)
+[28-09-2024 12:08:08]	Adding ControlParameter node 34 (name=HipRotation)
+[28-09-2024 12:08:08]	Adding ControlParameter node 35 (name=FootTurnWeight)
+[28-09-2024 12:08:08]	Adding ControlParameter node 36 (name=Attack_BankingSpeed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 37 (name=Attack_Banking)
+[28-09-2024 12:08:08]	Adding ControlParameter node 38 (name=PlaySpeed_10)
+[28-09-2024 12:08:08]	Adding ControlParameter node 39 (name=BlendWeight_1)
+[28-09-2024 12:08:08]	Adding ControlParameter node 40 (name=BlendWeight_minus1)
+[28-09-2024 12:08:08]	Adding ControlParameter node 41 (name=AdditiveBlend_1)
+[28-09-2024 12:08:08]	Adding ControlParameter node 42 (name=DodgeDirection)
+[28-09-2024 12:08:08]	Adding ControlParameter node 43 (name=DodgeDistance)
+[28-09-2024 12:08:08]	Adding ControlParameter node 44 (name=StepDirection)
+[28-09-2024 12:08:08]	Adding ControlParameter node 45 (name=StepDistance)
+[28-09-2024 12:08:08]	Adding ControlParameter node 46 (name=L_WepBreak)
+[28-09-2024 12:08:08]	Adding ControlParameter node 47 (name=R_WepBreak)
+[28-09-2024 12:08:08]	Adding ControlParameter node 48 (name=GuardStance)
+[28-09-2024 12:08:08]	Adding ControlParameter node 49 (name=IsFall)
+[28-09-2024 12:08:08]	Adding ControlParameter node 50 (name=DmgDirection)
+[28-09-2024 12:08:08]	Adding ControlParameter node 51 (name=DmgDuration)
+[28-09-2024 12:08:08]	Adding ControlParameter node 52 (name=DmgDownOrUp)
+[28-09-2024 12:08:08]	Adding ControlParameter node 53 (name=DmgSlashOrThrust)
+[28-09-2024 12:08:08]	Adding ControlParameter node 54 (name=DmgDistance)
+[28-09-2024 12:08:08]	Adding ControlParameter node 55 (name=MoveCategory)
+[28-09-2024 12:08:08]	Adding ControlParameter node 56 (name=IsFloating)
+[28-09-2024 12:08:08]	Adding ControlParameter node 57 (name=DmgBankingSpeed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 58 (name=LandingRate)
+[28-09-2024 12:08:08]	Adding ControlParameter node 59 (name=DmgCategory)
+[28-09-2024 12:08:08]	Adding ControlParameter node 60 (name=IsLockOn)
+[28-09-2024 12:08:08]	Adding ControlParameter node 61 (name=Floating_FB_Speed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 62 (name=Floating_Banking)
+[28-09-2024 12:08:08]	Adding ControlParameter node 63 (name=Floating_UD_Speed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 64 (name=IsDown)
+[28-09-2024 12:08:08]	Adding ControlParameter node 65 (name=LadderStartType)
+[28-09-2024 12:08:08]	Adding ControlParameter node 66 (name=IsSubAction)
+[28-09-2024 12:08:08]	Adding ControlParameter node 67 (name=LadderMove)
+[28-09-2024 12:08:08]	Adding ControlParameter node 68 (name=LadderDash)
+[28-09-2024 12:08:08]	Adding ControlParameter node 69 (name=LadderMoveUpSpeed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 70 (name=LadderMoveDownSpeed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 71 (name=LadderDashSpeed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 72 (name=LadderFallSpeed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 73 (name=Flight_FB_Speed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 74 (name=Flight_UD_Speed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 75 (name=Flight_Banking)
+[28-09-2024 12:08:08]	Adding ControlParameter node 76 (name=DieCategory)
+[28-09-2024 12:08:08]	Adding ControlParameter node 77 (name=DmgHitBackHold)
+[28-09-2024 12:08:08]	Adding ControlParameter node 78 (name=DmgHitBackDistance)
+[28-09-2024 12:08:08]	Adding ControlParameter node 79 (name=DmgHitBackDuration)
+[28-09-2024 12:08:08]	Adding ControlParameter node 80 (name=UnevenTerrain_Hips)
+[28-09-2024 12:08:08]	Adding ControlParameter node 81 (name=UnevenTerrain_BlendWeight)
+[28-09-2024 12:08:08]	Adding ControlParameter node 82 (name=RopeMove)
+[28-09-2024 12:08:08]	Adding ControlParameter node 83 (name=RopeLHandIK)
+[28-09-2024 12:08:08]	Adding ControlParameter node 84 (name=RopeRHandIK)
+[28-09-2024 12:08:08]	Adding ControlParameter node 85 (name=RopeLHandIKTarget)
+[28-09-2024 12:08:08]	Adding ControlParameter node 86 (name=RopeRHandIKTarget)
+[28-09-2024 12:08:08]	Adding ControlParameter node 87 (name=DoorCategory)
+[28-09-2024 12:08:08]	Adding ControlParameter node 88 (name=DoorSpeed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 89 (name=DoorLHandIK)
+[28-09-2024 12:08:08]	Adding ControlParameter node 90 (name=DoorRHandIK)
+[28-09-2024 12:08:08]	Adding ControlParameter node 91 (name=DoorLHandIKTarget)
+[28-09-2024 12:08:08]	Adding ControlParameter node 92 (name=DoorRHandIKTarget)
+[28-09-2024 12:08:08]	Adding ControlParameter node 93 (name=LandingCategory)
+[28-09-2024 12:08:08]	Adding ControlParameter node 94 (name=ShotPreparationFinish)
+[28-09-2024 12:08:08]	Adding ControlParameter node 95 (name=ShotMoveFinish)
+[28-09-2024 12:08:08]	Adding ControlParameter node 96 (name=BlendWeight_Injured)
+[28-09-2024 12:08:08]	Adding ControlParameter node 97 (name=Shake_Position)
+[28-09-2024 12:08:08]	Adding ControlParameter node 98 (name=Shake_Rotation)
+[28-09-2024 12:08:08]	Adding ControlParameter node 99 (name=ShakeRate)
+[28-09-2024 12:08:08]	Adding ControlParameter node 100 (name=AimTarget)
+[28-09-2024 12:08:08]	Adding ControlParameter node 101 (name=CatchDmgCategory)
+[28-09-2024 12:08:08]	Adding ControlParameter node 102 (name=CatchDmgHitCategory)
+[28-09-2024 12:08:08]	Adding ControlParameter node 103 (name=GuardBottomCategory)
+[28-09-2024 12:08:08]	Adding ControlParameter node 104 (name=GuardDuration)
+[28-09-2024 12:08:08]	Adding ControlParameter node 105 (name=EventActionCategory)
+[28-09-2024 12:08:08]	Adding ControlParameter node 106 (name=IsLanding)
+[28-09-2024 12:08:08]	Adding ControlParameter node 107 (name=RadioControlMode)
+[28-09-2024 12:08:08]	Adding ControlParameter node 108 (name=BlendWeight_Tire)
+[28-09-2024 12:08:08]	Adding ControlParameter node 109 (name=GuardCategory)
+[28-09-2024 12:08:08]	Adding ControlParameter node 110 (name=EventActionSpeed)
+[28-09-2024 12:08:08]	Adding ControlParameter node 111 (name=IsEventAction)
+[28-09-2024 12:08:08]	Adding ControlParameter node 112 (name=EventActionLeverOnOff)
+[28-09-2024 12:08:08]	Adding ControlParameter node 113 (name=Slope_Angle_Posotion)
+[28-09-2024 12:08:08]	Adding ControlParameter node 114 (name=Road_Up_Rotation)
+[28-09-2024 12:08:08]	Adding ControlParameter node 115 (name=Road_Down_Rotation)
+[28-09-2024 12:08:08]	Adding ControlParameter node 116 (name=Slope_Angle)
+[28-09-2024 12:08:08]	Adding node StateMachine_117 to MorphemeDB.Networks.Network.GraphEntry
+[28-09-2024 12:08:08]	Adding node BlendTree_118 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.BlendTree_118
+[28-09-2024 12:08:08]	Adding node StateMachine_119 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.StateMachine_119
+[28-09-2024 12:08:08]	Adding node BlendTree_120 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.StateMachine_119.StateMachine_119.GraphEntry.StateMachineNodes.BlendTree_120
+[28-09-2024 12:08:08]	Adding node BlendTree_122 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.StateMachine_119.StateMachine_119.GraphEntry.StateMachineNodes.BlendTree_122
+[28-09-2024 12:08:08]	Adding node a75_01_7100_Wep01_StartUp_01_In to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.StateMachine_119.StateMachine_119.GraphEntry.StateMachineNodes.BlendTree_122.BlendTree_122.GraphEntry.BlendTreeNodes.a75_01_7100_Wep01_StartUp_01_In
+[28-09-2024 12:08:08]	Adding node BlendTree_124 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.StateMachine_119.StateMachine_119.GraphEntry.StateMachineNodes.BlendTree_124
+[28-09-2024 12:08:08]	Adding node a75_01_7100_Wep01_StartUp_01_In to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.StateMachine_119.StateMachine_119.GraphEntry.StateMachineNodes.BlendTree_124.BlendTree_124.GraphEntry.BlendTreeNodes.a75_01_7100_Wep01_StartUp_01_In
+[28-09-2024 12:08:08]	Adding node Transit_125 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.StateMachine_119.StateMachine_119.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_126 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.StateMachine_119.StateMachine_119.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_127 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.StateMachine_119.StateMachine_119.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node BlendTree_128 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.BlendTree_128
+[28-09-2024 12:08:08]	Adding node BlendTree_129 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.BlendTree_129
+[28-09-2024 12:08:08]	Adding node a00_16_0015_DmgKnockBackLightSlashDown_F to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.a00_16_0015_DmgKnockBackLightSlashDown_F
+[28-09-2024 12:08:08]	Adding node HeadLook_131 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.HeadLook_131
+[28-09-2024 12:08:08]	Adding node BlendTree_132 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.BlendTree_132
+[28-09-2024 12:08:08]	Adding node BlendTree_134 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.BlendTree_134
+[28-09-2024 12:08:08]	Adding node a75_01_7140_Wep01_StartUp_05_In to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.BlendTree_134.BlendTree_134.GraphEntry.BlendTreeNodes.a75_01_7140_Wep01_StartUp_05_In
+[28-09-2024 12:08:08]	Adding node BlendTree_135 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.BlendTree_135
+[28-09-2024 12:08:08]	Adding node BlendTree_136 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.BlendTree_136
+[28-09-2024 12:08:08]	Adding node BlendTree_137 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.BlendTree_137
+[28-09-2024 12:08:08]	Adding node BlendTree_138 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.BlendTree_138
+[28-09-2024 12:08:08]	Adding node BlendTree_139 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.BlendTree_139
+[28-09-2024 12:08:08]	Adding node HeadLook_140 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.HeadLook_140
+[28-09-2024 12:08:08]	Adding node a00_16_0016_DmgKnockBackLightSlashDown_B to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.a00_16_0016_DmgKnockBackLightSlashDown_B
+[28-09-2024 12:08:08]	Adding node HeadLook_142 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.HeadLook_142
+[28-09-2024 12:08:08]	Adding node a00_16_0025_DmgKnockBackLightSlashUp_F to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.StateMachineNodes.a00_16_0025_DmgKnockBackLightSlashUp_F
+[28-09-2024 12:08:08]	Adding node Transit_144 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_145 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_146 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_147 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_148 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_149 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_150 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_151 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_152 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_153 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_154 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_155 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_156 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_157 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_158 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_159 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_160 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_161 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_162 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_163 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_164 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_165 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_166 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_167 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_168 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding node Transit_169 to MorphemeDB.Networks.Network.GraphEntry.StateMachine_117.GraphEntry.TransitionEdges
+[28-09-2024 12:08:08]	Adding request 0 (name=Idle)
+[28-09-2024 12:08:08]	Adding request 1 (name=Turn)
+[28-09-2024 12:08:08]	Adding request 2 (name=Step)
+[28-09-2024 12:08:08]	Adding request 3 (name=Dodge)
+[28-09-2024 12:08:08]	Adding request 4 (name=Combination)
+[28-09-2024 12:08:08]	Adding request 5 (name=Attack)
+[28-09-2024 12:08:08]	Adding request 6 (name=Attack_Cancel)
+[28-09-2024 12:08:08]	Adding request 7 (name=EventAction)
+[28-09-2024 12:08:08]	Adding request 8 (name=CatchAttack)
+[28-09-2024 12:08:08]	Adding request 9 (name=Jump)
+[28-09-2024 12:08:08]	Adding request 10 (name=StandJump)
+[28-09-2024 12:08:08]	Adding request 11 (name=JumpAttack)
+[28-09-2024 12:08:08]	Adding request 12 (name=LadderStart)
+[28-09-2024 12:08:08]	Adding request 13 (name=LadderUpEnd)
+[28-09-2024 12:08:08]	Adding request 14 (name=LadderDownEnd)
+[28-09-2024 12:08:08]	Adding request 15 (name=Die)
+[28-09-2024 12:08:08]	Adding request 16 (name=MoveGuard)
+[28-09-2024 12:08:08]	Adding request 17 (name=DamageUpper)
+[28-09-2024 12:08:08]	Adding request 18 (name=DamageFullBody)
+[28-09-2024 12:08:08]	Adding request 19 (name=SitDown)
+[28-09-2024 12:08:08]	Adding request 20 (name=RagDoll_End)
+[28-09-2024 12:08:08]	Adding request 21 (name=SitUp_FaceUp)
+[28-09-2024 12:08:08]	Adding request 22 (name=SitUp_FaceDown)
+[28-09-2024 12:08:08]	Adding request 23 (name=Guard)
+[28-09-2024 12:08:08]	Adding request 24 (name=ChangeStance)
+[28-09-2024 12:08:08]	Adding request 25 (name=ChangeStance_NoAnime)
+[28-09-2024 12:08:08]	Adding request 26 (name=Door)
+[28-09-2024 12:08:08]	Adding request 27 (name=Rope)
+[28-09-2024 12:08:08]	Adding request 28 (name=HitBack)
+[28-09-2024 12:08:08]	Adding request 29 (name=StartUp_Dmy)
+[28-09-2024 12:08:08]	Adding request 30 (name=Reset)
+[28-09-2024 12:08:08]	Adding request 31 (name=CatchDamage)
+[28-09-2024 12:08:08]	Adding request 32 (name=Contact)
+[28-09-2024 12:08:08]	Adding request 33 (name=A20)
+[28-09-2024 12:08:08]	Adding request 34 (name=Start00)
+[28-09-2024 12:08:08]	Adding request 35 (name=Start01)
+[28-09-2024 12:08:08]	Adding request 36 (name=Start02)
+[28-09-2024 12:08:08]	Adding request 37 (name=Start03)
+[28-09-2024 12:08:08]	Adding request 38 (name=Start04)
+[28-09-2024 12:08:08]	Adding request 39 (name=Start05)
+[28-09-2024 12:08:08]	Adding request 40 (name=Start06)
+[28-09-2024 12:08:08]	Adding request 41 (name=Start07)
+[28-09-2024 12:08:08]	Adding request 42 (name=Start08)
+[28-09-2024 12:08:08]	Adding request 43 (name=Start09)
+[28-09-2024 12:08:08]	Saving mcn file to C:\Users\marco\Documents\Morpheme\Projects\FRPG2_64\c7770\c7770_merged.mcn
+[28-09-2024 12:08:08]	Exit

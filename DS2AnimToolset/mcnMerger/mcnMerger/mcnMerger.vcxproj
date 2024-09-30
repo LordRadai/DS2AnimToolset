@@ -150,6 +150,7 @@
     <ClCompile Include="MCN\NodeMap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="extern.h" />
     <ClInclude Include="MCN\MCN.h" />
     <ClInclude Include="MCN\MCNUtils.h" />
     <ClInclude Include="MCN\NodeMap.h" />

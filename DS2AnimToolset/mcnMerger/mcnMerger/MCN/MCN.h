@@ -136,10 +136,12 @@ namespace MCN
 		void addStartPoint(const char* name);
 		void addRequest(ME::MessageExportXML* request);
 		void addControlParameter(ME::NodeExportXML* cp);
-		void addNode(ME::NodeExportXML* node);
+		void addNode(int nodeID);
+		void setStateMachinesDefaultStates();
 		void buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary);
 
-		NodeMap* getNodeMap(int index);
+		NodeMap* getNodeMap(int nodeID);
+		NodeMap* getBTNodeMap(int btID);
 
 	private:
 		Network() {}
@@ -149,6 +151,17 @@ namespace MCN
 		void createAnimLibraryRef(ME::AnimationLibraryXML* animLibPath);
 		void createPassDownPin();
 		void createControlParametersNode();
+
+		NodeMap* getParentNodeContainer(int nodeID);
+		void writeNode(NodeMap* nodeMap, NodeMap* parentNodeMap);
+
+		void writeNonContainerNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent);
+		void writeStateMachineNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent);
+		void writeBlendTreeNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent);
+		void writeTransitionNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent);
+
+		void setNodeMapParentBTs();
+		int getNumBTNodes();
 	protected:
 		Networks* m_owner = nullptr;
 		std::vector<AnimLocation*> m_animLocations;
@@ -215,6 +228,9 @@ namespace MCN
 		void addControlParameter(ME::NodeExportXML* node);
 		void addRequest(ME::MessageExportXML* request);
 		void buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary);
+		void addNode(int nodeID);
+		void setStateMachinesDefaultStates();
+
 		NodeMap* getNodeMap(int nodeId);
 
 		bool save();
