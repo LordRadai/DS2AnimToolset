@@ -402,6 +402,9 @@ namespace MCNUtils
 
 	std::string getMorphemeDBPointer(tinyxml2::XMLElement* element)
 	{
+		if (element == nullptr)
+			return "(null)";
+
 		std::string pointer = getElementName(element);
 		tinyxml2::XMLElement* parent = static_cast<tinyxml2::XMLElement*>(element->Parent());
 

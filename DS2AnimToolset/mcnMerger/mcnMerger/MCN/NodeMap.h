@@ -36,7 +36,7 @@ namespace MCN
 		tinyxml2::XMLElement* getDbEntry() const { return this->m_dbNodeEntry; }
 		std::string getName() const { return this->m_name; }
 		int getNodeID() const { return this->m_nodeID; }
-		int getParentSMNodeID() const { return this->m_parentSMNodeID; }
+		int getParentNodeID() const { return this->m_parentNodeID; }
 		NodeCategory getNodeCategory() const { return this->m_nodeCategory; }
 
 		void setDbEntry(tinyxml2::XMLElement* entry) { this->m_dbNodeEntry = entry; }
@@ -44,7 +44,7 @@ namespace MCN
 	private:
 		ME::NodeExportXML* m_nodeXml = nullptr;
 		int m_nodeID = -1;
-		int m_parentSMNodeID = -1;
+		int m_parentNodeID = -1;
 		tinyxml2::XMLElement* m_dbNodeEntry = nullptr;
 		NodeCategory m_nodeCategory = kInvalid;
 		std::string m_name = "";

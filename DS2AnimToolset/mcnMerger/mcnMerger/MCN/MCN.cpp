@@ -469,7 +469,7 @@ namespace MCN
 
 	NodeMap* Network::getParentNodeContainer(int nodeID)
 	{
-		int parentNodeID = this->getNodeMap(nodeID)->getParentSMNodeID();
+		int parentNodeID = this->getNodeMap(nodeID)->getParentNodeID();
 
 		while (parentNodeID != -1)
 		{
@@ -478,8 +478,7 @@ namespace MCN
 			if ((nodeMap->getNodeCategory() == kNetwork) || (nodeMap->getNodeCategory() == kBlendTree) || (nodeMap->getNodeCategory() == kStateMachine))
 				return nodeMap;
 
-			if (parentNodeID == -1)
-				parentNodeID = nodeMap->getParentSMNodeID();
+			parentNodeID = nodeMap->getParentNodeID();
 		}
 
 		return nullptr;
@@ -550,24 +549,6 @@ namespace MCN
 		g_appLog->debugMessage(MsgLevel_Info, "Adding node %s to %s\n", nodeMap->getName().c_str(), MCNUtils::getMorphemeDBPointer(parent).c_str());
 
 		//TODO: Implement
-	}
-
-	void Network::setNodeMapParentBTs()
-	{
-
-	}
-
-	int Network::getNumBTNodes()
-	{
-		int count = 0;
-
-		for (size_t i = 0; i < this->m_nodesMap.size(); i++)
-		{
-			if (this->m_nodesMap[i]->getNodeCategory() == kBlendTree)
-				count++;
-		}
-
-		return count;
 	}
 
 	tinyxml2::XMLElement* createBlendTreeNodeEntry(tinyxml2::XMLElement* where, const char* name, float x, float y)
@@ -690,15 +671,12 @@ namespace MCN
 				nodeCategory = kNode;
 
 			std::string nodeName = node->getName();
-			int blendTreeID = this->getNumBTNodes();
 
 			if (nodeName == "")
 			{
 				if (nodeCategory == kNetwork)
 				{
 					nodeName = "rootNetworkNode";
-
-					blendTreeID = -1;
 				}
 				else if (nodeCategory == kStateMachine)
 				{
@@ -706,13 +684,11 @@ namespace MCN
 					sprintf_s(name, "StateMachine_%d", node->getNodeID());
 
 					nodeName = name;
-
-					blendTreeID = -1;
 				}
 				else if (nodeCategory == kBlendTree)
 				{
 					char name[256];
-					sprintf_s(name, "BlendTree_%d", blendTreeID);
+					sprintf_s(name, "BlendTree_%d", node->getNodeID());
 
 					nodeName = name;
 				}
@@ -722,8 +698,6 @@ namespace MCN
 					sprintf_s(name, "Transit_%d", node->getNodeID());
 
 					nodeName = name;
-
-					blendTreeID = -1;
 				}
 				else
 				{
@@ -731,8 +705,6 @@ namespace MCN
 
 					if (nodeType == NODE_TYPE_ANIM_EVENTS)
 						nodeName = MCNUtils::getAnimNodeName(node, animLibrary);
-
-					blendTreeID = -1;
 				}
 			}
 
@@ -881,7 +853,7 @@ namespace MCN
 		}
 		catch (const std::exception& e)
 		{
-			//g_appLog->alertMessage(MsgLevel_Error, "Invalid mcn file %s", filename.c_str());
+			g_appLog->alertMessage(MsgLevel_Error, "Invalid mcn file %s", filename.c_str());
 			return nullptr;
 		}
 

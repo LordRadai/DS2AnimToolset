@@ -6,7 +6,7 @@ namespace MCN
 	{
 		this->m_nodeXml = src;
 		this->m_nodeID = src->getNodeID();
-		this->m_parentSMNodeID = src->getDownstreamParentID();
+		this->m_parentNodeID = src->getDownstreamParentID();
 		this->m_nodeCategory = category;
 		this->m_name = name;
 	}

@@ -158,9 +158,6 @@ namespace MCN
 		void writeStateMachineNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent);
 		void writeBlendTreeNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent);
 		void writeTransitionNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent);
-
-		void setNodeMapParentBTs();
-		int getNumBTNodes();
 	protected:
 		Networks* m_owner = nullptr;
 		std::vector<AnimLocation*> m_animLocations;
