@@ -469,22 +469,14 @@ namespace MCN
 
 	NodeMap* Network::getParentNodeContainer(int nodeID)
 	{
-		int parentNodeID = this->getNodeMap(nodeID)->getParentBTNodeID();
-
-		if (parentNodeID == -1)
-			parentNodeID = this->getNodeMap(nodeID)->getParentSMNodeID();
+		int parentNodeID = this->getNodeMap(nodeID)->getParentSMNodeID();
 
 		while (parentNodeID != -1)
 		{
-			NodeMap* nodeMap = this->getBTNodeMap(parentNodeID);
-
-			if (nodeMap == nullptr)
-				nodeMap = this->getNodeMap(parentNodeID);
+			NodeMap* nodeMap = this->getNodeMap(parentNodeID);
 
 			if ((nodeMap->getNodeCategory() == kNetwork) || (nodeMap->getNodeCategory() == kBlendTree) || (nodeMap->getNodeCategory() == kStateMachine))
 				return nodeMap;
-
-			parentNodeID = nodeMap->getParentBTNodeID();
 
 			if (parentNodeID == -1)
 				parentNodeID = nodeMap->getParentSMNodeID();
@@ -722,15 +714,7 @@ namespace MCN
 					char name[256];
 					sprintf_s(name, "BlendTree_%d", blendTreeID);
 
-					nodeName = MCNUtils::getNodeName(node);
-
-					if (nodeType == NODE_TYPE_ANIM_EVENTS)
-						nodeName = MCNUtils::getAnimNodeName(node, animLibrary);
-
-					NodeMap* btNode = new NodeMap(node, blendTreeID, kBlendTree, -1, name);
-					this->m_nodesMap.push_back(btNode);
-
-					nodeCategory = kNode;
+					nodeName = name;
 				}
 				else if (nodeCategory == kTransition)
 				{
@@ -752,7 +736,7 @@ namespace MCN
 				}
 			}
 
-			NodeMap* nodeMap = new NodeMap(node, -1, nodeCategory, blendTreeID, nodeName);
+			NodeMap* nodeMap = new NodeMap(node, nodeCategory, nodeName);
 
 			if (nodeCategory == kNetwork)
 				nodeMap->setDbEntry(this->m_xmlElement->FirstChildElement("GraphEntry"));
@@ -766,17 +750,6 @@ namespace MCN
 		for (size_t i = 0; i < this->m_nodesMap.size(); i++)
 		{
 			if (this->m_nodesMap[i]->getNodeID() == nodeID)
-				return this->m_nodesMap[i];
-		}
-
-		return nullptr;
-	}
-
-	NodeMap* Network::getBTNodeMap(int btID)
-	{
-		for (size_t i = 0; i < this->m_nodesMap.size(); i++)
-		{
-			if (this->m_nodesMap[i]->getBlendTreeID() == btID)
 				return this->m_nodesMap[i];
 		}
 

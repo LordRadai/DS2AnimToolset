@@ -141,7 +141,6 @@ namespace MCN
 		void buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary);
 
 		NodeMap* getNodeMap(int nodeID);
-		NodeMap* getBTNodeMap(int btID);
 
 	private:
 		Network() {}
