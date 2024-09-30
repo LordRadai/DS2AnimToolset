@@ -10,8 +10,7 @@ namespace MCNUtils
 	std::string getNodeNameWithoutParent(ME::NodeExportXML* node);
 	bool isNodeBlendTree(ME::NodeExportXML* nodeXml);
 	bool isNodeControlParam(ME::NodeExportXML* nodeDef);
-	std::string getAnimNodeName(ME::NodeExportXML* node, ME::AnimationLibraryXML* animLibrary);
-	std::string getNodeName(ME::NodeExportXML* node);
+	std::string getNodeName(ME::NodeExportXML* node, ME::AnimationLibraryXML* animLibrary);
 
 	tinyxml2::XMLElement* createBoolElement(tinyxml2::XMLElement* parent, const char* name, bool value);
 	tinyxml2::XMLElement* createVector3Element(tinyxml2::XMLElement* parent, std::string name, float x, float y, float z);

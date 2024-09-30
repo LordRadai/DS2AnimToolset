@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 				if (nodeMap != nullptr)
 					nodeName = nodeMap->getName();
 
-				mcn->addNode(i);
+				mcn->addNode(i, animLibrary);
 
 				break;
 			}

@@ -136,7 +136,7 @@ namespace MCN
 		void addStartPoint(const char* name);
 		void addRequest(ME::MessageExportXML* request);
 		void addControlParameter(ME::NodeExportXML* cp);
-		void addNode(int nodeID);
+		void addNode(int nodeID, ME::AnimationLibraryXML* animLibrary);
 		void setStateMachinesDefaultStates();
 		void buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary);
 
@@ -152,8 +152,9 @@ namespace MCN
 		void createControlParametersNode();
 
 		NodeMap* getParentNodeContainer(int nodeID);
-		void writeNode(NodeMap* nodeMap, NodeMap* parentNodeMap);
+		void writeNode(NodeMap* nodeMap, NodeMap* parentNodeMap, ME::AnimationLibraryXML* animLibrary);
 
+		void writeBlendTreeOutputNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent);
 		void writeNonContainerNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent);
 		void writeStateMachineNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent);
 		void writeBlendTreeNode(NodeMap* nodeMap, tinyxml2::XMLElement* parent);
@@ -224,7 +225,7 @@ namespace MCN
 		void addControlParameter(ME::NodeExportXML* node);
 		void addRequest(ME::MessageExportXML* request);
 		void buildNodeMap(ME::NetworkDefExportXML* netDef, ME::AnimationLibraryXML* animLibrary);
-		void addNode(int nodeID);
+		void addNode(int nodeID, ME::AnimationLibraryXML* animLibrary);
 		void setStateMachinesDefaultStates();
 
 		NodeMap* getNodeMap(int nodeId);

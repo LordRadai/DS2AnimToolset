@@ -252,8 +252,11 @@ namespace MCNUtils
 		}
 	}
 
-	std::string getNodeName(ME::NodeExportXML* node)
+	std::string getNodeName(ME::NodeExportXML* node, ME::AnimationLibraryXML* animLibrary)
 	{
+		if (node->getTypeID() == NODE_TYPE_ANIM_EVENTS)
+			return getAnimNodeName(node, animLibrary);
+
 		std::string typeName = getNodeTypeName(node);
 
 		char name[256];
