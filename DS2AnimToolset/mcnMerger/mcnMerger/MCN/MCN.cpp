@@ -495,19 +495,7 @@ namespace MCN
 
 	int getManifestVersion(int nodeType)
 	{
-		switch (nodeType)
-		{
-		case NODE_TYPE_STATE_MACHINE:
-			return 1;
-		case NODE_TYPE_HEAD_LOOK:
-			return 6;
-		case NODE_TYPE_ANIM_EVENTS:
-			return 9;
-		case NODE_TYPE_BLEND_N:
-			return 10;
-		default:
-			return 0;
-		}
+		return 0;
 	}
 
 	tinyxml2::XMLElement* createBlendTreeNodeEntry(tinyxml2::XMLElement* where, const char* name, const char* nodeType, float x, float y, float width, float height)
