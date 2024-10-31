@@ -210,6 +210,45 @@ namespace MD
 			return nodeExportXML;
 		}
 
+		ME::NodeExportXML* exportBlend2x2Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			if (nodeDef->getNodeTypeID() != NODE_TYPE_BLEND_2)
+				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_BLEND_2, nodeDef->getNodeTypeID());
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(2), "Source2NodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(3), "Source3NodeID");
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "WeightX");
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(1)->m_sourceNodeID, nodeDef->getInputCPConnection(1)->m_sourcePinIndex, "WeightY");
+
+			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+
+			assert(weights->m_numValues == 4);
+
+			nodeDataBlock->readFloat(weights->m_values[0], "BlendWeightX_0");
+			nodeDataBlock->readFloat(weights->m_values[1], "BlendWeightX_1");
+			nodeDataBlock->readFloat(weights->m_values[2], "BlendWeightY_0");
+			nodeDataBlock->readFloat(weights->m_values[3], "BlendWeightY_1");
+
+			writePassThroughMode(nodeDef, nodeDataBlock);
+			writeBlend2EventBlendMode(nodeDef, nodeDataBlock);
+			writeSlerpTrajPos(nodeDef, nodeDataBlock);
+			writeBlend2BlendModeFlags(nodeDef, nodeDataBlock);
+			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
+
+			MR::AttribDataBlendFlags* blendFlags = static_cast<MR::AttribDataBlendFlags*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BLEND_FLAGS));
+			nodeDataBlock->writeBool(blendFlags->m_alwaysCombineSampledEvents, "AlwaysCombineSampledEvents");
+
+			MR::AttribDataBool* loop = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_LOOP));
+			nodeDataBlock->writeBool(loop->m_value, "Loop");
+
+			return nodeExportXML;
+		}
+
 		ME::NodeExportXML* exportBlendNNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
 			if (nodeDef->getNodeTypeID() != NODE_TYPE_BLEND_N)

@@ -343,7 +343,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_BLEND_2X2:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportBlend2x2Node(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_BLEND_NXM:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
