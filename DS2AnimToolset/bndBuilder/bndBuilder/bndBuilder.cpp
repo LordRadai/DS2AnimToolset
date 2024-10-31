@@ -41,4 +41,6 @@ int main(int argc, char* argv[])
     bndOut->close();
     delete bndOut;
     bnd->destroy();
+
+    return 1;
 }
