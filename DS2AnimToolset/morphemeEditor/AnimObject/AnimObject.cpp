@@ -6,17 +6,9 @@
 #include "MorphemeSystem/MorphemeCharacterDef/MorphemeCharacterDef.h"
 #include "MorphemeSystem/MorphemeDecompiler/MorphemeDecompiler.h"
 
-AnimObject::AnimObject()
-{
-}
-
 AnimObject::AnimObject(int id)
 {	
     this->m_id = id;
-}
-
-AnimObject::~AnimObject()
-{
 }
 
 AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id)

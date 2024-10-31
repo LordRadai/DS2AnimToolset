@@ -10,9 +10,9 @@ class MorphemeCharacterDef;
 class AnimObject
 {
 public:
-	AnimObject();
+	AnimObject() {}
 	AnimObject(int id);
-	~AnimObject();
+	~AnimObject() {}
 
 	static AnimObject* createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id);
 
@@ -38,9 +38,9 @@ public:
 
 	bool isLoaded() const { return this->m_animHandle != nullptr; }
 private:
-	MR::AnimationSourceHandle* m_animHandle;
-	ME::TakeListXML* m_takeList;
-	int m_id;
-	std::string m_animFileName;
-	std::string m_animName;
+	MR::AnimationSourceHandle* m_animHandle = nullptr;
+	ME::TakeListXML* m_takeList = nullptr;
+	int m_id = -1;
+	std::string m_animFileName = "";
+	std::string m_animName = "";
 };
