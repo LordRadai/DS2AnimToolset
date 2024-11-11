@@ -257,7 +257,6 @@ namespace MD
 
 			int numAnimSets = netDef->getNumAnimSets();
 
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
 			nodeDataBlock->writeBool(isPassThroughTransformsOnce(nodeDef), "passThroughTransformsOnce");
 
 			return nodeExportXML;
