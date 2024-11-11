@@ -69,9 +69,9 @@ namespace MD
 
 			g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER fn = %s\n", fnName);
 
-			if (taskQueueFn == MR::nodeFreezePassThroughLastTrajectoryDeltaAndTransformsOnce)
+			if (taskQueueFn == MR::nodeFreezePassThroughLastTransformsOnce)
 				return true;
-			else if (taskQueueFn == MR::nodeFreezePassThroughLastTrajectoryDeltaAndTransforms)
+			else if (taskQueueFn == MR::nodeFreezePassThroughLastTransforms)
 				return false;
 			else
 				g_appLog->panicMessage("Unexpected task queing function %s\n", fnName);
