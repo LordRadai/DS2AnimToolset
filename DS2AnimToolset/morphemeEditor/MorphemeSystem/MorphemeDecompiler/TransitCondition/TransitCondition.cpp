@@ -1,6 +1,7 @@
 #include "TransitCondition.h"
 #include "extern.h"
 #include "RCore.h"
+#define THROW_NODE_TRANSIT_TYPE_MISMATCH(transitDef, type) if (transitDef->getType() != type) { g_appLog->panicMessage("Expecting node type %d (got %d)\n", type, transitDef->getType()); }
 
 namespace MD
 {
@@ -8,8 +9,7 @@ namespace MD
 	{
 		void exportTransitConditionOnCPBoolSet(MR::TransitConditionDefControlParamBoolSet* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_BOOL_SET_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_BOOL_SET_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CONTROL_PARAM_BOOL_SET_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -19,8 +19,7 @@ namespace MD
 
 		void exportTransitConditionCPFloatInRange(MR::TransitConditionDefControlParamFloatInRange* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CONTROL_PARAM_FLOAT_IN_RANGE_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -34,8 +33,7 @@ namespace MD
 
 		void exportTransitConditionCPIntInRange(MR::TransitConditionDefControlParamIntInRange* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_INT_IN_RANGE_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_INT_IN_RANGE_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CONTROL_PARAM_INT_IN_RANGE_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -49,8 +47,7 @@ namespace MD
 
 		void exportTransitConditionCPUIntInRange(MR::TransitConditionDefControlParamUIntInRange* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CONTROL_PARAM_UINT_IN_RANGE_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -64,8 +61,7 @@ namespace MD
 
 		void exportTransitConditionCPFloatLess(MR::TransitConditionDefControlParamFloatLess* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_FLOAT_LESS_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_FLOAT_LESS_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CONTROL_PARAM_FLOAT_LESS_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -79,8 +75,7 @@ namespace MD
 
 		void exportTransitConditionCPFloatGreater(MR::TransitConditionDefControlParamFloatGreater* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_FLOAT_GREATER_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_FLOAT_GREATER_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CONTROL_PARAM_FLOAT_GREATER_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -94,8 +89,7 @@ namespace MD
 
 		void exportTransitConditionCPIntLess(MR::TransitConditionDefControlParamIntLess* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_INT_LESS_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_INT_LESS_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CONTROL_PARAM_INT_LESS_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -109,8 +103,7 @@ namespace MD
 
 		void exportTransitConditionCPIntGreater(MR::TransitConditionDefControlParamIntGreater* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_INT_GREATER_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_INT_GREATER_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CONTROL_PARAM_INT_GREATER_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -124,8 +117,7 @@ namespace MD
 
 		void exportTransitConditionCPUIntLess(MR::TransitConditionDefControlParamUIntLess* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_INT_LESS_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_INT_LESS_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CONTROL_PARAM_INT_LESS_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -139,8 +131,7 @@ namespace MD
 
 		void exportTransitConditionCPUIntGreater(MR::TransitConditionDefControlParamUIntGreater* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CONTROL_PARAM_INT_GREATER_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CONTROL_PARAM_INT_GREATER_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CONTROL_PARAM_INT_GREATER_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -154,8 +145,7 @@ namespace MD
 
 		void exportTransitConditionInDurationEvent(MR::TransitConditionDefInDurationEvent* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_IN_DURATION_EVENT_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_IN_DURATION_EVENT_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_IN_DURATION_EVENT_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -179,8 +169,7 @@ namespace MD
 
 		void exportTransitConditionInSyncEventSegment(MR::TransitConditionDefInSyncEventRange* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_IN_SYNC_EVENT_SEGMENT_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_IN_SYNC_EVENT_SEGMENT_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_IN_SYNC_EVENT_SEGMENT_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -189,8 +178,7 @@ namespace MD
 
 		void exportTransitConditionInSyncEventRange(MR::TransitConditionDefInSyncEventRange* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_IN_SYNC_EVENT_RANGE_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_IN_SYNC_EVENT_RANGE_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_IN_SYNC_EVENT_RANGE_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -200,8 +188,7 @@ namespace MD
 
 		void exportTransitConditionCrossedSyncEventBoundary(MR::TransitConditionDefInSyncEventRange* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CROSSED_SYNC_EVENT_BOUNDARY_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CROSSED_SYNC_EVENT_BOUNDARY_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CROSSED_SYNC_EVENT_BOUNDARY_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -210,8 +197,7 @@ namespace MD
 
 		void exportTransitConditionNodeActive(MR::TransitConditionDefNodeActive* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_NODE_ACTIVE_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_NODE_ACTIVE_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_NODE_ACTIVE_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -220,8 +206,7 @@ namespace MD
 
 		void exportTransitConditionDiscreteEventTrigger(MR::TransitConditionDefDiscreteEventTriggered* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_DISCRETE_EVENT_TRIGGERED_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_DISCRETE_EVENT_TRIGGERED_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_DISCRETE_EVENT_TRIGGERED_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -230,8 +215,7 @@ namespace MD
 
 		void exportTransitConditionCrossedDurationFraction(MR::TransitConditionDefCrossedDurationFraction* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CROSSED_DURATION_FRACTION_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CROSSED_DURATION_FRACTION_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CROSSED_DURATION_FRACTION_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -240,8 +224,7 @@ namespace MD
 
 		void exportTransitConditionCrossedCurveEventValueDecreasing(MR::TransitConditionDefCrossedCurveEventValueDecreasing* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_CROSSED_CURVE_EVENT_VALUE_DECREASING_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -265,8 +248,7 @@ namespace MD
 
 		void exportTransitConditionRayHit(MR::TransitConditionDefRayHit* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_RAY_HIT_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_RAY_HIT_ID, transitCondDef->getType());
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_RAY_HIT_ID);
 
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
@@ -282,9 +264,8 @@ namespace MD
 
 		void exportTransitConditionOnMessage(MR::TransitConditionDefOnMessage* transitCondDef, ME::ConditionExportXML* conditionExport)
 		{
-			if (transitCondDef->getType() != TRANSCOND_ON_MESSAGE_ID)
-				g_appLog->panicMessage("Wrong transit condition type. Expecting %d got %d", TRANSCOND_ON_MESSAGE_ID, transitCondDef->getType());
-
+			THROW_NODE_TRANSIT_TYPE_MISMATCH(transitCondDef, TRANSCOND_ON_MESSAGE_ID);
+			
 			ME::DataBlockExportXML* dataBlock = static_cast<ME::DataBlockExportXML*>(conditionExport->getDataBlock());
 
 			dataBlock->writeUInt(transitCondDef->getMessageID(), "MessageID");
