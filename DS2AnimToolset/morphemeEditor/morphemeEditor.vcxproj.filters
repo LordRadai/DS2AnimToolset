@@ -279,6 +279,9 @@
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -489,6 +492,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

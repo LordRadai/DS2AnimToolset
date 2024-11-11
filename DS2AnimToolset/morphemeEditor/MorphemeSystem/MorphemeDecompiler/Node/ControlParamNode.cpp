@@ -9,8 +9,7 @@ namespace MD
 	{
 		ME::NodeExportXML* exportCPFloatNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_FLOAT)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_FLOAT, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_FLOAT);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -29,8 +28,7 @@ namespace MD
 
 		ME::NodeExportXML* exportCPVector3Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_VECTOR3)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_VECTOR3, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_VECTOR3);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -51,8 +49,7 @@ namespace MD
 
 		ME::NodeExportXML* exportCPVector4Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_VECTOR4)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_VECTOR4, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_VECTOR4);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -74,8 +71,7 @@ namespace MD
 
 		ME::NodeExportXML* exportCPBoolNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_BOOL)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_BOOL, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_BOOL);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -93,8 +89,7 @@ namespace MD
 
 		ME::NodeExportXML* exportCPIntNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_INT)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_INT, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_INT);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -112,8 +107,7 @@ namespace MD
 
 		ME::NodeExportXML* exportCPUIntNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_CP_UINT)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_CP_UINT, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_UINT);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());

@@ -11,8 +11,7 @@ namespace MD
 	{
 		ME::NodeExportXML* exportHeadLookNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_HEAD_LOOK)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_HEAD_LOOK, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_HEAD_LOOK);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());

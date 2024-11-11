@@ -11,6 +11,7 @@
 #include "Node/BlendNode.h"
 #include "Node/TransitNode.h"
 #include "Node/IKNode.h"
+#include "Node/OperatorNode.h"
 
 namespace MD
 {
@@ -328,7 +329,7 @@ namespace MD
 			nodeExport = Node::exportAnimSyncEventsNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_FILTER_TRANSFORMS:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportFilterTransformsNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_BLEND_2:
 			nodeExport = Node::exportBlend2Node(netDefExport, netDef, nodeDef);
@@ -337,10 +338,10 @@ namespace MD
 			nodeExport = Node::exportBlendNNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_SINGLEFRAME:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportSingleFrameNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_FREEZE:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportFreezeNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_BLEND_2X2:
 			nodeExport = Node::exportBlend2x2Node(netDefExport, netDef, nodeDef);
@@ -367,13 +368,13 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_FUNCTION:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportOperatorFunctionNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_ARITHMETIC:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportOperatorArithmeticNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_ARITHMETIC_VECTOR3:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportOperatorArithmeticVector3Node(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
@@ -382,7 +383,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_NOISE_GEN:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportOperatorNoiseGenNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_FEATHER_BLEND_2:
 			nodeExport = Node::exportFeatherBlend2Node(netDefExport, netDef, nodeDef);
@@ -463,7 +464,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_INT_TO_FLOAT:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportOperatorIntToFloatNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_RAY_CAST:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
@@ -475,10 +476,10 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_FLOATS_TO_VECTOR3:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportOperatorFloatsToVector3Node(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_FLOAT_TO_INT:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportOperatorFloatToIntNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_RANDOM_FLOAT:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);

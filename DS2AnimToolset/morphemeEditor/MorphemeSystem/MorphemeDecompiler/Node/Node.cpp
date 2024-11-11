@@ -4,8 +4,7 @@
 #include "../../MorphemeUtils/MorphemeUtils.h"
 #include "extern.h"
 #include "RCore.h"
-
-using namespace MR;
+#include "morpheme/Nodes/mrNodeFreeze.h"
 
 namespace MD
 {
@@ -63,6 +62,23 @@ namespace MD
 
 		}
 
+		bool isPassThroughTransformsOnce(MR::NodeDef* nodeDef)
+		{
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
+			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+			g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER fn = %s\n", fnName);
+
+			if (taskQueueFn == MR::nodeFreezePassThroughLastTrajectoryDeltaAndTransformsOnce)
+				return true;
+			else if (taskQueueFn == MR::nodeFreezePassThroughLastTrajectoryDeltaAndTransforms)
+				return false;
+			else
+				g_appLog->panicMessage("Unexpected task queing function %s\n", fnName);
+
+			return false;
+		}
+
 		ME::NodeExportXML* exportNodeCore(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
 			ME::NodeExportXML* nodeExportXML = static_cast<ME::NodeExportXML*>(netDefExport->createNode(nodeDef->getNodeID(), nodeDef->getNodeTypeID(), nodeDef->getParentNodeID(), false, netDef->getNodeNameFromNodeID(nodeDef->getNodeID())));
@@ -82,27 +98,25 @@ namespace MD
 
 		ME::NodeExportXML* exportNetworkNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_NETWORK)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_NETWORK, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_NETWORK);
 
 			return exportNodeCore(netDefExport, netDef, nodeDef);
 		}
 
 		ME::NodeExportXML* exportAnimSyncEventsNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_ANIM_EVENTS)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_ANIM_EVENTS, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_ANIM_EVENTS);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			int numAnimSets = netDef->getNumAnimSets();
 
-			MR::AttribDataBool* isLoop = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_LOOP));
+			MR::AttribDataBool* isLoop = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_LOOP));
 
 			for (short setIndex = 0; setIndex < netDef->getNumAnimSets(); setIndex++)
 			{
-				MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(nodeDef->getAttribData(ATTRIB_SEMANTIC_SOURCE_ANIM, setIndex));
+				MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM, setIndex));
 
 				if (sourceAnim)
 				{
@@ -139,8 +153,7 @@ namespace MD
 
 		ME::NodeExportXML* exportMirrorTransformNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_MIRROR_TRANSFORMS_ID)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_MIRROR_TRANSFORMS_ID, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_MIRROR_TRANSFORMS_ID);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -184,6 +197,68 @@ namespace MD
 				eventPassThrough = true;
 
 			nodeDataBlock->writeBool(eventPassThrough, "EventPassThrough");
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportFilterTransformsNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_FILTER_TRANSFORMS);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			int numAnimSets = netDef->getNumAnimSets();
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "NodeConnectedTo");
+			nodeDataBlock->writeInt(numAnimSets, "NumAnimSets");
+
+			for (MR::AnimSetIndex animSetIndex = 0; animSetIndex < numAnimSets; animSetIndex++)
+			{
+				CHAR paramName[256];
+
+				sprintf_s(paramName, "FilterIdCount_%d", animSetIndex + 1); // We add one to the index as LUA arrays start at 1 and the manifest was written out using LUA array indices
+
+				MR::AttribDataUIntArray* numBoneFilterIDs = static_cast<MR::AttribDataUIntArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BONE_IDS, animSetIndex));
+
+				nodeDataBlock->writeInt(numBoneFilterIDs->m_numValues);
+
+				for (uint32_t k = 0; k < numBoneFilterIDs->m_numValues; k++)
+				{
+					sprintf_s(paramName, "Id_%d_%d", animSetIndex + 1, k + 1);
+					nodeDataBlock->writeUInt(numBoneFilterIDs->m_values[k], paramName);
+				}
+			}
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportSingleFrameNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SINGLEFRAME);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			int numAnimSets = netDef->getNumAnimSets();
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(1)->m_sourceNodeID, nodeDef->getInputCPConnection(1)->m_sourcePinIndex, "Control");
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportFreezeNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_FREEZE);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			int numAnimSets = netDef->getNumAnimSets();
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
+			nodeDataBlock->writeBool(isPassThroughTransformsOnce(nodeDef), "passThroughTransformsOnce");
 
 			return nodeExportXML;
 		}

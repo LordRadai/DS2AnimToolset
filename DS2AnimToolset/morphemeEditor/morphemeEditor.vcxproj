@@ -223,6 +223,7 @@
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\Node.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\TransitNode.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\TransitCondition\TransitCondition.h" />
@@ -299,6 +300,7 @@
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\Node.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\TransitNode.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\TransitCondition\TransitCondition.cpp" />

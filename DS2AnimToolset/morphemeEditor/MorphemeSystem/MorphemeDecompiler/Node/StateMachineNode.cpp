@@ -88,8 +88,7 @@ namespace MD
 
 		ME::NodeExportXML* exportStateMachineNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_STATE_MACHINE, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_STATE_MACHINE);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());

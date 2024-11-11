@@ -180,8 +180,7 @@ namespace MD
 
 		ME::NodeExportXML* exportBlend2Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_BLEND_2)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_BLEND_2, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_2);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -212,8 +211,7 @@ namespace MD
 
 		ME::NodeExportXML* exportBlend2x2Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_BLEND_2)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_BLEND_2, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_2X2);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -251,8 +249,7 @@ namespace MD
 
 		ME::NodeExportXML* exportBlendNNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_BLEND_N)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_BLEND_N, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_N);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -296,8 +293,7 @@ namespace MD
 
 		ME::NodeExportXML* exportFeatherBlend2Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			if (nodeDef->getNodeTypeID() != NODE_TYPE_FEATHER_BLEND_2)
-				g_appLog->panicMessage("Expecting node type %d (got %d)\n", NODE_TYPE_FEATHER_BLEND_2, nodeDef->getNodeTypeID());
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_FEATHER_BLEND_2);
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
