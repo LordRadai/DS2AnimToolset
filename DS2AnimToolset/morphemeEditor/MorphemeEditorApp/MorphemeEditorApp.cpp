@@ -184,7 +184,7 @@ namespace
 
 		std::string animName = RString::toNarrow(path) + RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId));
 
-		g_appLog->debugMessage(MsgLevel_Info, "Exporting animation %s to FBX (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
+		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to FBX (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
 
 		FbxExporter* pExporter = FbxExporter::Create(g_pFbxManager, "Flver Exporter");
 		pExporter->SetFileExportVersion(FBX_2014_00_COMPATIBLE);
@@ -264,7 +264,7 @@ namespace
 
 		std::string animName = RString::toNarrow(path) + RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId)) + ".xmd";
 
-		g_appLog->debugMessage(MsgLevel_Info, "Exporting animation %s to XMD (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
+		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to XMD (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
 
 		XMD::XModel* xmd = XMDTranslator::createModel(rig, character->getCharacterModelCtrl()->getModel(), characterDef->getAnimFileLookUp()->getSourceFilename(animId), false);
 		XMDTranslator::createAnimCycle(xmd, anim, characterDef->getAnimFileLookUp()->getTakeName(animId));
@@ -1318,6 +1318,7 @@ bool MorphemeEditorApp::exportAnimations(std::wstring path)
 	int numAnims = characterDef->getNumAnims();
 
 	g_workerThread.load()->addProcess("Exporting animations", numAnims);
+	g_appLog->debugMessage(MsgLevel_Info, "Exporting animations:\n");
 
 	for (size_t i = 0; i < numAnims; i++)
 	{
@@ -1339,6 +1340,7 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 	const int numAnims = characterDef->getNumAnims();
 
 	g_workerThread.load()->addProcess("Exporting anim markup", numAnims);
+	g_appLog->debugMessage(MsgLevel_Info, "Exporting animation markups:\n");
 
 	for (size_t i = 0; i < numAnims; i++)
 	{
@@ -1516,11 +1518,11 @@ bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animId)
 
 	if (takeListXML)
 	{
-		g_appLog->debugMessage(MsgLevel_Info, "Exporting animation markup for animation %s (%ws)\n", animName.c_str(), this->m_character->getCharacterName().c_str());
+		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation markup for animation \"%s\" (%ws)\n", animName.c_str(), this->m_character->getCharacterName().c_str());
 
 		if (!takeListXML->write())
 		{
-			g_appLog->debugMessage(MsgLevel_Error, "Failed to export take list for animation %d\n", animId);
+			g_appLog->debugMessage(MsgLevel_Error, "\tFailed to export take list for animation %d\n", animId);
 
 			return false;
 		}
