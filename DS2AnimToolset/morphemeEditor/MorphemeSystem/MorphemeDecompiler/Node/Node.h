@@ -18,6 +18,7 @@ namespace MD
 		ME::NodeExportXML* exportFreezeNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 		ME::NodeExportXML* exportEmitRequestOnDiscreteEventNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 		ME::NodeExportXML* exportPlaySpeedModiferNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
+		ME::NodeExportXML* exportPassThroughNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 
 		void exportNodeTransitions(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport);
 

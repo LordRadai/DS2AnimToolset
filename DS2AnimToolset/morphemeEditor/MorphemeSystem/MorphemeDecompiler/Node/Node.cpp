@@ -316,5 +316,17 @@ namespace MD
 
 			return nodeExportXML;
 		}
+
+		ME::NodeExportXML* exportPassThroughNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_PASSTHROUGH);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "NodeConnectedTo");
+
+			return nodeExportXML;
+		}
 	}
 }

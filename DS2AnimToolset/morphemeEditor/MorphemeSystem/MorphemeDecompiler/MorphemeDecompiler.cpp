@@ -449,7 +449,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_PASSTHROUGH:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportPassThroughNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_MIRROR_TRANSFORMS_ID:
 			nodeExport = Node::exportMirrorTransformNode(netDefExport, netDef, nodeDef);
