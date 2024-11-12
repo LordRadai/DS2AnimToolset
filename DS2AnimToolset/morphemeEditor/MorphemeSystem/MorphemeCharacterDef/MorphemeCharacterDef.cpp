@@ -248,7 +248,7 @@ AnimObject* MorphemeCharacterDef::getAnimationById(int id)
 
 void MorphemeCharacterDef::addAnimation(const char* filename)
 {
-    g_appLog->debugMessage(MsgLevel_Debug, "\tRegistering animation \"%s\"\n", filename);
+    g_appLog->debugMessage(MsgLevel_Debug, "\tLoading animation \"%s\"\n", filename);
 
     int idx = m_anims.size();
     

@@ -268,7 +268,7 @@ namespace MD
 			int messageType = netDef->getMessageDistributor(i)->m_messageType;
 			const char* messageName = netDef->getMessageNameFromMessageID(messageId);
 
-			g_appLog->debugMessage(MsgLevel_Info, "\tExporting message %d (name=\"%s\", typeId = % d)\n", messageId, messageName, messageType);
+			g_appLog->debugMessage(MsgLevel_Info, "\tExporting message %d (name=\"%s\", typeId=%d)\n", messageId, messageName, messageType);
 
 			netDefExport->createMessage(RString::toWide(messageName).c_str(), messageType, messageId);
 		}
