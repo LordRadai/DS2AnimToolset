@@ -27,7 +27,7 @@ namespace
     int getChrIdFromNmbFileName(std::wstring name)
     {
         std::wstring chr_id_str;
-        int m_chrId = -1;
+        int chrId = -1;
 
         int lastCPos = name.find_last_of(L"\\");
 
@@ -36,11 +36,9 @@ namespace
 
         chr_id_str = name.substr(lastCPos + 2, 4);
 
-        m_chrId = stoi(chr_id_str);
+        chrId = stoi(chr_id_str);
 
-        g_appLog->debugMessage(MsgLevel_Debug, "Chr ID: %d\n", m_chrId);
-
-        return m_chrId;
+        return chrId;
     }
 
 }
@@ -60,6 +58,7 @@ MorphemeCharacterDef* MorphemeCharacterDef::create(const char* filename)
   strcpy(instance->m_filename, file_name.string().c_str());
 
   instance->m_chrId = getChrIdFromNmbFileName(filepath.c_str());
+  g_appLog->debugMessage(MsgLevel_Debug, "\tChr ID: %d\n", instance->m_chrId);
 
   //----------------------------
   // Load the given bundle file into memory and load the bundle.
@@ -69,6 +68,8 @@ MorphemeCharacterDef* MorphemeCharacterDef::create(const char* filename)
   // by the GameAssetLoader.
   void* bundle = NULL;
   int64_t bundleSize = 0;
+
+  g_appLog->debugMessage(MsgLevel_Debug, "\tLoading SimpleBundle at %s:\n", filename);
 
   //----------------------------
   // Load binary bundle into memory
@@ -148,6 +149,8 @@ bool MorphemeCharacterDef::init(void* bundle, size_t bundleSize)
   m_registeredAssetIDs = (UINT*)NMPMemoryCalloc(m_numRegisteredAssets * sizeof(UINT));
   m_clientAssets = (void**)NMPMemoryCalloc(m_numClientAssets * sizeof(void*));
   m_rigToAnimMaps.clear();
+
+  g_appLog->debugMessage(MsgLevel_Info, "\t\tBundle size: %d\n", bundleSize);
 
   //----------------------------
   // Process the bundle and extract the contents into memory
@@ -245,7 +248,7 @@ AnimObject* MorphemeCharacterDef::getAnimationById(int id)
 
 void MorphemeCharacterDef::addAnimation(const char* filename)
 {
-    g_appLog->debugMessage(MsgLevel_Debug, "Registering animation %s\n", filename);
+    g_appLog->debugMessage(MsgLevel_Debug, "\tRegistering animation %s\n", filename);
 
     int idx = m_anims.size();
     

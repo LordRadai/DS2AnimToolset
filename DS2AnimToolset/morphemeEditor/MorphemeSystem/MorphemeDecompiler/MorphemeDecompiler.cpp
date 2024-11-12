@@ -260,17 +260,17 @@ namespace MD
 		for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
 			exportNode(netDefExport, netDef, i);
 
-		//for (size_t i = 0; i < netDefExport->getNumNodes(); i++)
-			//Node::setNodeName((ME::NodeExportXML*)netDefExport->getNode(i));
-
 		const NMP::IDMappedStringTable* messageTable = netDef->getMessageIDNamesTable();
 
 		for (size_t i = 0; i < netDef->getNumMessages(); i++)
 		{
 			int messageId = netDef->getMessageDistributor(i)->m_messageID;
 			int messageType = netDef->getMessageDistributor(i)->m_messageType;
+			const char* messageName = netDef->getMessageNameFromMessageID(messageId);
 
-			netDefExport->createMessage(RString::toWide(netDef->getMessageNameFromMessageID(messageId)).c_str(), messageType, messageId);
+			g_appLog->debugMessage(MsgLevel_Info, "\tExporting message %s (messageID=%d, typeId=%d)\n", messageName, messageId, messageType);
+
+			netDefExport->createMessage(RString::toWide(messageName).c_str(), messageType, messageId);
 		}
 
 		netDefExport->setRootNodeNetworkID(netDef->getRootNodeID());
@@ -289,7 +289,7 @@ namespace MD
 		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
 		MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
 
-		g_appLog->debugMessage(MsgLevel_Info, "Exporting node %d (typeId=%d)\n", nodeId, nodeTypeID);
+		g_appLog->debugMessage(MsgLevel_Info, "\tExporting node %d (typeId=%d)\n", nodeId, nodeTypeID);
 
 		ME::NodeExportXML* nodeExport = nullptr;
 
@@ -428,7 +428,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_PLAY_SPEED_MODIFIER:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportPlaySpeedModiferNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_SCALE_TO_DURATION:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
@@ -470,7 +470,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_SMOOTH_FLOAT:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportOperatorSmoothFloatNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_RAMP_FLOAT:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);

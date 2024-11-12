@@ -278,7 +278,7 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 
 	this->m_nmRig = rig;
 
-	g_appLog->debugMessage(MsgLevel_Info, "Creating bone maps:");
+	g_appLog->debugMessage(MsgLevel_Info, "Creating bone maps:\n");
 
 	this->createFlverToMorphemeBoneMap();
 	this->createMorphemeToFlverBoneMap();

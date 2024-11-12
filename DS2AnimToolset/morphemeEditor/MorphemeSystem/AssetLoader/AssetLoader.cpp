@@ -43,9 +43,7 @@ void AssetLoader::evalBundleRequirements(
   NMP::Memory::Format assetMemReqs;
 
   while (bundleReader.readNextAsset(assetType, assetID, fileGuid, asset, assetMemReqs))
-  {
-    g_appLog->debugMessage(MsgLevel_Info, "Found assetType %d (size=%d, alignment=%d)\n", assetType, assetMemReqs.size, assetMemReqs.alignment & 0xFFFFFFFF);
-    
+  {    
     if (assetType < MR::Manager::kAsset_NumAssetTypes)
     {
       // The pluginList is used only when loading the bundle and isn't registered with the manager
@@ -59,8 +57,6 @@ void AssetLoader::evalBundleRequirements(
       ++numClientAssets;
     }
   }
-
-  g_appLog->debugMessage(MsgLevel_Info, "Finished parsing bundle file with a total of registered %d assets\n", numRegisteredAssets);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -101,6 +97,8 @@ MR::NetworkDef* AssetLoader::loadBundle(
 
   while (bundleReader.readNextAsset(assetType, assetID, fileGuid, asset, assetMemReqs))
   {
+      g_appLog->debugMessage(MsgLevel_Info, "\t\tRead asset %X (type %d, size=%d, alignment=%d)\n", assetID, assetType, assetMemReqs.size, assetMemReqs.alignment & 0xFFFFFFFF);
+
     //----------------------------
     // Only consider core runtime asset for registration with the manager. The locate process is also different for 
     // core and client assets, while core assets can be located using the manager, client assets need to be located 
@@ -231,6 +229,8 @@ MR::NetworkDef* AssetLoader::loadBundle(
       clientAssets[clientAssetIndex++] = asset;
     }
   }
+
+  g_appLog->debugMessage(MsgLevel_Info, "\t\tFinished parsing bundle file with a total of registered %d assets\n", registeredAssetIndex);
 
   return netDef;
 }

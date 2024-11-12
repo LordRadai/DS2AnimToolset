@@ -1119,7 +1119,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 		wchar_t filename[256];
 		swprintf_s(filename, L"%ws_%d.mrctrl", chrName.c_str(), i);
 
-		g_appLog->debugMessage(MsgLevel_Info, "Exporting character controller %d for %ws\n", i, chrName.c_str());
+		g_appLog->debugMessage(MsgLevel_Info, "Exporting character controller %d for %ws (%ws)\n", i, chrName.c_str(), filename);
 
 		ME::CharacterControllerExportXML* characterControllerExport = MD::exportCharacterController(characterDef->getCharacterController(i), filename);
 	
@@ -1149,7 +1149,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 		wchar_t filename[256];
 		swprintf_s(filename, L"%ws_%d.mrarig", chrName.c_str(), i);
 
-		g_appLog->debugMessage(MsgLevel_Info, "Exporting rig for animation set %d for %ws\n", i, chrName.c_str());
+		g_appLog->debugMessage(MsgLevel_Info, "Exporting rig for animation set %d for %ws (%ws)\n", i, chrName.c_str(), filename);
 
 		ME::RigExportXML* rigExport = MD::exportRig(characterDef->getNetworkDef(), characterDef->getNetworkDef()->getRig(i), filename);
 
@@ -1174,7 +1174,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	wchar_t libraryFilename[256];
 	swprintf_s(libraryFilename, L"%ws_Library.xml", chrName.c_str());
 
-	g_appLog->debugMessage(MsgLevel_Info, "Exporting animation library for %ws\n", chrName.c_str());
+	g_appLog->debugMessage(MsgLevel_Info, "Exporting animation library for %ws (%ws)\n", chrName.c_str(), libraryFilename);
 
 	ME::AnimationLibraryXML* animLibraryExport = MD::exportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, chrName.c_str(), libraryFilename);
 
@@ -1191,7 +1191,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	wchar_t messagePresetFilename[256];
 	swprintf_s(messagePresetFilename, L"%ws_Preset.xml", chrName.c_str());
 
-	g_appLog->debugMessage(MsgLevel_Info, "Exporting message preset library for %ws\n", chrName.c_str());
+	g_appLog->debugMessage(MsgLevel_Info, "Exporting message preset library for %ws (%ws)\n", chrName.c_str(), messagePresetFilename);
 
 	ME::MessagePresetLibraryExportXML* messagePresetExport = MD::exportMessagePresetLibrary(characterDef->getNetworkDef(), chrName, messagePresetFilename);
 
@@ -1213,7 +1213,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	exportNetworkDefFnTables(netDef, L"fnTables.txt");
 #endif
 
-	g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for c%04d\n", chrName);
+	g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for %ws (%ws):\n", chrName.c_str(), networkFilename);
 
 	ME::NetworkDefExportXML* netDefExport = MD::exportNetwork(netDef, animLibraryExport, messagePresetExport, chrName, networkFilename);
 

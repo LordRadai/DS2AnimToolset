@@ -3,11 +3,28 @@
 #include "extern.h"
 #include "RCore.h"
 #include "morpheme/mrAttribData.h"
+#include "morpheme/Nodes/mrNodeOperatorSmoothFloat.h"
 
 namespace MD
 {
 	namespace Node
 	{
+		bool isSmoothFloatScalar(MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_OP_SMOOTH_FLOAT);
+			
+			MR::OutputCPTask outputCPTask = nodeDef->getOutputCPTask(0);
+
+			if (outputCPTask == MR::nodeOperatorSmoothFloatCriticallyDampFloat)
+				return false;
+			else if (outputCPTask == MR::nodeOperatorSmoothFloatCriticallyDampVector)
+				return false;
+			else
+				g_appLog->panicMessage("Invalid outputCPTaskFunction %s (nodeId=%d)\n", MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), nodeDef->getNodeID());
+
+			return false;
+		}
+
 		ME::NodeExportXML* exportOperatorFunctionNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_OP_FUNCTION);
@@ -109,6 +126,28 @@ namespace MD
 
 			nodeDataBlock->writeFloat(noiseGenDef->m_noiseSawFrequency, "NoiseSawFrequency");
 			nodeDataBlock->writeInt(noiseGenDef->m_flags, "NoiseFlags");
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportOperatorSmoothFloatNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_OP_SMOOTH_FLOAT);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "Input");
+
+			MR::AttribDataSmoothFloatOperation* smoothFloatOperation = static_cast<MR::AttribDataSmoothFloatOperation*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+			nodeDataBlock->writeBool(isSmoothFloatScalar(nodeDef), "IsScalar");
+			nodeDataBlock->writeBool(smoothFloatOperation->m_smoothVel, "SmoothVelocity");
+			nodeDataBlock->writeFloat(smoothFloatOperation->m_floatRate, "SmoothTime");
+			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueX, "InitValue_X");
+			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueY, "InitValue_Y");
+			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueZ, "InitValue_Z");
+			nodeDataBlock->writeBool(smoothFloatOperation->m_useInitValOnInit, "UseInitValueOnInit");
 
 			return nodeExportXML;
 		}

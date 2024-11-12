@@ -19,8 +19,6 @@ namespace
 
         chrId = stoi(chrIdStr);
 
-        g_appLog->debugMessage(MsgLevel_Debug, "Chr ID: %d\n", chrId);
-
         return chrId;
     }
 
@@ -62,6 +60,8 @@ namespace
         swprintf_s(chrIdStr, L"%04d", chrId);
 
         std::vector<std::wstring> files;
+
+        g_appLog->debugMessage(MsgLevel_Debug, "TimeAct belonging to c%04d:\n", chrId);
 
         for (const auto& entry : std::filesystem::directory_iterator(tae_path))
         {
