@@ -443,7 +443,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_SWITCH:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportSwitchNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_SEQUENCE:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
@@ -560,7 +560,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_SMOOTH_TRANSFORMS:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportSmoothTransformsNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_EMIT_MESSAGE_AND_CP:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);

@@ -328,5 +328,73 @@ namespace MD
 
 			return nodeExportXML;
 		}
+
+		ME::NodeExportXML* exportSmoothTransformsNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SMOOTH_TRANSFORMS);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "SourceNodeID");
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "Multiplier");
+
+			int numAnimSets = netDef->getNumAnimSets();
+
+			CHAR paramNumSmoothingStrenght[256];
+			CHAR paramSmoothingStrenght[256];
+			for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
+			{
+				sprintf_s(paramNumSmoothingStrenght, "numSmoothingStrenghtSet_%d", animSetIdx);
+
+				MR::AttribDataFloatArray* smoothingStrenghtAttribData = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BONE_WEIGHTS, animSetIdx));
+				nodeDataBlock->writeUInt(smoothingStrenghtAttribData->m_numValues, paramNumSmoothingStrenght);
+
+				for (uint32_t i = 0; i < smoothingStrenghtAttribData->m_numValues; i++)
+				{
+					sprintf_s(paramSmoothingStrenght, "SmoothingStrenghts_%d_Set_%d", i + 1, animSetIdx + 1);
+					nodeDataBlock->writeFloat(smoothingStrenghtAttribData->m_values[i], paramSmoothingStrenght);
+				}
+			}
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportSwitchNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SWITCH);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int childNodeCount = nodeDef->getNumChildNodes();
+
+			nodeDataBlock->writeInt(childNodeCount, "SourceNodeCount");
+
+			CHAR paramName[256];
+			for (uint32_t i = 0; i < childNodeCount; i++)
+			{
+				sprintf_s(paramName, "Source%dNodeID", i);
+				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
+			}
+
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "Weight");
+
+			MR::AttribDataSwitchDef* switchDef = static_cast<MR::AttribDataSwitchDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+			MR::AttribDataFloatArray* childNodeWeights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+
+			for (uint32_t i = 0; i < childNodeCount; i++)
+			{
+				sprintf_s(paramName, "SourceWeight_%d", i);
+				nodeDataBlock->writeFloat(childNodeWeights->m_values[i], paramName);
+			}
+
+			bool wrapWeights = (childNodeWeights->m_numValues == (childNodeCount + 1));
+			nodeDataBlock->writeBool(wrapWeights, "WrapWeight");
+			nodeDataBlock->writeUInt(switchDef->m_evalMode, "EvaluationMethod");
+			nodeDataBlock->writeUInt(switchDef->m_inputSelectionMethod, "InputSelectionMethod");
+
+			return nodeExportXML;
+		}
 	}
 }
