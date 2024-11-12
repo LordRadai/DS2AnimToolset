@@ -482,7 +482,7 @@ namespace MD
 			nodeExport = Node::exportOperatorFloatToIntNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_RANDOM_FLOAT:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportOperatorRandomFloatNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_PHYSICS_INFO:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);

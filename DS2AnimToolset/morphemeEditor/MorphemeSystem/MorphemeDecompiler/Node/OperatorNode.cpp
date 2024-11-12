@@ -152,5 +152,22 @@ namespace MD
 
 			return nodeExportXML;
 		}
+
+		ME::NodeExportXML* exportOperatorRandomFloatNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_OP_RANDOM_FLOAT);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			MR::AttribDataRandomFloatDef* randomFloatDef = static_cast<MR::AttribDataRandomFloatDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+			nodeDataBlock->writeFloat(randomFloatDef->m_min, "Min");
+			nodeDataBlock->writeFloat(randomFloatDef->m_max, "Max");
+			nodeDataBlock->writeFloat(randomFloatDef->m_duration, "Interval");
+			nodeDataBlock->writeUInt(randomFloatDef->m_seed, "Seed");
+
+			return nodeExportXML;
+		}
 	}
 }
