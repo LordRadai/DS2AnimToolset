@@ -56,8 +56,6 @@ namespace
 
 		int boneIdx = pRig->getBoneIndexFromName(boneName.c_str());
 
-		g_appLog->debugMessage(MsgLevel_Debug, "Bone %s: (to=%d, from=%d)\n", boneName.c_str(), boneIdx, boneId);
-
 		return boneIdx;
 	}
 
@@ -280,6 +278,8 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 
 	this->m_nmRig = rig;
 
+	g_appLog->debugMessage(MsgLevel_Info, "Creating bone maps:");
+
 	this->createFlverToMorphemeBoneMap();
 	this->createMorphemeToFlverBoneMap();
 }
@@ -305,13 +305,13 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 
 		if (name.extension().compare(".flv") == 0)
 		{
+			g_appLog->debugMessage(MsgLevel_Debug, "Loading model %s\n", path.c_str());
+
 			UMEM* umem = uopenMem((char*)bnd->getFile(i)->data, bnd->getFile(i)->uncompressedSize);
 
 			model = new FlverModel(umem, rig);
 			model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
 			model->m_fileOrigin = path + L"\\" + name.c_str();
-
-			g_appLog->debugMessage(MsgLevel_Debug, "Loaded model %s\n", model->m_name.c_str());
 
 			found = true;
 			break;
@@ -797,6 +797,7 @@ void FlverModel::update(float dt)
 	}
 }
 
+//Draws the character
 void FlverModel::draw(RenderManager* renderManager)
 {
 	const Vector4 boneMarkerColor = RMath::getFloatColor(IM_COL32(51, 102, 255, 255));
@@ -906,6 +907,7 @@ void FlverModel::draw(RenderManager* renderManager)
 	}
 }
 
+//Looks up a bone in the flver rig by name
 int FlverModel::getFlverBoneIndexByName(const char* name)
 {
 	for (size_t i = 0; i < this->m_flver->header.boneCount; i++)
@@ -917,6 +919,7 @@ int FlverModel::getFlverBoneIndexByName(const char* name)
 	return -1;
 }
 
+//Looks up a bone in the morpheme rig by name
 int FlverModel::getMorphemeBoneIndexByName(const char* name)
 {
 	for (size_t i = 0; i < this->m_nmRig->getNumBones(); i++)
@@ -928,16 +931,22 @@ int FlverModel::getMorphemeBoneIndexByName(const char* name)
 	return -1;
 }
 
-//Creates an anim map from the flver model bone to the morpheme rig and saves it in m_morphemeToFlverRigMap
+//Creates an anim map from the flver model bone to the morpheme rig
 void FlverModel::createFlverToMorphemeBoneMap()
-{
+{	
 	this->m_flverToMorphemeBoneMap.clear();
 	this->m_flverToMorphemeBoneMap.reserve(this->m_flver->header.boneCount);
 
 	for (int i = 0; i < this->m_flver->header.boneCount; i++)
+	{
 		this->m_flverToMorphemeBoneMap.push_back(getMorphemeRigBoneIndexByFlverBoneIndex(this->m_nmRig, this, i));
+		
+		std::string boneName = this->getFlverBoneName(i);
+		g_appLog->debugMessage(MsgLevel_Debug, "\tBone %s: (to=%d, from=%d)\n", boneName.c_str(), this->m_flverToMorphemeBoneMap[i], i);
+	}
 }
 
+//Creates an anim map from the morpheme rig to the flver model bone
 void FlverModel::createMorphemeToFlverBoneMap()
 {
 	this->m_morphemeToFlverBoneMap.clear();

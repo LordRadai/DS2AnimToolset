@@ -92,7 +92,7 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 
 			g_appLog->debugMessage(MsgLevel_Warn, "Unhandled node exporter for node type %d\n", nodeDef->getNodeTypeID());
-
+			
 			return nodeExportXML;
 		}
 
@@ -255,9 +255,51 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			int numAnimSets = netDef->getNumAnimSets();
-
 			nodeDataBlock->writeBool(isPassThroughTransformsOnce(nodeDef), "passThroughTransformsOnce");
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportEmitRequestOnDiscreteEventNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_EMIT_MESSAGE_ON_DISCRETE_EVENT);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "SourceNodeID");
+
+			MR::AttribDataEmittedMessagesMap* emittedMessageMap = static_cast<MR::AttribDataEmittedMessagesMap*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_EMITTED_MESSAGES_MAP));
+			MR::AttribDataIntArray* eventUserDatas = static_cast<MR::AttribDataIntArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+			int numMessageSlots = emittedMessageMap->getEmittedMessageMapLength();
+
+			nodeDataBlock->writeUInt(numMessageSlots, "NumMessageSlots");
+
+			CHAR paramName[256];
+			for (uint32_t i = 0; i < numMessageSlots; i++)
+			{
+				const MR::EmittedMessageMap* messageMap = emittedMessageMap->getEmittedMessageEntry(i);
+
+				sprintf_s(paramName, "EventUserData_%d", i);
+				nodeDataBlock->writeInt(eventUserDatas->m_values[i], paramName);
+
+				sprintf_s(paramName, "ActionID_%d", i);
+				nodeDataBlock->writeUInt(messageMap->messageID);
+				
+				bool broadcast = false;
+
+				if (messageMap->stateMachineNodeID == MR::NETWORK_NODE_ID)
+					broadcast = true;
+				else
+				{
+					sprintf_s(paramName, "TargetNodePath_%d", i);
+					nodeDataBlock->writeString(netDefExport->getNode(messageMap->stateMachineNodeID)->getName(), paramName);
+				}
+
+				sprintf_s(paramName, "Broadcast_%d", i);
+				nodeDataBlock->writeBool(broadcast, paramName);
+			}
 
 			return nodeExportXML;
 		}

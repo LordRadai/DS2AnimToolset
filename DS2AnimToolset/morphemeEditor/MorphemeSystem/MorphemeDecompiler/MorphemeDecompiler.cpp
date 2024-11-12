@@ -289,7 +289,7 @@ namespace MD
 		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
 		MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
 
-		g_appLog->debugMessage(MsgLevel_Debug, "Exporting node %d (typeId=%d)\n", nodeId, nodeTypeID);
+		g_appLog->debugMessage(MsgLevel_Info, "Exporting node %d (typeId=%d)\n", nodeId, nodeTypeID);
 
 		ME::NodeExportXML* nodeExport = nullptr;
 
@@ -437,7 +437,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_EMIT_MESSAGE_ON_DISCRETE_EVENT:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportEmitRequestOnDiscreteEventNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CLOSEST_ANIM:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
