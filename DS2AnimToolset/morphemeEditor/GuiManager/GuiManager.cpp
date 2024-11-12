@@ -934,6 +934,8 @@ void GuiManager::modelViewerWindow()
 
 	ImGui::Begin("Model Viewer", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar);
 
+	const bool isWindowFocused = ImGui::IsWindowFocused();
+
 	MorphemeEditorApp::WindowFlags* windowStates = editorApp->getWindowFlags();
 	MorphemeEditorApp::PreviewFlags* previewFlags = editorApp->getPreviewFlags();
 	MorphemeEditorApp::TaskFlags* taskFlags = editorApp->getTaskFlags();
@@ -1006,7 +1008,7 @@ void GuiManager::modelViewerWindow()
 		}
 
 		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_BACKWARD_STEP))
+		if (ImGui::Button(ICON_FA_BACKWARD_STEP) || (isWindowFocused && (GetAsyncKeyState(0x51) & 1)))
 		{
 			animPlayer->stepPlay(-1.f / 30.f);
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
@@ -1017,17 +1019,17 @@ void GuiManager::modelViewerWindow()
 
 		if (!animPlayer->isPaused())
 		{
-			if (ImGui::Button(ICON_FA_PAUSE))
+			if (ImGui::Button(ICON_FA_PAUSE) || (isWindowFocused && (GetAsyncKeyState(VK_SPACE) & 1)))
 				animPlayer->setPause(true);
 		}
 		else
 		{
-			if (ImGui::Button(ICON_FA_PLAY))
+			if (ImGui::Button(ICON_FA_PLAY) || (isWindowFocused && (GetAsyncKeyState(VK_SPACE) & 1)))
 				animPlayer->setPause(false);
 		}
 
 		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_FORWARD_STEP))
+		if (ImGui::Button(ICON_FA_FORWARD_STEP) || (isWindowFocused && (GetAsyncKeyState(0x45) & 1)))
 		{
 			animPlayer->stepPlay(1.f / 30.f);
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
