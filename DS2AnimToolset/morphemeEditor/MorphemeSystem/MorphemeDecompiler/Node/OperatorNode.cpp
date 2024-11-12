@@ -143,6 +143,7 @@ namespace MD
 
 			nodeDataBlock->writeBool(isSmoothFloatScalar(nodeDef), "IsScalar");
 			nodeDataBlock->writeBool(smoothFloatOperation->m_smoothVel, "SmoothVelocity");
+
 			nodeDataBlock->writeFloat(smoothFloatOperation->m_floatRate, "SmoothTime");
 			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueX, "InitValue_X");
 			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueY, "InitValue_Y");
