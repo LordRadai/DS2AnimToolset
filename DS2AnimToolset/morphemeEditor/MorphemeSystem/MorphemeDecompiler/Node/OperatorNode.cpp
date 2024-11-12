@@ -169,5 +169,41 @@ namespace MD
 
 			return nodeExportXML;
 		}
+
+		ME::NodeExportXML* exportOperatorOneInputArithmeticNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "Input");
+
+			MR::AttribDataArithmeticOperation* functionOpCode = static_cast<MR::AttribDataArithmeticOperation*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+			nodeDataBlock->writeInt(functionOpCode->m_operation, "OperationCode");
+			nodeDataBlock->writeFloat(functionOpCode->m_constValue, "ConstantValueX");
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportOperatorOneInputArithmeticVector3Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC_VECTOR3);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "Input");
+
+			MR::AttribDataArithmeticOperation* functionOpCode = static_cast<MR::AttribDataArithmeticOperation*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+			nodeDataBlock->writeInt(functionOpCode->m_operation, "OperationCode");
+			nodeDataBlock->writeFloat(functionOpCode->m_constVector.x, "ConstantValueX");
+			nodeDataBlock->writeFloat(functionOpCode->m_constVector.y, "ConstantValueY");
+			nodeDataBlock->writeFloat(functionOpCode->m_constVector.z, "ConstantValueZ");
+
+			return nodeExportXML;
+		}
 	}
 }

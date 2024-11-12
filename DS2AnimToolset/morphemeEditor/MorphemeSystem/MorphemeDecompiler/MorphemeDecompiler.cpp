@@ -377,10 +377,10 @@ namespace MD
 			nodeExport = Node::exportOperatorArithmeticVector3Node(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportOperatorOneInputArithmeticNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC_VECTOR3:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportOperatorOneInputArithmeticVector3Node(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_NOISE_GEN:
 			nodeExport = Node::exportOperatorNoiseGenNode(netDefExport, netDef, nodeDef);
