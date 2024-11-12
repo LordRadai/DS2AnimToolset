@@ -268,7 +268,7 @@ namespace MD
 			int messageType = netDef->getMessageDistributor(i)->m_messageType;
 			const char* messageName = netDef->getMessageNameFromMessageID(messageId);
 
-			g_appLog->debugMessage(MsgLevel_Info, "\tExporting message %s (messageID=%d, typeId=%d)\n", messageName, messageId, messageType);
+			g_appLog->debugMessage(MsgLevel_Info, "\tExporting message %d (name=\"%s\", typeId = % d)\n", messageId, messageName, messageType);
 
 			netDefExport->createMessage(RString::toWide(messageName).c_str(), messageType, messageId);
 		}
@@ -288,8 +288,9 @@ namespace MD
 	{
 		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
 		MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
+		const char* nodeName = netDef->getNodeNameFromNodeID(nodeId);
 
-		g_appLog->debugMessage(MsgLevel_Info, "\tExporting node %d (typeId=%d)\n", nodeId, nodeTypeID);
+		g_appLog->debugMessage(MsgLevel_Info, "\tExporting node %d (name=\"%s\", typeId=%d)\n", nodeId, nodeName, nodeTypeID);
 
 		ME::NodeExportXML* nodeExport = nullptr;
 
