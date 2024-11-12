@@ -617,6 +617,7 @@ void Character::loadTimeAct(const char* filename)
 
     if (suffix.compare("") == 0)
     {
+        g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct \"%s\"\n", filename);
         TimeAct::TimeAct* timeAct = TimeAct::TimeAct::createFromFile(RString::toWide(filename), g_taeTemplate);
 
         this->m_timeAct = createTimeActXML(std::filesystem::path(prefix).filename().string(), timeAct, nullptr, nullptr);
@@ -627,8 +628,13 @@ void Character::loadTimeAct(const char* filename)
         std::string taeSfx = prefix + "_sfx.tae";
         std::string taeSnd = prefix + "_snd.tae";
 
+        g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct \"%s\"\n", taePl.c_str());
         TimeAct::TimeAct* timeActPl = TimeAct::TimeAct::createFromFile(RString::toWide(taePl), g_taeTemplate);
+        
+        g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct \"%s\"\n", taeSfx.c_str());
         TimeAct::TimeAct* timeActSfx = TimeAct::TimeAct::createFromFile(RString::toWide(taeSfx), g_taeTemplate);
+        
+        g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct \"%s\"\n", taeSnd.c_str());
         TimeAct::TimeAct* timeActSnd = TimeAct::TimeAct::createFromFile(RString::toWide(taeSnd), g_taeTemplate);
 
         this->m_timeAct = createTimeActXML(std::filesystem::path(prefix).filename().string(), timeActPl, timeActSfx, timeActSnd);
