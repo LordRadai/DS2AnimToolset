@@ -305,7 +305,7 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 
 		if (name.extension().compare(".flv") == 0)
 		{
-			g_appLog->debugMessage(MsgLevel_Debug, "Loading model %ws\n", path.c_str());
+			g_appLog->debugMessage(MsgLevel_Debug, "Loading model \"%ws\"\n", path.c_str());
 
 			UMEM* umem = uopenMem((char*)bnd->getFile(i)->data, bnd->getFile(i)->uncompressedSize);
 
@@ -942,7 +942,7 @@ void FlverModel::createFlverToMorphemeBoneMap()
 		this->m_flverToMorphemeBoneMap.push_back(getMorphemeRigBoneIndexByFlverBoneIndex(this->m_nmRig, this, i));
 		
 		std::string boneName = this->getFlverBoneName(i);
-		g_appLog->debugMessage(MsgLevel_Debug, "\tBone %s: (to=%d, from=%d)\n", boneName.c_str(), this->m_flverToMorphemeBoneMap[i], i);
+		g_appLog->debugMessage(MsgLevel_Debug, "\tBone \"%s\": (to=%d, from=%d)\n", boneName.c_str(), this->m_flverToMorphemeBoneMap[i], i);
 	}
 }
 
