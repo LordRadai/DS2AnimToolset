@@ -305,7 +305,7 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 
 		if (name.extension().compare(".flv") == 0)
 		{
-			g_appLog->debugMessage(MsgLevel_Debug, "Loading model %s\n", path.c_str());
+			g_appLog->debugMessage(MsgLevel_Debug, "Loading model %ws\n", path.c_str());
 
 			UMEM* umem = uopenMem((char*)bnd->getFile(i)->data, bnd->getFile(i)->uncompressedSize);
 
