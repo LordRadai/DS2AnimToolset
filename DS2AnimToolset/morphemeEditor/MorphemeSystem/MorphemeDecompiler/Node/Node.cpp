@@ -376,7 +376,7 @@ namespace MD
 			CHAR paramSmoothingStrenght[256];
 			for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
 			{
-				sprintf_s(paramNumSmoothingStrenght, "numSmoothingStrengthsSet_%d", animSetIdx);
+				sprintf_s(paramNumSmoothingStrenght, "numSmoothingStrengthsSet_%d", animSetIdx + 1);
 
 				MR::AttribDataFloatArray* smoothingStrenghtAttribData = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BONE_WEIGHTS, animSetIdx));
 				nodeDataBlock->writeUInt(smoothingStrenghtAttribData->m_numValues, paramNumSmoothingStrenght);
