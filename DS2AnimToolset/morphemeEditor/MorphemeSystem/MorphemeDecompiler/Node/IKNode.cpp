@@ -156,5 +156,100 @@ namespace MD
 
 			return nodeExportXML;
 		}
+
+		ME::NodeExportXML* exportLockFootNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_LOCK_FOOT);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int numAnimSets = netDef->getNumAnimSets();
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkFkBlendWeight", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "SwivelContributionToOrientation", nodeDef->getInputCPConnection(1));
+		
+			MR::AttribDataLockFootSetup* lockFootSetup = static_cast<MR::AttribDataLockFootSetup*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+			nodeDataBlock->writeBool(lockFootSetup->m_assumeSimpleHierarchy, "AssumeSimpleHierarchy");
+			nodeDataBlock->writeUInt(lockFootSetup->m_upAxis, "UpAxisIndex");
+			nodeDataBlock->writeBool(lockFootSetup->m_lockVerticalMotion, "LockVerticalMotion");
+			nodeDataBlock->writeBool(lockFootSetup->m_trackCharacterController, "TrackCharacterController");
+
+			CHAR paramName[256];
+			for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
+			{
+				MR::AttribDataLockFootChain* hipsIKAnimSetDef = static_cast<MR::AttribDataLockFootChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET));
+
+				sprintf_s(paramName, "FlipKneeRotationDirection_%d", animSetIdx + 1);
+				nodeDataBlock->writeBool(false, paramName);
+
+				sprintf_s(paramName, "KneeRotationAxisX_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_kneeRotationAxis.x, paramName);
+				sprintf_s(paramName, "KneeRotationAxisY_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_kneeRotationAxis.y, paramName);
+				sprintf_s(paramName, "KneeRotationAxisZ_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_kneeRotationAxis.z, paramName);
+
+				sprintf_s(paramName, "BallRotationAxisX_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ballRotationAxis.x, paramName);
+				sprintf_s(paramName, "BallRotationAxisY_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ballRotationAxis.y, paramName);
+				sprintf_s(paramName, "BallRotationAxisZ_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ballRotationAxis.z, paramName);
+
+				sprintf_s(paramName, "FootLevelVectorX_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ballRotationAxis.x, paramName);
+				sprintf_s(paramName, "FootLevelVectorY_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ballRotationAxis.y, paramName);
+				sprintf_s(paramName, "FootLevelVectorZ_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ballRotationAxis.z, paramName);
+
+				sprintf_s(paramName, "UseBallJoint_%d", animSetIdx + 1);
+				nodeDataBlock->writeBool(hipsIKAnimSetDef->m_useBallJoint, paramName);
+
+				sprintf_s(paramName, "FixToeGroundPenetration_%d", animSetIdx + 1);
+				nodeDataBlock->writeBool(hipsIKAnimSetDef->m_fixToeGroundPenetration, paramName);
+
+				sprintf_s(paramName, "FixGroundPenetration_%d", animSetIdx + 1);
+				nodeDataBlock->writeBool(hipsIKAnimSetDef->m_fixGroundPenetration, paramName);
+
+				sprintf_s(paramName, "FixFootOrientation_%d", animSetIdx + 1);
+				nodeDataBlock->writeBool(hipsIKAnimSetDef->m_fixFootOrientation, paramName);
+
+				sprintf_s(paramName, "CatchUpSpeedFactor_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_catchUpSpeedFactor, paramName);
+
+				sprintf_s(paramName, "StraightestLegFactor_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_straightestLegFactor, paramName);
+
+				sprintf_s(paramName, "SnapToSourceDistance_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_snapToSourceDistance, paramName);
+
+				sprintf_s(paramName, "AnkleLowerHeightBound_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ankleLowerHeightBound, paramName);
+
+				sprintf_s(paramName, "LowerHeightBound_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_lowerHeightBound, paramName);
+
+				sprintf_s(paramName, "ToeLowerHeightBound_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_toeLowerHeightBound, paramName);
+
+				sprintf_s(paramName, "ToeIndex_%d", animSetIdx + 1);
+				nodeDataBlock->writeUInt(hipsIKAnimSetDef->m_jointIndex[4], paramName);
+
+				sprintf_s(paramName, "BallIndex_%d", animSetIdx + 1);
+				nodeDataBlock->writeUInt(hipsIKAnimSetDef->m_jointIndex[3], paramName);
+
+				sprintf_s(paramName, "AnkleIndex_%d", animSetIdx + 1);
+				nodeDataBlock->writeUInt(hipsIKAnimSetDef->m_jointIndex[2], paramName);
+
+				sprintf_s(paramName, "FootfallEventID_%d", animSetIdx + 1);
+				nodeDataBlock->writeUInt(hipsIKAnimSetDef->m_footfallEventID, paramName);
+			}
+
+			return nodeExportXML;
+		}
 	}
 }

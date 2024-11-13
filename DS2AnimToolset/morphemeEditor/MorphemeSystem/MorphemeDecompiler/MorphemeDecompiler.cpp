@@ -411,7 +411,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_LOCK_FOOT:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportLockFootNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_HEAD_LOOK:
 			nodeExport = Node::exportHeadLookNode(netDefExport, netDef, nodeDef);
