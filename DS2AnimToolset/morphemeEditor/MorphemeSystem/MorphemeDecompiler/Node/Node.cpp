@@ -217,7 +217,7 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			int numAnimSets = netDef->getNumAnimSets();
+			const int numAnimSets = netDef->getNumAnimSets();
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "NodeConnectedTo");
 			nodeDataBlock->writeInt(numAnimSets, "NumAnimSets");
@@ -247,8 +247,6 @@ namespace MD
 
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
-
-			int numAnimSets = netDef->getNumAnimSets();
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
 			NodeUtils::writeInputCPConnection(nodeDataBlock, "Control", nodeDef->getInputCPConnection(0), true);
