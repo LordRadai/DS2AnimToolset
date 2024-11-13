@@ -63,13 +63,13 @@ namespace MD
 			nodeDataBlock->writeBool(chainAttrib->m_useTrajectorySlopeAlignment, paramName);
 
 			sprintf_s(paramName, "FootAlignToSurfaceAngleLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(NMP::radiansToDegrees(chainAttrib->m_footAlignToSurfaceAngleLimit), paramName);
+			nodeDataBlock->writeFloat(NMP::radiansToDegrees(chainAttrib->m_footAlignToSurfaceAngleLimit), paramName);
 		
 			sprintf_s(paramName, "FootAlignToSurfaceMaxAngle_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(NMP::radiansToDegrees(chainAttrib->m_footAlignToSurfaceMaxSlopeAngle), paramName);
+			nodeDataBlock->writeFloat(NMP::radiansToDegrees(chainAttrib->m_footAlignToSurfaceMaxSlopeAngle), paramName);
 		
 			sprintf_s(paramName, "FootLiftingHeightLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(chainAttrib->m_footLiftingHeightLimit, paramName);
+			nodeDataBlock->writeFloat(chainAttrib->m_footLiftingHeightLimit, paramName);
 
 			//Leg IK Chain options
 			assert(chainAttrib->m_numLimbs == 2);
