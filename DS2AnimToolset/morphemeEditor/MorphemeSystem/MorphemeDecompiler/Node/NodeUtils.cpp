@@ -77,5 +77,10 @@ namespace MD
 			attribDataBlock->writeBool(durationEventBlendOnOverlap, "DurationEventBlendOnOverlap");
 			attribDataBlock->writeBool(durationEventBlendWithinRange, "DurationEventBlendWithinRange");
 		}
+	
+		void writeInputCPConnection(ME::DataBlockExportXML* nodeDataBlock, const char* name, const MR::CPConnection* cpConnection)
+		{
+			nodeDataBlock->writeNetworkNodeIdWithPinIndex(cpConnection->m_sourceNodeID, cpConnection->m_sourcePinIndex, name);
+		}
 	}
 }

@@ -4,6 +4,12 @@
 #include "extern.h"
 #include "RCore.h"
 #include "morpheme/Nodes/mrNodePassThrough.h"
+#include "morpheme/Nodes/mrNodeFeatherBlend2.h"
+#include "morpheme/Nodes/mrNodeFeatherBlend2SyncEvents.h"
+#include "morpheme/Nodes/mrNodeBlend2.h"
+#include "morpheme/Nodes/mrNodeBlend2SyncEvents.h"
+#include "morpheme/Nodes/mrNodeSubtractiveBlend.h"
+#include "morpheme/Nodes/mrNodeSubtractiveBlendSyncEvents.h"
 #include "assetProcessor/include/assetProcessor/BlendNodeBuilderUtils.h"
 
 namespace MD
@@ -108,7 +114,7 @@ namespace MD
 			attribDataBlock->writeInt(blendMode, "BlendMode");
 		}
 
-		void writeBlend2EventBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void writeEventBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			AP::NodeSampledEventBlendModes eventBlendMode = AP::kSampledEventBlendModeInvalid;
 
@@ -142,7 +148,7 @@ namespace MD
 
 			//g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM fn = %s\n", fnName);
 
-			if ((taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformAddAttSlerpPos) || (taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformInterpAttSlerpPos))
+			if ((taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformAddAttSlerpPos) || (taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformInterpAttSlerpPos) || (taskQueueFn == MR::nodeSubtractiveBlendQueueTrajectoryDeltaAndTransformsSubtractAttSubtractPosSlerpTraj))
 				slerpTrajPos = true;
 
 			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
@@ -187,8 +193,8 @@ namespace MD
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
-			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "Weight");
-			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "EventBlendingWeight");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "EventBlendingWeight", nodeDef->getInputCPConnection(1));
 
 			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
 
@@ -198,7 +204,7 @@ namespace MD
 			nodeDataBlock->readFloat(weights->m_values[1], "BlendWeight_1");
 
 			writePassThroughMode(nodeDef, nodeDataBlock);
-			writeBlend2EventBlendMode(nodeDef, nodeDataBlock);
+			writeEventBlendMode(nodeDef, nodeDataBlock);
 			writeSlerpTrajPos(nodeDef, nodeDataBlock);
 			writeBlend2BlendModeFlags(nodeDef, nodeDataBlock);
 			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
@@ -220,8 +226,8 @@ namespace MD
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(2), "Source2NodeID");
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(3), "Source3NodeID");
-			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "WeightX");
-			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(1)->m_sourceNodeID, nodeDef->getInputCPConnection(1)->m_sourcePinIndex, "WeightY");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightX", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightY", nodeDef->getInputCPConnection(1));
 
 			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
 
@@ -233,7 +239,7 @@ namespace MD
 			nodeDataBlock->readFloat(weights->m_values[3], "BlendWeightY_1");
 
 			writePassThroughMode(nodeDef, nodeDataBlock);
-			writeBlend2EventBlendMode(nodeDef, nodeDataBlock);
+			writeEventBlendMode(nodeDef, nodeDataBlock);
 			writeSlerpTrajPos(nodeDef, nodeDataBlock);
 			writeBlend2BlendModeFlags(nodeDef, nodeDataBlock);
 			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
@@ -266,7 +272,7 @@ namespace MD
 				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
 			}
 
-			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "Weight");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0));
 
 			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
 			for (int i = 0; i < sourceNodeCount; i++)
@@ -302,8 +308,8 @@ namespace MD
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
-			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "Weight");
-			nodeDataBlock->writeNetworkNodeIdWithPinIndex(nodeDef->getInputCPConnection(0)->m_sourceNodeID, nodeDef->getInputCPConnection(0)->m_sourcePinIndex, "EventBlendingWeight");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "EventBlendingWeight", nodeDef->getInputCPConnection(1));
 
 			MR::AttribDataFloatArray* childWeights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
 
@@ -313,7 +319,7 @@ namespace MD
 			writePassThroughMode(nodeDef, nodeDataBlock);
 			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
 			writeFeatherBlendModeFlags(nodeDef, nodeDataBlock);
-			writeBlend2EventBlendMode(nodeDef, nodeDataBlock);
+			writeEventBlendMode(nodeDef, nodeDataBlock);
 			writeSlerpTrajPos(nodeDef, nodeDataBlock);
 
 			MR::AttribDataBlendFlags* blendFlags = static_cast<MR::AttribDataBlendFlags*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BLEND_FLAGS));
@@ -338,6 +344,26 @@ namespace MD
 					nodeDataBlock->writeFloat(channelAlphas->m_channelAlphas[j], paramAlpha);
 				}
 			}
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportSubtractiveBlendNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SUBTRACTIVE_BLEND);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			int numAnimSets = netDef->getNumAnimSets();
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
+
+			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
+			writeSlerpTrajPos(nodeDef, nodeDataBlock);
+			writePassThroughMode(nodeDef, nodeDataBlock);
+			writeEventBlendMode(nodeDef, nodeDataBlock);
 
 			return nodeExportXML;
 		}

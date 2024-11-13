@@ -354,7 +354,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_SUBTRACTIVE_BLEND:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportSubtractiveBlendNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_SCATTER_BLEND_1D:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
@@ -423,7 +423,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_HIPS_IK:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportHipsIKNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_PERFORMANCE_BEHAVIOUR:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);

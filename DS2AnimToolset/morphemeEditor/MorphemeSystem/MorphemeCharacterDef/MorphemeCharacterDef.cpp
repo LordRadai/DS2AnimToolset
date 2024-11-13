@@ -69,7 +69,7 @@ MorphemeCharacterDef* MorphemeCharacterDef::create(const char* filename)
   void* bundle = NULL;
   int64_t bundleSize = 0;
 
-  g_appLog->debugMessage(MsgLevel_Debug, "\tLoading SimpleBundle at %s:\n", filename);
+  g_appLog->debugMessage(MsgLevel_Debug, "\tLoading SimpleBundle at \"%s\":\n", filename);
 
   //----------------------------
   // Load binary bundle into memory

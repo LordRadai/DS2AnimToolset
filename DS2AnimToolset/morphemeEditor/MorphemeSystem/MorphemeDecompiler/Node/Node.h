@@ -1,6 +1,7 @@
 #pragma once
 #include "export/include/export/mcExportXML.h"
 #include "morpheme/mrNodeDef.h"
+#include "NodeUtils.h"
 #define THROW_NODE_TYPE_MISMATCH(nodeDef, type) if (nodeDef->getNodeTypeID() != type) { g_appLog->panicMessage("Expecting node type %d (got %d)\n", type, nodeDef->getNodeTypeID()); }
 
 namespace MD

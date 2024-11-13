@@ -230,7 +230,7 @@ MR::NetworkDef* AssetLoader::loadBundle(
     }
   }
 
-  g_appLog->debugMessage(MsgLevel_Info, "\t\tFinished parsing bundle file with a total of registered %d assets\n", registeredAssetIndex);
+  g_appLog->debugMessage(MsgLevel_Info, "\tFinished parsing bundle file with a total of registered %d assets\n", registeredAssetIndex);
 
   return netDef;
 }
