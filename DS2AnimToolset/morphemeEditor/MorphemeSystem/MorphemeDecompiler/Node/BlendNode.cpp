@@ -194,7 +194,7 @@ namespace MD
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
 			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "EventBlendingWeight", nodeDef->getInputCPConnection(1));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "EventBlendingWeight", nodeDef->getInputCPConnection(0)); //DS2 morpheme distribution uses a different version of the Blend2 node with only one input CP. We plug in the same CP used for the Weight for compatibility with out asset compiler
 
 			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
 
