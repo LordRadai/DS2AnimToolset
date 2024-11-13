@@ -153,7 +153,7 @@ namespace MD
 					nodeDataBlock->writeFloat(sourceAnim->m_clipEndFraction, paramName);
 
 					sprintf_s(paramName, "StartEventIndex_%d", setIndex + 1);
-					nodeDataBlock->writeFloat(sourceAnim->m_startSyncEventIndex, paramName);
+					nodeDataBlock->writeUInt(sourceAnim->m_startSyncEventIndex, paramName);
 				}
 			}
 
@@ -226,11 +226,10 @@ namespace MD
 			{
 				CHAR paramName[256];
 
-				sprintf_s(paramName, "FilterIdCount_%d", animSetIndex + 1); // We add one to the index as LUA arrays start at 1 and the manifest was written out using LUA array indices
-
 				MR::AttribDataUIntArray* numBoneFilterIDs = static_cast<MR::AttribDataUIntArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BONE_IDS, animSetIndex));
 
-				nodeDataBlock->writeInt(numBoneFilterIDs->m_numValues);
+				sprintf_s(paramName, "FilterIdCount_%d", animSetIndex + 1);
+				nodeDataBlock->writeInt(numBoneFilterIDs->m_numValues, paramName);
 
 				for (uint32_t k = 0; k < numBoneFilterIDs->m_numValues; k++)
 				{
@@ -294,7 +293,7 @@ namespace MD
 				nodeDataBlock->writeInt(eventUserDatas->m_values[i], paramName);
 
 				sprintf_s(paramName, "ActionID_%d", i);
-				nodeDataBlock->writeUInt(messageMap->messageID);
+				nodeDataBlock->writeUInt(messageMap->messageID, paramName);
 				
 				bool broadcast = false;
 
