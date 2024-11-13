@@ -158,8 +158,8 @@ namespace MD
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Target", nodeDef->getInputCPConnection(0));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "BlendWeight", nodeDef->getInputCPConnection(1));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Target", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "BlendWeight", nodeDef->getInputCPConnection(1), true);
 
 			MR::AttribDataHeadLookSetup* headLookSetup = static_cast<MR::AttribDataHeadLookSetup*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 			
@@ -219,11 +219,11 @@ namespace MD
 			const int numAnimSets = netDef->getNumAnimSets();
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "SourceNodeID");
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "PositionDelta", nodeDef->getInputCPConnection(0));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "RotationDeltaQuatNodeID", nodeDef->getInputCPConnection(1));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "RotationDeltaEulerNodeID", nodeDef->getInputCPConnection(2));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "FootTurnWeight", nodeDef->getInputCPConnection(3));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(4));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "PositionDelta", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "RotationDeltaQuatNodeID", nodeDef->getInputCPConnection(1), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "RotationDeltaEulerNodeID", nodeDef->getInputCPConnection(2), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "FootTurnWeight", nodeDef->getInputCPConnection(3), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(4), true);
 
 			MR::AttribDataHipsIKDef* hipsIKDef = static_cast<MR::AttribDataHipsIKDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
@@ -294,8 +294,8 @@ namespace MD
 			const int numAnimSets = netDef->getNumAnimSets();
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkFkBlendWeight", nodeDef->getInputCPConnection(0));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "SwivelContributionToOrientation", nodeDef->getInputCPConnection(1));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkFkBlendWeight", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "SwivelContributionToOrientation", nodeDef->getInputCPConnection(1), true);
 		
 			MR::AttribDataLockFootSetup* lockFootSetup = static_cast<MR::AttribDataLockFootSetup*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
@@ -389,9 +389,9 @@ namespace MD
 			const int numAnimSets = netDef->getNumAnimSets();
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkHipsWeight", nodeDef->getInputCPConnection(0));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkFkBlendWeight", nodeDef->getInputCPConnection(1));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "PredictionEnable", nodeDef->getInputCPConnection(2));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkHipsWeight", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkFkBlendWeight", nodeDef->getInputCPConnection(1), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "PredictionEnable", nodeDef->getInputCPConnection(2), true);
 
 			MR::AttribDataBasicUnevenTerrainSetup* setupAttrib = static_cast<MR::AttribDataBasicUnevenTerrainSetup*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 			

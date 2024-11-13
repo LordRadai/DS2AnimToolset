@@ -32,7 +32,7 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input", nodeDef->getInputCPConnection(0), true);
 
 			MR::AttribDataFunctionOperation* functionOpCode = static_cast<MR::AttribDataFunctionOperation*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 		
@@ -48,8 +48,8 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input0", nodeDef->getInputCPConnection(0));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input1", nodeDef->getInputCPConnection(1));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input0", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input1", nodeDef->getInputCPConnection(1), true);
 
 			MR::AttribDataArithmeticOperation* functionOpCode = static_cast<MR::AttribDataArithmeticOperation*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
@@ -65,8 +65,8 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input0", nodeDef->getInputCPConnection(0));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input1", nodeDef->getInputCPConnection(1));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input0", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input1", nodeDef->getInputCPConnection(1), true);
 
 			MR::AttribDataArithmeticOperation* functionOpCode = static_cast<MR::AttribDataArithmeticOperation*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
@@ -82,9 +82,9 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "FloatX", nodeDef->getInputCPConnection(0));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "FloatY", nodeDef->getInputCPConnection(1));
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "FloatZ", nodeDef->getInputCPConnection(2));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "FloatX", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "FloatY", nodeDef->getInputCPConnection(1), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "FloatZ", nodeDef->getInputCPConnection(2), true);
 
 			return nodeExportXML;
 		}
@@ -96,7 +96,7 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Float", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Float", nodeDef->getInputCPConnection(0), true);
 
 			return nodeExportXML;
 		}
@@ -108,7 +108,7 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Int", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Int", nodeDef->getInputCPConnection(0), true);
 
 			return nodeExportXML;
 		}
@@ -120,7 +120,7 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input", nodeDef->getInputCPConnection(0), true);
 
 			MR::AttribDataNoiseGenDef* noiseGenDef = static_cast<MR::AttribDataNoiseGenDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
@@ -137,7 +137,7 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input", nodeDef->getInputCPConnection(0), true);
 
 			MR::AttribDataSmoothFloatOperation* smoothFloatOperation = static_cast<MR::AttribDataSmoothFloatOperation*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
@@ -177,7 +177,7 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input", nodeDef->getInputCPConnection(0), true);
 
 			MR::AttribDataArithmeticOperation* functionOpCode = static_cast<MR::AttribDataArithmeticOperation*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
@@ -194,7 +194,7 @@ namespace MD
 			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Input", nodeDef->getInputCPConnection(0), true);
 
 			MR::AttribDataArithmeticOperation* functionOpCode = static_cast<MR::AttribDataArithmeticOperation*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 

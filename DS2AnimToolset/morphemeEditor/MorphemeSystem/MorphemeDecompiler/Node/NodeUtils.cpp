@@ -78,9 +78,12 @@ namespace MD
 			attribDataBlock->writeBool(durationEventBlendWithinRange, "DurationEventBlendWithinRange");
 		}
 	
-		void writeInputCPConnection(ME::DataBlockExportXML* nodeDataBlock, const char* name, const MR::CPConnection* cpConnection)
+		void writeInputCPConnection(ME::DataBlockExportXML* nodeDataBlock, const char* name, const MR::CPConnection* cpConnection, bool optional)
 		{
-			nodeDataBlock->writeNetworkNodeIdWithPinIndex(cpConnection->m_sourceNodeID, cpConnection->m_sourcePinIndex, name);
+			if (!optional)
+				nodeDataBlock->writeNetworkNodeIdWithPinIndex(cpConnection->m_sourceNodeID, cpConnection->m_sourcePinIndex, name);
+			else if ((cpConnection->m_sourceNodeID != 0xFFFF) && (cpConnection->m_sourcePinIndex != 0xFFFF))
+				nodeDataBlock->writeNetworkNodeIdWithPinIndex(cpConnection->m_sourceNodeID, cpConnection->m_sourcePinIndex, name);
 		}
 
 		bool isNodeControlParameter(MR::NodeDef* nodeDef)

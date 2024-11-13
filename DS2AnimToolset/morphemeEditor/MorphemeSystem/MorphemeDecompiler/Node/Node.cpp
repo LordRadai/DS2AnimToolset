@@ -251,7 +251,7 @@ namespace MD
 			int numAnimSets = netDef->getNumAnimSets();
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Control", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Control", nodeDef->getInputCPConnection(0), true);
 
 			return nodeExportXML;
 		}
@@ -345,7 +345,7 @@ namespace MD
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0), true);
 
 			return nodeExportXML;
 		}
@@ -370,7 +370,7 @@ namespace MD
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "SourceNodeID");
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Multiplier", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Multiplier", nodeDef->getInputCPConnection(0), true);
 
 			int numAnimSets = netDef->getNumAnimSets();
 
@@ -411,7 +411,7 @@ namespace MD
 				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
 			}
 
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0));
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0), true);
 
 			MR::AttribDataSwitchDef* switchDef = static_cast<MR::AttribDataSwitchDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 			MR::AttribDataFloatArray* childNodeWeights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
