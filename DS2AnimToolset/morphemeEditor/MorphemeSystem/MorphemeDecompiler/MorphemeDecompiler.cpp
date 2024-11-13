@@ -462,7 +462,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportPredictiveUnevenTerrainNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_CP_OP_INT_TO_FLOAT:
 			nodeExport = Node::exportOperatorIntToFloatNode(netDefExport, netDef, nodeDef);
