@@ -114,13 +114,13 @@ namespace MD
 			CHAR paramName[256];
 
 			sprintf_s(paramName, "PredictionSlopeAngleLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(atanf(NMP::radiansToDegrees(predictionDefAttrib->m_footLiftingSlopeAngleLimit)), paramName);
+			nodeDataBlock->writeFloat(NMP::radiansToDegrees(atanf(predictionDefAttrib->m_footLiftingSlopeAngleLimit)), paramName);
 		
 			sprintf_s(paramName, "PredictionLateralAngleLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(atanf(NMP::radiansToDegrees(predictionDefAttrib->m_footLiftingLateralAngleLimit)), paramName);
+			nodeDataBlock->writeFloat(NMP::radiansToDegrees(atanf(predictionDefAttrib->m_footLiftingLateralAngleLimit)), paramName);
 
 			sprintf_s(paramName, "PredictionCloseFootbaseTolFrac_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(atanf(NMP::radiansToDegrees(predictionDefAttrib->m_closeFootbaseTolFrac)), paramName);
+			nodeDataBlock->writeFloat(NMP::radiansToDegrees(atanf(predictionDefAttrib->m_closeFootbaseTolFrac)), paramName);
 		
 			assert(predictionDefAttrib->m_numLimbs == 2);
 
@@ -400,7 +400,7 @@ namespace MD
 			CHAR paramName[256];
 			for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
 			{
-				MR::AttribDataBasicUnevenTerrainChain* chainAttrib = static_cast<MR::AttribDataBasicUnevenTerrainChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF, animSetIdx));
+				MR::AttribDataBasicUnevenTerrainChain* chainAttrib = static_cast<MR::AttribDataBasicUnevenTerrainChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET, animSetIdx));
 
 				writePredictiveUnevenTerrainChainAttrib(nodeDataBlock, animSetIdx, chainAttrib);
 
