@@ -447,7 +447,7 @@ namespace MD
 			nodeExport = Node::exportSwitchNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_SEQUENCE:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef);
+			nodeExport = Node::exportSequenceNode(netDefExport, netDef, nodeDef);
 			break;
 		case NODE_TYPE_PASSTHROUGH:
 			nodeExport = Node::exportPassThroughNode(netDefExport, netDef, nodeDef);

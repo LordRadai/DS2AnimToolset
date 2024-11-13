@@ -396,5 +396,29 @@ namespace MD
 
 			return nodeExportXML;
 		}
+
+		ME::NodeExportXML* exportSequenceNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SEQUENCE);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int childNodeCount = nodeDef->getNumChildNodes();
+
+			nodeDataBlock->writeInt(childNodeCount, "ConnectedPinCount");
+
+			CHAR paramName[256];
+			for (uint32_t i = 0; i < childNodeCount; i++)
+			{
+				sprintf_s(paramName, "ConnectedNodeID_%d", i);
+				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
+			}
+
+			MR::AttribDataBool* loopable = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_LOOP));
+			nodeDataBlock->writeBool(loopable->m_value, "Loop");
+
+			return nodeExportXML;
+		}
 	}
 }
