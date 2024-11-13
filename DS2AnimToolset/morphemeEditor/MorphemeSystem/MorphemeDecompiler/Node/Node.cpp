@@ -220,7 +220,7 @@ namespace MD
 			const int numAnimSets = netDef->getNumAnimSets();
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "NodeConnectedTo");
-			nodeDataBlock->writeInt(numAnimSets, "NumAnimSets");
+			nodeDataBlock->writeInt(numAnimSets, "NumAnimSets"); 
 
 			for (MR::AnimSetIndex animSetIndex = 0; animSetIndex < numAnimSets; animSetIndex++)
 			{
