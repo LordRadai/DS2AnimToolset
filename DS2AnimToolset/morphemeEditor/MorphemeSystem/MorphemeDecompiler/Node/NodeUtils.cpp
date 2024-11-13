@@ -82,7 +82,7 @@ namespace MD
 		{
 			if (!optional)
 				nodeDataBlock->writeNetworkNodeIdWithPinIndex(cpConnection->m_sourceNodeID, cpConnection->m_sourcePinIndex, name);
-			else if ((cpConnection->m_sourceNodeID != 0xFFFF) && (cpConnection->m_sourcePinIndex != 0xFFFF))
+			else if ((cpConnection->m_sourceNodeID != MR::INVALID_NODE_ID) && (cpConnection->m_sourcePinIndex != MR::INVALID_PIN_INDEX))
 				nodeDataBlock->writeNetworkNodeIdWithPinIndex(cpConnection->m_sourceNodeID, cpConnection->m_sourcePinIndex, name);
 		}
 
