@@ -268,6 +268,22 @@ namespace MD
 			return nodeExportXML;
 		}
 
+		MR::AttribDataEmittedMessagesMap::RequestType getEmittedMessageRequestTypeID(MR::AttribDataEmittedMessagesMap* emittedMessageMap, uint32_t index)
+		{
+			if ((emittedMessageMap->getEmittedMessageEntry(index)->stateMachineNodeID == MR::INVALID_NODE_ID) && (emittedMessageMap->getEmittedMessageEntry(index)->messageID == MR::INVALID_MESSAGE_ID))
+				return MR::AttribDataEmittedMessagesMap::UNUSED;
+			else if ((emittedMessageMap->getEmittedMessageEntry(index)->stateMachineNodeID == MR::INVALID_NODE_ID) && (emittedMessageMap->getEmittedMessageEntry(index)->messageID != MR::INVALID_MESSAGE_ID))
+				return MR::AttribDataEmittedMessagesMap::EXTERNAL;
+			else if (!emittedMessageMap->isEntryUsed(index))
+				return MR::AttribDataEmittedMessagesMap::CLEAR;
+			else if ((emittedMessageMap->getEmittedMessageEntry(index)->stateMachineNodeID != MR::INVALID_NODE_ID) && (emittedMessageMap->getEmittedMessageEntry(index)->messageID != MR::INVALID_MESSAGE_ID))
+				return MR::AttribDataEmittedMessagesMap::SET;
+			else if ((emittedMessageMap->getEmittedMessageEntry(index)->stateMachineNodeID != MR::INVALID_NODE_ID) && (emittedMessageMap->getEmittedMessageEntry(index)->messageID == MR::INVALID_MESSAGE_ID))
+				return MR::AttribDataEmittedMessagesMap::RESET;
+			else
+				return MR::AttribDataEmittedMessagesMap::UNUSED;
+		}
+
 		ME::NodeExportXML* exportEmitRequestOnDiscreteEventNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_EMIT_MESSAGE_ON_DISCRETE_EVENT);
@@ -292,21 +308,30 @@ namespace MD
 				sprintf_s(paramName, "EventUserData_%d", i);
 				nodeDataBlock->writeInt(eventUserDatas->m_values[i], paramName);
 
+				MR::AttribDataEmittedMessagesMap::RequestType actionID = getEmittedMessageRequestTypeID(emittedMessageMap, i);
+
 				sprintf_s(paramName, "ActionID_%d", i);
-				nodeDataBlock->writeUInt(messageMap->messageID, paramName);
+				nodeDataBlock->writeUInt(actionID, paramName);
 				
-				bool broadcast = false;
-
-				if (messageMap->stateMachineNodeID == MR::NETWORK_NODE_ID)
-					broadcast = true;
-				else
+				if (actionID != MR::AttribDataEmittedMessagesMap::UNUSED)
 				{
-					sprintf_s(paramName, "TargetNodePath_%d", i);
-					nodeDataBlock->writeString(netDefExport->getNode(messageMap->stateMachineNodeID)->getName(), paramName);
-				}
+					sprintf_s(paramName, "EmittedMessageID_%d", i);
+					nodeDataBlock->writeUInt(messageMap->messageID, paramName);
 
-				sprintf_s(paramName, "Broadcast_%d", i);
-				nodeDataBlock->writeBool(broadcast, paramName);
+					bool broadcast = false;
+
+					if (messageMap->stateMachineNodeID == MR::NETWORK_NODE_ID)
+						broadcast = true;
+
+					sprintf_s(paramName, "Broadcast_%d", i);
+					nodeDataBlock->writeBool(broadcast, paramName);
+
+					if (!broadcast)
+					{
+						sprintf_s(paramName, "TargetNodePath_%d", i);
+						nodeDataBlock->writeString(netDefExport->getNode(messageMap->stateMachineNodeID)->getName(), paramName);
+					}
+				}			
 			}
 
 			return nodeExportXML;
