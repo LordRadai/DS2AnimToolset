@@ -81,7 +81,16 @@ namespace MD
 
 		ME::NodeExportXML* exportNodeCore(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
 		{
-			ME::NodeExportXML* nodeExportXML = static_cast<ME::NodeExportXML*>(netDefExport->createNode(nodeDef->getNodeID(), nodeDef->getNodeTypeID(), nodeDef->getParentNodeID(), false, netDef->getNodeNameFromNodeID(nodeDef->getNodeID())));
+			bool persistent = false;
+			bool downstreamMultiplyConnected = false;
+
+			if ((nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK) || (nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE) || NodeUtils::isNodeControlParameter(nodeDef))
+				persistent = true;
+
+			if (NodeUtils::isNodeControlParameter(nodeDef))
+				downstreamMultiplyConnected = true;
+
+			ME::NodeExportXML* nodeExportXML = static_cast<ME::NodeExportXML*>(netDefExport->createNode(nodeDef->getNodeID(), nodeDef->getNodeTypeID(), nodeDef->getParentNodeID(), downstreamMultiplyConnected, netDef->getNodeNameFromNodeID(nodeDef->getNodeID()), persistent));
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			return nodeExportXML;

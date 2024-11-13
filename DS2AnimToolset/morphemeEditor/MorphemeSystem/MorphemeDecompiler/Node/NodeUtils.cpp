@@ -82,5 +82,13 @@ namespace MD
 		{
 			nodeDataBlock->writeNetworkNodeIdWithPinIndex(cpConnection->m_sourceNodeID, cpConnection->m_sourcePinIndex, name);
 		}
+
+		bool isNodeControlParameter(MR::NodeDef* nodeDef)
+		{
+			if ((nodeDef->getNodeTypeID() >= 20) && (nodeDef->getNodeTypeID() <= 26))
+				return true;
+
+			return false;
+		}
 	}
 }

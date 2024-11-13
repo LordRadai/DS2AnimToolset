@@ -8,5 +8,6 @@ namespace MD
 	{
 		void writeSyncEventFlagsFromAttribData(ME::DataBlockExportXML* attribDataBlock, MR::AttribDataUInt* durationEventMatchingOpAttrib);
 		void writeInputCPConnection(ME::DataBlockExportXML* attribDataBlock, const char* name, const MR::CPConnection* cpConnection);
+		bool isNodeControlParameter(MR::NodeDef* nodeDef);
 	}
 }
