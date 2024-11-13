@@ -786,7 +786,7 @@ void MorphemeEditorApp::update(float dt)
 		this->m_taskFlags.compileNetwork = false;
 
 		char exportPath[256];
-		sprintf_s(exportPath, "Export\\%ws\\", this->m_character->getCharacterName().c_str());
+		sprintf_s(exportPath, "Export\\%ws", this->m_character->getCharacterName().c_str());
 
 		char networkFileName[256];
 		sprintf_s(networkFileName, "%ws.xml", this->m_character->getCharacterName().c_str());
@@ -798,12 +798,12 @@ void MorphemeEditorApp::update(float dt)
 		std::string fullPath = exeParentPath + std::string("\\") + std::string(exportPath);
 
 		std::string assetCompilerName = std::string("\"") + exeParentPath + "\\" + std::string(ASSET_COMPILER_EXE) + std::string("\"");
-		std::string assetPath = "-asset " + std::string("\"") + fullPath + std::string(networkFileName) + std::string("\"");
+		std::string assetPath = "-asset " + std::string("\"") + fullPath + "\\" + std::string(networkFileName) + std::string("\"");
 		std::string baseDir = "-basedir " + std::string("\"") + fullPath + std::string("\"");
-		std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "cache\\" + std::string("\"");
-		std::string outputDir = "-outputdir " + std::string("\"") + fullPath + "runtimeBinary" + std::string("\"");
-		std::string logFile = "-logFile " + std::string("\"") + fullPath + "tempOutput\\assetManager\\assetCompiler.log" + std::string("\"");
-		std::string errFile = "-errFile " + std::string("\"") + fullPath + "tempOutput\\assetManager\\assetCompilerError.log" + std::string("\"");
+		std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "\\cache" + std::string("\"");
+		std::string outputDir = "-outputdir " + std::string("\"") + fullPath + "\\runtimeBinary" + std::string("\"");
+		std::string logFile = "-logFile " + std::string("\"") + fullPath + "\\tempOutput\\assetManager\\assetCompiler.log" + std::string("\"");
+		std::string errFile = "-errFile " + std::string("\"") + fullPath + "\\tempOutput\\assetManager\\assetCompilerError.log" + std::string("\"");
 
 		std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
 		
