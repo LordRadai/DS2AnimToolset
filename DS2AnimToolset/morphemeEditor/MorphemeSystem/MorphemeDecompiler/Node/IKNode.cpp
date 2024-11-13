@@ -146,6 +146,7 @@ namespace MD
 			}
 
 			g_appLog->panicMessage("Invalid up axis vector (%.3f, %.3f, %.3f)\n", upAxisVector[0], upAxisVector[1], upAxisVector[2]);
+			
 			return -1;
 		}
 
