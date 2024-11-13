@@ -415,7 +415,7 @@ namespace MD
 				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
 			}
 
-			MR::AttribDataBool* loopable = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_LOOP));
+			MR::AttribDataBool* loopable = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CP_BOOL));
 			nodeDataBlock->writeBool(loopable->m_value, "Loop");
 
 			return nodeExportXML;
