@@ -1444,7 +1444,7 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 
 	exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"assetCompilerCommand.txt");
 
-	g_appLog->debugMessage(MsgLevel_Info, "%s", assetCompilerCommand.c_str());
+	g_appLog->debugMessage(MsgLevel_Info, "Invoking asset compiler with command %s", assetCompilerCommand.c_str());
 
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
