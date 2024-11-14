@@ -784,12 +784,15 @@ void GuiManager::rootWindow()
 		{
 			ImGui::BeginDisabled(editorApp->getCharacter() == nullptr);
 
-			if (ImGui::MenuItem("Export All")) { editorApp->getTaskFlags()->exportAll = true; }
+			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->exportAll = true; }
+			if (ImGui::MenuItem("Export and Process")) { editorApp->getTaskFlags()->exportAndProcess = true; }
+			
+			ImGui::SeparatorText("Export Components");
+			
 			if (ImGui::MenuItem("Export Model")) { editorApp->getTaskFlags()->exportModel = true; }
 			if (ImGui::MenuItem("Export Animations")) { editorApp->getTaskFlags()->exportAnimations = true; }
 			if (ImGui::MenuItem("Export Network")) { editorApp->getTaskFlags()->exportNetwork = true; }
 			if (ImGui::MenuItem("Export TimeAct")) { editorApp->getTaskFlags()->exportTae = true; }
-			if (ImGui::MenuItem("Process Assets")) { editorApp->getTaskFlags()->compileNetwork = true; }
 
 			ImGui::EndDisabled();
 

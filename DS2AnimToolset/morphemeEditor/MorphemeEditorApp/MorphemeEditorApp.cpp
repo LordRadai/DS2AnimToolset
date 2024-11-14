@@ -700,18 +700,24 @@ void MorphemeEditorApp::update(float dt)
 		this->saveFile();
 	}
 
-	if (this->m_taskFlags.exportTaeTemplateXml)
-	{
-		this->m_taskFlags.exportTaeTemplateXml = false;
-
-		g_workerThread.load()->startThread("Export TimeAct Template", &MorphemeEditorApp::exportTaeTemplateXML, this);
-	}
-
 	if (this->m_taskFlags.exportAll)
 	{
 		this->m_taskFlags.exportAll = false;
 
-		g_workerThread.load()->startThread("Export All", &MorphemeEditorApp::exportAll, this);
+		wchar_t exportPath[256];
+		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+
+		g_workerThread.load()->startThread("Export All", &MorphemeEditorApp::exportAll, this, exportPath);
+	}
+
+	if (this->m_taskFlags.exportAndProcess)
+	{
+		this->m_taskFlags.exportAndProcess = false;
+
+		wchar_t exportPath[256];
+		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+
+		g_workerThread.load()->startThread("Export and Process", &MorphemeEditorApp::exportAndProcess, this, exportPath);
 	}
 
 	if (this->m_taskFlags.exportTae)
@@ -785,43 +791,10 @@ void MorphemeEditorApp::update(float dt)
 	{
 		this->m_taskFlags.compileNetwork = false;
 
-		char exportPath[256];
-		sprintf_s(exportPath, "Export\\%ws", this->m_character->getCharacterName().c_str());
+		wchar_t exportPath[256];
+		swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
 
-		char networkFileName[256];
-		sprintf_s(networkFileName, "%ws.xml", this->m_character->getCharacterName().c_str());
-
-		char exePath[MAX_PATH];
-		GetModuleFileNameA(NULL, exePath, MAX_PATH);
-		std::string exeParentPath = std::filesystem::path(exePath).parent_path().string();
-
-		std::string fullPath = exeParentPath + std::string("\\") + std::string(exportPath);
-
-		std::string assetCompilerName = std::string("\"") + exeParentPath + "\\" + std::string(ASSET_COMPILER_EXE) + std::string("\"");
-		std::string assetPath = "-asset " + std::string("\"") + fullPath + "\\" + std::string(networkFileName) + std::string("\"");
-		std::string baseDir = "-basedir " + std::string("\"") + fullPath + std::string("\"");
-		std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "\\cache" + std::string("\"");
-		std::string outputDir = "-outputdir " + std::string("\"") + fullPath + "\\runtimeBinary" + std::string("\"");
-		std::string logFile = "-logFile " + std::string("\"") + fullPath + "\\tempOutput\\assetManager\\assetCompiler.log" + std::string("\"");
-		std::string errFile = "-errFile " + std::string("\"") + fullPath + "\\tempOutput\\assetManager\\assetCompilerError.log" + std::string("\"");
-
-		std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
-		
-		exportAssetCompilerCommand(assetCompilerCommand.c_str(), RString::toWide(std::string(exportPath) + "assetCompilerCommand.txt"));
-
-		g_appLog->debugMessage(MsgLevel_Info, "%s", assetCompilerCommand.c_str());
-
-		STARTUPINFO si;
-		PROCESS_INFORMATION pi;
-		ZeroMemory(&si, sizeof(si));
-		si.cb = sizeof(si);
-		ZeroMemory(&pi, sizeof(pi));
-		CreateProcess(nullptr, LPWSTR(RString::toWide(assetCompilerCommand).c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
-
-		WaitForSingleObject(pi.hProcess, INFINITE);
-
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
+		g_workerThread.load()->startThread("Compile Morpheme Assets", &MorphemeEditorApp::compileMorphemeAssets, this, std::wstring(exportPath));
 	}
 
 	if (this->m_taskFlags.compileTaes)
@@ -835,6 +808,15 @@ void MorphemeEditorApp::update(float dt)
 
 		g_workerThread.load()->startThread("Compile TimeAct", &MorphemeEditorApp::compileTimeActFiles, this, std::wstring(exportPath));
 	}
+
+#ifdef DEBUG
+	if (this->m_taskFlags.exportTaeTemplateXml)
+	{
+		this->m_taskFlags.exportTaeTemplateXml = false;
+
+		g_workerThread.load()->startThread("Export TimeAct Template", &MorphemeEditorApp::exportTaeTemplateXML, this);
+	}
+#endif
 }
 
 void MorphemeEditorApp::shutdown()
@@ -1091,6 +1073,8 @@ bool MorphemeEditorApp::exportTimeAct(std::wstring path)
 	tae->save();
 
 	std::filesystem::current_path(getExeRootDir());
+
+	return true;
 }
 
 bool MorphemeEditorApp::exportNetwork(std::wstring path)
@@ -1245,70 +1229,68 @@ bool MorphemeEditorApp::compileAndExportTae(std::wstring path)
 	return status;
 }
 
-bool MorphemeEditorApp::exportAll()
+bool MorphemeEditorApp::exportAll(std::wstring path)
 {
-	wchar_t exportPath[256];
-
 	if (this->m_character != nullptr)
 	{
-		g_workerThread.load()->addProcess("Exporting all", 5);
+		std::filesystem::create_directories(path);
 
+		g_workerThread.load()->addProcess("Exporting all", 4);
 		g_workerThread.load()->setProcessStepName("Exporting model");
 
-		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
-
-		std::filesystem::create_directories(exportPath);
-
-		this->exportModel(exportPath);
+		this->exportModel(path);
 
 		g_workerThread.load()->increaseProgressStep();
-
-		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
-
-		std::filesystem::create_directories(exportPath);
-
 		g_workerThread.load()->setProcessStepName("Exporting network");
 
-		this->exportNetwork(exportPath);
+		this->exportNetwork(path);
 
 		g_workerThread.load()->increaseProgressStep();
-
-		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
-
 		g_workerThread.load()->setProcessStepName("Exporting animations and markups");
 
-		this->exportAnimationsAndMarkups(exportPath);
+		this->exportAnimationsAndMarkups(path);
 
 		g_workerThread.load()->increaseProgressStep();
-
-		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
-
-		std::filesystem::create_directories(exportPath);
-
 		g_workerThread.load()->setProcessStepName("Exporting TimeAct");
 
-		this->exportTimeAct(exportPath);
+		this->exportTimeAct(path);
 
 		g_workerThread.load()->increaseProgressStep();
-
-		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
-
-		std::filesystem::create_directories(exportPath);
-
 		g_workerThread.load()->setProcessStepName("Compiling TimeAct files");
-
-		this->compileTimeActFiles(exportPath);
-
-		g_workerThread.load()->increaseProgressStep();
 	}
 	else
 	{
-		g_appLog->alertMessage(MsgLevel_Error, "No character is loaded");
+		g_appLog->alertMessage(MsgLevel_Error, "No character is loaded\n");
 
 		return false;
 	}
 
 	return true;
+}
+
+bool MorphemeEditorApp::exportAndProcess(std::wstring path)
+{
+	bool status = true;
+
+	if (!this->exportAll(path))
+	{
+		g_appLog->alertMessage(MsgLevel_Error, "Failed to process assets\n");
+		return false;
+	}
+
+	if (!this->compileTimeActFiles(path))
+	{
+		g_appLog->alertMessage(MsgLevel_Error, "Failed to compile TimeAct files\n");
+		status = false;
+	}
+
+	if (!this->compileMorphemeAssets(path))
+	{
+		g_appLog->alertMessage(MsgLevel_Error, "Failed to compile TimeAct files\n");
+		return false;
+	}
+
+	return status;
 }
 
 bool MorphemeEditorApp::exportAnimations(std::wstring path)
@@ -1421,6 +1403,46 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 	g_workerThread.load()->increaseProgressStep();
 
 	std::filesystem::current_path(getExeRootDir());
+}
+
+bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
+{
+	char networkFileName[256];
+	sprintf_s(networkFileName, "%ws.xml", this->m_character->getCharacterName().c_str());
+
+	char exePath[MAX_PATH];
+	GetModuleFileNameA(NULL, exePath, MAX_PATH);
+	std::string exeParentPath = std::filesystem::path(exePath).parent_path().string();
+
+	std::string fullPath = exeParentPath + std::string("\\") + RString::toNarrow(path);
+
+	std::string assetCompilerName = std::string("\"") + exeParentPath + "\\" + std::string(ASSET_COMPILER_EXE) + std::string("\"");
+	std::string assetPath = "-asset " + std::string("\"") + fullPath + "\\" + std::string(networkFileName) + std::string("\"");
+	std::string baseDir = "-basedir " + std::string("\"") + fullPath + std::string("\"");
+	std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "\\cache" + std::string("\"");
+	std::string outputDir = "-outputdir " + std::string("\"") + fullPath + "\\runtimeBinary" + std::string("\"");
+	std::string logFile = "-logFile " + std::string("\"") + fullPath + "\\tempOutput\\assetManager\\assetCompiler.log" + std::string("\"");
+	std::string errFile = "-errFile " + std::string("\"") + fullPath + "\\tempOutput\\assetManager\\assetCompilerError.log" + std::string("\"");
+
+	std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
+
+	exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"assetCompilerCommand.txt");
+
+	g_appLog->debugMessage(MsgLevel_Info, "%s", assetCompilerCommand.c_str());
+
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+	CreateProcess(nullptr, LPWSTR(RString::toWide(assetCompilerCommand).c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
+
+	WaitForSingleObject(pi.hProcess, INFINITE);
+
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+
+	return true;
 }
 
 bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)

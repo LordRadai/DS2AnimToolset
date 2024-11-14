@@ -57,6 +57,7 @@ public:
 		bool exportAnimations = false;
 		bool exportNetwork = false;
 		bool exportAll = false;
+		bool exportAndProcess = false;
 		ExportFormat exportFormat = kFbx;
 
 		bool compileNetwork = false;
@@ -114,6 +115,7 @@ public:
 	void exportAnimationsAndMarkups(std::wstring path);
 	bool exportModel(std::wstring path);
 
+	bool compileMorphemeAssets(std::wstring path);
 	bool compileTimeActFiles(std::wstring path);
 
 	static MorphemeEditorApp* getInstance();
@@ -128,7 +130,8 @@ private:
 	void savePlayerModelPreset();
 
 	bool compileAndExportTae(std::wstring path);
-	bool exportAll();
+	bool exportAll(std::wstring path);
+	bool exportAndProcess(std::wstring path);
 	bool exportAnimations(std::wstring path);
 	bool exportAnimMarkups(std::wstring path);
 
