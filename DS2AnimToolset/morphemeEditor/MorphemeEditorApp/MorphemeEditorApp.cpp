@@ -707,6 +707,8 @@ void MorphemeEditorApp::update(float dt)
 		wchar_t exportPath[256];
 		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
 
+		std::filesystem::create_directories(exportPath);
+
 		g_workerThread.load()->startThread("Export All", &MorphemeEditorApp::exportAll, this, exportPath);
 	}
 
@@ -716,6 +718,8 @@ void MorphemeEditorApp::update(float dt)
 
 		wchar_t exportPath[256];
 		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+
+		std::filesystem::create_directories(exportPath);
 
 		g_workerThread.load()->startThread("Export and Process", &MorphemeEditorApp::exportAndProcess, this, exportPath);
 	}
@@ -779,6 +783,8 @@ void MorphemeEditorApp::update(float dt)
 			wchar_t exportPath[256];
 			swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
 			
+			std::filesystem::create_directories(exportPath);
+
 			g_workerThread.load()->startThread("Export Animations", &MorphemeEditorApp::exportAnimationsAndMarkups, this, std::wstring(exportPath));
 		}
 		else
@@ -793,6 +799,8 @@ void MorphemeEditorApp::update(float dt)
 
 		wchar_t exportPath[256];
 		swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
+
+		std::filesystem::create_directories(exportPath);
 
 		g_workerThread.load()->startThread("Compile Morpheme Assets", &MorphemeEditorApp::compileMorphemeAssets, this, std::wstring(exportPath));
 	}
@@ -1233,8 +1241,6 @@ bool MorphemeEditorApp::exportAll(std::wstring path)
 {
 	if (this->m_character != nullptr)
 	{
-		std::filesystem::create_directories(path);
-
 		g_workerThread.load()->addProcess("Exporting all", 4);
 		g_workerThread.load()->setProcessStepName("Exporting model");
 
