@@ -709,7 +709,7 @@ void MorphemeEditorApp::update(float dt)
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->startThread("Export All", &MorphemeEditorApp::exportAll, this, exportPath);
+		g_workerThread.load()->startThread("Export All", &MorphemeEditorApp::exportAll, this, std::wstring(exportPath));
 	}
 
 	if (this->m_taskFlags.exportAndProcess)
@@ -721,7 +721,7 @@ void MorphemeEditorApp::update(float dt)
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->startThread("Export and Process", &MorphemeEditorApp::exportAndProcess, this, exportPath);
+		g_workerThread.load()->startThread("Export and Process", &MorphemeEditorApp::exportAndProcess, this, std::wstring(exportPath));
 	}
 
 	if (this->m_taskFlags.exportTae)
@@ -733,7 +733,7 @@ void MorphemeEditorApp::update(float dt)
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->startThread("Export TimeAct", &MorphemeEditorApp::compileAndExportTae, this, std::wstring(exportPath));
+		g_workerThread.load()->startThread("Export TimeAct", &MorphemeEditorApp::exportAndCompileTae, this, std::wstring(exportPath));
 	}
 
 	if (this->m_taskFlags.exportModel)
@@ -1220,7 +1220,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	return true;
 }
 
-bool MorphemeEditorApp::compileAndExportTae(std::wstring path)
+bool MorphemeEditorApp::exportAndCompileTae(std::wstring path)
 {
 	bool status = true;
 
@@ -1262,7 +1262,6 @@ bool MorphemeEditorApp::exportAll(std::wstring path)
 		this->exportTimeAct(path);
 
 		g_workerThread.load()->increaseProgressStep();
-		g_workerThread.load()->setProcessStepName("Compiling TimeAct files");
 	}
 	else
 	{
@@ -1278,11 +1277,17 @@ bool MorphemeEditorApp::exportAndProcess(std::wstring path)
 {
 	bool status = true;
 
+	g_workerThread.load()->addProcess("Exporting and processing assets...", 3);
+	g_workerThread.load()->setProcessStepName("Exporting assets");
+
 	if (!this->exportAll(path))
 	{
 		g_appLog->alertMessage(MsgLevel_Error, "Failed to process assets\n");
 		return false;
 	}
+
+	g_workerThread.load()->increaseProgressStep();
+	g_workerThread.load()->setProcessStepName("Compiling TimeAct files...");
 
 	if (!this->compileTimeActFiles(path))
 	{
@@ -1290,11 +1295,16 @@ bool MorphemeEditorApp::exportAndProcess(std::wstring path)
 		status = false;
 	}
 
+	g_workerThread.load()->increaseProgressStep();
+	g_workerThread.load()->setProcessStepName("Compiling morpheme assets...");
+
 	if (!this->compileMorphemeAssets(path))
 	{
 		g_appLog->alertMessage(MsgLevel_Error, "Failed to compile TimeAct files\n");
 		return false;
 	}
+
+	g_workerThread.load()->increaseProgressStep();
 
 	return status;
 }

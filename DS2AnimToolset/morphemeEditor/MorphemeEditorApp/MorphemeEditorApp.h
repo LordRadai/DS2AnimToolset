@@ -107,17 +107,6 @@ public:
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
 	std::wstring getGamePath() const { return this->m_gamePath; }
 
-	void loadFile();
-	void saveFile();
-
-	bool exportTimeAct(std::wstring path);
-	bool exportNetwork(std::wstring path);
-	void exportAnimationsAndMarkups(std::wstring path);
-	bool exportModel(std::wstring path);
-
-	bool compileMorphemeAssets(std::wstring path);
-	bool compileTimeActFiles(std::wstring path);
-
 	static MorphemeEditorApp* getInstance();
 
 private:
@@ -129,11 +118,22 @@ private:
 	void loadPlayerModelPreset();
 	void savePlayerModelPreset();
 
-	bool compileAndExportTae(std::wstring path);
+	void loadFile();
+	void saveFile();
+
 	bool exportAll(std::wstring path);
 	bool exportAndProcess(std::wstring path);
+	bool exportAndCompileTae(std::wstring path);
+
+	bool exportTimeAct(std::wstring path);
+	bool exportNetwork(std::wstring path);
+	void exportAnimationsAndMarkups(std::wstring path);
+	bool exportModel(std::wstring path);
 	bool exportAnimations(std::wstring path);
 	bool exportAnimMarkups(std::wstring path);
+
+	bool compileMorphemeAssets(std::wstring path);
+	bool compileTimeActFiles(std::wstring path);
 
 	bool exportAnimation(std::wstring path, int animId);
 	bool exportAnimMarkup(std::wstring path, int animId);
