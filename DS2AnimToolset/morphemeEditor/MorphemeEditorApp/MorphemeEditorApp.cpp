@@ -705,7 +705,7 @@ void MorphemeEditorApp::update(float dt)
 		this->m_taskFlags.exportAll = false;
 
 		wchar_t exportPath[256];
-		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+		swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
 
 		std::filesystem::create_directories(exportPath);
 
@@ -717,7 +717,7 @@ void MorphemeEditorApp::update(float dt)
 		this->m_taskFlags.exportAndProcess = false;
 
 		wchar_t exportPath[256];
-		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+		swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
 
 		std::filesystem::create_directories(exportPath);
 
@@ -729,7 +729,7 @@ void MorphemeEditorApp::update(float dt)
 		this->m_taskFlags.exportTae = false;
 
 		wchar_t exportPath[256];
-		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+		swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
 
 		std::filesystem::create_directories(exportPath);
 
@@ -743,7 +743,7 @@ void MorphemeEditorApp::update(float dt)
 		if (this->m_character != nullptr)
 		{
 			wchar_t exportPath[256];
-			swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+			swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
 
 			std::filesystem::create_directories(exportPath);
 
@@ -762,7 +762,7 @@ void MorphemeEditorApp::update(float dt)
 		if (this->m_character != nullptr)
 		{
 			wchar_t exportPath[256];
-			swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+			swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
 
 			std::filesystem::create_directories(exportPath);
 
@@ -781,7 +781,7 @@ void MorphemeEditorApp::update(float dt)
 		if (this->m_character != nullptr && this->m_character->getMorphemeCharacter() != nullptr)
 		{
 			wchar_t exportPath[256];
-			swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+			swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
 			
 			std::filesystem::create_directories(exportPath);
 
@@ -810,7 +810,7 @@ void MorphemeEditorApp::update(float dt)
 		this->m_taskFlags.compileTaes = false;
 
 		wchar_t exportPath[256];
-		swprintf_s(exportPath, L"Export\\%ws\\", this->m_character->getCharacterName().c_str());
+		swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
 
 		std::filesystem::create_directories(exportPath);
 
@@ -1442,7 +1442,7 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 
 	std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
 
-	exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"assetCompilerCommand.txt");
+	exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"\\assetCompilerCommand.txt");
 
 	g_appLog->debugMessage(MsgLevel_Info, "Invoking asset compiler with command %s", assetCompilerCommand.c_str());
 
