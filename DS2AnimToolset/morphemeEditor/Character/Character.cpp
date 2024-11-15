@@ -481,7 +481,7 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
 {
     Character* character = new Character();
 
-    MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, true);
+    MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, false);
     characterDef->loadAnimations();
 
     std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
