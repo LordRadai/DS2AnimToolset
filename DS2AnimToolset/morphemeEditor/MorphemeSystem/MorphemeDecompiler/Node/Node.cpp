@@ -87,7 +87,7 @@ namespace MD
 			if ((nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK) || (nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE) || NodeUtils::isNodeControlParameter(nodeDef))
 				persistent = true;
 
-			if (NodeUtils::isNodeControlParameter(nodeDef))
+			if (NodeUtils::isNodeControlParameter(nodeDef) || (nodeDef->getNodeFlags() & MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
 				downstreamMultiplyConnected = true;
 
 			ME::NodeExportXML* nodeExportXML = static_cast<ME::NodeExportXML*>(netDefExport->createNode(nodeDef->getNodeID(), nodeDef->getNodeTypeID(), nodeDef->getParentNodeID(), downstreamMultiplyConnected, netDef->getNodeNameFromNodeID(nodeDef->getNodeID()), persistent));
@@ -331,6 +331,8 @@ namespace MD
 					}
 				}			
 			}
+
+			nodeDataBlock->writeBool(true, "NodeEmitsMessages");
 
 			return nodeExportXML;
 		}
