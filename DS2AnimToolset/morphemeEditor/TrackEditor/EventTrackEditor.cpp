@@ -391,9 +391,9 @@ namespace TrackEditor
 					const Event* event = track->events[j];
 
 					const float normStartTime = RMath::frameToTime(event->frameStart, this->m_fps) / duration;
-					const float normEndTime = RMath::frameToTime(event->frameEnd, this->m_fps) / duration;
+					const float normDuration = RMath::frameToTime(event->frameEnd - event->frameStart, this->m_fps) / duration;
 
-					trackXML->createEvent(j, normStartTime, normEndTime, event->userData);
+					trackXML->createEvent(j, normStartTime, normDuration, event->userData);
 				}
 			}
 		}
