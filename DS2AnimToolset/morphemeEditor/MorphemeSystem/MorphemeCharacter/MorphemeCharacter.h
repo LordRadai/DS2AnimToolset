@@ -67,7 +67,6 @@ public:
   NMP::DataBuffer*    getWorldTransforms() const { return m_worldTransforms; }
 
   MorphemeCharacterDef* getCharacterDef() const { return this->m_characterDef; }
-
 protected:
 
   MorphemeCharacter(MorphemeCharacterDef* gameCharacterDef):

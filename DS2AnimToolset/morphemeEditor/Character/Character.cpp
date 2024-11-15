@@ -481,7 +481,7 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
 {
     Character* character = new Character();
 
-    MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename);
+    MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, true);
     characterDef->loadAnimations();
 
     std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
@@ -573,10 +573,8 @@ void Character::update(float dt)
     if (model)
         this->m_position = Vector3::Transform(Vector3::Zero, model->getWorldMatrix());
 
-#ifdef MR_SIMULATE_NETWORK
-    if (this->m_morphemeCharacter)
+    if (this->m_morphemeCharacter && this->m_morphemeCharacter->getCharacterDef()->simulateNetwork())
         this->m_morphemeCharacter->update(dt);
-#endif
 }
 
 void Character::draw(RenderManager* renderManager)

@@ -22,5 +22,5 @@ namespace MorphemeSystem
 	//
 	// CharacterDefs that are created via the Manager are automatically registered with the manager
 	//  and the memory management of the Character remains the responsibility of the Manager.
-	MorphemeCharacterDef* createCharacterDef(const char* filename);  //< Name of simple bundle file where we should try and load this characters assets from.
+	MorphemeCharacterDef* createCharacterDef(const char* filename, bool simulateNetwork);  //< Name of simple bundle file where we should try and load this characters assets from.
 };

@@ -67,6 +67,8 @@ public:
   const char* getBundleFilepath() const { return m_metadata.m_bundleDir; }
   const char* getFilename() const { return m_filename; }
   int getCharacterId() const { return m_chrId; }
+  bool simulateNetwork() const { return this->m_simulateNetwork; }
+  void setSimulateNetwork(bool simulate) { this->m_simulateNetwork = simulate; }
   int getNumRigToAnimMaps() { return this->m_rigToAnimMaps.size(); }
   int getNumCharacterControllers() { return this->m_characterControllerDefs.size(); }
   int getNumAnims() { return this->m_anims.size(); }
@@ -115,6 +117,7 @@ protected:
   AnimData m_metadata;
   char m_filename[255];
 
+  bool m_simulateNetwork = true;
   int m_chrId;
   std::vector<AnimObject*> m_anims;
 };
