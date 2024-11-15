@@ -1277,7 +1277,7 @@ bool MorphemeEditorApp::exportAndProcess(std::wstring path)
 {
 	bool status = true;
 
-	g_workerThread.load()->addProcess("Exporting and processing assets...", 3);
+	g_workerThread.load()->addProcess("Exporting and processing assets", 3);
 	g_workerThread.load()->setProcessStepName("Exporting assets");
 
 	if (!this->exportAll(path))
@@ -1287,7 +1287,7 @@ bool MorphemeEditorApp::exportAndProcess(std::wstring path)
 	}
 
 	g_workerThread.load()->increaseProgressStep();
-	g_workerThread.load()->setProcessStepName("Compiling TimeAct files...");
+	g_workerThread.load()->setProcessStepName("Compiling TimeAct files");
 
 	if (!this->compileTimeActFiles(path))
 	{
@@ -1296,7 +1296,7 @@ bool MorphemeEditorApp::exportAndProcess(std::wstring path)
 	}
 
 	g_workerThread.load()->increaseProgressStep();
-	g_workerThread.load()->setProcessStepName("Compiling morpheme assets...");
+	g_workerThread.load()->setProcessStepName("Compiling morpheme assets");
 
 	if (!this->compileMorphemeAssets(path))
 	{
@@ -1441,8 +1441,7 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 	std::string errFile = "-errFile " + std::string("\"") + fullPath + "\\tempOutput\\assetManager\\assetCompilerError.log" + std::string("\"");
 
 	std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
-
-	exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"\\assetCompilerCommand.txt");
+	//exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"\\assetCompilerCommand.txt");
 
 	g_appLog->debugMessage(MsgLevel_Info, "Invoking asset compiler with command %s", assetCompilerCommand.c_str());
 
