@@ -9,6 +9,14 @@ namespace MD
 {
 	namespace Node
 	{
+		inline float getAngleFromClampedCosine(float in)
+		{
+			float cos = NMP::clampValue(in, 0.f, 1.f);
+			float angleRad = acosf(cos);
+
+			return NMP::radiansToDegrees(angleRad);
+		}
+
 		void writePredictiveUnevenTerrainChainAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataBasicUnevenTerrainChain* chainAttrib)
 		{
 			CHAR paramName[256];
@@ -21,6 +29,9 @@ namespace MD
 
 			sprintf_s(paramName, "HipsPosVelLimitEnable_%d", animSetIdx + 1);
 			nodeDataBlock->writeBool(chainAttrib->m_hipsPosVelLimitEnable, paramName);
+
+			sprintf_s(paramName, "HipsPosVelLimit_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(chainAttrib->m_hipsPosAccelLimit, paramName);
 
 			sprintf_s(paramName, "HipsPosAccelLimitEnable_%d", animSetIdx + 1);
 			nodeDataBlock->writeBool(chainAttrib->m_hipsPosAccelLimitEnable, paramName);
@@ -63,10 +74,10 @@ namespace MD
 			nodeDataBlock->writeBool(chainAttrib->m_useTrajectorySlopeAlignment, paramName);
 
 			sprintf_s(paramName, "FootAlignToSurfaceAngleLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(NMP::radiansToDegrees(chainAttrib->m_footAlignToSurfaceAngleLimit), paramName);
-		
-			sprintf_s(paramName, "FootAlignToSurfaceMaxAngle_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(NMP::radiansToDegrees(chainAttrib->m_footAlignToSurfaceMaxSlopeAngle), paramName);
+			nodeDataBlock->writeFloat(getAngleFromClampedCosine(chainAttrib->m_footAlignToSurfaceAngleLimit), paramName);
+
+			sprintf_s(paramName, "FootAlignToSurfaceMaxSlopeAngle_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(getAngleFromClampedCosine(chainAttrib->m_footAlignToSurfaceMaxSlopeAngle), paramName);
 		
 			sprintf_s(paramName, "FootLiftingHeightLimit_%d", animSetIdx + 1);
 			nodeDataBlock->writeFloat(chainAttrib->m_footLiftingHeightLimit, paramName);
@@ -120,7 +131,7 @@ namespace MD
 			nodeDataBlock->writeFloat(NMP::radiansToDegrees(atanf(predictionDefAttrib->m_footLiftingLateralAngleLimit)), paramName);
 
 			sprintf_s(paramName, "PredictionCloseFootbaseTolFrac_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(NMP::radiansToDegrees(atanf(predictionDefAttrib->m_closeFootbaseTolFrac)), paramName);
+			nodeDataBlock->writeFloat(predictionDefAttrib->m_closeFootbaseTolFrac, paramName);
 		
 			assert(predictionDefAttrib->m_numLimbs == 2);
 
