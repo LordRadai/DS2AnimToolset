@@ -116,10 +116,10 @@ namespace MD
 					MR::StateMachineInitData* nodeInitData = static_cast<MR::StateMachineInitData*>(transitDef->m_nodeInitData->m_nodeInitDataArray[i]);
 
 					sprintf_s(paramName, "DestinationSubStateID_%d", i);
-					nodeDataBlock->writeInt(nodeInitData->getTargetNodeID(), paramName);
+					nodeDataBlock->writeInt(nodeInitData->getInitialSubStateID(), paramName);
 
 					sprintf_s(paramName, "DestinationSubStateParentID_%d", i);
-					nodeDataBlock->writeInt(nodeInitData->getInitialSubStateID(), paramName);
+					nodeDataBlock->writeInt(nodeInitData->getTargetNodeID(), paramName);
 				}
 			}
 			else

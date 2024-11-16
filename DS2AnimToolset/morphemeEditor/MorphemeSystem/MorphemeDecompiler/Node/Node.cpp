@@ -197,13 +197,13 @@ namespace MD
 				nodeDataBlock->writeUInt(eventOffset, "EventOffset");
 			}
 
-			bool eventPassThrough = false;
+			bool eventPassThrough = true;
 
 			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TIME_POS);
 			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
 
 			if (taskQueueFn == MR::nodeMirrorQueueTimePos)
-				eventPassThrough = true;
+				eventPassThrough = false;
 
 			nodeDataBlock->writeBool(eventPassThrough, "EventPassThrough");
 
@@ -385,7 +385,7 @@ namespace MD
 
 				for (uint32_t i = 0; i < smoothingStrenghtAttribData->m_numValues; i++)
 				{
-					sprintf_s(paramSmoothingStrenght, "SmoothingStrenghts_%d_Set_%d", i + 1, animSetIdx + 1);
+					sprintf_s(paramSmoothingStrenght, "SmoothingStrengths_%d_Set_%d", i + 1, animSetIdx + 1);
 					nodeDataBlock->writeFloat(smoothingStrenghtAttribData->m_values[i], paramSmoothingStrenght);
 				}
 			}
@@ -423,7 +423,7 @@ namespace MD
 			}
 
 			bool wrapWeights = (childNodeWeights->m_numValues == (childNodeCount + 1));
-			nodeDataBlock->writeBool(wrapWeights, "WrapWeight");
+			nodeDataBlock->writeBool(wrapWeights, "WrapWeights");
 			nodeDataBlock->writeUInt(switchDef->m_evalMode, "EvaluationMethod");
 			nodeDataBlock->writeUInt(switchDef->m_inputSelectionMethod, "InputSelectionMethod");
 

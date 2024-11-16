@@ -55,7 +55,7 @@ namespace
 		out.close();
 	}
 
-	void exportNetworkDefFnTables(MR::NetworkDef* netDef, std::wstring path)
+	void dumpNetworkTaskQueuingFnTables(MR::NetworkDef* netDef, std::wstring path)
 	{
 		std::ofstream out(path, std::ios::out);
 
@@ -86,6 +86,49 @@ namespace
 		}
 
 		out.close();
+	}
+
+	void dumpNetworkOutputCPTasksFnTables(MR::NetworkDef* netDef, std::wstring path)
+	{
+		std::ofstream out(path, std::ios::out);
+
+		char tableBuf[256];
+		char lineBuf[256];
+
+		int numTables = netDef->getOutputCPTaskFnTables()->getNumTaskFnTables();
+		for (int i = 0; i < numTables; i++)
+		{
+			const MR::SharedTaskFnTables::SharedTaskFn* table = netDef->getOutputCPTaskFnTables()->getTaskFnTable(i);
+
+			sprintf_s(tableBuf, "OutputCPTaskFnTable_%d:\n", i);
+			out << tableBuf;
+
+			for (int sem = 0; sem < MR::Manager::getInstance().getNumRegisteredAttribSemantics(); sem++)
+			{
+				const char* fnName = MR::Manager::getInstance().getOutputCPTaskName(MR::OutputCPTask(table[sem]));
+				int fnID = -1;
+
+				if (fnName)
+					fnID = MR::Manager::getInstance().getTaskQueuingFnID(fnName);
+
+				sprintf_s(lineBuf, "\t%s (%d) -> %s (%d)\n", MR::Manager::getInstance().getAttributeSemanticName(sem), sem, fnName, fnID);
+				out << lineBuf;
+			}
+
+			out << "\n";
+		}
+
+		out.close();
+	}
+
+	void printNodeFnTables(MR::NetworkDef* netDef, MR::NodeID nodeID, std::ofstream& file)
+	{
+		const MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
+
+		char lineBuf[256];
+		sprintf_s(lineBuf, "Node_%d (taskQueuingFnTablesID=%d, outputCPTasksFnTablesID=%d)\n", nodeID, nodeDef->getTaskQueuingFnsID(), nodeDef->getOutputCPTasksID());
+
+		file << lineBuf;
 	}
 
 	void printNode(MR::NetworkDef* netDef, MR::NodeID nodeID, std::ofstream& file, int numIndents, std::vector<MR::NodeID>& printedNodes)
@@ -129,9 +172,10 @@ namespace
 		}
 	}
 
-	void exportNetworkNodeNames(MR::NetworkDef* netDef, std::wstring path)
+	void dumpNetworkNodes(MR::NetworkDef* netDef, std::wstring path)
 	{
-		std::ofstream out(path, std::ios::out);
+		std::ofstream nodeDump(path, std::ios::out);
+		std::ofstream nodeDumpExt(L"nodeFnTables.txt", std::ios::out);
 
 		char lineBuf[256];
 
@@ -139,9 +183,12 @@ namespace
 
 		std::vector<MR::NodeID> printedNodes;
 		for (int i = 0; i < numNodes; i++)
-			printNode(netDef, i, out, 0, printedNodes);
+		{
+			printNode(netDef, i, nodeDump, 0, printedNodes);
+			printNodeFnTables(netDef, i, nodeDumpExt);
+		}
 
-		out.close();
+		nodeDump.close();
 	}
 
 	void exportAssetCompilerCommand(const char* command, std::wstring path)
@@ -1257,8 +1304,9 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
-	exportNetworkNodeNames(netDef, L"network.txt");
-	exportNetworkDefFnTables(netDef, L"fnTables.txt");
+	dumpNetworkNodes(netDef, L"nodes.txt");
+	dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
+	dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
 
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for %ws (%ws):\n", chrName.c_str(), networkFilename);
 

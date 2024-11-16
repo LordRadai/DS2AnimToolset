@@ -16,7 +16,7 @@ namespace MD
 
 			int numConditions = globalStateDef->getNumExitConditions();
 
-			for (size_t i = 0; i < numConditions; i++)
+			for (int i = 0; i < numConditions; i++)
 			{
 				int conditionIndex = globalStateDef->getExitConditionStateMachineIndex(i);
 				MR::TransitConditionDef* transitCondDef = stateMachineDef->getConditionDef(conditionIndex);

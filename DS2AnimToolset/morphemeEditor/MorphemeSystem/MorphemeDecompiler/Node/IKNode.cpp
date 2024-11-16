@@ -31,7 +31,7 @@ namespace MD
 			nodeDataBlock->writeBool(chainAttrib->m_hipsPosVelLimitEnable, paramName);
 
 			sprintf_s(paramName, "HipsPosVelLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(chainAttrib->m_hipsPosAccelLimit, paramName);
+			nodeDataBlock->writeFloat(chainAttrib->m_hipsPosVelLimit, paramName);
 
 			sprintf_s(paramName, "HipsPosAccelLimitEnable_%d", animSetIdx + 1);
 			nodeDataBlock->writeBool(chainAttrib->m_hipsPosAccelLimitEnable, paramName);
@@ -40,7 +40,7 @@ namespace MD
 			nodeDataBlock->writeFloat(chainAttrib->m_hipsPosAccelLimit, paramName);
 
 			// Common leg options
-			sprintf_s(paramName, "StraighestLegFactor_%d", animSetIdx + 1);
+			sprintf_s(paramName, "StraightestLegFactor_%d", animSetIdx + 1);
 			nodeDataBlock->writeFloat(chainAttrib->m_straightestLegFactor, paramName);
 
 			sprintf_s(paramName, "AnklePosVelLimitEnable_%d", animSetIdx + 1);
@@ -240,9 +240,9 @@ namespace MD
 
 			uint32_t upAxisIndex = getUpAxisIndex(hipsIKDef->m_upAxis);
 			nodeDataBlock->writeUInt(upAxisIndex, "UpAxisIndex");
-			nodeDataBlock->writeBool(hipsIKDef->m_keepWorldFootOrientation, "KeepWorldFootOrientation");
 			nodeDataBlock->writeFloat(hipsIKDef->m_swivelOrientationWeight, "KneeSwivelWeight");
 			nodeDataBlock->writeBool(hipsIKDef->m_localReferenceFrame, "LocalReferenceFrame");
+			nodeDataBlock->writeBool(hipsIKDef->m_keepWorldFootOrientation, "KeepWorldFootOrientation");
 
 			CHAR paramName[256];
 			for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)

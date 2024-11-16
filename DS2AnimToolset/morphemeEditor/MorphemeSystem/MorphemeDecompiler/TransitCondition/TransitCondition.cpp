@@ -70,7 +70,7 @@ namespace MD
 			dataBlock->writeBool(true, "LessThanOperation");
 
 			dataBlock->writeString("float", "DataType");
-			dataBlock->writeUInt(transitCondDef->getTestValue(), "TestValue");
+			dataBlock->writeFloat(transitCondDef->getTestValue(), "TestValue");
 		}
 
 		void exportTransitConditionCPFloatGreater(MR::TransitConditionDefControlParamFloatGreater* transitCondDef, ME::ConditionExportXML* conditionExport)
@@ -84,7 +84,7 @@ namespace MD
 			dataBlock->writeBool(false, "LessThanOperation");
 
 			dataBlock->writeString("float", "DataType");
-			dataBlock->writeUInt(transitCondDef->getTestValue(), "TestValue");
+			dataBlock->writeFloat(transitCondDef->getTestValue(), "TestValue");
 		}
 
 		void exportTransitConditionCPIntLess(MR::TransitConditionDefControlParamIntLess* transitCondDef, ME::ConditionExportXML* conditionExport)
@@ -98,7 +98,7 @@ namespace MD
 			dataBlock->writeBool(true, "LessThanOperation");
 
 			dataBlock->writeString("int", "DataType");
-			dataBlock->writeUInt(transitCondDef->getTestValue(), "TestValue");
+			dataBlock->writeInt(transitCondDef->getTestValue(), "TestValue");
 		}
 
 		void exportTransitConditionCPIntGreater(MR::TransitConditionDefControlParamIntGreater* transitCondDef, ME::ConditionExportXML* conditionExport)
@@ -112,7 +112,7 @@ namespace MD
 			dataBlock->writeBool(false, "LessThanOperation");
 
 			dataBlock->writeString("int", "DataType");
-			dataBlock->writeUInt(transitCondDef->getTestValue(), "TestValue");
+			dataBlock->writeInt(transitCondDef->getTestValue(), "TestValue");
 		}
 
 		void exportTransitConditionCPUIntLess(MR::TransitConditionDefControlParamUIntLess* transitCondDef, ME::ConditionExportXML* conditionExport)
