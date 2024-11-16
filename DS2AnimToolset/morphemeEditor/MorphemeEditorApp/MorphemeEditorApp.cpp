@@ -88,6 +88,62 @@ namespace
 		out.close();
 	}
 
+	void printNode(MR::NetworkDef* netDef, MR::NodeID nodeID, std::ofstream& file, int numIndents, std::vector<MR::NodeID>& printedNodes)
+	{
+		for (uint32_t i = 0; i < printedNodes.size(); i++)
+		{
+			if (nodeID == printedNodes[i])
+				return;
+		}
+
+		printedNodes.push_back(nodeID);
+
+		std::string indendationString = "";
+
+		for (size_t i = 0; i < numIndents; i++)
+			indendationString += "\t";
+
+		const MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
+		const char* nodeName = netDef->getNodeNameFromNodeID(nodeID);
+		const bool isContainer = ((nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE) || (nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK));
+
+		char nodeBuf[256];
+
+		if ((nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT) || (nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT_SYNC_EVENTS))
+		{
+			sprintf_s(nodeBuf, "%sTransit_%d (src=%d, dst=%d)\n", indendationString.c_str(), nodeDef->getNodeID(), nodeDef->getChildNodeID(0), nodeDef->getChildNodeID(1));
+			file << nodeBuf;
+
+			return;
+		}
+
+		sprintf_s(nodeBuf, "%sNode_%d (parentNode=%d, typeID=%d, name=\"%s\")\n", indendationString.c_str(), nodeDef->getNodeID(), nodeDef->getParentNodeID(), nodeDef->getNodeTypeID(), nodeName);
+		file << nodeBuf;
+
+		for (uint32_t i = 0; i < nodeDef->getNumChildNodes(); i++)
+		{
+			if (isContainer)
+				printNode(netDef, nodeDef->getChildNodeID(i), file, numIndents + 1, printedNodes);
+			else
+				printNode(netDef, nodeDef->getChildNodeID(i), file, numIndents, printedNodes);
+		}
+	}
+
+	void exportNetworkNodeNames(MR::NetworkDef* netDef, std::wstring path)
+	{
+		std::ofstream out(path, std::ios::out);
+
+		char lineBuf[256];
+
+		const int numNodes = netDef->getNumNodeDefs();
+
+		std::vector<MR::NodeID> printedNodes;
+		for (int i = 0; i < numNodes; i++)
+			printNode(netDef, i, out, 0, printedNodes);
+
+		out.close();
+	}
+
 	void exportAssetCompilerCommand(const char* command, std::wstring path)
 	{
 		std::ofstream out(path, std::ios::out);
@@ -1201,9 +1257,8 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
-#ifdef _DEBUG
+	exportNetworkNodeNames(netDef, L"network.txt");
 	exportNetworkDefFnTables(netDef, L"fnTables.txt");
-#endif
 
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for %ws (%ws):\n", chrName.c_str(), networkFilename);
 
@@ -1247,14 +1302,14 @@ bool MorphemeEditorApp::exportAll(std::wstring path)
 		this->exportModel(path);
 
 		g_workerThread.load()->increaseProgressStep();
-		g_workerThread.load()->setProcessStepName("Exporting network");
-
-		this->exportNetwork(path);
-
-		g_workerThread.load()->increaseProgressStep();
 		g_workerThread.load()->setProcessStepName("Exporting animations and markups");
 
 		this->exportAnimationsAndMarkups(path);
+
+		g_workerThread.load()->increaseProgressStep();
+		g_workerThread.load()->setProcessStepName("Exporting network");
+
+		this->exportNetwork(path);
 
 		g_workerThread.load()->increaseProgressStep();
 		g_workerThread.load()->setProcessStepName("Exporting TimeAct");
