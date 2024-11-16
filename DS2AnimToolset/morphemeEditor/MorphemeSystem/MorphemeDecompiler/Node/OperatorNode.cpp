@@ -182,7 +182,8 @@ namespace MD
 			MR::AttribDataArithmeticOperation* functionOpCode = static_cast<MR::AttribDataArithmeticOperation*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
 			nodeDataBlock->writeInt(functionOpCode->m_operation, "OperationCode");
-			nodeDataBlock->writeFloat(functionOpCode->m_constValue, "ConstantValueX");
+			nodeDataBlock->writeFloat(functionOpCode->m_constValue, "ConstantValue");
+			nodeDataBlock->writeFloat(functionOpCode->m_constVector.x, "ConstantValueX");
 
 			return nodeExportXML;
 		}
