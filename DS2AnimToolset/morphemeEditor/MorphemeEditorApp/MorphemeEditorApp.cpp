@@ -6,6 +6,7 @@
 #include "XMDTranslator/XMDTranslator.h"
 #include "FromSoftware/TimeAct/TaeExport/TaeExport.h"
 #include "FromSoftware/TimeAct/TaeTemplate/TaeTemplateXML/TaeTemplateXML.h"
+#include "MorphemeSystem/MorphemeDecompiler/Node/NodeUtils.h"
 #include <thread>
 
 #ifndef _DEBUG
@@ -131,64 +132,168 @@ namespace
 		file << lineBuf;
 	}
 
-	void printNode(MR::NetworkDef* netDef, MR::NodeID nodeID, std::ofstream& file, int numIndents, std::vector<MR::NodeID>& printedNodes)
+	tinyxml2::XMLElement* createNodeXML(MR::NodeDef* nodeDef, tinyxml2::XMLElement* parent, std::string nodeName)
 	{
-		for (uint32_t i = 0; i < printedNodes.size(); i++)
-		{
-			if (nodeID == printedNodes[i])
-				return;
-		}
+		tinyxml2::XMLElement* nodeXML = parent->InsertNewChildElement("Node");
 
-		printedNodes.push_back(nodeID);
+		nodeXML->SetAttribute("Name", nodeName.c_str());
+		nodeXML->SetAttribute("TypeID", nodeDef->getNodeTypeID());
+		nodeXML->SetAttribute("ParentID", nodeDef->getParentNodeID());
+
+		return nodeXML;
+	}
+
+	void addNodeToXML(MR::NetworkDef* netDef, MR::NodeID nodeID, ME::AnimationLibraryExport* animLibrary, tinyxml2::XMLElement* parent, bool isInput)
+	{
+		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
+
+		const bool isContainer = ((nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE) || (nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK));
+
+		std::string nodeName = MD::NodeUtils::buildNodeName(netDef, nodeDef, animLibrary);
+
+		tinyxml2::XMLElement* nodeXML = createNodeXML(nodeDef, parent, nodeName);
+
+		if (!isContainer)
+		{
+			const int numChildNodes = nodeDef->getNumChildNodes();
+			const int numInputCPs = nodeDef->getNumInputCPConnections();
+
+			if (numChildNodes > 0)
+			{
+				tinyxml2::XMLElement* inputNodes = nodeXML->InsertNewChildElement("InputNodes");
+
+				for (int i = 0; i < numChildNodes; i++)
+				{
+					std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
+
+					if (name == "InvalidType_0")
+						name = "None";
+
+					createNodeXML(nodeDef->getChildNodeDef(i), inputNodes, name);
+				}
+			}
+
+			if (numInputCPs > 0)
+			{
+				tinyxml2::XMLElement* inputCPs = nodeXML->InsertNewChildElement("InputCPs");
+
+				for (int i = 0; i < numInputCPs; i++)
+				{
+					std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getInputCPConnectionSourceNodeDef(i), animLibrary);
+
+					if (name == "InvalidType_0")
+						name = "None";
+
+					createNodeXML(nodeDef->getInputCPConnectionSourceNodeDef(i), inputCPs, name);
+				}
+			}
+		}
+		else
+		{
+			const int numChildNodes = nodeDef->getNumChildNodes();
+
+			if (numChildNodes > 0)
+			{
+				tinyxml2::XMLElement* childNodes = nodeXML->InsertNewChildElement("Children");
+
+				for (int i = 0; i < numChildNodes; i++)
+				{
+					std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
+
+					if (name == "InvalidType_0")
+						name = "None";
+
+					createNodeXML(nodeDef->getChildNodeDef(i), childNodes, name);
+				}
+			}
+		}
+	}
+
+	void printNode(MR::NetworkDef* netDef, MR::NodeID nodeID, ME::AnimationLibraryExport* animLibrary, std::ofstream& file, int numIndents, std::unordered_map<MR::NodeID, std::string>& nodeMap, bool isInput)
+	{
+		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
 
 		std::string indendationString = "";
 
 		for (size_t i = 0; i < numIndents; i++)
 			indendationString += "\t";
 
-		const MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
-		const char* nodeName = netDef->getNodeNameFromNodeID(nodeID);
-		const bool isContainer = ((nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE) || (nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK));
+		bool alreadyExported = false;
 
-		char nodeBuf[256];
-
-		if ((nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT) || (nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT_SYNC_EVENTS))
+		if (nodeMap.find(nodeID) != nodeMap.end())
 		{
-			sprintf_s(nodeBuf, "%sTransit_%d (src=%d, dst=%d)\n", indendationString.c_str(), nodeDef->getNodeID(), nodeDef->getChildNodeID(0), nodeDef->getChildNodeID(1));
-			file << nodeBuf;
+			alreadyExported = true;
 
-			return;
+			if (!isInput)
+				file << indendationString + nodeMap[nodeID];
+			else
+				file << indendationString + "-" + nodeMap[nodeID];
 		}
 
-		sprintf_s(nodeBuf, "%sNode_%d (parentNode=%d, typeID=%d, name=\"%s\")\n", indendationString.c_str(), nodeDef->getNodeID(), nodeDef->getParentNodeID(), nodeDef->getNodeTypeID(), nodeName);
-		file << nodeBuf;
+		const bool isContainer = ((nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE) || (nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK));
+
+		if (!alreadyExported)
+		{
+			std::string nodeName = MD::NodeUtils::buildNodeName(netDef, nodeDef, animLibrary);
+
+			char nodeBuf[256];
+
+			if ((nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT) || (nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT_SYNC_EVENTS))
+			{
+				sprintf_s(nodeBuf, "%s\"%s\" (src=%d, dst=%d)\n", indendationString.c_str(), nodeName.c_str(), nodeDef->getChildNodeID(0), nodeDef->getChildNodeID(1));
+				file << nodeBuf;
+
+				return;
+			}
+
+			if (!isInput)
+				sprintf_s(nodeBuf, "\"%s\" (parentNode=%d, typeID=%d)\n", nodeName.c_str(), nodeDef->getParentNodeID(), nodeDef->getNodeTypeID());
+			else
+				sprintf_s(nodeBuf, "\"%s\" (parentNode=%d, typeID=%d)\n", nodeName.c_str(), nodeDef->getParentNodeID(), nodeDef->getNodeTypeID());
+
+			nodeMap.insert(std::make_pair(nodeID, std::string(nodeBuf)));
+
+			if (!isInput)
+				file << indendationString + nodeBuf;
+			else
+				file << indendationString + "-" + nodeBuf;
+		}
+		
+		if (isContainer)
+			file << indendationString + "{\n";
 
 		for (uint32_t i = 0; i < nodeDef->getNumChildNodes(); i++)
 		{
 			if (isContainer)
-				printNode(netDef, nodeDef->getChildNodeID(i), file, numIndents + 1, printedNodes);
+				printNode(netDef, nodeDef->getChildNodeID(i), animLibrary, file, numIndents + 1, nodeMap, false);
 			else
-				printNode(netDef, nodeDef->getChildNodeID(i), file, numIndents, printedNodes);
+				printNode(netDef, nodeDef->getChildNodeID(i), animLibrary, file, numIndents + 1, nodeMap, true);
 		}
+
+		for (uint32_t i = 0; i < nodeDef->getNumInputCPConnections(); i++)
+			printNode(netDef, nodeDef->getInputCPConnectionSourceNodeID(i), animLibrary, file, numIndents + 1, nodeMap, true);
+
+		if (isContainer)
+			file << indendationString + "}\n";
 	}
 
-	void dumpNetworkNodes(MR::NetworkDef* netDef, std::wstring path)
+	void dumpNetworkNodes(MR::NetworkDef* netDef, ME::AnimationLibraryExport* animLibrary, std::wstring path)
 	{
-		std::ofstream nodeDump(path, std::ios::out);
 		std::ofstream nodeDumpExt(L"nodeFnTables.txt", std::ios::out);
 
-		char lineBuf[256];
+		tinyxml2::XMLDocument xmlDoc;
+		tinyxml2::XMLElement* root = xmlDoc.NewElement("Nodes");
 
 		const int numNodes = netDef->getNumNodeDefs();
 
-		std::vector<MR::NodeID> printedNodes;
 		for (int i = 0; i < numNodes; i++)
 		{
-			printNode(netDef, i, nodeDump, 0, printedNodes);
+			addNodeToXML(netDef, i, animLibrary, root, false);
 			printNodeFnTables(netDef, i, nodeDumpExt);
 		}
 
-		nodeDump.close();
+		xmlDoc.InsertEndChild(root);
+		xmlDoc.SaveFile(RString::toNarrow(path).c_str());
 	}
 
 	void exportAssetCompilerCommand(const char* command, std::wstring path)
@@ -1304,7 +1409,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
-	dumpNetworkNodes(netDef, L"nodes.txt");
+	dumpNetworkNodes(netDef, animLibraryExport, L"nodes.xml");
 	dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
 	dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
 

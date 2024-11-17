@@ -13,4 +13,5 @@ namespace MorphemeUtils
 	std::vector<MR::StateDef*> getStateMachineSteadyChildNodes(MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 	std::vector<MR::StateDef*> getStateMachineTransitChildNodes(MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
 	int getConditionIndexByID(MR::StateDef* stateDef, int conditionID);
+	const char* getNodeTypeName(MR::NodeType typeID);
 }

@@ -10,12 +10,12 @@ namespace MD
 {
 	namespace Node
 	{
-		ME::NodeExportXML* exportTransitNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		ME::NodeExportXML* exportTransitNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			if ((nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT) && (nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_PHYSICS))
 				g_appLog->panicMessage("Expecting node type %d or %d (got %d)\n", NODE_TYPE_TRANSIT, NODE_TYPE_TRANSIT_PHYSICS, nodeDef->getNodeTypeID());
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			if (nodeDef->getChildNodeID(0) != MR::INVALID_NODE_ID)
@@ -133,12 +133,12 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportTransitSyncEventsNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		ME::NodeExportXML* exportTransitSyncEventsNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			if ((nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_SYNC_EVENTS) && (nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS))
 				g_appLog->panicMessage("Expecting node type %d or %d (got %d)\n", NODE_TYPE_TRANSIT_SYNC_EVENTS, NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS, nodeDef->getNodeTypeID());
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			if (nodeDef->getChildNodeID(0) != MR::INVALID_NODE_ID)

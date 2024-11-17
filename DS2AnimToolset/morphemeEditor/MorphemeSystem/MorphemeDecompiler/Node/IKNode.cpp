@@ -161,11 +161,11 @@ namespace MD
 			return -1;
 		}
 
-		ME::NodeExportXML* exportHeadLookNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		ME::NodeExportXML* exportHeadLookNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_HEAD_LOOK);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
@@ -201,11 +201,11 @@ namespace MD
 				nodeDataBlock->writeFloat(headLookChain->m_ikParams->pointingVector.z, paramName);
 
 				sprintf_s(paramName, "EndEffectorOffsetX_%d", animSetIndex + 1);
-				nodeDataBlock->readFloat(headLookChain->m_endEffectorOffset.x, paramName);
+				nodeDataBlock->writeFloat(headLookChain->m_endEffectorOffset.x, paramName);
 				sprintf_s(paramName, "EndEffectorOffsetY_%d", animSetIndex + 1);
-				nodeDataBlock->readFloat(headLookChain->m_endEffectorOffset.y, paramName);
+				nodeDataBlock->writeFloat(headLookChain->m_endEffectorOffset.y, paramName);
 				sprintf_s(paramName, "EndEffectorOffsetZ_%d", animSetIndex + 1);
-				nodeDataBlock->readFloat(headLookChain->m_endEffectorOffset.z, paramName);
+				nodeDataBlock->writeFloat(headLookChain->m_endEffectorOffset.z, paramName);
 
 				sprintf_s(paramName, "Bias_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(headLookChain->m_ikParams->bias, paramName);
@@ -220,11 +220,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportHipsIKNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		ME::NodeExportXML* exportHipsIKNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_HIPS_IK);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -295,11 +295,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportLockFootNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		ME::NodeExportXML* exportLockFootNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_LOCK_FOOT);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -390,11 +390,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportPredictiveUnevenTerrainNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		ME::NodeExportXML* exportPredictiveUnevenTerrainNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef);
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
