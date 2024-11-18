@@ -199,8 +199,8 @@ namespace MD
 
 			assert(weights->m_numValues == 2);
 
-			nodeDataBlock->readFloat(weights->m_values[0], "BlendWeight_0");
-			nodeDataBlock->readFloat(weights->m_values[1], "BlendWeight_1");
+			nodeDataBlock->writeFloat(weights->m_values[0], "BlendWeight_0");
+			nodeDataBlock->writeFloat(weights->m_values[1], "BlendWeight_1");
 
 			writePassThroughMode(nodeDef, nodeDataBlock);
 			writeEventBlendMode(nodeDef, nodeDataBlock);
@@ -232,10 +232,10 @@ namespace MD
 
 			assert(weights->m_numValues == 4);
 
-			nodeDataBlock->readFloat(weights->m_values[0], "BlendWeightX_0");
-			nodeDataBlock->readFloat(weights->m_values[1], "BlendWeightX_1");
-			nodeDataBlock->readFloat(weights->m_values[2], "BlendWeightY_0");
-			nodeDataBlock->readFloat(weights->m_values[3], "BlendWeightY_1");
+			nodeDataBlock->writeFloat(weights->m_values[0], "BlendWeightX_0");
+			nodeDataBlock->writeFloat(weights->m_values[1], "BlendWeightX_1");
+			nodeDataBlock->writeFloat(weights->m_values[2], "BlendWeightY_0");
+			nodeDataBlock->writeFloat(weights->m_values[3], "BlendWeightY_1");
 
 			writePassThroughMode(nodeDef, nodeDataBlock);
 			writeEventBlendMode(nodeDef, nodeDataBlock);

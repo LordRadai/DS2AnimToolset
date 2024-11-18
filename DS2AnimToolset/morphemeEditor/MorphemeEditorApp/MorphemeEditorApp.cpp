@@ -132,13 +132,34 @@ namespace
 		file << lineBuf;
 	}
 
-	tinyxml2::XMLElement* createNodeXML(MR::NodeDef* nodeDef, tinyxml2::XMLElement* parent, std::string nodeName)
+	tinyxml2::XMLElement* createNodeXML(MR::NodeDef* nodeDef, tinyxml2::XMLElement* parent, std::string nodeName, bool activeState)
 	{
 		tinyxml2::XMLElement* nodeXML = parent->InsertNewChildElement("Node");
 
-		nodeXML->SetAttribute("Name", nodeName.c_str());
-		nodeXML->SetAttribute("TypeID", nodeDef->getNodeTypeID());
-		nodeXML->SetAttribute("ParentID", nodeDef->getParentNodeID());
+		if (nodeDef != nullptr)
+		{
+			nodeXML->SetAttribute("Name", nodeName.c_str());
+			nodeXML->SetAttribute("NodeID", nodeDef->getNodeID());
+			nodeXML->SetAttribute("TypeID", nodeDef->getNodeTypeID());
+			nodeXML->SetAttribute("ParentID", nodeDef->getParentNodeID());
+
+			return nodeXML;
+		}
+
+		if (activeState)
+		{
+			nodeXML->SetAttribute("Name", "ActiveState");
+			nodeXML->SetAttribute("NodeID", -1);
+			nodeXML->SetAttribute("TypeID", 0);
+			nodeXML->SetAttribute("ParentID", 0);
+
+			return nodeXML;
+		}
+
+		nodeXML->SetAttribute("Name", "None");
+		nodeXML->SetAttribute("NodeID", -1);
+		nodeXML->SetAttribute("TypeID", 0);
+		nodeXML->SetAttribute("ParentID", 0);
 
 		return nodeXML;
 	}
@@ -151,7 +172,7 @@ namespace
 
 		std::string nodeName = MD::NodeUtils::buildNodeName(netDef, nodeDef, animLibrary);
 
-		tinyxml2::XMLElement* nodeXML = createNodeXML(nodeDef, parent, nodeName);
+		tinyxml2::XMLElement* nodeXML = createNodeXML(nodeDef, parent, nodeName, false);
 
 		if (!isContainer)
 		{
@@ -164,12 +185,18 @@ namespace
 
 				for (int i = 0; i < numChildNodes; i++)
 				{
-					std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
-
-					if (name == "InvalidType_0")
-						name = "None";
-
-					createNodeXML(nodeDef->getChildNodeDef(i), inputNodes, name);
+					if (nodeDef->getChildNodeID(i) != MR::INVALID_NODE_ID)
+					{
+						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
+						createNodeXML(nodeDef->getChildNodeDef(i), inputNodes, name, false);
+					}
+					else
+					{
+						if ((nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT) || (nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT_SYNC_EVENTS))
+							createNodeXML(nullptr, inputNodes, "", true);
+						else
+							createNodeXML(nullptr, inputNodes, "", false);
+					}
 				}
 			}
 
@@ -179,12 +206,15 @@ namespace
 
 				for (int i = 0; i < numInputCPs; i++)
 				{
-					std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getInputCPConnectionSourceNodeDef(i), animLibrary);
-
-					if (name == "InvalidType_0")
-						name = "None";
-
-					createNodeXML(nodeDef->getInputCPConnectionSourceNodeDef(i), inputCPs, name);
+					if (nodeDef->getInputCPConnectionSourceNodeID(i) != MR::INVALID_NODE_ID)
+					{
+						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getInputCPConnectionSourceNodeDef(i), animLibrary);
+						createNodeXML(nodeDef->getInputCPConnectionSourceNodeDef(i), inputCPs, name, false);
+					}
+					else
+					{
+						createNodeXML(nullptr, inputCPs, "", false);
+					}
 				}
 			}
 		}
@@ -198,12 +228,15 @@ namespace
 
 				for (int i = 0; i < numChildNodes; i++)
 				{
-					std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
-
-					if (name == "InvalidType_0")
-						name = "None";
-
-					createNodeXML(nodeDef->getChildNodeDef(i), childNodes, name);
+					if (nodeDef->getChildNodeID(i) != MR::INVALID_NODE_ID)
+					{
+						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
+						createNodeXML(nodeDef->getChildNodeDef(i), childNodes, name, false);
+					}
+					else
+					{
+						createNodeXML(nullptr, childNodes, "", false);
+					}
 				}
 			}
 		}

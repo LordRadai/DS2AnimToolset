@@ -170,14 +170,17 @@ namespace MD
 		rigExport->setRigRetargetScale(1.f);
 		rigExport->setMirrorPlane(0);
 
-		MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
-
-		if (mirroredMapping != nullptr)
+		if (netDef->getNodeDef(0)->getNumAttribDataHandles() == 4)
 		{
-			for (size_t i = 0; i < mirroredMapping->getNumMappings(); i++)
-				rigExport->createMirrorMapping(i, mirroredMapping->getLeftBone(i), mirroredMapping->getRightBone(i));
-		}
+			MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
 
+			if (mirroredMapping != nullptr)
+			{
+				for (size_t i = 0; i < mirroredMapping->getNumMappings(); i++)
+					rigExport->createMirrorMapping(i, mirroredMapping->getLeftBone(i), mirroredMapping->getRightBone(i));
+			}
+		}
+		
 		return rigExport;
 	}
 
@@ -255,10 +258,10 @@ namespace MD
 
 		ME::NetworkDefExportXML* netDefExport = static_cast<ME::NetworkDefExportXML*>(factory.createNetworkDef(RString::guidToString(gidReference).c_str(), netName, dstFileName.c_str()));
 
-		netDefExport->setNetworkWorldOrientation(NMP::Vector3XAxis(), NMP::Vector3ZAxis(), NMP::Vector3XAxis());
+		netDefExport->setNetworkWorldOrientation(NMP::Vector3YAxis(), NMP::Vector3XAxis(), NMP::Vector3ZAxis());
 
 		for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
-			exportNode(netDefExport, netDef, i, NodeUtils::buildNodeName(netDef, netDef->getNodeDef(i), animLibraryExport));
+			exportNode(netDefExport, netDef, i, netDef->getNodeNameFromNodeID(i));
 
 		const NMP::IDMappedStringTable* messageTable = netDef->getMessageIDNamesTable();
 
