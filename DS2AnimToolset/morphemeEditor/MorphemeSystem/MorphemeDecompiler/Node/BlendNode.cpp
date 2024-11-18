@@ -24,22 +24,20 @@ namespace MD
 			MR::AttribDataUInt* durationEventMatchingOpAttrib = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_DURATION_EVENT_MATCHING_OP));
 			MR::AttribDataBool* loop = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_LOOP));
 
-			if (startSyncEventIndex && durationEventMatchingOpAttrib && loop)
+			MR::QueueAttrTaskFn syncEventTrackFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_SYNC_EVENT_TRACK);
+
+			if (syncEventTrackFn == MR::nodeBlend2SyncEventsQueueSyncEventTrack)
 				timeStretchMode = AP::kNodeTimeStretchMatchEvents;
 
 			attribDataBlock->writeInt(timeStretchMode, "TimeStretchMode");
 
 			if (loop)
 				attribDataBlock->writeBool(loop->m_value, "Loop");
-			else
-				attribDataBlock->writeBool(true, "Loop");
 
 			NodeUtils::writeSyncEventFlagsFromAttribData(attribDataBlock, durationEventMatchingOpAttrib);
 
 			if (startSyncEventIndex)
 				attribDataBlock->writeInt(startSyncEventIndex->m_value, "StartEventIndex");
-			else
-				attribDataBlock->writeInt(0, "StartEventIndex");
 		}
 
 		void writeFeatherBlendModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
@@ -48,8 +46,6 @@ namespace MD
 
 			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
 			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
-
-			//g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRANSFORM_BUFFER fn = %s\n", fnName);
 
 			if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsAddAttAddPos)
 				blendMode == AP::kAddQuatAddPos;
@@ -98,8 +94,6 @@ namespace MD
 			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
 			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
 
-			//g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRANSFORM_BUFFER fn = %s\n", fnName);
-
 			if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttAddPos)
 				blendMode = AP::kAddQuatAddPos;
 			else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttInterpPos)
@@ -120,8 +114,6 @@ namespace MD
 
 			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER);
 			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
-
-			//g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER fn = %s\n", fnName);
 
 			if (taskQueueFn == MR::nodeBlend2SyncEventsQueueSampledEventsBuffers)
 				eventBlendMode = AP::kMergeSampledEvents;

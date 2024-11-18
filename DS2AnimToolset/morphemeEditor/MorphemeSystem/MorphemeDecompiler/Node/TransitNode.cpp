@@ -10,6 +10,20 @@ namespace MD
 {
 	namespace Node
 	{
+		void writeDeltaTrajSrouce(MR::NodeDef* nodeDef, ME::DataBlockExportXML* dataBlockExport)
+		{
+			MR::QueueAttrTaskFn trajDeltaTransformTaskFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM);
+
+			int deltaTrajSource = 0;
+
+			if (trajDeltaTransformTaskFn == MR::queuePassThroughChild0IfNotPhysics)
+				deltaTrajSource = 2;
+			else if (trajDeltaTransformTaskFn == MR::queuePassThroughChild1IfNotPhysics)
+				deltaTrajSource = 1;
+
+			dataBlockExport->writeUInt(deltaTrajSource, "DeltaTrajSource");
+		}
+
 		ME::NodeExportXML* exportTransitNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			if ((nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT) && (nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_PHYSICS))
@@ -129,6 +143,8 @@ namespace MD
 
 			nodeDataBlock->writeBool(deadBlendDef->m_useDeadReckoningWhenDeadBlending, "UseDeadReckoningWhenDeadBlending");
 			nodeDataBlock->writeBool(deadBlendDef->m_blendToDestinationPhysicsBones, "BlendToDestinationPhysicsBones");
+			
+			writeDeltaTrajSrouce(nodeDef, nodeDataBlock);
 
 			return nodeExportXML;
 		}
@@ -225,6 +241,8 @@ namespace MD
 
 			nodeDataBlock->writeBool(deadBlendDef->m_useDeadReckoningWhenDeadBlending, "UseDeadReckoningWhenDeadBlending");
 			nodeDataBlock->writeBool(deadBlendDef->m_blendToDestinationPhysicsBones, "BlendToDestinationPhysicsBones");
+
+			writeDeltaTrajSrouce(nodeDef, nodeDataBlock);
 
 			return nodeExportXML;
 		}
