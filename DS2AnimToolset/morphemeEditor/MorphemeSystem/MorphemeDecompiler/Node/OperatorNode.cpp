@@ -16,7 +16,7 @@ namespace MD
 			MR::OutputCPTask outputCPTask = nodeDef->getOutputCPTask(0);
 
 			if (outputCPTask == MR::nodeOperatorSmoothFloatCriticallyDampFloat)
-				return false;
+				return true;
 			else if (outputCPTask == MR::nodeOperatorSmoothFloatCriticallyDampVector)
 				return false;
 			else

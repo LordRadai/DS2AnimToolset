@@ -140,6 +140,7 @@ namespace
 		{
 			nodeXML->SetAttribute("Name", nodeName.c_str());
 			nodeXML->SetAttribute("NodeID", nodeDef->getNodeID());
+			nodeXML->SetAttribute("NodeFlags", nodeDef->getNodeFlags());
 			nodeXML->SetAttribute("TypeID", nodeDef->getNodeTypeID());
 			nodeXML->SetAttribute("ParentID", nodeDef->getParentNodeID());
 
@@ -150,6 +151,7 @@ namespace
 		{
 			nodeXML->SetAttribute("Name", "ActiveState");
 			nodeXML->SetAttribute("NodeID", -1);
+			nodeXML->SetAttribute("NodeFlags", 0);
 			nodeXML->SetAttribute("TypeID", 0);
 			nodeXML->SetAttribute("ParentID", 0);
 
@@ -158,6 +160,7 @@ namespace
 
 		nodeXML->SetAttribute("Name", "None");
 		nodeXML->SetAttribute("NodeID", -1);
+		nodeXML->SetAttribute("NodeFlags", 0);
 		nodeXML->SetAttribute("TypeID", 0);
 		nodeXML->SetAttribute("ParentID", 0);
 

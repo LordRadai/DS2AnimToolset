@@ -389,7 +389,7 @@ namespace MD
 			nodeExport = Node::exportOperatorNoiseGenNode(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_FEATHER_BLEND_2:
-			nodeExport = Node::exportFeatherBlend2Node(netDefExport, netDef, nodeDef, nodeName);
+			nodeExport = Node::exportFeatherBlendNode(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_APPLY_BIND_POSE:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);

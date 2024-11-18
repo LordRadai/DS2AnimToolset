@@ -156,20 +156,24 @@ namespace MD
 
 		void writePassThroughMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
-			short passThroughChildIndex = nodeDef->getPassThroughChildIndex();
-
-			switch (passThroughChildIndex)
+			if (nodeDef->getNodeFlags() & MR::NodeDef::NODE_FLAG_IS_FILTER)
 			{
-			case 0:
-				attribDataBlock->writeInt(AP::kNodePassThroughSource0, "PassThroughMode");
-				break;
-			case 1:
-				attribDataBlock->writeInt(AP::kNodePassThroughSource1, "PassThroughMode");
-				break;
-			default:
-				attribDataBlock->writeInt(AP::kNodePassThroughNone, "PassThroughMode");
-				break;
+				uint16_t passThroughChildIndex = nodeDef->getPassThroughChildIndex();
+
+				switch (passThroughChildIndex)
+				{
+				case 0:
+					attribDataBlock->writeInt(AP::kNodePassThroughSource0, "PassThroughMode");
+					break;
+				case 1:
+					attribDataBlock->writeInt(AP::kNodePassThroughSource1, "PassThroughMode");
+					break;
+				}
+
+				return;
 			}
+
+			attribDataBlock->writeInt(AP::kNodePassThroughNone, "PassThroughMode");
 		}
 
 		bool isBlendNodeWrapWeights(MR::NodeDef* nodeDef)
@@ -296,7 +300,7 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportFeatherBlend2Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* exportFeatherBlendNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_FEATHER_BLEND_2);
 
