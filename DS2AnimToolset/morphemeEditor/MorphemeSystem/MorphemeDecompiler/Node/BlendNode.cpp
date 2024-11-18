@@ -127,8 +127,7 @@ namespace MD
 		{
 			bool slerpTrajPos = false;
 
-			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM);
-			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM_BUFFER);
 
 			switch (nodeDef->getNodeTypeID())
 			{
@@ -150,7 +149,12 @@ namespace MD
 				if ((taskQueueFn == MR::nodeSubtractiveBlendQueueTrajectoryDeltaAndTransformsSubtractAttSubtractPosSlerpTraj))
 					slerpTrajPos = true;
 				break;
+			case NODE_TYPE_BLEND_N:
+				if ((taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsInterpAttInterpPosSlerpTraj))
+					slerpTrajPos = true;
+				break;
 			default:
+				g_appLog->panicMessage("Invalid node type %d (expecting a blend node)");
 				break;
 			}
 
