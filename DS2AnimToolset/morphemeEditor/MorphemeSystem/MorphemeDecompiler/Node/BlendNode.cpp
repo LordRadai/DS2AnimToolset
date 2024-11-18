@@ -115,18 +115,10 @@ namespace MD
 			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER);
 			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
 
-			if (taskQueueFn == MR::nodeBlend2SyncEventsQueueSampledEventsBuffers)
+			if ((taskQueueFn == MR::nodeBlend2SyncEventsQueueSampledEventsBuffers) || (taskQueueFn == MR::nodeBlend2QueueSampledEventsBuffers))
 				eventBlendMode = AP::kMergeSampledEvents;
-			else if (taskQueueFn == MR::nodeBlend2SyncEventsQueueAddSampledEventsBuffers)
+			else if ((taskQueueFn == MR::nodeBlend2SyncEventsQueueAddSampledEventsBuffers) || (taskQueueFn == MR::nodeBlend2QueueAddSampledEventsBuffers))
 				eventBlendMode = AP::kAddSampledEvents;
-			else if (taskQueueFn == MR::nodeBlend2QueueSampledEventsBuffers)
-				eventBlendMode = AP::kMergeSampledEvents;
-			else if (taskQueueFn == MR::nodeBlend2QueueAddSampledEventsBuffers)
-				eventBlendMode = AP::kAddSampledEvents;
-			else if (taskQueueFn == MR::queuePassThroughChild0 || taskQueueFn == MR::queuePassThroughChild1)
-				eventBlendMode = AP::kMergeSampledEvents;
-			else
-				g_appLog->panicMessage("Unexpected task queing function %s\n", fnName);
 
 			attribDataBlock->writeInt(eventBlendMode, "EventsBlendMode");
 		}
@@ -138,10 +130,29 @@ namespace MD
 			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM);
 			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
 
-			//g_appLog->debugMessage(MsgLevel_Debug, "\tATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM fn = %s\n", fnName);
-
-			if ((taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformAddAttSlerpPos) || (taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaTransformInterpAttSlerpPos) || (taskQueueFn == MR::nodeSubtractiveBlendQueueTrajectoryDeltaAndTransformsSubtractAttSubtractPosSlerpTraj))
-				slerpTrajPos = true;
+			switch (nodeDef->getNodeTypeID())
+			{
+			case NODE_TYPE_FEATHER_BLEND_2:
+				if ((taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsAddAttAddPosSlerpTraj) ||
+					(taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsAddAttInterpPosSlerpTraj) ||
+					(taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsInterpAttAddPosSlerpTraj) || 
+					(taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsInterpAttInterpPosSlerpTraj))
+					slerpTrajPos = true;
+				break;
+			case NODE_TYPE_BLEND_2:
+				if ((taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsAddAttAddPosSlerpTraj) || 
+					(taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsAddAttInterpPosSlerpTraj) ||
+					(taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsInterpAttAddPosSlerpTraj) ||
+					(taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsInterpAttInterpPosSlerpTraj))
+					slerpTrajPos = true;
+				break;
+			case NODE_TYPE_SUBTRACTIVE_BLEND:
+				if ((taskQueueFn == MR::nodeSubtractiveBlendQueueTrajectoryDeltaAndTransformsSubtractAttSubtractPosSlerpTraj))
+					slerpTrajPos = true;
+				break;
+			default:
+				break;
+			}
 
 			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
 		}
