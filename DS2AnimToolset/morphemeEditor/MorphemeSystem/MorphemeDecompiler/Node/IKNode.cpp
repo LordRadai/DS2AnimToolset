@@ -338,11 +338,11 @@ namespace MD
 				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ballRotationAxis.z, paramName);
 
 				sprintf_s(paramName, "FootLevelVectorX_%d", animSetIdx + 1);
-				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ballRotationAxis.x, paramName);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_footLevelVector.x, paramName);
 				sprintf_s(paramName, "FootLevelVectorY_%d", animSetIdx + 1);
-				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ballRotationAxis.y, paramName);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_footLevelVector.y, paramName);
 				sprintf_s(paramName, "FootLevelVectorZ_%d", animSetIdx + 1);
-				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ballRotationAxis.z, paramName);
+				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_footLevelVector.z, paramName);
 
 				sprintf_s(paramName, "UseBallJoint_%d", animSetIdx + 1);
 				nodeDataBlock->writeBool(hipsIKAnimSetDef->m_useBallJoint, paramName);
