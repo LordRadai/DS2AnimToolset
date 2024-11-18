@@ -10,6 +10,8 @@
 #include "morpheme/Nodes/mrNodeBlend2SyncEvents.h"
 #include "morpheme/Nodes/mrNodeSubtractiveBlend.h"
 #include "morpheme/Nodes/mrNodeSubtractiveBlendSyncEvents.h"
+#include "morpheme/Nodes/mrNodeBlend2x2.h"
+#include "morpheme/Nodes/mrNodeBlend2x2SyncEvents.h"
 #include "assetProcessor/include/assetProcessor/BlendNodeBuilderUtils.h"
 
 namespace MD
@@ -153,6 +155,10 @@ namespace MD
 				if ((taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsInterpAttInterpPosSlerpTraj))
 					slerpTrajPos = true;
 				break;
+			case NODE_TYPE_BLEND_2X2:
+				if ((taskQueueFn == MR::nodeBlend2x2QueueTrajectoryDeltaAndTransformsInterpPosInterpAttSlerpTraj))
+					slerpTrajPos = true;
+				break;
 			default:
 				g_appLog->panicMessage("Invalid node type %d (expecting a blend node)");
 				break;
@@ -239,19 +245,14 @@ namespace MD
 			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightX", nodeDef->getInputCPConnection(0), true);
 			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightY", nodeDef->getInputCPConnection(1), true);
 
-			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+			MR::AttribDataBlendNxMDef* weights = static_cast<MR::AttribDataBlendNxMDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
 
-			assert(weights->m_numValues == 4);
+			nodeDataBlock->writeFloat(weights->m_weightsX[0], "BlendWeightX_0");
+			nodeDataBlock->writeFloat(weights->m_weightsX[1], "BlendWeightX_1");
+			nodeDataBlock->writeFloat(weights->m_weightsY[0], "BlendWeightY_0");
+			nodeDataBlock->writeFloat(weights->m_weightsY[1], "BlendWeightY_1");
 
-			nodeDataBlock->writeFloat(weights->m_values[0], "BlendWeightX_0");
-			nodeDataBlock->writeFloat(weights->m_values[1], "BlendWeightX_1");
-			nodeDataBlock->writeFloat(weights->m_values[2], "BlendWeightY_0");
-			nodeDataBlock->writeFloat(weights->m_values[3], "BlendWeightY_1");
-
-			writePassThroughMode(nodeDef, nodeDataBlock);
-			writeEventBlendMode(nodeDef, nodeDataBlock);
 			writeSlerpTrajPos(nodeDef, nodeDataBlock);
-			writeBlend2BlendModeFlags(nodeDef, nodeDataBlock);
 			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
 
 			MR::AttribDataBlendFlags* blendFlags = static_cast<MR::AttribDataBlendFlags*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BLEND_FLAGS));
