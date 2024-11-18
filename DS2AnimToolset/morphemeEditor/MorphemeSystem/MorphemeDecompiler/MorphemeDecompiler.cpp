@@ -434,7 +434,7 @@ namespace MD
 			nodeExport = Node::exportPlaySpeedModiferNode(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_SCALE_TO_DURATION:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);
+			nodeExport = Node::exportScaleToDuration(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_EMIT_JOINT_CP_INFO:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);
