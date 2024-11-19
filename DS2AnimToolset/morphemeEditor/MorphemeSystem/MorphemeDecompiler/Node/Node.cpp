@@ -465,5 +465,17 @@ namespace MD
 
 			return nodeExportXML;
 		}
+
+		ME::NodeExportXML* exportApplyGlobalTimeNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_APPLY_GLOBAL_TIME);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "NodeConnectedTo");
+
+			return nodeExportXML;
+		}
 	}
 }

@@ -401,7 +401,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_APPLY_GLOBAL_TIME:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);
+			nodeExport = Node::exportApplyGlobalTimeNode(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_APPLY_PHYSICS_JOINT_LIMITS:
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);
@@ -410,7 +410,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_TWO_BONE_IK:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);
+			nodeExport = Node::exportTwoBoneIKNode(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_LOCK_FOOT:
 			nodeExport = Node::exportLockFootNode(netDefExport, netDef, nodeDef, nodeName);
@@ -458,10 +458,7 @@ namespace MD
 			nodeExport = Node::exportMirrorTransformNode(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_BASIC_UNEVEN_TERRAIN:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);
-			break;
-		case NODE_TYPE_ACTIVE_STATE:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);
+			nodeExport = Node::exportBasicUnevenTerrainNode(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN:
 			nodeExport = Node::exportPredictiveUnevenTerrainNode(netDefExport, netDef, nodeDef, nodeName);

@@ -25,7 +25,7 @@ namespace MD
 			return NMP::radiansToDegrees(angleRad);
 		}
 
-		void writePredictiveUnevenTerrainChainAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataBasicUnevenTerrainChain* chainAttrib)
+		void writeBasicUnevenTerrainChainAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataBasicUnevenTerrainChain* chainAttrib)
 		{
 			CHAR paramName[256];
 
@@ -428,40 +428,6 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportPredictiveUnevenTerrainNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
-		{
-			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN);
-
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
-			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
-
-			const int numAnimSets = netDef->getNumAnimSets();
-
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkHipsWeight", nodeDef->getInputCPConnection(0), true);
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkFkBlendWeight", nodeDef->getInputCPConnection(1), true);
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "PredictionEnable", nodeDef->getInputCPConnection(2), true);
-
-			MR::AttribDataBasicUnevenTerrainSetup* setupAttrib = static_cast<MR::AttribDataBasicUnevenTerrainSetup*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
-			
-			uint32_t upAxisIndex = getUpAxisIndex(setupAttrib->m_upAxis);
-			nodeDataBlock->writeUInt(upAxisIndex, "UpAxisIndex");
-
-			CHAR paramName[256];
-			for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
-			{
-				MR::AttribDataBasicUnevenTerrainChain* chainAttrib = static_cast<MR::AttribDataBasicUnevenTerrainChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET, animSetIdx));
-
-				writePredictiveUnevenTerrainChainAttrib(nodeDataBlock, animSetIdx, chainAttrib);
-
-				MR::AttribDataPredictiveUnevenTerrainPredictionDef* predictionDefAttrib = static_cast<MR::AttribDataPredictiveUnevenTerrainPredictionDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_UNEVEN_TERRAIN_PREDICTION_DEF, animSetIdx));
-			
-				writePredictiveUnevenTerrainPredictionDefAttrib(nodeDataBlock, animSetIdx, predictionDefAttrib);
-			}
-
-			return nodeExportXML;
-		}
-
 		ME::NodeExportXML* exportGunAimIKNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_GUN_AIM_IK);
@@ -489,7 +455,7 @@ namespace MD
 			for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
 			{
 				const MR::AttribDataGunAimIKChain* gunAimChainAttrib = static_cast<MR::AttribDataGunAimIKChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET));
-			
+
 				sprintf_s(paramName, "GunJointIndex_%d", animSetIdx + 1);
 				nodeDataBlock->writeUInt(gunAimChainAttrib->m_gunJointIndex, paramName);
 
@@ -523,7 +489,7 @@ namespace MD
 				const bool primaryHingeFlipped = isAxisFlipped(gunAimChainAttrib->m_primaryArmHingeAxis);
 
 				sprintf_s(paramName, "FlipPrimaryHinge_%d", animSetIdx + 1);
-				nodeDataBlock->writeUInt(primaryHingeFlipped, paramName);
+				nodeDataBlock->writeBool(primaryHingeFlipped, paramName);
 
 				if (primaryHingeFlipped)
 				{
@@ -555,7 +521,7 @@ namespace MD
 					const bool flipSecondaryHinge = isAxisFlipped(gunAimChainAttrib->m_secondaryArmHingeAxis);
 
 					sprintf_s(paramName, "FlipSecondaryHinge_%d", animSetIdx + 1);
-					nodeDataBlock->writeUInt(isAxisFlipped(gunAimChainAttrib->m_secondaryArmHingeAxis), paramName);
+					nodeDataBlock->writeBool(isAxisFlipped(gunAimChainAttrib->m_secondaryArmHingeAxis), paramName);
 
 					if (flipSecondaryHinge)
 					{
@@ -585,6 +551,156 @@ namespace MD
 
 				sprintf_s(paramName, "SpineRootJointIndex_%d", animSetIdx + 1);
 				nodeDataBlock->writeUInt(gunAimChainAttrib->m_spineRootJointIndex, paramName);
+			}
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportTwoBoneIKNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_TWO_BONE_IK);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int numAnimSets = netDef->getNumAnimSets();
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "EffectorTarget", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "TargetOrientation", nodeDef->getInputCPConnection(1), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "SwivelAngle", nodeDef->getInputCPConnection(2), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkFkBlendWeight", nodeDef->getInputCPConnection(3), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "SwivelContributionToOrientation", nodeDef->getInputCPConnection(4), true);
+
+			const MR::AttribDataTwoBoneIKSetup* twoBoneIKSetup = static_cast<MR::AttribDataTwoBoneIKSetup*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+			//Sanity check because I'm not sure the struct definition for this attrib data is correct since the game uses a different version of it than the morpheme SDK
+			if ((twoBoneIKSetup->m_userControlledOrientation != (nodeDef->getInputCPConnectionSourceNodeID(1) == MR::INVALID_NODE_ID)) &&
+				!twoBoneIKSetup->m_useSpecifiedJointOrientation)
+				g_appLog->panicMessage("Invalid TwoBoneIK setup attribute for node %d", nodeDef->getNodeID());
+
+			nodeDataBlock->writeBool(twoBoneIKSetup->m_assumeSimpleHierarchy, "AssumeSimpleHierarchy");
+			nodeDataBlock->writeBool(twoBoneIKSetup->m_keepEndEffOrientation, "KeepEndEffOrientation");
+			nodeDataBlock->writeBool(twoBoneIKSetup->m_updateTargetByDeltas, "UpdateTargetByDeltas");
+			nodeDataBlock->writeBool(twoBoneIKSetup->m_useSpecifiedJointAsTarget, "UseSpecifiedJointAsTarget");
+			nodeDataBlock->writeBool(twoBoneIKSetup->m_useSpecifiedJointOrientation, "UseSpecifiedJointOrientation");
+
+			CHAR paramName[256];
+			for (uint32_t animSetIndex = 0; animSetIndex < numAnimSets; animSetIndex++)
+			{
+				const MR::AttribDataTwoBoneIKChain* twoBoneIKChain = static_cast<MR::AttribDataTwoBoneIKChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET));
+			
+				const bool flipMidJointRotationDirection = isAxisFlipped(twoBoneIKChain->m_midJointRotAxis);
+
+				sprintf_s(paramName, "FlipMidJointRotationDirection_%d", animSetIndex + 1);
+				nodeDataBlock->writeBool(flipMidJointRotationDirection, paramName);
+
+				if (flipMidJointRotationDirection)
+				{
+					sprintf_s(paramName, "MidJointRotationAxisX_%d", animSetIndex + 1);
+					nodeDataBlock->writeFloat(-twoBoneIKChain->m_midJointRotAxis.x, paramName);
+					sprintf_s(paramName, "MidJointRotationAxisY_%d", animSetIndex + 1);
+					nodeDataBlock->writeFloat(-twoBoneIKChain->m_midJointRotAxis.y, paramName);
+					sprintf_s(paramName, "MidJointRotationAxisZ_%d", animSetIndex + 1);
+					nodeDataBlock->writeFloat(-twoBoneIKChain->m_midJointRotAxis.z, paramName);
+				}
+				else
+				{
+					sprintf_s(paramName, "MidJointRotationAxisX_%d", animSetIndex + 1);
+					nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointRotAxis.x, paramName);
+					sprintf_s(paramName, "MidJointRotationAxisY_%d", animSetIndex + 1);
+					nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointRotAxis.y, paramName);
+					sprintf_s(paramName, "MidJointRotationAxisZ_%d", animSetIndex + 1);
+					nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointRotAxis.z, paramName);
+				}
+
+				sprintf_s(paramName, "MidJointReferenceAxisX_%d", animSetIndex + 1);
+				nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointReferenceAxis.x, paramName);
+				sprintf_s(paramName, "MidJointReferenceAxisX_%d", animSetIndex + 1);
+				nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointReferenceAxis.y, paramName);
+				sprintf_s(paramName, "MidJointReferenceAxisX_%d", animSetIndex + 1);
+				nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointReferenceAxis.z, paramName);
+
+				sprintf_s(paramName, "EndJointIndex_%d", animSetIndex + 1);
+				nodeDataBlock->writeUInt(twoBoneIKChain->m_endJointIndex, paramName);
+
+				sprintf_s(paramName, "MidJointIndex_%d", animSetIndex + 1);
+				nodeDataBlock->writeUInt(twoBoneIKChain->m_midJointIndex, paramName);
+
+				sprintf_s(paramName, "RootJointIndex_%d", animSetIndex + 1);
+				nodeDataBlock->writeUInt(twoBoneIKChain->m_rootJointIndex, paramName);
+
+				if (twoBoneIKSetup->m_useSpecifiedJointAsTarget)
+				{
+					sprintf_s(paramName, "TargetJointIndex_%d", animSetIndex + 1);
+					nodeDataBlock->writeUInt(twoBoneIKChain->m_targetJointIndex, paramName);
+				}
+
+				sprintf_s(paramName, "GlobalReferenceAxis_%d", animSetIndex + 1);
+				nodeDataBlock->writeBool(twoBoneIKChain->m_globalReferenceAxis, paramName);
+			}
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportBasicUnevenTerrainNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BASIC_UNEVEN_TERRAIN);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int numAnimSets = netDef->getNumAnimSets();
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkHipsWeight", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkFkBlendWeight", nodeDef->getInputCPConnection(1), true);
+
+			MR::AttribDataBasicUnevenTerrainSetup* setupAttrib = static_cast<MR::AttribDataBasicUnevenTerrainSetup*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+			uint32_t upAxisIndex = getUpAxisIndex(setupAttrib->m_upAxis);
+			nodeDataBlock->writeUInt(upAxisIndex, "UpAxisIndex");
+
+			CHAR paramName[256];
+			for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
+			{
+				MR::AttribDataBasicUnevenTerrainChain* chainAttrib = static_cast<MR::AttribDataBasicUnevenTerrainChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET, animSetIdx));
+
+				writeBasicUnevenTerrainChainAttrib(nodeDataBlock, animSetIdx, chainAttrib);
+			}
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportPredictiveUnevenTerrainNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int numAnimSets = netDef->getNumAnimSets();
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkHipsWeight", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "IkFkBlendWeight", nodeDef->getInputCPConnection(1), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "PredictionEnable", nodeDef->getInputCPConnection(2), true);
+
+			MR::AttribDataBasicUnevenTerrainSetup* setupAttrib = static_cast<MR::AttribDataBasicUnevenTerrainSetup*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+			
+			uint32_t upAxisIndex = getUpAxisIndex(setupAttrib->m_upAxis);
+			nodeDataBlock->writeUInt(upAxisIndex, "UpAxisIndex");
+
+			CHAR paramName[256];
+			for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
+			{
+				MR::AttribDataBasicUnevenTerrainChain* chainAttrib = static_cast<MR::AttribDataBasicUnevenTerrainChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET, animSetIdx));
+
+				writeBasicUnevenTerrainChainAttrib(nodeDataBlock, animSetIdx, chainAttrib);
+
+				MR::AttribDataPredictiveUnevenTerrainPredictionDef* predictionDefAttrib = static_cast<MR::AttribDataPredictiveUnevenTerrainPredictionDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_UNEVEN_TERRAIN_PREDICTION_DEF, animSetIdx));
+			
+				writePredictiveUnevenTerrainPredictionDefAttrib(nodeDataBlock, animSetIdx, predictionDefAttrib);
 			}
 
 			return nodeExportXML;
