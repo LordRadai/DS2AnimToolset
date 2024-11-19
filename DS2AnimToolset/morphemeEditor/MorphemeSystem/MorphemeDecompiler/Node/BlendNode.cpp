@@ -60,8 +60,8 @@ namespace MD
 			else
 				g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
 
-			bool additiveBlendAtt;
-			bool additiveBlendPos;
+			bool additiveBlendAtt = false;
+			bool additiveBlendPos = false;
 
 			switch (blendMode)
 			{
