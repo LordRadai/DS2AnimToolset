@@ -53,6 +53,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrTarget_NoPhysics", "Morpheme4\morpheme\tools\runtimeTarget\mrTarget_NoPhysics_X64.vcxproj", "{F06FA5C4-F809-42F7-22AA-634F3A057082}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bndBuilder", "bndBuilder\bndBuilder\bndBuilder.vcxproj", "{555324AF-C2DD-4C1A-AEE3-00E1CAF79FFC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1E248D65-A668-4A85-94B0-BD29524B180B} = {1E248D65-A668-4A85-94B0-BD29524B180B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcnMerger", "mcnMerger\mcnMerger\mcnMerger.vcxproj", "{A588A61E-DE06-4219-B136-CAF6E356A84F}"
 	ProjectSection(ProjectDependencies) = postProject
