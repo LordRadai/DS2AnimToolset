@@ -199,8 +199,8 @@ namespace MD
 					float lean1 = atanf(jointLimitParams->upper.y) * 4.f;
 					float lean2 = atanf(jointLimitParams->upper.z) * 4.f;
 
-					jointLimitExport->setTwistLow(-twistMin);
-					jointLimitExport->setTwistHigh(-twistMax);
+					jointLimitExport->setTwistLow(-twistMax);
+					jointLimitExport->setTwistHigh(-twistMin);
 
 					ME::JointLimitExport::LimitType limitType = ME::JointLimitExport::kHingeLimitType;
 
