@@ -26,9 +26,9 @@ namespace MD
 			MR::AttribDataUInt* durationEventMatchingOpAttrib = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_DURATION_EVENT_MATCHING_OP));
 			MR::AttribDataBool* loop = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_LOOP));
 
-			MR::QueueAttrTaskFn syncEventTrackFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_SYNC_EVENT_TRACK);
+			MR::QueueAttrTaskFn syncEventTrackFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_UPDATE_TIME_POS);
 
-			if (syncEventTrackFn == MR::nodeBlend2SyncEventsQueueSyncEventTrack)
+			if (syncEventTrackFn == MR::nodeBlend2SyncEventsQueueTimePos)
 				timeStretchMode = AP::kNodeTimeStretchMatchEvents;
 
 			attribDataBlock->writeInt(timeStretchMode, "TimeStretchMode");

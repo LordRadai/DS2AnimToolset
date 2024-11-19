@@ -195,8 +195,8 @@ namespace MD
 
 					if (lean1 && lean2)
 					{
-						jointLimitExport->setSwing1(lean1);
-						jointLimitExport->setSwing2(lean2);
+						jointLimitExport->setSwing1(lean2);
+						jointLimitExport->setSwing2(lean1);
 
 						limitType = ME::JointLimitExport::kBallSocketLimitType;
 					}
