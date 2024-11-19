@@ -501,7 +501,10 @@ namespace
 
 		int animId = anim->getAnimID();
 
-		if (anim->getHandle() == nullptr)
+		if (!anim->isLoaded())
+			anim = characterDef->getAnimation(0);
+
+		if (!anim->isLoaded())
 			return false;
 
 		MR::AnimRigDef* rig = character->getRig(0);
@@ -1778,8 +1781,7 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animId)
 	switch (this->m_taskFlags.exportFormat)
 	{
 	case MorphemeEditorApp::kFbx:
-		return exportAnimationToFbx(path, this->m_character, animId, true);
-		break;
+		return exportAnimationToFbx(path, this->m_character, animId, false);
 	case MorphemeEditorApp::kXmd:
 		return exportAnimationToXmd(path, this->m_character, animId);
 	default:
