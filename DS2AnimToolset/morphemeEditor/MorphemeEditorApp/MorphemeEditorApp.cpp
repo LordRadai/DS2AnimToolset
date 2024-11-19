@@ -1681,8 +1681,8 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 	std::string baseDir = "-basedir " + std::string("\"") + fullPath + std::string("\"");
 	std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "\\cache" + std::string("\"");
 	std::string outputDir = "-outputdir " + std::string("\"") + fullPath + "\\runtimeBinary" + std::string("\"");
-	std::string logFile = "-logFile " + std::string("\"") + fullPath + "\\tempOutput\\assetManager\\assetCompiler.log" + std::string("\"");
-	std::string errFile = "-errFile " + std::string("\"") + fullPath + "\\tempOutput\\assetManager\\assetCompilerError.log" + std::string("\"");
+	std::string logFile = "-logFile " + std::string("\"") + fullPath + "\\assetCompiler.log" + std::string("\"");
+	std::string errFile = "-errFile " + std::string("\"") + fullPath + "\\assetCompilerError.log" + std::string("\"");
 
 	std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
 	//exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"\\assetCompilerCommand.txt");
