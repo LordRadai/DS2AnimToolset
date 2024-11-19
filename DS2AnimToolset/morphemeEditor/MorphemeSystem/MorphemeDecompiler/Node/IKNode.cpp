@@ -575,8 +575,8 @@ namespace MD
 			const MR::AttribDataTwoBoneIKSetup* twoBoneIKSetup = static_cast<MR::AttribDataTwoBoneIKSetup*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
 			//Sanity check because I'm not sure the struct definition for this attrib data is correct since the game uses a different version of it than the morpheme SDK
-			if ((twoBoneIKSetup->m_userControlledOrientation != (nodeDef->getInputCPConnectionSourceNodeID(1) == MR::INVALID_NODE_ID)) &&
-				!twoBoneIKSetup->m_useSpecifiedJointOrientation)
+			if ((twoBoneIKSetup->m_userControlledOrientation != (nodeDef->getInputCPConnectionSourceNodeID(1) == MR::INVALID_NODE_ID)) ||
+				(twoBoneIKSetup->m_useSpecifiedJointOrientation != twoBoneIKSetup->m_userControlledOrientation))
 				g_appLog->panicMessage("Invalid TwoBoneIK setup attribute for node %d", nodeDef->getNodeID());
 
 			nodeDataBlock->writeBool(twoBoneIKSetup->m_assumeSimpleHierarchy, "AssumeSimpleHierarchy");
