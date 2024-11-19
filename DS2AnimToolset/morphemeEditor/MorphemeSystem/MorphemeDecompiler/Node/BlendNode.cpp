@@ -50,18 +50,18 @@ namespace MD
 			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
 
 			if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsAddAttAddPos)
-				blendMode == AP::kAddQuatAddPos;
+				blendMode = AP::kAddQuatAddPos;
 			else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsAddAttInterpPos)
-				blendMode == AP::kAddQuatInterpPos;
+				blendMode = AP::kAddQuatInterpPos;
 			else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsInterpAttAddPos)
-				blendMode == AP::kInterpQuatAddPos;
+				blendMode = AP::kInterpQuatAddPos;
 			else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsInterpAttInterpPos)
-				blendMode == AP::kInterpQuatInterpPos;
+				blendMode = AP::kInterpQuatInterpPos;
 			else
 				g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
 
-			bool additiveBlendAtt = false;
-			bool additiveBlendPos = false;
+			bool additiveBlendAtt;
+			bool additiveBlendPos;
 
 			switch (blendMode)
 			{
