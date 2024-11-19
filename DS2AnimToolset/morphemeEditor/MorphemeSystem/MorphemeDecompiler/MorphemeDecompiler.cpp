@@ -26,8 +26,7 @@ namespace MD
 
 		if (animNode == nullptr)
 		{
-			takeList->createTake(L"untitled", 1, 30, true, 0.f, 1.f);
-
+			takeList->createTake(RString::toWide(character->getAnimFileLookUp()->getTakeName(animId)).c_str(), 1, 30, true);
 			return takeList;
 		}
 
@@ -40,9 +39,7 @@ namespace MD
 		if (loopAttr != nullptr)
 			loop = loopAttr->m_value;
 
-		int sourceAnimId = sourceAnim->m_animAssetID;
-
-		ME::TakeExportXML* take = static_cast<ME::TakeExportXML*>(takeList->createTake(RString::toWide(character->getAnimFileLookUp()->getTakeName(sourceAnimId)).c_str(), sourceAnim->m_sourceAnimDuration, 30, loop, sourceAnim->m_clipStartFraction, sourceAnim->m_clipEndFraction));
+		ME::TakeExportXML* take = static_cast<ME::TakeExportXML*>(takeList->createTake(RString::toWide(character->getAnimFileLookUp()->getTakeName(animId)).c_str(), sourceAnim->m_sourceAnimDuration, 30, loop, sourceAnim->m_clipStartFraction, sourceAnim->m_clipEndFraction));
 
 		for (size_t i = 0; i < sourceEvents->m_numDiscreteEventTracks; i++)
 		{
