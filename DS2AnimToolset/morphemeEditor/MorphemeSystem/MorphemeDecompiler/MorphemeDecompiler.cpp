@@ -21,8 +21,15 @@ namespace MD
 
 		MR::NodeDef* animNode = MorphemeUtils::getAnimNodeByAnimID(netDef, animId);
 
+		ME::ExportFactoryXML factory;
+		ME::TakeListXML* takeList = (ME::TakeListXML*)factory.createTakeList(dstFileName.c_str(), dstFileName.c_str());
+
 		if (animNode == nullptr)
-			return nullptr;
+		{
+			takeList->createTake(L"untitled", 1, 30, true, 0.f, 1.f);
+
+			return takeList;
+		}
 
 		MR::AttribDataBool* loopAttr = static_cast<MR::AttribDataBool*>(animNode->getAttribData(MR::ATTRIB_SEMANTIC_LOOP));
 		MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(animNode->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM));
@@ -35,11 +42,7 @@ namespace MD
 
 		int sourceAnimId = sourceAnim->m_animAssetID;
 
-		ME::ExportFactoryXML factory;
-		std::wstring dest = dstFileName;
-
-		ME::TakeListXML* takeList = (ME::TakeListXML*)factory.createTakeList(dest.c_str(), dest.c_str());
-		ME::TakeExportXML* take = (ME::TakeExportXML*)takeList->createTake(RString::toWide(character->getAnimFileLookUp()->getTakeName(sourceAnimId)).c_str(), sourceAnim->m_sourceAnimDuration, 30, loop, sourceAnim->m_clipStartFraction, sourceAnim->m_clipEndFraction);
+		ME::TakeExportXML* take = static_cast<ME::TakeExportXML*>(takeList->createTake(RString::toWide(character->getAnimFileLookUp()->getTakeName(sourceAnimId)).c_str(), sourceAnim->m_sourceAnimDuration, 30, loop, sourceAnim->m_clipStartFraction, sourceAnim->m_clipEndFraction));
 
 		for (size_t i = 0; i < sourceEvents->m_numDiscreteEventTracks; i++)
 		{

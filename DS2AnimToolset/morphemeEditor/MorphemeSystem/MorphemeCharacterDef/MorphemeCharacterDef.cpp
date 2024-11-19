@@ -246,13 +246,13 @@ AnimObject* MorphemeCharacterDef::getAnimationById(int id)
     return nullptr;
 }
 
-void MorphemeCharacterDef::addAnimation(const char* filename)
+void MorphemeCharacterDef::addAnimation(const char* filename, int animSetIdx)
 {
     g_appLog->debugMessage(MsgLevel_Debug, "\tLoading animation \"%s\"\n", filename);
 
     int idx = m_anims.size();
     
-    m_anims.push_back(AnimObject::createFromMorphemeAssets(this, this->m_netDef->getRig(0), this->m_rigToAnimMaps[0], filename, idx));
+    m_anims.push_back(AnimObject::createFromMorphemeAssets(this, this->m_netDef->getRig(animSetIdx), this->m_rigToAnimMaps[animSetIdx], filename, idx));
 }
 
 void MorphemeCharacterDef::sortAnimations()

@@ -492,7 +492,7 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
         std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
         std::wstring animFilePath = animFolder + L"\\" + animFileName;
 
-        characterDef->addAnimation(RString::toNarrow(animFilePath.c_str()).c_str());
+        characterDef->addAnimation(RString::toNarrow(animFilePath).c_str());
     }
 
     characterDef->sortAnimations();
