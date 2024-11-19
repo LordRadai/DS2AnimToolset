@@ -513,9 +513,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <None Include="packages.config" />
     <None Include="fromloader\src\util\stringio\simple_sjis_table.bin">
       <Filter>File di risorse</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

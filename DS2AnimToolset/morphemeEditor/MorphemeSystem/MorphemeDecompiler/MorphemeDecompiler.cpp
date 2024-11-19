@@ -170,16 +170,16 @@ namespace MD
 		rigExport->setRigRetargetScale(1.f);
 		rigExport->setMirrorPlane(0);
 
-		if (netDef->getNodeDef(0)->getNumAttribDataHandles() == 4)
-		{
-			MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+		MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
 
-			if (mirroredMapping != nullptr)
-			{
-				for (size_t i = 0; i < mirroredMapping->getNumMappings(); i++)
-					rigExport->createMirrorMapping(i, mirroredMapping->getLeftBone(i), mirroredMapping->getRightBone(i));
-			}
+		if (mirroredMapping != nullptr)
+		{
+			for (size_t i = 0; i < mirroredMapping->getNumMappings(); i++)
+				rigExport->createMirrorMapping(i, mirroredMapping->getLeftBone(i), mirroredMapping->getRightBone(i));
 		}
+
+		MR::AttribDataJointLimits* jointLimits = static_cast<MR::AttribDataJointLimits*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+
 		
 		return rigExport;
 	}
