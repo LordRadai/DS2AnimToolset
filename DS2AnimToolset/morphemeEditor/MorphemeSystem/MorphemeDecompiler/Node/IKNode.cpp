@@ -9,6 +9,14 @@ namespace MD
 {
 	namespace Node
 	{
+		inline bool isAxisFlipped(NMP::Vector3 vec)
+		{
+			if ((vec.x < 0) || (vec.y < 0) || (vec.z < 0))
+				return true;
+
+			return false;
+		}
+
 		inline float getAngleFromClampedCosine(float in)
 		{
 			float cos = NMP::clampValue(in, 0.f, 1.f);
@@ -106,17 +114,33 @@ namespace MD
 				sprintf_s(paramName, "%sToeIndex_%d", legNames[i], animSetIdx + 1);
 				nodeDataBlock->writeUInt(chainData->m_channelIDs[4], paramName);
 
-				sprintf_s(paramName, "%sKneeRotationAxisX_%d", legNames[i], animSetIdx + 1);
-				nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.x, paramName);
-
-				sprintf_s(paramName, "%sKneeRotationAxisY_%d", legNames[i], animSetIdx + 1);
-				nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.y, paramName);
-
-				sprintf_s(paramName, "%sKneeRotationAxisZ_%d", legNames[i], animSetIdx + 1);
-				nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.z, paramName);
+				const bool flippedAxis = isAxisFlipped(chainData->m_kneeRotationAxis);
 
 				sprintf_s(paramName, "%sFlipKneeRotationDirection_%d", legNames[i], animSetIdx + 1);
-				nodeDataBlock->writeFloat(false, paramName);
+				nodeDataBlock->writeBool(flippedAxis, paramName);
+
+				if (flippedAxis)
+				{
+					sprintf_s(paramName, "%sKneeRotationAxisX_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(-chainData->m_kneeRotationAxis.x, paramName);
+
+					sprintf_s(paramName, "%sKneeRotationAxisY_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(-chainData->m_kneeRotationAxis.y, paramName);
+
+					sprintf_s(paramName, "%sKneeRotationAxisZ_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(-chainData->m_kneeRotationAxis.z, paramName);
+				}
+				else
+				{
+					sprintf_s(paramName, "%sKneeRotationAxisX_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.x, paramName);
+
+					sprintf_s(paramName, "%sKneeRotationAxisY_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.y, paramName);
+
+					sprintf_s(paramName, "%sKneeRotationAxisZ_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.z, paramName);
+				}
 			}
 		}
 
@@ -320,15 +344,29 @@ namespace MD
 			{
 				MR::AttribDataLockFootChain* hipsIKAnimSetDef = static_cast<MR::AttribDataLockFootChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET, animSetIdx));
 
-				sprintf_s(paramName, "FlipKneeRotationDirection_%d", animSetIdx + 1);
-				nodeDataBlock->writeBool(false, paramName);
+				const bool flippedAxis = isAxisFlipped(hipsIKAnimSetDef->m_kneeRotationAxis);
 
-				sprintf_s(paramName, "KneeRotationAxisX_%d", animSetIdx + 1);
-				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_kneeRotationAxis.x, paramName);
-				sprintf_s(paramName, "KneeRotationAxisY_%d", animSetIdx + 1);
-				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_kneeRotationAxis.y, paramName);
-				sprintf_s(paramName, "KneeRotationAxisZ_%d", animSetIdx + 1);
-				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_kneeRotationAxis.z, paramName);
+				sprintf_s(paramName, "FlipKneeRotationDirection_%d", animSetIdx + 1);
+				nodeDataBlock->writeBool(flippedAxis, paramName);
+
+				if (flippedAxis)
+				{
+					sprintf_s(paramName, "KneeRotationAxisX_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(-hipsIKAnimSetDef->m_kneeRotationAxis.x, paramName);
+					sprintf_s(paramName, "KneeRotationAxisY_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(-hipsIKAnimSetDef->m_kneeRotationAxis.y, paramName);
+					sprintf_s(paramName, "KneeRotationAxisZ_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(-hipsIKAnimSetDef->m_kneeRotationAxis.z, paramName);
+				}
+				else
+				{
+					sprintf_s(paramName, "KneeRotationAxisX_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_kneeRotationAxis.x, paramName);
+					sprintf_s(paramName, "KneeRotationAxisY_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_kneeRotationAxis.y, paramName);
+					sprintf_s(paramName, "KneeRotationAxisZ_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_kneeRotationAxis.z, paramName);
+				}
 
 				sprintf_s(paramName, "BallRotationAxisX_%d", animSetIdx + 1);
 				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ballRotationAxis.x, paramName);
@@ -419,6 +457,134 @@ namespace MD
 				MR::AttribDataPredictiveUnevenTerrainPredictionDef* predictionDefAttrib = static_cast<MR::AttribDataPredictiveUnevenTerrainPredictionDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_UNEVEN_TERRAIN_PREDICTION_DEF, animSetIdx));
 			
 				writePredictiveUnevenTerrainPredictionDefAttrib(nodeDataBlock, animSetIdx, predictionDefAttrib);
+			}
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportGunAimIKNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_GUN_AIM_IK);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int numAnimSets = netDef->getNumAnimSets();
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Target", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "BlendWeight", nodeDef->getInputCPConnection(1), true);
+
+			const MR::AttribDataGunAimSetup* gunAimSetupAttrib = static_cast<MR::AttribDataGunAimSetup*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+			nodeDataBlock->writeFloat(gunAimSetupAttrib->m_worldUpAxis.x, "WorldUpAxisX");
+			nodeDataBlock->writeFloat(gunAimSetupAttrib->m_worldUpAxis.y, "WorldUpAxisY");
+			nodeDataBlock->writeFloat(gunAimSetupAttrib->m_worldUpAxis.z, "WorldUpAxisZ");
+
+			nodeDataBlock->writeBool(gunAimSetupAttrib->m_keepUpright, "KeepUpright");
+			nodeDataBlock->writeBool(gunAimSetupAttrib->m_applyJointLimits, "ApplyJointLimits");
+			nodeDataBlock->writeBool(gunAimSetupAttrib->m_worldSpaceTarget, "WorldSpaceTarget");
+
+			CHAR paramName[256];
+			for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
+			{
+				const MR::AttribDataGunAimIKChain* gunAimChainAttrib = static_cast<MR::AttribDataGunAimIKChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET));
+			
+				sprintf_s(paramName, "GunJointIndex_%d", animSetIdx + 1);
+				nodeDataBlock->writeUInt(gunAimChainAttrib->m_gunJointIndex, paramName);
+
+				sprintf_s(paramName, "GunBindJointIndex_%d", animSetIdx + 1);
+				nodeDataBlock->writeUInt(gunAimChainAttrib->m_gunBindJointIndex, paramName);
+
+				sprintf_s(paramName, "GunPivotOffsetX_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(gunAimChainAttrib->m_gunPivotOffset.x, paramName);
+				sprintf_s(paramName, "GunPivotOffsetY_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(gunAimChainAttrib->m_gunPivotOffset.y, paramName);
+				sprintf_s(paramName, "GunPivotOffsetZ_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(gunAimChainAttrib->m_gunPivotOffset.z, paramName);
+
+				sprintf_s(paramName, "GunBarrelOffsetX_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(gunAimChainAttrib->m_gunBarrelOffset.x, paramName);
+				sprintf_s(paramName, "GunBarrelOffsetY_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(gunAimChainAttrib->m_gunBarrelOffset.y, paramName);
+				sprintf_s(paramName, "GunBarrelOffsetZ_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(gunAimChainAttrib->m_gunBarrelOffset.z, paramName);
+
+				sprintf_s(paramName, "GunPointingVectorX_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(gunAimChainAttrib->m_gunPointingVector.x, paramName);
+				sprintf_s(paramName, "GunPointingVectorY_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(gunAimChainAttrib->m_gunPointingVector.y, paramName);
+				sprintf_s(paramName, "GunPointingVectorZ_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(gunAimChainAttrib->m_gunPointingVector.z, paramName);
+
+				sprintf_s(paramName, "PrimaryWristJointIndex_%d", animSetIdx + 1);
+				nodeDataBlock->writeUInt(gunAimChainAttrib->m_primaryWristJointIndex, paramName);
+
+				const bool primaryHingeFlipped = isAxisFlipped(gunAimChainAttrib->m_primaryArmHingeAxis);
+
+				sprintf_s(paramName, "FlipPrimaryHinge_%d", animSetIdx + 1);
+				nodeDataBlock->writeUInt(primaryHingeFlipped, paramName);
+
+				if (primaryHingeFlipped)
+				{
+					sprintf_s(paramName, "PrimaryArmHingeAxisX_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(-gunAimChainAttrib->m_primaryArmHingeAxis.x, paramName);
+					sprintf_s(paramName, "PrimaryArmHingeAxisY_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(-gunAimChainAttrib->m_primaryArmHingeAxis.y, paramName);
+					sprintf_s(paramName, "PrimaryArmHingeAxisZ_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(-gunAimChainAttrib->m_primaryArmHingeAxis.z, paramName);
+				}
+				else
+				{
+					sprintf_s(paramName, "PrimaryArmHingeAxisX_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(gunAimChainAttrib->m_primaryArmHingeAxis.x, paramName);
+					sprintf_s(paramName, "PrimaryArmHingeAxisY_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(gunAimChainAttrib->m_primaryArmHingeAxis.y, paramName);
+					sprintf_s(paramName, "PrimaryArmHingeAxisZ_%d", animSetIdx + 1);
+					nodeDataBlock->writeFloat(gunAimChainAttrib->m_primaryArmHingeAxis.z, paramName);
+				}
+
+				sprintf_s(paramName, "UseSecondaryArm_%d", animSetIdx + 1);
+				nodeDataBlock->writeBool(gunAimChainAttrib->m_useSecondaryArm, paramName);
+
+				if (gunAimChainAttrib->m_useSecondaryArm)
+				{
+					sprintf_s(paramName, "SecondaryWristJointIndex_%d", animSetIdx + 1);
+					nodeDataBlock->writeUInt(gunAimChainAttrib->m_secondaryWristJointIndex, paramName);
+
+					const bool flipSecondaryHinge = isAxisFlipped(gunAimChainAttrib->m_secondaryArmHingeAxis);
+
+					sprintf_s(paramName, "FlipSecondaryHinge_%d", animSetIdx + 1);
+					nodeDataBlock->writeUInt(isAxisFlipped(gunAimChainAttrib->m_secondaryArmHingeAxis), paramName);
+
+					if (flipSecondaryHinge)
+					{
+						sprintf_s(paramName, "SecondaryArmHingeAxisX_%d", animSetIdx + 1);
+						nodeDataBlock->writeFloat(-gunAimChainAttrib->m_secondaryArmHingeAxis.x, paramName);
+						sprintf_s(paramName, "SecondaryArmHingeAxisY_%d", animSetIdx + 1);
+						nodeDataBlock->writeFloat(-gunAimChainAttrib->m_secondaryArmHingeAxis.y, paramName);
+						sprintf_s(paramName, "SecondaryArmHingeAxisZ_%d", animSetIdx + 1);
+						nodeDataBlock->writeFloat(-gunAimChainAttrib->m_secondaryArmHingeAxis.z, paramName);
+					}
+					else
+					{
+						sprintf_s(paramName, "SecondaryArmHingeAxisX_%d", animSetIdx + 1);
+						nodeDataBlock->writeFloat(gunAimChainAttrib->m_secondaryArmHingeAxis.x, paramName);
+						sprintf_s(paramName, "SecondaryArmHingeAxisY_%d", animSetIdx + 1);
+						nodeDataBlock->writeFloat(gunAimChainAttrib->m_secondaryArmHingeAxis.y, paramName);
+						sprintf_s(paramName, "SecondaryArmHingeAxisZ_%d", animSetIdx + 1);
+						nodeDataBlock->writeFloat(gunAimChainAttrib->m_secondaryArmHingeAxis.z, paramName);
+					}
+				}
+
+				sprintf_s(paramName, "SpineBias_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(gunAimChainAttrib->m_spineBias, paramName);
+
+				sprintf_s(paramName, "UpdateTargetByDeltas_%d", animSetIdx + 1);
+				nodeDataBlock->writeBool(gunAimChainAttrib->m_updateTargetByDeltas, paramName);
+
+				sprintf_s(paramName, "SpineRootJointIndex_%d", animSetIdx + 1);
+				nodeDataBlock->writeUInt(gunAimChainAttrib->m_spineRootJointIndex, paramName);
 			}
 
 			return nodeExportXML;

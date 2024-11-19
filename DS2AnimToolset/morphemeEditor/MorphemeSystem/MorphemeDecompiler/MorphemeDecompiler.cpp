@@ -542,7 +542,7 @@ namespace MD
 			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_GUN_AIM_IK:
-			nodeExport = Node::exportNodeUnhandled(netDefExport, netDef, nodeDef, nodeName);
+			nodeExport = Node::exportGunAimIKNode(netDefExport, netDef, nodeDef, nodeName);
 			break;
 		case NODE_TYPE_TRANSIT_SYNC_EVENTS:
 			nodeExport = Node::exportTransitSyncEventsNode(netDefExport, netDef, nodeDef, nodeName);
