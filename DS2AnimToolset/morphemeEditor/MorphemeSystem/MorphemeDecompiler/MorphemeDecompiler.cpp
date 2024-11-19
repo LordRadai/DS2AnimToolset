@@ -4,6 +4,7 @@
 #include "MorphemeSystem/MorphemeUtils/MorphemeUtils.h"
 #include "morpheme/mrCharacterControllerDef.h"
 #include "morpheme/mrMirroredAnimMapping.h"
+#include "NMGeomUtils/NMJointLimits.h"
 
 #include "Node/Node.h"
 #include "Node/StateMachineNode.h"
@@ -135,7 +136,7 @@ namespace MD
 		return characterControllerExport;
 	}
 
-	ME::RigExportXML* exportRig(MR::NetworkDef* netDef, MR::AnimRigDef* rig, std::wstring dstFileName)
+	ME::RigExportXML* exportRig(MR::NetworkDef* netDef, MR::AnimRigDef* rig, int animSetIdx, std::wstring dstFileName)
 	{
 		ME::ExportFactoryXML factory;
 
@@ -170,16 +171,51 @@ namespace MD
 		rigExport->setRigRetargetScale(1.f);
 		rigExport->setMirrorPlane(0);
 
-		MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+		const MR::AttribDataMirroredAnimMapping* mirroredMappingAttrib = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING, animSetIdx));
 
-		if (mirroredMapping != nullptr)
+		if (mirroredMappingAttrib != nullptr)
 		{
-			for (size_t i = 0; i < mirroredMapping->getNumMappings(); i++)
-				rigExport->createMirrorMapping(i, mirroredMapping->getLeftBone(i), mirroredMapping->getRightBone(i));
+			for (size_t i = 0; i < mirroredMappingAttrib->getNumMappings(); i++)
+				rigExport->createMirrorMapping(i, mirroredMappingAttrib->getLeftBone(i), mirroredMappingAttrib->getRightBone(i));
 		}
 
-		MR::AttribDataJointLimits* jointLimits = static_cast<MR::AttribDataJointLimits*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+		const MR::AttribDataJointLimits* jointLimitAttrib = static_cast<MR::AttribDataJointLimits*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_JOINT_LIMITS, animSetIdx));
 
+		if (jointLimitAttrib != nullptr)
+		{
+			for (size_t i = 0; i < jointLimitAttrib->getNumRigJoints(); i++)
+			{
+				const NMRU::JointLimits::Params* jointLimitParams = jointLimitAttrib->getLimitForJoint(i);
+
+				if (jointLimitParams != nullptr)
+				{
+					ME::JointLimitExportXML* jointLimitExport = static_cast<ME::JointLimitExportXML*>(rigExport->createJointLimit(i));
+
+					jointLimitExport->setOrientation(jointLimitParams->frame.x, jointLimitParams->frame.y, jointLimitParams->frame.z, jointLimitParams->frame.w);
+					jointLimitExport->setOffsetOrientation(jointLimitParams->offset.x, jointLimitParams->offset.y, jointLimitParams->offset.z, jointLimitParams->offset.w);
+
+					float twistMin = atanf(jointLimitParams->lower.x) * 4.f;
+					float twistMax = atanf(jointLimitParams->upper.x) * 4.f;
+					float lean1 = atanf(jointLimitParams->upper.y) * 4.f;
+					float lean2 = atanf(jointLimitParams->upper.z) * 4.f;
+
+					jointLimitExport->setTwistLow(-twistMin);
+					jointLimitExport->setTwistHigh(-twistMax);
+
+					ME::JointLimitExport::LimitType limitType = ME::JointLimitExport::kHingeLimitType;
+
+					if (lean1 && lean2)
+					{
+						jointLimitExport->setSwing1(lean1);
+						jointLimitExport->setSwing2(lean2);
+
+						limitType = ME::JointLimitExport::kBallSocketLimitType;
+					}
+
+					jointLimitExport->setLimitType(limitType);
+				}
+			}
+		}
 		
 		return rigExport;
 	}

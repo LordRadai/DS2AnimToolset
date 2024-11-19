@@ -1387,7 +1387,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting rig for animation set %d for %ws (%ws)\n", i, chrName.c_str(), filename);
 
-		ME::RigExportXML* rigExport = MD::exportRig(characterDef->getNetworkDef(), characterDef->getNetworkDef()->getRig(i), filename);
+		ME::RigExportXML* rigExport = MD::exportRig(characterDef->getNetworkDef(), characterDef->getNetworkDef()->getRig(i), i, filename);
 
 		char processName[256];
 		sprintf_s(processName, "Exporting rig for anim set %d", i);
