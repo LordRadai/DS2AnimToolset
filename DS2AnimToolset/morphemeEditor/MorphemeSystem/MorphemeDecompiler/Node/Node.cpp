@@ -472,6 +472,7 @@ namespace MD
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Duration", nodeDef->getInputCPConnection(0), false);
 
 			return nodeExportXML;
 		}
