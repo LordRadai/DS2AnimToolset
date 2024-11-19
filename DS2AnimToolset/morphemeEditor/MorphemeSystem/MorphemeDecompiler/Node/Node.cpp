@@ -102,6 +102,16 @@ namespace MD
 
 			g_appLog->debugMessage(MsgLevel_Warn, "\tUnhandled node exporter for node type %d\n", nodeDef->getNodeTypeID());
 			
+			std::ofstream unhandledDump;
+
+			char line[256];
+			unhandledDump.open("unhandledNodes.txt", std::ios::out | std::ios::app);
+
+			sprintf_s(line, "%d (typeID=%d)\n", nodeDef->getNodeID(), nodeDef->getNodeTypeID());
+
+			unhandledDump << line;
+			unhandledDump.close();
+
 			return nodeExportXML;
 		}
 
