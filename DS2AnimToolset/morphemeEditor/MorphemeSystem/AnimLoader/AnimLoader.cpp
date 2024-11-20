@@ -54,7 +54,10 @@ MR::AnimSourceBase* AnimLoader::requestAnim(const MR::RuntimeAnimAssetID animAss
               NMP_SPRINTF(fullFilename, 512, "%ws\\%s", dirEntry.path().c_str(), filename);
 
               if (std::filesystem::exists(fullFilename))
+              {
+                  NMP_DEBUG_MSG("Loading animation from extanibnd archive", fullFilename);
                   bytesRead = NMP::NMFile::allocAndLoad(fullFilename, &fileBuffer, &length, NMP_VECTOR_ALIGNMENT);
+              }
           }
       }
 
