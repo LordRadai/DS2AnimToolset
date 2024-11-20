@@ -33,10 +33,6 @@ namespace MD
 				if (trackExport->getEventTrackType() != ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE)
 					continue;
 				
-				//Generate all the sync event tracks datas
-				if ((strcmp(trackDiscrete->getTrackName(), "Footsteps") == 0))
-					continue;
-
 				if ((trackDiscrete->getTrackID() == trackExport->getEventTrackChannelID()) &&
 					(trackDiscrete->getUserData() == trackExport->getUserData()) &&
 					(trackDiscrete->getNumEvents() == trackExport->getNumEvents()) &&

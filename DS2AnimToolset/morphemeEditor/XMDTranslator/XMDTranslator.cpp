@@ -2,7 +2,7 @@
 #include "RCore.h"
 #include "extern.h"
 #include "morphemeEditor.h"
-#include "SimpleMath.h"
+#include <SimpleMath.h>
 #include "morpheme/AnimSource/mrAnimSourceNSA.h"
 
 namespace
