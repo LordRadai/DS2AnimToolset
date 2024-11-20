@@ -16,7 +16,7 @@
 
 namespace MD
 {
-	ME::EventTrackExport* getExportedTrack(std::vector<ME::EventTrackExport*>& exportedDurationTracks, MR::EventTrackDefBase* track)
+	ME::EventTrackExport* getExportedTrack(std::vector<ME::EventTrackExport*>& exportedTracks, MR::EventTrackDefBase* track)
 	{
 		ME::EventTrackExport* targetTrack = nullptr;
 		MR::EventTrackDefDiscrete* trackDiscrete = static_cast<MR::EventTrackDefDiscrete*>(track);
@@ -26,12 +26,21 @@ namespace MD
 		switch (track->getType())
 		{
 		case MR::kEventType_Discrete:
-			for (size_t trackIdx = 0; trackIdx < exportedDurationTracks.size(); trackIdx++)
+			for (size_t trackIdx = 0; trackIdx < exportedTracks.size(); trackIdx++)
 			{
-				ME::DiscreteEventTrackExport* trackExport = static_cast<ME::DiscreteEventTrackExport*>(exportedDurationTracks[trackIdx]);
+				ME::DiscreteEventTrackExport* trackExport = static_cast<ME::DiscreteEventTrackExport*>(exportedTracks[trackIdx]);
 
-				if ((trackDiscrete->getTrackID() == trackExport->getEventTrackChannelID()) && (trackDiscrete->getUserData() == trackExport->getUserData() &&
-					trackDiscrete->getNumEvents() == trackExport->getNumEvents()))
+				if (trackExport->getEventTrackType() != ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE)
+					continue;
+				
+				//Generate all the sync event tracks datas
+				if ((strcmp(trackDiscrete->getTrackName(), "Footsteps") == 0))
+					continue;
+
+				if ((trackDiscrete->getTrackID() == trackExport->getEventTrackChannelID()) &&
+					(trackDiscrete->getUserData() == trackExport->getUserData()) &&
+					(trackDiscrete->getNumEvents() == trackExport->getNumEvents()) &&
+					(strcmp(trackDiscrete->getTrackName(), trackExport->getName()) == 0))
 				{
 					targetTrack = trackExport;
 
@@ -45,16 +54,24 @@ namespace MD
 							return nullptr;
 						}
 					}
+
+					if (targetTrack != nullptr)
+						return targetTrack;
 				}
 			}
 			break;
 		case MR::kEventType_Curve:
-			for (size_t trackIdx = 0; trackIdx < exportedDurationTracks.size(); trackIdx++)
+			for (size_t trackIdx = 0; trackIdx < exportedTracks.size(); trackIdx++)
 			{
-				ME::CurveEventTrackExport* trackExport = static_cast<ME::CurveEventTrackExport*>(exportedDurationTracks[trackIdx]);
+				ME::CurveEventTrackExport* trackExport = static_cast<ME::CurveEventTrackExport*>(exportedTracks[trackIdx]);
 
-				if ((trackCurve->getTrackID() == trackExport->getEventTrackChannelID()) && (trackCurve->getUserData() == trackExport->getUserData() &&
-					trackCurve->getNumEvents() == trackExport->getNumEvents()))
+				if (trackExport->getEventTrackType() != ME::EventTrackExport::EVENT_TRACK_TYPE_CURVE)
+					continue;
+
+				if ((trackCurve->getTrackID() == trackExport->getEventTrackChannelID()) &&
+					(trackCurve->getUserData() == trackExport->getUserData()) &&
+					(trackCurve->getNumEvents() == trackExport->getNumEvents()) &&
+					(strcmp(trackCurve->getTrackName(), trackExport->getName()) == 0))
 				{
 					targetTrack = trackExport;
 
@@ -69,16 +86,24 @@ namespace MD
 							return nullptr;
 						}
 					}
+
+					if (targetTrack != nullptr)
+						return targetTrack;
 				}
 			}
 			break;
 		case MR::kEventType_Duration:
-			for (size_t trackIdx = 0; trackIdx < exportedDurationTracks.size(); trackIdx++)
+			for (size_t trackIdx = 0; trackIdx < exportedTracks.size(); trackIdx++)
 			{
-				ME::DurationEventTrackExport* trackExport = static_cast<ME::DurationEventTrackExport*>(exportedDurationTracks[trackIdx]);
+				ME::DurationEventTrackExport* trackExport = static_cast<ME::DurationEventTrackExport*>(exportedTracks[trackIdx]);
 
-				if ((trackDur->getTrackID() == trackExport->getEventTrackChannelID()) && (trackDur->getUserData() == trackExport->getUserData() &&
-					trackDur->getNumEvents() == trackExport->getNumEvents()))
+				if (trackExport->getEventTrackType() != ME::EventTrackExport::EVENT_TRACK_TYPE_DURATION)
+					continue;
+
+				if ((trackDur->getTrackID() == trackExport->getEventTrackChannelID()) &&
+					(trackDur->getUserData() == trackExport->getUserData()) &&
+					(trackDur->getNumEvents() == trackExport->getNumEvents()) &&
+					(strcmp(trackDur->getTrackName(), trackExport->getName()) == 0))
 				{
 					targetTrack = trackExport;
 
@@ -93,6 +118,9 @@ namespace MD
 							return nullptr;
 						}
 					}
+
+					if (targetTrack != nullptr)
+						return targetTrack;
 				}
 			}
 			break;

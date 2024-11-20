@@ -43,7 +43,20 @@ MR::AnimSourceBase* AnimLoader::requestAnim(const MR::RuntimeAnimAssetID animAss
   int64_t bytesRead = NMP::NMFile::allocAndLoad(fullFilename, &fileBuffer, &length, NMP_VECTOR_ALIGNMENT);
   if (bytesRead == -1)
   {
-    return NULL;
+      std::filesystem::path parent_path = std::filesystem::path(filename).parent_path().parent_path().string() + "\\c0001\\";
+
+      if (std::filesystem::exists(parent_path))
+      {
+          for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(parent_path))
+          {
+              NMP_SPRINTF(fullFilename, 512, "%s/%s", dirEntry.path().string(), filename);
+
+              bytesRead = NMP::NMFile::allocAndLoad(fullFilename, &fileBuffer, &length, NMP_VECTOR_ALIGNMENT);
+          }
+
+          if (bytesRead == -1)
+              return NULL;
+      }
   }
 
   //----------------------------

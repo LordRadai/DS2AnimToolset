@@ -137,34 +137,33 @@ namespace MD
 			{
 				MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM, setIndex));
 
-				if (sourceAnim)
+				if (setIndex == 0)
 				{
-					if (setIndex == 0)
-					{
-						nodeDataBlock->writeAnimationId(sourceAnim->m_animAssetID, "AnimIndex");
-						nodeDataBlock->writeBool(false, "GenerateAnimationDeltas");
-						nodeDataBlock->writeBool(isLoop->m_value, "Loop");
-						nodeDataBlock->writeBool(sourceAnim->m_playBackwards, "PlayBackwards");
-						nodeDataBlock->writeBool(false, "PreComputeSyncEventTracks");
-					}
+					MR::AttribDataSyncEventTrack* syncEventTrack = static_cast<MR::AttribDataSyncEventTrack*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SYNC_EVENT_TRACK, setIndex));
 
-					char paramName[256];
-
-					sprintf_s(paramName, "DefaultClip_%d", setIndex + 1);
-					nodeDataBlock->writeBool(true, paramName);
-
-					sprintf_s(paramName, "ClipRangeMode_%d", setIndex + 1);
-					nodeDataBlock->writeInt(3, paramName);
-
-					sprintf_s(paramName, "ClipStartFraction_%d", setIndex + 1);
-					nodeDataBlock->writeFloat(sourceAnim->m_clipStartFraction, paramName);
-
-					sprintf_s(paramName, "ClipEndFraction_%d", setIndex + 1);
-					nodeDataBlock->writeFloat(sourceAnim->m_clipEndFraction, paramName);
-
-					sprintf_s(paramName, "StartEventIndex_%d", setIndex + 1);
-					nodeDataBlock->writeUInt(sourceAnim->m_startSyncEventIndex, paramName);
+					nodeDataBlock->writeAnimationId(sourceAnim->m_animAssetID, "AnimIndex");
+					nodeDataBlock->writeBool(false, "GenerateAnimationDeltas");
+					nodeDataBlock->writeBool(isLoop->m_value, "Loop");
+					nodeDataBlock->writeBool(sourceAnim->m_playBackwards, "PlayBackwards");
+					nodeDataBlock->writeBool(syncEventTrack != nullptr, "PreComputeSyncEventTracks");
 				}
+
+				char paramName[256];
+
+				sprintf_s(paramName, "DefaultClip_%d", setIndex + 1);
+				nodeDataBlock->writeBool(true, paramName);
+
+				sprintf_s(paramName, "ClipRangeMode_%d", setIndex + 1);
+				nodeDataBlock->writeInt(3, paramName);
+
+				sprintf_s(paramName, "ClipStartFraction_%d", setIndex + 1);
+				nodeDataBlock->writeFloat(sourceAnim->m_clipStartFraction, paramName);
+
+				sprintf_s(paramName, "ClipEndFraction_%d", setIndex + 1);
+				nodeDataBlock->writeFloat(sourceAnim->m_clipEndFraction, paramName);
+
+				sprintf_s(paramName, "StartEventIndex_%d", setIndex + 1);
+				nodeDataBlock->writeUInt(sourceAnim->m_startSyncEventIndex, paramName);
 			}
 
 			return nodeExportXML;

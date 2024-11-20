@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "extern.h"
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
+#include "MorphemeSystem/MorphemeUtils/MorphemeUtils.h"
 
 namespace
 {
@@ -482,23 +483,6 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
     Character* character = new Character();
 
     MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, false);
-    characterDef->loadAnimations();
-
-    std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
-    int animCount = characterDef->getAnimFileLookUp()->getNumAnims();
-
-    //Queue of duration tracks we will be exporting alongside the animation. This is to optimize space when invoking the assetCompiler
-    std::vector<ME::EventTrackExport*> exportedTracks;
-
-    for (int i = 0; i < animCount; i++)
-    {
-        std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
-        std::wstring animFilePath = animFolder + L"\\" + animFileName;
-
-        characterDef->addAnimation(RString::toNarrow(animFilePath).c_str(), exportedTracks);
-    }
-
-    characterDef->sortAnimations();
 
     if (!characterDef)
         throw("Failed to create MorphemeCharacterDef instance (%s)", filename);
@@ -507,6 +491,25 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
 
     if (!character->m_morphemeCharacter)
         throw("Failed to create MorphemeCharacter instance (%s)", filename);
+
+    characterDef->loadAnimations();
+
+    std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
+    int animCount = characterDef->getAnimFileLookUp()->getNumAnims();
+
+    //Queue of tracks we will be exporting alongside the animation. This is to optimize space when invoking the assetCompiler
+    std::vector<ME::EventTrackExport*> exportedTracks;
+
+    const int animSetIdx = 0;
+    for (int i = 0; i < animCount; i++)
+    {
+        std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
+        std::wstring animFilePath = animFolder + L"\\" + animFileName;
+
+        characterDef->addAnimation(RString::toNarrow(animFilePath).c_str(), MorphemeUtils::getRigToAnimMapByAnimID(characterDef->getNetworkDef(), i, animSetIdx), exportedTracks, animSetIdx);
+    }
+
+    characterDef->sortAnimations();
 
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
     character->m_characterName = generateCharacterName(character->m_chrId);

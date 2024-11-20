@@ -35,6 +35,18 @@ namespace MorphemeUtils
 		return nullptr;
 	}
 
+    MR::RigToAnimMap* getRigToAnimMapByAnimID(MR::NetworkDef* netDef, int assetId, int animSetIdx)
+    {
+        MR::NodeDef* animNode = getAnimNodeByAnimID(netDef, assetId);
+
+        if (animNode == nullptr)
+            return nullptr;
+
+        MR::AttribDataSourceAnim* sourceAnimAttrib = static_cast<MR::AttribDataSourceAnim*>(animNode->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM, animSetIdx));
+    
+        return sourceAnimAttrib->m_rigToAnimMap;
+    }
+
 	MR::StateDef* getStateDefReferencingCondition(int conditionIndex, MR::AttribDataStateMachineDef* stateMachineDef)
 	{
 		for (int i = 0; i < stateMachineDef->getNumStates(); i++)

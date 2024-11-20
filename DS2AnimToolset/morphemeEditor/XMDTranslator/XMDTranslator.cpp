@@ -524,7 +524,7 @@ namespace XMDTranslator
 
 		XMD::XAnimCycle* animCycle = static_cast<XMD::XAnimCycle*>(xmd->CreateNode(XMD::XFn::AnimCycle));
 
-		const MR::AnimRigDef* rig = animObj->getHandle()->getRig();
+		const MR::RigToAnimMap* rigToAnimMap = animObj->getHandle()->getRigToAnimMap();
 
 		int animLenFrames = RMath::timeToFrame(animObj->getAnimLenght(), 30);
 
@@ -532,7 +532,7 @@ namespace XMDTranslator
 		animCycle->SetFrameRate(30);
 		animCycle->SetFrameTimes(0, animLenFrames, animLenFrames);
 
-		for (size_t i = 0; i < rig->getNumBones(); i++)
+		for (size_t i = 0; i < rigToAnimMap->getNumRigBones(); i++)
 		{
 			//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
 			if (i == 0)
