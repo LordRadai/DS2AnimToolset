@@ -233,7 +233,7 @@ MR::CharacterControllerDef* MorphemeCharacterDef::getCharacterController(int idx
 
 AnimObject* MorphemeCharacterDef::getAnimation(int animSetIdx, int idx)
 {
-    if (idx < m_anims.size())
+    if (idx < m_anims[animSetIdx].size())
         return m_anims[animSetIdx][idx];
 
     return nullptr;
@@ -254,7 +254,7 @@ void MorphemeCharacterDef::addAnimation(const char* filename, int animSetIdx)
 {
     g_appLog->debugMessage(MsgLevel_Debug, "\Adding animation \"%s\" for animSet %d\n", filename, animSetIdx);
 
-    const int idx = m_anims.size();
+    const int idx = m_anims[animSetIdx].size();
     
     m_anims[animSetIdx].push_back(AnimObject::createFromMorphemeAssets(this, this->m_netDef->getRig(animSetIdx), MorphemeUtils::getRigToAnimMapByAnimID(this->m_netDef, idx, animSetIdx), filename, idx));
 }

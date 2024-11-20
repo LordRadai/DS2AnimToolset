@@ -1168,7 +1168,7 @@ void GuiManager::assetsWindow()
 
 						ImGui::BeginChild("anim_list");
 						{
-							int numAnims = characterDef->getAnimFileLookUp()->getNumAnims();
+							const int numAnims = characterDef->getAnimFileLookUp()->getNumAnims();
 							const int animSetIdx = character->getMorphemeNetwork()->getActiveAnimSetIndex();
 
 							for (int i = 0; i < numAnims; i++)

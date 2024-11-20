@@ -507,7 +507,6 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
         }
     }
 
-
     characterDef->sortAnimations();
 
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
