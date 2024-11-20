@@ -261,5 +261,6 @@ void MorphemeCharacterDef::addAnimation(const char* filename, int animSetIdx)
 
 void MorphemeCharacterDef::sortAnimations()
 {
-    std::sort(m_anims.begin(), m_anims.end(), compareAnimObjs);
+    for (uint32_t i = 0; i < m_anims.size(); i++)
+        std::sort(m_anims[i].begin(), m_anims[i].end(), compareAnimObjs);
 }
