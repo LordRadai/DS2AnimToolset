@@ -487,12 +487,15 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
     std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
     int animCount = characterDef->getAnimFileLookUp()->getNumAnims();
 
+    //Queue of duration tracks we will be exporting alongside the animation. This is to optimize space when invoking the assetCompiler
+    std::vector<ME::EventTrackExport*> exportedTracks;
+
     for (int i = 0; i < animCount; i++)
     {
         std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
         std::wstring animFilePath = animFolder + L"\\" + animFileName;
 
-        characterDef->addAnimation(RString::toNarrow(animFilePath).c_str());
+        characterDef->addAnimation(RString::toNarrow(animFilePath).c_str(), exportedTracks);
     }
 
     characterDef->sortAnimations();
