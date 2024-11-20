@@ -2,7 +2,6 @@
 #include "framework.h"
 #include "extern.h"
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
-#include "MorphemeSystem/MorphemeUtils/MorphemeUtils.h"
 
 namespace
 {
@@ -504,7 +503,7 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
         std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
         std::wstring animFilePath = animFolder + L"\\" + animFileName;
 
-        characterDef->addAnimation(RString::toNarrow(animFilePath).c_str(), MorphemeUtils::getRigToAnimMapByAnimID(characterDef->getNetworkDef(), i, animSetIdx), animSetIdx);
+        characterDef->addAnimation(RString::toNarrow(animFilePath).c_str(), animSetIdx);
     }
 
     characterDef->sortAnimations();
