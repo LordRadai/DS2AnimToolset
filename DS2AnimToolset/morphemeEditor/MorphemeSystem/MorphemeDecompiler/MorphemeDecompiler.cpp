@@ -19,12 +19,13 @@ namespace MD
 	ME::EventTrackExport* getExportedTrack(std::vector<ME::EventTrackExport*>& exportedDurationTracks, MR::EventTrackDefBase* track)
 	{
 		ME::EventTrackExport* targetTrack = nullptr;
+		MR::EventTrackDefDiscrete* trackDiscrete = static_cast<MR::EventTrackDefDiscrete*>(track);
+		MR::EventTrackDefCurve* trackCurve = static_cast<MR::EventTrackDefCurve*>(track);
+		MR::EventTrackDefDuration* trackDur = static_cast<MR::EventTrackDefDuration*>(track);
 
 		switch (track->getType())
 		{
 		case MR::kEventType_Discrete:
-			MR::EventTrackDefDiscrete* trackDiscrete = static_cast<MR::EventTrackDefDiscrete*>(track);
-
 			for (size_t trackIdx = 0; trackIdx < exportedDurationTracks.size(); trackIdx++)
 			{
 				ME::DiscreteEventTrackExport* trackExport = static_cast<ME::DiscreteEventTrackExport*>(exportedDurationTracks[trackIdx]);
@@ -48,8 +49,6 @@ namespace MD
 			}
 			break;
 		case MR::kEventType_Curve:
-			MR::EventTrackDefCurve* trackCurve = static_cast<MR::EventTrackDefCurve*>(track);
-
 			for (size_t trackIdx = 0; trackIdx < exportedDurationTracks.size(); trackIdx++)
 			{
 				ME::CurveEventTrackExport* trackExport = static_cast<ME::CurveEventTrackExport*>(exportedDurationTracks[trackIdx]);
@@ -74,8 +73,6 @@ namespace MD
 			}
 			break;
 		case MR::kEventType_Duration:
-			MR::EventTrackDefDuration* trackDur = static_cast<MR::EventTrackDefDuration*>(track);
-
 			for (size_t trackIdx = 0; trackIdx < exportedDurationTracks.size(); trackIdx++)
 			{
 				ME::DurationEventTrackExport* trackExport = static_cast<ME::DurationEventTrackExport*>(exportedDurationTracks[trackIdx]);
