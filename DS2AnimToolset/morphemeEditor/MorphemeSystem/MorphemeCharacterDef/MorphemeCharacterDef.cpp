@@ -249,9 +249,9 @@ AnimObject* MorphemeCharacterDef::getAnimationById(int id)
 
 void MorphemeCharacterDef::addAnimation(const char* filename, int animSetIdx)
 {
-    g_appLog->debugMessage(MsgLevel_Debug, "\tLoading animation \"%s\"\n", filename);
+    g_appLog->debugMessage(MsgLevel_Debug, "\Adding animation \"%s\"\n", filename);
 
-    int idx = m_anims.size();
+    const int idx = m_anims.size();
     
     m_anims.push_back(AnimObject::createFromMorphemeAssets(this, this->m_netDef->getRig(animSetIdx), MorphemeUtils::getRigToAnimMapByAnimID(this->m_netDef, idx, animSetIdx), filename, idx));
 }
