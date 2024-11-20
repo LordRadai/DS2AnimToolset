@@ -252,7 +252,7 @@ AnimObject* MorphemeCharacterDef::getAnimationById(int animSetIdx, int id)
 
 void MorphemeCharacterDef::addAnimation(const char* filename, int animSetIdx)
 {
-    g_appLog->debugMessage(MsgLevel_Debug, "\Adding animation \"%s\"\n", filename);
+    g_appLog->debugMessage(MsgLevel_Debug, "\tAdding animation \"%s\"\n", filename);
 
     const int idx = m_anims[animSetIdx].size();
     
