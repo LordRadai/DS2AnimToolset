@@ -35,6 +35,8 @@ MR::AnimSourceBase* AnimLoader::requestAnim(const MR::RuntimeAnimAssetID animAss
   char fullFilename[512];
   NMP_SPRINTF(fullFilename, 512, "%s\\%s", dir, filename);
 
+  NMP_DEBUG_MSG("Attempting to load animation %s", fullFilename);
+
   const char* format   = info->getFormatType(animAssetID);
 
   void*    fileBuffer = 0;
@@ -43,15 +45,16 @@ MR::AnimSourceBase* AnimLoader::requestAnim(const MR::RuntimeAnimAssetID animAss
   int64_t bytesRead = NMP::NMFile::allocAndLoad(fullFilename, &fileBuffer, &length, NMP_VECTOR_ALIGNMENT);
   if (bytesRead == -1)
   {
-      std::filesystem::path parent_path = std::filesystem::path(dir).parent_path().parent_path().string() + "\\c0001\\";
+      std::filesystem::path parent_path = std::filesystem::path(dir).parent_path().string() + "\\c0001\\";
 
       if (std::filesystem::exists(parent_path))
       {
           for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(parent_path))
           {
-              NMP_SPRINTF(fullFilename, 512, "%s\\%s", dirEntry.path().string(), filename);
+              NMP_SPRINTF(fullFilename, 512, "%ws\\%s", dirEntry.path().c_str(), filename);
 
-              bytesRead = NMP::NMFile::allocAndLoad(fullFilename, &fileBuffer, &length, NMP_VECTOR_ALIGNMENT);
+              if (std::filesystem::exists(fullFilename))
+                  bytesRead = NMP::NMFile::allocAndLoad(fullFilename, &fileBuffer, &length, NMP_VECTOR_ALIGNMENT);
           }
       }
 

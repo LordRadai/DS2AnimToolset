@@ -62,7 +62,9 @@ AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR
 
     if (animHandle)
     {
-        animHandle->setRigToAnimMap(rigToAnimMap);
+        if (rigToAnimMap)
+            animHandle->setRigToAnimMap(rigToAnimMap);
+
         animHandle->setRig(rig);
         animHandle->setTime(0.f);
     }

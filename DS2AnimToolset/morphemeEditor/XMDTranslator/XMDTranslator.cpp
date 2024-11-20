@@ -524,13 +524,16 @@ namespace XMDTranslator
 
 		XMD::XAnimCycle* animCycle = static_cast<XMD::XAnimCycle*>(xmd->CreateNode(XMD::XFn::AnimCycle));
 
-		const MR::RigToAnimMap* rigToAnimMap = animObj->getHandle()->getRigToAnimMap();
-
 		int animLenFrames = RMath::timeToFrame(animObj->getAnimLenght(), 30);
 
 		animCycle->SetName(takeName);
 		animCycle->SetFrameRate(30);
 		animCycle->SetFrameTimes(0, animLenFrames, animLenFrames);
+
+		const MR::RigToAnimMap* rigToAnimMap = animObj->getHandle()->getRigToAnimMap();
+
+		if (rigToAnimMap == nullptr)
+			return animCycle;
 
 		for (size_t i = 0; i < rigToAnimMap->getNumRigBones(); i++)
 		{
