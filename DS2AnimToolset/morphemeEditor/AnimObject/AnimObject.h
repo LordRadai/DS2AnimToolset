@@ -14,7 +14,7 @@ public:
 	AnimObject(int id);
 	~AnimObject() {}
 
-	static AnimObject* createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id, std::vector<ME::EventTrackExport*>& exportedTracks);
+	static AnimObject* createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id);
 
 	inline bool operator <(const AnimObject& other)
 	{

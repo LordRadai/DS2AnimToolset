@@ -497,16 +497,14 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
     std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
     int animCount = characterDef->getAnimFileLookUp()->getNumAnims();
 
-    //Queue of tracks we will be exporting alongside the animation. This is to optimize space when invoking the assetCompiler
-    std::vector<ME::EventTrackExport*> exportedTracks;
+    const int animSetIdx = character->getMorphemeNetwork()->getActiveAnimSetIndex();
 
-    const int animSetIdx = 0;
     for (int i = 0; i < animCount; i++)
     {
         std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
         std::wstring animFilePath = animFolder + L"\\" + animFileName;
 
-        characterDef->addAnimation(RString::toNarrow(animFilePath).c_str(), MorphemeUtils::getRigToAnimMapByAnimID(characterDef->getNetworkDef(), i, animSetIdx), exportedTracks, animSetIdx);
+        characterDef->addAnimation(RString::toNarrow(animFilePath).c_str(), MorphemeUtils::getRigToAnimMapByAnimID(characterDef->getNetworkDef(), i, animSetIdx), animSetIdx);
     }
 
     characterDef->sortAnimations();

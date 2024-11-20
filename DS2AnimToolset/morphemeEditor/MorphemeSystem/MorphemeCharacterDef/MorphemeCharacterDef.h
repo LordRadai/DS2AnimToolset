@@ -77,7 +77,7 @@ public:
   MR::CharacterControllerDef* getCharacterController(int idx);
   AnimObject* getAnimation(int idx);
   AnimObject* getAnimationById(int id);
-  void addAnimation(const char* filename, MR::RigToAnimMap* rigToAnimMap, std::vector<ME::EventTrackExport*>& exportedTracks, int animSetIdx = 0);
+  void addAnimation(const char* filename, MR::RigToAnimMap* rigToAnimMap, int animSetIdx = 0);
   void sortAnimations();
 
 protected:

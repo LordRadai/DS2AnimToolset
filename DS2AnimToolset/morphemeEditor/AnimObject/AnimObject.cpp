@@ -11,7 +11,7 @@ AnimObject::AnimObject(int id)
     this->m_id = id;
 }
 
-AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id, std::vector<ME::EventTrackExport*>& exportedTracks)
+AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id)
 {
     AnimObject* animObj = new AnimObject(id);
 
@@ -76,7 +76,7 @@ AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR
     std::filesystem::path takeListPath = std::filesystem::path(out_path).string() + RString::removeExtension(owner->getAnimFileLookUp()->getSourceFilename(id)) + ".xmd.xml";
 
     animObj->m_animHandle = animHandle;
-    animObj->m_takeList = MD::exportAnimMarkup(owner, id, takeListPath.c_str(), exportedTracks);
+    animObj->m_takeList = MD::exportAnimMarkup(owner, id, takeListPath.c_str());
     animObj->m_id = id;
 
     animObj->m_animFileName = std::string(filename);

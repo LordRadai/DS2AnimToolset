@@ -127,7 +127,7 @@ namespace MD
 		return targetTrack;
 	}
 
-	ME::TakeListXML* exportAnimMarkup(MorphemeCharacterDef* character, int animId, std::wstring dstFileName, std::vector<ME::EventTrackExport*>& exportedTracks)
+	ME::TakeListXML* exportAnimMarkup(MorphemeCharacterDef* character, int animId, std::wstring dstFileName)
 	{
 		MR::NetworkDef* netDef = character->getNetworkDef();
 
@@ -156,78 +156,46 @@ namespace MD
 		for (size_t i = 0; i < sourceEvents->m_numDiscreteEventTracks; i++)
 		{
 			MR::EventTrackDefDiscrete* track = sourceEvents->m_sourceDiscreteEventTracks[i];
-			ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, track);
 
-			std::string guid;
+			GUID gidReference;
+			CoCreateGuid(&gidReference);
 
-			if (targetTrack == nullptr)
-			{
-				GUID gidReference;
-				CoCreateGuid(&gidReference);
-
-				guid = RString::guidToString(gidReference);
-			}
-			else
-				guid = targetTrack->getGUID();
+			std::string guid = RString::guidToString(gidReference);
 
 			ME::DiscreteEventTrackExportXML* trackXML = (ME::DiscreteEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
 
 			for (size_t j = 0; j < track->getNumEvents(); j++)
 				trackXML->createEvent(j, track->getEvent(j)->getStartTime(), track->getEvent(j)->getUserData());
-
-			if (targetTrack == nullptr)
-				exportedTracks.push_back(trackXML);
 		}
 
 		for (size_t i = 0; i < sourceEvents->m_numCurveEventTracks; i++)
 		{
 			MR::EventTrackDefCurve* track = sourceEvents->m_sourceCurveEventTracks[i];
-			ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, track);
-			std::string guid;
 
-			if (targetTrack == nullptr)
-			{
-				GUID gidReference;
-				CoCreateGuid(&gidReference);
+			GUID gidReference;
+			CoCreateGuid(&gidReference);
 
-				guid = RString::guidToString(gidReference);
-			}
-			else
-				guid = targetTrack->getGUID();
+			std::string guid = RString::guidToString(gidReference);
 
 			ME::CurveEventTrackExportXML* trackXML = (ME::CurveEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_CURVE, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
 
 			for (size_t j = 0; j < track->getNumEvents(); j++)
 				trackXML->createEvent(j, track->getEvent(j)->getTime(), track->getEvent(j)->getValue(), track->getEvent(j)->getUserData());
-
-			if (targetTrack == nullptr)
-				exportedTracks.push_back(trackXML);
 		}
 
 		for (size_t i = 0; i < sourceEvents->m_numDurEventTracks; i++)
 		{
 			MR::EventTrackDefDuration* track = sourceEvents->m_sourceDurEventTracks[i];
-			ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, track);
-			
-			std::string guid;
-			
-			if (targetTrack == nullptr)
-			{
-				GUID gidReference;
-				CoCreateGuid(&gidReference);
 
-				guid = RString::guidToString(gidReference);
-			}
-			else
-				guid = targetTrack->getGUID();
+			GUID gidReference;
+			CoCreateGuid(&gidReference);
+
+			std::string guid = RString::guidToString(gidReference);
 
 			ME::DurationEventTrackExportXML* trackXML = (ME::DurationEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DURATION, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
 
 			for (size_t j = 0; j < track->getNumEvents(); j++)
 				trackXML->createEvent(j, track->getEvent(j)->getStartTime(), track->getEvent(j)->getDuration(), track->getEvent(j)->getUserData());
-		
-			if (targetTrack == nullptr)
-				exportedTracks.push_back(trackXML);
 		}
 
 		return takeList;
