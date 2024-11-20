@@ -100,8 +100,9 @@ namespace MD
 			if (isNodeControlParameter(nodeDef))
 				return netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
-			std::string name;
+			std::string name = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
+			/*
 			if ((nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT) && (nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_SYNC_EVENTS))
 			{
 				for (size_t i = 0; i < nodeDef->getNumChildNodes(); i++)
@@ -115,6 +116,7 @@ namespace MD
 						break;
 				}
 			}
+			*/
 
 			if (name == "")
 			{

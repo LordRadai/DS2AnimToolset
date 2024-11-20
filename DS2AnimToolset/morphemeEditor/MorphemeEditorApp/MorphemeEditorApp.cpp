@@ -191,7 +191,7 @@ namespace
 					if (nodeDef->getChildNodeID(i) != MR::INVALID_NODE_ID)
 					{
 						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
-						createNodeXML(nodeDef->getChildNodeDef(i), inputNodes, name, false);
+						createNodeXML(nodeDef->getChildNodeDef(i), inputNodes, nodeName, false);
 					}
 					else
 					{
@@ -241,6 +241,38 @@ namespace
 						createNodeXML(nullptr, childNodes, "", false);
 					}
 				}
+			}
+		}
+	}
+
+	void addNamedNodeToXML(MR::NetworkDef* netDef, MR::NodeID nodeID, ME::AnimationLibraryExport* animLibrary, tinyxml2::XMLElement* parent, std::vector<MR::NodeID>& processedNodes)
+	{
+		for (size_t i = 0; i < processedNodes.size(); i++)
+		{
+			if (nodeID == processedNodes[i])
+				return;
+		}
+
+		processedNodes.push_back(nodeID);
+
+		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
+
+		std::string nodeName = netDef->getNodeNameFromNodeID(nodeID);
+
+		if (nodeName == "")
+			return;
+
+		tinyxml2::XMLElement* nodeXML = createNodeXML(nodeDef, parent, netDef->getNodeNameFromNodeID(nodeID), false);
+
+		const int numChildNodes = nodeDef->getNumChildNodes();
+		const int numInputCPs = nodeDef->getNumInputCPConnections();
+
+		if (numChildNodes > 0)
+		{
+			for (int i = 0; i < numChildNodes; i++)
+			{
+				if (nodeDef->getChildNodeID(i) != MR::INVALID_NODE_ID)
+					addNamedNodeToXML(netDef, nodeDef->getChildNodeID(i), animLibrary, nodeXML, processedNodes);
 			}
 		}
 	}
@@ -326,6 +358,42 @@ namespace
 		{
 			addNodeToXML(netDef, i, animLibrary, root, false);
 			printNodeFnTables(netDef, i, nodeDumpExt);
+		}
+
+		xmlDoc.InsertEndChild(root);
+		xmlDoc.SaveFile(RString::toNarrow(path).c_str());
+	}
+
+	void dumpNamedNodes(MR::NetworkDef* netDef, ME::AnimationLibraryExport* animLibrary, std::wstring path)
+	{
+		tinyxml2::XMLDocument xmlDoc;
+		tinyxml2::XMLElement* root = xmlDoc.NewElement("Nodes");
+
+		const int numNodes = netDef->getNumNodeDefs();
+
+		std::vector<MR::NodeID> processedNodes;
+
+		for (int i = 0; i < numNodes; i++)
+			addNamedNodeToXML(netDef, i, animLibrary, root, processedNodes);
+
+		xmlDoc.InsertEndChild(root);
+		xmlDoc.SaveFile(RString::toNarrow(path).c_str());
+	}
+
+	void dumpNodeIDNamesTable(MR::NetworkDef* netDef, ME::AnimationLibraryExport* animLibrary, std::wstring path)
+	{
+		tinyxml2::XMLDocument xmlDoc;
+		tinyxml2::XMLElement* root = xmlDoc.NewElement("NodeIDNamesTable");
+
+		const int numNodes = netDef->getNumNodeDefs();
+
+		const NMP::IDMappedStringTable* nodeIDNamesTable = netDef->getNodeIDNamesTable();
+
+		for (size_t i = 0; i < nodeIDNamesTable->getNumEntries(); i++)
+		{
+			tinyxml2::XMLElement* elem = root->InsertNewChildElement("Entry");
+			elem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(i));
+			elem->SetAttribute("Name", nodeIDNamesTable->getEntryString(i));
 		}
 
 		xmlDoc.InsertEndChild(root);
@@ -1448,6 +1516,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
+	dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
 	dumpNetworkNodes(netDef, animLibraryExport, L"nodes.xml");
 	dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
 	dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
