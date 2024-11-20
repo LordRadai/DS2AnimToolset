@@ -241,7 +241,7 @@ AnimObject* MorphemeCharacterDef::getAnimation(int animSetIdx, int idx)
 
 AnimObject* MorphemeCharacterDef::getAnimationById(int animSetIdx, int id)
 {
-    for (size_t i = 0; i < this->m_anims.size(); i++)
+    for (size_t i = 0; i < this->m_anims[animSetIdx].size(); i++)
     {
         if (this->m_anims[animSetIdx][i]->getAnimID() == id)
             return this->m_anims[animSetIdx][i];

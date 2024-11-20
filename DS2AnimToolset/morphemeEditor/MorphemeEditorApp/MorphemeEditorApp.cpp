@@ -1629,12 +1629,11 @@ bool MorphemeEditorApp::exportAnimations(std::wstring path)
 {
 	MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
 
-	int numAnims = characterDef->getNumAnims();
+	const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
+	const int numAnims = characterDef->getNumAnims(animSetIdx);
 
 	g_workerThread.load()->addProcess("Exporting animations", numAnims);
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting animations:\n");
-
-	const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
 
 	for (size_t i = 0; i < numAnims; i++)
 	{
@@ -1653,12 +1652,11 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 {
 	MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
 
-	const int numAnims = characterDef->getNumAnims();
+	const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
+	const int numAnims = characterDef->getNumAnims(animSetIdx);
 
 	g_workerThread.load()->addProcess("Exporting anim markup", numAnims);
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting animation markups:\n");
-
-	const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
 
 	for (size_t i = 0; i < numAnims; i++)
 	{

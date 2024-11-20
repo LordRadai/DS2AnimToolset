@@ -71,7 +71,7 @@ public:
   void setSimulateNetwork(bool simulate) { this->m_simulateNetwork = simulate; }
   int getNumRigToAnimMaps() { return this->m_rigToAnimMaps.size(); }
   int getNumCharacterControllers() { return this->m_characterControllerDefs.size(); }
-  int getNumAnims() { return this->m_anims.size(); }
+  int getNumAnims(int animSetIdx) { return this->m_anims[animSetIdx].size(); }
 
   MR::RigToAnimMap* getRigToAnimMap(int idx);
   MR::CharacterControllerDef* getCharacterController(int idx);
