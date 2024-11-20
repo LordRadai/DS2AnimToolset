@@ -535,21 +535,25 @@ namespace XMDTranslator
 		if (rigToAnimMap == nullptr)
 			return animCycle;
 
-		for (size_t i = 0; i < rigToAnimMap->getNumRigBones(); i++)
+		MR::AnimToRigTableMap* animToRigMap = (MR::AnimToRigTableMap*)rigToAnimMap->getRigToAnimMapData();
+
+		for (size_t i = 0; i < animToRigMap->getNumAnimChannels(); i++)
 		{
+			const int channelID = animToRigMap->getAnimToRigMapEntry(i);
+
 			//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
-			if (i == 0)
+			if (channelID == 0)
 				continue;
 
-			XMD::XSampledKeys* sampleKeys = animCycle->AddSampledKeys(i);
+			XMD::XSampledKeys* sampleKeys = animCycle->AddSampledKeys(channelID);
 			sampleKeys->SetSize(animLenFrames);
 
 			for (size_t j = 0; j < animLenFrames; j++)
 			{
 				float time = RMath::frameToTime(j, 30);
 
-				sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, i);
-				sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, i);
+				sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
+				sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
 			}
 		}
 
