@@ -75,8 +75,8 @@ public:
 
   MR::RigToAnimMap* getRigToAnimMap(int idx);
   MR::CharacterControllerDef* getCharacterController(int idx);
-  AnimObject* getAnimation(int idx);
-  AnimObject* getAnimationById(int id);
+  AnimObject* getAnimation(int animSetIdx, int idx);
+  AnimObject* getAnimationById(int animSetIdx, int id);
   void addAnimation(const char* filename, int animSetIdx = 0);
   void sortAnimations();
 
@@ -119,7 +119,7 @@ protected:
 
   bool m_simulateNetwork = true;
   int m_chrId;
-  std::vector<AnimObject*> m_anims;
+  std::vector<std::vector<AnimObject*>> m_anims;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

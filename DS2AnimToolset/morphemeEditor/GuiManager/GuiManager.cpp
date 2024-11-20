@@ -1169,6 +1169,7 @@ void GuiManager::assetsWindow()
 						ImGui::BeginChild("anim_list");
 						{
 							int numAnims = characterDef->getAnimFileLookUp()->getNumAnims();
+							const int animSetIdx = character->getMorphemeNetwork()->getActiveAnimSetIndex();
 
 							for (int i = 0; i < numAnims; i++)
 							{
@@ -1177,7 +1178,7 @@ void GuiManager::assetsWindow()
 								//if (eventTrackEditor->isEdited())
 									//anim_name += "*";
 
-								AnimObject* currentAnim = characterDef->getAnimation(i);
+								AnimObject* currentAnim = characterDef->getAnimation(animSetIdx, i);
 
 								anim_name += RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(currentAnim->getAnimID()));
 

@@ -482,12 +482,12 @@ namespace
 		return status;
 	}
 
-	bool exportAnimationToFbx(std::wstring path, Character* character, int animIdx, bool addModel)
+	bool exportAnimationToFbx(std::wstring path, Character* character, int animSetIdx, int animIdx, bool addModel)
 	{
 		bool status = true;
 
 		MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
-		AnimObject* anim = characterDef->getAnimation(animIdx);
+		AnimObject* anim = characterDef->getAnimation(0, animIdx);
 
 		int animId = anim->getAnimID();
 
@@ -544,7 +544,7 @@ namespace
 			}
 		}
 
-		if (!FBXTranslator::createFbxTake(pScene, morphemeRig, characterDef->getAnimationById(animId), characterDef->getAnimFileLookUp()->getTakeName(animId)))
+		if (!FBXTranslator::createFbxTake(pScene, morphemeRig, characterDef->getAnimationById(animSetIdx, animId), characterDef->getAnimFileLookUp()->getTakeName(animId)))
 		{
 			g_appLog->debugMessage(MsgLevel_Error, "Failed to create FBX take (%ws)\n", character->getCharacterName().c_str());
 			status = false;
@@ -560,17 +560,17 @@ namespace
 		return status;
 	}
 
-	bool exportAnimationToXmd(std::wstring path, Character* character, int animIdx)
+	bool exportAnimationToXmd(std::wstring path, Character* character, int animSetIdx, int animIdx)
 	{
 		bool status = true;
 
 		MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
-		AnimObject* anim = characterDef->getAnimation(animIdx);
+		AnimObject* anim = characterDef->getAnimation(animSetIdx, animIdx);
 
 		int animId = anim->getAnimID();
 
 		if (!anim->isLoaded())
-			anim = characterDef->getAnimation(0);
+			anim = characterDef->getAnimation(0, 0);
 
 		if (!anim->isLoaded())
 			return false;
@@ -1634,12 +1634,14 @@ bool MorphemeEditorApp::exportAnimations(std::wstring path)
 	g_workerThread.load()->addProcess("Exporting animations", numAnims);
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting animations:\n");
 
+	const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
+
 	for (size_t i = 0; i < numAnims; i++)
 	{
-		std::string animName = RString::removeExtension(characterDef->getAnimationById(i)->getAnimName());
+		std::string animName = RString::removeExtension(characterDef->getAnimationById(animSetIdx, i)->getAnimName());
 		g_workerThread.load()->setProcessStepName(animName);
 
-		this->exportAnimation(path, i);
+		this->exportAnimation(path, animSetIdx, i);
 
 		g_workerThread.load()->increaseProgressStep();
 	}
@@ -1656,12 +1658,14 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 	g_workerThread.load()->addProcess("Exporting anim markup", numAnims);
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting animation markups:\n");
 
+	const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
+
 	for (size_t i = 0; i < numAnims; i++)
 	{
-		std::string animName = RString::removeExtension(characterDef->getAnimationById(i)->getAnimName());
+		std::string animName = RString::removeExtension(characterDef->getAnimationById(animSetIdx, i)->getAnimName());
 		g_workerThread.load()->setProcessStepName(animName);
 
-		this->exportAnimMarkup(path, i);
+		this->exportAnimMarkup(path, animSetIdx, i);
 
 		g_workerThread.load()->increaseProgressStep();
 	}
@@ -1845,28 +1849,30 @@ bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
 	return true;
 }
 
-bool MorphemeEditorApp::exportAnimation(std::wstring path, int animId)
+bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int animId)
 {
 	switch (this->m_taskFlags.exportFormat)
 	{
 	case MorphemeEditorApp::kFbx:
-		return exportAnimationToFbx(path, this->m_character, animId, false);
+		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, false);
 	case MorphemeEditorApp::kXmd:
-		return exportAnimationToXmd(path, this->m_character, animId);
+		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId);
 	default:
 		return false;
 	}
 }
 
-bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animId)
+bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int animId)
 {
 	MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
 	
 	if (characterDef == nullptr)
 		throw("characterDef was nullptr\n");
 
-	ME::TakeListXML* takeListXML = characterDef->getAnimationById(animId)->getTakeList();
-	std::string animName = RString::removeExtension(characterDef->getAnimationById(animId)->getAnimName());
+	AnimObject* anim = characterDef->getAnimationById(animSetIdx, animId);
+
+	ME::TakeListXML* takeListXML = anim->getTakeList();
+	std::string animName = RString::removeExtension(anim->getAnimName());
 
 	if (takeListXML)
 	{

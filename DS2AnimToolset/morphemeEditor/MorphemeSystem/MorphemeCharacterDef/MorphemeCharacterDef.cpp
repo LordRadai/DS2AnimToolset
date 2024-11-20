@@ -171,6 +171,9 @@ bool MorphemeCharacterDef::init(void* bundle, size_t bundleSize)
     return false;
   }
 
+  for (size_t i = 0; i < m_netDef->getNumAnimSets(); i++)
+      m_anims.push_back(std::vector<AnimObject*>());
+
   m_isLoaded = true;
 
   return true;
@@ -228,20 +231,20 @@ MR::CharacterControllerDef* MorphemeCharacterDef::getCharacterController(int idx
     return nullptr;
 }
 
-AnimObject* MorphemeCharacterDef::getAnimation(int idx)
+AnimObject* MorphemeCharacterDef::getAnimation(int animSetIdx, int idx)
 {
     if (idx < m_anims.size())
-        return m_anims[idx];
+        return m_anims[animSetIdx][idx];
 
     return nullptr;
 }
 
-AnimObject* MorphemeCharacterDef::getAnimationById(int id)
+AnimObject* MorphemeCharacterDef::getAnimationById(int animSetIdx, int id)
 {
     for (size_t i = 0; i < this->m_anims.size(); i++)
     {
-        if (this->m_anims[i]->getAnimID() == id)
-            return this->m_anims[i];
+        if (this->m_anims[animSetIdx][i]->getAnimID() == id)
+            return this->m_anims[animSetIdx][i];
     }
 
     return nullptr;
@@ -253,7 +256,7 @@ void MorphemeCharacterDef::addAnimation(const char* filename, int animSetIdx)
 
     const int idx = m_anims.size();
     
-    m_anims.push_back(AnimObject::createFromMorphemeAssets(this, this->m_netDef->getRig(animSetIdx), MorphemeUtils::getRigToAnimMapByAnimID(this->m_netDef, idx, animSetIdx), filename, idx));
+    m_anims[animSetIdx].push_back(AnimObject::createFromMorphemeAssets(this, this->m_netDef->getRig(animSetIdx), MorphemeUtils::getRigToAnimMapByAnimID(this->m_netDef, idx, animSetIdx), filename, idx));
 }
 
 void MorphemeCharacterDef::sortAnimations()

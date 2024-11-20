@@ -135,8 +135,8 @@ private:
 	bool compileMorphemeAssets(std::wstring path);
 	bool compileTimeActFiles(std::wstring path);
 
-	bool exportAnimation(std::wstring path, int animId);
-	bool exportAnimMarkup(std::wstring path, int animId);
+	bool exportAnimation(std::wstring path, int animSetIdx, int animId);
+	bool exportAnimMarkup(std::wstring path, int animSetIdx, int animId);
 
 	void exportTaeTemplateXML();
 

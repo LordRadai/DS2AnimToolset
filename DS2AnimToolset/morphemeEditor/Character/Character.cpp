@@ -494,17 +494,19 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
     characterDef->loadAnimations();
 
     std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
-    int animCount = characterDef->getAnimFileLookUp()->getNumAnims();
+    const int animCount = characterDef->getAnimFileLookUp()->getNumAnims();
 
-    const int animSetIdx = character->getMorphemeNetwork()->getActiveAnimSetIndex();
-
-    for (int i = 0; i < animCount; i++)
+    for (uint32_t animSetIdx = 0; animSetIdx < characterDef->getNetworkDef()->getNumAnimSets(); animSetIdx++)
     {
-        std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
-        std::wstring animFilePath = animFolder + L"\\" + animFileName;
+        for (uint32_t i = 0; i < animCount; i++)
+        {
+            std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
+            std::wstring animFilePath = animFolder + L"\\" + animFileName;
 
-        characterDef->addAnimation(RString::toNarrow(animFilePath).c_str(), animSetIdx);
+            characterDef->addAnimation(RString::toNarrow(animFilePath).c_str(), animSetIdx);
+        }
     }
+
 
     characterDef->sortAnimations();
 
