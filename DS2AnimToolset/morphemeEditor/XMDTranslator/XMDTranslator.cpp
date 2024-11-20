@@ -532,28 +532,50 @@ namespace XMDTranslator
 
 		const MR::RigToAnimMap* rigToAnimMap = animObj->getHandle()->getRigToAnimMap();
 
-		if (rigToAnimMap == nullptr)
-			return animCycle;
-
-		MR::AnimToRigTableMap* animToRigMap = (MR::AnimToRigTableMap*)rigToAnimMap->getRigToAnimMapData();
-
-		for (size_t i = 0; i < animToRigMap->getNumAnimChannels(); i++)
+		//If it's present, we use the animToRigMap, otherwise we use the whole rig
+		if (rigToAnimMap && (rigToAnimMap->getRigToAnimMapType() == MR::RigToAnimMap::AnimToRig))
 		{
-			const int channelID = animToRigMap->getAnimToRigMapEntry(i);
+			const MR::AnimToRigTableMap* animToRigMap = (MR::AnimToRigTableMap*)rigToAnimMap->getRigToAnimMapData();
 
-			//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
-			if (channelID == 0)
-				continue;
-
-			XMD::XSampledKeys* sampleKeys = animCycle->AddSampledKeys(channelID);
-			sampleKeys->SetSize(animLenFrames);
-
-			for (size_t j = 0; j < animLenFrames; j++)
+			for (uint32_t i = 0; i < animToRigMap->getNumAnimChannels(); i++)
 			{
-				float time = RMath::frameToTime(j, 30);
+				const int channelID = animToRigMap->getAnimToRigMapEntry(i);
 
-				sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
-				sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
+				//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
+				if (channelID == 0)
+					continue;
+
+				XMD::XSampledKeys* sampleKeys = animCycle->AddSampledKeys(channelID);
+				sampleKeys->SetSize(animLenFrames);
+
+				for (size_t j = 0; j < animLenFrames; j++)
+				{
+					float time = RMath::frameToTime(j, 30);
+
+					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
+					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
+				}
+			}
+		}
+		else
+		{
+			const MR::AnimRigDef* animRigDef = animObj->getHandle()->getRig();
+
+			//We start from 1 because bone 0 is added by morpheme on export, so it's not a part of the real skeleton
+			for (uint32_t i = 1; i < animRigDef->getNumBones(); i++)
+			{
+				const int channelID = i;
+
+				XMD::XSampledKeys* sampleKeys = animCycle->AddSampledKeys(channelID);
+				sampleKeys->SetSize(animLenFrames);
+
+				for (size_t j = 0; j < animLenFrames; j++)
+				{
+					float time = RMath::frameToTime(j, 30);
+
+					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
+					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
+				}
 			}
 		}
 
