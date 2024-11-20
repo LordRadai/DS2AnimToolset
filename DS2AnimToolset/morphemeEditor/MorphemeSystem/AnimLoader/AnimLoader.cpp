@@ -19,7 +19,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 MR::AnimSourceBase* AnimLoader::requestAnim(const MR::RuntimeAnimAssetID animAssetID, void* userdata)
 {
-    MorphemeCharacterDef::AnimData* metadata = (MorphemeCharacterDef::AnimData*)userdata;
+  MorphemeCharacterDef::AnimData* metadata = (MorphemeCharacterDef::AnimData*)userdata;
 
   MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* info = metadata->m_animFileLookUp;
   const char* dir = metadata->m_bundleDir;
@@ -33,7 +33,7 @@ MR::AnimSourceBase* AnimLoader::requestAnim(const MR::RuntimeAnimAssetID animAss
   //----------------------------
   // Add the file extension to the start of the filename. By default this is hard coded to the ProjectData folder.
   char fullFilename[512];
-  NMP_SPRINTF(fullFilename, 512, "%s/%s", dir, filename);
+  NMP_SPRINTF(fullFilename, 512, "%s\\%s", dir, filename);
 
   const char* format   = info->getFormatType(animAssetID);
 
@@ -43,20 +43,20 @@ MR::AnimSourceBase* AnimLoader::requestAnim(const MR::RuntimeAnimAssetID animAss
   int64_t bytesRead = NMP::NMFile::allocAndLoad(fullFilename, &fileBuffer, &length, NMP_VECTOR_ALIGNMENT);
   if (bytesRead == -1)
   {
-      std::filesystem::path parent_path = std::filesystem::path(filename).parent_path().parent_path().string() + "\\c0001\\";
+      std::filesystem::path parent_path = std::filesystem::path(dir).parent_path().parent_path().string() + "\\c0001\\";
 
       if (std::filesystem::exists(parent_path))
       {
           for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(parent_path))
           {
-              NMP_SPRINTF(fullFilename, 512, "%s/%s", dirEntry.path().string(), filename);
+              NMP_SPRINTF(fullFilename, 512, "%s\\%s", dirEntry.path().string(), filename);
 
               bytesRead = NMP::NMFile::allocAndLoad(fullFilename, &fileBuffer, &length, NMP_VECTOR_ALIGNMENT);
           }
-
-          if (bytesRead == -1)
-              return NULL;
       }
+
+      if (bytesRead == -1)
+          return NULL;
   }
 
   //----------------------------
