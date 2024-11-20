@@ -498,6 +498,8 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
 
     for (uint32_t animSetIdx = 0; animSetIdx < characterDef->getNetworkDef()->getNumAnimSets(); animSetIdx++)
     {
+        g_appLog->debugMessage(MsgLevel_Debug, "\Adding animations for animSet %d\n", animSetIdx);
+
         for (uint32_t i = 0; i < animCount; i++)
         {
             std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
