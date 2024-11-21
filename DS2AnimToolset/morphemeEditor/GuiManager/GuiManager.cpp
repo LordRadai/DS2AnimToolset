@@ -818,7 +818,7 @@ void GuiManager::rootWindow()
 				ImGui::EndCombo();
 			}
 
-			ImGui::DragInt("Compression FPS", &editorApp->getExportSettings()->compressionFps, 0.5f, 0, 120);
+			ImGui::SliderInt("Compression FPS", &editorApp->getExportSettings()->compressionFps, 0, 120);
 
 			ImGui::EndMenu();
 		}

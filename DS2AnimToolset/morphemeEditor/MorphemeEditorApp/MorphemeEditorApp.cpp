@@ -1380,7 +1380,7 @@ void MorphemeEditorApp::saveSettings()
 		settings = RINI::create("Data\\res\\settings.ini");
 
 	settings->setInt("Export", "export_format", this->m_exportSettings.exportFormat);
-	settings->setInt("Export", "compression_fps", this->m_exportSettings.compressionFps);
+	//settings->setInt("Export", "compression_fps", this->m_exportSettings.compressionFps);
 
 	settings->setBool("ModelViewer", "draw_dummies", this->m_previewFlags.drawDummies);
 	settings->setBool("ModelViewer", "draw_bones", this->m_previewFlags.drawBones);

@@ -86,7 +86,7 @@ public:
 	struct ExportSettings
 	{
 		ExportFormat exportFormat = kFbx;
-		int compressionFps = 20;
+		int compressionFps = 30;
 	};
 
 	~MorphemeEditorApp();
