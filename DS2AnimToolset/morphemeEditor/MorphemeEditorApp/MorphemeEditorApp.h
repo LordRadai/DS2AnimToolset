@@ -86,7 +86,9 @@ public:
 	struct ExportSettings
 	{
 		ExportFormat exportFormat = kFbx;
-		int compressionFps = 30;
+		uint8_t compressionFormat = 2;
+		bool useSourceSampleFrequency = true;
+		int sampleFrequency = 30;
 	};
 
 	~MorphemeEditorApp();

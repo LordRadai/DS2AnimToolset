@@ -1068,6 +1068,23 @@ namespace
 
 		return optimisedTakeList;
 	}
+
+	const char* getAnimFormatName(uint8_t animFormat)
+	{
+		switch (animFormat)
+		{
+		case ANIM_TYPE_MBA:
+			return "mba";
+		case ANIM_TYPE_ASA:
+			return "asa";
+		case ANIM_TYPE_NSA:
+			return "nsa";
+		case ANIM_TYPE_QSA:
+			return "qsa";
+		default:
+			return "nsa";
+		}
+	}
 }
 
 MorphemeEditorApp* MorphemeEditorApp::getInstance()
@@ -1360,7 +1377,9 @@ void MorphemeEditorApp::loadSettings()
 	}
 
 	this->m_exportSettings.exportFormat = (ExportFormat)settings->getInt("Export", "export_format", 0);
-	this->m_exportSettings.compressionFps = settings->getInt("Export", "compression_fps", 30);
+	this->m_exportSettings.compressionFormat = settings->getInt("Export", "compression_format", 2);
+	this->m_exportSettings.useSourceSampleFrequency = settings->getBool("Export", "use_source_sample_frequency", true);
+	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "sample_frequency", 30);
 
 	this->m_previewFlags.drawDummies = settings->getBool("ModelViewer", "draw_dummies", false);
 	this->m_previewFlags.drawBones = settings->getBool("ModelViewer", "draw_bones", true);
@@ -1380,7 +1399,9 @@ void MorphemeEditorApp::saveSettings()
 		settings = RINI::create("Data\\res\\settings.ini");
 
 	settings->setInt("Export", "export_format", this->m_exportSettings.exportFormat);
-	//settings->setInt("Export", "compression_fps", this->m_exportSettings.compressionFps);
+	settings->setInt("Export", "compression_format", this->m_exportSettings.compressionFormat);
+	settings->setBool("Export", "use_source_sample_frequency", this->m_exportSettings.useSourceSampleFrequency);
+	settings->setInt("Export", "sample_frequency", this->m_exportSettings.sampleFrequency);
 
 	settings->setBool("ModelViewer", "draw_dummies", this->m_previewFlags.drawDummies);
 	settings->setBool("ModelViewer", "draw_bones", this->m_previewFlags.drawBones);
@@ -1657,7 +1678,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting animation library for %ws (%ws)\n", chrName.c_str(), libraryFilename);
 
-	ME::AnimationLibraryXML* animLibraryExport = MD::exportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, chrName.c_str(), libraryFilename);
+	ME::AnimationLibraryXML* animLibraryExport = MD::exportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, chrName.c_str(), libraryFilename, getAnimFormatName(this->m_exportSettings.compressionFormat), !this->m_exportSettings.useSourceSampleFrequency, this->m_exportSettings.sampleFrequency);
 
 	if (!animLibraryExport->write())
 		g_appLog->debugMessage(MsgLevel_Error, "Failed to export animation library for %ws\n", chrName.c_str());
@@ -2024,12 +2045,14 @@ bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
 
 bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int animId)
 {
+	const int fps = 30;
+
 	switch (this->m_exportSettings.exportFormat)
 	{
 	case MorphemeEditorApp::kFbx:
-		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, 30, false);
+		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, false);
 	case MorphemeEditorApp::kXmd:
-		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, 30);
+		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, fps);
 	default:
 		return false;
 	}

@@ -800,15 +800,15 @@ void GuiManager::rootWindow()
 
 			int currentItem = editorApp->getExportSettings()->exportFormat;
 
-			const char* items[] = { "FBX", "XMD" };
+			const char* exportFormat[] = { "FBX", "XMD" };
 
-			if (ImGui::BeginCombo("Format", items[editorApp->getExportSettings()->exportFormat]))
+			if (ImGui::BeginCombo("Export Format", exportFormat[editorApp->getExportSettings()->exportFormat]))
 			{
 				for (size_t i = 0; i < MorphemeEditorApp::kNumExportFormats; i++)
 				{
 					const bool selected = (editorApp->getExportSettings()->exportFormat == i);
 
-					if (ImGui::Selectable(items[i], selected))
+					if (ImGui::Selectable(exportFormat[i], selected))
 						editorApp->getExportSettings()->exportFormat = (MorphemeEditorApp::ExportFormat)i;
 
 					if (selected)
@@ -818,7 +818,31 @@ void GuiManager::rootWindow()
 				ImGui::EndCombo();
 			}
 
-			//ImGui::SliderInt("Compression FPS", &editorApp->getExportSettings()->compressionFps, 0, 120);
+			const char* compressionFormats[] = { "MBA", "ASA", "NSA", "QSA" };
+
+			if (ImGui::BeginCombo("Compression Format", compressionFormats[editorApp->getExportSettings()->compressionFormat]))
+			{
+				for (uint8_t i = 0; i < 4; i++)
+				{
+					const bool selected = (editorApp->getExportSettings()->compressionFormat == i);
+
+					if (ImGui::Selectable(compressionFormats[i], selected))
+						editorApp->getExportSettings()->compressionFormat = i;
+
+					if (selected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+			}
+
+			ImGui::Checkbox("Use source sample frequency", &editorApp->getExportSettings()->useSourceSampleFrequency);
+
+			ImGui::BeginDisabled(editorApp->getExportSettings()->useSourceSampleFrequency);
+
+			ImGui::InputDragInt("Sample frequency", &editorApp->getExportSettings()->sampleFrequency, 0.5f, 0, 120);
+
+			ImGui::EndDisabled();
 
 			ImGui::EndMenu();
 		}
