@@ -656,19 +656,25 @@ void Character::loadPartsFaceGenBnd(std::wstring root, FgPartType type, int id, 
     switch (type)
     {
     case kFgFace:
+        fullId = 1000 + id;
+
         if (female)
-            swprintf_s(modelName, L"\\face\\fg_1001_f.bnd");
+            swprintf_s(modelName, L"\\face\\fg_%d_f.bnd", fullId);
         else
-            swprintf_s(modelName, L"\\face\\fg_1001_m.bnd");
+            swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
         break;
     case kFgHead:
+        fullId = 2000 + id;
+
         if (female)
-            swprintf_s(modelName, L"\\face\\fg_2001_f.bnd");
+            swprintf_s(modelName, L"\\face\\fg_%d_f.bnd", fullId);
         else
-            swprintf_s(modelName, L"\\face\\fg_2001_m.bnd");
+            swprintf_s(modelName, L"\\face\\fg_%d_m.bnd", fullId);
         break;
     case kFgEyes:
-        swprintf_s(modelName, L"\\face\\fg_3001_a.bnd");
+        fullId = 3000 + id;
+
+        swprintf_s(modelName, L"\\face\\fg_%d_a.bnd", fullId);
         break;
     case kFgEyeBrows:
         fullId = 4000 + id;
