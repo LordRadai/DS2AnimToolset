@@ -58,7 +58,6 @@ public:
 		bool exportNetwork = false;
 		bool exportAll = false;
 		bool exportAndProcess = false;
-		ExportFormat exportFormat = kFbx;
 
 		bool compileNetwork = false;
 		bool compileTaes = false;
@@ -84,6 +83,12 @@ public:
 		bool playerPartsManager = false;
 	};
 
+	struct ExportSettings
+	{
+		ExportFormat exportFormat = kFbx;
+		int compressionFps = 20;
+	};
+
 	~MorphemeEditorApp();
 
 	MorphemeEditorApp(const MorphemeEditorApp&) = delete;
@@ -104,6 +109,7 @@ public:
 	WindowFlags* getWindowFlags() { return &this->m_windowFlags; }
 	TaskFlags* getTaskFlags() { return &this->m_taskFlags; }
 	PreviewFlags* getPreviewFlags() { return &this->m_previewFlags; }
+	ExportSettings* getExportSettings() { return &this->m_exportSettings; }
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
 	std::wstring getGamePath() const { return this->m_gamePath; }
 
@@ -143,6 +149,7 @@ private:
 	WindowFlags m_windowFlags;
 	TaskFlags m_taskFlags;
 	PreviewFlags m_previewFlags;
+	ExportSettings m_exportSettings;
 
 	FlverResources* m_flverResources = nullptr;
 	PlayerModelPreset* m_playerModelPreset = nullptr;

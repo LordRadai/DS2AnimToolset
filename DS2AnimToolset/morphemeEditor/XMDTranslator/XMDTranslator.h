@@ -25,7 +25,7 @@ namespace XMDTranslator
 	XMD::XBone* createMeshBone(XMD::XModel* xmd, XMD::XMesh* mesh, int meshIdx);
 
 	XMD::XAnimCycle* createBindPoseAnimCycle(XMD::XModel* xmd, MR::AnimRigDef* rig);
-	XMD::XAnimCycle* createAnimCycle(XMD::XModel* xmd, AnimObject* animObj, const char* takeName);
+	XMD::XAnimCycle* createAnimCycle(XMD::XModel* xmd, AnimObject* animObj, const char* takeName, int fps);
 
 	XMD::XAnimationTake* createBindPoseAnimTake(XMD::XModel* xmd, MR::AnimRigDef* rig);
 	XMD::XAnimationTake* createAnimTake(XMD::XModel* xmd, AnimObject* animObj, const char* takeName);

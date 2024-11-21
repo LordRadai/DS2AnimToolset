@@ -16,7 +16,7 @@
 
 namespace MD
 {
-	ME::TakeListXML* exportAnimMarkup(MorphemeCharacterDef* character, int animId, std::wstring dstFileName)
+	ME::TakeListXML* exportAnimMarkup(MorphemeCharacterDef* character, int animId, std::wstring dstFileName, int fps)
 	{
 		MR::NetworkDef* netDef = character->getNetworkDef();
 
@@ -27,7 +27,7 @@ namespace MD
 
 		if (animNode == nullptr)
 		{
-			takeList->createTake(RString::toWide(character->getAnimFileLookUp()->getTakeName(animId)).c_str(), 1, 30, true);
+			takeList->createTake(RString::toWide(character->getAnimFileLookUp()->getTakeName(animId)).c_str(), 1, fps, true);
 			return takeList;
 		}
 
@@ -40,7 +40,7 @@ namespace MD
 		if (loopAttr != nullptr)
 			loop = loopAttr->m_value;
 
-		ME::TakeExportXML* take = static_cast<ME::TakeExportXML*>(takeList->createTake(RString::toWide(character->getAnimFileLookUp()->getTakeName(animId)).c_str(), sourceAnim->m_sourceAnimDuration, 30, loop, sourceAnim->m_clipStartFraction, sourceAnim->m_clipEndFraction));
+		ME::TakeExportXML* take = static_cast<ME::TakeExportXML*>(takeList->createTake(RString::toWide(character->getAnimFileLookUp()->getTakeName(animId)).c_str(), sourceAnim->m_sourceAnimDuration, fps, loop, sourceAnim->m_clipStartFraction, sourceAnim->m_clipEndFraction));
 
 		for (size_t i = 0; i < sourceEvents->m_numDiscreteEventTracks; i++)
 		{

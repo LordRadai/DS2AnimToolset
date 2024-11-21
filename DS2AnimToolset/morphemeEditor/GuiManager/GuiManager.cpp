@@ -796,20 +796,20 @@ void GuiManager::rootWindow()
 
 			ImGui::EndDisabled();
 
-			ImGui::Separator();
+			ImGui::SeparatorText("Export Settings");
 
-			int currentItem = editorApp->getTaskFlags()->exportFormat;
+			int currentItem = editorApp->getExportSettings()->exportFormat;
 
 			const char* items[] = { "FBX", "XMD" };
 
-			if (ImGui::BeginCombo("Format", items[editorApp->getTaskFlags()->exportFormat]))
+			if (ImGui::BeginCombo("Format", items[editorApp->getExportSettings()->exportFormat]))
 			{
 				for (size_t i = 0; i < MorphemeEditorApp::kNumExportFormats; i++)
 				{
-					const bool selected = (editorApp->getTaskFlags()->exportFormat == i);
+					const bool selected = (editorApp->getExportSettings()->exportFormat == i);
 
 					if (ImGui::Selectable(items[i], selected))
-						editorApp->getTaskFlags()->exportFormat = (MorphemeEditorApp::ExportFormat)i;
+						editorApp->getExportSettings()->exportFormat = (MorphemeEditorApp::ExportFormat)i;
 
 					if (selected)
 						ImGui::SetItemDefaultFocus();
@@ -817,6 +817,8 @@ void GuiManager::rootWindow()
 
 				ImGui::EndCombo();
 			}
+
+			ImGui::DragInt("Compression FPS", &editorApp->getExportSettings()->compressionFps, 1.f, 0, 30);
 
 			ImGui::EndMenu();
 		}

@@ -517,17 +517,17 @@ namespace XMDTranslator
 	}
 
 	//XAnimCycle is deprecated in the XMD SDK, but it's supported by morphemeConnect 3.6.2
-	XMD::XAnimCycle* createAnimCycle(XMD::XModel* xmd, AnimObject* animObj, const char* takeName)
+	XMD::XAnimCycle* createAnimCycle(XMD::XModel* xmd, AnimObject* animObj, const char* takeName, int fps)
 	{
 		if (animObj->getHandle() == nullptr)
 			return nullptr;
 
 		XMD::XAnimCycle* animCycle = static_cast<XMD::XAnimCycle*>(xmd->CreateNode(XMD::XFn::AnimCycle));
 
-		int animLenFrames = RMath::timeToFrame(animObj->getAnimLenght(), 30);
+		int animLenFrames = RMath::timeToFrame(animObj->getAnimLenght(), fps) + 1;
 
 		animCycle->SetName(takeName);
-		animCycle->SetFrameRate(30);
+		animCycle->SetFrameRate(fps);
 		animCycle->SetFrameTimes(0, animLenFrames, animLenFrames);
 
 		const MR::RigToAnimMap* rigToAnimMap = animObj->getHandle()->getRigToAnimMap();

@@ -482,7 +482,7 @@ namespace
 		return status;
 	}
 
-	bool exportAnimationToFbx(std::wstring path, Character* character, int animSetIdx, int animIdx, bool addModel)
+	bool exportAnimationToFbx(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool addModel)
 	{
 		bool status = true;
 
@@ -560,7 +560,7 @@ namespace
 		return status;
 	}
 
-	bool exportAnimationToXmd(std::wstring path, Character* character, int animSetIdx, int animIdx)
+	bool exportAnimationToXmd(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps)
 	{
 		bool status = true;
 
@@ -582,7 +582,7 @@ namespace
 		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to XMD (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
 
 		XMD::XModel* xmd = XMDTranslator::createModel(rig, character->getCharacterModelCtrl()->getModel(), characterDef->getAnimFileLookUp()->getSourceFilename(animId), false);
-		XMDTranslator::createAnimCycle(xmd, anim, characterDef->getAnimFileLookUp()->getTakeName(animId));
+		XMDTranslator::createAnimCycle(xmd, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
 
 		if (xmd->Save(animName) != XMD::XFileError::Success)
 			status = false;
@@ -1359,8 +1359,9 @@ void MorphemeEditorApp::loadSettings()
 		return;
 	}
 
-	this->m_taskFlags.exportFormat = (ExportFormat)settings->getInt("Export", "export_format", 0);
-	
+	this->m_exportSettings.exportFormat = (ExportFormat)settings->getInt("Export", "export_format", 0);
+	this->m_exportSettings.compressionFps = settings->getInt("Export", "compression_fps", 20);
+
 	this->m_previewFlags.drawDummies = settings->getBool("ModelViewer", "draw_dummies", false);
 	this->m_previewFlags.drawBones = settings->getBool("ModelViewer", "draw_bones", true);
 	this->m_previewFlags.displayMode = (DisplayMode)settings->getInt("ModelViewer", "model_disp_mode", 0);
@@ -1378,7 +1379,8 @@ void MorphemeEditorApp::saveSettings()
 	if (settings == nullptr)
 		settings = RINI::create("Data\\res\\settings.ini");
 
-	settings->setInt("Export", "export_format", this->m_taskFlags.exportFormat);
+	settings->setInt("Export", "export_format", this->m_exportSettings.exportFormat);
+	settings->setInt("Export", "compression_fps", this->m_exportSettings.compressionFps);
 
 	settings->setBool("ModelViewer", "draw_dummies", this->m_previewFlags.drawDummies);
 	settings->setBool("ModelViewer", "draw_bones", this->m_previewFlags.drawBones);
@@ -1860,7 +1862,7 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 
 	std::wstring animExportPath;
 
-	switch (this->m_taskFlags.exportFormat)
+	switch (this->m_exportSettings.exportFormat)
 	{
 	case kFbx:
 		animExportPath = L"FBX\\";
@@ -1898,7 +1900,7 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 	exportFlverToMorphemeBoneMap(model, path + L"bone_map.txt");
 #endif
 
-	switch (this->m_taskFlags.exportFormat)
+	switch (this->m_exportSettings.exportFormat)
 	{
 	case MorphemeEditorApp::kFbx:
 		exportModelToFbx(path, this->m_character);
@@ -2022,12 +2024,12 @@ bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
 
 bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int animId)
 {
-	switch (this->m_taskFlags.exportFormat)
+	switch (this->m_exportSettings.exportFormat)
 	{
 	case MorphemeEditorApp::kFbx:
-		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, false);
+		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, this->m_exportSettings.compressionFps, false);
 	case MorphemeEditorApp::kXmd:
-		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId);
+		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, this->m_exportSettings.compressionFps);
 	default:
 		return false;
 	}
