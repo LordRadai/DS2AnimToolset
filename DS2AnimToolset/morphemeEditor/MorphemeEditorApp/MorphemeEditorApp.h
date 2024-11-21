@@ -136,7 +136,7 @@ private:
 	bool compileTimeActFiles(std::wstring path);
 
 	bool exportAnimation(std::wstring path, int animSetIdx, int animId);
-	bool exportAnimMarkup(std::wstring path, int animSetIdx, int animId);
+	bool exportAnimMarkup(std::wstring path, int animSetIdx, int animId, std::vector<ME::EventTrackExport*>& exportedTracks);
 
 	void exportTaeTemplateXML();
 

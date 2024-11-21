@@ -896,6 +896,116 @@ namespace
 			}
 		}
 	}
+
+	ME::EventTrackExport* getExportedTrack(std::vector<ME::EventTrackExport*>& exportedTracks, ME::EventTrackExport* track)
+	{
+		for (size_t i = 0; i < exportedTracks.size(); i++)
+		{
+			ME::EventTrackExport* exportedTrack = exportedTracks[i];
+
+			if ((exportedTrack->getEventTrackType() == track->getEventTrackType()) &&
+				(exportedTrack->getUserData() == track->getUserData()) &&
+				(exportedTrack->getEventTrackChannelID() == track->getEventTrackChannelID()) &&
+				(strcmp(exportedTrack->getName(), track->getName()) == 0))
+			{
+				return exportedTrack;
+			}
+		}
+
+		return nullptr;
+	}
+
+	ME::TakeListXML* createOptimisedTakeList(ME::TakeListXML* takeList, std::vector<ME::EventTrackExport*>& exportedTracks)
+	{
+		ME::ExportFactoryXML exportFactory;
+		ME::TakeListXML* optimisedTakeList = static_cast<ME::TakeListXML*>(exportFactory.createTakeList(RString::toWide(takeList->getSourceAnimFilename()).c_str(), RString::toWide(takeList->getDestFilename()).c_str()));
+	
+		for (size_t takeIdx = 0; takeIdx < takeList->getNumTakes(); takeIdx++)
+		{
+			ME::TakeExport* originalTake = takeList->getTake(takeIdx);
+			ME::TakeExportXML* optimisedTake = static_cast<ME::TakeExportXML*>(optimisedTakeList->createTake(RString::toWide(originalTake->getName()).c_str(), originalTake->getCachedTakeSecondsDuration(), originalTake->getCachedTakeFPS(), originalTake->getLoop(), originalTake->getClipStart(), originalTake->getClipEnd()));
+		
+			for (size_t eventTrackIdx = 0; eventTrackIdx < originalTake->getNumEventTracks(); eventTrackIdx++)
+			{	
+				switch (originalTake->getEventTrack(eventTrackIdx)->getEventTrackType())
+				{
+				case ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE:
+				{
+					ME::DiscreteEventTrackExport* originalEventTrack = static_cast<ME::DiscreteEventTrackExport*>(originalTake->getEventTrack(eventTrackIdx));
+					std::string guid = originalEventTrack->getGUID();
+
+					ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalEventTrack);
+
+					if (targetTrack)
+						guid = targetTrack->getGUID();
+
+					ME::DiscreteEventTrackExportXML* optimisedTrack = static_cast<ME::DiscreteEventTrackExportXML*>(optimisedTake->createEventTrack(originalEventTrack->getEventTrackType(), guid.c_str(), RString::toWide(originalEventTrack->getName()).c_str(), originalEventTrack->getEventTrackChannelID(), originalEventTrack->getUserData()));
+
+					for (size_t eventIdx = 0; eventIdx < originalEventTrack->getNumEvents(); eventIdx++)
+					{
+						ME::DiscreteEventExport* originalEvent = originalEventTrack->getEvent(eventIdx);
+						optimisedTrack->createEvent(originalEvent->getIndex(), originalEvent->getNormalisedTime(), originalEvent->getUserData());
+					}
+
+					if (targetTrack == nullptr)
+						exportedTracks.push_back(originalEventTrack);
+
+					break;
+				}
+				case ME::EventTrackExport::EVENT_TRACK_TYPE_DURATION:
+				{
+					ME::DurationEventTrackExport* originalEventTrack = static_cast<ME::DurationEventTrackExport*>(originalTake->getEventTrack(eventTrackIdx));
+					std::string guid = originalEventTrack->getGUID();
+
+					ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalEventTrack);
+
+					if (targetTrack)
+						guid = targetTrack->getGUID();
+
+					ME::DurationEventTrackExportXML* optimisedTrack = static_cast<ME::DurationEventTrackExportXML*>(optimisedTake->createEventTrack(originalEventTrack->getEventTrackType(), guid.c_str(), RString::toWide(originalEventTrack->getName()).c_str(), originalEventTrack->getEventTrackChannelID(), originalEventTrack->getUserData()));
+
+					for (size_t eventIdx = 0; eventIdx < originalEventTrack->getNumEvents(); eventIdx++)
+					{
+						ME::DurationEventExport* originalEvent = originalEventTrack->getEvent(eventIdx);
+						optimisedTrack->createEvent(originalEvent->getIndex(), originalEvent->getNormalisedStartTime(), originalEvent->getNormalisedDuration(), originalEvent->getUserData());
+					}
+
+					if (targetTrack == nullptr)
+						exportedTracks.push_back(originalEventTrack);
+
+					break;
+				}
+				case ME::EventTrackExport::EVENT_TRACK_TYPE_CURVE:
+				{
+					ME::CurveEventTrackExport* originalEventTrack = static_cast<ME::CurveEventTrackExport*>(originalTake->getEventTrack(eventTrackIdx));
+					std::string guid = originalEventTrack->getGUID();
+
+					ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalEventTrack);
+
+					if (targetTrack)
+						guid = targetTrack->getGUID();
+
+					ME::CurveEventTrackExportXML* optimisedTrack = static_cast<ME::CurveEventTrackExportXML*>(optimisedTake->createEventTrack(originalEventTrack->getEventTrackType(), guid.c_str(), RString::toWide(originalEventTrack->getName()).c_str(), originalEventTrack->getEventTrackChannelID(), originalEventTrack->getUserData()));
+
+					for (size_t eventIdx = 0; eventIdx < originalEventTrack->getNumEvents(); eventIdx++)
+					{
+						ME::CurveEventExport* originalEvent = originalEventTrack->getEvent(eventIdx);
+						optimisedTrack->createEvent(originalEvent->getIndex(), originalEvent->getNormalisedStartTime(), originalEvent->getFloatValue(), originalEvent->getUserData());
+					}
+
+					if (targetTrack == nullptr)
+						exportedTracks.push_back(originalEventTrack);
+
+					break;
+				}				
+				default:
+					break;
+				}
+			}
+		}
+
+		return optimisedTakeList;
+	}
 }
 
 MorphemeEditorApp* MorphemeEditorApp::getInstance()
@@ -1658,12 +1768,13 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 	g_workerThread.load()->addProcess("Exporting anim markup", numAnims);
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting animation markups:\n");
 
+	std::vector<ME::EventTrackExport*> exportedTracks;
 	for (size_t i = 0; i < numAnims; i++)
 	{
 		std::string animName = RString::removeExtension(characterDef->getAnimationById(animSetIdx, i)->getAnimName());
 		g_workerThread.load()->setProcessStepName(animName);
 
-		this->exportAnimMarkup(path, animSetIdx, i);
+		this->exportAnimMarkup(path, animSetIdx, i, exportedTracks);
 
 		g_workerThread.load()->increaseProgressStep();
 	}
@@ -1860,7 +1971,7 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 	}
 }
 
-bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int animId)
+bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int animId, std::vector<ME::EventTrackExport*>& exportedTracks)
 {
 	MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
 	
@@ -1876,12 +1987,16 @@ bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int 
 	{
 		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation markup for animation \"%s\" (%ws)\n", animName.c_str(), this->m_character->getCharacterName().c_str());
 
-		if (!takeListXML->write())
+		ME::TakeListXML* optimisedTakeList = createOptimisedTakeList(takeListXML, exportedTracks);
+
+		if (!optimisedTakeList->write())
 		{
 			g_appLog->debugMessage(MsgLevel_Error, "\tFailed to export take list for animation %d\n", animId);
 
 			return false;
 		}
+
+		delete optimisedTakeList;
 	}
 
 	return true;
