@@ -899,8 +899,6 @@ namespace
 
 	ME::EventTrackExport* getExportedTrack(std::vector<ME::EventTrackExport*>& exportedTracks, ME::EventTrackExport* track)
 	{
-		ME::EventTrackExport* targetTrack = nullptr;
-
 		for (size_t i = 0; i < exportedTracks.size(); i++)
 		{
 			if ((exportedTracks[i]->getEventTrackType() == track->getEventTrackType()) &&
@@ -909,6 +907,8 @@ namespace
 				(exportedTracks[i]->getNumEvents() == track->getNumEvents()) &&
 				(strcmp(exportedTracks[i]->getName(), track->getName()) == 0))
 			{
+				ME::EventTrackExport* targetTrack = exportedTracks[i];
+
 				switch (track->getEventTrackType())
 				{
 				case ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE:
@@ -921,10 +921,10 @@ namespace
 						ME::DiscreteEventExport* exportedEvent = exportedTrack->getEvent(eventIdx);
 						ME::DiscreteEventExport* event = trackDisc->getEvent(eventIdx);
 
-						if ((exportedEvent->getNormalisedTime() == event->getNormalisedTime()) &&
-							(exportedEvent->getUserData() == event->getUserData()))
+						if ((exportedEvent->getNormalisedTime() != event->getNormalisedTime()) ||
+							(exportedEvent->getUserData() != event->getUserData()))
 						{
-							return exportedTrack;
+							targetTrack = nullptr;
 						}
 					}
 					break;
@@ -939,11 +939,11 @@ namespace
 						ME::DurationEventExport* exportedEvent = exportedTrack->getEvent(eventIdx);
 						ME::DurationEventExport* event = trackDisc->getEvent(eventIdx);
 
-						if ((exportedEvent->getNormalisedStartTime() == event->getNormalisedStartTime()) &&
-							(exportedEvent->getNormalisedDuration() == event->getNormalisedDuration()) &&
-							(exportedEvent->getUserData() == event->getUserData()))
+						if ((exportedEvent->getNormalisedStartTime() != event->getNormalisedStartTime()) ||
+							(exportedEvent->getNormalisedDuration() != event->getNormalisedDuration()) ||
+							(exportedEvent->getUserData() != event->getUserData()))
 						{
-							return exportedTrack;
+							targetTrack = nullptr;
 						}
 					}
 					break;
@@ -958,16 +958,19 @@ namespace
 						ME::CurveEventExport* exportedEvent = exportedTrack->getEvent(eventIdx);
 						ME::CurveEventExport* event = trackDisc->getEvent(eventIdx);
 
-						if ((exportedEvent->getNormalisedStartTime() == event->getNormalisedStartTime()) &&
-							(exportedEvent->getFloatValue() == event->getFloatValue()) &&
-							(exportedEvent->getUserData() == event->getUserData()))
+						if ((exportedEvent->getNormalisedStartTime() != event->getNormalisedStartTime()) ||
+							(exportedEvent->getFloatValue() != event->getFloatValue()) ||
+							(exportedEvent->getUserData() != event->getUserData()))
 						{
-							return exportedTrack;
+							targetTrack = nullptr;
 						}
 					}
 					break;
 				}
 				}
+
+				if (targetTrack)
+					return targetTrack;
 			}
 		}
 
