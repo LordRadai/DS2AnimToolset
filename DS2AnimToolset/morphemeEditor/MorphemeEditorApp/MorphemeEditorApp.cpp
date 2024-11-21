@@ -899,16 +899,75 @@ namespace
 
 	ME::EventTrackExport* getExportedTrack(std::vector<ME::EventTrackExport*>& exportedTracks, ME::EventTrackExport* track)
 	{
+		ME::EventTrackExport* targetTrack = nullptr;
+
 		for (size_t i = 0; i < exportedTracks.size(); i++)
 		{
-			ME::EventTrackExport* exportedTrack = exportedTracks[i];
-
-			if ((exportedTrack->getEventTrackType() == track->getEventTrackType()) &&
-				(exportedTrack->getUserData() == track->getUserData()) &&
-				(exportedTrack->getEventTrackChannelID() == track->getEventTrackChannelID()) &&
-				(strcmp(exportedTrack->getName(), track->getName()) == 0))
+			if ((exportedTracks[i]->getEventTrackType() == track->getEventTrackType()) &&
+				(exportedTracks[i]->getUserData() == track->getUserData()) &&
+				(exportedTracks[i]->getEventTrackChannelID() == track->getEventTrackChannelID()) &&
+				(exportedTracks[i]->getNumEvents() == track->getNumEvents()) &&
+				(strcmp(exportedTracks[i]->getName(), track->getName()) == 0))
 			{
-				return exportedTrack;
+				switch (track->getEventTrackType())
+				{
+				case ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE:
+				{
+					ME::DiscreteEventTrackExport* trackDisc = static_cast<ME::DiscreteEventTrackExport*>(track);
+					ME::DiscreteEventTrackExport* exportedTrack = static_cast<ME::DiscreteEventTrackExport*>(exportedTracks[i]);
+
+					for (size_t eventIdx = 0; eventIdx < exportedTrack->getNumEvents(); eventIdx++)
+					{
+						ME::DiscreteEventExport* exportedEvent = exportedTrack->getEvent(eventIdx);
+						ME::DiscreteEventExport* event = trackDisc->getEvent(eventIdx);
+
+						if ((exportedEvent->getNormalisedTime() == event->getNormalisedTime()) &&
+							(exportedEvent->getUserData() == event->getUserData()))
+						{
+							return exportedTrack;
+						}
+					}
+					break;
+				}
+				case ME::EventTrackExport::EVENT_TRACK_TYPE_DURATION:
+				{
+					ME::DurationEventTrackExport* trackDisc = static_cast<ME::DurationEventTrackExport*>(track);
+					ME::DurationEventTrackExport* exportedTrack = static_cast<ME::DurationEventTrackExport*>(exportedTracks[i]);
+
+					for (size_t eventIdx = 0; eventIdx < exportedTrack->getNumEvents(); eventIdx++)
+					{
+						ME::DurationEventExport* exportedEvent = exportedTrack->getEvent(eventIdx);
+						ME::DurationEventExport* event = trackDisc->getEvent(eventIdx);
+
+						if ((exportedEvent->getNormalisedStartTime() == event->getNormalisedStartTime()) &&
+							(exportedEvent->getNormalisedDuration() == event->getNormalisedDuration()) &&
+							(exportedEvent->getUserData() == event->getUserData()))
+						{
+							return exportedTrack;
+						}
+					}
+					break;
+				}
+				case ME::EventTrackExport::EVENT_TRACK_TYPE_CURVE:
+				{
+					ME::CurveEventTrackExport* trackDisc = static_cast<ME::CurveEventTrackExport*>(track);
+					ME::CurveEventTrackExport* exportedTrack = static_cast<ME::CurveEventTrackExport*>(exportedTracks[i]);
+
+					for (size_t eventIdx = 0; eventIdx < exportedTrack->getNumEvents(); eventIdx++)
+					{
+						ME::CurveEventExport* exportedEvent = exportedTrack->getEvent(eventIdx);
+						ME::CurveEventExport* event = trackDisc->getEvent(eventIdx);
+
+						if ((exportedEvent->getNormalisedStartTime() == event->getNormalisedStartTime()) &&
+							(exportedEvent->getFloatValue() == event->getFloatValue()) &&
+							(exportedEvent->getUserData() == event->getUserData()))
+						{
+							return exportedTrack;
+						}
+					}
+					break;
+				}
+				}
 			}
 		}
 
