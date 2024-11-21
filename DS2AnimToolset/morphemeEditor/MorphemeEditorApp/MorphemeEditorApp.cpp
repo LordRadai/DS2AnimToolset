@@ -2027,9 +2027,9 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 	switch (this->m_exportSettings.exportFormat)
 	{
 	case MorphemeEditorApp::kFbx:
-		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, this->m_exportSettings.compressionFps, false);
+		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, 30, false);
 	case MorphemeEditorApp::kXmd:
-		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, this->m_exportSettings.compressionFps);
+		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, 30);
 	default:
 		return false;
 	}

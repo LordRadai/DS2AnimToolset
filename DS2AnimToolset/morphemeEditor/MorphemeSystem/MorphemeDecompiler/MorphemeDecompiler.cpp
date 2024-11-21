@@ -249,18 +249,15 @@ namespace MD
 			if (rigExport[i])
 				animSetExport->setRig(rigExport[i]);
 
-			if (netDef->getNodeDef(0)->getNumAttribDataHandles() == 4)
+			MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+
+			if (mirroredMapping)
 			{
-				MR::AttribDataMirroredAnimMapping* mirroredMapping = static_cast<MR::AttribDataMirroredAnimMapping*>(netDef->getNodeDef(0)->getAttribData(MR::ATTRIB_SEMANTIC_MIRRORED_ANIM_MAPPING));
+				for (size_t i = 0; i < mirroredMapping->getNumEventIdsToRemap(); i++)
+					animSetExport->createEventUserdataMirrorMapping(i, mirroredMapping->getLeftEventIdMapping(i), mirroredMapping->getRightEventIdMapping(i));
 
-				if (mirroredMapping)
-				{
-					for (size_t i = 0; i < mirroredMapping->getNumEventIdsToRemap(); i++)
-						animSetExport->createEventUserdataMirrorMapping(i, mirroredMapping->getLeftEventIdMapping(i), mirroredMapping->getRightEventIdMapping(i));
-
-					for (size_t i = 0; i < mirroredMapping->getNumTrackIdsToRemap(); i++)
-						animSetExport->createEventTrackMirrorMapping(i, mirroredMapping->getLeftTrackIdMapping(i), mirroredMapping->getRightTrackIdMapping(i));
-				}
+				for (size_t i = 0; i < mirroredMapping->getNumTrackIdsToRemap(); i++)
+					animSetExport->createEventTrackMirrorMapping(i, mirroredMapping->getLeftTrackIdMapping(i), mirroredMapping->getRightTrackIdMapping(i));
 			}
 
 			for (size_t i = 0; i < filenameLookup->getNumAnims(); i++)
