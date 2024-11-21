@@ -1360,7 +1360,7 @@ void MorphemeEditorApp::loadSettings()
 	}
 
 	this->m_exportSettings.exportFormat = (ExportFormat)settings->getInt("Export", "export_format", 0);
-	this->m_exportSettings.compressionFps = settings->getInt("Export", "compression_fps", 20);
+	this->m_exportSettings.compressionFps = settings->getInt("Export", "compression_fps", 30);
 
 	this->m_previewFlags.drawDummies = settings->getBool("ModelViewer", "draw_dummies", false);
 	this->m_previewFlags.drawBones = settings->getBool("ModelViewer", "draw_bones", true);
