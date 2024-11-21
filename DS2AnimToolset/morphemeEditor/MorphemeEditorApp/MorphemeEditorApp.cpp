@@ -1378,8 +1378,8 @@ void MorphemeEditorApp::loadSettings()
 
 	this->m_exportSettings.exportFormat = (ExportFormat)settings->getInt("Export", "export_format", 0);
 	this->m_exportSettings.compressionFormat = settings->getInt("Export", "compression_format", 2);
-	this->m_exportSettings.useSourceSampleFrequency = settings->getBool("Export", "use_source_sample_frequency", true);
-	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "sample_frequency", 30);
+	this->m_exportSettings.useSourceSampleFrequency = settings->getBool("Export", "compression_use_source_sample_frequency", true);
+	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "compression_sample_frequency", 30);
 
 	this->m_previewFlags.drawDummies = settings->getBool("ModelViewer", "draw_dummies", false);
 	this->m_previewFlags.drawBones = settings->getBool("ModelViewer", "draw_bones", true);
@@ -1400,8 +1400,8 @@ void MorphemeEditorApp::saveSettings()
 
 	settings->setInt("Export", "export_format", this->m_exportSettings.exportFormat);
 	settings->setInt("Export", "compression_format", this->m_exportSettings.compressionFormat);
-	settings->setBool("Export", "use_source_sample_frequency", this->m_exportSettings.useSourceSampleFrequency);
-	settings->setInt("Export", "sample_frequency", this->m_exportSettings.sampleFrequency);
+	settings->setBool("Export", "compression_use_source_sample_frequency", this->m_exportSettings.useSourceSampleFrequency);
+	settings->setInt("Export", "compression_sample_frequency", this->m_exportSettings.sampleFrequency);
 
 	settings->setBool("ModelViewer", "draw_dummies", this->m_previewFlags.drawDummies);
 	settings->setBool("ModelViewer", "draw_bones", this->m_previewFlags.drawBones);
