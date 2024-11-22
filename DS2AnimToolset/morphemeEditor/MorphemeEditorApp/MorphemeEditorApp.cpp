@@ -391,8 +391,11 @@ namespace
 
 		for (size_t i = 0; i < nodeIDNamesTable->getNumEntries(); i++)
 		{
+			const MR::NodeDef* nodeDef = netDef->getNodeDef(nodeIDNamesTable->getEntryID(i));
+
 			tinyxml2::XMLElement* elem = root->InsertNewChildElement("Entry");
 			elem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(i));
+			elem->SetAttribute("NodeTypeID", nodeDef->getNodeTypeID());
 			elem->SetAttribute("Name", nodeIDNamesTable->getEntryString(i));
 		}
 
@@ -997,6 +1000,7 @@ namespace
 					std::string guid = originalEventTrack->getGUID();
 
 					ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalEventTrack);
+					//ME::EventTrackExport* targetTrack = nullptr;
 
 					if (targetTrack)
 						guid = targetTrack->getGUID();
