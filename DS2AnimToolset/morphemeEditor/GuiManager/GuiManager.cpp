@@ -515,8 +515,6 @@ namespace
 
 				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
 				{
-					setPresetModelFgId(preset, character->getCharacterModelCtrl(), type);
-
 					if (path.compare(L"") == 0)
 						character->getCharacterModelCtrl()->setModelFg(type, nullptr);
 					else
@@ -525,6 +523,8 @@ namespace
 
 						character->getCharacterModelCtrl()->setModelFg(type, model);
 					}
+
+					setPresetModelFgId(preset, character->getCharacterModelCtrl(), type);
 				}
 			}
 
