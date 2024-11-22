@@ -212,7 +212,6 @@ namespace MD
 
 			nodeDataBlock->writeBool(deadblendBreakoutToSource, "DeadblendBreakoutToSource");
 
-
 			if (transitDef->m_nodeInitData)
 			{
 				int numDestSubStates = transitDef->m_nodeInitData->m_numNodeInitDatas;
