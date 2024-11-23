@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
 					if (targetChrId != -1)
 					{
 						wchar_t extAnibndFolderName[256];
-						wsprintf(extAnibndFolderName, L"c0001_%d", targetChrId);
+						wsprintf(extAnibndFolderName, L"c0001_c%04d", targetChrId);
 
 						destinationFile = std::filesystem::path(outputFolder).wstring() + L"\\" + chrIdStr + L"\\ext\\" + extAnibndFolderName + L"\\" + filename;
 					
