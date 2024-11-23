@@ -4,6 +4,19 @@
 
 RLog* g_appLog;
 
+int getAnimIDByFilename(const std::wstring& filename) 
+{
+	std::wstring numericString;
+
+	for (char ch : filename) 
+	{
+		if (std::isdigit(ch))
+			numericString += ch;
+	}
+
+	return !numericString.empty() ? std::stoi(numericString) : 0;
+}
+
 int main(int argc, char* argv[])
 {
 	g_appLog = new RLog(MsgLevel_Debug, "morphemeBinderPacker.log", "mcnMerger");
@@ -25,9 +38,9 @@ int main(int argc, char* argv[])
 	}
 
 	std::wstring chrIdStr = filepath.filename().wstring();
+	int chrId = std::stoi(chrIdStr.substr(1, 4));
 
 	std::filesystem::path outputFolder = filepath.wstring() + L"\\morphemeBinders";
-	std::filesystem::create_directories(outputFolder);
 
 	for (const auto& entry : std::filesystem::directory_iterator(runtimeBinary)) 
 	{
@@ -35,11 +48,23 @@ int main(int argc, char* argv[])
 		{
 			std::wstring filename = entry.path().filename().wstring();
 
+			if (entry.path().extension() == ".nsa")
+			{
+				int animId = getAnimIDByFilename(filename);
+
+				if (chrId == 1)
+				{
+
+				}
+			}
+
+
 			std::filesystem::path destinationFile = std::filesystem::path(outputFolder).wstring() + L"\\" + chrIdStr + L"\\" + filename;
+			std::filesystem::create_directories(destinationFile.parent_path());
 
 			std::filesystem::copy(entry.path(), destinationFile, std::filesystem::copy_options::overwrite_existing);
 
-			g_appLog->debugMessage(MsgLevel_Info, "Copied \"%s\" to \"%s\"\n", entry.path().c_str(), destinationFile.c_str());
+			g_appLog->debugMessage(MsgLevel_Info, "Copied \"%ws\" to \"%ws\"\n", entry.path().c_str(), destinationFile.c_str());
 		}
 	}
 }
