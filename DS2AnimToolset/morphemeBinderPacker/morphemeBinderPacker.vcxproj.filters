@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="bndBuilder.cpp">
+    <ClCompile Include="morphemeBinderPacker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

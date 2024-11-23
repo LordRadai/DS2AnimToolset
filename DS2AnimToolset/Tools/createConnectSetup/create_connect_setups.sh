@@ -10,6 +10,6 @@ for folder in input/*/; do
 		mkdir -p "$output_folder"/XMD/motion_xmd
 		mkdir -p "$output_folder"/morphemeMarkup
 		
-		scripts/create_morph_setup.sh "$folder" "$output_folder"
+		scripts/create_connect_setup.sh "$folder" "$output_folder"
 	fi
 done
