@@ -87,6 +87,26 @@ void createWitchyBndXml(std::string filename, std::string binderFileName)
 	doc.SaveFile(filename.c_str());
 }
 
+bool isMorphemeCompressedAnim(std::wstring filepath)
+{
+	std::filesystem::path path(filepath);
+
+	if ((path.extension() == ".mba") || (path.extension() == ".qsa") || (path.extension() == ".asa") || (path.extension() == ".nsa"))
+		return true;
+
+	return false;
+}
+
+bool isMorphemeBinary(std::wstring filepath)
+{
+	std::filesystem::path path(filepath);
+
+	if (isMorphemeCompressedAnim(filepath) || (path.extension() == ".nmb"))
+		return true;
+
+	return false;
+}
+
 int main(int argc, char* argv[])
 {
 	g_appLog = new RLog(MsgLevel_Debug, "morphemeBinderPacker.log", "morphemeBinderPacker");
@@ -116,9 +136,10 @@ int main(int argc, char* argv[])
 
 	std::filesystem::path outputFolder = filepath.wstring() + L"\\binders";
 
+	int numProcessedFiles = 0;
 	for (const auto& entry : std::filesystem::directory_iterator(runtimeBinary)) 
 	{
-		if (entry.is_regular_file() && (entry.path().extension() == ".nsa" || entry.path().extension() == ".nmb")) 
+		if (entry.is_regular_file() && isMorphemeBinary(entry.path())) 
 		{
 			std::wstring filename = entry.path().filename().wstring();
 			std::filesystem::path destinationFile = std::filesystem::path(outputFolder).wstring() + L"\\" + chrIdStr + L"\\runtimeBinary\\" + filename;
@@ -126,7 +147,7 @@ int main(int argc, char* argv[])
 			CHAR binderFileName[256];
 			sprintf_s(binderFileName, "%ws.anibnd.dcx", chrIdStr.c_str());
 
-			if (entry.path().extension() == ".nsa")
+			if (isMorphemeCompressedAnim(entry.path()))
 			{
 				int animId = getAnimIDByFilename(filename);
 
@@ -142,7 +163,7 @@ int main(int argc, char* argv[])
 						wchar_t extAnibndFolderName[256];
 						wsprintf(extAnibndFolderName, L"c0001_%d", targetChrId);
 
-						destinationFile = std::filesystem::path(outputFolder).wstring() + L"\\" + chrIdStr + L"\\" + extAnibndFolderName + L"\\" + filename;
+						destinationFile = std::filesystem::path(outputFolder).wstring() + L"\\" + chrIdStr + L"\\ext\\" + extAnibndFolderName + L"\\" + filename;
 					
 						sprintf_s(binderFileName, "%ws.extanibnd.dcx", extAnibndFolderName);
 					}
@@ -155,6 +176,10 @@ int main(int argc, char* argv[])
 			std::filesystem::copy(entry.path(), destinationFile, std::filesystem::copy_options::overwrite_existing);
 
 			g_appLog->debugMessage(MsgLevel_Info, "Copied \"%ws\" to \"%ws\"\n", entry.path().c_str(), destinationFile.c_str());
+
+			numProcessedFiles++;
 		}
 	}
+
+	g_appLog->debugMessage(MsgLevel_Info, "Copied %d files\n", numProcessedFiles);
 }
