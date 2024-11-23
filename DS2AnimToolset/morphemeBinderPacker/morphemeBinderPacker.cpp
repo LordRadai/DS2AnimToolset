@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
 	std::unordered_map<int, int> animIdChrIdMap;
 
 	if (chrId == 1)
-		getExtAnimList(L"extanimlist.txt", animIdChrIdMap);
+		getExtAnimList(L"Data\\extanimlist.txt", animIdChrIdMap);
 
 	std::filesystem::path outputFolder = filepath.wstring() + L"\\binders";
 
