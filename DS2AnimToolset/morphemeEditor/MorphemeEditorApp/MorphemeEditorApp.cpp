@@ -20,9 +20,42 @@ namespace
 	std::string getExeRootDir()
 	{
 		char filePath[256];
-		GetModuleFileNameA(NULL, filePath, 260);
+		GetModuleFileNameA(NULL, filePath, 256);
 
 		return std::filesystem::path(filePath).parent_path().string();
+	}
+
+	float calcTimeActEditorCurrentTime(TrackEditor::EventTrackEditor* eventTrackEditor, float timeActTrackLenght, float fallbackTimeVal)
+	{
+		TrackEditor::Track* timeActTrack = nullptr;
+
+		for (size_t i = 0; i < eventTrackEditor->getNumTracks(); i++)
+		{
+			TrackEditor::Track* track = eventTrackEditor->getTrack(i);
+			
+			if (track->userData == 1000)
+				timeActTrack = track;
+		}
+
+		if (timeActTrack)
+		{
+			const float currentTime = eventTrackEditor->getCurrentTime();
+
+			const float startTime = RMath::frameToTime(timeActTrack->events[0]->frameStart, eventTrackEditor->getFps());
+			const float endTime = RMath::frameToTime(timeActTrack->events[0]->frameEnd, eventTrackEditor->getFps());
+			float eventFraction = 0.f;
+
+			if (currentTime < startTime)
+				eventFraction = 0.f;
+			else if (currentTime > endTime)
+				eventFraction = 1.f;
+			else
+				eventFraction = (currentTime - startTime) / (endTime - startTime);
+
+			return eventFraction * timeActTrackLenght;
+		}
+
+		return fallbackTimeVal;
 	}
 
 	float calculateOptimalCameraDistance(Camera* camera, Character* character)
@@ -1136,10 +1169,12 @@ void MorphemeEditorApp::update(float dt)
 			this->m_eventTrackEditor->setTimeCodeFormat(this->m_timeActEditor->getTimeCodeFormat());
 		}
 
+		const float timeActEditorTime = calcTimeActEditorCurrentTime(this->m_eventTrackEditor, RMath::frameToTime(this->m_timeActEditor->getFrameMax(), this->m_timeActEditor->getFps()), this->m_animPlayer->getTime());
+
 		if (this->m_timeActEditor && this->m_timeActEditor->getSource())
 		{
 			if (!this->m_animPlayer->isPaused())
-				this->m_timeActEditor->setCurrentTime(this->m_animPlayer->getTime());
+				this->m_timeActEditor->setCurrentTime(timeActEditorTime);
 			else
 				this->m_animPlayer->setTime(this->m_timeActEditor->getCurrentTime());
 		}

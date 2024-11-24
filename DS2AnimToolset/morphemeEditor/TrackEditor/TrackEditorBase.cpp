@@ -374,22 +374,8 @@ namespace TrackEditor
 
                 if (!this->m_tracks[i]->discrete)
                 {
-                    if (event->frameEnd < this->m_firstFrame)
-                        event->frameEnd = this->m_firstFrame;
-
-                    if (event->frameStart > this->m_lastFrame)
-                        event->frameStart = this->m_lastFrame;
-
                     if (event->frameStart > event->frameEnd)
                         event->frameStart = event->frameEnd;
-                }
-                else
-                {
-                    if (event->frameStart < this->m_firstFrame)
-                        event->frameStart = this->m_firstFrame;
-
-                    if (event->frameStart > this->m_lastFrame)
-                        event->frameStart = this->m_lastFrame;
                 }
             }
         }
