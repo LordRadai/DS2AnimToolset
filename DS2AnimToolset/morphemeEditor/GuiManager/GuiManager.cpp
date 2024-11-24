@@ -963,7 +963,7 @@ void GuiManager::modelViewerWindow()
 
 	ImGui::Begin("Model Viewer", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar);
 
-	const bool isWindowFocused = ImGui::IsWindowFocused();
+	const bool isWindowFocused = ImGui::IsWindowFocused() && ImGui::IsWindowHovered();
 
 	MorphemeEditorApp::WindowFlags* windowStates = editorApp->getWindowFlags();
 	MorphemeEditorApp::PreviewFlags* previewFlags = editorApp->getPreviewFlags();
