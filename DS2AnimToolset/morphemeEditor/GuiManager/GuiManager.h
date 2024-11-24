@@ -19,6 +19,7 @@ public:
 
 	void render(ID3D11DeviceContext* pContext, ID3D11RenderTargetView* pRenderTargetView);
 
+	bool isApplicationFocused();
 private:
 	HWND m_window = nullptr;
 	bool m_initialised = false;
