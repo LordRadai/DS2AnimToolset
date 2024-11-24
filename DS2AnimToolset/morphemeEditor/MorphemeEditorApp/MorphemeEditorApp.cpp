@@ -1941,6 +1941,13 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 
 bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 {
+	if (this->m_character == nullptr)
+	{
+		g_appLog->debugMessage(MsgLevel_Info, "Skipping assets compilation because no character file was loaded\n");
+
+		return false;
+	}
+
 	char networkFileName[256];
 	sprintf_s(networkFileName, "%ws.xml", this->m_character->getCharacterName().c_str());
 
@@ -1981,12 +1988,20 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
 {
 	if (this->m_character == nullptr)
+	{
+		g_appLog->alertMessage(MsgLevel_Info, "Skipping TimeAct compilation because no character was loaded\n");
+
 		return false;
+	}
 
 	TimeAct::TaeExport::TimeActExportXML* taeXML = this->m_character->getTimeAct();
 
 	if (taeXML == nullptr)
+	{
+		g_appLog->debugMessage(MsgLevel_Info, "Skipping TimeAct compilation because no TimeAct file was loaded\n");
+
 		return false;
+	}
 
 	std::filesystem::current_path(path);
 
