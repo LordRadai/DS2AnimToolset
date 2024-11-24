@@ -1076,6 +1076,7 @@ void GuiManager::modelViewerWindow()
 		ImGui::Separator();
 
 		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 10);
+
 		static float playSpeed = 1.f;
 		ImGui::SliderFloat(ICON_FA_CLOCK, &playSpeed, 0.1f, 1.f);
 
