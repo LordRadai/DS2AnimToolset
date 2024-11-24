@@ -191,7 +191,7 @@ namespace
 					if (nodeDef->getChildNodeID(i) != MR::INVALID_NODE_ID)
 					{
 						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
-						createNodeXML(nodeDef->getChildNodeDef(i), inputNodes, nodeName, false);
+						createNodeXML(nodeDef->getChildNodeDef(i), inputNodes, name, false);
 					}
 					else
 					{
