@@ -57,6 +57,7 @@ namespace MD
 				break;
 			case MR::AttribDataTransitDef::INIT_DEST_USE_EVENT_INDEX_AND_USE_EVENT_FRACTION:
 				useDestinationStartSyncEventFraction = true;
+				useDestinationStartSyncEventIndex = true;
 				break;
 			case MR::AttribDataTransitDef::INIT_DEST_SYNC_ON_EVENT_INDEX_AND_SYNC_ON_EVENT_FRACTION:
 				break;
