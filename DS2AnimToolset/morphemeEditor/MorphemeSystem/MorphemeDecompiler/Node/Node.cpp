@@ -5,11 +5,24 @@
 #include "extern.h"
 #include "RCore.h"
 #include "morpheme/Nodes/mrNodeFreeze.h"
+#include "morpheme/Nodes/mrNodeExtractJointInfo.h"
 
 namespace MD
 {
 	namespace Node
 	{
+		bool getOutputSpace(MR::NodeDef* nodeDef)
+		{
+			MR::QueueAttrTaskFn transformBufferFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
+
+			if ((transformBufferFn == MR::nodeExtractJointInfoObjectQueueTransforms) || (transformBufferFn == MR::nodeExtractJointInfoObjectJointSelectQueueTransforms))
+				return true;
+			else if ((transformBufferFn == MR::nodeExtractJointInfoLocalQueueTransforms) || (transformBufferFn == MR::nodeExtractJointInfoLocalJointSelectQueueTransforms))
+				return false;
+			else
+				g_appLog->panicMessage("Invalid transform buffer function for ExtractJointInfo node %s (nodeID=%d)\n", MR::Manager::getInstance().getTaskQueuingFnName(transformBufferFn), nodeDef->getNodeID());
+		}
+
 		void exportNodeTransitions(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
 		{
 			MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
@@ -484,6 +497,148 @@ namespace MD
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "NodeConnectedTo");
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportApplyBindPose(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_APPLY_BIND_POSE);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "NodeConnectedTo");
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportExtractJointInfoNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_EMIT_JOINT_CP_INFO);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "SourceNodeID");
+			const int numAnimSets = netDef->getNumAnimSets();
+
+			nodeDataBlock->writeInt(numAnimSets, "NumAnimSets");
+
+			CHAR paramName[256];
+			for (uint32_t animSetIndex = 0; animSetIndex < numAnimSets; animSetIndex++)
+			{
+				MR::AttribDataUInt* jointIndexAttrib = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CP_UINT, animSetIndex));
+			
+				sprintf_s(paramName, "JointIndex_%d", animSetIndex + 1);
+				nodeDataBlock->writeUInt(jointIndexAttrib->m_value, paramName);
+
+				MR::AttribDataInt* angleTypeAttrib = static_cast<MR::AttribDataInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CP_INT, animSetIndex));
+				nodeDataBlock->writeInt(angleTypeAttrib->m_value, "AngleType");
+
+				MR::AttribDataBool* mesaureUintAttrib = static_cast<MR::AttribDataBool*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CP_BOOL, animSetIndex));
+				nodeDataBlock->writeBool(mesaureUintAttrib->m_value, "MeasureUnit");
+			}
+
+			nodeDataBlock->writeBool(getOutputSpace(nodeDef), "OutputSpace");
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportClosestAnimNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CLOSEST_ANIM);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+			
+			const int numSourceNodes = nodeDef->getNumChildNodes();
+
+			nodeDataBlock->writeUInt(numSourceNodes, "SourceNodeCount");
+
+			CHAR paramName[256];
+			for (uint32_t i = 0; i < numSourceNodes; i++)
+			{
+				sprintf_s(paramName, "Source%dNodeID", i);
+				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
+			}
+
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "DeadBlendWeight", nodeDef->getInputCPConnection(0), false);
+
+			MR::AttribDataClosestAnimDef* setupAttrib = static_cast<MR::AttribDataClosestAnimDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+			nodeDataBlock->writeBool(setupAttrib->m_precomputeSourcesOffline, "PrecomputeSourcesOffline");
+			nodeDataBlock->writeBool(setupAttrib->m_useVelocity, "UseVelocity");
+			nodeDataBlock->writeFloat(setupAttrib->m_influenceBetweenPosAndOrient, "InfluenceBetweenPositionAndOrientation");
+			nodeDataBlock->writeBool(setupAttrib->m_useRootRotationBlending, "UseRootRotationBlending");
+			nodeDataBlock->writeFloat(setupAttrib->m_fractionThroughSource, "BlendDuration");
+
+			float matchTolerance = acosf(2 * setupAttrib->m_maxRootRotationAngle);
+			nodeDataBlock->writeFloat(matchTolerance, "MatchTolerance");
+
+			nodeDataBlock->writeUInt(NodeUtils::getAxisIndex(setupAttrib->m_rootRotationAxis));
+
+			const int numAnimSets = netDef->getNumAnimSets();
+
+			CHAR paramName[256];
+			for (uint32_t animSetIndex = 0; animSetIndex < numAnimSets; animSetIndex++)
+			{
+				MR::AttribDataClosestAnimDefAnimSet* closestAnimDefAnimSetAttrib = static_cast<MR::AttribDataClosestAnimDefAnimSet*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET));
+				
+				sprintf_s(paramName, "NumAlphaValuesSet_%d", animSetIndex + 1);
+				nodeDataBlock->writeUInt(closestAnimDefAnimSetAttrib->m_numEntries, paramName);
+
+				for (uint32_t rigChanIndex = 0; rigChanIndex < closestAnimDefAnimSetAttrib->m_numEntries; rigChanIndex++)
+				{
+					sprintf_s(paramName, "Alpha_%d_Set_%d", rigChanIndex + 1, animSetIndex + 1);
+					nodeDataBlock->writeFloat(closestAnimDefAnimSetAttrib->m_weights[rigChanIndex], paramName);
+				}
+			}
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportRetargetNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_RETARGET);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int numSourceNodes = nodeDef->getNumChildNodes();
+
+			nodeDataBlock->writeUInt(nodeDef->getChildNodeID(0), "SourceNodeID");
+
+			//We're not decompiling asset manager temp networks
+			nodeDataBlock->writeBool(false, "AssetManagerExport");
+
+			const int numAnimSets = netDef->getNumAnimSets();
+
+			CHAR paramName[256];
+			for (uint32_t animSetIndex = 0; animSetIndex < numAnimSets; animSetIndex++)
+			{
+				MR::AttribDataUInt* inputAnimSetIndexAttrib = static_cast<MR::AttribDataUInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_ACTIVE_ANIM_SET_INDEX, animSetIndex));
+
+				sprintf_s(paramName, "InputAnimSetIndex_%d", animSetIndex + 1);
+				nodeDataBlock->writeUInt(inputAnimSetIndexAttrib->m_value, paramName);
+			}
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* exportScaleCharacterNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SCALE_CHARACTER);
+
+			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int numSourceNodes = nodeDef->getNumChildNodes();
+
+			nodeDataBlock->writeUInt(nodeDef->getChildNodeID(0), "SourceNodeID");
+
+			//TODO: Figure out a way to recover the message ID
+			nodeDataBlock->writeUInt(-1, "ScaleMessageID");
 
 			return nodeExportXML;
 		}

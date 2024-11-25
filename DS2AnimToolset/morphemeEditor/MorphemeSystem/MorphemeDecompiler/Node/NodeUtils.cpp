@@ -9,6 +9,19 @@ namespace MD
 {
 	namespace NodeUtils
 	{
+		int getAxisIndex(NMP::Vector3 axis)
+		{
+			if (axis.x)
+				return 1;
+			else if (axis.y)
+				return 2;
+			else if (axis.z)
+				return 3;
+
+			g_appLog->panicMessage("Input vector is not a valid axis vector (%.3f, %.3f, %.3f)\n", axis.x, axis.y, axis.z);
+			return 0;
+		}
+
 		void writeSyncEventFlagsFromAttribData(ME::DataBlockExportXML* attribDataBlock, MR::AttribDataUInt* durationEventMatchingOpAttrib)
 		{
 			bool durationEventBlendPassThrough = false;

@@ -25,6 +25,11 @@ namespace MD
 		ME::NodeExportXML* exportSequenceNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		ME::NodeExportXML* exportScaleToDuration(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		ME::NodeExportXML* exportApplyGlobalTimeNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
+		ME::NodeExportXML* exportApplyBindPose(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
+		ME::NodeExportXML* exportExtractJointInfoNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
+		ME::NodeExportXML* exportClosestAnimNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
+		ME::NodeExportXML* exportRetargetNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
+		ME::NodeExportXML* exportScaleCharacterNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 
 		void exportNodeTransitions(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport);
 	}

@@ -555,6 +555,10 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
             character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getRightHandEquipId(), preset->isRightHandEquipShield());
         }
     }
+    else
+    {
+        g_appLog->alertMessage(MsgLevel_Info, "Failed to find Game path. No models or TimeAct files will be loaded\n");
+    }
 
     return character;
 }
