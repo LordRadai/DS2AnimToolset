@@ -48,6 +48,8 @@ namespace MEProject
 		for (size_t i = 0; i < this->m_animSets.size(); i++)
 			this->m_animSets[i]->destroy();
 
+		this->m_animSets.clear();
+
 		RXML::XMLFileObj::destroy();
 	}
 }

@@ -210,6 +210,8 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="imgui_custom\imgui_custom_logic.h" />
     <ClInclude Include="imgui_custom\imgui_custom_widget.h" />
+    <ClInclude Include="MEProj\AnimSet.h" />
+    <ClInclude Include="MEProj\MEProj.h" />
     <ClInclude Include="morphemeEditor.h" />
     <ClInclude Include="MorphemeEditorApp\MorphemeEditorApp.h" />
     <ClInclude Include="MorphemeSystem\AnimLoader\AnimLoader.h" />
@@ -287,6 +289,8 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="imgui_custom\imgui_custom_logic.cpp" />
     <ClCompile Include="imgui_custom\imgui_custom_widget.cpp" />
+    <ClCompile Include="MEProj\AnimSet.cpp" />
+    <ClCompile Include="MEProj\MEProj.cpp" />
     <ClCompile Include="morphemeEditor.cpp" />
     <ClCompile Include="MorphemeEditorApp\MorphemeEditorApp.cpp" />
     <ClCompile Include="MorphemeSystem\AnimLoader\AnimLoader.cpp" />
