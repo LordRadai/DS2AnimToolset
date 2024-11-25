@@ -11,7 +11,7 @@ AnimObject::AnimObject(int id)
     this->m_id = id;
 }
 
-AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id)
+AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id, const char* format)
 {
     AnimObject* animObj = new AnimObject(id);
 
@@ -27,7 +27,7 @@ AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR
     //Look for the NSA anim file in the same folder as the NMB file first
     if (fileSize > -1)
     {
-        animHandle->openAnimation((unsigned char*)animData, fileSize, "nsa");
+        animHandle->openAnimation((unsigned char*)animData, fileSize, format);
         found = true;
     }
 
@@ -46,7 +46,7 @@ AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR
 
                 if (fileSize > -1)
                 {
-                    animHandle->openAnimation((unsigned char*)animData, fileSize, "nsa");
+                    animHandle->openAnimation((unsigned char*)animData, fileSize, format);
                     found = true;
                     break;
                 }

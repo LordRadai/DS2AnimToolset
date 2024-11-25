@@ -77,7 +77,7 @@ public:
   MR::CharacterControllerDef* getCharacterController(int idx);
   AnimObject* getAnimation(int animSetIdx, int idx);
   AnimObject* getAnimationById(int animSetIdx, int id);
-  void addAnimation(const char* filename, int animSetIdx = 0);
+  void addAnimation(const char* filename, int animSetIdx = 0, const char* format = "nsa");
   void sortAnimations();
 
 protected:
