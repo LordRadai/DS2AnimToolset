@@ -580,7 +580,6 @@ namespace MD
 
 			const int numAnimSets = netDef->getNumAnimSets();
 
-			CHAR paramName[256];
 			for (uint32_t animSetIndex = 0; animSetIndex < numAnimSets; animSetIndex++)
 			{
 				MR::AttribDataClosestAnimDefAnimSet* closestAnimDefAnimSetAttrib = static_cast<MR::AttribDataClosestAnimDefAnimSet*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET));
