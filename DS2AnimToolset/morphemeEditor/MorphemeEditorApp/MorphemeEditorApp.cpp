@@ -1750,7 +1750,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
-#ifdef _DEBUG
+#ifdef EXPORT_DEBUG_NM_DATA
 	dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
 	dumpNetworkNodes(netDef, animLibraryExport, L"nodes.xml");
 	dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
