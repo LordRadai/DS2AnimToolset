@@ -30,7 +30,7 @@ namespace MEProject
 		rootDirElem->SetText(timeActPath.c_str());
 	}
 
-	AnimSet* MEProject::addAnimSet(std::string name, std::string rig, std::string characterController)
+	void MEProject::addAnimSet(std::string name, std::string rig, std::string characterController)
 	{
 		AnimSet* animSet = new AnimSet;
 
@@ -39,8 +39,50 @@ namespace MEProject
 		animSet->setCharacterController(characterController);
 
 		this->m_animSets.push_back(animSet);
+	}
 
-		return animSet;
+	std::string MEProject::getRootDir()
+	{
+		return this->m_rootElement->getXmlElement()->FirstChildElement("RootDir")->GetText();
+	}
+
+	std::string MEProject::getModel()
+	{
+		return this->m_rootElement->getXmlElement()->FirstChildElement("Model")->GetText();
+	}
+
+	std::string MEProject::getNetwork()
+	{
+		return this->m_rootElement->getXmlElement()->FirstChildElement("Network")->GetText();
+	}
+
+	std::string MEProject::getTimeAct()
+	{
+		return this->m_rootElement->getXmlElement()->FirstChildElement("TimeAct")->GetText();
+	}
+
+	std::string MEProject::getAnimSetName(int animSetIdx)
+	{
+		if (animSetIdx < this->m_animSets.size())
+			return this->m_animSets[animSetIdx]->getName();
+
+		return "";
+	}
+
+	std::string MEProject::getRig(int animSetIdx)
+	{
+		if (animSetIdx < this->m_animSets.size())
+			return this->m_animSets[animSetIdx]->getRig();
+
+		return "";
+	}
+
+	std::string MEProject::getCharacterController(int animSetIdx)
+	{
+		if (animSetIdx < this->m_animSets.size())
+			return this->m_animSets[animSetIdx]->getCharacterController();
+
+		return "";
 	}
 
 	void MEProject::destroy()

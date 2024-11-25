@@ -12,6 +12,10 @@ namespace MEProject
 		void setRig(std::string rigPath);
 		void setCharacterController(std::string ccPath);
 
+		std::string getName();
+		std::string getRig();
+		std::string getCharacterController();
+
 		void destroy();
 	};
 }
