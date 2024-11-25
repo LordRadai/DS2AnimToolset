@@ -115,6 +115,8 @@ public:
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
 	std::wstring getGamePath() const { return this->m_gamePath; }
 
+	float calcTimeActEditorCurrentTime();
+
 	static MorphemeEditorApp* getInstance();
 
 private:

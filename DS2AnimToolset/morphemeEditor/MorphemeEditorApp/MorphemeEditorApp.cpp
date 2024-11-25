@@ -25,39 +25,6 @@ namespace
 		return std::filesystem::path(filePath).parent_path().string();
 	}
 
-	float calcTimeActEditorCurrentTime(TrackEditor::EventTrackEditor* eventTrackEditor, float timeActTrackLenght, float fallbackTimeVal)
-	{
-		TrackEditor::Track* timeActTrack = nullptr;
-
-		for (size_t i = 0; i < eventTrackEditor->getNumTracks(); i++)
-		{
-			TrackEditor::Track* track = eventTrackEditor->getTrack(i);
-			
-			if (track->userData == 1000)
-				timeActTrack = track;
-		}
-
-		if (timeActTrack)
-		{
-			const float currentTime = eventTrackEditor->getCurrentTime();
-
-			const float startTime = RMath::frameToTime(timeActTrack->events[0]->frameStart, eventTrackEditor->getFps());
-			const float endTime = RMath::frameToTime(timeActTrack->events[0]->frameEnd, eventTrackEditor->getFps());
-			float eventFraction = 0.f;
-
-			if (currentTime < startTime)
-				eventFraction = 0.f;
-			else if (currentTime > endTime)
-				eventFraction = 1.f;
-			else
-				eventFraction = (currentTime - startTime) / (endTime - startTime);
-
-			return eventFraction * timeActTrackLenght;
-		}
-
-		return fallbackTimeVal;
-	}
-
 	float calculateOptimalCameraDistance(Camera* camera, Character* character)
 	{
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
@@ -1169,7 +1136,7 @@ void MorphemeEditorApp::update(float dt)
 			this->m_eventTrackEditor->setTimeCodeFormat(this->m_timeActEditor->getTimeCodeFormat());
 		}
 
-		const float timeActEditorTime = calcTimeActEditorCurrentTime(this->m_eventTrackEditor, RMath::frameToTime(this->m_timeActEditor->getFrameMax(), this->m_timeActEditor->getFps()), this->m_animPlayer->getTime());
+		const float timeActEditorTime = this->calcTimeActEditorCurrentTime();
 
 		if (this->m_timeActEditor && this->m_timeActEditor->getSource())
 		{
@@ -1403,6 +1370,40 @@ void MorphemeEditorApp::shutdown()
 
 	if (this->_instance)
 		delete this->_instance;
+}
+
+float MorphemeEditorApp::calcTimeActEditorCurrentTime()
+{
+	TrackEditor::Track* timeActTrack = nullptr;
+
+	for (size_t i = 0; i < this->m_eventTrackEditor->getNumTracks(); i++)
+	{
+		TrackEditor::Track* track = this->m_eventTrackEditor->getTrack(i);
+
+		if (track->userData == 1000)
+			timeActTrack = track;
+	}
+
+	if (timeActTrack)
+	{
+		const float taeTrackLen = RMath::frameToTime(this->m_timeActEditor->getFrameMax(), this->m_timeActEditor->getFps());
+		const float currentTime = this->m_eventTrackEditor->getCurrentTime();
+
+		const float startTime = RMath::frameToTime(timeActTrack->events[0]->frameStart, this->m_eventTrackEditor->getFps());
+		const float endTime = RMath::frameToTime(timeActTrack->events[0]->frameEnd, this->m_eventTrackEditor->getFps());
+		float eventFraction = 0.f;
+
+		if (currentTime < startTime)
+			eventFraction = 0.f;
+		else if (currentTime > endTime)
+			eventFraction = 1.f;
+		else
+			eventFraction = (currentTime - startTime) / (endTime - startTime);
+
+		return eventFraction * taeTrackLen;
+	}
+
+	return this->m_animPlayer->getTime();
 }
 
 void MorphemeEditorApp::loadSettings()

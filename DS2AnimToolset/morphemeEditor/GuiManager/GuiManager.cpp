@@ -1037,19 +1037,22 @@ void GuiManager::modelViewerWindow()
 		TrackEditor::EventTrackEditor* eventTrackEditor = editorApp->getEventTrackEditor();
 		TrackEditor::TimeActEditor* timeActEditor = editorApp->getTimeActEditor();
 
+		const int stepSize = 1.f / 30.f;
+
 		if (ImGui::Button(ICON_FA_BACKWARD_FAST))
 		{
 			animPlayer->setTime(RMath::frameToTime(eventTrackEditor->getClipStart()));
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
+			timeActEditor->setCurrentTime(editorApp->calcTimeActEditorCurrentTime());
 		}
 
 		ImGui::SameLine();
+
 		if (ImGui::Button(ICON_FA_BACKWARD_STEP) || ((GetAsyncKeyState(0x51) & 1) && isWindowFocused))
 		{
-			animPlayer->stepPlay(-1.f / 30.f);
+			animPlayer->stepPlay(-stepSize);
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
+			timeActEditor->setCurrentTime(editorApp->calcTimeActEditorCurrentTime());
 		}
 
 		ImGui::SameLine();
@@ -1066,19 +1069,21 @@ void GuiManager::modelViewerWindow()
 		}
 
 		ImGui::SameLine();
+
 		if (ImGui::Button(ICON_FA_FORWARD_STEP) || ((GetAsyncKeyState(0x45) & 1) && isWindowFocused))
 		{
-			animPlayer->stepPlay(1.f / 30.f);
+			animPlayer->stepPlay(stepSize);
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
+			timeActEditor->setCurrentTime(editorApp->calcTimeActEditorCurrentTime());
 		}
 
 		ImGui::SameLine();
+
 		if (ImGui::Button(ICON_FA_FORWARD_FAST))
 		{
 			animPlayer->setTime(RMath::timeToFrame(eventTrackEditor->getClipEnd()));
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
+			timeActEditor->setCurrentTime(editorApp->calcTimeActEditorCurrentTime());
 		}
 
 		ImGui::Separator();
