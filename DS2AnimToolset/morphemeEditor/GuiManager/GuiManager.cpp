@@ -1037,13 +1037,13 @@ void GuiManager::modelViewerWindow()
 		TrackEditor::EventTrackEditor* eventTrackEditor = editorApp->getEventTrackEditor();
 		TrackEditor::TimeActEditor* timeActEditor = editorApp->getTimeActEditor();
 
-		const int stepSize = 1.f / 30.f;
+		const float stepSize = 1.f / 30.f;
 
 		if (ImGui::Button(ICON_FA_BACKWARD_FAST))
 		{
 			animPlayer->setTime(RMath::frameToTime(eventTrackEditor->getClipStart()));
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(editorApp->calcTimeActEditorCurrentTime());
+			timeActEditor->setCurrentTime(animPlayer->getTime());
 		}
 
 		ImGui::SameLine();
@@ -1052,7 +1052,7 @@ void GuiManager::modelViewerWindow()
 		{
 			animPlayer->stepPlay(-stepSize);
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(editorApp->calcTimeActEditorCurrentTime());
+			timeActEditor->setCurrentTime(animPlayer->getTime());
 		}
 
 		ImGui::SameLine();
@@ -1074,7 +1074,7 @@ void GuiManager::modelViewerWindow()
 		{
 			animPlayer->stepPlay(stepSize);
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(editorApp->calcTimeActEditorCurrentTime());
+			timeActEditor->setCurrentTime(animPlayer->getTime());
 		}
 
 		ImGui::SameLine();
@@ -1083,7 +1083,7 @@ void GuiManager::modelViewerWindow()
 		{
 			animPlayer->setTime(RMath::timeToFrame(eventTrackEditor->getClipEnd()));
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(editorApp->calcTimeActEditorCurrentTime());
+			timeActEditor->setCurrentTime(animPlayer->getTime());
 		}
 
 		ImGui::Separator();
