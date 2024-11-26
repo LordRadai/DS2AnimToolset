@@ -15,6 +15,7 @@ enum TimeActSlot
 class Character
 {
 public:
+	static Character* createFromMeProj(const char* filename);
 	static Character* createFromNmb(std::vector<std::wstring>& fileList, const char* filename);
 	static Character* createFromTimeAct(const char* filename);
 

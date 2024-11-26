@@ -30,6 +30,20 @@ namespace MEProject
 		rootDirElem->SetText(timeActPath.c_str());
 	}
 
+	void MEProject::setAssetDir(std::string assetPath)
+	{
+		tinyxml2::XMLElement* rootDirElem = RXML::getUniqueElement(this->m_rootElement->getXmlElement(), "AssetDir");
+
+		rootDirElem->SetText(assetPath.c_str());
+	}
+
+	void MEProject::setMarkupDir(std::string markupDir)
+	{
+		tinyxml2::XMLElement* rootDirElem = RXML::getUniqueElement(this->m_rootElement->getXmlElement(), "MarkupDir");
+
+		rootDirElem->SetText(markupDir.c_str());
+	}
+
 	void MEProject::addAnimSet(std::string name, std::string rig, std::string characterController)
 	{
 		AnimSet* animSet = new AnimSet;
@@ -59,6 +73,16 @@ namespace MEProject
 	std::string MEProject::getTimeAct()
 	{
 		return this->m_rootElement->getXmlElement()->FirstChildElement("TimeAct")->GetText();
+	}
+
+	std::string MEProject::getAssetDir()
+	{
+		return this->m_rootElement->getXmlElement()->FirstChildElement("AssetDir")->GetText();
+	}
+
+	std::string MEProject::getMarkupDir()
+	{
+		return this->m_rootElement->getXmlElement()->FirstChildElement("MarkupDir")->GetText();
 	}
 
 	std::string MEProject::getAnimSetName(int animSetIdx)

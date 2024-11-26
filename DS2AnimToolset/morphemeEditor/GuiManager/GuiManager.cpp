@@ -709,14 +709,7 @@ void GuiManager::update(float dt)
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 	MorphemeEditorApp::WindowFlags* windowFlags = editorApp->getWindowFlags();
 
-	if (this->isApplicationFocused())
-	{
-		if (editorApp->getCharacter() != nullptr && editorApp->getCharacter()->getTimeAct() != nullptr)
-		{
-			if (RInput::isKeyComboPressed(VK_CONTROL, 0x46))	//Ctrl+F
-				windowFlags->searchQuery = true;
-		}
-	}
+	this->handleUserInputs();
 
 	if (windowFlags->imGuiDemo)
 		ImGui::ShowDemoWindow(&windowFlags->imGuiDemo);
@@ -768,6 +761,31 @@ void GuiManager::shutdown()
 	ImGui::DestroyContext();
 }
 
+void GuiManager::handleUserInputs()
+{
+	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
+	MorphemeEditorApp::WindowFlags* windowFlags = editorApp->getWindowFlags();
+	MorphemeEditorApp::TaskFlags* taskFlags = editorApp->getTaskFlags();
+
+	if (this->isApplicationFocused())
+	{
+		if (RInput::isKeyComboPressed(VK_CONTROL, 0x4E))	//Ctrl+N
+			taskFlags->newFile = true;
+
+		if (RInput::isKeyComboPressed(VK_CONTROL, 0x4F))	//Ctrl+O
+			taskFlags->loadFile = true;
+
+		if (RInput::isKeyComboPressed(VK_CONTROL, 0x53))	//Ctrl+O
+			taskFlags->saveFile = true;
+
+		if (editorApp->getCharacter() != nullptr && editorApp->getCharacter()->getTimeAct() != nullptr)
+		{
+			if (RInput::isKeyComboPressed(VK_CONTROL, 0x46))	//Ctrl+F
+				windowFlags->searchQuery = true;
+		}
+	}
+}
+
 void GuiManager::rootWindow()
 {
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
@@ -785,8 +803,15 @@ void GuiManager::rootWindow()
 
 	if (ImGui::BeginMenu("File"))
 	{
-		if (ImGui::MenuItem("Open...")) { editorApp->getTaskFlags()->loadFile = true; }
-		//if (ImGui::MenuItem("Save...")) { editorApp->getTaskFlags()->saveFile = true; }
+		if (ImGui::MenuItem("New", "Ctrl+N")) { editorApp->getTaskFlags()->newFile = true; }
+		if (ImGui::MenuItem("Open", "Ctrl+O")) { editorApp->getTaskFlags()->loadFile = true; }
+
+		if (ImGui::MenuItem("Import")) { editorApp->getTaskFlags()->importFile = true; }
+
+		ImGui::Separator();
+
+		if (ImGui::MenuItem("Save", "Ctrl+S")) { editorApp->getTaskFlags()->saveFile = true; }
+		if (ImGui::MenuItem("Save As")) { editorApp->getTaskFlags()->saveFileAs = true; }
 
 		ImGui::Separator();
 		

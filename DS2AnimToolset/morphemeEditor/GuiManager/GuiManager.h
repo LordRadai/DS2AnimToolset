@@ -30,6 +30,8 @@ private:
 
 	inline static GuiManager* _instance = nullptr;
 
+	void handleUserInputs();
+
 	void rootWindow();
 	void modelViewerWindow();
 	void assetsWindow();

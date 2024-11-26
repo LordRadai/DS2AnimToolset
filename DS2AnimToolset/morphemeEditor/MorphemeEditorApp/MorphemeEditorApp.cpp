@@ -1196,6 +1196,13 @@ void MorphemeEditorApp::update(float dt)
 	if (this->m_eventTrackEditor)
 		this->m_eventTrackEditor->update(dt);
 
+	if (this->m_taskFlags.newFile)
+	{
+		this->m_taskFlags.newFile = false;
+
+		this->newFile();
+	}
+
 	if (this->m_taskFlags.loadFile)
 	{
 		this->m_taskFlags.loadFile = false;
@@ -1208,6 +1215,20 @@ void MorphemeEditorApp::update(float dt)
 		this->m_taskFlags.saveFile = false;
 
 		this->saveFile();
+	}
+
+	if (this->m_taskFlags.saveFileAs)
+	{
+		this->m_taskFlags.saveFileAs = false;
+
+		this->saveFileAs();
+	}
+
+	if (this->m_taskFlags.importFile)
+	{
+		this->m_taskFlags.importFile = false;
+
+		this->importFile();
 	}
 
 	if (this->m_taskFlags.exportAll)
@@ -1478,7 +1499,109 @@ MorphemeEditorApp::~MorphemeEditorApp()
 {
 }
 
+void MorphemeEditorApp::newFile()
+{
+	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Editor Project", L"*.meproj"}, {L"All Files",L"*.*"} };
+
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+		COINIT_DISABLE_OLE1DDE);
+
+	if (SUCCEEDED(hr))
+	{
+		IFileOpenDialog* pFileSave = NULL;
+
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL,
+			IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileSave));
+
+		if (SUCCEEDED(hr))
+		{
+			pFileSave->SetFileTypes(2, ComDlgFS);
+
+			// Show the Open dialog box.
+			hr = pFileSave->Show(NULL);
+
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem* pItem;
+				hr = pFileSave->GetResult(&pItem);
+
+				if (SUCCEEDED(hr))
+				{
+					PWSTR pszOutFilePath;
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
+
+					// Display the file name to the user.
+					if (SUCCEEDED(hr))
+					{
+						std::filesystem::path filepath = std::wstring(pszOutFilePath);
+
+
+					}
+					pItem->Release();
+				}
+				else
+					MessageBoxW(NULL, L"Failed to save file", L"Application.cpp", MB_ICONERROR);
+			}
+			pFileSave->Release();
+		}
+		CoUninitialize();
+	}
+}
+
 void MorphemeEditorApp::loadFile()
+{
+	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Editor Project", L"*.meproj"}, {L"All Files",L"*.*"} };
+
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+		COINIT_DISABLE_OLE1DDE);
+
+	if (SUCCEEDED(hr))
+	{
+		IFileOpenDialog* pFileOpen = NULL;
+
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+		if (SUCCEEDED(hr))
+		{
+			pFileOpen->SetFileTypes(2, ComDlgFS);
+
+			// Show the Open dialog box.
+			hr = pFileOpen->Show(NULL);
+
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem* pItem;
+				hr = pFileOpen->GetResult(&pItem);
+
+				if (SUCCEEDED(hr))
+				{
+					PWSTR pszOutFilePath;
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
+
+					// Display the file name to the user.
+					if (SUCCEEDED(hr))
+					{
+						std::filesystem::path filepath = std::wstring(pszOutFilePath);
+
+						
+					}
+					pItem->Release();
+				}
+				else
+					MessageBoxW(NULL, L"Failed to save file", L"Application.cpp", MB_ICONERROR);
+			}
+			pFileOpen->Release();
+		}
+		CoUninitialize();
+	}
+}
+
+void MorphemeEditorApp::importFile()
 {
 	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"TimeAct", L"*.tae"}, {L"All Files",L"*.*"} };
 
@@ -1556,7 +1679,13 @@ void MorphemeEditorApp::loadFile()
 	}
 }
 
+
 void MorphemeEditorApp::saveFile()
+{
+
+}
+
+void MorphemeEditorApp::saveFileAs()
 {
 	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"TimeAct", L"*.tae"}, {L"All Files",L"*.*"} };
 

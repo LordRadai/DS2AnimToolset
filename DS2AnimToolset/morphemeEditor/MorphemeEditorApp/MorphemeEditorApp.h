@@ -48,9 +48,12 @@ public:
 	{
 		bool resetCamera = false;
 
+		bool newFile = false;
 		bool loadFile = false;
 		bool saveFile = false;
+		bool saveFileAs = false;
 
+		bool importFile = false;
 		bool exportTaeTemplateXml = false;
 		bool exportTae = false;
 		bool exportModel = false;
@@ -128,8 +131,12 @@ private:
 	void loadPlayerModelPreset();
 	void savePlayerModelPreset();
 
+	void newFile();
 	void loadFile();
 	void saveFile();
+	void saveFileAs();
+
+	void importFile();
 
 	bool exportAll(std::wstring path);
 	bool exportAndProcess(std::wstring path);

@@ -13,12 +13,16 @@ namespace MEProject
 		void setModel(std::string modelPath);
 		void setNetwork(std::string networkPath);
 		void setTimeAct(std::string timeActPath);
+		void setAssetDir(std::string assetPath);
+		void setMarkupDir(std::string markupDir);
 		void addAnimSet(std::string name, std::string rig, std::string characterController);
 
 		std::string getRootDir();
 		std::string getModel();
 		std::string getNetwork();
 		std::string getTimeAct();
+		std::string getAssetDir();
+		std::string getMarkupDir();
 		std::string getAnimSetName(int animSetIdx);
 		std::string getRig(int animSetIdx);
 		std::string getCharacterController(int animSetIdx);
