@@ -892,7 +892,7 @@ void FlverModel::draw(RenderManager* renderManager)
 		if (this->m_settings.displayMode == kDispXRay)
 			alpha = 0.5f;
 
-		renderManager->applyPhysicalEffect(world, alpha);
+		renderManager->applyEffect(world, alpha);
 		renderManager->setInputLayout(kPhysicalLayout);
 
 		primShaded.Begin();
