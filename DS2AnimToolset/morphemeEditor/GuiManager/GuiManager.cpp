@@ -2041,13 +2041,6 @@ void GuiManager::importFilePopup()
 			static char timeActSndFile[256];
 			static char extAniBndDir[256];
 
-			ImGui::PathSelection("Game Folder", gameDir);
-			ImGui::PathSelection("Model", modelFile);
-			ImGui::FileSelection("TimeActPl", timeActPlFile);
-			ImGui::FileSelection("TimeActSfx", timeActSfxFile);
-			ImGui::FileSelection("TimeActSnd", timeActSndFile);
-			ImGui::PathSelection("Extanibnd Folder", extAniBndDir);
-
 			if (ImGui::Button("Auto"))
 			{
 				sprintf_s(gameDir, "%ws", editorApp->getGamePath().c_str());
@@ -2077,6 +2070,13 @@ void GuiManager::importFilePopup()
 					sprintf_s(extAniBndDir, "%s\\%s", gameDir, "morpheme4\\chr\\c0001");
 				}
 			}
+
+			ImGui::PathSelection("Game Folder", gameDir);
+			ImGui::PathSelection("Model", modelFile);
+			ImGui::FileSelection("TimeActPl", timeActPlFile);
+			ImGui::FileSelection("TimeActSfx", timeActSfxFile);
+			ImGui::FileSelection("TimeActSnd", timeActSndFile);
+			ImGui::PathSelection("Extanibnd Folder", extAniBndDir);
 
 			ImGui::Separator();
 
