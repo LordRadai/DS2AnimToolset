@@ -1,3 +1,4 @@
+#include <thread>
 #include "MorphemeEditorApp.h"
 #include "extern.h"
 #include "RenderManager/RenderManager.h"
@@ -7,7 +8,6 @@
 #include "FromSoftware/TimeAct/TaeExport/TaeExport.h"
 #include "FromSoftware/TimeAct/TaeTemplate/TaeTemplateXML/TaeTemplateXML.h"
 #include "MorphemeSystem/MorphemeDecompiler/Node/NodeUtils.h"
-#include <thread>
 
 #ifndef _DEBUG
 #define ASSET_COMPILER_EXE "morphemeAssetCompiler.exe"
@@ -1532,12 +1532,15 @@ void MorphemeEditorApp::newFile()
 					PWSTR pszOutFilePath;
 					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
 
-					// Display the file name to the user.
 					if (SUCCEEDED(hr))
 					{
 						std::filesystem::path filepath = std::wstring(pszOutFilePath);
 
+						if (this->m_projectFile)
+							this->m_projectFile->destroy();
 
+						this->m_projectFile = new MEProject::MEProject(RString::toNarrow(filepath).c_str());
+						this->m_projectFile->save();
 					}
 					pItem->Release();
 				}
@@ -1583,7 +1586,6 @@ void MorphemeEditorApp::loadFile()
 					PWSTR pszOutFilePath;
 					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
 
-					// Display the file name to the user.
 					if (SUCCEEDED(hr))
 					{
 						std::filesystem::path filepath = std::wstring(pszOutFilePath);
@@ -1634,7 +1636,6 @@ void MorphemeEditorApp::importFile()
 					PWSTR pszFilePath;
 					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
 
-					// Display the file name to the user.
 					if (SUCCEEDED(hr))
 					{
 						std::filesystem::path filepath = std::wstring(pszFilePath);
@@ -1687,7 +1688,7 @@ void MorphemeEditorApp::saveFile()
 
 void MorphemeEditorApp::saveFileAs()
 {
-	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"TimeAct", L"*.tae"}, {L"All Files",L"*.*"} };
+	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Editor Project", L"*.meproj"}, {L"All Files",L"*.*"} };
 
 	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
 		COINIT_DISABLE_OLE1DDE);
@@ -1702,7 +1703,7 @@ void MorphemeEditorApp::saveFileAs()
 
 		if (SUCCEEDED(hr))
 		{
-			pFileSave->SetFileTypes(3, ComDlgFS);
+			pFileSave->SetFileTypes(2, ComDlgFS);
 
 			// Show the Open dialog box.
 			hr = pFileSave->Show(NULL);
@@ -1718,17 +1719,11 @@ void MorphemeEditorApp::saveFileAs()
 					PWSTR pszOutFilePath;
 					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
 
-					// Display the file name to the user.
 					if (SUCCEEDED(hr))
 					{
 						std::filesystem::path filepath = std::wstring(pszOutFilePath);
 
-						if (filepath.extension() == ".nmb")
-						{	
-						}
-						else if (filepath.extension() == ".tae")
-						{
-						}
+						
 					}
 					pItem->Release();
 				}

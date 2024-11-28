@@ -14,6 +14,7 @@
 #include "TrackEditor/EventTrackEditor.h"
 #include "FileIDNamesTable/FileIDNamesTable.h"
 #include "PlayerModelPreset/PlayerModelPreset.h"
+#include "MEProj/MEProj.h"
 
 struct FlverResources
 {
@@ -103,6 +104,7 @@ public:
 	void update(float dt);
 	void shutdown();
 
+	MEProject::MEProject* getProjectFile() const { return this->m_projectFile; }
 	Character* getCharacter() const { return this->m_character; }
 	AnimPlayer* getAnimPlayer() const { return this->m_animPlayer; }
 	Camera* getCamera() const { return this->m_camera; }
@@ -162,6 +164,7 @@ private:
 	PreviewFlags m_previewFlags;
 	ExportSettings m_exportSettings;
 
+	MEProject::MEProject* m_projectFile = nullptr;
 	FlverResources* m_flverResources = nullptr;
 	PlayerModelPreset* m_playerModelPreset = nullptr;
 	Camera* m_camera = nullptr;

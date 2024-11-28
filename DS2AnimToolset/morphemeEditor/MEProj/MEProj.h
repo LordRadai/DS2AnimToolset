@@ -6,8 +6,25 @@ namespace MEProject
 	class MEProject : public RXML::XMLFileObj
 	{
 	public:
-		MEProject() {}
-		~MEProject() {}
+		MEProject() : RXML::XMLFileObj() 
+		{
+			this->setRootDir("");
+			this->setAssetDir("");
+			this->setMarkupDir("");
+			this->setModel("");
+			this->setNetwork("");
+			this->setTimeAct("");
+		}
+
+		MEProject(const char* filename) : RXML::XMLFileObj(filename) 
+		{
+			this->setRootDir("");
+			this->setAssetDir("");
+			this->setMarkupDir("");
+			this->setModel("");
+			this->setNetwork("");
+			this->setTimeAct("");
+		}
 
 		void setRootDir(std::string rootDir);
 		void setModel(std::string modelPath);
@@ -27,8 +44,10 @@ namespace MEProject
 		std::string getRig(int animSetIdx);
 		std::string getCharacterController(int animSetIdx);
 
+		bool load(const char* filename);
 		void destroy();
 	private:
+		~MEProject() {}
 
 		std::vector<AnimSet*> m_animSets;
 	};

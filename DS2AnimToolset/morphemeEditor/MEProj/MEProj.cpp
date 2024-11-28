@@ -109,6 +109,16 @@ namespace MEProject
 		return "";
 	}
 
+	bool MEProject::load(const char* filename)
+	{
+		bool status = RXML::XMLFileObj::load(filename);
+
+		if (!status)
+			return false;
+
+		return true;
+	}
+
 	void MEProject::destroy()
 	{
 		for (size_t i = 0; i < this->m_animSets.size(); i++)

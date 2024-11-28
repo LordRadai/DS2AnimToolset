@@ -288,9 +288,9 @@ namespace TrackEditor
 
     void TrackEditorBase::loadColorsFromXML(const char* filename)
     {
-        RXML::XMLFileObj* xml = RXML::XMLFileObj::create(filename);
+        RXML::XMLFileObj* xml = new RXML::XMLFileObj;
 
-        if (xml == nullptr)
+        if (!xml->load(filename))
         {
             g_appLog->alertMessage(MsgLevel_Error, "Failed to load %s\n", filename);
 
@@ -312,6 +312,8 @@ namespace TrackEditor
         RXML::getVector4Element(xml->getRootElement()->getXmlElement(), "TrackActiveBoundingBox", &this->m_colors.m_trackBoundingBoxActive.x);
         RXML::getVector4Element(xml->getRootElement()->getXmlElement(), "TrackText", &this->m_colors.m_trackTextColor.x);
         RXML::getVector4Element(xml->getRootElement()->getXmlElement(), "TrackCursor", &this->m_colors.m_cursorColor.x);
+
+        xml->destroy();
     }
 
     void TrackEditorBase::loadColorsFromINI(const char* filename)
