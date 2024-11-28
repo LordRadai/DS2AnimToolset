@@ -1103,14 +1103,6 @@ void MorphemeEditorApp::initialise()
 {
 	MorphemeSystem::initMorpheme();
 
-	this->m_flverResources = new FlverResources;
-
-	this->m_timeActEditor = TrackEditor::TimeActEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds, g_taeTemplate);
-	this->m_eventTrackEditor = TrackEditor::EventTrackEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorRenameTrack | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds);
-
-	this->m_eventTrackEditor->registerListener(this->m_timeActEditor);
-	this->m_timeActEditor->registerListener(this->m_eventTrackEditor);
-
 	this->loadSettings();
 	this->loadPlayerModelPreset();
 
@@ -1491,8 +1483,16 @@ void MorphemeEditorApp::savePlayerModelPreset()
 
 MorphemeEditorApp::MorphemeEditorApp() : Application()
 {
-	this->m_animPlayer = new AnimPlayer();
-	this->m_camera = new Camera();
+	this->m_animPlayer = new AnimPlayer;
+	this->m_camera = new Camera;
+	this->m_projectFile = new MEProject::MEProject;
+	this->m_flverResources = new FlverResources;
+
+	this->m_timeActEditor = TrackEditor::TimeActEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds, g_taeTemplate);
+	this->m_eventTrackEditor = TrackEditor::EventTrackEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorRenameTrack | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds);
+
+	this->m_eventTrackEditor->registerListener(this->m_timeActEditor);
+	this->m_timeActEditor->registerListener(this->m_eventTrackEditor);
 }
 
 MorphemeEditorApp::~MorphemeEditorApp()
@@ -1501,56 +1501,10 @@ MorphemeEditorApp::~MorphemeEditorApp()
 
 void MorphemeEditorApp::newFile()
 {
-	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Editor Project", L"*.meproj"}, {L"All Files",L"*.*"} };
+	if (this->m_projectFile)
+		this->m_projectFile->destroy();
 
-	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
-		COINIT_DISABLE_OLE1DDE);
-
-	if (SUCCEEDED(hr))
-	{
-		IFileOpenDialog* pFileSave = NULL;
-
-		// Create the FileOpenDialog object.
-		hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL,
-			IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileSave));
-
-		if (SUCCEEDED(hr))
-		{
-			pFileSave->SetFileTypes(2, ComDlgFS);
-
-			// Show the Open dialog box.
-			hr = pFileSave->Show(NULL);
-
-			// Get the file name from the dialog box.
-			if (SUCCEEDED(hr))
-			{
-				IShellItem* pItem;
-				hr = pFileSave->GetResult(&pItem);
-
-				if (SUCCEEDED(hr))
-				{
-					PWSTR pszOutFilePath;
-					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
-
-					if (SUCCEEDED(hr))
-					{
-						std::filesystem::path filepath = std::wstring(pszOutFilePath);
-
-						if (this->m_projectFile)
-							this->m_projectFile->destroy();
-
-						this->m_projectFile = new MEProject::MEProject(RString::toNarrow(filepath).c_str());
-						this->m_projectFile->save();
-					}
-					pItem->Release();
-				}
-				else
-					g_appLog->alertMessage(MsgLevel_Error, "Failed to save file");
-			}
-			pFileSave->Release();
-		}
-		CoUninitialize();
-	}
+	this->m_projectFile = new MEProject::MEProject();
 }
 
 void MorphemeEditorApp::loadFile()
@@ -1590,7 +1544,8 @@ void MorphemeEditorApp::loadFile()
 					{
 						std::filesystem::path filepath = std::wstring(pszOutFilePath);
 
-						
+						if (this->m_projectFile)
+							this->m_projectFile->load(filepath.string().c_str());
 					}
 					pItem->Release();
 				}
@@ -1680,10 +1635,15 @@ void MorphemeEditorApp::importFile()
 	}
 }
 
-
 void MorphemeEditorApp::saveFile()
 {
-
+	if (this->m_projectFile)
+	{
+		if (this->m_projectFile->getDstFileName() != "")
+			this->m_projectFile->save();
+		else
+			this->saveFileAs();
+	}
 }
 
 void MorphemeEditorApp::saveFileAs()
@@ -1721,9 +1681,17 @@ void MorphemeEditorApp::saveFileAs()
 
 					if (SUCCEEDED(hr))
 					{
-						std::filesystem::path filepath = std::wstring(pszOutFilePath);
+						std::filesystem::path filepath = std::filesystem::path(pszOutFilePath).replace_extension("").wstring() + L".meproj";
 
-						
+						this->m_projectFile->setDstFileName(filepath.string());
+
+						std::string rootDir = filepath.parent_path().string();
+
+						this->m_projectFile->setRootDir(rootDir);
+						this->m_projectFile->setAssetDir(rootDir + "\\motion_xmd");
+						this->m_projectFile->setMarkupDir(rootDir + "\\morphemeMarkup");
+
+						this->m_projectFile->save();
 					}
 					pItem->Release();
 				}

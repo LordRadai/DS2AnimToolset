@@ -104,7 +104,7 @@ public:
 	void update(float dt);
 	void shutdown();
 
-	MEProject::MEProject* getProjectFile() const { return this->m_projectFile; }
+	MEProject::MEProject* getProject() const { return this->m_projectFile; }
 	Character* getCharacter() const { return this->m_character; }
 	AnimPlayer* getAnimPlayer() const { return this->m_animPlayer; }
 	Camera* getCamera() const { return this->m_camera; }

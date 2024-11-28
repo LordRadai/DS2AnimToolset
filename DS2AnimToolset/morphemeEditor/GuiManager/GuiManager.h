@@ -46,5 +46,7 @@ private:
 	void partsManagerWindow();
 	void searchQueryWindow();
 
+	void selectTimeActPopup();
+	void newProjectPopup();
 	void progressIndicatorPopup();
 };

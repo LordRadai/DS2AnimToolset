@@ -1,5 +1,9 @@
 #include "imgui_custom_widget.h"
 #include <stdio.h>
+#include <string>
+#include <Windows.h>
+#include <shobjidl.h>
+#include "IconsFontAwesome6.h"
 
 bool ImGui::InputInt64(const char* label, ImS64* v, int step, int step_fast, ImGuiInputTextFlags flags)
 {
@@ -89,4 +93,61 @@ void ImGui::InputDragInt(const char* label, int* v, float dragSpeed, int min, in
     ImGui::SameLine();
 
     ImGui::SliderInt(label, v, min, max, "");
+}
+
+std::wstring browseForFolder()
+{
+    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    if (SUCCEEDED(hr))
+    {
+        IFileDialog* pFileDialog = nullptr;
+
+        hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFileDialog));
+        if (SUCCEEDED(hr))
+        {
+            DWORD dwOptions;
+            if (SUCCEEDED(pFileDialog->GetOptions(&dwOptions)))
+                pFileDialog->SetOptions(dwOptions | FOS_PICKFOLDERS);
+
+            hr = pFileDialog->Show(NULL);
+            if (SUCCEEDED(hr))
+            {
+                IShellItem* pItem = nullptr;
+                hr = pFileDialog->GetResult(&pItem);
+                if (SUCCEEDED(hr))
+                {
+                    PWSTR pszFolderPath = nullptr;
+                    hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFolderPath);
+                    if (SUCCEEDED(hr))
+                    {
+                        return pszFolderPath;
+
+                        CoTaskMemFree(pszFolderPath);
+                    }
+                    pItem->Release();
+                }
+            }
+            pFileDialog->Release();
+        }
+        CoUninitialize();
+    }
+}
+
+void ImGui::PathSelection(const char* label, char* v, ImGuiInputFlags flags)
+{
+    ImGui::Text(label);
+
+    ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 25);
+
+    ImGui::InputText("", v, 256, flags);
+
+    ImGui::SameLine();
+
+    if (ImGui::Button(ICON_FA_FOLDER))
+    {
+        std::wstring selectedFolder = browseForFolder();
+        sprintf(v, "%ws", selectedFolder.c_str());
+    }
 }

@@ -44,6 +44,13 @@ namespace MEProject
 		rootDirElem->SetText(markupDir.c_str());
 	}
 
+	void MEProject::setGameDir(std::wstring gamePath)
+	{
+		tinyxml2::XMLElement* rootDirElem = RXML::getUniqueElement(this->m_rootElement->getXmlElement(), "GameDir");
+
+		rootDirElem->SetText(gamePath.c_str());
+	}
+
 	void MEProject::addAnimSet(std::string name, std::string rig, std::string characterController)
 	{
 		AnimSet* animSet = new AnimSet;
@@ -55,37 +62,42 @@ namespace MEProject
 		this->m_animSets.push_back(animSet);
 	}
 
-	std::string MEProject::getRootDir()
+	std::string MEProject::getRootDir() const
 	{
 		return this->m_rootElement->getXmlElement()->FirstChildElement("RootDir")->GetText();
 	}
 
-	std::string MEProject::getModel()
+	std::string MEProject::getModel() const
 	{
 		return this->m_rootElement->getXmlElement()->FirstChildElement("Model")->GetText();
 	}
 
-	std::string MEProject::getNetwork()
+	std::string MEProject::getNetwork() const
 	{
 		return this->m_rootElement->getXmlElement()->FirstChildElement("Network")->GetText();
 	}
 
-	std::string MEProject::getTimeAct()
+	std::string MEProject::getTimeAct() const
 	{
 		return this->m_rootElement->getXmlElement()->FirstChildElement("TimeAct")->GetText();
 	}
 
-	std::string MEProject::getAssetDir()
+	std::string MEProject::getAssetDir() const
 	{
 		return this->m_rootElement->getXmlElement()->FirstChildElement("AssetDir")->GetText();
 	}
 
-	std::string MEProject::getMarkupDir()
+	std::string MEProject::getMarkupDir() const
 	{
 		return this->m_rootElement->getXmlElement()->FirstChildElement("MarkupDir")->GetText();
 	}
 
-	std::string MEProject::getAnimSetName(int animSetIdx)
+	std::string MEProject::getGameDir() const
+	{
+		return this->m_rootElement->getXmlElement()->FirstChildElement("MarkupDir")->GetText();
+	}
+
+	std::string MEProject::getAnimSetName(int animSetIdx) const
 	{
 		if (animSetIdx < this->m_animSets.size())
 			return this->m_animSets[animSetIdx]->getName();
@@ -93,7 +105,7 @@ namespace MEProject
 		return "";
 	}
 
-	std::string MEProject::getRig(int animSetIdx)
+	std::string MEProject::getRig(int animSetIdx) const
 	{
 		if (animSetIdx < this->m_animSets.size())
 			return this->m_animSets[animSetIdx]->getRig();
@@ -101,7 +113,7 @@ namespace MEProject
 		return "";
 	}
 
-	std::string MEProject::getCharacterController(int animSetIdx)
+	std::string MEProject::getCharacterController(int animSetIdx) const
 	{
 		if (animSetIdx < this->m_animSets.size())
 			return this->m_animSets[animSetIdx]->getCharacterController();

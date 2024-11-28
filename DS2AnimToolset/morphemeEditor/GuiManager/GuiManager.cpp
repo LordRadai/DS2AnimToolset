@@ -698,6 +698,10 @@ void GuiManager::update(float dt)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+	this->selectTimeActPopup();
+	this->newProjectPopup();
+	this->progressIndicatorPopup();
+
 	this->rootWindow();
 	this->assetsWindow();
 	this->modelViewerWindow();
@@ -810,8 +814,10 @@ void GuiManager::rootWindow()
 
 		ImGui::Separator();
 
+		ImGui::BeginDisabled(editorApp->getProject() == nullptr);
 		if (ImGui::MenuItem("Save", "Ctrl+S")) { editorApp->getTaskFlags()->saveFile = true; }
 		if (ImGui::MenuItem("Save As")) { editorApp->getTaskFlags()->saveFileAs = true; }
+		ImGui::EndDisabled();
 
 		ImGui::Separator();
 		
@@ -982,9 +988,6 @@ void GuiManager::rootWindow()
 #endif
 
 	ImGui::EndMenuBar();
-
-	this->progressIndicatorPopup();
-
 	ImGui::End();
 }
 
@@ -1155,58 +1158,6 @@ void GuiManager::assetsWindow()
 {
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 	Character* character = editorApp->getCharacter();
-
-	if (character)
-	{
-		ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImVec2(2, 2), ImGuiCond_Appearing);
-		ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
-
-		if (ImGui::BeginPopupModal("Select TimeAct File"))
-		{
-			static std::wstring selectedFile;
-
-			if (ImGui::Button("Load"))
-			{
-				character->loadTimeAct(RString::toNarrow(selectedFile).c_str());
-
-				ImGui::CloseCurrentPopup();
-			}
-
-			ImGui::SameLine();
-
-			if (ImGui::Button("Cancel") || RInput::isKeyStateChanged(VK_ESCAPE))
-				ImGui::CloseCurrentPopup();
-
-			ImGui::BeginChild("file_list");
-
-			std::vector<std::wstring> fileList = editorApp->getTimeActFileList();
-
-			for (size_t i = 0; i < fileList.size(); i++)
-			{
-				ImGui::PushID(i);
-
-				ImGui::Selectable(RString::toNarrow(std::filesystem::path(fileList[i]).filename()).c_str(), selectedFile == fileList[i]);
-
-				if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
-					selectedFile = fileList[i];
-
-				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
-				{
-					selectedFile = fileList[i];
-					
-					character->loadTimeAct(RString::toNarrow(selectedFile).c_str());
-
-					ImGui::CloseCurrentPopup();
-				}
-
-				ImGui::PopID();
-			}
-
-			ImGui::EndChild();
-
-			ImGui::EndPopup();
-		}
-	}
 
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
@@ -2010,6 +1961,92 @@ void GuiManager::searchQueryWindow()
 	}
 
 	ImGui::End();
+}
+
+void GuiManager::selectTimeActPopup()
+{
+	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
+	Character* character = editorApp->getCharacter();
+
+	if (character)
+	{
+		ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImVec2(2, 2), ImGuiCond_Appearing);
+		ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
+
+		if (ImGui::BeginPopupModal("Select TimeAct File"))
+		{
+			static std::wstring selectedFile;
+
+			if (ImGui::Button("Load"))
+			{
+				character->loadTimeAct(RString::toNarrow(selectedFile).c_str());
+
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Cancel") || RInput::isKeyStateChanged(VK_ESCAPE))
+				ImGui::CloseCurrentPopup();
+
+			ImGui::BeginChild("file_list");
+
+			std::vector<std::wstring> fileList = editorApp->getTimeActFileList();
+
+			for (size_t i = 0; i < fileList.size(); i++)
+			{
+				ImGui::PushID(i);
+
+				ImGui::Selectable(RString::toNarrow(std::filesystem::path(fileList[i]).filename()).c_str(), selectedFile == fileList[i]);
+
+				if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+					selectedFile = fileList[i];
+
+				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+				{
+					selectedFile = fileList[i];
+
+					character->loadTimeAct(RString::toNarrow(selectedFile).c_str());
+
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::PopID();
+			}
+
+			ImGui::EndChild();
+
+			ImGui::EndPopup();
+		}
+	}
+}
+
+void GuiManager::newProjectPopup()
+{
+	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
+	MEProject::MEProject* meProj = editorApp->getProject();
+
+	if (meProj)
+	{
+		ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImGui::GetWindowSize() / 2, ImGuiCond_Appearing);
+		ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
+
+		if (ImGui::BeginPopupModal("New Project"))
+		{
+			static char rootDir[256];
+			ImGui::PathSelection("RootDir", rootDir);
+
+			if (ImGui::Button("Create"))
+			{
+				meProj->setRootDir(rootDir);
+				meProj->save();
+
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
+		}
+	}
 }
 
 void GuiManager::progressIndicatorPopup()

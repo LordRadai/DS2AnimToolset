@@ -8,6 +8,8 @@ namespace MEProject
 	public:
 		MEProject() : RXML::XMLFileObj() 
 		{
+			this->m_rootElement->getXmlElement()->SetName("MeProject");
+
 			this->setRootDir("");
 			this->setAssetDir("");
 			this->setMarkupDir("");
@@ -18,6 +20,8 @@ namespace MEProject
 
 		MEProject(const char* filename) : RXML::XMLFileObj(filename) 
 		{
+			this->m_rootElement->getXmlElement()->SetName("MeProject");
+
 			this->setRootDir("");
 			this->setAssetDir("");
 			this->setMarkupDir("");
@@ -32,17 +36,19 @@ namespace MEProject
 		void setTimeAct(std::string timeActPath);
 		void setAssetDir(std::string assetPath);
 		void setMarkupDir(std::string markupDir);
+		void setGameDir(std::wstring gamePath);
 		void addAnimSet(std::string name, std::string rig, std::string characterController);
 
-		std::string getRootDir();
-		std::string getModel();
-		std::string getNetwork();
-		std::string getTimeAct();
-		std::string getAssetDir();
-		std::string getMarkupDir();
-		std::string getAnimSetName(int animSetIdx);
-		std::string getRig(int animSetIdx);
-		std::string getCharacterController(int animSetIdx);
+		std::string getRootDir() const;
+		std::string getModel() const;
+		std::string getNetwork() const;
+		std::string getTimeAct() const;
+		std::string getAssetDir() const;
+		std::string getMarkupDir() const;
+		std::string getGameDir() const;
+		std::string getAnimSetName(int animSetIdx) const;
+		std::string getRig(int animSetIdx) const;
+		std::string getCharacterController(int animSetIdx) const;
 
 		bool load(const char* filename);
 		void destroy();
