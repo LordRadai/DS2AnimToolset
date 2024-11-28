@@ -122,6 +122,7 @@ public:
 
 	void destroyCharacter();
 
+	bool exportAllAndDestroy(std::wstring path);
 	bool exportAll(std::wstring path);
 	bool exportAndProcess(std::wstring path);
 	bool exportAndCompileTae(std::wstring path);

@@ -1907,6 +1907,15 @@ void MorphemeEditorApp::destroyCharacter()
 	this->m_character = nullptr;
 }
 
+bool MorphemeEditorApp::exportAllAndDestroy(std::wstring path)
+{
+	bool status = this->exportAll(path);
+
+	this->destroyCharacter();
+
+	return status;
+}
+
 bool MorphemeEditorApp::exportAll(std::wstring path)
 {
 	if (this->m_character != nullptr)

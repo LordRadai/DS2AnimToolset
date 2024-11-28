@@ -2082,24 +2082,39 @@ void GuiManager::importFilePopup()
 
 			if (ImGui::Button("Import"))
 			{
+				Character* character = editorApp->getCharacter();
+
 				std::wstring rootDir = RString::toWide(meProj->getRootDir());
 								
-				editorApp->getCharacter()->loadTimeAct(timeActPlFile);
+				character->loadTimeAct(timeActPlFile);
 
 				char timeActFile[256];
-				sprintf_s(timeActFile, "%ws\\%ws_tae.xml", rootDir.c_str(), editorApp->getCharacter()->getTimeAct()->getName().c_str());
+				sprintf_s(timeActFile, "%ws\\%s_tae.xml", rootDir.c_str(), character->getTimeAct()->getName().c_str());
 
 				char netFile[256];
-				sprintf_s(netFile, "%ws\\%ws.xml", rootDir.c_str(), editorApp->getCharacter()->getCharacterName().c_str());
+				sprintf_s(netFile, "%ws\\%ws.xml", rootDir.c_str(), character->getCharacterName().c_str());
 
 				meProj->setTimeAct(timeActFile);
 				meProj->setModel(modelFile);
 				meProj->setNetwork(netFile);
+
+				for (uint32_t i = 0; i < character->getMorphemeNetwork()->getNetworkDef()->getNumAnimSets(); i++)
+				{
+					char animSetName[256];
+					sprintf_s(animSetName, "%ws_%d", character->getCharacterName().c_str(), i);
+
+					char rigFileName[256];
+					sprintf_s(rigFileName, "%ws\\%ws_%d.mrarig", rootDir, character->getCharacterName().c_str(), i);
+
+					char characterControllerFileName[256];
+					sprintf_s(characterControllerFileName, "%ws\\%ws_%d.mrctrl", rootDir, character->getCharacterName().c_str(), i);
+				
+					meProj->addAnimSet(animSetName, rigFileName, characterControllerFileName);
+				}
+
 				meProj->save();
 
-				g_workerThread.load()->startThread("Decompile Assets", &MorphemeEditorApp::exportAll, editorApp, rootDir);
-
-				editorApp->destroyCharacter();
+				g_workerThread.load()->startThread("Decompile Assets", &MorphemeEditorApp::exportAllAndDestroy, editorApp, rootDir);
 
 				ImGui::CloseCurrentPopup();
 			}

@@ -19,7 +19,7 @@ namespace MEProject
 
 		void destroy();
 	protected:
-		AnimSet() {}
+		AnimSet(tinyxml2::XMLElement* elem) : RXML::XMLElemObj(elem) {}
 		~AnimSet() {}
 	};
 }

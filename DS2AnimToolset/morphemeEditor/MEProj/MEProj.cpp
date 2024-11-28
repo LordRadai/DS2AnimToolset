@@ -53,7 +53,9 @@ namespace MEProject
 
 	void MEProj::addAnimSet(std::string name, std::string rig, std::string characterController)
 	{
-		AnimSet* animSet = new AnimSet;
+		tinyxml2::XMLElement* animSets = RXML::getUniqueElement(this->m_rootElement->getXmlElement(), "AnimSets");
+
+		AnimSet* animSet = new AnimSet(animSets->InsertNewChildElement("AnimSet"));
 
 		animSet->setName(name);
 		animSet->setRig(rig);
