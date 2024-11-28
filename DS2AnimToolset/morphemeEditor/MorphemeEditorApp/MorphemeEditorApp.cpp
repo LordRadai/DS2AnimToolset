@@ -1545,7 +1545,7 @@ void MorphemeEditorApp::newFile()
 					pItem->Release();
 				}
 				else
-					MessageBoxW(NULL, L"Failed to save file", L"Application.cpp", MB_ICONERROR);
+					g_appLog->alertMessage(MsgLevel_Error, "Failed to save file");
 			}
 			pFileSave->Release();
 		}
@@ -1595,7 +1595,7 @@ void MorphemeEditorApp::loadFile()
 					pItem->Release();
 				}
 				else
-					MessageBoxW(NULL, L"Failed to save file", L"Application.cpp", MB_ICONERROR);
+					g_appLog->alertMessage(MsgLevel_Error, "Failed to open file");
 			}
 			pFileOpen->Release();
 		}
@@ -1728,7 +1728,7 @@ void MorphemeEditorApp::saveFileAs()
 					pItem->Release();
 				}
 				else
-					MessageBoxW(NULL, L"Failed to save file", L"Application.cpp", MB_ICONERROR);
+					g_appLog->alertMessage(MsgLevel_Error, "Failed to save file");
 			}
 			pFileSave->Release();
 		}
