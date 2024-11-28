@@ -3,10 +3,10 @@
 
 namespace MEProject
 {
-	class MEProject : public RXML::XMLFileObj
+	class MEProj : public RXML::XMLFileObj
 	{
 	public:
-		MEProject() : RXML::XMLFileObj() 
+		MEProj() : RXML::XMLFileObj() 
 		{
 			this->m_rootElement->getXmlElement()->SetName("MeProject");
 
@@ -18,7 +18,7 @@ namespace MEProject
 			this->setTimeAct("");
 		}
 
-		MEProject(const char* filename) : RXML::XMLFileObj(filename) 
+		MEProj(const char* filename) : RXML::XMLFileObj(filename) 
 		{
 			this->m_rootElement->getXmlElement()->SetName("MeProject");
 
@@ -53,7 +53,7 @@ namespace MEProject
 		bool load(const char* filename);
 		void destroy();
 	private:
-		~MEProject() {}
+		~MEProj() {}
 
 		std::vector<AnimSet*> m_animSets;
 	};

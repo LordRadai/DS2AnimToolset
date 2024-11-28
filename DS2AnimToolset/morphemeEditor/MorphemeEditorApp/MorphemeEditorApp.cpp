@@ -1485,7 +1485,7 @@ MorphemeEditorApp::MorphemeEditorApp() : Application()
 {
 	this->m_animPlayer = new AnimPlayer;
 	this->m_camera = new Camera;
-	this->m_projectFile = new MEProject::MEProject;
+	this->m_projectFile = new MEProject::MEProj;
 	this->m_flverResources = new FlverResources;
 
 	this->m_timeActEditor = TrackEditor::TimeActEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds, g_taeTemplate);
@@ -1501,10 +1501,63 @@ MorphemeEditorApp::~MorphemeEditorApp()
 
 void MorphemeEditorApp::newFile()
 {
-	if (this->m_projectFile)
-		this->m_projectFile->destroy();
+	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Editor Project", L"*.meproj"}, {L"All Files",L"*.*"} };
 
-	this->m_projectFile = new MEProject::MEProject();
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+		COINIT_DISABLE_OLE1DDE);
+
+	if (SUCCEEDED(hr))
+	{
+		IFileOpenDialog* pFileSave = NULL;
+
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL,
+			IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileSave));
+
+		if (SUCCEEDED(hr))
+		{
+			pFileSave->SetFileTypes(2, ComDlgFS);
+
+			// Show the Open dialog box.
+			hr = pFileSave->Show(NULL);
+
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem* pItem;
+				hr = pFileSave->GetResult(&pItem);
+
+				if (SUCCEEDED(hr))
+				{
+					PWSTR pszOutFilePath;
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
+
+					if (SUCCEEDED(hr))
+					{
+						std::filesystem::path filepath = std::filesystem::path(pszOutFilePath).replace_extension("").wstring() + L".meproj";
+
+						if (this->m_projectFile)
+							this->m_projectFile->destroy();
+
+						this->m_projectFile = new MEProject::MEProj(filepath.string().c_str());
+
+						std::string rootDir = filepath.parent_path().string();
+
+						this->m_projectFile->setRootDir(rootDir);
+						this->m_projectFile->setAssetDir(rootDir + "\\motion_xmd");
+						this->m_projectFile->setMarkupDir(rootDir + "\\morphemeMarkup");
+
+						this->m_projectFile->save();
+					}
+					pItem->Release();
+				}
+				else
+					g_appLog->alertMessage(MsgLevel_Error, "Failed to save file");
+			}
+			pFileSave->Release();
+		}
+		CoUninitialize();
+	}
 }
 
 void MorphemeEditorApp::loadFile()
@@ -1560,7 +1613,7 @@ void MorphemeEditorApp::loadFile()
 
 void MorphemeEditorApp::importFile()
 {
-	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"TimeAct", L"*.tae"}, {L"All Files",L"*.*"} };
+	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"All Files",L"*.*"} };
 
 	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
 		COINIT_DISABLE_OLE1DDE);
@@ -1575,7 +1628,7 @@ void MorphemeEditorApp::importFile()
 
 		if (SUCCEEDED(hr))
 		{
-			pFileOpen->SetFileTypes(3, ComDlgFS);
+			pFileOpen->SetFileTypes(2, ComDlgFS);
 
 			// Show the Open dialog box.
 			hr = pFileOpen->Show(NULL);
@@ -1595,6 +1648,7 @@ void MorphemeEditorApp::importFile()
 					{
 						std::filesystem::path filepath = std::wstring(pszFilePath);
 
+						/*
 						if (this->m_character)
 							this->m_character->destroy();
 
@@ -1610,8 +1664,6 @@ void MorphemeEditorApp::importFile()
 
 						if (filepath.extension() == ".nmb")
 							this->m_character = Character::createFromNmb(this->m_timeActFileList, RString::toNarrow(filepath).c_str());
-						else if (filepath.extension() == ".tae")
-							this->m_character = Character::createFromTimeAct(RString::toNarrow(filepath).c_str());
 
 						if ((this->m_character != nullptr) && (this->m_character->getCharacterId() == 1))
 						{
@@ -1623,6 +1675,9 @@ void MorphemeEditorApp::importFile()
 
 						this->m_camera->setOffset(Vector3::Zero);
 						this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
+						*/
+
+						ImGui::OpenPopup("Import File");
 					}
 					pItem->Release();
 				}

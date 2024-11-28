@@ -553,7 +553,7 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
         
         fileList = getTaeFileListFromChrId(timeActFolder + L"\\chr\\", character->m_chrId);
 
-        ImGui::OpenPopup("Select TimeAct File");
+        //ImGui::OpenPopup("Select TimeAct File");
 
         if (character->m_chrId == 1)
         {

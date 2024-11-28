@@ -2,12 +2,13 @@
 
 namespace MEProject
 {
+	class MEProj;
+
 	class AnimSet : public RXML::XMLElemObj
 	{
-	public:
-		AnimSet() {}
-		~AnimSet() {}
+		friend class MEProj;
 
+	public:
 		void setName(std::string name);
 		void setRig(std::string rigPath);
 		void setCharacterController(std::string ccPath);
@@ -17,5 +18,8 @@ namespace MEProject
 		std::string getCharacterController();
 
 		void destroy();
+	protected:
+		AnimSet() {}
+		~AnimSet() {}
 	};
 }

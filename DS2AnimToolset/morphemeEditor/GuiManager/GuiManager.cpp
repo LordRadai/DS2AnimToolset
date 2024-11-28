@@ -699,7 +699,7 @@ void GuiManager::update(float dt)
 	ImGui::NewFrame();
 
 	this->selectTimeActPopup();
-	this->newProjectPopup();
+	this->importFilePopup();
 	this->progressIndicatorPopup();
 
 	this->rootWindow();
@@ -810,14 +810,14 @@ void GuiManager::rootWindow()
 		if (ImGui::MenuItem("New", "Ctrl+N")) { editorApp->getTaskFlags()->newFile = true; }
 		if (ImGui::MenuItem("Open", "Ctrl+O")) { editorApp->getTaskFlags()->loadFile = true; }
 
+		ImGui::BeginDisabled(editorApp->getProject()->getRootDir() == "");
 		if (ImGui::MenuItem("Import")) { editorApp->getTaskFlags()->importFile = true; }
+		ImGui::EndDisabled();
 
 		ImGui::Separator();
 
-		ImGui::BeginDisabled(editorApp->getProject() == nullptr);
 		if (ImGui::MenuItem("Save", "Ctrl+S")) { editorApp->getTaskFlags()->saveFile = true; }
 		if (ImGui::MenuItem("Save As")) { editorApp->getTaskFlags()->saveFileAs = true; }
-		ImGui::EndDisabled();
 
 		ImGui::Separator();
 		
@@ -2021,25 +2021,32 @@ void GuiManager::selectTimeActPopup()
 	}
 }
 
-void GuiManager::newProjectPopup()
+void GuiManager::importFilePopup()
 {
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
-	MEProject::MEProject* meProj = editorApp->getProject();
+	MEProject::MEProj* meProj = editorApp->getProject();
 
 	if (meProj)
 	{
 		ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImGui::GetWindowSize() / 2, ImGuiCond_Appearing);
 		ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
 
-		if (ImGui::BeginPopupModal("New Project"))
+		if (ImGui::BeginPopupModal("Import File"))
 		{
-			static char rootDir[256];
-			ImGui::PathSelection("RootDir", rootDir);
+			static char gameDir[256];
+			static char modelFile[256];
+			static char timeActFile[256];
+			static char extAniBndDir[256];
 
-			if (ImGui::Button("Create"))
+			ImGui::PathSelection("Game Folder", gameDir);
+			ImGui::PathSelection("Model", modelFile);
+			ImGui::PathSelection("TimeAct", timeActFile);
+			ImGui::PathSelection("Extanibnd Folder", extAniBndDir);
+
+			if (ImGui::Button("Import"))
 			{
-				meProj->setRootDir(rootDir);
-				meProj->save();
+				std::wstring rootDir = RString::toWide(meProj->getRootDir());
+				g_workerThread.load()->startThread("Decompile Assets", &MorphemeEditorApp::exportAll, editorApp, rootDir);
 
 				ImGui::CloseCurrentPopup();
 			}

@@ -131,17 +131,17 @@ std::wstring browseForFolder()
         }
         CoUninitialize();
     }
+
+    return L"";
 }
 
 void ImGui::PathSelection(const char* label, char* v, ImGuiInputFlags flags)
 {
     ImGui::Text(label);
 
-    ImGui::SameLine();
-
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 25);
 
-    ImGui::InputText("", v, 256, flags);
+    ImGui::InputText("##text_box", v, 256, flags);
 
     ImGui::SameLine();
 

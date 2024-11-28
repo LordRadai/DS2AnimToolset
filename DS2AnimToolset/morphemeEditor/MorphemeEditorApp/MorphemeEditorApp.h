@@ -104,7 +104,7 @@ public:
 	void update(float dt);
 	void shutdown();
 
-	MEProject::MEProject* getProject() const { return this->m_projectFile; }
+	MEProject::MEProj* getProject() const { return this->m_projectFile; }
 	Character* getCharacter() const { return this->m_character; }
 	AnimPlayer* getAnimPlayer() const { return this->m_animPlayer; }
 	Camera* getCamera() const { return this->m_camera; }
@@ -119,6 +119,17 @@ public:
 	ExportSettings* getExportSettings() { return &this->m_exportSettings; }
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
 	std::wstring getGamePath() const { return this->m_gamePath; }
+
+	bool exportAll(std::wstring path);
+	bool exportAndProcess(std::wstring path);
+	bool exportAndCompileTae(std::wstring path);
+
+	bool exportTimeAct(std::wstring path);
+	bool exportNetwork(std::wstring path);
+	void exportAnimationsAndMarkups(std::wstring path);
+	bool exportModel(std::wstring path);
+	bool exportAnimations(std::wstring path);
+	bool exportAnimMarkups(std::wstring path);
 
 	float calcTimeActEditorCurrentTime();
 
@@ -140,17 +151,6 @@ private:
 
 	void importFile();
 
-	bool exportAll(std::wstring path);
-	bool exportAndProcess(std::wstring path);
-	bool exportAndCompileTae(std::wstring path);
-
-	bool exportTimeAct(std::wstring path);
-	bool exportNetwork(std::wstring path);
-	void exportAnimationsAndMarkups(std::wstring path);
-	bool exportModel(std::wstring path);
-	bool exportAnimations(std::wstring path);
-	bool exportAnimMarkups(std::wstring path);
-
 	bool compileMorphemeAssets(std::wstring path);
 	bool compileTimeActFiles(std::wstring path);
 
@@ -164,7 +164,7 @@ private:
 	PreviewFlags m_previewFlags;
 	ExportSettings m_exportSettings;
 
-	MEProject::MEProject* m_projectFile = nullptr;
+	MEProject::MEProj* m_projectFile = nullptr;
 	FlverResources* m_flverResources = nullptr;
 	PlayerModelPreset* m_playerModelPreset = nullptr;
 	Camera* m_camera = nullptr;

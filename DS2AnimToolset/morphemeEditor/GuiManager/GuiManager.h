@@ -47,6 +47,6 @@ private:
 	void searchQueryWindow();
 
 	void selectTimeActPopup();
-	void newProjectPopup();
+	void importFilePopup();
 	void progressIndicatorPopup();
 };
