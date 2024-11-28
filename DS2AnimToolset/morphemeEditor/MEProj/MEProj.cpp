@@ -55,7 +55,16 @@ namespace MEProject
 	{
 		tinyxml2::XMLElement* animSets = RXML::getUniqueElement(this->m_rootElement->getXmlElement(), "AnimSets");
 
-		AnimSet* animSet = new AnimSet(animSets->InsertNewChildElement("AnimSet"));
+		AnimSet* animSet = nullptr;
+
+		for (size_t i = 0; i < this->m_animSets.size(); i++)
+		{
+			if (this->m_animSets[i]->getName() == name)
+				animSet = this->m_animSets[i];
+		}
+
+		if (animSet == nullptr)
+			animSet = new AnimSet(animSets->InsertNewChildElement("AnimSet"));
 
 		animSet->setName(name);
 		animSet->setRig(rig);

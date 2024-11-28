@@ -2104,11 +2104,11 @@ void GuiManager::importFilePopup()
 					sprintf_s(animSetName, "%ws_%d", character->getCharacterName().c_str(), i);
 
 					char rigFileName[256];
-					sprintf_s(rigFileName, "%ws\\%ws_%d.mrarig", rootDir, character->getCharacterName().c_str(), i);
+					sprintf_s(rigFileName, "%ws\\%ws_%d.mrarig", rootDir.c_str(), character->getCharacterName().c_str(), i);
 
 					char characterControllerFileName[256];
-					sprintf_s(characterControllerFileName, "%ws\\%ws_%d.mrctrl", rootDir, character->getCharacterName().c_str(), i);
-				
+					sprintf_s(characterControllerFileName, "%ws\\%ws_%d.mrctrl", rootDir.c_str(), character->getCharacterName().c_str(), i);
+					
 					meProj->addAnimSet(animSetName, rigFileName, characterControllerFileName);
 				}
 
