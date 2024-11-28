@@ -90,7 +90,7 @@ Matrix AnimObject::getTransformAtTime(float time, int channelId)
     MR::AnimationSourceHandle* animHandle = this->m_animHandle;
     animHandle->setTime(time);
 
-    Matrix transform = NMDX::getWorldMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
+    Matrix transform = utils::NMDX::getWorldMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
 
     if ((channelId == animHandle->getRig()->getTrajectoryBoneIndex()) || (channelId == animHandle->getRig()->getCharacterRootBoneIndex()))
     {
@@ -98,7 +98,7 @@ Matrix AnimObject::getTransformAtTime(float time, int channelId)
         NMP::Quat trajRot;
         animHandle->getTrajectory(trajRot, trajPos);
 
-        transform *= NMDX::getWorldMatrix(trajRot, trajPos);
+        transform *= utils::NMDX::getWorldMatrix(trajRot, trajPos);
     }
 
     return transform;
@@ -115,10 +115,10 @@ Vector3 AnimObject::getTransformPosAtTime(float time, int channelId)
         NMP::Quat trajRot;
         animHandle->getTrajectory(trajRot, trajPos);
 
-        return NMDX::getDxVector(trajPos);
+        return utils::NMDX::getDxVector(trajPos);
     }
 
-    return NMDX::getDxVector(animHandle->getChannelData()[channelId].m_pos);
+    return utils::NMDX::getDxVector(animHandle->getChannelData()[channelId].m_pos);
 }
 
 Quaternion AnimObject::getTransformQuatAtTime(float time, int channelId)
@@ -132,10 +132,10 @@ Quaternion AnimObject::getTransformQuatAtTime(float time, int channelId)
         NMP::Quat trajRot;
         animHandle->getTrajectory(trajRot, trajPos);
 
-        return NMDX::getDxQuat(trajRot);
+        return utils::NMDX::getDxQuat(trajRot);
     }
 
-    return NMDX::getDxQuat(animHandle->getChannelData()[channelId].m_quat);
+    return utils::NMDX::getDxQuat(animHandle->getChannelData()[channelId].m_quat);
 }
 
 void AnimObject::setAnimTime(float time)

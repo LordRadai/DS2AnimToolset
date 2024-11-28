@@ -120,6 +120,8 @@ public:
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
 	std::wstring getGamePath() const { return this->m_gamePath; }
 
+	void destroyCharacter();
+
 	bool exportAll(std::wstring path);
 	bool exportAndProcess(std::wstring path);
 	bool exportAndCompileTae(std::wstring path);

@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "extern.h"
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
+#include "utils/utils.h"
 
 namespace
 {
@@ -28,60 +29,6 @@ namespace
         swprintf_s(name, L"c%04d", chrId);
 
         return std::wstring(name);
-    }
-
-    std::wstring findGamePath(std::wstring current_path)
-    {
-        std::filesystem::path gamepath = current_path;
-
-        do
-        {
-            std::wstring parent_path = gamepath.parent_path();
-            gamepath = parent_path;
-
-            int lastDirPos = parent_path.find_last_of(L"\\");
-
-            std::wstring folder = parent_path.substr(lastDirPos, parent_path.length());
-
-            if (folder.compare(L"\\") == 0)
-                return L"";
-
-            if (folder.compare(L"\\Game") == 0)
-                return gamepath;
-
-        } while (true);
-
-        return L"";
-    }
-
-    std::vector<std::wstring> getTaeFileListFromChrId(std::wstring tae_path, int chrId)
-    {
-        wchar_t chrIdStr[256];
-        swprintf_s(chrIdStr, L"%04d", chrId);
-
-        std::vector<std::wstring> files;
-
-        g_appLog->debugMessage(MsgLevel_Debug, "TimeAct belonging to c%04d:\n", chrId);
-
-        for (const auto& entry : std::filesystem::directory_iterator(tae_path))
-        {
-            if (entry.path().extension().compare(".tae") == 0)
-            {
-                std::wstring filename = entry.path().filename();
-                std::wstring filenameChrId = filename.substr(1, 4);
-
-                if (filenameChrId.compare(chrIdStr) == 0)
-                {
-                    g_appLog->debugMessage(MsgLevel_Debug, "\t%ws\n", filename.c_str());
-                    files.push_back(entry.path());
-                }
-            }
-        }
-
-        if (files.size() == 0)
-            g_appLog->alertMessage(MsgLevel_Debug, "Could not find any TimeAct files belonging to c%d in %ws\n", chrId, tae_path);
-
-        return files;
     }
 
     std::wstring getModelNameFromChrId(std::wstring model_path, std::wstring m_chrId)
@@ -121,37 +68,6 @@ namespace
             return;
 
         model->draw(renderManager);
-    }
-
-    std::string extractTimeActFilePrefix(std::string filename)
-    {
-        std::string name = std::filesystem::path(filename).filename().string();
-
-        if (name.at(0) == 'o')
-            return filename;
-
-        size_t underscorePos = filename.find_last_of('_');
-
-        if (underscorePos != std::string::npos)
-            return filename.substr(0, underscorePos);
-
-        return "";
-    }
-
-    std::string extractTimeActFileSuffix(std::string filename) 
-    {
-        std::string name = std::filesystem::path(filename).filename().string();
-
-        if (name.at(0) == 'o')
-            return "";
-
-        size_t underscorePos = filename.find('_');
-        size_t dotPos = filename.find('.');
-
-        if ((underscorePos != std::string::npos) && (dotPos != std::string::npos) && (dotPos > underscorePos))
-            return filename.substr(underscorePos + 1, dotPos - underscorePos - 1);
-
-        return "";
     }
 
     void writeArgumentValue(const TimeAct::Argument* arg, TimeAct::TaeExport::TimeActArgumentExportXML* argExport)
@@ -538,7 +454,8 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
     character->m_characterName = generateCharacterName(character->m_chrId);
 
-    std::wstring gamePath = findGamePath(RString::toWide(filename));
+    /*
+    std::wstring gamePath = utils::findGamePath(RString::toWide(filename));
 
     if (gamePath != L"")
     {
@@ -551,7 +468,7 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
 
         character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, characterDef->getNetworkDef()->getRig(0)));
         
-        fileList = getTaeFileListFromChrId(timeActFolder + L"\\chr\\", character->m_chrId);
+        fileList = utils::getTaeFileListFromChrId(timeActFolder + L"\\chr\\", character->m_chrId);
 
         //ImGui::OpenPopup("Select TimeAct File");
 
@@ -583,6 +500,7 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
     {
         g_appLog->alertMessage(MsgLevel_Info, "Failed to find Game path. No models or TimeAct files will be loaded\n");
     }
+    */
 
     return character;
 }
@@ -644,8 +562,8 @@ void Character::destroy()
 
 void Character::loadTimeAct(const char* filename)
 {
-    std::string prefix = extractTimeActFilePrefix(filename);
-    std::string suffix = extractTimeActFileSuffix(filename);
+    std::string prefix = utils::extractTimeActFilePrefix(filename);
+    std::string suffix = utils::extractTimeActFileSuffix(filename);
 
     g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct files:\n", filename);
 

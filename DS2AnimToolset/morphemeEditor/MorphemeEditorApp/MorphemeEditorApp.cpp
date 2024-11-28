@@ -8,6 +8,7 @@
 #include "FromSoftware/TimeAct/TaeExport/TaeExport.h"
 #include "FromSoftware/TimeAct/TaeTemplate/TaeTemplateXML/TaeTemplateXML.h"
 #include "MorphemeSystem/MorphemeDecompiler/Node/NodeUtils.h"
+#include "utils/utils.h"
 
 #ifndef _DEBUG
 #define ASSET_COMPILER_EXE "morphemeAssetCompiler.exe"
@@ -650,30 +651,6 @@ namespace
 				}
 			}
 		}
-	}
-
-	std::wstring findGamePath(std::wstring current_path)
-	{
-		std::filesystem::path gamepath = current_path;
-
-		do
-		{
-			std::wstring parent_path = gamepath.parent_path();
-			gamepath = parent_path;
-
-			int lastDirPos = parent_path.find_last_of(L"\\");
-
-			std::wstring folder = parent_path.substr(lastDirPos, parent_path.length());
-
-			if (folder.compare(L"\\") == 0)
-				return L"";
-
-			if (folder.compare(L"\\Game") == 0)
-				return gamepath;
-
-		} while (true);
-
-		return L"";
 	}
 
 	int getEquipIDByFilename(std::wstring filename)
@@ -1369,8 +1346,7 @@ void MorphemeEditorApp::shutdown()
 		delete this->m_animPlayer;
 	}
 
-	if (this->m_character)
-		this->m_character->destroy();
+	this->destroyCharacter();
 
 	if (this->m_camera)
 		delete this->m_camera;
@@ -1648,34 +1624,12 @@ void MorphemeEditorApp::importFile()
 					{
 						std::filesystem::path filepath = std::wstring(pszFilePath);
 
-						/*
-						if (this->m_character)
-							this->m_character->destroy();
+						this->destroyCharacter();
 
-						if (this->m_eventTrackEditor)
-							this->m_eventTrackEditor->reset();
-
-						if (this->m_timeActEditor)
-							this->m_timeActEditor->reset();
-
-						this->m_timeActFileList.clear();
-
-						this->m_gamePath = findGamePath(filepath);
+						this->m_gamePath = utils::findGamePath(filepath);
 
 						if (filepath.extension() == ".nmb")
 							this->m_character = Character::createFromNmb(this->m_timeActFileList, RString::toNarrow(filepath).c_str());
-
-						if ((this->m_character != nullptr) && (this->m_character->getCharacterId() == 1))
-						{
-							if (this->m_gamePath.compare(L"") != 0)
-								fillFlverResources(this->getFlverResources(), this->m_gamePath);
-						}
-
-						this->m_animPlayer->setCharacter(this->m_character);
-
-						this->m_camera->setOffset(Vector3::Zero);
-						this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
-						*/
 
 						ImGui::OpenPopup("Import File");
 					}
@@ -1935,6 +1889,22 @@ bool MorphemeEditorApp::exportAndCompileTae(std::wstring path)
 	g_workerThread.load()->increaseProgressStep();
 
 	return status;
+}
+
+void MorphemeEditorApp::destroyCharacter()
+{
+	if (this->m_character)
+		this->m_character->destroy();
+
+	if (this->m_eventTrackEditor)
+		this->m_eventTrackEditor->reset();
+
+	if (this->m_timeActEditor)
+		this->m_timeActEditor->reset();
+
+	this->m_timeActFileList.clear();
+
+	this->m_character = nullptr;
 }
 
 bool MorphemeEditorApp::exportAll(std::wstring path)

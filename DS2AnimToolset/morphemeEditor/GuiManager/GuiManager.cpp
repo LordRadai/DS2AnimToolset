@@ -7,6 +7,7 @@
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
 #include "WorkerThread/WorkerThread.h"
 #include "Camera/Camera.h"
+#include "utils/utils.h"
 
 #define MSAA_SETTING_COUNT 4
 
@@ -698,7 +699,7 @@ void GuiManager::update(float dt)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	this->selectTimeActPopup();
+	//this->selectTimeActPopup();
 	this->importFilePopup();
 	this->progressIndicatorPopup();
 
@@ -2035,21 +2036,78 @@ void GuiManager::importFilePopup()
 		{
 			static char gameDir[256];
 			static char modelFile[256];
-			static char timeActFile[256];
+			static char timeActPlFile[256];
+			static char timeActSfxFile[256];
+			static char timeActSndFile[256];
 			static char extAniBndDir[256];
 
 			ImGui::PathSelection("Game Folder", gameDir);
 			ImGui::PathSelection("Model", modelFile);
-			ImGui::PathSelection("TimeAct", timeActFile);
+			ImGui::FileSelection("TimeActPl", timeActPlFile);
+			ImGui::FileSelection("TimeActSfx", timeActSfxFile);
+			ImGui::FileSelection("TimeActSnd", timeActSndFile);
 			ImGui::PathSelection("Extanibnd Folder", extAniBndDir);
+
+			if (ImGui::Button("Auto"))
+			{
+				sprintf_s(gameDir, "%ws", editorApp->getGamePath().c_str());
+
+				if (strcmp(gameDir, "") == 0)
+					g_appLog->alertMessage(MsgLevel_Info, "Autocomplete feature needs a non-empty Game folder path\n");
+				else
+				{
+					sprintf_s(modelFile, "%s\\%s\\%ws.bnd", gameDir, "model\\chr", editorApp->getCharacter()->getCharacterName().c_str());
+
+					if (strcmp(timeActPlFile, "") == 0)
+						g_appLog->alertMessage(MsgLevel_Info, "You did not select a TimeActPl file. Auto complete won't guess the other TimeAct files to use\n");
+					else
+					{
+						std::string prefix = utils::extractTimeActFilePrefix(timeActPlFile);
+						std::string suffix = utils::extractTimeActFileSuffix(timeActPlFile);
+
+						std::string taePl = prefix + "_pl.tae";
+						std::string taeSfx = prefix + "_sfx.tae";
+						std::string taeSnd = prefix + "_snd.tae";
+
+						sprintf_s(timeActPlFile, "%s", taePl.c_str());
+						sprintf_s(timeActSfxFile, "%s", taeSfx.c_str());
+						sprintf_s(timeActSndFile, "%s", taeSnd.c_str());
+					}
+
+					sprintf_s(extAniBndDir, "%s\\%s", gameDir, "morpheme4\\chr\\c0001");
+				}
+			}
+
+			ImGui::Separator();
 
 			if (ImGui::Button("Import"))
 			{
 				std::wstring rootDir = RString::toWide(meProj->getRootDir());
+								
+				editorApp->getCharacter()->loadTimeAct(timeActPlFile);
+
+				char timeActFile[256];
+				sprintf_s(timeActFile, "%ws\\%ws_tae.xml", rootDir.c_str(), editorApp->getCharacter()->getTimeAct()->getName().c_str());
+
+				char netFile[256];
+				sprintf_s(netFile, "%ws\\%ws.xml", rootDir.c_str(), editorApp->getCharacter()->getCharacterName().c_str());
+
+				meProj->setTimeAct(timeActFile);
+				meProj->setModel(modelFile);
+				meProj->setNetwork(netFile);
+				meProj->save();
+
 				g_workerThread.load()->startThread("Decompile Assets", &MorphemeEditorApp::exportAll, editorApp, rootDir);
+
+				editorApp->destroyCharacter();
 
 				ImGui::CloseCurrentPopup();
 			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Cancel") || RInput::isKeyStateChanged(VK_ESCAPE))
+				ImGui::CloseCurrentPopup();
 
 			ImGui::EndPopup();
 		}

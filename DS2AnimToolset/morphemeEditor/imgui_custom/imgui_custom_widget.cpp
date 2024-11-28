@@ -135,19 +135,99 @@ std::wstring browseForFolder()
     return L"";
 }
 
+std::wstring browseForFile()
+{
+    COMDLG_FILTERSPEC ComDlgFS[] = { {L"All Files",L"*.*"} };
+
+    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+        COINIT_DISABLE_OLE1DDE);
+
+    if (SUCCEEDED(hr))
+    {
+        IFileOpenDialog* pFileOpen = NULL;
+
+        // Create the FileOpenDialog object.
+        hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+            IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+        if (SUCCEEDED(hr))
+        {
+            pFileOpen->SetFileTypes(1, ComDlgFS);
+
+            // Show the Open dialog box.
+            hr = pFileOpen->Show(NULL);
+
+            // Get the file name from the dialog box.
+            if (SUCCEEDED(hr))
+            {
+                IShellItem* pItem;
+                hr = pFileOpen->GetResult(&pItem);
+
+                if (SUCCEEDED(hr))
+                {
+                    PWSTR pszOutFilePath;
+                    hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
+
+                    if (SUCCEEDED(hr))
+                        return pszOutFilePath;
+
+                    pItem->Release();
+                }
+            }
+            pFileOpen->Release();
+        }
+        CoUninitialize();
+    }
+
+    return L"";
+}
+
 void ImGui::PathSelection(const char* label, char* v, ImGuiInputFlags flags)
 {
     ImGui::Text(label);
 
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 25);
 
-    ImGui::InputText("##text_box", v, 256, flags);
+    char textBoxId[256];
+    sprintf_s(textBoxId, "##%s_textBox", label);
+
+    ImGui::InputText(textBoxId, v, 256, flags);
 
     ImGui::SameLine();
 
-    if (ImGui::Button(ICON_FA_FOLDER))
+    char buttonLabel[256];
+    sprintf_s(buttonLabel, "%s##_%s", ICON_FA_FOLDER, label);
+
+    if (ImGui::Button(buttonLabel))
     {
         std::wstring selectedFolder = browseForFolder();
-        sprintf(v, "%ws", selectedFolder.c_str());
+
+        if (selectedFolder != L"")
+            sprintf(v, "%ws", selectedFolder.c_str());
+    }
+}
+
+void ImGui::FileSelection(const char* label, char* v, ImGuiInputFlags flags)
+{
+    ImGui::Text(label);
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 25);
+
+    char textBoxId[256];
+    sprintf_s(textBoxId, "##%s_textBox", label);
+
+    ImGui::InputText(textBoxId, v, 256, flags);
+
+    ImGui::SameLine();
+
+    char buttonLabel[256];
+    sprintf_s(buttonLabel, "%s##_%s", ICON_FA_FOLDER, label);
+
+    if (ImGui::Button(buttonLabel))
+    {
+        std::wstring selectedFile = browseForFile();
+
+        if (selectedFile != L"")
+            sprintf(v, "%ws", selectedFile.c_str());
     }
 }

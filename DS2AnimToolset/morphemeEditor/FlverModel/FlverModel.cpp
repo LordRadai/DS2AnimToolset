@@ -79,15 +79,15 @@ namespace
 		pos.y = tmp;
 		pos.x = -pos.x;
 
-		Matrix translation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateTranslation(NMDX::getDxVector(pos));
-		Matrix rotation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateFromQuaternion(NMDX::getDxQuat(rot));
+		Matrix translation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateTranslation(utils::NMDX::getDxVector(pos));
+		Matrix rotation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateFromQuaternion(utils::NMDX::getDxQuat(rot));
 
 		return rotation * translation;
 	}
 
 	Matrix getNmBoneTranform(MR::AnimationSourceHandle* animHandle, int channelId)
 	{
-		return NMDX::getWorldMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
+		return utils::NMDX::getWorldMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
 	}
 
 	Matrix computeNmBoneGlobalTransform(MR::AnimationSourceHandle* animHandle, int channelId)
@@ -113,12 +113,12 @@ namespace
 
 	Matrix computeNmBoneBindPoseGlobalTransform(const MR::AnimRigDef* rig, int channelId)
 	{
-		DirectX::XMMATRIX boneLocalTransform = NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(channelId), *rig->getBindPoseBonePos(channelId));
+		DirectX::XMMATRIX boneLocalTransform = utils::NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(channelId), *rig->getBindPoseBonePos(channelId));
 		int parentIdx = rig->getParentBoneIndex(channelId);
 
 		while (parentIdx != -1)
 		{
-			boneLocalTransform *= NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(parentIdx), *rig->getBindPoseBonePos(parentIdx));
+			boneLocalTransform *= utils::NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(parentIdx), *rig->getBindPoseBonePos(parentIdx));
 
 			parentIdx = rig->getParentBoneIndex(parentIdx);
 		}
@@ -205,7 +205,7 @@ namespace
 
 	Matrix getNmRelativeBindPose(const MR::AnimRigDef* rig, int idx)
 	{
-		Matrix transform = NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(idx), *rig->getBindPoseBonePos(idx));
+		Matrix transform = utils::NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(idx), *rig->getBindPoseBonePos(idx));
 		transform *= Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
 		transform *= Matrix::CreateReflection(Plane(Vector3::Up));
 
@@ -214,7 +214,7 @@ namespace
 
 	Matrix getNmRelativeTransform(MR::AnimationSourceHandle* animHandle, int idx)
 	{
-		Matrix transform = NMDX::getWorldMatrix(animHandle->getChannelData()[idx].m_quat, animHandle->getChannelData()[idx].m_pos);
+		Matrix transform = utils::NMDX::getWorldMatrix(animHandle->getChannelData()[idx].m_quat, animHandle->getChannelData()[idx].m_pos);
 		transform *= Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
 		transform *= Matrix::CreateReflection(Plane(Vector3::Up));
 
