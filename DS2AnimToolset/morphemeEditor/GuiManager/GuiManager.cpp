@@ -7,7 +7,6 @@
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
 #include "WorkerThread/WorkerThread.h"
 #include "Camera/Camera.h"
-#include "utils/utils.h"
 
 #define MSAA_SETTING_COUNT 4
 
@@ -574,21 +573,16 @@ void GuiManager::initialise(HWND hwnd, ID3D11DeviceContext* pContext, ID3D11Devi
 {
 	this->m_window = hwnd;
 
-	const float dpiScale = 1.f;
-
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport
-	//io.DisplayFramebufferScale = ImVec2(dpiScale, dpiScale);
 
 	// Setup Dear ImGui style
-	this->initGuiStyle();
-
-	ImGui::GetStyle().ScaleAllSizes(dpiScale);
+	ImGui::StyleColorsDark();
 
 	// Setup Platform/Scene backends
 	ImGui_ImplWin32_Init(hwnd);
@@ -597,8 +591,8 @@ void GuiManager::initialise(HWND hwnd, ID3D11DeviceContext* pContext, ID3D11Devi
 	g_appLog->debugMessage(MsgLevel_Info, "Add ImGui fonts\n");
 	io.Fonts->AddFontDefault();
 
-	const float baseFontSize = 13.0f * dpiScale; // 13.0f is the size of the default font. Change to the font size you use.
-	const float iconFontSize = baseFontSize * 2.0f / 3.0f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
+	float baseFontSize = 13.0f; // 13.0f is the size of the default font. Change to the font size you use.
+	float iconFontSize = baseFontSize * 2.0f / 3.0f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
 
 	// merge in icons from Font Awesome
 	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
@@ -607,6 +601,9 @@ void GuiManager::initialise(HWND hwnd, ID3D11DeviceContext* pContext, ID3D11Devi
 	icons_config.PixelSnapH = true;
 	icons_config.GlyphMinAdvanceX = iconFontSize;
 	io.Fonts->AddFontFromFileTTF("Data//font//" FONT_ICON_FILE_NAME_FAS, iconFontSize, &icons_config, icons_ranges);
+	// use FONT_ICON_FILE_NAME_FAR if you want regular instead of solid
+
+	this->initGuiStyle();
 
 	this->m_initialised = true;
 }
@@ -699,10 +696,6 @@ void GuiManager::update(float dt)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	//this->selectTimeActPopup();
-	this->importFilePopup();
-	this->progressIndicatorPopup();
-
 	this->rootWindow();
 	this->assetsWindow();
 	this->modelViewerWindow();
@@ -714,7 +707,14 @@ void GuiManager::update(float dt)
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 	MorphemeEditorApp::WindowFlags* windowFlags = editorApp->getWindowFlags();
 
-	this->handleUserInputs();
+	if (this->isApplicationFocused())
+	{
+		if (editorApp->getCharacter() != nullptr && editorApp->getCharacter()->getTimeAct() != nullptr)
+		{
+			if (RInput::isKeyComboPressed(VK_CONTROL, 0x46))	//Ctrl+F
+				windowFlags->searchQuery = true;
+		}
+	}
 
 	if (windowFlags->imGuiDemo)
 		ImGui::ShowDemoWindow(&windowFlags->imGuiDemo);
@@ -766,31 +766,6 @@ void GuiManager::shutdown()
 	ImGui::DestroyContext();
 }
 
-void GuiManager::handleUserInputs()
-{
-	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
-	MorphemeEditorApp::WindowFlags* windowFlags = editorApp->getWindowFlags();
-	MorphemeEditorApp::TaskFlags* taskFlags = editorApp->getTaskFlags();
-
-	if (this->isApplicationFocused())
-	{
-		if (RInput::isKeyComboPressed(VK_CONTROL, 0x4E))	//Ctrl+N
-			taskFlags->newFile = true;
-
-		if (RInput::isKeyComboPressed(VK_CONTROL, 0x4F))	//Ctrl+O
-			taskFlags->loadFile = true;
-
-		if (RInput::isKeyComboPressed(VK_CONTROL, 0x53))	//Ctrl+O
-			taskFlags->saveFile = true;
-
-		if (editorApp->getCharacter() != nullptr && editorApp->getCharacter()->getTimeAct() != nullptr)
-		{
-			if (RInput::isKeyComboPressed(VK_CONTROL, 0x46))	//Ctrl+F
-				windowFlags->searchQuery = true;
-		}
-	}
-}
-
 void GuiManager::rootWindow()
 {
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
@@ -808,17 +783,8 @@ void GuiManager::rootWindow()
 
 	if (ImGui::BeginMenu("File"))
 	{
-		if (ImGui::MenuItem("New", "Ctrl+N")) { editorApp->getTaskFlags()->newFile = true; }
-		if (ImGui::MenuItem("Open", "Ctrl+O")) { editorApp->getTaskFlags()->loadFile = true; }
-
-		ImGui::BeginDisabled(editorApp->getProject()->getRootDir() == "");
-		if (ImGui::MenuItem("Import")) { editorApp->getTaskFlags()->importFile = true; }
-		ImGui::EndDisabled();
-
-		ImGui::Separator();
-
-		if (ImGui::MenuItem("Save", "Ctrl+S")) { editorApp->getTaskFlags()->saveFile = true; }
-		if (ImGui::MenuItem("Save As")) { editorApp->getTaskFlags()->saveFileAs = true; }
+		if (ImGui::MenuItem("Open...")) { editorApp->getTaskFlags()->loadFile = true; }
+		//if (ImGui::MenuItem("Save...")) { editorApp->getTaskFlags()->saveFile = true; }
 
 		ImGui::Separator();
 		
@@ -989,6 +955,9 @@ void GuiManager::rootWindow()
 #endif
 
 	ImGui::EndMenuBar();
+
+	this->progressIndicatorPopup();
+
 	ImGui::End();
 }
 
@@ -1068,8 +1037,6 @@ void GuiManager::modelViewerWindow()
 		TrackEditor::EventTrackEditor* eventTrackEditor = editorApp->getEventTrackEditor();
 		TrackEditor::TimeActEditor* timeActEditor = editorApp->getTimeActEditor();
 
-		const float stepSize = 1.f / 30.f;
-
 		if (ImGui::Button(ICON_FA_BACKWARD_FAST))
 		{
 			animPlayer->setTime(RMath::frameToTime(eventTrackEditor->getClipStart()));
@@ -1078,10 +1045,9 @@ void GuiManager::modelViewerWindow()
 		}
 
 		ImGui::SameLine();
-
 		if (ImGui::Button(ICON_FA_BACKWARD_STEP) || ((GetAsyncKeyState(0x51) & 1) && isWindowFocused))
 		{
-			animPlayer->stepPlay(-stepSize);
+			animPlayer->stepPlay(-1.f / 30.f);
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
 			timeActEditor->setCurrentTime(animPlayer->getTime());
 		}
@@ -1100,16 +1066,14 @@ void GuiManager::modelViewerWindow()
 		}
 
 		ImGui::SameLine();
-
 		if (ImGui::Button(ICON_FA_FORWARD_STEP) || ((GetAsyncKeyState(0x45) & 1) && isWindowFocused))
 		{
-			animPlayer->stepPlay(stepSize);
+			animPlayer->stepPlay(1.f / 30.f);
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
 			timeActEditor->setCurrentTime(animPlayer->getTime());
 		}
 
 		ImGui::SameLine();
-
 		if (ImGui::Button(ICON_FA_FORWARD_FAST))
 		{
 			animPlayer->setTime(RMath::timeToFrame(eventTrackEditor->getClipEnd()));
@@ -1159,6 +1123,58 @@ void GuiManager::assetsWindow()
 {
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 	Character* character = editorApp->getCharacter();
+
+	if (character)
+	{
+		ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImVec2(2, 2), ImGuiCond_Appearing);
+		ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
+
+		if (ImGui::BeginPopupModal("Select TimeAct File"))
+		{
+			static std::wstring selectedFile;
+
+			if (ImGui::Button("Load"))
+			{
+				character->loadTimeAct(RString::toNarrow(selectedFile).c_str());
+
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Cancel") || RInput::isKeyStateChanged(VK_ESCAPE))
+				ImGui::CloseCurrentPopup();
+
+			ImGui::BeginChild("file_list");
+
+			std::vector<std::wstring> fileList = editorApp->getTimeActFileList();
+
+			for (size_t i = 0; i < fileList.size(); i++)
+			{
+				ImGui::PushID(i);
+
+				ImGui::Selectable(RString::toNarrow(std::filesystem::path(fileList[i]).filename()).c_str(), selectedFile == fileList[i]);
+
+				if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+					selectedFile = fileList[i];
+
+				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+				{
+					selectedFile = fileList[i];
+					
+					character->loadTimeAct(RString::toNarrow(selectedFile).c_str());
+
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::PopID();
+			}
+
+			ImGui::EndChild();
+
+			ImGui::EndPopup();
+		}
+	}
 
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
@@ -1962,171 +1978,6 @@ void GuiManager::searchQueryWindow()
 	}
 
 	ImGui::End();
-}
-
-void GuiManager::selectTimeActPopup()
-{
-	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
-	Character* character = editorApp->getCharacter();
-
-	if (character)
-	{
-		ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImVec2(2, 2), ImGuiCond_Appearing);
-		ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
-
-		if (ImGui::BeginPopupModal("Select TimeAct File"))
-		{
-			static std::wstring selectedFile;
-
-			if (ImGui::Button("Load"))
-			{
-				character->loadTimeAct(RString::toNarrow(selectedFile).c_str());
-
-				ImGui::CloseCurrentPopup();
-			}
-
-			ImGui::SameLine();
-
-			if (ImGui::Button("Cancel") || RInput::isKeyStateChanged(VK_ESCAPE))
-				ImGui::CloseCurrentPopup();
-
-			ImGui::BeginChild("file_list");
-
-			std::vector<std::wstring> fileList = editorApp->getTimeActFileList();
-
-			for (size_t i = 0; i < fileList.size(); i++)
-			{
-				ImGui::PushID(i);
-
-				ImGui::Selectable(RString::toNarrow(std::filesystem::path(fileList[i]).filename()).c_str(), selectedFile == fileList[i]);
-
-				if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
-					selectedFile = fileList[i];
-
-				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
-				{
-					selectedFile = fileList[i];
-
-					character->loadTimeAct(RString::toNarrow(selectedFile).c_str());
-
-					ImGui::CloseCurrentPopup();
-				}
-
-				ImGui::PopID();
-			}
-
-			ImGui::EndChild();
-
-			ImGui::EndPopup();
-		}
-	}
-}
-
-void GuiManager::importFilePopup()
-{
-	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
-	MEProject::MEProj* meProj = editorApp->getProject();
-
-	if (meProj)
-	{
-		ImGui::SetNextWindowPos(ImGui::GetWindowPos() + ImGui::GetWindowSize() / 2, ImGuiCond_Appearing);
-		ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Appearing);
-
-		if (ImGui::BeginPopupModal("Import File"))
-		{
-			static char gameDir[256];
-			static char modelFile[256];
-			static char timeActPlFile[256];
-			static char timeActSfxFile[256];
-			static char timeActSndFile[256];
-			static char extAniBndDir[256];
-
-			if (ImGui::Button("Auto"))
-			{
-				sprintf_s(gameDir, "%ws", editorApp->getGamePath().c_str());
-
-				if (strcmp(gameDir, "") == 0)
-					g_appLog->alertMessage(MsgLevel_Info, "Autocomplete feature needs a non-empty Game folder path\n");
-				else
-				{
-					sprintf_s(modelFile, "%s\\%s\\%ws.bnd", gameDir, "model\\chr", editorApp->getCharacter()->getCharacterName().c_str());
-
-					if (strcmp(timeActPlFile, "") == 0)
-						g_appLog->alertMessage(MsgLevel_Info, "You did not select a TimeActPl file. Auto complete won't guess the other TimeAct files to use\n");
-					else
-					{
-						std::string prefix = utils::extractTimeActFilePrefix(timeActPlFile);
-						std::string suffix = utils::extractTimeActFileSuffix(timeActPlFile);
-
-						std::string taePl = prefix + "_pl.tae";
-						std::string taeSfx = prefix + "_sfx.tae";
-						std::string taeSnd = prefix + "_snd.tae";
-
-						sprintf_s(timeActPlFile, "%s", taePl.c_str());
-						sprintf_s(timeActSfxFile, "%s", taeSfx.c_str());
-						sprintf_s(timeActSndFile, "%s", taeSnd.c_str());
-					}
-
-					sprintf_s(extAniBndDir, "%s\\%s", gameDir, "morpheme4\\chr\\c0001");
-				}
-			}
-
-			ImGui::PathSelection("Game Folder", gameDir);
-			ImGui::PathSelection("Model", modelFile);
-			ImGui::FileSelection("TimeActPl", timeActPlFile);
-			ImGui::FileSelection("TimeActSfx", timeActSfxFile);
-			ImGui::FileSelection("TimeActSnd", timeActSndFile);
-			ImGui::PathSelection("Extanibnd Folder", extAniBndDir);
-
-			ImGui::Separator();
-
-			if (ImGui::Button("Import"))
-			{
-				Character* character = editorApp->getCharacter();
-
-				std::wstring rootDir = RString::toWide(meProj->getRootDir());
-								
-				character->loadTimeAct(timeActPlFile);
-
-				char timeActFile[256];
-				sprintf_s(timeActFile, "%ws\\%s_tae.xml", rootDir.c_str(), character->getTimeAct()->getName().c_str());
-
-				char netFile[256];
-				sprintf_s(netFile, "%ws\\%ws.xml", rootDir.c_str(), character->getCharacterName().c_str());
-
-				meProj->setTimeAct(timeActFile);
-				meProj->setModel(modelFile);
-				meProj->setNetwork(netFile);
-
-				for (uint32_t i = 0; i < character->getMorphemeNetwork()->getNetworkDef()->getNumAnimSets(); i++)
-				{
-					char animSetName[256];
-					sprintf_s(animSetName, "%ws_%d", character->getCharacterName().c_str(), i);
-
-					char rigFileName[256];
-					sprintf_s(rigFileName, "%ws\\%ws_%d.mrarig", rootDir.c_str(), character->getCharacterName().c_str(), i);
-
-					char characterControllerFileName[256];
-					sprintf_s(characterControllerFileName, "%ws\\%ws_%d.mrctrl", rootDir.c_str(), character->getCharacterName().c_str(), i);
-					
-					meProj->addAnimSet(animSetName, rigFileName, characterControllerFileName);
-				}
-
-				meProj->save();
-
-				g_workerThread.load()->startThread("Decompile Assets", &MorphemeEditorApp::exportAllAndDestroy, editorApp, rootDir);
-
-				ImGui::CloseCurrentPopup();
-			}
-
-			ImGui::SameLine();
-
-			if (ImGui::Button("Cancel") || RInput::isKeyStateChanged(VK_ESCAPE))
-				ImGui::CloseCurrentPopup();
-
-			ImGui::EndPopup();
-		}
-	}
 }
 
 void GuiManager::progressIndicatorPopup()

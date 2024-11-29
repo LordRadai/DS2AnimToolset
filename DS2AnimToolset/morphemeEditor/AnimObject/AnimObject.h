@@ -14,8 +14,7 @@ public:
 	AnimObject(int id);
 	~AnimObject() {}
 
-	static AnimObject* createFromXmd(const char* filename, int id);
-	static AnimObject* createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id, const char* format);
+	static AnimObject* createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id);
 
 	inline bool operator <(const AnimObject& other)
 	{

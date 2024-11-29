@@ -59,7 +59,7 @@ MorphemeCharacter* MorphemeCharacter::create(MorphemeCharacterDef* networkDef)
   // Set the default active anim set - here we only have 1 to choose.
   instance->m_net->setActiveAnimSetIndex(0);
 
-  if (instance->m_characterDef->getDoSimulateNetwork())
+  if (instance->m_characterDef->simulateNetwork())
   {
       //----------------------
       // Perform an initial update of the network with start time of zero

@@ -14,8 +14,6 @@
 #include "TrackEditor/EventTrackEditor.h"
 #include "FileIDNamesTable/FileIDNamesTable.h"
 #include "PlayerModelPreset/PlayerModelPreset.h"
-#include "MEProj/MEProj.h"
-#include "AnimBrowser/AnimBrowser.h"
 
 struct FlverResources
 {
@@ -50,12 +48,9 @@ public:
 	{
 		bool resetCamera = false;
 
-		bool newFile = false;
 		bool loadFile = false;
 		bool saveFile = false;
-		bool saveFileAs = false;
 
-		bool importFile = false;
 		bool exportTaeTemplateXml = false;
 		bool exportTae = false;
 		bool exportModel = false;
@@ -105,7 +100,6 @@ public:
 	void update(float dt);
 	void shutdown();
 
-	MEProject::MEProj* getProject() const { return this->m_projectFile; }
 	Character* getCharacter() const { return this->m_character; }
 	AnimPlayer* getAnimPlayer() const { return this->m_animPlayer; }
 	Camera* getCamera() const { return this->m_camera; }
@@ -121,22 +115,6 @@ public:
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
 	std::wstring getGamePath() const { return this->m_gamePath; }
 
-	void destroyCharacter();
-
-	bool exportAllAndDestroy(std::wstring path);
-	bool exportAll(std::wstring path);
-	bool exportAndProcess(std::wstring path);
-	bool exportAndCompileTae(std::wstring path);
-
-	bool exportTimeAct(std::wstring path);
-	bool exportNetwork(std::wstring path);
-	void exportAnimationsAndMarkups(std::wstring path);
-	bool exportModel(std::wstring path);
-	bool exportAnimations(std::wstring path);
-	bool exportAnimMarkups(std::wstring path);
-
-	float calcTimeActEditorCurrentTime();
-
 	static MorphemeEditorApp* getInstance();
 
 private:
@@ -148,12 +126,19 @@ private:
 	void loadPlayerModelPreset();
 	void savePlayerModelPreset();
 
-	void newFile();
 	void loadFile();
 	void saveFile();
-	void saveFileAs();
 
-	void importFile();
+	bool exportAll(std::wstring path);
+	bool exportAndProcess(std::wstring path);
+	bool exportAndCompileTae(std::wstring path);
+
+	bool exportTimeAct(std::wstring path);
+	bool exportNetwork(std::wstring path);
+	void exportAnimationsAndMarkups(std::wstring path);
+	bool exportModel(std::wstring path);
+	bool exportAnimations(std::wstring path);
+	bool exportAnimMarkups(std::wstring path);
 
 	bool compileMorphemeAssets(std::wstring path);
 	bool compileTimeActFiles(std::wstring path);
@@ -168,11 +153,9 @@ private:
 	PreviewFlags m_previewFlags;
 	ExportSettings m_exportSettings;
 
-	MEProject::MEProj* m_projectFile = nullptr;
 	FlverResources* m_flverResources = nullptr;
 	PlayerModelPreset* m_playerModelPreset = nullptr;
 	Camera* m_camera = nullptr;
-	AnimBrowser* m_animBrowser = nullptr;
 	AnimPlayer* m_animPlayer = nullptr;
 	Character* m_character = nullptr;
 

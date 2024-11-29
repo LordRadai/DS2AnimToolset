@@ -1,7 +1,7 @@
 #include "AnimObject.h"
 #include <string>
 #include <filesystem>
-#include "utils/NMDX/NMDX.h"
+#include "utils/utils.h"
 #include "RCore.h"
 #include "MorphemeSystem/MorphemeCharacterDef/MorphemeCharacterDef.h"
 #include "MorphemeSystem/MorphemeDecompiler/MorphemeDecompiler.h"
@@ -11,29 +11,7 @@ AnimObject::AnimObject(int id)
     this->m_id = id;
 }
 
-AnimObject* AnimObject::createFromXmd(const char* filename, int id)
-{
-    AnimObject* animObj = new AnimObject(id);
-
-    std::filesystem::path name = std::filesystem::path(filename).filename();
-
-    wchar_t markupPath[256];
-    swprintf_s(markupPath, L"morphemeMarkup\\");
-
-    std::filesystem::path takeListPath = std::filesystem::path(markupPath).string() + RString::removeExtension(filename) + ".xml";
-
-    ME::ExportFactoryXML exportFactory;
-
-    animObj->m_animHandle = nullptr;
-    animObj->m_takeList = static_cast<ME::TakeListXML*>(exportFactory.loadAsset(takeListPath.string().c_str()));
-
-    animObj->m_animFileName = std::string(filename);
-    animObj->m_animName = std::string(name.string());
-
-    return animObj;
-}
-
-AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id, const char* format)
+AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR::AnimRigDef* rig, MR::RigToAnimMap* rigToAnimMap, const char* filename, int id)
 {
     AnimObject* animObj = new AnimObject(id);
 
@@ -49,7 +27,7 @@ AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR
     //Look for the NSA anim file in the same folder as the NMB file first
     if (fileSize > -1)
     {
-        animHandle->openAnimation((unsigned char*)animData, fileSize, format);
+        animHandle->openAnimation((unsigned char*)animData, fileSize, "nsa");
         found = true;
     }
 
@@ -68,7 +46,7 @@ AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR
 
                 if (fileSize > -1)
                 {
-                    animHandle->openAnimation((unsigned char*)animData, fileSize, format);
+                    animHandle->openAnimation((unsigned char*)animData, fileSize, "nsa");
                     found = true;
                     break;
                 }
@@ -99,6 +77,7 @@ AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR
 
     animObj->m_animHandle = animHandle;
     animObj->m_takeList = MD::exportAnimMarkup(owner, id, takeListPath.c_str(), 30);
+    animObj->m_id = id;
 
     animObj->m_animFileName = std::string(filename);
     animObj->m_animName = std::string(name.string());

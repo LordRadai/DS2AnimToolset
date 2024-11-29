@@ -30,8 +30,6 @@ private:
 
 	inline static GuiManager* _instance = nullptr;
 
-	void handleUserInputs();
-
 	void rootWindow();
 	void modelViewerWindow();
 	void assetsWindow();
@@ -46,7 +44,5 @@ private:
 	void partsManagerWindow();
 	void searchQueryWindow();
 
-	void selectTimeActPopup();
-	void importFilePopup();
 	void progressIndicatorPopup();
 };

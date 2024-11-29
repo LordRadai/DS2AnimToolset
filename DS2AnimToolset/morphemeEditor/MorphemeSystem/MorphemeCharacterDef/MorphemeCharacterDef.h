@@ -30,6 +30,12 @@
 class MorphemeCharacterDef
 {
 public:
+    struct AnimData
+    {
+        char m_bundleDir[500];
+        MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* m_animFileLookUp;
+    };
+
   virtual ~MorphemeCharacterDef() {};
 
   //----------------------------
@@ -57,10 +63,12 @@ public:
   UINT  getNumRegisteredAssets() const { return m_numRegisteredAssets; }
   UINT  getNumClientAssets()     const { return m_numClientAssets; }
 
-  MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* getAnimFileLookUp() const { return m_animRuntimeIDToFilenameLookup; }
+  MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* getAnimFileLookUp() const { return m_metadata.m_animFileLookUp; }
+  const char* getBundleFilepath() const { return m_metadata.m_bundleDir; }
   const char* getFilename() const { return m_filename; }
-  bool getDoSimulateNetwork() const { return this->m_simulateNetwork; }
-  void setDoSimulateNetwork(bool simulate) { this->m_simulateNetwork = simulate; }
+  int getCharacterId() const { return m_chrId; }
+  bool simulateNetwork() const { return this->m_simulateNetwork; }
+  void setSimulateNetwork(bool simulate) { this->m_simulateNetwork = simulate; }
   int getNumRigToAnimMaps() { return this->m_rigToAnimMaps.size(); }
   int getNumCharacterControllers() { return this->m_characterControllerDefs.size(); }
   int getNumAnims(int animSetIdx) { return this->m_anims[animSetIdx].size(); }
@@ -69,7 +77,7 @@ public:
   MR::CharacterControllerDef* getCharacterController(int idx);
   AnimObject* getAnimation(int animSetIdx, int idx);
   AnimObject* getAnimationById(int animSetIdx, int id);
-  void addAnimation(const char* filename, int animSetIdx = 0, const char* format = "nsa");
+  void addAnimation(const char* filename, int animSetIdx = 0);
   void sortAnimations();
 
 protected:
@@ -77,7 +85,7 @@ protected:
   MorphemeCharacterDef():
     m_isLoaded(false),
     m_netDef(NULL),
-    m_animRuntimeIDToFilenameLookup(NULL),
+    m_metadata{ "", NULL},
     m_registeredAssetIDs(NULL),
     m_clientAssets(NULL),
     m_numRegisteredAssets(0),
@@ -106,10 +114,11 @@ protected:
   UINT  m_numRegisteredAssets;
   UINT  m_numClientAssets;
 
-  MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* m_animRuntimeIDToFilenameLookup;
+  AnimData m_metadata;
   char m_filename[255];
 
   bool m_simulateNetwork = true;
+  int m_chrId;
   std::vector<std::vector<AnimObject*>> m_anims;
 };
 

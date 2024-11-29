@@ -65,6 +65,13 @@ public:
 	void initialise(HWND hwnd);
 	void shutdown();
 
+	bool createD3DDevice();
+	void createGuiRenderTarget();
+	void clearD3DDevice();
+	void clearGuiRenderTarget();
+
+	void createResources();
+
 	void update(float dt);
 	void clear();
 	void render();
@@ -91,19 +98,12 @@ public:
 	Settings* getSettings() { return &this->m_settings; }
 
 	void applyDebugEffect(DirectX::SimpleMath::Matrix world);
-	void applyEffect(DirectX::SimpleMath::Matrix world, float alpha);
+	void applyPhysicalEffect(DirectX::SimpleMath::Matrix world, float alpha);
 	void setInputLayout(InputLayoutType type);
 
 private:
 	void loadSettings();
 	void saveSettings();
-
-	bool createD3DDevice();
-	void createGuiRenderTarget();
-	void clearD3DDevice();
-	void clearGuiRenderTarget();
-
-	void createResources();
 
 	Settings m_settings;
 

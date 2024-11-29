@@ -1,4 +1,3 @@
-#include <thread>
 #include "MorphemeEditorApp.h"
 #include "extern.h"
 #include "RenderManager/RenderManager.h"
@@ -8,7 +7,7 @@
 #include "FromSoftware/TimeAct/TaeExport/TaeExport.h"
 #include "FromSoftware/TimeAct/TaeTemplate/TaeTemplateXML/TaeTemplateXML.h"
 #include "MorphemeSystem/MorphemeDecompiler/Node/NodeUtils.h"
-#include "utils/utils.h"
+#include <thread>
 
 #ifndef _DEBUG
 #define ASSET_COMPILER_EXE "morphemeAssetCompiler.exe"
@@ -24,6 +23,39 @@ namespace
 		GetModuleFileNameA(NULL, filePath, 256);
 
 		return std::filesystem::path(filePath).parent_path().string();
+	}
+
+	float calcTimeActEditorCurrentTime(TrackEditor::EventTrackEditor* eventTrackEditor, float timeActTrackLenght, float fallbackTimeVal)
+	{
+		TrackEditor::Track* timeActTrack = nullptr;
+
+		for (size_t i = 0; i < eventTrackEditor->getNumTracks(); i++)
+		{
+			TrackEditor::Track* track = eventTrackEditor->getTrack(i);
+			
+			if (track->userData == 1000)
+				timeActTrack = track;
+		}
+
+		if (timeActTrack)
+		{
+			const float currentTime = eventTrackEditor->getCurrentTime();
+
+			const float startTime = RMath::frameToTime(timeActTrack->events[0]->frameStart, eventTrackEditor->getFps());
+			const float endTime = RMath::frameToTime(timeActTrack->events[0]->frameEnd, eventTrackEditor->getFps());
+			float eventFraction = 0.f;
+
+			if (currentTime < startTime)
+				eventFraction = 0.f;
+			else if (currentTime > endTime)
+				eventFraction = 1.f;
+			else
+				eventFraction = (currentTime - startTime) / (endTime - startTime);
+
+			return eventFraction * timeActTrackLenght;
+		}
+
+		return fallbackTimeVal;
 	}
 
 	float calculateOptimalCameraDistance(Camera* camera, Character* character)
@@ -653,6 +685,30 @@ namespace
 		}
 	}
 
+	std::wstring findGamePath(std::wstring current_path)
+	{
+		std::filesystem::path gamepath = current_path;
+
+		do
+		{
+			std::wstring parent_path = gamepath.parent_path();
+			gamepath = parent_path;
+
+			int lastDirPos = parent_path.find_last_of(L"\\");
+
+			std::wstring folder = parent_path.substr(lastDirPos, parent_path.length());
+
+			if (folder.compare(L"\\") == 0)
+				return L"";
+
+			if (folder.compare(L"\\Game") == 0)
+				return gamepath;
+
+		} while (true);
+
+		return L"";
+	}
+
 	int getEquipIDByFilename(std::wstring filename)
 	{
 		size_t first = filename.find_first_of(L"_") + 1;
@@ -1080,6 +1136,14 @@ void MorphemeEditorApp::initialise()
 {
 	MorphemeSystem::initMorpheme();
 
+	this->m_flverResources = new FlverResources;
+
+	this->m_timeActEditor = TrackEditor::TimeActEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds, g_taeTemplate);
+	this->m_eventTrackEditor = TrackEditor::EventTrackEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorRenameTrack | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds);
+
+	this->m_eventTrackEditor->registerListener(this->m_timeActEditor);
+	this->m_timeActEditor->registerListener(this->m_eventTrackEditor);
+
 	this->loadSettings();
 	this->loadPlayerModelPreset();
 
@@ -1105,7 +1169,7 @@ void MorphemeEditorApp::update(float dt)
 			this->m_eventTrackEditor->setTimeCodeFormat(this->m_timeActEditor->getTimeCodeFormat());
 		}
 
-		const float timeActEditorTime = this->calcTimeActEditorCurrentTime();
+		const float timeActEditorTime = calcTimeActEditorCurrentTime(this->m_eventTrackEditor, RMath::frameToTime(this->m_timeActEditor->getFrameMax(), this->m_timeActEditor->getFps()), this->m_animPlayer->getTime());
 
 		if (this->m_timeActEditor && this->m_timeActEditor->getSource())
 		{
@@ -1165,13 +1229,6 @@ void MorphemeEditorApp::update(float dt)
 	if (this->m_eventTrackEditor)
 		this->m_eventTrackEditor->update(dt);
 
-	if (this->m_taskFlags.newFile)
-	{
-		this->m_taskFlags.newFile = false;
-
-		this->newFile();
-	}
-
 	if (this->m_taskFlags.loadFile)
 	{
 		this->m_taskFlags.loadFile = false;
@@ -1184,20 +1241,6 @@ void MorphemeEditorApp::update(float dt)
 		this->m_taskFlags.saveFile = false;
 
 		this->saveFile();
-	}
-
-	if (this->m_taskFlags.saveFileAs)
-	{
-		this->m_taskFlags.saveFileAs = false;
-
-		this->saveFileAs();
-	}
-
-	if (this->m_taskFlags.importFile)
-	{
-		this->m_taskFlags.importFile = false;
-
-		this->importFile();
 	}
 
 	if (this->m_taskFlags.exportAll)
@@ -1346,15 +1389,8 @@ void MorphemeEditorApp::shutdown()
 		delete this->m_animPlayer;
 	}
 
-	if (this->m_projectFile)
-		this->m_projectFile->destroy();
-
-	if (this->m_animBrowser)
-	{
-		delete this->m_animBrowser;
-	}
-
-	this->destroyCharacter();
+	if (this->m_character)
+		this->m_character->destroy();
 
 	if (this->m_camera)
 		delete this->m_camera;
@@ -1367,40 +1403,6 @@ void MorphemeEditorApp::shutdown()
 
 	if (this->_instance)
 		delete this->_instance;
-}
-
-float MorphemeEditorApp::calcTimeActEditorCurrentTime()
-{
-	TrackEditor::Track* timeActTrack = nullptr;
-
-	for (size_t i = 0; i < this->m_eventTrackEditor->getNumTracks(); i++)
-	{
-		TrackEditor::Track* track = this->m_eventTrackEditor->getTrack(i);
-
-		if (track->userData == 1000)
-			timeActTrack = track;
-	}
-
-	if (timeActTrack)
-	{
-		const float taeTrackLen = RMath::frameToTime(this->m_timeActEditor->getFrameMax(), this->m_timeActEditor->getFps());
-		const float currentTime = this->m_eventTrackEditor->getCurrentTime();
-
-		const float startTime = RMath::frameToTime(timeActTrack->events[0]->frameStart, this->m_eventTrackEditor->getFps());
-		const float endTime = RMath::frameToTime(timeActTrack->events[0]->frameEnd, this->m_eventTrackEditor->getFps());
-		float eventFraction = 0.f;
-
-		if (currentTime < startTime)
-			eventFraction = 0.f;
-		else if (currentTime > endTime)
-			eventFraction = 1.f;
-		else
-			eventFraction = (currentTime - startTime) / (endTime - startTime);
-
-		return eventFraction * taeTrackLen;
-	}
-
-	return this->m_animPlayer->getTime();
 }
 
 void MorphemeEditorApp::loadSettings()
@@ -1467,87 +1469,17 @@ void MorphemeEditorApp::savePlayerModelPreset()
 
 MorphemeEditorApp::MorphemeEditorApp() : Application()
 {
-	this->m_animPlayer = new AnimPlayer;
-	this->m_camera = new Camera;
-	this->m_projectFile = new MEProject::MEProj;
-	this->m_flverResources = new FlverResources;
-	this->m_animBrowser = new AnimBrowser;
-
-	this->m_timeActEditor = TrackEditor::TimeActEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds, g_taeTemplate);
-	this->m_eventTrackEditor = TrackEditor::EventTrackEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorRenameTrack | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds);
-
-	this->m_eventTrackEditor->registerListener(this->m_timeActEditor);
-	this->m_timeActEditor->registerListener(this->m_eventTrackEditor);
+	this->m_animPlayer = new AnimPlayer();
+	this->m_camera = new Camera();
 }
 
 MorphemeEditorApp::~MorphemeEditorApp()
 {
 }
 
-void MorphemeEditorApp::newFile()
-{
-	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Editor Project", L"*.meproj"}, {L"All Files",L"*.*"} };
-
-	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
-		COINIT_DISABLE_OLE1DDE);
-
-	if (SUCCEEDED(hr))
-	{
-		IFileOpenDialog* pFileSave = NULL;
-
-		// Create the FileOpenDialog object.
-		hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL,
-			IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileSave));
-
-		if (SUCCEEDED(hr))
-		{
-			pFileSave->SetFileTypes(2, ComDlgFS);
-
-			// Show the Open dialog box.
-			hr = pFileSave->Show(NULL);
-
-			// Get the file name from the dialog box.
-			if (SUCCEEDED(hr))
-			{
-				IShellItem* pItem;
-				hr = pFileSave->GetResult(&pItem);
-
-				if (SUCCEEDED(hr))
-				{
-					PWSTR pszOutFilePath;
-					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
-
-					if (SUCCEEDED(hr))
-					{
-						std::filesystem::path filepath = std::filesystem::path(pszOutFilePath).replace_extension("").wstring() + L".meproj";
-
-						if (this->m_projectFile)
-							this->m_projectFile->destroy();
-
-						this->m_projectFile = new MEProject::MEProj(filepath.string().c_str());
-
-						std::string rootDir = filepath.parent_path().string();
-
-						this->m_projectFile->setRootDir(rootDir);
-						this->m_projectFile->setAssetDir(rootDir + "\\motion_xmd");
-						this->m_projectFile->setMarkupDir(rootDir + "\\morphemeMarkup");
-
-						this->m_projectFile->save();
-					}
-					pItem->Release();
-				}
-				else
-					g_appLog->alertMessage(MsgLevel_Error, "Failed to save file");
-			}
-			pFileSave->Release();
-		}
-		CoUninitialize();
-	}
-}
-
 void MorphemeEditorApp::loadFile()
 {
-	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Editor Project", L"*.meproj"}, {L"All Files",L"*.*"} };
+	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"TimeAct", L"*.tae"}, {L"All Files",L"*.*"} };
 
 	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
 		COINIT_DISABLE_OLE1DDE);
@@ -1562,58 +1494,7 @@ void MorphemeEditorApp::loadFile()
 
 		if (SUCCEEDED(hr))
 		{
-			pFileOpen->SetFileTypes(2, ComDlgFS);
-
-			// Show the Open dialog box.
-			hr = pFileOpen->Show(NULL);
-
-			// Get the file name from the dialog box.
-			if (SUCCEEDED(hr))
-			{
-				IShellItem* pItem;
-				hr = pFileOpen->GetResult(&pItem);
-
-				if (SUCCEEDED(hr))
-				{
-					PWSTR pszOutFilePath;
-					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
-
-					if (SUCCEEDED(hr))
-					{
-						std::filesystem::path filepath = std::wstring(pszOutFilePath);
-
-						if (this->m_projectFile)
-							this->m_projectFile->load(filepath.string().c_str());
-					}
-					pItem->Release();
-				}
-				else
-					g_appLog->alertMessage(MsgLevel_Error, "Failed to open file");
-			}
-			pFileOpen->Release();
-		}
-		CoUninitialize();
-	}
-}
-
-void MorphemeEditorApp::importFile()
-{
-	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"All Files",L"*.*"} };
-
-	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
-		COINIT_DISABLE_OLE1DDE);
-
-	if (SUCCEEDED(hr))
-	{
-		IFileOpenDialog* pFileOpen = NULL;
-
-		// Create the FileOpenDialog object.
-		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
-			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
-
-		if (SUCCEEDED(hr))
-		{
-			pFileOpen->SetFileTypes(2, ComDlgFS);
+			pFileOpen->SetFileTypes(3, ComDlgFS);
 
 			// Show the Open dialog box.
 			hr = pFileOpen->Show(NULL);
@@ -1629,18 +1510,39 @@ void MorphemeEditorApp::importFile()
 					PWSTR pszFilePath;
 					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
 
+					// Display the file name to the user.
 					if (SUCCEEDED(hr))
 					{
 						std::filesystem::path filepath = std::wstring(pszFilePath);
 
-						this->destroyCharacter();
+						if (this->m_character)
+							this->m_character->destroy();
 
-						this->m_gamePath = utils::findGamePath(filepath);
+						if (this->m_eventTrackEditor)
+							this->m_eventTrackEditor->reset();
+
+						if (this->m_timeActEditor)
+							this->m_timeActEditor->reset();
+
+						this->m_timeActFileList.clear();
+
+						this->m_gamePath = findGamePath(filepath);
 
 						if (filepath.extension() == ".nmb")
-							this->m_character = Character::createFromNmb(RString::toNarrow(filepath).c_str(), false);
+							this->m_character = Character::createFromNmb(this->m_timeActFileList, RString::toNarrow(filepath).c_str());
+						else if (filepath.extension() == ".tae")
+							this->m_character = Character::createFromTimeAct(RString::toNarrow(filepath).c_str());
 
-						ImGui::OpenPopup("Import File");
+						if ((this->m_character != nullptr) && (this->m_character->getCharacterId() == 1))
+						{
+							if (this->m_gamePath.compare(L"") != 0)
+								fillFlverResources(this->getFlverResources(), this->m_gamePath);
+						}
+
+						this->m_animPlayer->setCharacter(this->m_character);
+
+						this->m_camera->setOffset(Vector3::Zero);
+						this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
 					}
 					pItem->Release();
 				}
@@ -1655,18 +1557,7 @@ void MorphemeEditorApp::importFile()
 
 void MorphemeEditorApp::saveFile()
 {
-	if (this->m_projectFile)
-	{
-		if (this->m_projectFile->getDstFileName() != "")
-			this->m_projectFile->save();
-		else
-			this->saveFileAs();
-	}
-}
-
-void MorphemeEditorApp::saveFileAs()
-{
-	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Editor Project", L"*.meproj"}, {L"All Files",L"*.*"} };
+	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"TimeAct", L"*.tae"}, {L"All Files",L"*.*"} };
 
 	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
 		COINIT_DISABLE_OLE1DDE);
@@ -1681,7 +1572,7 @@ void MorphemeEditorApp::saveFileAs()
 
 		if (SUCCEEDED(hr))
 		{
-			pFileSave->SetFileTypes(2, ComDlgFS);
+			pFileSave->SetFileTypes(3, ComDlgFS);
 
 			// Show the Open dialog box.
 			hr = pFileSave->Show(NULL);
@@ -1697,24 +1588,22 @@ void MorphemeEditorApp::saveFileAs()
 					PWSTR pszOutFilePath;
 					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
 
+					// Display the file name to the user.
 					if (SUCCEEDED(hr))
 					{
-						std::filesystem::path filepath = std::filesystem::path(pszOutFilePath).replace_extension("").wstring() + L".meproj";
+						std::filesystem::path filepath = std::wstring(pszOutFilePath);
 
-						this->m_projectFile->setDstFileName(filepath.string());
-
-						std::string rootDir = filepath.parent_path().string();
-
-						this->m_projectFile->setRootDir(rootDir);
-						this->m_projectFile->setAssetDir(rootDir + "\\motion_xmd");
-						this->m_projectFile->setMarkupDir(rootDir + "\\morphemeMarkup");
-
-						this->m_projectFile->save();
+						if (filepath.extension() == ".nmb")
+						{	
+						}
+						else if (filepath.extension() == ".tae")
+						{
+						}
 					}
 					pItem->Release();
 				}
 				else
-					g_appLog->alertMessage(MsgLevel_Error, "Failed to save file");
+					MessageBoxW(NULL, L"Failed to save file", L"Application.cpp", MB_ICONERROR);
 			}
 			pFileSave->Release();
 		}
@@ -1861,12 +1750,10 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 	MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
-#ifdef EXPORT_DEBUG_NM_DATA
 	dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
 	dumpNetworkNodes(netDef, animLibraryExport, L"nodes.xml");
 	dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
 	dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
-#endif
 
 	g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for %ws (%ws):\n", chrName.c_str(), networkFilename);
 
@@ -1896,31 +1783,6 @@ bool MorphemeEditorApp::exportAndCompileTae(std::wstring path)
 	g_workerThread.load()->setProcessStepName("Compiling TimeAct files...");
 	status = this->compileTimeActFiles(path);
 	g_workerThread.load()->increaseProgressStep();
-
-	return status;
-}
-
-void MorphemeEditorApp::destroyCharacter()
-{
-	if (this->m_character)
-		this->m_character->destroy();
-
-	if (this->m_eventTrackEditor)
-		this->m_eventTrackEditor->reset();
-
-	if (this->m_timeActEditor)
-		this->m_timeActEditor->reset();
-
-	this->m_timeActFileList.clear();
-
-	this->m_character = nullptr;
-}
-
-bool MorphemeEditorApp::exportAllAndDestroy(std::wstring path)
-{
-	bool status = this->exportAll(path);
-
-	this->destroyCharacter();
 
 	return status;
 }

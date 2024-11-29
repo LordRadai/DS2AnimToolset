@@ -16,7 +16,8 @@ RenderManager::RenderManager()
     this->m_deviceContext = nullptr;
     this->m_renderTargetView = nullptr;
 
-    this->setResolution(1920, 1080);
+    this->m_height = 1920;
+    this->m_width = 1080;
 }
 
 RenderManager::~RenderManager()
@@ -102,8 +103,10 @@ void RenderManager::initialise(HWND hwnd)
             m_physicalInputLayout.ReleaseAndGetAddressOf())
     );
 
-    m_view = Matrix::CreateLookAt(Vector3(2.f, 2.f, 2.f), Vector3::Zero, Vector3::UnitY);
-    m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f, float(this->m_width) / float(this->m_height), 0.1f, 10.f);
+    m_view = Matrix::CreateLookAt(Vector3(2.f, 2.f, 2.f),
+        Vector3::Zero, Vector3::UnitY);
+    m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,
+        float(this->m_width) / float(this->m_height), 0.1f, 10.f);
     m_origin = Matrix::Identity;
 
     m_debugEffect->SetView(m_view);
@@ -190,8 +193,8 @@ void RenderManager::createResources()
     const DXGI_FORMAT textureFmt = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
     D3D11_TEXTURE2D_DESC textureDescOffscren;
-    textureDescOffscren.Width = this->m_width;
-    textureDescOffscren.Height = this->m_height;
+    textureDescOffscren.Width = m_width;
+    textureDescOffscren.Height = m_height;
     textureDescOffscren.MipLevels = 1;
     textureDescOffscren.ArraySize = 1;
     textureDescOffscren.Format = textureFmt;
@@ -205,8 +208,8 @@ void RenderManager::createResources()
     m_device->CreateTexture2D(&textureDescOffscren, nullptr, &this->m_offScreenRenderTarget);
 
     D3D11_TEXTURE2D_DESC textureDesc;
-    textureDesc.Width = this->m_width;
-    textureDesc.Height = this->m_height;
+    textureDesc.Width = m_width;
+    textureDesc.Height = m_height;
     textureDesc.MipLevels = 1;
     textureDesc.ArraySize = 1;
     textureDesc.Format = textureFmt;
@@ -339,13 +342,10 @@ void RenderManager::render()
         GuiManager::getInstance()->render(this->m_deviceContext, this->m_guiRenderTargetView);
 }
 
-//Sets the resolution adjusting for the HWND DPI
 void RenderManager::setResolution(int width, int height)
 {
-    const float dpiScale = 1.f;
-
-    this->m_width = static_cast<int>((std::max)(width, 1) * dpiScale);
-    this->m_height = static_cast<int>((std::max)(height, 1) * dpiScale);
+    this->m_width = (std::max)(width, 1);
+    this->m_height = (std::max)(height, 1);
 }
 
 void RenderManager::resize(int width, int height)
@@ -355,7 +355,7 @@ void RenderManager::resize(int width, int height)
 
     this->setResolution(width, height);
 
-    this->m_swapChain->ResizeBuffers(0, this->m_width, this->m_height, DXGI_FORMAT_UNKNOWN, 0);
+    this->m_swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
 
     this->createGuiRenderTarget();
     this->createResources();
@@ -386,8 +386,8 @@ bool RenderManager::createD3DDevice()
     DXGI_SWAP_CHAIN_DESC sd;
     ZeroMemory(&sd, sizeof(sd));
     sd.BufferCount = 2;
-    sd.BufferDesc.Width = this->m_width;
-    sd.BufferDesc.Height = this->m_height;
+    sd.BufferDesc.Width = 0;
+    sd.BufferDesc.Height = 0;
     sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     sd.BufferDesc.RefreshRate.Numerator = 60;
     sd.BufferDesc.RefreshRate.Denominator = 1;
@@ -442,11 +442,10 @@ void RenderManager::applyDebugEffect(DirectX::SimpleMath::Matrix world)
     this->m_debugEffect->SetWorld(world);
     this->m_debugEffect->SetView(this->m_view);
     this->m_debugEffect->SetProjection(this->m_proj);
-
     this->m_debugEffect->Apply(this->m_deviceContext);
 }
 
-void RenderManager::applyEffect(DirectX::SimpleMath::Matrix world, float alpha)
+void RenderManager::applyPhysicalEffect(DirectX::SimpleMath::Matrix world, float alpha)
 {
     this->m_physicalEffect->SetWorld(world);
     this->m_physicalEffect->SetView(this->m_view);
