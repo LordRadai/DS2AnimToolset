@@ -242,6 +242,7 @@
     <ClInclude Include="TrackEditor\Track\Event\Event.h" />
     <ClInclude Include="TrackEditor\Track\Track.h" />
     <ClInclude Include="utils\NMDX\NMDX.h" />
+    <ClInclude Include="utils\utils.h" />
     <ClInclude Include="WorkerThread\ProgressIndicator\ProgressIndicator.h" />
     <ClInclude Include="WorkerThread\WorkerThread.h" />
     <ClInclude Include="XMDTranslator\XMDTranslator.h" />
@@ -315,6 +316,7 @@
     <ClCompile Include="TrackEditor\Track\Event\Event.cpp" />
     <ClCompile Include="TrackEditor\Track\Track.cpp" />
     <ClCompile Include="utils\NMDX\NMDX.cpp" />
+    <ClCompile Include="utils\utils.cpp" />
     <ClCompile Include="WorkerThread\ProgressIndicator\ProgressIndicator.cpp" />
     <ClCompile Include="WorkerThread\WorkerThread.cpp" />
     <ClCompile Include="XMDTranslator\XMDTranslator.cpp" />

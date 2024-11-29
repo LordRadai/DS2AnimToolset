@@ -40,7 +40,7 @@ public:
 
 private:
 	Character();
-	~Character();
+	~Character() {}
 
 	int m_chrId;
 	std::wstring m_characterName;

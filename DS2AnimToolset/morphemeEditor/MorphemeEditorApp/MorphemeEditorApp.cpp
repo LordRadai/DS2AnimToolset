@@ -7,6 +7,7 @@
 #include "FromSoftware/TimeAct/TaeExport/TaeExport.h"
 #include "FromSoftware/TimeAct/TaeTemplate/TaeTemplateXML/TaeTemplateXML.h"
 #include "MorphemeSystem/MorphemeDecompiler/Node/NodeUtils.h"
+#include "utils/utils.h"
 #include <thread>
 
 #ifndef _DEBUG
@@ -683,30 +684,6 @@ namespace
 				}
 			}
 		}
-	}
-
-	std::wstring findGamePath(std::wstring current_path)
-	{
-		std::filesystem::path gamepath = current_path;
-
-		do
-		{
-			std::wstring parent_path = gamepath.parent_path();
-			gamepath = parent_path;
-
-			int lastDirPos = parent_path.find_last_of(L"\\");
-
-			std::wstring folder = parent_path.substr(lastDirPos, parent_path.length());
-
-			if (folder.compare(L"\\") == 0)
-				return L"";
-
-			if (folder.compare(L"\\Game") == 0)
-				return gamepath;
-
-		} while (true);
-
-		return L"";
 	}
 
 	int getEquipIDByFilename(std::wstring filename)
@@ -1526,7 +1503,7 @@ void MorphemeEditorApp::loadFile()
 
 						this->m_timeActFileList.clear();
 
-						this->m_gamePath = findGamePath(filepath);
+						this->m_gamePath = utils::findGamePath(filepath);
 
 						if (filepath.extension() == ".nmb")
 							this->m_character = Character::createFromNmb(this->m_timeActFileList, RString::toNarrow(filepath).c_str(), false);
