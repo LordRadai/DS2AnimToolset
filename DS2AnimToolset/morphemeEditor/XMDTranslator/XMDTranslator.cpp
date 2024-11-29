@@ -2,7 +2,7 @@
 #include "RCore.h"
 #include "extern.h"
 #include "morphemeEditor.h"
-#include "SimpleMath.h"
+#include <SimpleMath.h>
 #include "morpheme/AnimSource/mrAnimSourceNSA.h"
 
 namespace
@@ -517,36 +517,65 @@ namespace XMDTranslator
 	}
 
 	//XAnimCycle is deprecated in the XMD SDK, but it's supported by morphemeConnect 3.6.2
-	XMD::XAnimCycle* createAnimCycle(XMD::XModel* xmd, AnimObject* animObj, const char* takeName)
+	XMD::XAnimCycle* createAnimCycle(XMD::XModel* xmd, AnimObject* animObj, const char* takeName, int fps)
 	{
 		if (animObj->getHandle() == nullptr)
 			return nullptr;
 
 		XMD::XAnimCycle* animCycle = static_cast<XMD::XAnimCycle*>(xmd->CreateNode(XMD::XFn::AnimCycle));
 
-		const MR::AnimRigDef* rig = animObj->getHandle()->getRig();
-
-		int animLenFrames = RMath::timeToFrame(animObj->getAnimLenght(), 30);
+		int animLenFrames = RMath::timeToFrame(animObj->getAnimLenght(), fps) + 1;
 
 		animCycle->SetName(takeName);
-		animCycle->SetFrameRate(30);
+		animCycle->SetFrameRate(fps);
 		animCycle->SetFrameTimes(0, animLenFrames, animLenFrames);
 
-		for (size_t i = 0; i < rig->getNumBones(); i++)
+		const MR::RigToAnimMap* rigToAnimMap = animObj->getHandle()->getRigToAnimMap();
+
+		//If it's present, we use the animToRigMap, otherwise we use the whole rig
+		if (rigToAnimMap && (rigToAnimMap->getRigToAnimMapType() == MR::RigToAnimMap::AnimToRig))
 		{
-			//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
-			if (i == 0)
-				continue;
+			const MR::AnimToRigTableMap* animToRigMap = (MR::AnimToRigTableMap*)rigToAnimMap->getRigToAnimMapData();
 
-			XMD::XSampledKeys* sampleKeys = animCycle->AddSampledKeys(i);
-			sampleKeys->SetSize(animLenFrames);
-
-			for (size_t j = 0; j < animLenFrames; j++)
+			for (uint32_t i = 0; i < animToRigMap->getNumAnimChannels(); i++)
 			{
-				float time = RMath::frameToTime(j, 30);
+				const int channelID = animToRigMap->getAnimToRigMapEntry(i);
 
-				sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, i);
-				sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, i);
+				//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
+				if (channelID == 0)
+					continue;
+
+				XMD::XSampledKeys* sampleKeys = animCycle->AddSampledKeys(channelID);
+				sampleKeys->SetSize(animLenFrames);
+
+				for (size_t j = 0; j < animLenFrames; j++)
+				{
+					float time = RMath::frameToTime(j, 30);
+
+					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
+					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
+				}
+			}
+		}
+		else
+		{
+			const MR::AnimRigDef* animRigDef = animObj->getHandle()->getRig();
+
+			//We start from 1 because bone 0 is added by morpheme on export, so it's not a part of the real skeleton
+			for (uint32_t i = 1; i < animRigDef->getNumBones(); i++)
+			{
+				const int channelID = i;
+
+				XMD::XSampledKeys* sampleKeys = animCycle->AddSampledKeys(channelID);
+				sampleKeys->SetSize(animLenFrames);
+
+				for (size_t j = 0; j < animLenFrames; j++)
+				{
+					float time = RMath::frameToTime(j, 30);
+
+					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
+					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
+				}
 			}
 		}
 

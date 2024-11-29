@@ -3,7 +3,7 @@
 #include "extern.h"
 #include "utils/NMDX/NMDX.h"
 #include "RenderManager/RenderManager.h"
-#include "FromSoftware/BND4/BND4.h"
+#include "RCore.h"
 
 namespace
 {
@@ -56,8 +56,6 @@ namespace
 
 		int boneIdx = pRig->getBoneIndexFromName(boneName.c_str());
 
-		g_appLog->debugMessage(MsgLevel_Debug, "Bone %s: (to=%d, from=%d)\n", boneName.c_str(), boneIdx, boneId);
-
 		return boneIdx;
 	}
 
@@ -81,15 +79,15 @@ namespace
 		pos.y = tmp;
 		pos.x = -pos.x;
 
-		Matrix translation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateTranslation(NMDX::getDxVector(pos));
-		Matrix rotation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateFromQuaternion(NMDX::getDxQuat(rot));
+		Matrix translation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateTranslation(utils::NMDX::getDxVector(pos));
+		Matrix rotation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateFromQuaternion(utils::NMDX::getDxQuat(rot));
 
 		return rotation * translation;
 	}
 
 	Matrix getNmBoneTranform(MR::AnimationSourceHandle* animHandle, int channelId)
 	{
-		return NMDX::getWorldMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
+		return utils::NMDX::getWorldMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
 	}
 
 	Matrix computeNmBoneGlobalTransform(MR::AnimationSourceHandle* animHandle, int channelId)
@@ -115,12 +113,12 @@ namespace
 
 	Matrix computeNmBoneBindPoseGlobalTransform(const MR::AnimRigDef* rig, int channelId)
 	{
-		DirectX::XMMATRIX boneLocalTransform = NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(channelId), *rig->getBindPoseBonePos(channelId));
+		DirectX::XMMATRIX boneLocalTransform = utils::NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(channelId), *rig->getBindPoseBonePos(channelId));
 		int parentIdx = rig->getParentBoneIndex(channelId);
 
 		while (parentIdx != -1)
 		{
-			boneLocalTransform *= NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(parentIdx), *rig->getBindPoseBonePos(parentIdx));
+			boneLocalTransform *= utils::NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(parentIdx), *rig->getBindPoseBonePos(parentIdx));
 
 			parentIdx = rig->getParentBoneIndex(parentIdx);
 		}
@@ -207,7 +205,7 @@ namespace
 
 	Matrix getNmRelativeBindPose(const MR::AnimRigDef* rig, int idx)
 	{
-		Matrix transform = NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(idx), *rig->getBindPoseBonePos(idx));
+		Matrix transform = utils::NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(idx), *rig->getBindPoseBonePos(idx));
 		transform *= Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
 		transform *= Matrix::CreateReflection(Plane(Vector3::Up));
 
@@ -216,7 +214,7 @@ namespace
 
 	Matrix getNmRelativeTransform(MR::AnimationSourceHandle* animHandle, int idx)
 	{
-		Matrix transform = NMDX::getWorldMatrix(animHandle->getChannelData()[idx].m_quat, animHandle->getChannelData()[idx].m_pos);
+		Matrix transform = utils::NMDX::getWorldMatrix(animHandle->getChannelData()[idx].m_quat, animHandle->getChannelData()[idx].m_pos);
 		transform *= Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
 		transform *= Matrix::CreateReflection(Plane(Vector3::Up));
 
@@ -280,6 +278,8 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 
 	this->m_nmRig = rig;
 
+	g_appLog->debugMessage(MsgLevel_Info, "Creating bone maps:\n");
+
 	this->createFlverToMorphemeBoneMap();
 	this->createMorphemeToFlverBoneMap();
 }
@@ -292,7 +292,7 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 {
 	FlverModel* model = nullptr;
 
-	Bnd4* bnd = Bnd4::loadFromFile(path);
+	BND4::Bnd4* bnd = BND4::Bnd4::loadFromFile(path);
 
 	if (bnd == nullptr)
 		return nullptr;
@@ -305,13 +305,13 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 
 		if (name.extension().compare(".flv") == 0)
 		{
+			g_appLog->debugMessage(MsgLevel_Debug, "Loading model \"%ws\"\n", path.c_str());
+
 			UMEM* umem = uopenMem((char*)bnd->getFile(i)->data, bnd->getFile(i)->uncompressedSize);
 
 			model = new FlverModel(umem, rig);
 			model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
 			model->m_fileOrigin = path + L"\\" + name.c_str();
-
-			g_appLog->debugMessage(MsgLevel_Debug, "Loaded model %s\n", model->m_name.c_str());
 
 			found = true;
 			break;
@@ -797,6 +797,7 @@ void FlverModel::update(float dt)
 	}
 }
 
+//Draws the character
 void FlverModel::draw(RenderManager* renderManager)
 {
 	const Vector4 boneMarkerColor = RMath::getFloatColor(IM_COL32(51, 102, 255, 255));
@@ -906,6 +907,7 @@ void FlverModel::draw(RenderManager* renderManager)
 	}
 }
 
+//Looks up a bone in the flver rig by name
 int FlverModel::getFlverBoneIndexByName(const char* name)
 {
 	for (size_t i = 0; i < this->m_flver->header.boneCount; i++)
@@ -917,6 +919,7 @@ int FlverModel::getFlverBoneIndexByName(const char* name)
 	return -1;
 }
 
+//Looks up a bone in the morpheme rig by name
 int FlverModel::getMorphemeBoneIndexByName(const char* name)
 {
 	for (size_t i = 0; i < this->m_nmRig->getNumBones(); i++)
@@ -928,16 +931,22 @@ int FlverModel::getMorphemeBoneIndexByName(const char* name)
 	return -1;
 }
 
-//Creates an anim map from the flver model bone to the morpheme rig and saves it in m_morphemeToFlverRigMap
+//Creates an anim map from the flver model bone to the morpheme rig
 void FlverModel::createFlverToMorphemeBoneMap()
-{
+{	
 	this->m_flverToMorphemeBoneMap.clear();
 	this->m_flverToMorphemeBoneMap.reserve(this->m_flver->header.boneCount);
 
 	for (int i = 0; i < this->m_flver->header.boneCount; i++)
+	{
 		this->m_flverToMorphemeBoneMap.push_back(getMorphemeRigBoneIndexByFlverBoneIndex(this->m_nmRig, this, i));
+		
+		std::string boneName = this->getFlverBoneName(i);
+		g_appLog->debugMessage(MsgLevel_Debug, "\tBone \"%s\": (to=%d, from=%d)\n", boneName.c_str(), this->m_flverToMorphemeBoneMap[i], i);
+	}
 }
 
+//Creates an anim map from the morpheme rig to the flver model bone
 void FlverModel::createMorphemeToFlverBoneMap()
 {
 	this->m_morphemeToFlverBoneMap.clear();

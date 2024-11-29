@@ -76,9 +76,9 @@ void MorphemeSystem::termMorpheme()
 
 //----------------------------------------------------------------------------------------------------------------------
 // Creates a CharacterDef and registers it with the manager.
-MorphemeCharacterDef* MorphemeSystem::createCharacterDef(const char* filename)
+MorphemeCharacterDef* MorphemeSystem::createCharacterDef(const char* filename, bool simulateNetwork)
 {
-    g_appLog->debugMessage(MsgLevel_Info, "Creating CharacterDefBasic from file %s\n", filename);
+    g_appLog->debugMessage(MsgLevel_Info, "Creating CharacterDef from file \"%s\"\n", filename);
 
     MorphemeCharacterDef* gameCharacterDef = MorphemeCharacterDef::create(filename);
     if (!gameCharacterDef || !gameCharacterDef->isLoaded())
@@ -86,6 +86,8 @@ MorphemeCharacterDef* MorphemeSystem::createCharacterDef(const char* filename)
         NMP_ASSERT_FAIL();
         return NULL;
     }
+
+    gameCharacterDef->setDoSimulateNetwork(simulateNetwork);
 
     return gameCharacterDef;
 }

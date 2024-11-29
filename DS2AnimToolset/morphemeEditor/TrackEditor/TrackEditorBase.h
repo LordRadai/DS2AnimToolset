@@ -73,6 +73,8 @@ namespace TrackEditor
         int getFrameMax() const { return this->m_frameMax; }
         bool isReload() const { return this->m_reload; }
         TimeCodeFormat getTimeCodeFormat() const { return this->m_timeCodeFormat; }
+        Track* getTrack(int idx) const { return this->m_tracks[idx]; }
+        Event* getSelectedEvent(int trackIdx, int eventIdx) const { return this->m_tracks[trackIdx]->events[eventIdx]; }
         bool isEdited() const { return this->m_edited; }
         Colors* getColors() { return &this->m_colors; }
         int getSelectedTrackIdx() const { return this->m_selectedTrack; }

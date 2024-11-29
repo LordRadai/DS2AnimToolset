@@ -70,3 +70,23 @@ void ImGui::CompositeProgressBar(const char* label, int step, int numSteps, cons
 
     ImGui::ProgressBar(progress, ImVec2(0, 0), buf);
 }
+
+void ImGui::InputDragFloat(const char* label, float* v, float dragSpeed, float min, float max, const char* format, ImGuiInputFlags flags)
+{
+    ImGui::SetNextItemWidth(50);
+    ImGui::DragFloat("", v, dragSpeed, min, max, format, flags);
+
+    ImGui::SameLine();
+
+    ImGui::SliderFloat(label, v, min, max, "");
+}
+
+void ImGui::InputDragInt(const char* label, int* v, float dragSpeed, int min, int max, const char* format, ImGuiInputFlags flags)
+{
+    ImGui::SetNextItemWidth(50);
+    ImGui::DragInt("", v, dragSpeed, min, max, format, flags);
+
+    ImGui::SameLine();
+
+    ImGui::SliderInt(label, v, min, max, "");
+}

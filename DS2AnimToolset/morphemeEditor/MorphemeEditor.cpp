@@ -8,7 +8,7 @@
 #include "GuiManager/GuiManager.h"
 #include "RenderManager/RenderManager.h"
 #include "WorkerThread/WorkerThread.h"
-#include "FromSoftware/TimeAct/TaeTemplate/TaeTemplate.h"
+#include "RCore.h"
 
 static UINT g_ResizeWidth = 0, g_ResizeHeight = 0;
 

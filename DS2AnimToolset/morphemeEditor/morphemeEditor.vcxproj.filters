@@ -54,7 +54,7 @@
     <ClInclude Include="MorphemeSystem\AssetLoader\AssetLoader.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\MorphemeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\MorphemeDecompiler.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h">
@@ -126,24 +126,6 @@
     <ClInclude Include="FlverModel\FlverModel.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="FromSoftware\BND4\BND4.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TimeAct.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TimeActEvent\TimeActEventData\TimeActEventData.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TimeActEvent\TimeActEvent.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TAE3\TAE3.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplate.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="TrackEditor\TrackEditorBase.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
@@ -163,12 +145,6 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TaeExport\TaeExport.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplateXML\TaeTemplateXML.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="WorkerThread\ProgressIndicator\ProgressIndicator.h">
@@ -276,31 +252,37 @@
     <ClInclude Include="fromloader\umem.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MRUtils\MRUtils.h">
+    <ClInclude Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\Node.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\TransitCondition\TransitCondition.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\ControlParamNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\BlendNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\TransitNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.h">
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\utils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -332,7 +314,7 @@
     <ClCompile Include="MorphemeSystem\AssetLoader\AssetLoader.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\MorphemeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\MorphemeDecompiler.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp">
@@ -395,24 +377,6 @@
     <ClCompile Include="FlverModel\FlverModel.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="FromSoftware\BND4\BND4.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TimeAct.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TimeActEvent\TimeActEventData\TimeActEventData.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TimeActEvent\TimeActEvent.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TAE3\TAE3.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplate.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="TrackEditor\TrackEditorBase.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
@@ -432,12 +396,6 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TaeExport\TaeExport.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplateXML\TaeTemplateXML.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="WorkerThread\ProgressIndicator\ProgressIndicator.cpp">
@@ -512,31 +470,37 @@
     <ClCompile Include="fromloader\umem.c">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MRUtils\MRUtils.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\Node.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\TransitCondition\TransitCondition.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\ControlParamNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\BlendNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\TransitNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.cpp">
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\utils.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -555,9 +519,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <None Include="packages.config" />
     <None Include="fromloader\src\util\stringio\simple_sjis_table.bin">
       <Filter>File di risorse</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

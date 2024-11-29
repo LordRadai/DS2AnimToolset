@@ -15,7 +15,7 @@ enum TimeActSlot
 class Character
 {
 public:
-	static Character* createFromNmb(std::vector<std::wstring>& fileList, const char* filename);
+	static Character* createFromNmb(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork);
 	static Character* createFromTimeAct(const char* filename);
 
 	CharacterModelCtrl* getCharacterModelCtrl() const { return this->m_characterModelCtrl; }
@@ -40,7 +40,7 @@ public:
 
 private:
 	Character();
-	~Character();
+	~Character() {}
 
 	int m_chrId;
 	std::wstring m_characterName;

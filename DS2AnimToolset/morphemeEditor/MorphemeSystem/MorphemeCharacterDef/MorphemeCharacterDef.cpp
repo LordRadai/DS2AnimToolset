@@ -14,6 +14,7 @@
 #include "RCore.h"
 
 #include "MorphemeSystem/MorphemeSystem.h"
+#include "MorphemeSystem/MorphemeUtils/MorphemeUtils.h"
 #include "../AssetLoader/AssetLoader.h"
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -27,7 +28,7 @@ namespace
     int getChrIdFromNmbFileName(std::wstring name)
     {
         std::wstring chr_id_str;
-        int m_chrId = -1;
+        int chrId = -1;
 
         int lastCPos = name.find_last_of(L"\\");
 
@@ -36,11 +37,9 @@ namespace
 
         chr_id_str = name.substr(lastCPos + 2, 4);
 
-        m_chrId = stoi(chr_id_str);
+        chrId = stoi(chr_id_str);
 
-        g_appLog->debugMessage(MsgLevel_Debug, "Chr ID: %d\n", m_chrId);
-
-        return m_chrId;
+        return chrId;
     }
 
 }
@@ -59,8 +58,6 @@ MorphemeCharacterDef* MorphemeCharacterDef::create(const char* filename)
   strcpy(instance->m_metadata.m_bundleDir, filepath.parent_path().string().c_str());
   strcpy(instance->m_filename, file_name.string().c_str());
 
-  instance->m_chrId = getChrIdFromNmbFileName(filepath.c_str());
-
   //----------------------------
   // Load the given bundle file into memory and load the bundle.
 
@@ -69,6 +66,8 @@ MorphemeCharacterDef* MorphemeCharacterDef::create(const char* filename)
   // by the GameAssetLoader.
   void* bundle = NULL;
   int64_t bundleSize = 0;
+
+  g_appLog->debugMessage(MsgLevel_Debug, "\tLoading SimpleBundle at \"%s\":\n", filename);
 
   //----------------------------
   // Load binary bundle into memory
@@ -149,6 +148,8 @@ bool MorphemeCharacterDef::init(void* bundle, size_t bundleSize)
   m_clientAssets = (void**)NMPMemoryCalloc(m_numClientAssets * sizeof(void*));
   m_rigToAnimMaps.clear();
 
+  g_appLog->debugMessage(MsgLevel_Info, "\t\tBundle size: %d\n", bundleSize);
+
   //----------------------------
   // Process the bundle and extract the contents into memory
   m_netDef = AssetLoader::loadBundle(
@@ -166,6 +167,9 @@ bool MorphemeCharacterDef::init(void* bundle, size_t bundleSize)
   {
     return false;
   }
+
+  for (size_t i = 0; i < m_netDef->getNumAnimSets(); i++)
+      m_anims.push_back(std::vector<AnimObject*>());
 
   m_isLoaded = true;
 
@@ -224,35 +228,36 @@ MR::CharacterControllerDef* MorphemeCharacterDef::getCharacterController(int idx
     return nullptr;
 }
 
-AnimObject* MorphemeCharacterDef::getAnimation(int idx)
+AnimObject* MorphemeCharacterDef::getAnimation(int animSetIdx, int idx)
 {
-    if (idx < m_anims.size())
-        return m_anims[idx];
+    if (idx < m_anims[animSetIdx].size())
+        return m_anims[animSetIdx][idx];
 
     return nullptr;
 }
 
-AnimObject* MorphemeCharacterDef::getAnimationById(int id)
+AnimObject* MorphemeCharacterDef::getAnimationById(int animSetIdx, int id)
 {
-    for (size_t i = 0; i < this->m_anims.size(); i++)
+    for (size_t i = 0; i < this->m_anims[animSetIdx].size(); i++)
     {
-        if (this->m_anims[i]->getAnimID() == id)
-            return this->m_anims[i];
+        if (this->m_anims[animSetIdx][i]->getAnimID() == id)
+            return this->m_anims[animSetIdx][i];
     }
 
     return nullptr;
 }
 
-void MorphemeCharacterDef::addAnimation(const char* filename)
+void MorphemeCharacterDef::addAnimation(const char* filename, int animSetIdx)
 {
-    g_appLog->debugMessage(MsgLevel_Debug, "Registering animation %s\n", filename);
+    g_appLog->debugMessage(MsgLevel_Debug, "\tAdding animation \"%s\"\n", filename);
 
-    int idx = m_anims.size();
+    const int idx = m_anims[animSetIdx].size();
     
-    m_anims.push_back(AnimObject::createFromMorphemeAssets(this, this->m_netDef->getRig(0), this->m_rigToAnimMaps[0], filename, idx));
+    m_anims[animSetIdx].push_back(AnimObject::createFromMorphemeAssets(this, this->m_netDef->getRig(animSetIdx), MorphemeUtils::getRigToAnimMapByAnimID(this->m_netDef, idx, animSetIdx), filename, idx));
 }
 
 void MorphemeCharacterDef::sortAnimations()
 {
-    std::sort(m_anims.begin(), m_anims.end(), compareAnimObjs);
+    for (uint32_t i = 0; i < m_anims.size(); i++)
+        std::sort(m_anims[i].begin(), m_anims[i].end(), compareAnimObjs);
 }

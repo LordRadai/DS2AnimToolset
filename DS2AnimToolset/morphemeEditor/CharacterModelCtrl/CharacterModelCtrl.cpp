@@ -229,19 +229,14 @@ FlverModel* CharacterModelCtrl::getModelFg(FgPartType fgType)
 		return this->m_faceGen.m_fgFace;
 	case kFgHead:
 		return this->m_faceGen.m_fgHead;
-		break;
 	case kFgEyes:
 		return this->m_faceGen.m_fgEyes;
-		break;
 	case kFgEyeBrows:
 		return this->m_faceGen.m_fgEyeBrows;
-		break;
 	case kFgBeard:
 		return this->m_faceGen.m_fgBeard;
-		break;
 	case kFgHair:
 		return this->m_faceGen.m_fgHair;
-		break;
 	default:
 		return nullptr;
 	}

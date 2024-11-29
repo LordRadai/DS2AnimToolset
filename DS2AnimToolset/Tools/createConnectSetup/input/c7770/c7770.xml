@@ -1,0 +1,2275 @@
+<NetworkDefinition guid="d34a85ee-c580-474b-af36-3f66ced845fb" name="c7770">
+  <networkWorldForwardVector>1.000000, 0.000000, 0.000000</networkWorldForwardVector>
+  <networkWorldRightVector>0.000000, 0.000000, 1.000000</networkWorldRightVector>
+  <networkWorldUpVector>1.000000, 0.000000, 0.000000</networkWorldUpVector>
+  <Node name="" networkID="0" downstreamParentID="65535" typeID="9">
+    <DataBlock/>
+  </Node>
+  <Node name="ControlParameters|StartupType" networkID="1" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">ff,ff,ff,ff,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|FB_Speed" networkID="2" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|FootLock_IK" networkID="3" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Banking" networkID="4" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Banking_Speed" networkID="5" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|FrontDirection" networkID="6" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|PlaySpeed_0" networkID="7" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|PlaySpeed_01" networkID="8" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">cd,cc,cc,3d,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|PlaySpeed_05" networkID="9" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|PlaySpeed_1" networkID="10" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|PlaySpeed_1_5" networkID="11" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,c0,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|PlaySpeed_2" networkID="12" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,40,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|PlaySpeed_3" networkID="13" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,40,40,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|PlaySpeed_5" networkID="14" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,a0,40,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|WeaponCategory_Ene" networkID="15" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|AttackCategory_Ene" networkID="16" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|IsBladeDash" networkID="17" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Combo1_Route" networkID="18" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Combo2_Route" networkID="19" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Combo3_Route" networkID="20" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Shot1_Route" networkID="21" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Shot2_Route" networkID="22" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Shot3_Route" networkID="23" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Attack_SwingSpeed" networkID="24" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Attack_SwingSpeed2" networkID="25" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Attack_SwingSpeed3" networkID="26" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Attack_SwingSpeed4" networkID="27" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|LookAtTarget" networkID="28" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">00,00,20,c1,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">33,33,73,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|LookAtWeight" networkID="29" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|IsSideWalk" networkID="30" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|SideWalkRotation" networkID="31" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|BlendWeight_SideWalk" networkID="32" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|HipPosotion" networkID="33" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">0a,d7,a3,bd,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">cd,cc,4c,be,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|HipRotation" networkID="34" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,f0,41,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|FootTurnWeight" networkID="35" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Attack_BankingSpeed" networkID="36" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Attack_Banking" networkID="37" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|PlaySpeed_10" networkID="38" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,20,41,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|BlendWeight_1" networkID="39" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|BlendWeight_minus1" networkID="40" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,bf,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|AdditiveBlend_1" networkID="41" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DodgeDirection" networkID="42" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DodgeDistance" networkID="43" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,40,40,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|StepDirection" networkID="44" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|StepDistance" networkID="45" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,c0,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|L_WepBreak" networkID="46" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|R_WepBreak" networkID="47" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|GuardStance" networkID="48" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|IsFall" networkID="49" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DmgDirection" networkID="50" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DmgDuration" networkID="51" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DmgDownOrUp" networkID="52" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DmgSlashOrThrust" networkID="53" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DmgDistance" networkID="54" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|MoveCategory" networkID="55" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|IsFloating" networkID="56" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DmgBankingSpeed" networkID="57" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|LandingRate" networkID="58" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DmgCategory" networkID="59" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">0a,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|IsLockOn" networkID="60" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Floating_FB_Speed" networkID="61" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Floating_Banking" networkID="62" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Floating_UD_Speed" networkID="63" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|IsDown" networkID="64" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|LadderStartType" networkID="65" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|IsSubAction" networkID="66" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|LadderMove" networkID="67" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|LadderDash" networkID="68" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|LadderMoveUpSpeed" networkID="69" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|LadderMoveDownSpeed" networkID="70" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|LadderDashSpeed" networkID="71" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|LadderFallSpeed" networkID="72" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Flight_FB_Speed" networkID="73" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Flight_UD_Speed" networkID="74" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Flight_Banking" networkID="75" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DieCategory" networkID="76" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DmgHitBackHold" networkID="77" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DmgHitBackDistance" networkID="78" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DmgHitBackDuration" networkID="79" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">29,5c,ef,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|UnevenTerrain_Hips" networkID="80" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|UnevenTerrain_BlendWeight" networkID="81" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|RopeMove" networkID="82" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|RopeLHandIK" networkID="83" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|RopeRHandIK" networkID="84" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|RopeLHandIKTarget" networkID="85" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|RopeRHandIKTarget" networkID="86" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DoorCategory" networkID="87" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DoorSpeed" networkID="88" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DoorLHandIK" networkID="89" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DoorRHandIK" networkID="90" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DoorLHandIKTarget" networkID="91" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|DoorRHandIKTarget" networkID="92" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|LandingCategory" networkID="93" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|ShotPreparationFinish" networkID="94" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|ShotMoveFinish" networkID="95" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|BlendWeight_Injured" networkID="96" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Shake_Position" networkID="97" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Shake_Rotation" networkID="98" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|ShakeRate" networkID="99" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|AimTarget" networkID="100" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">00,00,40,c0,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">00,00,c0,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|CatchDmgCategory" networkID="101" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|CatchDmgHitCategory" networkID="102" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|GuardBottomCategory" networkID="103" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|GuardDuration" networkID="104" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|EventActionCategory" networkID="105" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|IsLanding" networkID="106" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">01,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|RadioControlMode" networkID="107" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|BlendWeight_Tire" networkID="108" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|GuardCategory" networkID="109" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|EventActionSpeed" networkID="110" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,80,3f,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|IsEventAction" networkID="111" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|EventActionLeverOnOff" networkID="112" downstreamParentID="65535" typeID="24">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="int" description="DefaultInt">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Slope_Angle_Posotion" networkID="113" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">cd,cc,cc,bd,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Road_Up_Rotation" networkID="114" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,34,c2,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Road_Down_Rotation" networkID="115" downstreamParentID="65535" typeID="21">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,34,42,</DataElement>
+      <DataElement type="float" description="DefaultValue_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_2">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="ControlParameters|Slope_Angle" networkID="116" downstreamParentID="65535" typeID="20">
+    <DataBlock>
+      <DataElement type="uint" description="InputPathCount">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DefaultValue_0">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="117" downstreamParentID="0" typeID="10">
+    <DataBlock>
+      <DataElement type="uint" description="ChildNodeCount">0e,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_0">76,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_1">77,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_2">80,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_3">81,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_4">83,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_5">84,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_6">86,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_7">87,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_8">88,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_9">89,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_10">8a,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_11">8b,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_12">8c,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_13">8e,00,00,00,</DataElement>
+      <DataElement type="uint" description="ChildTransitionCount">1a,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_0">90,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_1">91,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_2">92,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_3">93,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_4">94,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_5">95,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_6">96,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_7">97,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_8">98,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_9">99,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_10">9a,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_11">9b,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_12">9c,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_13">9d,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_14">9e,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_15">9f,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_16">a0,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_17">a1,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_18">a2,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_19">a3,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_20">a4,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_21">a5,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_22">a6,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_23">a7,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_24">a8,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_25">a9,00,00,00,</DataElement>
+      <DataElement type="uint" description="DefaultNodeID">76,00,00,00,</DataElement>
+    </DataBlock>
+    <CommonCondition index="0" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">23,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </CommonCondition>
+    <CommonCondition index="1" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">26,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </CommonCondition>
+    <CommonCondition index="2" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">27,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </CommonCondition>
+    <CommonCondition index="3" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">2b,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </CommonCondition>
+    <CommonCondition index="4" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">25,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </CommonCondition>
+    <CommonCondition index="5" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">29,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </CommonCondition>
+    <CommonCondition index="6" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">2a,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </CommonCondition>
+    <CommonCondition index="7" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">28,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </CommonCondition>
+    <CommonCondition index="8" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">24,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </CommonCondition>
+    <CommonCondition index="9" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">22,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </CommonCondition>
+    <CommonConditionSet index="0" targetNodeID="144">
+      <conditionIndices>0, </conditionIndices>
+    </CommonConditionSet>
+    <CommonConditionSet index="1" targetNodeID="149">
+      <conditionIndices>1, </conditionIndices>
+    </CommonConditionSet>
+    <CommonConditionSet index="2" targetNodeID="153">
+      <conditionIndices>2, </conditionIndices>
+    </CommonConditionSet>
+    <CommonConditionSet index="3" targetNodeID="156">
+      <conditionIndices>3, </conditionIndices>
+    </CommonConditionSet>
+    <CommonConditionSet index="4" targetNodeID="158">
+      <conditionIndices>4, </conditionIndices>
+    </CommonConditionSet>
+    <CommonConditionSet index="5" targetNodeID="159">
+      <conditionIndices>5, </conditionIndices>
+    </CommonConditionSet>
+    <CommonConditionSet index="6" targetNodeID="161">
+      <conditionIndices>6, </conditionIndices>
+    </CommonConditionSet>
+    <CommonConditionSet index="7" targetNodeID="162">
+      <conditionIndices>7, </conditionIndices>
+    </CommonConditionSet>
+    <CommonConditionSet index="8" targetNodeID="164">
+      <conditionIndices>8, </conditionIndices>
+    </CommonConditionSet>
+    <CommonConditionSet index="9" targetNodeID="165">
+      <conditionIndices>9, </conditionIndices>
+    </CommonConditionSet>
+  </Node>
+  <Node name="" networkID="118" downstreamParentID="117" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">04,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">00,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="609">
+      <DataBlock>
+        <DataElement type="NetworkNodeId" description="RuntimeNodeID">01,00,00,00,</DataElement>
+        <DataElement type="bool" description="NotInRange">00,</DataElement>
+        <DataElement type="char" bytes="3" description="DataType">69,6e,74,</DataElement>
+        <DataElement type="int" description="LowerTestValue">00,00,00,00,</DataElement>
+        <DataElement type="int" description="UpperTestValue">00,00,00,00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="1" typeID="609">
+      <DataBlock>
+        <DataElement type="NetworkNodeId" description="RuntimeNodeID">01,00,00,00,</DataElement>
+        <DataElement type="bool" description="NotInRange">00,</DataElement>
+        <DataElement type="char" bytes="3" description="DataType">69,6e,74,</DataElement>
+        <DataElement type="int" description="LowerTestValue">02,00,00,00,</DataElement>
+        <DataElement type="int" description="UpperTestValue">02,00,00,00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="2" typeID="609">
+      <DataBlock>
+        <DataElement type="NetworkNodeId" description="RuntimeNodeID">01,00,00,00,</DataElement>
+        <DataElement type="bool" description="NotInRange">00,</DataElement>
+        <DataElement type="char" bytes="3" description="DataType">69,6e,74,</DataElement>
+        <DataElement type="int" description="LowerTestValue">06,00,00,00,</DataElement>
+        <DataElement type="int" description="UpperTestValue">06,00,00,00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="3" typeID="609">
+      <DataBlock>
+        <DataElement type="NetworkNodeId" description="RuntimeNodeID">01,00,00,00,</DataElement>
+        <DataElement type="bool" description="NotInRange">00,</DataElement>
+        <DataElement type="char" bytes="3" description="DataType">69,6e,74,</DataElement>
+        <DataElement type="int" description="LowerTestValue">07,00,00,00,</DataElement>
+        <DataElement type="int" description="UpperTestValue">07,00,00,00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="4" typeID="609">
+      <DataBlock>
+        <DataElement type="NetworkNodeId" description="RuntimeNodeID">01,00,00,00,</DataElement>
+        <DataElement type="bool" description="NotInRange">00,</DataElement>
+        <DataElement type="char" bytes="3" description="DataType">69,6e,74,</DataElement>
+        <DataElement type="int" description="LowerTestValue">03,00,00,00,</DataElement>
+        <DataElement type="int" description="UpperTestValue">03,00,00,00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="5" typeID="609">
+      <DataBlock>
+        <DataElement type="NetworkNodeId" description="RuntimeNodeID">01,00,00,00,</DataElement>
+        <DataElement type="bool" description="NotInRange">00,</DataElement>
+        <DataElement type="char" bytes="3" description="DataType">69,6e,74,</DataElement>
+        <DataElement type="int" description="LowerTestValue">08,00,00,00,</DataElement>
+        <DataElement type="int" description="UpperTestValue">08,00,00,00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="6" typeID="609">
+      <DataBlock>
+        <DataElement type="NetworkNodeId" description="RuntimeNodeID">01,00,00,00,</DataElement>
+        <DataElement type="bool" description="NotInRange">00,</DataElement>
+        <DataElement type="char" bytes="3" description="DataType">69,6e,74,</DataElement>
+        <DataElement type="int" description="LowerTestValue">09,00,00,00,</DataElement>
+        <DataElement type="int" description="UpperTestValue">09,00,00,00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="7" typeID="609">
+      <DataBlock>
+        <DataElement type="NetworkNodeId" description="RuntimeNodeID">01,00,00,00,</DataElement>
+        <DataElement type="bool" description="NotInRange">00,</DataElement>
+        <DataElement type="char" bytes="3" description="DataType">69,6e,74,</DataElement>
+        <DataElement type="int" description="LowerTestValue">05,00,00,00,</DataElement>
+        <DataElement type="int" description="UpperTestValue">05,00,00,00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="8" typeID="609">
+      <DataBlock>
+        <DataElement type="NetworkNodeId" description="RuntimeNodeID">01,00,00,00,</DataElement>
+        <DataElement type="bool" description="NotInRange">00,</DataElement>
+        <DataElement type="char" bytes="3" description="DataType">69,6e,74,</DataElement>
+        <DataElement type="int" description="LowerTestValue">01,00,00,00,</DataElement>
+        <DataElement type="int" description="UpperTestValue">01,00,00,00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="9" typeID="609">
+      <DataBlock>
+        <DataElement type="NetworkNodeId" description="RuntimeNodeID">01,00,00,00,</DataElement>
+        <DataElement type="bool" description="NotInRange">00,</DataElement>
+        <DataElement type="char" bytes="3" description="DataType">69,6e,74,</DataElement>
+        <DataElement type="int" description="LowerTestValue">04,00,00,00,</DataElement>
+        <DataElement type="int" description="UpperTestValue">04,00,00,00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="10" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="11" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="145">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="1" targetNodeID="146">
+      <conditionIndices>1, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="2" targetNodeID="150">
+      <conditionIndices>2, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="3" targetNodeID="151">
+      <conditionIndices>3, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="4" targetNodeID="152">
+      <conditionIndices>4, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="5" targetNodeID="154">
+      <conditionIndices>5, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="6" targetNodeID="155">
+      <conditionIndices>6, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="7" targetNodeID="157">
+      <conditionIndices>7, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="8" targetNodeID="160">
+      <conditionIndices>8, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="9" targetNodeID="163">
+      <conditionIndices>9, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="10" targetNodeID="147">
+      <conditionIndices>10, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="11" targetNodeID="148">
+      <conditionIndices>11, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="119" downstreamParentID="117" typeID="10">
+    <DataBlock>
+      <DataElement type="uint" description="ChildNodeCount">03,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_0">78,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_1">7a,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildNodeID_2">7c,00,00,00,</DataElement>
+      <DataElement type="uint" description="ChildTransitionCount">03,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_0">7d,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_1">7e,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="RuntimeChildTransitID_2">7f,00,00,00,</DataElement>
+      <DataElement type="uint" description="DefaultNodeID">78,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="1" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="147">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="1" targetNodeID="148">
+      <conditionIndices>1, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="120" downstreamParentID="119" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">04,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">00,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="611">
+      <DataBlock>
+        <DataElement type="float" description="EventRangeStart">00,00,80,3f,</DataElement>
+        <DataElement type="float" description="EventRangeEnd">00,00,80,3f,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="125">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="121" downstreamParentID="122" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">04,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">00,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="122" downstreamParentID="119" typeID="122">
+    <DataBlock>
+      <DataElement type="NetworkNodeId" description="InputNodeID">79,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="Target" pinIndex="0">1c,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="BlendWeight" pinIndex="0">27,00,00,00,</DataElement>
+      <DataElement type="bool" description="UpdateTargetByDeltas">00,</DataElement>
+      <DataElement type="bool" description="WorldSpaceTarget">00,</DataElement>
+      <DataElement type="bool" description="ApplyJointLimits">01,</DataElement>
+      <DataElement type="bool" description="MinimiseRotation">01,</DataElement>
+      <DataElement type="bool" description="KeepUpright">00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisX">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisY">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisZ">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorX_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorY_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="PointingVectorZ_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="Bias_1">00,00,00,00,</DataElement>
+      <DataElement type="uint" description="EndJointIndex_1">1b,00,00,00,</DataElement>
+      <DataElement type="uint" description="RootJointIndex_1">19,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="603">
+      <DataBlock>
+        <DataElement type="float" description="TestFraction">00,00,80,3f,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="126">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="123" downstreamParentID="124" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">04,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">00,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="124" downstreamParentID="119" typeID="122">
+    <DataBlock>
+      <DataElement type="NetworkNodeId" description="InputNodeID">7b,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="Target" pinIndex="0">1c,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="BlendWeight" pinIndex="0">27,00,00,00,</DataElement>
+      <DataElement type="bool" description="UpdateTargetByDeltas">00,</DataElement>
+      <DataElement type="bool" description="WorldSpaceTarget">00,</DataElement>
+      <DataElement type="bool" description="ApplyJointLimits">01,</DataElement>
+      <DataElement type="bool" description="MinimiseRotation">01,</DataElement>
+      <DataElement type="bool" description="KeepUpright">00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisX">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisY">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisZ">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorX_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorY_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="PointingVectorZ_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="Bias_1">00,00,00,00,</DataElement>
+      <DataElement type="uint" description="EndJointIndex_1">1b,00,00,00,</DataElement>
+      <DataElement type="uint" description="RootJointIndex_1">19,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="603">
+      <DataBlock>
+        <DataElement type="float" description="TestFraction">00,00,80,3f,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="127">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="125" downstreamParentID="119" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">78,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">7a,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,80,3f,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">01,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="126" downstreamParentID="119" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">7a,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">7c,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,80,3f,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">01,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="127" downstreamParentID="119" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">7c,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">7a,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,80,3f,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">01,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="128" downstreamParentID="117" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">08,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="1" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="147">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="1" targetNodeID="148">
+      <conditionIndices>1, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="129" downstreamParentID="117" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">05,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="1" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="147">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="1" targetNodeID="148">
+      <conditionIndices>1, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="130" downstreamParentID="131" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">0c,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="131" downstreamParentID="117" typeID="122">
+    <DataBlock>
+      <DataElement type="NetworkNodeId" description="InputNodeID">82,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="Target" pinIndex="0">1c,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="BlendWeight" pinIndex="0">27,00,00,00,</DataElement>
+      <DataElement type="bool" description="UpdateTargetByDeltas">00,</DataElement>
+      <DataElement type="bool" description="WorldSpaceTarget">00,</DataElement>
+      <DataElement type="bool" description="ApplyJointLimits">01,</DataElement>
+      <DataElement type="bool" description="MinimiseRotation">01,</DataElement>
+      <DataElement type="bool" description="KeepUpright">00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisX">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisY">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisZ">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorX_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorY_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="PointingVectorZ_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="Bias_1">00,00,00,00,</DataElement>
+      <DataElement type="uint" description="EndJointIndex_1">1b,00,00,00,</DataElement>
+      <DataElement type="uint" description="RootJointIndex_1">19,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="132" downstreamParentID="117" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">09,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="1" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="147">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="1" targetNodeID="148">
+      <conditionIndices>1, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="133" downstreamParentID="134" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">03,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="134" downstreamParentID="117" typeID="122">
+    <DataBlock>
+      <DataElement type="NetworkNodeId" description="InputNodeID">85,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="Target" pinIndex="0">1c,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="BlendWeight" pinIndex="0">27,00,00,00,</DataElement>
+      <DataElement type="bool" description="UpdateTargetByDeltas">00,</DataElement>
+      <DataElement type="bool" description="WorldSpaceTarget">00,</DataElement>
+      <DataElement type="bool" description="ApplyJointLimits">01,</DataElement>
+      <DataElement type="bool" description="MinimiseRotation">01,</DataElement>
+      <DataElement type="bool" description="KeepUpright">00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisX">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisY">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisZ">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorX_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorY_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="PointingVectorZ_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="Bias_1">00,00,00,00,</DataElement>
+      <DataElement type="uint" description="EndJointIndex_1">1b,00,00,00,</DataElement>
+      <DataElement type="uint" description="RootJointIndex_1">19,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="1" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="166">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="1" targetNodeID="167">
+      <conditionIndices>1, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="135" downstreamParentID="117" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">06,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="1" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="147">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="1" targetNodeID="148">
+      <conditionIndices>1, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="136" downstreamParentID="117" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">01,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="1" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="168">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="1" targetNodeID="169">
+      <conditionIndices>1, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="137" downstreamParentID="117" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">0a,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="1" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="147">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="1" targetNodeID="148">
+      <conditionIndices>1, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="138" downstreamParentID="117" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">07,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="1" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="147">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="1" targetNodeID="148">
+      <conditionIndices>1, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="139" downstreamParentID="117" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">0b,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+    <Condition index="0" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <Condition index="1" typeID="601">
+      <DataBlock>
+        <DataElement type="uint" description="MessageID">21,00,00,00,</DataElement>
+        <DataElement type="bool" description="OnNotSet">00,</DataElement>
+      </DataBlock>
+    </Condition>
+    <ConditionSet index="0" targetNodeID="147">
+      <conditionIndices>0, </conditionIndices>
+    </ConditionSet>
+    <ConditionSet index="1" targetNodeID="148">
+      <conditionIndices>1, </conditionIndices>
+    </ConditionSet>
+  </Node>
+  <Node name="" networkID="140" downstreamParentID="117" typeID="122">
+    <DataBlock>
+      <DataElement type="NetworkNodeId" description="InputNodeID">8d,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="Target" pinIndex="0">1c,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="BlendWeight" pinIndex="0">27,00,00,00,</DataElement>
+      <DataElement type="bool" description="UpdateTargetByDeltas">00,</DataElement>
+      <DataElement type="bool" description="WorldSpaceTarget">00,</DataElement>
+      <DataElement type="bool" description="ApplyJointLimits">01,</DataElement>
+      <DataElement type="bool" description="MinimiseRotation">01,</DataElement>
+      <DataElement type="bool" description="KeepUpright">00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisX">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisY">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisZ">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorX_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorY_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="PointingVectorZ_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="Bias_1">00,00,00,00,</DataElement>
+      <DataElement type="uint" description="EndJointIndex_1">1b,00,00,00,</DataElement>
+      <DataElement type="uint" description="RootJointIndex_1">19,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="141" downstreamParentID="140" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">02,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="142" downstreamParentID="117" typeID="122">
+    <DataBlock>
+      <DataElement type="NetworkNodeId" description="InputNodeID">8f,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="Target" pinIndex="0">1c,00,00,00,</DataElement>
+      <DataElement type="NetworkNodeId" description="BlendWeight" pinIndex="0">27,00,00,00,</DataElement>
+      <DataElement type="bool" description="UpdateTargetByDeltas">00,</DataElement>
+      <DataElement type="bool" description="WorldSpaceTarget">00,</DataElement>
+      <DataElement type="bool" description="ApplyJointLimits">01,</DataElement>
+      <DataElement type="bool" description="MinimiseRotation">01,</DataElement>
+      <DataElement type="bool" description="KeepUpright">00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisX">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisY">00,00,00,00,</DataElement>
+      <DataElement type="float" description="WorldUpAxisZ">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorX_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="PointingVectorY_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="PointingVectorZ_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="Bias_1">00,00,00,00,</DataElement>
+      <DataElement type="uint" description="EndJointIndex_1">1b,00,00,00,</DataElement>
+      <DataElement type="uint" description="RootJointIndex_1">19,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="143" downstreamParentID="142" typeID="104">
+    <DataBlock>
+      <DataElement type="AnimationId" description="AnimIndex">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="GenerateAnimationDeltas">00,</DataElement>
+      <DataElement type="bool" description="Loop">01,</DataElement>
+      <DataElement type="bool" description="PlayBackwards">00,</DataElement>
+      <DataElement type="bool" description="PreComputeSyncEventTracks">00,</DataElement>
+      <DataElement type="bool" description="DefaultClip_1">01,</DataElement>
+      <DataElement type="int" description="ClipRangeMode_1">03,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipStartFraction_1">00,00,00,00,</DataElement>
+      <DataElement type="float" description="ClipEndFraction_1">00,00,80,3f,</DataElement>
+      <DataElement type="float" description="StartEventIndex_1">00,00,00,00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="144" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">80,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="145" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">76,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">77,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="146" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">76,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">81,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="147" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">83,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">cd,cc,4c,3e,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">01,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="148" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">83,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">cd,cc,4c,3e,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">01,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="149" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">86,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="150" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">76,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">87,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="151" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">76,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">88,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="152" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">76,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">84,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="153" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">89,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="154" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">76,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">8a,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="155" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">76,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">8b,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="156" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">8b,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="157" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">76,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">89,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="158" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">84,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="159" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">88,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="160" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">76,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">80,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="161" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">8a,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="162" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">87,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="163" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">76,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">86,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="164" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">81,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="165" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="DestNodeID">77,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="166" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">86,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">8c,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">cd,cc,4c,3e,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">01,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="167" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">86,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">8c,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">cd,cc,4c,3e,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">01,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="168" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">88,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">8e,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">cd,cc,4c,3e,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">01,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Node name="" networkID="169" downstreamParentID="117" typeID="402">
+    <DataBlock>
+      <DataElement type="int" description="SourceNodeID">88,00,00,00,</DataElement>
+      <DataElement type="int" description="DestNodeID">8e,00,00,00,</DataElement>
+      <DataElement type="float" description="DurationInTime">cd,cc,4c,3e,</DataElement>
+      <DataElement type="float" description="DestinationStartFraction">00,00,00,00,</DataElement>
+      <DataElement type="float" description="DestinationStartSyncEvent">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartFraction">01,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventIndex">00,</DataElement>
+      <DataElement type="bool" description="UseDestinationStartSyncEventFraction">00,</DataElement>
+      <DataElement type="bool" description="BreakoutTransit">00,</DataElement>
+      <DataElement type="bool" description="isReversibleTransit">00,</DataElement>
+      <DataElement type="bool" description="FreezeSource">00,</DataElement>
+      <DataElement type="bool" description="FreezeDest">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendAttitude">00,</DataElement>
+      <DataElement type="bool" description="AdditiveBlendPosition">00,</DataElement>
+      <DataElement type="bool" description="SphericallyInterpolateTrajectoryPosition">00,</DataElement>
+      <DataElement type="bool" description="DeadblendBreakoutToSource">00,</DataElement>
+      <DataElement type="int" description="DestinationSubStateCount">00,00,00,00,</DataElement>
+      <DataElement type="bool" description="UseDeadReckoningWhenDeadBlending">01,</DataElement>
+      <DataElement type="bool" description="BlendToDestinationPhysicsBones">00,</DataElement>
+    </DataBlock>
+  </Node>
+  <Message name="Idle" messageTypeID="10" messageID="0"/>
+  <Message name="Turn" messageTypeID="10" messageID="1"/>
+  <Message name="Step" messageTypeID="10" messageID="2"/>
+  <Message name="Dodge" messageTypeID="10" messageID="3"/>
+  <Message name="Combination" messageTypeID="10" messageID="4"/>
+  <Message name="Attack" messageTypeID="10" messageID="5"/>
+  <Message name="Attack_Cancel" messageTypeID="10" messageID="6"/>
+  <Message name="EventAction" messageTypeID="10" messageID="7"/>
+  <Message name="CatchAttack" messageTypeID="10" messageID="8"/>
+  <Message name="Jump" messageTypeID="10" messageID="9"/>
+  <Message name="StandJump" messageTypeID="10" messageID="10"/>
+  <Message name="JumpAttack" messageTypeID="10" messageID="11"/>
+  <Message name="LadderStart" messageTypeID="10" messageID="12"/>
+  <Message name="LadderUpEnd" messageTypeID="10" messageID="13"/>
+  <Message name="LadderDownEnd" messageTypeID="10" messageID="14"/>
+  <Message name="Die" messageTypeID="10" messageID="15"/>
+  <Message name="MoveGuard" messageTypeID="10" messageID="16"/>
+  <Message name="DamageUpper" messageTypeID="10" messageID="17"/>
+  <Message name="DamageFullBody" messageTypeID="10" messageID="18"/>
+  <Message name="SitDown" messageTypeID="10" messageID="19"/>
+  <Message name="RagDoll_End" messageTypeID="10" messageID="20"/>
+  <Message name="SitUp_FaceUp" messageTypeID="10" messageID="21"/>
+  <Message name="SitUp_FaceDown" messageTypeID="10" messageID="22"/>
+  <Message name="Guard" messageTypeID="10" messageID="23"/>
+  <Message name="ChangeStance" messageTypeID="10" messageID="24"/>
+  <Message name="ChangeStance_NoAnime" messageTypeID="10" messageID="25"/>
+  <Message name="Door" messageTypeID="10" messageID="26"/>
+  <Message name="Rope" messageTypeID="10" messageID="27"/>
+  <Message name="HitBack" messageTypeID="10" messageID="28"/>
+  <Message name="StartUp_Dmy" messageTypeID="10" messageID="29"/>
+  <Message name="Reset" messageTypeID="10" messageID="30"/>
+  <Message name="CatchDamage" messageTypeID="10" messageID="31"/>
+  <Message name="Contact" messageTypeID="10" messageID="32"/>
+  <Message name="A20" messageTypeID="10" messageID="33"/>
+  <Message name="Start00" messageTypeID="10" messageID="34"/>
+  <Message name="Start01" messageTypeID="10" messageID="35"/>
+  <Message name="Start02" messageTypeID="10" messageID="36"/>
+  <Message name="Start03" messageTypeID="10" messageID="37"/>
+  <Message name="Start04" messageTypeID="10" messageID="38"/>
+  <Message name="Start05" messageTypeID="10" messageID="39"/>
+  <Message name="Start06" messageTypeID="10" messageID="40"/>
+  <Message name="Start07" messageTypeID="10" messageID="41"/>
+  <Message name="Start08" messageTypeID="10" messageID="42"/>
+  <Message name="Start09" messageTypeID="10" messageID="43"/>
+  <rootNodeNetworkID>117</rootNodeNetworkID>
+  <AnimLibraryRef refGUID="1883595b-956a-4627-9e59-4a6ba64b1ecc" filename="c7770_Library.xml"/>
+  <MessagePresetLibraryRef refGUID="5efb2ebd-3c85-4e5c-b7fe-ca017604f3f9" filename="c7770_Preset.xml"/>
+</NetworkDefinition>

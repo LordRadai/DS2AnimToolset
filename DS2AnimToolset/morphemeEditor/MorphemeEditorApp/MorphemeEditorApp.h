@@ -57,7 +57,7 @@ public:
 		bool exportAnimations = false;
 		bool exportNetwork = false;
 		bool exportAll = false;
-		ExportFormat exportFormat = kFbx;
+		bool exportAndProcess = false;
 
 		bool compileNetwork = false;
 		bool compileTaes = false;
@@ -83,6 +83,14 @@ public:
 		bool playerPartsManager = false;
 	};
 
+	struct ExportSettings
+	{
+		ExportFormat exportFormat = kFbx;
+		uint8_t compressionFormat = 2;
+		bool useSourceSampleFrequency = true;
+		int sampleFrequency = 30;
+	};
+
 	~MorphemeEditorApp();
 
 	MorphemeEditorApp(const MorphemeEditorApp&) = delete;
@@ -103,18 +111,9 @@ public:
 	WindowFlags* getWindowFlags() { return &this->m_windowFlags; }
 	TaskFlags* getTaskFlags() { return &this->m_taskFlags; }
 	PreviewFlags* getPreviewFlags() { return &this->m_previewFlags; }
+	ExportSettings* getExportSettings() { return &this->m_exportSettings; }
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
 	std::wstring getGamePath() const { return this->m_gamePath; }
-
-	void loadFile();
-	void saveFile();
-
-	bool exportTimeAct(std::wstring path);
-	bool exportNetwork(std::wstring path);
-	void exportAnimationsAndMarkups(std::wstring path);
-	bool exportModel(std::wstring path);
-
-	bool compileTimeActFiles(std::wstring path);
 
 	static MorphemeEditorApp* getInstance();
 
@@ -127,19 +126,32 @@ private:
 	void loadPlayerModelPreset();
 	void savePlayerModelPreset();
 
-	bool compileAndExportTae(std::wstring path);
-	bool exportAll();
+	void loadFile();
+	void saveFile();
+
+	bool exportAll(std::wstring path);
+	bool exportAndProcess(std::wstring path);
+	bool exportAndCompileTae(std::wstring path);
+
+	bool exportTimeAct(std::wstring path);
+	bool exportNetwork(std::wstring path);
+	void exportAnimationsAndMarkups(std::wstring path);
+	bool exportModel(std::wstring path);
 	bool exportAnimations(std::wstring path);
 	bool exportAnimMarkups(std::wstring path);
 
-	bool exportAnimation(std::wstring path, int animId);
-	bool exportAnimMarkup(std::wstring path, int animId);
+	bool compileMorphemeAssets(std::wstring path);
+	bool compileTimeActFiles(std::wstring path);
+
+	bool exportAnimation(std::wstring path, int animSetIdx, int animId);
+	bool exportAnimMarkup(std::wstring path, int animSetIdx, int animId, std::vector<ME::EventTrackExport*>& exportedTracks);
 
 	void exportTaeTemplateXML();
 
 	WindowFlags m_windowFlags;
 	TaskFlags m_taskFlags;
 	PreviewFlags m_previewFlags;
+	ExportSettings m_exportSettings;
 
 	FlverResources* m_flverResources = nullptr;
 	PlayerModelPreset* m_playerModelPreset = nullptr;

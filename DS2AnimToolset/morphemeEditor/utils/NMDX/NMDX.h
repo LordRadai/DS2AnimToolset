@@ -4,9 +4,12 @@
 
 using namespace DirectX::SimpleMath;
 
-namespace NMDX
+namespace utils
 {
-	Vector3 getDxVector(const NMP::Vector3 in);
-	Quaternion getDxQuat(const NMP::Quat in);
-	Matrix getWorldMatrix(NMP::Quat quat, NMP::Vector3 pos);
+	namespace NMDX
+	{
+		Vector3 getDxVector(const NMP::Vector3 in);
+		Quaternion getDxQuat(const NMP::Quat in);
+		Matrix getWorldMatrix(NMP::Quat quat, NMP::Vector3 pos);
+	}
 }

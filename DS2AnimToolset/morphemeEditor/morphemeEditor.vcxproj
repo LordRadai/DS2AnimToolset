@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\bin\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\obj\</IntDir>
+    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_debug</TargetName>
     <LibraryPath>$(SolutionDir)lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <ExternalIncludePath>$(SolutionDir)include\;$(SolutionDir)include\zlib</ExternalIncludePath>
@@ -80,7 +80,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\bin\</OutDir>
-    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\obj\</IntDir>
+    <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
     <LibraryPath>$(SolutionDir)lib\$(Platform)\$(Configuration)\;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <ExternalIncludePath>$(SolutionDir)include\;$(SolutionDir)include\zlib</ExternalIncludePath>
     <IncludePath>$(IncludePath)</IncludePath>
@@ -117,7 +117,7 @@
     <ClCompile>
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_USRDLL;_WIN64;_WINDLL;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MR_DISABLE_OUTPUT_DEBUGGING;WIN32;_USRDLL;_WIN64;_WINDLL;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)Morpheme4\common\NMRuntimeUtils\include;$(SolutionDir)RCore\RCore\src;$(SolutionDir)Morpheme4\common\NMTL\include;$(SolutionDir)Morpheme4\common\tinyxml;$(SolutionDir)Morpheme4\common\XMD\include;$(SolutionDir)Morpheme4\morpheme\SDK\export\include;$(ProjectDir)\include\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -138,7 +138,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_USRDLL;_WIN64;_WINDLL;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MR_DISABLE_OUTPUT_DEBUGGING;WIN32;_USRDLL;_WIN64;_WINDLL;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)Morpheme4\common\NMRuntimeUtils\include;$(SolutionDir)RCore\RCore\src;$(SolutionDir)Morpheme4\common\XMD\include;$(SolutionDir)Morpheme4\common\NMTL\include;$(SolutionDir)Morpheme4\common\tinyxml;$(SolutionDir)Morpheme4\morpheme\SDK\export\include;$(ProjectDir)\include\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -199,14 +199,6 @@
     <ClInclude Include="fromloader\src\util\types\types.h" />
     <ClInclude Include="fromloader\src\util\validate\validate.h" />
     <ClInclude Include="fromloader\umem.h" />
-    <ClInclude Include="FromSoftware\BND4\BND4.h" />
-    <ClInclude Include="FromSoftware\TimeAct\TaeExport\TaeExport.h" />
-    <ClInclude Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplate.h" />
-    <ClInclude Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplateXML\TaeTemplateXML.h" />
-    <ClInclude Include="FromSoftware\TimeAct\TimeAct.h" />
-    <ClInclude Include="FromSoftware\TimeAct\TimeActEvent\TimeActEvent.h" />
-    <ClInclude Include="FromSoftware\TimeAct\TimeActEvent\TimeActEventData\TimeActEventData.h" />
-    <ClInclude Include="FromSoftware\TimeAct\TAE3\TAE3.h" />
     <ClInclude Include="GuiManager\GuiManager.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
@@ -225,17 +217,18 @@
     <ClInclude Include="MorphemeSystem\CharacterController\CharacterController.h" />
     <ClInclude Include="MorphemeSystem\MorphemeCharacterDef\MorphemeCharacterDef.h" />
     <ClInclude Include="MorphemeSystem\MorphemeCharacter\MorphemeCharacter.h" />
-    <ClInclude Include="MorphemeSystem\MorphemeExport\MorphemeExport.h" />
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.h" />
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.h" />
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.h" />
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.h" />
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.h" />
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.h" />
-    <ClInclude Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.h" />
-    <ClInclude Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\MorphemeDecompiler.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\BlendNode.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\ControlParamNode.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\Node.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\TransitNode.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\TransitCondition\TransitCondition.h" />
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h" />
-    <ClInclude Include="MorphemeSystem\MRUtils\MRUtils.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.h" />
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h" />
     <ClInclude Include="PlayerModelPreset\PlayerModelPreset.h" />
     <ClInclude Include="RenderManager\DebugDraw\DebugDraw.h" />
@@ -249,6 +242,7 @@
     <ClInclude Include="TrackEditor\Track\Event\Event.h" />
     <ClInclude Include="TrackEditor\Track\Track.h" />
     <ClInclude Include="utils\NMDX\NMDX.h" />
+    <ClInclude Include="utils\utils.h" />
     <ClInclude Include="WorkerThread\ProgressIndicator\ProgressIndicator.h" />
     <ClInclude Include="WorkerThread\WorkerThread.h" />
     <ClInclude Include="XMDTranslator\XMDTranslator.h" />
@@ -284,14 +278,6 @@
     <ClCompile Include="fromloader\src\util\types\types.cpp" />
     <ClCompile Include="fromloader\src\util\validate\validate.cpp" />
     <ClCompile Include="fromloader\umem.c" />
-    <ClCompile Include="FromSoftware\BND4\BND4.cpp" />
-    <ClCompile Include="FromSoftware\TimeAct\TaeExport\TaeExport.cpp" />
-    <ClCompile Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplate.cpp" />
-    <ClCompile Include="FromSoftware\TimeAct\TaeTemplate\TaeTemplateXML\TaeTemplateXML.cpp" />
-    <ClCompile Include="FromSoftware\TimeAct\TimeAct.cpp" />
-    <ClCompile Include="FromSoftware\TimeAct\TimeActEvent\TimeActEvent.cpp" />
-    <ClCompile Include="FromSoftware\TimeAct\TimeActEvent\TimeActEventData\TimeActEventData.cpp" />
-    <ClCompile Include="FromSoftware\TimeAct\TAE3\TAE3.cpp" />
     <ClCompile Include="GuiManager\GuiManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -309,17 +295,18 @@
     <ClCompile Include="MorphemeSystem\CharacterController\CharacterController.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeCharacterDef\MorphemeCharacterDef.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeCharacter\MorphemeCharacter.cpp" />
-    <ClCompile Include="MorphemeSystem\MorphemeExport\MorphemeExport.cpp" />
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\BlendNodeExport.cpp" />
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\ControlParamNodeExport.cpp" />
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\IKNodeExport.cpp" />
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExport.cpp" />
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\NodeExportHelpers.cpp" />
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\StateMachineNodeExport.cpp" />
-    <ClCompile Include="MorphemeSystem\MorphemeExport\NodeExport\TransitNodeExport.cpp" />
-    <ClCompile Include="MorphemeSystem\MorphemeExport\TransitConditionExport\TransitConditionExport.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\MorphemeDecompiler.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\BlendNode.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\ControlParamNode.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\Node.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\TransitNode.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\TransitCondition\TransitCondition.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp" />
-    <ClCompile Include="MorphemeSystem\MRUtils\MRUtils.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.cpp" />
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp" />
     <ClCompile Include="PlayerModelPreset\PlayerModelPreset.cpp" />
     <ClCompile Include="RenderManager\RenderManager.cpp" />
@@ -329,6 +316,7 @@
     <ClCompile Include="TrackEditor\Track\Event\Event.cpp" />
     <ClCompile Include="TrackEditor\Track\Track.cpp" />
     <ClCompile Include="utils\NMDX\NMDX.cpp" />
+    <ClCompile Include="utils\utils.cpp" />
     <ClCompile Include="WorkerThread\ProgressIndicator\ProgressIndicator.cpp" />
     <ClCompile Include="WorkerThread\WorkerThread.cpp" />
     <ClCompile Include="XMDTranslator\XMDTranslator.cpp" />
@@ -347,12 +335,12 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\directxtk_uwp.2024.6.5.1\build\native\directxtk_uwp.targets" Condition="Exists('..\packages\directxtk_uwp.2024.6.5.1\build\native\directxtk_uwp.targets')" />
+    <Import Project="..\packages\directxtk_uwp.2024.10.29.1\build\native\directxtk_uwp.targets" Condition="Exists('..\packages\directxtk_uwp.2024.10.29.1\build\native\directxtk_uwp.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\directxtk_uwp.2024.6.5.1\build\native\directxtk_uwp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk_uwp.2024.6.5.1\build\native\directxtk_uwp.targets'))" />
+    <Error Condition="!Exists('..\packages\directxtk_uwp.2024.10.29.1\build\native\directxtk_uwp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk_uwp.2024.10.29.1\build\native\directxtk_uwp.targets'))" />
   </Target>
 </Project>

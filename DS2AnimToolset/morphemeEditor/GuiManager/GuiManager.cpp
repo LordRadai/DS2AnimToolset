@@ -515,8 +515,6 @@ namespace
 
 				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
 				{
-					setPresetModelFgId(preset, character->getCharacterModelCtrl(), type);
-
 					if (path.compare(L"") == 0)
 						character->getCharacterModelCtrl()->setModelFg(type, nullptr);
 					else
@@ -525,6 +523,8 @@ namespace
 
 						character->getCharacterModelCtrl()->setModelFg(type, model);
 					}
+
+					setPresetModelFgId(preset, character->getCharacterModelCtrl(), type);
 				}
 			}
 
@@ -707,7 +707,7 @@ void GuiManager::update(float dt)
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 	MorphemeEditorApp::WindowFlags* windowFlags = editorApp->getWindowFlags();
 
-	if (GetForegroundWindow() == this->m_window)
+	if (this->isApplicationFocused())
 	{
 		if (editorApp->getCharacter() != nullptr && editorApp->getCharacter()->getTimeAct() != nullptr)
 		{
@@ -751,6 +751,14 @@ void GuiManager::render(ID3D11DeviceContext* pContext, ID3D11RenderTargetView* p
 	}
 }
 
+bool GuiManager::isApplicationFocused()
+{
+	if (GetForegroundWindow() == this->m_window)
+		return true;
+
+	return false;
+}
+
 void GuiManager::shutdown()
 {
 	ImGui_ImplDX11_Shutdown();
@@ -784,7 +792,11 @@ void GuiManager::rootWindow()
 		{
 			ImGui::BeginDisabled(editorApp->getCharacter() == nullptr);
 
-			if (ImGui::MenuItem("Export All")) { editorApp->getTaskFlags()->exportAll = true; }
+			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->exportAll = true; }
+			if (ImGui::MenuItem("Export and Process")) { editorApp->getTaskFlags()->exportAndProcess = true; }
+			
+			ImGui::SeparatorText("Export Components");
+			
 			if (ImGui::MenuItem("Export Model")) { editorApp->getTaskFlags()->exportModel = true; }
 			if (ImGui::MenuItem("Export Animations")) { editorApp->getTaskFlags()->exportAnimations = true; }
 			if (ImGui::MenuItem("Export Network")) { editorApp->getTaskFlags()->exportNetwork = true; }
@@ -792,20 +804,20 @@ void GuiManager::rootWindow()
 
 			ImGui::EndDisabled();
 
-			ImGui::Separator();
+			ImGui::SeparatorText("Export Settings");
 
-			int currentItem = editorApp->getTaskFlags()->exportFormat;
+			int currentItem = editorApp->getExportSettings()->exportFormat;
 
-			const char* items[] = { "FBX", "XMD" };
+			const char* exportFormat[] = { "FBX", "XMD" };
 
-			if (ImGui::BeginCombo("Format", items[editorApp->getTaskFlags()->exportFormat]))
+			if (ImGui::BeginCombo("Export Format", exportFormat[editorApp->getExportSettings()->exportFormat]))
 			{
 				for (size_t i = 0; i < MorphemeEditorApp::kNumExportFormats; i++)
 				{
-					const bool selected = (editorApp->getTaskFlags()->exportFormat == i);
+					const bool selected = (editorApp->getExportSettings()->exportFormat == i);
 
-					if (ImGui::Selectable(items[i], selected))
-						editorApp->getTaskFlags()->exportFormat = (MorphemeEditorApp::ExportFormat)i;
+					if (ImGui::Selectable(exportFormat[i], selected))
+						editorApp->getExportSettings()->exportFormat = (MorphemeEditorApp::ExportFormat)i;
 
 					if (selected)
 						ImGui::SetItemDefaultFocus();
@@ -813,6 +825,32 @@ void GuiManager::rootWindow()
 
 				ImGui::EndCombo();
 			}
+
+			const char* compressionFormats[] = { "MBA", "ASA", "NSA", "QSA" };
+
+			if (ImGui::BeginCombo("Compression Format", compressionFormats[editorApp->getExportSettings()->compressionFormat]))
+			{
+				for (uint8_t i = 0; i < 4; i++)
+				{
+					const bool selected = (editorApp->getExportSettings()->compressionFormat == i);
+
+					if (ImGui::Selectable(compressionFormats[i], selected))
+						editorApp->getExportSettings()->compressionFormat = i;
+
+					if (selected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+			}
+
+			ImGui::Checkbox("Use source sample frequency", &editorApp->getExportSettings()->useSourceSampleFrequency);
+
+			ImGui::BeginDisabled(editorApp->getExportSettings()->useSourceSampleFrequency);
+
+			ImGui::InputDragInt("Sample frequency", &editorApp->getExportSettings()->sampleFrequency, 0.5f, 0, 120);
+
+			ImGui::EndDisabled();
 
 			ImGui::EndMenu();
 		}
@@ -911,7 +949,6 @@ void GuiManager::rootWindow()
 	{
 		if (ImGui::MenuItem("ImGui Demo", nullptr, editorApp->getWindowFlags()->imGuiDemo)) { editorApp->getWindowFlags()->imGuiDemo = !editorApp->getWindowFlags()->imGuiDemo; }
 		if (ImGui::MenuItem("Create Tae Template XML")) { editorApp->getTaskFlags()->exportTaeTemplateXml = true; }
-		if (ImGui::MenuItem("Process Assets")) { editorApp->getTaskFlags()->compileNetwork = true; }
 
 		ImGui::EndMenu();
 	}
@@ -926,6 +963,8 @@ void GuiManager::rootWindow()
 
 void GuiManager::modelViewerWindow()
 {
+	const bool isWindowFocused = this->isApplicationFocused();
+
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 
 	Camera* camera = editorApp->getCamera();
@@ -1006,7 +1045,7 @@ void GuiManager::modelViewerWindow()
 		}
 
 		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_BACKWARD_STEP))
+		if (ImGui::Button(ICON_FA_BACKWARD_STEP) || ((GetAsyncKeyState(0x51) & 1) && isWindowFocused))
 		{
 			animPlayer->stepPlay(-1.f / 30.f);
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
@@ -1017,17 +1056,17 @@ void GuiManager::modelViewerWindow()
 
 		if (!animPlayer->isPaused())
 		{
-			if (ImGui::Button(ICON_FA_PAUSE))
+			if (ImGui::Button(ICON_FA_PAUSE) || ((GetAsyncKeyState(VK_SPACE) & 1) && isWindowFocused))
 				animPlayer->setPause(true);
 		}
 		else
 		{
-			if (ImGui::Button(ICON_FA_PLAY))
+			if (ImGui::Button(ICON_FA_PLAY) || ((GetAsyncKeyState(VK_SPACE) & 1) && isWindowFocused))
 				animPlayer->setPause(false);
 		}
 
 		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_FORWARD_STEP))
+		if (ImGui::Button(ICON_FA_FORWARD_STEP) || ((GetAsyncKeyState(0x45) & 1) && isWindowFocused))
 		{
 			animPlayer->stepPlay(1.f / 30.f);
 			eventTrackEditor->setCurrentTime(animPlayer->getTime());
@@ -1043,6 +1082,13 @@ void GuiManager::modelViewerWindow()
 		}
 
 		ImGui::Separator();
+
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 10);
+
+		static float playSpeed = 1.f;
+		ImGui::SliderFloat(ICON_FA_CLOCK, &playSpeed, 0.1f, 1.f);
+
+		animPlayer->setPlaySpeed(playSpeed);
 
 		ImGui::EndMenuBar();
 	}
@@ -1163,7 +1209,8 @@ void GuiManager::assetsWindow()
 
 						ImGui::BeginChild("anim_list");
 						{
-							int numAnims = characterDef->getAnimFileLookUp()->getNumAnims();
+							const int numAnims = characterDef->getAnimFileLookUp()->getNumAnims();
+							const int animSetIdx = character->getMorphemeNetwork()->getActiveAnimSetIndex();
 
 							for (int i = 0; i < numAnims; i++)
 							{
@@ -1172,7 +1219,7 @@ void GuiManager::assetsWindow()
 								//if (eventTrackEditor->isEdited())
 									//anim_name += "*";
 
-								AnimObject* currentAnim = characterDef->getAnimation(i);
+								AnimObject* currentAnim = characterDef->getAnimation(animSetIdx, i);
 
 								anim_name += RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(currentAnim->getAnimID()));
 
@@ -1856,7 +1903,7 @@ void GuiManager::searchQueryWindow()
 				std::string col1 = std::to_string(groupId);
 				std::string col2 = g_taeTemplate->getGroupName(groupId);
 				std::string col3 = std::to_string(eventId);
-				std::string col4 = g_taeTemplate->getEventName(groupId, eventId) + result->getArgumentsString();
+				std::string col4 = g_taeTemplate->getEventName(groupId, eventId) + result->getArgumentsString(g_taeTemplate);
 
 				for (size_t column = 0; column < columnCount; column++)
 				{
