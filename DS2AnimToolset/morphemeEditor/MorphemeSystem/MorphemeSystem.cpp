@@ -87,7 +87,7 @@ MorphemeCharacterDef* MorphemeSystem::createCharacterDef(const char* filename, b
         return NULL;
     }
 
-    gameCharacterDef->setSimulateNetwork(simulateNetwork);
+    gameCharacterDef->setDoSimulateNetwork(simulateNetwork);
 
     return gameCharacterDef;
 }

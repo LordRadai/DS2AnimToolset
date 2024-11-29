@@ -66,9 +66,8 @@ public:
   MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* getAnimFileLookUp() const { return m_metadata.m_animFileLookUp; }
   const char* getBundleFilepath() const { return m_metadata.m_bundleDir; }
   const char* getFilename() const { return m_filename; }
-  int getCharacterId() const { return m_chrId; }
-  bool simulateNetwork() const { return this->m_simulateNetwork; }
-  void setSimulateNetwork(bool simulate) { this->m_simulateNetwork = simulate; }
+  bool getDoSimulateNetwork() const { return this->m_simulateNetwork; }
+  void setDoSimulateNetwork(bool simulate) { this->m_simulateNetwork = simulate; }
   int getNumRigToAnimMaps() { return this->m_rigToAnimMaps.size(); }
   int getNumCharacterControllers() { return this->m_characterControllerDefs.size(); }
   int getNumAnims(int animSetIdx) { return this->m_anims[animSetIdx].size(); }
@@ -115,10 +114,9 @@ protected:
   UINT  m_numClientAssets;
 
   AnimData m_metadata;
-  char m_filename[255];
+  char m_filename[256];
 
   bool m_simulateNetwork = true;
-  int m_chrId;
   std::vector<std::vector<AnimObject*>> m_anims;
 };
 

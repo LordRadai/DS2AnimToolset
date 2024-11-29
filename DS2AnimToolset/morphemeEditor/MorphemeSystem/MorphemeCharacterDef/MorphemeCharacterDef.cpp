@@ -58,9 +58,6 @@ MorphemeCharacterDef* MorphemeCharacterDef::create(const char* filename)
   strcpy(instance->m_metadata.m_bundleDir, filepath.parent_path().string().c_str());
   strcpy(instance->m_filename, file_name.string().c_str());
 
-  instance->m_chrId = getChrIdFromNmbFileName(filepath.c_str());
-  g_appLog->debugMessage(MsgLevel_Debug, "\tChr ID: %d\n", instance->m_chrId);
-
   //----------------------------
   // Load the given bundle file into memory and load the bundle.
 

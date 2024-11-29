@@ -477,11 +477,11 @@ Character::~Character()
 {
 }
 
-Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const char* filename)
+Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork)
 {
     Character* character = new Character();
 
-    MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, false);
+    MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, doSimulateNetwork);
 
     if (!characterDef)
         throw("Failed to create MorphemeCharacterDef instance (%s)", filename);
@@ -583,7 +583,7 @@ void Character::update(float dt)
     if (model)
         this->m_position = Vector3::Transform(Vector3::Zero, model->getWorldMatrix());
 
-    if (this->m_morphemeCharacter && this->m_morphemeCharacter->getCharacterDef()->simulateNetwork())
+    if (this->m_morphemeCharacter && this->m_morphemeCharacter->getCharacterDef()->getDoSimulateNetwork())
         this->m_morphemeCharacter->update(dt);
 }
 
