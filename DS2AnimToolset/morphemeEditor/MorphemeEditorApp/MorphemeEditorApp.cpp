@@ -1346,6 +1346,14 @@ void MorphemeEditorApp::shutdown()
 		delete this->m_animPlayer;
 	}
 
+	if (this->m_projectFile)
+		this->m_projectFile->destroy();
+
+	if (this->m_animBrowser)
+	{
+		delete this->m_animBrowser;
+	}
+
 	this->destroyCharacter();
 
 	if (this->m_camera)
@@ -1463,6 +1471,7 @@ MorphemeEditorApp::MorphemeEditorApp() : Application()
 	this->m_camera = new Camera;
 	this->m_projectFile = new MEProject::MEProj;
 	this->m_flverResources = new FlverResources;
+	this->m_animBrowser = new AnimBrowser;
 
 	this->m_timeActEditor = TrackEditor::TimeActEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds, g_taeTemplate);
 	this->m_eventTrackEditor = TrackEditor::EventTrackEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorRenameTrack | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds);
@@ -1629,7 +1638,7 @@ void MorphemeEditorApp::importFile()
 						this->m_gamePath = utils::findGamePath(filepath);
 
 						if (filepath.extension() == ".nmb")
-							this->m_character = Character::createFromNmb(this->m_timeActFileList, RString::toNarrow(filepath).c_str());
+							this->m_character = Character::createFromNmb(RString::toNarrow(filepath).c_str(), false);
 
 						ImGui::OpenPopup("Import File");
 					}

@@ -17,34 +17,6 @@
 #include "MorphemeSystem/MorphemeUtils/MorphemeUtils.h"
 #include "../AssetLoader/AssetLoader.h"
 //----------------------------------------------------------------------------------------------------------------------
-
-namespace
-{
-    bool compareAnimObjs(AnimObject* first, AnimObject* second)
-    {
-        return std::string(first->getAnimName()) < std::string(second->getAnimName());
-    }
-
-    int getChrIdFromNmbFileName(std::wstring name)
-    {
-        std::wstring chr_id_str;
-        int chrId = -1;
-
-        int lastCPos = name.find_last_of(L"\\");
-
-        if (name.substr(lastCPos + 1, 1).compare(L"c") != 0)
-            return -1;
-
-        chr_id_str = name.substr(lastCPos + 2, 4);
-
-        chrId = stoi(chr_id_str);
-
-        return chrId;
-    }
-
-}
-
-//----------------------------------------------------------------------------------------------------------------------
 MorphemeCharacterDef* MorphemeCharacterDef::create(const char* filename)
 {
   //----------------------------
@@ -55,11 +27,7 @@ MorphemeCharacterDef* MorphemeCharacterDef::create(const char* filename)
   std::filesystem::path filepath(filename);
   std::filesystem::path file_name = filepath.filename();
 
-  strcpy(instance->m_metadata.m_bundleDir, filepath.parent_path().string().c_str());
   strcpy(instance->m_filename, file_name.string().c_str());
-
-  instance->m_chrId = getChrIdFromNmbFileName(filepath.c_str());
-  g_appLog->debugMessage(MsgLevel_Debug, "\tChr ID: %d\n", instance->m_chrId);
 
   //----------------------------
   // Load the given bundle file into memory and load the bundle.
@@ -123,7 +91,7 @@ bool MorphemeCharacterDef::loadAnimations()
   for (UINT i = 0; i < m_netDef->getNumAnimSets(); ++i)
   {
     g_appLog->debugMessage(MsgLevel_Debug, "Loading animations for anim set %d\n", i);
-    m_netDef->loadAnimations((MR::AnimSetIndex)i, &m_metadata);
+    m_netDef->loadAnimations((MR::AnimSetIndex)i);
   }
   return true;
 }
@@ -164,7 +132,7 @@ bool MorphemeCharacterDef::init(void* bundle, size_t bundleSize)
                    m_numClientAssets,
                    m_rigToAnimMaps,
                    m_characterControllerDefs,
-                   m_metadata.m_animFileLookUp);
+                   m_animRuntimeIDToFilenameLookup);
 
   if (!m_netDef)
   {
@@ -262,5 +230,5 @@ void MorphemeCharacterDef::addAnimation(const char* filename, int animSetIdx, co
 void MorphemeCharacterDef::sortAnimations()
 {
     for (uint32_t i = 0; i < m_anims.size(); i++)
-        std::sort(m_anims[i].begin(), m_anims[i].end(), compareAnimObjs);
+        std::sort(m_anims[i].begin(), m_anims[i].end());
 }

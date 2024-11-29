@@ -15,6 +15,7 @@
 #include "FileIDNamesTable/FileIDNamesTable.h"
 #include "PlayerModelPreset/PlayerModelPreset.h"
 #include "MEProj/MEProj.h"
+#include "AnimBrowser/AnimBrowser.h"
 
 struct FlverResources
 {
@@ -171,6 +172,7 @@ private:
 	FlverResources* m_flverResources = nullptr;
 	PlayerModelPreset* m_playerModelPreset = nullptr;
 	Camera* m_camera = nullptr;
+	AnimBrowser* m_animBrowser = nullptr;
 	AnimPlayer* m_animPlayer = nullptr;
 	Character* m_character = nullptr;
 

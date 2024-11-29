@@ -397,31 +397,16 @@ Character* Character::createFromMeProj(const char* filename)
 {
     Character* character = new Character();
 
-    MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, false);
-
-    if (!characterDef)
-        throw("Failed to create MorphemeCharacterDef instance (%s)", filename);
-
-    character->m_morphemeCharacter = MorphemeCharacter::create(characterDef);
-
-    if (!character->m_morphemeCharacter)
-        throw("Failed to create MorphemeCharacter instance (%s)", filename);
-
-    characterDef->loadAnimations();
-
-    std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
-    const int animCount = characterDef->getAnimFileLookUp()->getNumAnims();
-
-
+    
 
     return character;
 }
 
-Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const char* filename)
+Character* Character::createFromNmb(const char* filename, bool doSimulateNetwork)
 {
     Character* character = new Character();
 
-    MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, false);
+    MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, doSimulateNetwork);
 
     if (!characterDef)
         throw("Failed to create MorphemeCharacterDef instance (%s)", filename);
@@ -454,7 +439,6 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
     character->m_characterName = generateCharacterName(character->m_chrId);
 
-    /*
     std::wstring gamePath = utils::findGamePath(RString::toWide(filename));
 
     if (gamePath != L"")
@@ -468,10 +452,6 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
 
         character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, characterDef->getNetworkDef()->getRig(0)));
         
-        fileList = utils::getTaeFileListFromChrId(timeActFolder + L"\\chr\\", character->m_chrId);
-
-        //ImGui::OpenPopup("Select TimeAct File");
-
         if (character->m_chrId == 1)
         {
             PlayerModelPreset* preset = MorphemeEditorApp::getInstance()->getPlayerModelPreset();
@@ -500,7 +480,6 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
     {
         g_appLog->alertMessage(MsgLevel_Info, "Failed to find Game path. No models or TimeAct files will be loaded\n");
     }
-    */
 
     return character;
 }
@@ -525,7 +504,7 @@ void Character::update(float dt)
     if (model)
         this->m_position = Vector3::Transform(Vector3::Zero, model->getWorldMatrix());
 
-    if (this->m_morphemeCharacter && this->m_morphemeCharacter->getCharacterDef()->getSimulateNetwork())
+    if (this->m_morphemeCharacter && this->m_morphemeCharacter->getCharacterDef()->getDoSimulateNetwork())
         this->m_morphemeCharacter->update(dt);
 }
 
