@@ -54,8 +54,9 @@ public:
 	FlverModel* getModelFg(FgPartType fgType);
 
 	void setDisplayMode(DisplayMode mode);
-	void setShowDummies(bool show);
+	void setDrawDummies(bool show);
 	void setDrawBones(bool show);
+	void setDrawMeshes(bool show);
 	void setDrawBoundingBox(bool show);
 	void setScale(float scale);
 

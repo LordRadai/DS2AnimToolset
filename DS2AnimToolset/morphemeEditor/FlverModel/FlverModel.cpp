@@ -883,27 +883,30 @@ void FlverModel::draw(RenderManager* renderManager)
 
 	prim.End();
 
-	if (this->m_settings.displayMode != kDispWireframe)
+	if (this->m_settings.drawMeshes)
 	{
-		DirectX::PrimitiveBatch<DirectX::VertexPositionNormalColor> primShaded(renderManager->getDeviceContext(), UINT16_MAX * 3, UINT16_MAX);
+		if (this->m_settings.displayMode != kDispWireframe)
+		{
+			DirectX::PrimitiveBatch<DirectX::VertexPositionNormalColor> primShaded(renderManager->getDeviceContext(), UINT16_MAX * 3, UINT16_MAX);
 
-		float alpha = 1.f;
+			float alpha = 1.f;
 
-		if (this->m_settings.displayMode == kDispXRay)
-			alpha = 0.5f;
+			if (this->m_settings.displayMode == kDispXRay)
+				alpha = 0.5f;
 
-		renderManager->applyPhysicalEffect(world, alpha);
-		renderManager->setInputLayout(kPhysicalLayout);
+			renderManager->applyPhysicalEffect(world, alpha);
+			renderManager->setInputLayout(kPhysicalLayout);
 
-		primShaded.Begin();
-		DX::DrawModel(&primShaded, Matrix::Identity, this);
-		primShaded.End();
-	}
-	else
-	{
-		prim.Begin();
-		DX::DrawModelWireframe(&prim, Matrix::Identity, this, Vector4(DirectX::Colors::White));
-		prim.End();
+			primShaded.Begin();
+			DX::DrawModel(&primShaded, Matrix::Identity, this);
+			primShaded.End();
+		}
+		else
+		{
+			prim.Begin();
+			DX::DrawModelWireframe(&prim, Matrix::Identity, this, Vector4(DirectX::Colors::White));
+			prim.End();
+		}
 	}
 }
 

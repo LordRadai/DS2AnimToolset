@@ -90,18 +90,16 @@ Matrix AnimObject::getTransformAtTime(float time, int channelId)
     MR::AnimationSourceHandle* animHandle = this->m_animHandle;
     animHandle->setTime(time);
 
-    Matrix transform = utils::NMDX::getWorldMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
-
-    if ((channelId == animHandle->getRig()->getTrajectoryBoneIndex()) || (channelId == animHandle->getRig()->getCharacterRootBoneIndex()))
+    if (channelId == animHandle->getRig()->getTrajectoryBoneIndex())
     {
         NMP::Vector3 trajPos;
         NMP::Quat trajRot;
         animHandle->getTrajectory(trajRot, trajPos);
 
-        transform *= utils::NMDX::getWorldMatrix(trajRot, trajPos);
+        return utils::NMDX::getWorldMatrix(trajRot, trajPos);
     }
 
-    return transform;
+    return utils::NMDX::getWorldMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
 }
 
 Vector3 AnimObject::getTransformPosAtTime(float time, int channelId)

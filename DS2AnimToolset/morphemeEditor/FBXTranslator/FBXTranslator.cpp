@@ -591,7 +591,7 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
 
 			FbxTime keyTime;
-			keyTime.SetSecondDouble(animTime);
+			keyTime.SetFrame(RMath::timeToFrame(animTime, 30));
 
 			FbxVector4 translation = transform.GetT();
 
