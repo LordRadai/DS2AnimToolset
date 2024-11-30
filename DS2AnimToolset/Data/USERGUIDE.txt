@@ -1,0 +1,20 @@
+REQUIREMENTS:
+* Unpack the game with UXM. You need a full unpack, a partial won't do.
+
+LOADING NMB:
+1) First off, make sure you have the .anibnd.dcx and extanibnd.dcx compressed archives unpacked (use WitchyBND for that). You can find these files in morpheme4\chr and morpheme4\chr\c0001. If you don't have these folders, you did not unpack the game.
+2) In MorphemeEditor, go under File>Open..., select the nmb and then click Open. It could take a while, so be patient. If you opened an nmb that's inside the Game folder, the program will automatically find the model and TimeAct files. If not, it will throw a warning message. It only needs the nmb to work, so it's not necessary it does find everything. However, if it does find TimeAct files, it will allow you to edit the tracks alongside the morpheme event tracks.
+2.a) IF IT FOUND THE GAME FOLDER: A popup propting you to select which TimeAct file to load will open. Select any of them, it will automatically load the sfx and snd sharing the same prefix (e.g c10000_)
+
+EXPORTING FILES:
+Under File>Export, there are several options:
+1) Export will just create .xml project files ready for the assetCompiler, as well as decompress animations to the specified format. It will save everything in your morphemeEditor folder under Export\cXXXX (XXXX is the chrID, same as the one in the original nmb file you opened).
+2) Export and Process will performs the same tasks as Export, but will also invoke the assetCompiler for you. The assetCompiler will produce .nmb and .nsa files.
+3) Once it's done, you can either manually place the new files in a decompressed dcx and let WitchyBND recompress everything, or use the helper tool I made for this, morphemeBinderPacker.
+
+TO USE MORPHEME BINDER PACKER:
+You can either:
+1) Open a cmd, and invoke the program passing as an argument the cXXXX folder in the terminal
+2) Drag and drop the cXXXX folder on top of morphemeBinderPacker.exe. Whatever you do, will produce anibnd.dcx and extanibnd.dcx files (if the character you're recompressing is the player, c0001).
+
+Once you have the dcx files, just overwrite the old files in the Game\morpheme4\chr folder.
