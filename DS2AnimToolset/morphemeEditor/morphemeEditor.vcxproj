@@ -164,8 +164,10 @@
     <ClInclude Include="Character\Character.h" />
     <ClInclude Include="DebugDraw\DebugDraw.h" />
     <ClInclude Include="extern.h" />
-    <ClInclude Include="FBXTranslator\FBXTranslator.h" />
     <ClInclude Include="FileIDNamesTable\FileIDNamesTable.h" />
+    <ClInclude Include="FileTranslator\FBXTranslator\FBXTranslator.h" />
+    <ClInclude Include="FileTranslator\FileTranslator.h" />
+    <ClInclude Include="FileTranslator\XMDTranslator\XMDTranslator.h" />
     <ClInclude Include="FlverModel\FlverModel.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="fromloader\cmem.h" />
@@ -245,7 +247,6 @@
     <ClInclude Include="utils\utils.h" />
     <ClInclude Include="WorkerThread\ProgressIndicator\ProgressIndicator.h" />
     <ClInclude Include="WorkerThread\WorkerThread.h" />
-    <ClInclude Include="XMDTranslator\XMDTranslator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimPlayer\AnimPlayer.cpp" />
@@ -255,8 +256,9 @@
     <ClCompile Include="CharacterModelCtrl\CharacterModelCtrl.cpp" />
     <ClCompile Include="Character\Character.cpp" />
     <ClCompile Include="DebugDraw\DebugDraw.cpp" />
-    <ClCompile Include="FBXTranslator\FBXTranslator.cpp" />
     <ClCompile Include="FileIDNamesTable\FileIDNamesTable.cpp" />
+    <ClCompile Include="FileTranslator\FBXTranslator\FBXTranslator.cpp" />
+    <ClCompile Include="FileTranslator\XMDTranslator\XMDTranslator.cpp" />
     <ClCompile Include="FlverModel\FlverModel.cpp" />
     <ClCompile Include="fromloader\cmem.c" />
     <ClCompile Include="fromloader\src\formats\binder\binder.cpp" />
@@ -319,7 +321,6 @@
     <ClCompile Include="utils\utils.cpp" />
     <ClCompile Include="WorkerThread\ProgressIndicator\ProgressIndicator.cpp" />
     <ClCompile Include="WorkerThread\WorkerThread.cpp" />
-    <ClCompile Include="XMDTranslator\XMDTranslator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="morphemeEditor.rc" />
