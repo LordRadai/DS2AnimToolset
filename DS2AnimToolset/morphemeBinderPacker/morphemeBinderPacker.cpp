@@ -109,6 +109,10 @@ bool isMorphemeBinary(std::wstring filepath)
 
 int main(int argc, char* argv[])
 {
+	char exePath[256];
+	GetModuleFileNameA(nullptr, exePath, 256);
+	std::filesystem::current_path(std::filesystem::path(exePath).parent_path());
+
 	g_appLog = new RLog(MsgLevel_Debug, "morphemeBinderPacker.log", "morphemeBinderPacker");
 
 	if (argc < 2)
@@ -118,6 +122,8 @@ int main(int argc, char* argv[])
 	}
 
 	std::filesystem::path filepath = argv[1];
+
+	g_appLog->debugMessage(MsgLevel_Info, "Input: %s\n", filepath.string().c_str());
 
 	std::filesystem::path runtimeBinary = filepath.wstring() + L"\\runtimeBinary";
 
