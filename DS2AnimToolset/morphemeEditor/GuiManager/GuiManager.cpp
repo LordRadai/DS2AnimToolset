@@ -994,7 +994,7 @@ void GuiManager::modelViewerWindow()
 
 		if (ImGui::BeginMenu("Model"))
 		{
-			if (ImGui::MenuItem("Draw Meshes", nullptr, previewFlags->drawMeshes)) { previewFlags->drawBones = !previewFlags->drawMeshes; }
+			if (ImGui::MenuItem("Draw Meshes", nullptr, previewFlags->drawMeshes)) { previewFlags->drawMeshes = !previewFlags->drawMeshes; }
 			if (ImGui::MenuItem("Draw Bones", nullptr, previewFlags->drawBones)) { previewFlags->drawBones = !previewFlags->drawBones; }
 			if (ImGui::MenuItem("Draw Dummies", nullptr, previewFlags->drawDummies)) { previewFlags->drawDummies = !previewFlags->drawDummies; }
 			if (ImGui::MenuItem("Draw Bounding Boxes", nullptr, previewFlags->drawBoundingBoxes)) { previewFlags->drawBoundingBoxes = !previewFlags->drawBoundingBoxes; }
