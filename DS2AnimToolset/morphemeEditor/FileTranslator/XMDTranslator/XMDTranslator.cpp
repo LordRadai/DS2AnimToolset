@@ -110,28 +110,24 @@ namespace
 
 	XM2::XQuaternion getBoneTransformQuatAtTime(AnimObject* animObj, float time, int boneId)
 	{
-		/*
 		if (boneId == animObj->getHandle()->getRig()->getCharacterRootBoneIndex())
 		{
 			int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 
 			return convertToXmdQuat(animObj->getTransformQuatAtTime(time, trajectoryBoneId) * animObj->getTransformQuatAtTime(time, boneId));
 		}
-		*/
 
 		return convertToXmdQuat(animObj->getTransformQuatAtTime(time, boneId));
 	}
 
 	XM2::XVector3 getBoneTransformPosAtTime(AnimObject* animObj, float time, int boneId)
 	{
-		/*
 		if (boneId == animObj->getHandle()->getRig()->getCharacterRootBoneIndex())
 		{
 			int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 
 			return convertToXmdVec3(animObj->getTransformPosAtTime(time, trajectoryBoneId) + animObj->getTransformPosAtTime(time, boneId));
 		}
-		*/
 
 		return convertToXmdVec3(animObj->getTransformPosAtTime(time, boneId));
 	}
@@ -534,7 +530,8 @@ namespace XMDTranslator
 		animCycle->SetFrameRate(fps);
 		animCycle->SetFrameTimes(0, animLenFrames, animLenFrames);
 
-		const MR::RigToAnimMap* rigToAnimMap = animObj->getHandle()->getRigToAnimMap();
+		//const MR::RigToAnimMap* rigToAnimMap = animObj->getHandle()->getRigToAnimMap();
+		const MR::RigToAnimMap* rigToAnimMap = nullptr;
 
 		//If it's present, we use the animToRigMap, otherwise we use the whole rig
 		if (rigToAnimMap && (rigToAnimMap->getRigToAnimMapType() == MR::RigToAnimMap::AnimToRig))
@@ -547,7 +544,7 @@ namespace XMDTranslator
 
 				//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
 				if (channelID == 0)
-					continue;
+					g_appLog->panicMessage("Incorrect rigToAnimMap data. CharacterWorldSpaceTM should not be animated! (anim=%s)\n", animObj->getAnimName());
 
 				XMD::XSampledKeys* sampleKeys = animCycle->AddSampledKeys(channelID);
 				sampleKeys->SetSize(animLenFrames);
