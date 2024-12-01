@@ -446,8 +446,8 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 	const int keyframeCount = animSampleRate * animDuration;
 	const int boneCount = animHandle->getChannelCount();
 
-	const int flverTrajectoryBone = morphemeToFlverBoneMap[animHandle->getRig()->getTrajectoryBoneIndex()];
-	const int flverRootBoneIndex = morphemeToFlverBoneMap[animHandle->getRig()->getCharacterRootBoneIndex()];
+	const int trajectoryBoneIndex = animHandle->getRig()->getTrajectoryBoneIndex();
+	const int rootBoneIndex = animHandle->getRig()->getCharacterRootBoneIndex();
 
 	for (int boneIndex = 1; boneIndex < boneCount; boneIndex++)
 	{
@@ -482,8 +482,8 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 
 			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
 
-			if (flverBoneIdx == flverRootBoneIndex)
-				transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, animHandle->getRig()->getTrajectoryBoneIndex()) * pAnim->getTransformAtTime(animTime, boneIndex));
+			if (boneIndex == rootBoneIndex)
+				transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
 
 			FbxTime keyTime;
 			keyTime.SetFrame(RMath::timeToFrame(animTime, 30));
@@ -571,6 +571,9 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 	int keyframeCount = animSampleRate * animDuration;
 	int boneCount = animHandle->getChannelCount();
 
+	const int trajectoryBoneIndex = animHandle->getRig()->getTrajectoryBoneIndex();
+	const int rootBoneIndex = animHandle->getRig()->getCharacterRootBoneIndex();
+
 	for (int boneIndex = 1; boneIndex < boneCount; boneIndex++)
 	{
 		FbxNode* pBone = pSkeleton[boneIndex];
@@ -598,8 +601,8 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 			float animTime = GetTimeByAnimFrame(animDuration, animSampleRate, frame);
 			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
 
-			if (boneIndex == animHandle->getRig()->getCharacterRootBoneIndex())
-				transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, animHandle->getRig()->getTrajectoryBoneIndex()) * pAnim->getTransformAtTime(animTime, boneIndex));
+			if (boneIndex == rootBoneIndex)
+				transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
 
 			FbxTime keyTime;
 			keyTime.SetFrame(RMath::timeToFrame(animTime, 30));
