@@ -110,28 +110,24 @@ namespace
 
 	XM2::XQuaternion getBoneTransformQuatAtTime(AnimObject* animObj, float time, int boneId)
 	{
-		/*
 		if (boneId == animObj->getHandle()->getRig()->getCharacterRootBoneIndex())
 		{
 			const int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 
 			return convertToXmdQuat(animObj->getTransformQuatAtTime(time, trajectoryBoneId) * animObj->getTransformQuatAtTime(time, boneId));
 		}
-		*/
 
 		return convertToXmdQuat(animObj->getTransformQuatAtTime(time, boneId));
 	}
 
 	XM2::XVector3 getBoneTransformPosAtTime(AnimObject* animObj, float time, int boneId)
 	{
-		/*
 		if (boneId == animObj->getHandle()->getRig()->getCharacterRootBoneIndex())
 		{
 			const int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 
 			return convertToXmdVec3(animObj->getTransformPosAtTime(time, trajectoryBoneId) + animObj->getTransformPosAtTime(time, boneId));
 		}
-		*/
 
 		return convertToXmdVec3(animObj->getTransformPosAtTime(time, boneId));
 	}
