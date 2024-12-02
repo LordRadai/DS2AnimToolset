@@ -34,7 +34,10 @@ namespace
 			TrackEditor::Track* track = eventTrackEditor->getTrack(i);
 			
 			if ((track->userData == 1000) && (strcmp(track->name, "TimeAct") == 0))
+			{
 				timeActTrack = track;
+				break;
+			}
 		}
 
 		if (timeActTrack)
