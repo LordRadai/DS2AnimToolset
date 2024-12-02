@@ -555,7 +555,7 @@ namespace XMDTranslator
 
 		XMD::XAnimCycle* animCycle = static_cast<XMD::XAnimCycle*>(xmd->CreateNode(XMD::XFn::AnimCycle));
 
-		int animLenFrames = RMath::timeToFrame(animObj->getAnimLenght(), fps) + 1;
+		const int animLenFrames = RMath::timeToFrame(animObj->getAnimLenght(), fps);
 
 		animCycle->SetName(takeName);
 		animCycle->SetFrameRate(fps);

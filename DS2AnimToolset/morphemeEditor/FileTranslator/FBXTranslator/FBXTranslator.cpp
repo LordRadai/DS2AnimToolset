@@ -409,7 +409,7 @@ std::vector<FbxNode*> FBXTranslator::createFbxMorphemeSkeleton(FbxScene* pScene,
 }
 
 //Creates FBX animation take from an NSA file input, adding the FLVER rig
-bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimObject* pAnim, std::string name, std::vector<int> morphemeToFlverBoneMap)
+bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimObject* pAnim, std::string name, std::vector<int> morphemeToFlverBoneMap, int fps)
 {
 	MR::AnimationSourceHandle* animHandle = pAnim->getHandle();
 
@@ -434,16 +434,15 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 	FbxTime start;
 	start.SetSecondDouble(0.0);
 
-	float animSampleRate = 30.f;
 	float animDuration = animSourceNSA->getDuration(animSourceNSA);
 
 	FbxTime end;
-	end.SetFrame(RMath::timeToFrame(animDuration, 30));
+	end.SetFrame(RMath::timeToFrame(animDuration, fps));
 
 	FbxTimeSpan timeSpan = FbxTimeSpan(start, end);
 	pAnimStack->SetLocalTimeSpan(timeSpan);
 
-	const int keyframeCount = animSampleRate * animDuration;
+	const int keyframeCount = fps * animDuration;
 	const int boneCount = animHandle->getChannelCount();
 
 	const int trajectoryBoneIndex = animHandle->getRig()->getTrajectoryBoneIndex();
@@ -478,7 +477,7 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 		{
 			int keyIndex;
 
-			float animTime = GetTimeByAnimFrame(animDuration, animSampleRate, frame);
+			float animTime = GetTimeByAnimFrame(animDuration, fps, frame);
 
 			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
 
@@ -537,7 +536,7 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 }
 
 //Creates an FBXTake from the NSA file input, adding the morpheme rig
-bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimObject* pAnim, std::string name)
+bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkeleton, AnimObject* pAnim, std::string name, int fps)
 {
 	MR::AnimationSourceHandle* animHandle = pAnim->getHandle();
 
@@ -562,7 +561,6 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 	FbxTime start;
 	start.SetSecondDouble(0.0);
 
-	float animSampleRate = 60;
 	float animDuration = animSourceNSA->getDuration(animSourceNSA);
 
 	FbxTime end;
@@ -571,7 +569,7 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 	FbxTimeSpan timeSpan = FbxTimeSpan(start, end);
 	pAnimStack->SetLocalTimeSpan(timeSpan);
 
-	int keyframeCount = animSampleRate * animDuration;
+	int keyframeCount = fps * animDuration;
 	int boneCount = animHandle->getChannelCount();
 
 	const int trajectoryBoneIndex = animHandle->getRig()->getTrajectoryBoneIndex();
@@ -601,7 +599,7 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 		{
 			int keyIndex;
 
-			float animTime = GetTimeByAnimFrame(animDuration, animSampleRate, frame);
+			float animTime = GetTimeByAnimFrame(animDuration, fps, frame);
 			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
 
 			if (boneIndex == rootBoneIndex)
@@ -611,7 +609,7 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 			}
 
 			FbxTime keyTime;
-			keyTime.SetFrame(RMath::timeToFrame(animTime, 30));
+			keyTime.SetFrame(RMath::timeToFrame(animTime, fps));
 
 			FbxVector4 translation = transform.GetT();
 
