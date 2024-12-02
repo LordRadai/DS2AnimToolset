@@ -115,7 +115,7 @@ namespace
 			const int parentBoneId = animObj->getHandle()->getRig()->getParentBoneIndex(boneId);
 			const int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 
-			return convertToXmdQuat(animObj->getTransformQuatAtTime(time, trajectoryBoneId) * animObj->getTransformQuatAtTime(time, boneId) * animObj->getTransformQuatAtTime(time, parentBoneId));
+			return convertToXmdQuat(animObj->getTransformQuatAtTime(time, boneId) * animObj->getTransformQuatAtTime(time, parentBoneId) * animObj->getTransformQuatAtTime(time, trajectoryBoneId));
 		}
 
 		return convertToXmdQuat(animObj->getTransformQuatAtTime(time, boneId));
@@ -128,7 +128,7 @@ namespace
 			const int parentBoneId = animObj->getHandle()->getRig()->getParentBoneIndex(boneId);
 			const int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 
-			return convertToXmdVec3(animObj->getTransformPosAtTime(time, trajectoryBoneId) + animObj->getTransformPosAtTime(time, boneId) + animObj->getTransformPosAtTime(time, parentBoneId));
+			return convertToXmdVec3(animObj->getTransformPosAtTime(time, boneId) + animObj->getTransformPosAtTime(time, parentBoneId) + animObj->getTransformPosAtTime(time, trajectoryBoneId));
 		}
 
 		return convertToXmdVec3(animObj->getTransformPosAtTime(time, boneId));
@@ -548,8 +548,23 @@ namespace XMDTranslator
 				{
 					float time = RMath::frameToTime(j, 30);
 
-					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
-					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
+					Matrix transform = animObj->getTransformAtTime(time, channelID);
+
+					if (channelID == rootBoneID)
+					{
+						const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
+						transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
+					}
+
+					Vector3 position;
+					Quaternion rotation;
+					Vector3 scale;
+
+					transform.Decompose(scale, rotation, position);
+
+					sampleKeys->TranslationKeys()[j] = convertToXmdVec3(position);
+					sampleKeys->RotationKeys()[j] = convertToXmdQuat(rotation);
+					sampleKeys->ScaleKeys()[j] = convertToXmdVec3(scale);
 				}
 			}
 		}
@@ -569,8 +584,23 @@ namespace XMDTranslator
 				{
 					float time = RMath::frameToTime(j, 30);
 
-					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
-					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
+					Matrix transform = animObj->getTransformAtTime(time, channelID);
+
+					if (channelID == rootBoneID)
+					{
+						const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
+						transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
+					}
+
+					Vector3 position;
+					Quaternion rotation;
+					Vector3 scale;
+
+					transform.Decompose(scale, rotation, position);
+
+					sampleKeys->TranslationKeys()[j] = convertToXmdVec3(position);
+					sampleKeys->RotationKeys()[j] = convertToXmdQuat(rotation);
+					sampleKeys->ScaleKeys()[j] = convertToXmdVec3(scale);
 				}
 			}
 		}

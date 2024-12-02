@@ -485,7 +485,7 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 			if (boneIndex == rootBoneIndex)
 			{
 				const int parentIdx = pAnim->getHandle()->getRig()->getParentBoneIndex(rootBoneIndex);
-				transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex) * pAnim->getTransformAtTime(animTime, parentIdx) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
+				transform *= ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, parentIdx) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
 			}
 
 			FbxTime keyTime;
