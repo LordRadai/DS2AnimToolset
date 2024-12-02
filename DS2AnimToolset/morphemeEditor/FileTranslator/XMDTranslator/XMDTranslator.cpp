@@ -110,28 +110,65 @@ namespace
 
 	XM2::XQuaternion getBoneTransformQuatAtTime(AnimObject* animObj, float time, int boneId)
 	{
-		if (boneId == animObj->getHandle()->getRig()->getCharacterRootBoneIndex())
-		{
-			const int parentBoneId = animObj->getHandle()->getRig()->getParentBoneIndex(boneId);
-			const int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
+		Matrix transform = animObj->getTransformAtTime(time, boneId);
 
-			return convertToXmdQuat(animObj->getTransformQuatAtTime(time, boneId) * animObj->getTransformQuatAtTime(time, parentBoneId) * animObj->getTransformQuatAtTime(time, trajectoryBoneId));
+		if (boneId == rootBoneID)
+		{
+			const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
+			transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
 		}
 
-		return convertToXmdQuat(animObj->getTransformQuatAtTime(time, boneId));
+		Vector3 position;
+		Quaternion rotation;
+		Vector3 scale;
+
+		transform.Decompose(scale, rotation, position);
+
+		return convertToXmdQuat(rotation);
 	}
 
 	XM2::XVector3 getBoneTransformPosAtTime(AnimObject* animObj, float time, int boneId)
 	{
-		if (boneId == animObj->getHandle()->getRig()->getCharacterRootBoneIndex())
-		{
-			const int parentBoneId = animObj->getHandle()->getRig()->getParentBoneIndex(boneId);
-			const int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
+		Matrix transform = animObj->getTransformAtTime(time, boneId);
 
-			return convertToXmdVec3(animObj->getTransformPosAtTime(time, boneId) + animObj->getTransformPosAtTime(time, parentBoneId) + animObj->getTransformPosAtTime(time, trajectoryBoneId));
+		if (boneId == rootBoneID)
+		{
+			const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
+			transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
 		}
 
-		return convertToXmdVec3(animObj->getTransformPosAtTime(time, boneId));
+		Vector3 position;
+		Quaternion rotation;
+		Vector3 scale;
+
+		transform.Decompose(scale, rotation, position);
+
+		return convertToXmdVec3(position);
+	}
+
+	XM2::XVector3 getBoneTransformScaleAtTime(AnimObject* animObj, float time, int boneId)
+	{
+		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
+		Matrix transform = animObj->getTransformAtTime(time, boneId);
+
+		if (boneId == rootBoneID)
+		{
+			const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
+			transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
+		}
+
+		Vector3 position;
+		Quaternion rotation;
+		Vector3 scale;
+
+		transform.Decompose(scale, rotation, position);
+
+		return convertToXmdVec3(scale);
 	}
 
 	//Returns true if the transforms are unchaning
@@ -522,9 +559,6 @@ namespace XMDTranslator
 		animCycle->SetName(takeName);
 		animCycle->SetFrameRate(fps);
 		animCycle->SetFrameTimes(0, animLenFrames, animLenFrames);
-		
-		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
-		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
 
 		const MR::RigToAnimMap* rigToAnimMap = animObj->getHandle()->getRigToAnimMap();
 
@@ -548,23 +582,9 @@ namespace XMDTranslator
 				{
 					float time = RMath::frameToTime(j, 30);
 
-					Matrix transform = animObj->getTransformAtTime(time, channelID);
-
-					if (channelID == rootBoneID)
-					{
-						const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
-						transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
-					}
-
-					Vector3 position;
-					Quaternion rotation;
-					Vector3 scale;
-
-					transform.Decompose(scale, rotation, position);
-
-					sampleKeys->TranslationKeys()[j] = convertToXmdVec3(position);
-					sampleKeys->RotationKeys()[j] = convertToXmdQuat(rotation);
-					sampleKeys->ScaleKeys()[j] = convertToXmdVec3(scale);
+					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
+					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
+					sampleKeys->ScaleKeys()[j] = getBoneTransformScaleAtTime(animObj, time, channelID);
 				}
 			}
 		}
@@ -584,23 +604,9 @@ namespace XMDTranslator
 				{
 					float time = RMath::frameToTime(j, 30);
 
-					Matrix transform = animObj->getTransformAtTime(time, channelID);
-
-					if (channelID == rootBoneID)
-					{
-						const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
-						transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
-					}
-
-					Vector3 position;
-					Quaternion rotation;
-					Vector3 scale;
-
-					transform.Decompose(scale, rotation, position);
-
-					sampleKeys->TranslationKeys()[j] = convertToXmdVec3(position);
-					sampleKeys->RotationKeys()[j] = convertToXmdQuat(rotation);
-					sampleKeys->ScaleKeys()[j] = convertToXmdVec3(scale);
+					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
+					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
+					sampleKeys->ScaleKeys()[j] = getBoneTransformScaleAtTime(animObj, time, channelID);
 				}
 			}
 		}
