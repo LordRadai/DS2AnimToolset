@@ -249,6 +249,7 @@ namespace XMDTranslator
 			XMD::XBone* bone = getBoneByName(joints, rig->getBoneName(i));
 
 			bone->SetChildren(children);
+			bone->UpdateBindPose();
 		}
 
 		if (includeMeshes && (model != nullptr))
