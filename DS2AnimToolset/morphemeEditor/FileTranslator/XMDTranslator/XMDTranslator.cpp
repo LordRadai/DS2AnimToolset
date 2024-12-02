@@ -115,7 +115,7 @@ namespace
 			const int parentBoneId = animObj->getHandle()->getRig()->getParentBoneIndex(boneId);
 			const int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 
-			return convertToXmdQuat(animObj->getTransformQuatAtTime(time, trajectoryBoneId) * animObj->getTransformQuatAtTime(time, parentBoneId) * animObj->getTransformQuatAtTime(time, boneId));
+			return convertToXmdQuat(animObj->getTransformQuatAtTime(time, trajectoryBoneId) * animObj->getTransformQuatAtTime(time, boneId) * animObj->getTransformQuatAtTime(time, parentBoneId));
 		}
 
 		return convertToXmdQuat(animObj->getTransformQuatAtTime(time, boneId));
@@ -128,7 +128,7 @@ namespace
 			const int parentBoneId = animObj->getHandle()->getRig()->getParentBoneIndex(boneId);
 			const int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 
-			return convertToXmdVec3(animObj->getTransformPosAtTime(time, trajectoryBoneId) + animObj->getTransformPosAtTime(time, parentBoneId) + animObj->getTransformPosAtTime(time, boneId));
+			return convertToXmdVec3(animObj->getTransformPosAtTime(time, trajectoryBoneId) + animObj->getTransformPosAtTime(time, boneId) + animObj->getTransformPosAtTime(time, parentBoneId));
 		}
 
 		return convertToXmdVec3(animObj->getTransformPosAtTime(time, boneId));
