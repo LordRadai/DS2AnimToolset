@@ -16,5 +16,6 @@ TO USE MORPHEME BINDER PACKER:
 You can either:
 1) Open a cmd, and invoke the program passing as an argument the cXXXX folder in the terminal
 2) Drag and drop the cXXXX folder on top of morphemeBinderPacker.exe. Whatever you do, will produce anibnd.dcx and extanibnd.dcx files (if the character you're recompressing is the player, c0001).
+3) Compress the binders/runtimeBinary and all the folders under binder/ext using WitchyBND (drag and drop on top of WitchyBND.exe)
 
-Once you have the dcx files, just overwrite the old files in the Game\morpheme4\chr folder.
+Once you have the dcx files, just overwrite the old files in the Game\morpheme4\chr folder (and in Game\morpheme4\c0001).
