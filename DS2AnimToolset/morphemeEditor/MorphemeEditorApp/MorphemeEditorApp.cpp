@@ -583,7 +583,7 @@ namespace
 			}
 		}
 
-		if (!FBXTranslator::createFbxTake(pScene, morphemeRig, characterDef->getAnimationById(animSetIdx, animId), characterDef->getAnimFileLookUp()->getTakeName(animId)))
+		if (!FBXTranslator::createFbxTake(pScene, morphemeRig, characterDef->getAnimationById(animSetIdx, animId), characterDef->getAnimFileLookUp()->getTakeName(animId), fps))
 		{
 			g_appLog->debugMessage(MsgLevel_Error, "Failed to create FBX take (%ws)\n", character->getCharacterName().c_str());
 			status = false;
