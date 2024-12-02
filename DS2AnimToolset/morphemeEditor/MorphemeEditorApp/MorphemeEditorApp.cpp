@@ -2,8 +2,7 @@
 #include "extern.h"
 #include "RenderManager/RenderManager.h"
 #include "WorkerThread/WorkerThread.h"
-#include "FBXTranslator/FBXTranslator.h"
-#include "XMDTranslator/XMDTranslator.h"
+#include "FileTranslator/FileTranslator.h"
 #include "FromSoftware/TimeAct/TaeExport/TaeExport.h"
 #include "FromSoftware/TimeAct/TaeTemplate/TaeTemplateXML/TaeTemplateXML.h"
 #include "MorphemeSystem/MorphemeDecompiler/Node/NodeUtils.h"
@@ -34,8 +33,11 @@ namespace
 		{
 			TrackEditor::Track* track = eventTrackEditor->getTrack(i);
 			
-			if (track->userData == 1000)
+			if ((track->userData == 1000) && (strcmp(track->name, "TimeAct") == 0))
+			{
 				timeActTrack = track;
+				break;
+			}
 		}
 
 		if (timeActTrack)
@@ -1166,7 +1168,8 @@ void MorphemeEditorApp::update(float dt)
 		if (modelCtrl)
 		{
 			modelCtrl->setDisplayMode(this->m_previewFlags.displayMode);
-			modelCtrl->setShowDummies(this->m_previewFlags.drawDummies);
+			modelCtrl->setDrawDummies(this->m_previewFlags.drawDummies);
+			modelCtrl->setDrawMeshes(this->m_previewFlags.drawMeshes);
 			modelCtrl->setDrawBones(this->m_previewFlags.drawBones);
 			modelCtrl->setDrawBoundingBox(this->m_previewFlags.drawBoundingBoxes);
 		}
@@ -1398,6 +1401,7 @@ void MorphemeEditorApp::loadSettings()
 	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "compression_sample_frequency", 30);
 
 	this->m_previewFlags.drawDummies = settings->getBool("ModelViewer", "draw_dummies", false);
+	this->m_previewFlags.drawMeshes = settings->getBool("ModelViewer", "draw_meshes", true);
 	this->m_previewFlags.drawBones = settings->getBool("ModelViewer", "draw_bones", true);
 	this->m_previewFlags.displayMode = (DisplayMode)settings->getInt("ModelViewer", "model_disp_mode", 0);
 
@@ -1420,6 +1424,7 @@ void MorphemeEditorApp::saveSettings()
 	settings->setInt("Export", "compression_sample_frequency", this->m_exportSettings.sampleFrequency);
 
 	settings->setBool("ModelViewer", "draw_dummies", this->m_previewFlags.drawDummies);
+	settings->setBool("ModelViewer", "draw_meshes", this->m_previewFlags.drawMeshes);
 	settings->setBool("ModelViewer", "draw_bones", this->m_previewFlags.drawBones);
 	settings->setInt("ModelViewer", "model_disp_mode", this->m_previewFlags.displayMode);
 

@@ -45,9 +45,6 @@
     <ClInclude Include="AnimObject\AnimObject.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="FBXTranslator\FBXTranslator.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="MorphemeSystem\AnimLoader\AnimLoader.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
@@ -139,9 +136,6 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="TrackEditor\EventTrackEditor.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="XMDTranslator\XMDTranslator.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h">
@@ -285,6 +279,15 @@
     <ClInclude Include="utils\utils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="FileTranslator\FBXTranslator\FBXTranslator.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FileTranslator\XMDTranslator\XMDTranslator.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FileTranslator\FileTranslator.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -303,9 +306,6 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="AnimObject\AnimObject.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="FBXTranslator\FBXTranslator.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\AnimLoader\AnimLoader.cpp">
@@ -390,9 +390,6 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="TrackEditor\EventTrackEditor.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="XMDTranslator\XMDTranslator.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp">
@@ -501,6 +498,12 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="utils\utils.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FileTranslator\FBXTranslator\FBXTranslator.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FileTranslator\XMDTranslator\XMDTranslator.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

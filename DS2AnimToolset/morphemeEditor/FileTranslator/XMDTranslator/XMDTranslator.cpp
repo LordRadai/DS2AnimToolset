@@ -110,26 +110,65 @@ namespace
 
 	XM2::XQuaternion getBoneTransformQuatAtTime(AnimObject* animObj, float time, int boneId)
 	{
-		if (boneId == animObj->getHandle()->getRig()->getCharacterRootBoneIndex())
-		{
-			int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
+		Matrix transform = animObj->getTransformAtTime(time, boneId);
 
-			return convertToXmdQuat(animObj->getTransformQuatAtTime(time, trajectoryBoneId) * animObj->getTransformQuatAtTime(time, boneId));
+		if (boneId == rootBoneID)
+		{
+			const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
+			transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
 		}
 
-		return convertToXmdQuat(animObj->getTransformQuatAtTime(time, boneId));
+		Vector3 position;
+		Quaternion rotation;
+		Vector3 scale;
+
+		transform.Decompose(scale, rotation, position);
+
+		return convertToXmdQuat(rotation);
 	}
 
 	XM2::XVector3 getBoneTransformPosAtTime(AnimObject* animObj, float time, int boneId)
 	{
-		if (boneId == animObj->getHandle()->getRig()->getCharacterRootBoneIndex())
-		{
-			int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
+		Matrix transform = animObj->getTransformAtTime(time, boneId);
 
-			return convertToXmdVec3(animObj->getTransformPosAtTime(time, trajectoryBoneId) + animObj->getTransformPosAtTime(time, boneId));
+		if (boneId == rootBoneID)
+		{
+			const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
+			transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
 		}
 
-		return convertToXmdVec3(animObj->getTransformPosAtTime(time, boneId));
+		Vector3 position;
+		Quaternion rotation;
+		Vector3 scale;
+
+		transform.Decompose(scale, rotation, position);
+
+		return convertToXmdVec3(position);
+	}
+
+	XM2::XVector3 getBoneTransformScaleAtTime(AnimObject* animObj, float time, int boneId)
+	{
+		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
+		Matrix transform = animObj->getTransformAtTime(time, boneId);
+
+		if (boneId == rootBoneID)
+		{
+			const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
+			transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
+		}
+
+		Vector3 position;
+		Quaternion rotation;
+		Vector3 scale;
+
+		transform.Decompose(scale, rotation, position);
+
+		return convertToXmdVec3(scale);
 	}
 
 	//Returns true if the transforms are unchaning
@@ -199,21 +238,13 @@ namespace XMDTranslator
 
 		XMD::XBoneList joints;
 
-		for (size_t i = 0; i < rig->getNumBones(); i++)
+		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
-			//CharacterWorldSpaceTM is not a bone, its a control node added on export by morpheme, so we skip it
-			if (i == 0)
-				continue;
-
 			joints.push_back(XMDTranslator::createJoint(xmd, rig, i));
 		}
 
-		for (size_t i = 0; i < rig->getNumBones(); i++)
+		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
-			//CharacterWorldSpaceTM is not a bone, its a control node added on export by morpheme, so we skip it
-			if (i == 0)
-				continue;
-
 			XMD::XBone::XBoneList children = getChildJoints(joints, rig, i);
 			XMD::XBone* bone = getBoneByName(joints, rig->getBoneName(i));
 
@@ -543,7 +574,7 @@ namespace XMDTranslator
 
 				//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
 				if (channelID == 0)
-					continue;
+					g_appLog->panicMessage("Incorrect rigToAnimMap data. CharacterWorldSpaceTM should not be animated! (anim=%s)\n", animObj->getAnimName());
 
 				XMD::XSampledKeys* sampleKeys = animCycle->AddSampledKeys(channelID);
 				sampleKeys->SetSize(animLenFrames);
@@ -554,6 +585,7 @@ namespace XMDTranslator
 
 					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
 					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
+					sampleKeys->ScaleKeys()[j] = getBoneTransformScaleAtTime(animObj, time, channelID);
 				}
 			}
 		}
@@ -575,6 +607,7 @@ namespace XMDTranslator
 
 					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
 					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
+					sampleKeys->ScaleKeys()[j] = getBoneTransformScaleAtTime(animObj, time, channelID);
 				}
 			}
 		}
@@ -600,12 +633,8 @@ namespace XMDTranslator
 		XMD::XBoneList boneList;
 		xmd->GetBones(boneList);
 
-		for (size_t i = 0; i < rig->getNumBones(); i++)
+		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
-			//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
-			if (i == 0)
-				continue;
-
 			std::string boneName = rig->getBoneName(i);
 
 			XMD::XBone* bone = getBoneByName(boneList, boneName);
@@ -654,12 +683,8 @@ namespace XMDTranslator
 		XMD::XBoneList boneList;
 		xmd->GetBones(boneList);
 
-		for (size_t i = 0; i < rig->getNumBones(); i++)
+		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
-			//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
-			if (i == 0)
-				continue;
-
 			XMDTranslator::createAnimatedNode(animTake, boneList, animObj, i, fps);
 		}
 

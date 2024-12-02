@@ -43,6 +43,7 @@ public:
 	{
 		DisplayMode displayMode = kDispNormal;
 		bool drawDummyPolygons = false;
+		bool drawMeshes = true;
 		bool drawBones = false;
 		bool drawBoundingBox = false;
 		bool highlight = false;

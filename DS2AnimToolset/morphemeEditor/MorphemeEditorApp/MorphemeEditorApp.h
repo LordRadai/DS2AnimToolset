@@ -65,6 +65,7 @@ public:
 
 	struct PreviewFlags
 	{
+		bool drawMeshes = true;
 		bool drawBones = true;
 		bool drawDummies = false;
 		bool drawBoundingBoxes = false;
