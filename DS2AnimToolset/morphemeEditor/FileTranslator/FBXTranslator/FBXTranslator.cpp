@@ -483,7 +483,10 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
 
 			if (boneIndex == rootBoneIndex)
-				transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
+			{
+				const int parentIdx = pAnim->getHandle()->getRig()->getParentBoneIndex(rootBoneIndex);
+				transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex) * pAnim->getTransformAtTime(animTime, parentIdx) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
+			}
 
 			FbxTime keyTime;
 			keyTime.SetFrame(RMath::timeToFrame(animTime, 30));
@@ -602,7 +605,10 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
 
 			if (boneIndex == rootBoneIndex)
-				transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
+			{
+				const int parentIdx = pAnim->getHandle()->getRig()->getParentBoneIndex(rootBoneIndex);
+				transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex) * pAnim->getTransformAtTime(animTime, parentIdx) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
+			}
 
 			FbxTime keyTime;
 			keyTime.SetFrame(RMath::timeToFrame(animTime, 30));

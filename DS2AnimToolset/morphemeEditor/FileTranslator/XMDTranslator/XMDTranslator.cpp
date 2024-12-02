@@ -112,9 +112,10 @@ namespace
 	{
 		if (boneId == animObj->getHandle()->getRig()->getCharacterRootBoneIndex())
 		{
+			const int parentBoneId = animObj->getHandle()->getRig()->getParentBoneIndex(boneId);
 			const int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 
-			return convertToXmdQuat(animObj->getTransformQuatAtTime(time, trajectoryBoneId) * animObj->getTransformQuatAtTime(time, boneId));
+			return convertToXmdQuat(animObj->getTransformQuatAtTime(time, trajectoryBoneId) * animObj->getTransformQuatAtTime(time, parentBoneId) * animObj->getTransformQuatAtTime(time, boneId));
 		}
 
 		return convertToXmdQuat(animObj->getTransformQuatAtTime(time, boneId));
@@ -124,9 +125,10 @@ namespace
 	{
 		if (boneId == animObj->getHandle()->getRig()->getCharacterRootBoneIndex())
 		{
+			const int parentBoneId = animObj->getHandle()->getRig()->getParentBoneIndex(boneId);
 			const int trajectoryBoneId = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 
-			return convertToXmdVec3(animObj->getTransformPosAtTime(time, trajectoryBoneId) + animObj->getTransformPosAtTime(time, boneId));
+			return convertToXmdVec3(animObj->getTransformPosAtTime(time, trajectoryBoneId) + animObj->getTransformPosAtTime(time, parentBoneId) + animObj->getTransformPosAtTime(time, boneId));
 		}
 
 		return convertToXmdVec3(animObj->getTransformPosAtTime(time, boneId));
@@ -199,26 +201,17 @@ namespace XMDTranslator
 
 		XMD::XBoneList joints;
 
-		for (size_t i = 0; i < rig->getNumBones(); i++)
+		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
-			//CharacterWorldSpaceTM is not a bone, its a control node added on export by morpheme, so we skip it
-			if (i == 0)
-				continue;
-
 			joints.push_back(XMDTranslator::createJoint(xmd, rig, i));
 		}
 
-		for (size_t i = 0; i < rig->getNumBones(); i++)
+		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
-			//CharacterWorldSpaceTM is not a bone, its a control node added on export by morpheme, so we skip it
-			if (i == 0)
-				continue;
-
 			XMD::XBone::XBoneList children = getChildJoints(joints, rig, i);
 			XMD::XBone* bone = getBoneByName(joints, rig->getBoneName(i));
 
 			bone->SetChildren(children);
-			bone->UpdateBindPose();
 		}
 
 		if (includeMeshes && (model != nullptr))
@@ -529,9 +522,11 @@ namespace XMDTranslator
 		animCycle->SetName(takeName);
 		animCycle->SetFrameRate(fps);
 		animCycle->SetFrameTimes(0, animLenFrames, animLenFrames);
+		
+		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
 
-		//const MR::RigToAnimMap* rigToAnimMap = animObj->getHandle()->getRigToAnimMap();
-		const MR::RigToAnimMap* rigToAnimMap = nullptr;
+		const MR::RigToAnimMap* rigToAnimMap = animObj->getHandle()->getRigToAnimMap();
 
 		//If it's present, we use the animToRigMap, otherwise we use the whole rig
 		if (rigToAnimMap && (rigToAnimMap->getRigToAnimMapType() == MR::RigToAnimMap::AnimToRig))
@@ -601,12 +596,8 @@ namespace XMDTranslator
 		XMD::XBoneList boneList;
 		xmd->GetBones(boneList);
 
-		for (size_t i = 0; i < rig->getNumBones(); i++)
+		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
-			//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
-			if (i == 0)
-				continue;
-
 			std::string boneName = rig->getBoneName(i);
 
 			XMD::XBone* bone = getBoneByName(boneList, boneName);
@@ -655,12 +646,8 @@ namespace XMDTranslator
 		XMD::XBoneList boneList;
 		xmd->GetBones(boneList);
 
-		for (size_t i = 0; i < rig->getNumBones(); i++)
+		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
-			//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
-			if (i == 0)
-				continue;
-
 			XMDTranslator::createAnimatedNode(animTake, boneList, animObj, i, fps);
 		}
 

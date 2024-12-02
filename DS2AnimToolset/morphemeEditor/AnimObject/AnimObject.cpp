@@ -87,8 +87,8 @@ AnimObject* AnimObject::createFromMorphemeAssets(MorphemeCharacterDef* owner, MR
 
 Matrix AnimObject::getTransformAtTime(float time, int channelId)
 {
+    this->setAnimTime(time);
     MR::AnimationSourceHandle* animHandle = this->m_animHandle;
-    animHandle->setTime(time);
 
     if (channelId == animHandle->getRig()->getTrajectoryBoneIndex())
     {
@@ -104,8 +104,8 @@ Matrix AnimObject::getTransformAtTime(float time, int channelId)
 
 Vector3 AnimObject::getTransformPosAtTime(float time, int channelId)
 {
+    this->setAnimTime(time);
     MR::AnimationSourceHandle* animHandle = this->m_animHandle;
-    animHandle->setTime(time);
 
     if (channelId == animHandle->getRig()->getTrajectoryBoneIndex())
     {
@@ -121,8 +121,9 @@ Vector3 AnimObject::getTransformPosAtTime(float time, int channelId)
 
 Quaternion AnimObject::getTransformQuatAtTime(float time, int channelId)
 {
+    this->setAnimTime(time);
+
     MR::AnimationSourceHandle* animHandle = this->m_animHandle;
-    animHandle->setTime(time);
 
     if (channelId == animHandle->getRig()->getTrajectoryBoneIndex())
     {

@@ -1099,6 +1099,7 @@ void FlverModel::animate(MR::AnimationSourceHandle* animHandle)
 	//We initialise the final transforms to the flver bind pose so we can skip bones unhandled by morpheme in the next loop
 	this->m_boneTransforms = this->m_boneBindPose;
 	this->m_verts = this->m_vertBindPose;
+
 	const int flverTrajectoryBone = this->getFlverBoneIndexByMorphemeBoneIndex(animHandle->getRig()->getTrajectoryBoneIndex());
 
 	if (animHandle)
@@ -1151,7 +1152,7 @@ void FlverModel::animate(MR::AnimationSourceHandle* animHandle)
 			{
 				int boneID = indices[wt];
 
-				if (boneID < 0 || boneID >= boneRelativeTransforms.size() || boneID == flverTrajectoryBone)
+				if ((boneID < 0) || (boneID >= boneRelativeTransforms.size()))
 					continue;
 
 				newPos += Vector3::Transform(this->m_vertBindPose[meshIdx][vertexIndex].vertexData.position, boneRelativeTransforms[boneID]) * weights[wt];
