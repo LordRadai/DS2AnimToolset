@@ -14,7 +14,7 @@ namespace GLTFTranslator
         rootNode.name = model->getModelName();
 
         Quaternion rootRot = Quaternion::CreateFromAxisAngle(Vector3::Right, -DirectX::XM_PIDIV2);
-
+        rootNode.translation = { 0.f, 0.f, 0.f };
         rootNode.rotation = { rootRot.x, rootRot.y, rootRot.z, rootRot.w }; //Z-up
 
         gltfModel->nodes.push_back(rootNode);
@@ -132,7 +132,10 @@ namespace GLTFTranslator
         node.name = "MeshNode_" + std::to_string(meshIndex);
         node.mesh = gltf->meshes.size() - 1; // Index of the mesh
 
+        // Add node to the model
         gltf->nodes.push_back(node);
+
+        // Add node as a child of the root node
         gltf->nodes[0].children.push_back(gltf->nodes.size() - 1);
 
         // Return a pointer to the newly added mesh
