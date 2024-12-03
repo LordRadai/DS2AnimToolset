@@ -354,23 +354,20 @@ namespace XMDTranslator
 					{
 						XM2::XU32 id = skin->AddInfluence(bone);
 
-						if (boneIdx != -1)
+						switch (j)
 						{
-							switch (j)
-							{
-							case 0:
-								skinnedVertex.push_back(XMD::XSkinWeight(weights[i].x, id));
-								break;
-							case 1:
-								skinnedVertex.push_back(XMD::XSkinWeight(weights[i].y, id));
-								break;
-							case 2:
-								skinnedVertex.push_back(XMD::XSkinWeight(weights[i].z, id));
-								break;
-							case 3:
-								skinnedVertex.push_back(XMD::XSkinWeight(weights[i].w, id));
-								break;
-							}
+						case 0:
+							skinnedVertex.push_back(XMD::XSkinWeight(weights[i].x, id));
+							break;
+						case 1:
+							skinnedVertex.push_back(XMD::XSkinWeight(weights[i].y, id));
+							break;
+						case 2:
+							skinnedVertex.push_back(XMD::XSkinWeight(weights[i].z, id));
+							break;
+						case 3:
+							skinnedVertex.push_back(XMD::XSkinWeight(weights[i].w, id));
+							break;
 						}
 					}
 				}
