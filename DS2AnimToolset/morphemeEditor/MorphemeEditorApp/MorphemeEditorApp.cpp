@@ -1976,6 +1976,9 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 
 	std::string fullPath = exeParentPath + std::string("\\") + RString::toNarrow(path);
 
+	const int successCode = 1;
+	const int failureCode = -1;
+
 	std::string assetCompilerName = std::string("\"") + exeParentPath + "\\" + std::string(ASSET_COMPILER_EXE) + std::string("\"");
 	std::string assetPath = "-asset " + std::string("\"") + fullPath + "\\" + std::string(networkFileName) + std::string("\"");
 	std::string baseDir = "-basedir " + std::string("\"") + fullPath + std::string("\"");
@@ -1984,24 +1987,53 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 	std::string logFile = "-logFile " + std::string("\"") + fullPath + "\\assetCompiler.log" + std::string("\"");
 	std::string errFile = "-errFile " + std::string("\"") + fullPath + "\\assetCompilerError.log" + std::string("\"");
 
+	std::string successCodeStr = "-successCode " + std::to_string(successCode);
+	std::string failureCodeStr = "-failureCode " + std::to_string(failureCode);
+
 	std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
-	//exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"\\assetCompilerCommand.txt");
+	
+#ifdef _DEBUG
+	exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"\\assetCompilerCommand.txt");
+#endif
 
 	g_appLog->debugMessage(MsgLevel_Info, "Invoking asset compiler with command %s\n", assetCompilerCommand.c_str());
+
+	//If it exists, delete any previous output in this folder toa void cluttering
+	if (std::filesystem::exists(fullPath + "\\runtimeBinary"))
+		std::filesystem::remove_all(fullPath + "\\runtimeBinary");
 
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
 	ZeroMemory(&pi, sizeof(pi));
-	CreateProcess(nullptr, LPWSTR(RString::toWide(assetCompilerCommand).c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
 
-	WaitForSingleObject(pi.hProcess, INFINITE);
+	if (CreateProcess(nullptr, LPWSTR(RString::toWide(assetCompilerCommand).c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi))
+	{
+		WaitForSingleObject(pi.hProcess, INFINITE);
 
-	CloseHandle(pi.hProcess);
-	CloseHandle(pi.hThread);
+		DWORD exitCode;
+		GetExitCodeProcess(pi.hProcess, &exitCode);
 
-	return true;
+		g_appLog->debugMessage(MsgLevel_Info, "\tAsset compiler exited with code %d\n", exitCode);
+
+		if (exitCode == failureCode)
+			g_appLog->alertMessage(MsgLevel_Error, "There were errors while compiling assets. Check assetCompilerError.log");
+
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+
+		g_appLog->debugMessage(MsgLevel_Info, "\tPerforming post-compilation cleanup\n", exitCode);
+
+		//Delete the cache folder
+		std::filesystem::remove_all(fullPath + "\\cache");
+
+		return true;
+	}
+
+	g_appLog->alertMessage(MsgLevel_Error, "Failed to create assetCompiler process\n");
+
+	return false;
 }
 
 bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
