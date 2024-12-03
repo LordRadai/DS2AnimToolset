@@ -19,8 +19,6 @@ namespace MD
 			if (attribData == nullptr)
 				return nullptr;
 
-			nodeDataBlock->writeUInt(0, "InputPathCount");
-
 			nodeDataBlock->writeFloat(attribData->m_value, "DefaultValue_0");
 
 			return nodeExportXML;
@@ -37,8 +35,6 @@ namespace MD
 
 			if (attribData == nullptr)
 				return nullptr;
-
-			nodeDataBlock->writeUInt(0, "InputPathCount");
 
 			nodeDataBlock->writeFloat(attribData->m_value[0], "DefaultValue_0");
 			nodeDataBlock->writeFloat(attribData->m_value[1], "DefaultValue_1");
@@ -58,8 +54,6 @@ namespace MD
 
 			if (attribData == nullptr)
 				return nullptr;
-
-			nodeDataBlock->writeUInt(0, "InputPathCount");
 
 			nodeDataBlock->writeFloat(attribData->m_value[0], "DefaultValue_0");
 			nodeDataBlock->writeFloat(attribData->m_value[1], "DefaultValue_1");
@@ -81,7 +75,6 @@ namespace MD
 			if (attribData == nullptr)
 				return nullptr;
 
-			nodeDataBlock->writeUInt(0, "InputPathCount");
 			nodeDataBlock->writeBool(attribData->m_value, "DefaultFlag");
 
 			return nodeExportXML;
@@ -99,7 +92,6 @@ namespace MD
 			if (attribData == nullptr)
 				return nullptr;
 
-			nodeDataBlock->writeUInt(0, "InputPathCount");
 			nodeDataBlock->writeInt(attribData->m_value, "DefaultInt");
 
 			return nodeExportXML;
@@ -117,7 +109,6 @@ namespace MD
 			if (attribData == nullptr)
 				return nullptr;
 
-			nodeDataBlock->writeUInt(0, "InputPathCount");
 			nodeDataBlock->writeUInt(attribData->m_value, "DefaultInt");
 
 			return nodeExportXML;
