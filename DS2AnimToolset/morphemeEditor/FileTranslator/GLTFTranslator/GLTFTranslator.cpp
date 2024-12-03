@@ -52,7 +52,7 @@ namespace GLTFTranslator
 
         gltfModel->nodes.push_back(rootNode);
 
-        if (includeMeshes)
+        if (includeMeshes && (model != nullptr))
         {
             for (size_t i = 0; i < model->getNumMeshes(); i++)
                 createMesh(gltfModel, model, i);
