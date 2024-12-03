@@ -288,6 +288,21 @@
     <ClInclude Include="FileTranslator\FileTranslator.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="FileTranslator\GLTFTranslator\tinygltf\json.hpp">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FileTranslator\GLTFTranslator\tinygltf\stb_image.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FileTranslator\GLTFTranslator\tinygltf\stb_image_write.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FileTranslator\GLTFTranslator\tinygltf\tiny_gltf.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="FileTranslator\GLTFTranslator\GLTFTranslator.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -504,6 +519,12 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="FileTranslator\XMDTranslator\XMDTranslator.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FileTranslator\GLTFTranslator\tinygltf\tiny_gltf.cc">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FileTranslator\GLTFTranslator\GLTFTranslator.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
