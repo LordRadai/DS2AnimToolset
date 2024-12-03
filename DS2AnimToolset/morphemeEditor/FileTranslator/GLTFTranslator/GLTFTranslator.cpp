@@ -1,5 +1,38 @@
+#include <algorithm>
 #include "GLTFTranslator.h"
 #include "MorphemeEditor.h"
+
+namespace
+{
+    void calculateMinMax(const std::vector<Vector3>& vectors, Vector3& outMin, Vector3& outMax) {
+        if (vectors.empty()) {
+            // Handle empty input case
+            outMin = Vector3(0, 0, 0);
+            outMax = Vector3(0, 0, 0);
+            return;
+        }
+
+        // Initialize min and max with extreme values
+        outMin = Vector3(FLT_MAX,
+            FLT_MAX,
+            FLT_MAX);
+
+        outMax = Vector3(-FLT_MAX,
+            -FLT_MAX,
+            -FLT_MAX);
+
+        // Iterate through the vector and update min and max
+        for (const auto& vec : vectors) {
+            outMin.x = std::fmin(outMin.x, vec.x);
+            outMin.y = std::fmin(outMin.y, vec.y);
+            outMin.z = std::fmin(outMin.z, vec.z);
+
+            outMax.x = std::fmax(outMax.x, vec.x);
+            outMax.y = std::fmax(outMax.y, vec.y);
+            outMax.z = std::fmax(outMax.z, vec.z);
+        }
+    }
+}
 
 namespace GLTFTranslator
 {
@@ -32,6 +65,14 @@ namespace GLTFTranslator
     {
         std::vector<Vector3> vertices = model->getFlverMeshVertices(meshIndex, true);
         std::vector<Vector3> normals = model->getFlverMeshNormals(meshIndex, true);
+
+        Vector3 minBound, maxBound;
+
+        calculateMinMax(vertices, minBound, maxBound);
+
+        // Normalize the normals, or gltf will complain about the small errors
+        for (size_t i = 0; i < normals.size(); i++)
+            normals[i].Normalize();
 
         std::vector<uint16_t> indices;
         indices.reserve(vertices.size());
@@ -95,6 +136,11 @@ namespace GLTFTranslator
         positionAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
         positionAccessor.type = TINYGLTF_TYPE_VEC3;
         positionAccessor.count = vertices.size();
+
+        // Set min and max bounds
+        positionAccessor.minValues = { minBound.x, minBound.y, minBound.z };
+        positionAccessor.maxValues = { maxBound.x, maxBound.y, maxBound.z };
+
         gltf->accessors.push_back(positionAccessor);
 
         tinygltf::Accessor normalAccessor;

@@ -529,9 +529,7 @@ namespace
 		tinygltf::Model* gltfModel = GLTFTranslator::createModel(rig, model, true);
 
 		tinygltf::Scene scene;
-
-		for (size_t i = 0; i < gltfModel->nodes.size(); i++)
-			scene.nodes.push_back(i); // Index of the node
+		scene.nodes.push_back(0); // Root node of the model
 
 		gltfModel->scenes.push_back(scene);
 		gltfModel->defaultScene = 0; // Set the default scene
