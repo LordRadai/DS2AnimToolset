@@ -14,6 +14,7 @@ namespace
 
 		std::string boneName = pFlverModel->getFlverBoneName(boneId);
 
+		/*
 		if (boneName == "LCalfTwist")
 			boneName = "L_Calf";
 		else if (boneName == "RCalfTwist")
@@ -53,10 +54,9 @@ namespace
 			boneName = "L_Forearm";
 		else if (boneName == "RForeTwist")
 			boneName = "R_Forearm";
+		*/
 
-		int boneIdx = pRig->getBoneIndexFromName(boneName.c_str());
-
-		return boneIdx;
+		return pRig->getBoneIndexFromName(boneName.c_str());
 	}
 
 	int getFlverBoneIDByMorphemeBoneID(MR::AnimRigDef* pRig, FlverModel* pFlverModel, int idx)
