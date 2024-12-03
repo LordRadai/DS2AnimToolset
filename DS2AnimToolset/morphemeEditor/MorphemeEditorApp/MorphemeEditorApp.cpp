@@ -446,7 +446,7 @@ namespace
 		out.close();
 	}
 
-	bool exportModelToFbx(std::wstring path, Character* character)
+	bool exportModelToFbx(Character* character)
 	{
 		bool status = true;
 
@@ -501,7 +501,7 @@ namespace
 		pExporter->Destroy(true);
 	}
 
-	bool exportModelToXmd(std::wstring path, Character* character)
+	bool exportModelToXmd(Character* character)
 	{
 		bool status = true;
 
@@ -521,9 +521,29 @@ namespace
 		return status;
 	}
 
-	bool exportModelToGltf(std::wstring path, Character* character)
+	bool exportModelToGltf(Character* character)
 	{
-		return false;
+		FlverModel* model = character->getCharacterModelCtrl()->getModel();
+		MR::AnimRigDef* rig = character->getRig(0);
+
+		tinygltf::Model* gltfModel = GLTFTranslator::createModel(rig, model, true);
+
+		tinygltf::Scene scene;
+
+		for (size_t i = 0; i < gltfModel->nodes.size(); i++)
+			scene.nodes.push_back(i); // Index of the node
+
+		gltfModel->scenes.push_back(scene);
+		gltfModel->defaultScene = 0; // Set the default scene
+
+		std::string modelOutPath = RString::toNarrow(character->getCharacterName()) + ".gltf";
+
+		tinygltf::TinyGLTF gltfWriter;
+		bool success = gltfWriter.WriteGltfSceneToFile(gltfModel, modelOutPath, false, true, true, false);
+
+		delete gltfModel;
+
+		return success;
 	}
 
 	bool exportAnimationToFbx(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool addModel)
@@ -1957,12 +1977,14 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 	switch (this->m_exportSettings.exportFormat)
 	{
 	case MorphemeEditorApp::kFbx:
-		exportModelToFbx(path, this->m_character);
+		exportModelToFbx(this->m_character);
 		break;
 	case MorphemeEditorApp::kXmd:
-		exportModelToXmd(path, this->m_character);
+		exportModelToXmd(this->m_character);
+		break;
 	case MorphemeEditorApp::kGltf:
-		exportModelToGltf(path, this->m_character);
+		exportModelToGltf(this->m_character);
+		break;
 	}
 
 	g_workerThread.load()->increaseProgressStep();
