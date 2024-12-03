@@ -223,10 +223,10 @@ bool MorphemeCharacter::init(MorphemeCharacterDef* characterDef)
   // is off-screen or only the transforms if the trajectory is controller by a server.
   const MR::NodeID rootNodeId = networkDef->getRootNodeID();
   const uint16_t minLifespan = 1;
+  m_net->addPostUpdateAccessAttrib(rootNodeId, MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM_BUFFER, minLifespan);
   m_net->addPostUpdateAccessAttrib(rootNodeId, MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER, minLifespan);
   m_net->addPostUpdateAccessAttrib(rootNodeId, MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM, minLifespan);
   m_net->addPostUpdateAccessAttrib(rootNodeId, MR::ATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER, minLifespan);
-  m_net->addPostUpdateAccessAttrib(rootNodeId, MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM_BUFFER, minLifespan);
 
   //----------------------------
   // Allocate a pose buffer.
