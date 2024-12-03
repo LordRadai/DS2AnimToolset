@@ -256,7 +256,6 @@
   <ItemGroup>
     <ClCompile Include="AnimPlayer\AnimPlayer.cpp" />
     <ClCompile Include="AnimObject\AnimObject.cpp" />
-    <ClCompile Include="Application\Application.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="CharacterModelCtrl\CharacterModelCtrl.cpp" />
     <ClCompile Include="Character\Character.cpp" />

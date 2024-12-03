@@ -521,6 +521,11 @@ namespace
 		return status;
 	}
 
+	bool exportModelToGltf(std::wstring path, Character* character)
+	{
+		return false;
+	}
+
 	bool exportAnimationToFbx(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool addModel)
 	{
 		bool status = true;
@@ -629,6 +634,11 @@ namespace
 		delete xmd;
 
 		return status;
+	}
+
+	bool exportAnimationToGltf(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps)
+	{
+		return false;
 	}
 
 	void addEventGroupToTimeActTrack(TimeAct::TimeActTrack* dst, TimeAct::TaeExport::TimeActGroupExportXML* groupXML)
@@ -1941,7 +1951,7 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 	std::filesystem::current_path(path);
 
 #ifdef _DEBUG
-	exportFlverToMorphemeBoneMap(model, path + L"bone_map.txt");
+	exportFlverToMorphemeBoneMap(model, path + L"morpheme_bone_map.txt");
 #endif
 
 	switch (this->m_exportSettings.exportFormat)
@@ -1951,6 +1961,8 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 		break;
 	case MorphemeEditorApp::kXmd:
 		exportModelToXmd(path, this->m_character);
+	case MorphemeEditorApp::kGltf:
+		exportModelToGltf(path, this->m_character);
 	}
 
 	g_workerThread.load()->increaseProgressStep();
@@ -2123,6 +2135,8 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, false);
 	case MorphemeEditorApp::kXmd:
 		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, fps);
+	case MorphemeEditorApp::kGltf:
+		return exportAnimationToGltf(path, this->m_character, animSetIdx, animId, fps);
 	default:
 		return false;
 	}

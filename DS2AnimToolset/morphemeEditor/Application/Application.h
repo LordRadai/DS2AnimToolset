@@ -3,7 +3,7 @@
 class Application
 {
 public:
-	~Application();
+	~Application() {}
 
 	bool isInitialised() const { return this->m_initialised; }
 
@@ -12,7 +12,7 @@ public:
 	virtual void shutdown() = 0;
 
 protected:
-	Application();
+	Application() {}
 
 	bool m_initialised = false;
 };
