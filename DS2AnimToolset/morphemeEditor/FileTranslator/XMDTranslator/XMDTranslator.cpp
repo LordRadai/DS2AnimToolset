@@ -238,11 +238,11 @@ namespace XMDTranslator
 
 		XMD::XBoneList joints;
 
+		//Create all joints
 		for (size_t i = 1; i < rig->getNumBones(); i++)
-		{
 			joints.push_back(XMDTranslator::createJoint(xmd, rig, i));
-		}
 
+		//Loop back over to set children
 		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
 			XMD::XBone::XBoneList children = getChildJoints(joints, rig, i);
@@ -463,6 +463,8 @@ namespace XMDTranslator
 
 		normals->SetIndexSet(normalIndices);
 
+		//We leave these out because it seems to be causing corruption issues within the XMD. Probably a FLVER lib bug
+		/*
 		XMD::XVector3Array tangentsList = getTangents(model, meshIdx);
 		XMD::XVertexSet* tangents = mesh->CreateVertexSet("tangents", tangentsList.size(), 3, XMD::XVertexSet::kTangent);
 
@@ -478,6 +480,7 @@ namespace XMDTranslator
 			bitangents->SetElement(bitangentsList[i], i);
 
 		bitangents->SetIndexSet(normalIndices);
+		*/
 
 		XMDTranslator::createSkin(xmd, mesh, model, meshIdx);
 		XMDTranslator::createMeshBone(xmd, mesh, meshIdx);
