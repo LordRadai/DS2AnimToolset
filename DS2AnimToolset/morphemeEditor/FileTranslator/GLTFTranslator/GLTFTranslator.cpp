@@ -1,9 +1,23 @@
 #include <algorithm>
 #include "GLTFTranslator.h"
 #include "MorphemeEditor.h"
+#include "extern.h"
+#include "RCore.h"
 
 namespace
 {
+    void addRootNode(tinygltf::Model* gltf, std::string name, Quaternion rotation, Vector3 translation = Vector3::Zero, Vector3 scale = Vector3::One)
+    {
+        tinygltf::Node rootNode;
+        rootNode.name = name;
+
+        rootNode.translation = { translation.x, translation.y, translation.z };
+        rootNode.rotation = { rotation.x, rotation.y, rotation.z, rotation.w };
+        rootNode.scale = { scale.x, scale.y, scale.z };
+
+        gltf->nodes.push_back(rootNode);
+    }
+
     void calculateMinMax(const std::vector<Vector3>& vectors, Vector3& outMin, Vector3& outMax) {
         if (vectors.empty()) {
             // Handle empty input case
@@ -32,6 +46,17 @@ namespace
             outMax.z = std::fmax(outMax.z, vec.z);
         }
     }
+
+    int getGltfBoneIndexByName(tinygltf::Model* gltf, std::string name)
+    {
+        for (size_t i = 1; i < gltf->nodes.size(); i++)
+        {
+            if (gltf->nodes[i].name == name)
+                return i;
+        }
+
+        return -1;
+    }
 }
 
 namespace GLTFTranslator
@@ -42,15 +67,24 @@ namespace GLTFTranslator
 		gltfModel->asset.version = "2.0";
 		gltfModel->asset.generator = APPNAME_A;
 
-        // Create the root node
-        tinygltf::Node rootNode;
-        rootNode.name = model->getModelName();
+        addRootNode(gltfModel, model->getModelName(), Quaternion::CreateFromAxisAngle(Vector3::Right, DirectX::XM_PIDIV2));
 
-        Quaternion rootRot = Quaternion::CreateFromAxisAngle(Vector3::Right, -DirectX::XM_PIDIV2);
-        rootNode.translation = { 0.f, 0.f, 0.f };
-        rootNode.rotation = { rootRot.x, rootRot.y, rootRot.z, rootRot.w }; //Z-up
+        //Add all the bones
+        for (size_t i = 1; i < rig->getNumBones(); i++)
+            createJoint(gltfModel, rig, i);
 
-        gltfModel->nodes.push_back(rootNode);
+        //Loop back over to add all children
+        for (size_t i = 1; i < rig->getNumBones(); i++)
+        {
+            int jointIndex = getGltfBoneIndexByName(gltfModel, rig->getBoneName(i));
+            int parentIndex = getGltfBoneIndexByName(gltfModel, rig->getBoneName(rig->getParentBoneIndex(i)));
+
+            //If the parent bone was not found, add to the root node
+            if (parentIndex == -1)
+                parentIndex = 0;
+
+            gltfModel->nodes[parentIndex].children.push_back(jointIndex);
+        }
 
         if (includeMeshes && (model != nullptr))
         {
@@ -186,5 +220,22 @@ namespace GLTFTranslator
 
         // Return a pointer to the newly added mesh
         return &gltf->meshes.back();
+    }
+
+    tinygltf::Node* createJoint(tinygltf::Model* gltf, const MR::AnimRigDef* rig, const int boneID) 
+    {
+        const NMP::Vector3* translation = rig->getBindPoseBonePos(boneID);
+        const NMP::Quat* rotation = rig->getBindPoseBoneQuat(boneID);
+
+        tinygltf::Node jointNode;
+        jointNode.name = rig->getBoneName(boneID);
+        jointNode.translation = { translation->x, translation->y, translation->z };
+        jointNode.rotation = { rotation->x, rotation->y, rotation->z, rotation->w };
+        jointNode.scale = { 1.0f, 1.0f, 1.0f };
+
+        const int jointIndex = gltf->nodes.size();
+        gltf->nodes.push_back(jointNode);
+
+        return &gltf->nodes.back();
     }
 }

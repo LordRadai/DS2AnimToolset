@@ -8,4 +8,5 @@ namespace GLTFTranslator
 {
 	tinygltf::Model* createModel(MR::AnimRigDef* rig, FlverModel* model, bool includeMeshes);
 	tinygltf::Mesh* createMesh(tinygltf::Model* gltf, FlverModel* model, int meshIndex);
+	tinygltf::Node* createJoint(tinygltf::Model* gltfModel, const MR::AnimRigDef* rig, const int boneID);
 }
