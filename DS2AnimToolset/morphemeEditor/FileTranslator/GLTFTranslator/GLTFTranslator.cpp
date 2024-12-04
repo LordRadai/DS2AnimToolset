@@ -7,6 +7,141 @@
 
 namespace
 {
+    tinygltf::BufferView* createBufferView(tinygltf::Model* gltf, int targetBuffer, size_t byteOffset, size_t byteLength, int target)
+    {
+        tinygltf::BufferView bufferView;
+        bufferView.buffer = targetBuffer;
+        bufferView.byteOffset = byteOffset;
+        bufferView.byteLength = byteLength;
+        bufferView.target = target;
+        gltf->bufferViews.push_back(bufferView);
+
+        return &gltf->bufferViews.back();
+    }
+
+    tinygltf::Accessor* createAccessor(tinygltf::Model* gltf, int targetBufferView, size_t byteOffset, int componentType, int type, int count)
+    {
+        tinygltf::Accessor accessor;
+        accessor.bufferView = targetBufferView;
+        accessor.byteOffset = byteOffset;
+        accessor.componentType = componentType;
+        accessor.type = type;
+        accessor.count = count;
+
+        gltf->accessors.push_back(accessor);
+
+        return &gltf->accessors.back();
+    }
+
+    void createSphere(tinygltf::Model* gltf, std::string name, Vector3 center, float radius, int latitudeDivisions = 50, int longitudeDivisions = 50)
+    {
+        std::vector<float> vertices;
+        std::vector<unsigned int> indices;
+        std::vector<float> normals;
+
+        // Generate the vertices and normals
+        for (int lat = 0; lat <= latitudeDivisions; ++lat) {
+            float theta = lat * DirectX::XM_PI / latitudeDivisions; // Latitude angle
+            float sinTheta = sin(theta);
+            float cosTheta = cos(theta);
+
+            for (int lon = 0; lon <= longitudeDivisions; ++lon) {
+                float phi = lon * 2 * DirectX::XM_PI / longitudeDivisions; // Longitude angle
+                float sinPhi = sin(phi);
+                float cosPhi = cos(phi);
+
+                // Vertex position
+                float x = center.x + radius * cosPhi * sinTheta;
+                float y = center.y + radius * cosTheta;
+                float z = center.z + radius * sinPhi * sinTheta;
+
+                // Normal (normalized position vector)
+                float nx = cosPhi * sinTheta;
+                float ny = cosTheta;
+                float nz = sinPhi * sinTheta;
+
+                // Add vertex position
+                vertices.push_back(x);
+                vertices.push_back(y);
+                vertices.push_back(z);
+
+                // Add normal
+                normals.push_back(nx);
+                normals.push_back(ny);
+                normals.push_back(nz);
+            }
+        }
+
+        // Generate the indices for the sphere's triangles
+        for (int lat = 0; lat < latitudeDivisions; ++lat) {
+            for (int lon = 0; lon < longitudeDivisions; ++lon) {
+                int first = (lat * (longitudeDivisions + 1)) + lon;
+                int second = first + longitudeDivisions + 1;
+
+                // Create two triangles for each quad
+                indices.push_back(first);
+                indices.push_back(second);
+                indices.push_back(first + 1);
+
+                indices.push_back(second);
+                indices.push_back(second + 1);
+                indices.push_back(first + 1);
+            }
+        }
+
+        // Create the mesh and the corresponding buffer
+        tinygltf::Mesh mesh;
+
+        // Add position attribute (vertices)
+        tinygltf::Accessor positionAccessor;
+        positionAccessor.bufferView = 0; // Assuming the buffer view will be added to the buffer after this step
+        positionAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
+        positionAccessor.type = TINYGLTF_TYPE_VEC3;
+        positionAccessor.count = vertices.size() / 3;
+        gltf->accessors.push_back(positionAccessor);
+
+        // Add normal attribute (normals)
+        tinygltf::Accessor normalAccessor;
+        normalAccessor.bufferView = 1; // Assuming normal buffer view
+        normalAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
+        normalAccessor.type = TINYGLTF_TYPE_VEC3;
+        normalAccessor.count = normals.size() / 3;
+        gltf->accessors.push_back(normalAccessor);
+
+        // Add index buffer
+        tinygltf::Accessor indexAccessor;
+        indexAccessor.bufferView = 2; // Assuming index buffer view
+        indexAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT;
+        indexAccessor.type = TINYGLTF_TYPE_SCALAR;
+        indexAccessor.count = indices.size();
+        gltf->accessors.push_back(indexAccessor);
+
+        // Add the buffers
+        tinygltf::Buffer buffer;
+        buffer.data.insert(buffer.data.end(), vertices.begin(), vertices.end());
+        buffer.data.insert(buffer.data.end(), normals.begin(), normals.end());
+        buffer.data.insert(buffer.data.end(), indices.begin(), indices.end());
+        gltf->buffers.push_back(buffer);
+
+        // Create buffer views for position, normals, and indices
+        createBufferView(gltf, 0, 0, vertices.size() * sizeof(float), TINYGLTF_TARGET_ARRAY_BUFFER);
+        createBufferView(gltf, 1, vertices.size() * sizeof(float), normals.size() * sizeof(float), TINYGLTF_TARGET_ARRAY_BUFFER);
+        createBufferView(gltf, 2, normals.size() * sizeof(float), indices.size() * sizeof(unsigned int), TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
+
+        // Create a mesh object
+        tinygltf::Primitive primitive;
+        primitive.attributes["POSITION"] = 0;  // Position attribute
+        primitive.attributes["NORMAL"] = 1;    // Normal attribute
+        primitive.mode = TINYGLTF_MODE_TRIANGLES;
+        primitive.indices = 2;                  // Index accessor
+
+        // Create the mesh
+        mesh.name = name;
+        mesh.primitives.push_back(primitive);
+
+        gltf->meshes.push_back(mesh);
+    }
+
     void addRootNode(tinygltf::Model* gltf, std::string name, Quaternion rotation = Quaternion::Identity, Vector3 translation = Vector3::Zero, Vector3 scale = Vector3::One)
     {
         tinygltf::Node rootNode;
@@ -70,87 +205,10 @@ namespace
         int lineMaterialIndex = gltf->materials.size() - 1;
 
         // Iterate through all joints
-        for (size_t i = 1; i < rig->getNumBones(); ++i) 
-        {
-            int parentIndex = rig->getParentBoneIndex(i);
-            if (parentIndex == -1)
-                continue;
-
-            // Get the positions of the bone and its parent            
-            Vector3 start = Vector3::Transform(Vector3::Zero, utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(parentIndex), *rig->getBindPoseBonePos(parentIndex)));
-            Vector3 end = Vector3::Transform(Vector3::Zero, utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(i), *rig->getBindPoseBonePos(i)));
-
-            // Create a line mesh for the bone
-            std::vector<Vector3> vertices = { start, end };
-            std::vector<uint16_t> indices = { 0, 1 };
-
-            // Create a buffer for the line data
-            tinygltf::Buffer buffer;
-            buffer.data.insert(buffer.data.end(),
-                reinterpret_cast<const unsigned char*>(vertices.data()),
-                reinterpret_cast<const unsigned char*>(vertices.data() + vertices.size()));
-
-            buffer.data.insert(buffer.data.end(),
-                reinterpret_cast<const unsigned char*>(indices.data()),
-                reinterpret_cast<const unsigned char*>(indices.data() + indices.size()));
-
-            gltf->buffers.push_back(buffer);
-
-            size_t positionDataSize = vertices.size() * sizeof(Vector3);
-
-            // Create a BufferView for the line data
-            tinygltf::BufferView bufferView;
-            bufferView.buffer = gltf->buffers.size() - 1;
-            bufferView.byteOffset = 0;
-            bufferView.byteLength = positionDataSize;
-            bufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
-            gltf->bufferViews.push_back(bufferView);
-
-            // Create an Accessor for the line positions
-            tinygltf::Accessor positionAccessor;
-            positionAccessor.bufferView = gltf->bufferViews.size() - 1;
-            positionAccessor.byteOffset = 0;
-            positionAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
-            positionAccessor.type = TINYGLTF_TYPE_VEC3;
-            positionAccessor.count = vertices.size();
-            gltf->accessors.push_back(positionAccessor);
-
-            // Create another BufferView and Accessor for the indices
-            tinygltf::BufferView indexBufferView;
-            indexBufferView.buffer = gltf->buffers.size() - 1;
-            indexBufferView.byteOffset = positionDataSize;
-            indexBufferView.byteLength = indices.size() * sizeof(uint16_t);
-            indexBufferView.target = TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER;
-            gltf->bufferViews.push_back(indexBufferView);
-
-            tinygltf::Accessor indexAccessor;
-            indexAccessor.bufferView = gltf->bufferViews.size() - 1;
-            indexAccessor.byteOffset = 0;
-            indexAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT;
-            indexAccessor.type = TINYGLTF_TYPE_SCALAR;
-            indexAccessor.count = indices.size();
-            gltf->accessors.push_back(indexAccessor);
-
-            // Create a Primitive for the line
-            tinygltf::Primitive primitive;
-            primitive.attributes["POSITION"] = gltf->accessors.size() - 2; // Position accessor index
-            primitive.indices = gltf->accessors.size() - 1;               // Index accessor index
-            primitive.mode = TINYGLTF_MODE_LINE;
-            primitive.material = lineMaterialIndex;                            // Assign material
-
-            // Create a Mesh for the line
-            tinygltf::Mesh lineMesh;
-            lineMesh.name = "BoneDebugMesh_" + std::to_string(i);
-            lineMesh.primitives.push_back(primitive);
-            gltf->meshes.push_back(lineMesh);
-
-            // Create a Node for the line and add it to the model
-            tinygltf::Node lineNode;
-            lineNode.mesh = gltf->meshes.size() - 1;
-            gltf->nodes.push_back(lineNode);
-
-            // Add the debug node to the root node or appropriate parent
-            gltf->nodes[parentIndex].children.push_back(gltf->nodes.size() - 1);
+        for (uint32_t boneID = 1; boneID < rig->getNumBones(); ++boneID) 
+        {        
+            Matrix bindPoseTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(boneID), *rig->getBindPoseBonePos(boneID));
+            createSphere(gltf, "BoneMarker_" + std::to_string(boneID), Vector3::Transform(Vector3::Zero, bindPoseTransform), 0.3f);
         }
     }
 
@@ -206,32 +264,6 @@ namespace
         }
     }
 
-    tinygltf::BufferView* createBufferView(tinygltf::Model* gltf, int targetBuffer, size_t byteOffset, size_t byteLength, int target)
-    {
-        tinygltf::BufferView bufferView;
-        bufferView.buffer = targetBuffer;
-        bufferView.byteOffset = byteOffset;
-        bufferView.byteLength = byteLength;
-        bufferView.target = target;
-        gltf->bufferViews.push_back(bufferView);
-
-        return &gltf->bufferViews.back();
-    }
-
-    tinygltf::Accessor* createBufferViewAccessor(tinygltf::Model* gltf, int targetBufferView, size_t byteOffset, int componentType, int type, int count)
-    {
-        tinygltf::Accessor accessor;
-        accessor.bufferView = targetBufferView;
-        accessor.byteOffset = byteOffset;
-        accessor.componentType = componentType;
-        accessor.type = type;
-        accessor.count = count;
-
-        gltf->accessors.push_back(accessor);
-
-        return &gltf->accessors.back();
-    }
-
     float clampValue(float value, float tolerance = 1e-4f) 
     {
         if (std::abs(value - 1.0f) < tolerance) 
@@ -272,14 +304,14 @@ namespace GLTFTranslator
             int jointIndex = getGltfNodeByName(gltfModel, rig->getBoneName(i));
             int parentIndex = getGltfNodeByName(gltfModel, rig->getBoneName(rig->getParentBoneIndex(i)));
 
-            //If the parent bone was not found, add to the root node
+            // If the parent bone was not found, add to the root node
             if (parentIndex == -1)
                 parentIndex = 0;
 
             gltfModel->nodes[parentIndex].children.push_back(jointIndex);
         }
 
-        addBoneVisuals(gltfModel, rig);
+        //addBoneVisuals(gltfModel, rig);
 
         if (includeMeshes && (model != nullptr))
         {
@@ -375,7 +407,7 @@ namespace GLTFTranslator
 
         // Vertices
         createBufferView(gltf, gltf->buffers.size() - 1, positionOffset, positionDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
-        tinygltf::Accessor* positionAccessor = createBufferViewAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, vertices.size());
+        tinygltf::Accessor* positionAccessor = createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, vertices.size());
         positionAccessor->minValues = { minBound.x, minBound.y, minBound.z };
         positionAccessor->maxValues = { maxBound.x, maxBound.y, maxBound.z };
 
@@ -383,31 +415,31 @@ namespace GLTFTranslator
 
         // Normals
         createBufferView(gltf, gltf->buffers.size() - 1, normalOffset, normalDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
-        createBufferViewAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, normals.size());
+        createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, normals.size());
 
         const int normalsDataIdx = gltf->accessors.size() - 1;
 
         // Vertex indices
         createBufferView(gltf, gltf->buffers.size() - 1, indexOffset, indexDataSize, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
-        createBufferViewAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_SCALAR, indices.size());
+        createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_SCALAR, indices.size());
 
         const int indicesDataIdx = gltf->accessors.size() - 1;
 
         // Bone indices
         createBufferView(gltf, gltf->buffers.size() - 1, jointOffset, jointDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
-        createBufferViewAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_VEC4, jointIndices.size());
+        createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_VEC4, jointIndices.size());
 
         const int boneIndicesDataIdx = gltf->accessors.size() - 1;
 
         // Bone weights
         createBufferView(gltf, gltf->buffers.size() - 1, weightOffset, weightDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
-        createBufferViewAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC4, jointWeights.size());
+        createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC4, jointWeights.size());
 
         const int boneWeightsDataIdx = gltf->accessors.size() - 1;
 
         // IBM
         createBufferView(gltf, gltf->buffers.size() - 1, inverseBindMatrixOffset, inverseBindMatrixDataSize, 0);
-        createBufferViewAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_MAT4, inverseBindMatrices.size());
+        createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_MAT4, inverseBindMatrices.size());
         
         const int ibmDataIdx = gltf->accessors.size() - 1;
 
