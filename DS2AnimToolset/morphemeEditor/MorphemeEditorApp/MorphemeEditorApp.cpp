@@ -532,7 +532,7 @@ namespace
 		scene.nodes.push_back(0); // Root node of the model
 
 		gltfModel->scenes.push_back(scene);
-		gltfModel->defaultScene = 0; // Set the default scene
+		gltfModel->defaultScene = 0;
 
 		std::string modelOutPath = RString::toNarrow(character->getCharacterName()) + ".gltf";
 

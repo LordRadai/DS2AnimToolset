@@ -3,6 +3,7 @@
 #include "MorphemeEditor.h"
 #include "extern.h"
 #include "RCore.h"
+#include "utils/utils.h"
 
 namespace
 {
@@ -57,6 +58,102 @@ namespace
 
         return -1;
     }
+
+    void addBoneVisuals(tinygltf::Model* gltf, MR::AnimRigDef* rig) 
+    {
+        // Debug bone view material
+        tinygltf::Material lineMaterial;
+        lineMaterial.name = "DebugBoneMaterial";
+        lineMaterial.pbrMetallicRoughness.baseColorFactor = { 0.0, 0.0, 1.0, 1.0 };
+        lineMaterial.pbrMetallicRoughness.metallicFactor = 0.0;
+        lineMaterial.pbrMetallicRoughness.roughnessFactor = 1.0;
+        gltf->materials.push_back(lineMaterial);
+        int lineMaterialIndex = gltf->materials.size() - 1;
+
+        // Iterate through all joints
+        for (size_t i = 1; i < rig->getNumBones(); ++i) 
+        {
+            int parentIndex = rig->getParentBoneIndex(i);
+            if (parentIndex == -1)
+                continue;
+
+            // Get the positions of the bone and its parent            
+            Vector3 start = Vector3::Transform(Vector3::Zero, utils::NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(parentIndex), *rig->getBindPoseBonePos(parentIndex)));
+            Vector3 end = Vector3::Transform(Vector3::Zero, utils::NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(i), *rig->getBindPoseBonePos(i)));
+
+            // Create a line mesh for the bone
+            std::vector<Vector3> vertices = { start, end };
+            std::vector<uint16_t> indices = { 0, 1 };
+
+            // Create a buffer for the line data
+            tinygltf::Buffer buffer;
+            buffer.data.insert(buffer.data.end(),
+                reinterpret_cast<const unsigned char*>(vertices.data()),
+                reinterpret_cast<const unsigned char*>(vertices.data() + vertices.size()));
+
+            buffer.data.insert(buffer.data.end(),
+                reinterpret_cast<const unsigned char*>(indices.data()),
+                reinterpret_cast<const unsigned char*>(indices.data() + indices.size()));
+
+            gltf->buffers.push_back(buffer);
+
+            size_t positionDataSize = vertices.size() * sizeof(Vector3);
+
+            // Create a BufferView for the line data
+            tinygltf::BufferView bufferView;
+            bufferView.buffer = gltf->buffers.size() - 1;
+            bufferView.byteOffset = 0;
+            bufferView.byteLength = positionDataSize;
+            bufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
+            gltf->bufferViews.push_back(bufferView);
+
+            // Create an Accessor for the line positions
+            tinygltf::Accessor positionAccessor;
+            positionAccessor.bufferView = gltf->bufferViews.size() - 1;
+            positionAccessor.byteOffset = 0;
+            positionAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
+            positionAccessor.type = TINYGLTF_TYPE_VEC3;
+            positionAccessor.count = vertices.size();
+            gltf->accessors.push_back(positionAccessor);
+
+            // Create another BufferView and Accessor for the indices
+            tinygltf::BufferView indexBufferView;
+            indexBufferView.buffer = gltf->buffers.size() - 1;
+            indexBufferView.byteOffset = positionDataSize;
+            indexBufferView.byteLength = indices.size() * sizeof(uint16_t);
+            indexBufferView.target = TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER;
+            gltf->bufferViews.push_back(indexBufferView);
+
+            tinygltf::Accessor indexAccessor;
+            indexAccessor.bufferView = gltf->bufferViews.size() - 1;
+            indexAccessor.byteOffset = 0;
+            indexAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT;
+            indexAccessor.type = TINYGLTF_TYPE_SCALAR;
+            indexAccessor.count = indices.size();
+            gltf->accessors.push_back(indexAccessor);
+
+            // Create a Primitive for the line
+            tinygltf::Primitive primitive;
+            primitive.attributes["POSITION"] = gltf->accessors.size() - 2; // Position accessor index
+            primitive.indices = gltf->accessors.size() - 1;               // Index accessor index
+            primitive.mode = TINYGLTF_MODE_LINE;
+            primitive.material = lineMaterialIndex;                            // Assign material
+
+            // Create a Mesh for the line
+            tinygltf::Mesh lineMesh;
+            lineMesh.name = "BoneDebugMesh_" + std::to_string(i);
+            lineMesh.primitives.push_back(primitive);
+            gltf->meshes.push_back(lineMesh);
+
+            // Create a Node for the line and add it to the model
+            tinygltf::Node lineNode;
+            lineNode.mesh = gltf->meshes.size() - 1;
+            gltf->nodes.push_back(lineNode);
+
+            // Add the debug node to the root node or appropriate parent
+            gltf->nodes[parentIndex].children.push_back(gltf->nodes.size() - 1);
+        }
+    }
 }
 
 namespace GLTFTranslator
@@ -67,7 +164,7 @@ namespace GLTFTranslator
 		gltfModel->asset.version = "2.0";
 		gltfModel->asset.generator = APPNAME_A;
 
-        addRootNode(gltfModel, model->getModelName(), Quaternion::CreateFromAxisAngle(Vector3::Right, DirectX::XM_PIDIV2));
+        addRootNode(gltfModel, "SceneRoot", Quaternion::CreateFromAxisAngle(Vector3::Right, -DirectX::XM_PIDIV2));
 
         //Add all the bones
         for (size_t i = 1; i < rig->getNumBones(); i++)
@@ -85,6 +182,8 @@ namespace GLTFTranslator
 
             gltfModel->nodes[parentIndex].children.push_back(jointIndex);
         }
+
+        //addBoneVisuals(gltfModel, rig);
 
         if (includeMeshes && (model != nullptr))
         {

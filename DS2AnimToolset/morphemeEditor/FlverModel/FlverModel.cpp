@@ -681,8 +681,6 @@ void FlverModel::initModelData()
 	{
 		std::vector<Vector3> vertices = this->getFlverMeshVertices(i, false);
 		std::vector<Vector3> normals = this->getFlverMeshNormals(i, false);
-		std::vector<Vector3> tangents = this->getFlverMeshTangents(i, false);
-		std::vector<Vector3> bitangents = this->getFlverMeshBiTangents(i, false);
 		std::vector<Vector4> boneWeights = this->getFlverMeshBoneWeights(i);
 		std::vector<std::vector<int>> boneIndices = this->getFlverMeshBoneIndices(i);
 
