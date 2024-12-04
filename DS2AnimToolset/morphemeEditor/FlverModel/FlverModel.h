@@ -32,8 +32,8 @@ public:
 	struct SkinnedVertex
 	{
 		DirectX::VertexPositionNormalColor vertexData;
-		float boneWeights[4];
-		int boneIndices[4];
+		float boneWeights[4] = { 0, 0, 0, 0 };
+		int boneIndices[4] = { -1, -1, -1, -1 };
 
 		SkinnedVertex() {}
 		SkinnedVertex(Vector3 pos, Vector3 normal, float* weights, int* bone_indices);
@@ -53,7 +53,7 @@ public:
 
 	static FlverModel* createFromBnd(std::wstring path, MR::AnimRigDef* rig);
 
-	void initModelData();
+	void initialise();
 	void destroy();
 
 	std::string getModelName() const { return this->m_name; }

@@ -82,7 +82,7 @@ FbxNode* CreateMorphemeBoneNode(FbxScene* pScene, FbxPose* pBindPoses, MR::AnimR
 {
 	FbxNode* pBoneNode = FbxNode::Create(pScene, pRig->getBoneName(id));
 
-	Matrix bonePose = utils::NMDX::getWorldMatrix(*pRig->getBindPoseBoneQuat(id), *pRig->getBindPoseBonePos(id));
+	Matrix bonePose = utils::NMDX::getTransformMatrix(*pRig->getBindPoseBoneQuat(id), *pRig->getBindPoseBonePos(id));
 	FbxAMatrix boneTransform = CreateFbxMatrixFromDXMatrix(bonePose);
 
 	pBoneNode->LclTranslation.Set(boneTransform.GetT());

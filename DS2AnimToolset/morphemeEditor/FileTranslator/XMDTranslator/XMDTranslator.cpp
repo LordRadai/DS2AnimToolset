@@ -395,7 +395,6 @@ namespace XMDTranslator
 		XMD::XJoint* joint = static_cast<XMD::XJoint*>(xmd->CreateNode(XMD::XFn::Joint));
 
 		joint->SetName(rig->getBoneName(idx));
-
 		joint->SetTranslation(convertToXmdVec3(*rig->getBindPoseBonePos(idx)));
 		joint->SetRotation(convertToXmdQuat(*rig->getBindPoseBoneQuat(idx)));
 

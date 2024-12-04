@@ -96,10 +96,10 @@ Matrix AnimObject::getTransformAtTime(float time, int channelId)
         NMP::Quat trajRot;
         animHandle->getTrajectory(trajRot, trajPos);
 
-        return utils::NMDX::getWorldMatrix(trajRot, trajPos);
+        return utils::NMDX::getTransformMatrix(trajRot, trajPos);
     }
 
-    return utils::NMDX::getWorldMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
+    return utils::NMDX::getTransformMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
 }
 
 Vector3 AnimObject::getTransformPosAtTime(float time, int channelId)

@@ -75,7 +75,7 @@ void CharacterModelCtrl::destroy()
 void CharacterModelCtrl::setModel(FlverModel* model)
 {
 	if (model)
-		model->initModelData();
+		model->initialise();
 
 	if (this->m_model)
 		this->m_model->destroy();

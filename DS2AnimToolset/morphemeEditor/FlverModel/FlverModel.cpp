@@ -87,7 +87,7 @@ namespace
 
 	Matrix getNmBoneTranform(MR::AnimationSourceHandle* animHandle, int channelId)
 	{
-		return utils::NMDX::getWorldMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
+		return utils::NMDX::getTransformMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
 	}
 
 	Matrix computeNmBoneGlobalTransform(MR::AnimationSourceHandle* animHandle, int channelId)
@@ -113,12 +113,12 @@ namespace
 
 	Matrix computeNmBoneBindPoseGlobalTransform(const MR::AnimRigDef* rig, int channelId)
 	{
-		DirectX::XMMATRIX boneLocalTransform = utils::NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(channelId), *rig->getBindPoseBonePos(channelId));
+		DirectX::XMMATRIX boneLocalTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(channelId), *rig->getBindPoseBonePos(channelId));
 		int parentIdx = rig->getParentBoneIndex(channelId);
 
 		while (parentIdx != -1)
 		{
-			boneLocalTransform *= utils::NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(parentIdx), *rig->getBindPoseBonePos(parentIdx));
+			boneLocalTransform *= utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(parentIdx), *rig->getBindPoseBonePos(parentIdx));
 
 			parentIdx = rig->getParentBoneIndex(parentIdx);
 		}
@@ -205,7 +205,7 @@ namespace
 
 	Matrix getNmRelativeBindPose(const MR::AnimRigDef* rig, int idx)
 	{
-		Matrix transform = utils::NMDX::getWorldMatrix(*rig->getBindPoseBoneQuat(idx), *rig->getBindPoseBonePos(idx));
+		Matrix transform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(idx), *rig->getBindPoseBonePos(idx));
 		transform *= Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
 		transform *= Matrix::CreateReflection(Plane(Vector3::Up));
 
@@ -214,7 +214,7 @@ namespace
 
 	Matrix getNmRelativeTransform(MR::AnimationSourceHandle* animHandle, int idx)
 	{
-		Matrix transform = utils::NMDX::getWorldMatrix(animHandle->getChannelData()[idx].m_quat, animHandle->getChannelData()[idx].m_pos);
+		Matrix transform = utils::NMDX::getTransformMatrix(animHandle->getChannelData()[idx].m_quat, animHandle->getChannelData()[idx].m_pos);
 		transform *= Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
 		transform *= Matrix::CreateReflection(Plane(Vector3::Up));
 
@@ -272,7 +272,7 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 
 	this->m_focusPoint = Vector3::Transform(Vector3::Zero, this->m_position) + DirectX::SimpleMath::Vector3(0, focus_y, 0);
 
-	this->initModelData();
+	this->initialise();
 
 	this->m_loaded = true;
 
@@ -336,7 +336,7 @@ void FlverModel::destroy()
 	delete this;
 }
 
-//Gets the vertices for the FLVER mesh at index idx
+// Gets the vertices for the FLVER mesh at index idx 
 std::vector<Vector3> FlverModel::getFlverMeshVertices(int idx, bool flip)
 {
 	std::vector<Vector3> vertices;
@@ -394,7 +394,7 @@ std::vector<Vector3> FlverModel::getFlverMeshVertices(int idx, bool flip)
 	return vertices;
 }
 
-//Gets the normals for the FLVER mesh at index idx
+// Gets the normals for the FLVER mesh at index idx 
 std::vector<Vector3> FlverModel::getFlverMeshNormals(int idx, bool flip)
 {
 	std::vector<Vector3> normals;
@@ -448,6 +448,8 @@ std::vector<Vector3> FlverModel::getFlverMeshNormals(int idx, bool flip)
 	return normals;
 }
 
+// Gets the tangents for the FLVER mesh at index idx 
+// WARNING! This data seems to be wrong, I do not advise you to inclide these when exporting)
 std::vector<Vector3> FlverModel::getFlverMeshTangents(int idx, bool flip)
 {
 	std::vector<Vector3> tangents;
@@ -501,6 +503,8 @@ std::vector<Vector3> FlverModel::getFlverMeshTangents(int idx, bool flip)
 	return tangents;
 }
 
+// Gets the bitangents for the FLVER mesh at index idx 
+// WARNING! This data seems to be wrong, I do not advise you to inclide these when exporting)
 std::vector<Vector3> FlverModel::getFlverMeshBiTangents(int idx, bool flip)
 {
 	std::vector<Vector3> bitangents;
@@ -554,7 +558,7 @@ std::vector<Vector3> FlverModel::getFlverMeshBiTangents(int idx, bool flip)
 	return bitangents;
 }
 
-//Gets the bone weights for the FLVER mesh at index idx
+// Gets the bone weights for the FLVER mesh at index idx
 std::vector<Vector4> FlverModel::getFlverMeshBoneWeights(int idx)
 {
 	std::vector<Vector4> weights;
@@ -606,6 +610,7 @@ std::vector<Vector4> FlverModel::getFlverMeshBoneWeights(int idx)
 	return weights;
 }
 
+// Gets the bone influence indices for the FLVER mesh at index idx
 std::vector<std::vector<int>> FlverModel::getFlverMeshBoneIndices(int idx)
 {
 	std::vector<std::vector<int>> buffer;
@@ -660,8 +665,8 @@ std::vector<std::vector<int>> FlverModel::getFlverMeshBoneIndices(int idx)
 	return buffer;
 }
 
-//Gets all the model vertices for all the meshes and stores them into m_verts
-void FlverModel::initModelData()
+// Gets all the model vertices for all the meshes and stores them into m_verts
+void FlverModel::initialise()
 {
 	this->m_verts.clear();
 	this->m_boneTransforms.clear();
