@@ -386,11 +386,11 @@ namespace GLTFTranslator
 
     tinygltf::Mesh* createMesh(tinygltf::Model* gltf, FlverModel* model, int meshIndex)
     {
-        std::vector<Vector3> vertices = getMeshVertices(model, meshIndex);
-        std::vector<Vector3> normals = getMeshNormals(model, meshIndex);
+        //std::vector<Vector3> vertices = getMeshVertices(model, meshIndex);
+        //std::vector<Vector3> normals = getMeshNormals(model, meshIndex);
 
-        //std::vector<Vector3> vertices = model->getFlverMeshVertices(meshIndex, true);
-        //std::vector<Vector3> normals = model->getFlverMeshNormals(meshIndex, true);
+        std::vector<Vector3> vertices = model->getFlverMeshVertices(meshIndex, true);
+        std::vector<Vector3> normals = model->getFlverMeshNormals(meshIndex, true);
 
         Vector3 minBound, maxBound;
 
@@ -565,7 +565,7 @@ namespace GLTFTranslator
         std::vector<float> timeData;
         timeData.reserve(numKeyframes);
         for (size_t i = 0; i < numKeyframes; i++)
-            timeData.push_back(i / fps);
+            timeData.push_back(RMath::frameToTime(i, fps));
 
         tinygltf::Animation animation;
         animation.name = takeName;
