@@ -53,7 +53,6 @@ public:
 
 	static FlverModel* createFromBnd(std::wstring path, MR::AnimRigDef* rig);
 
-	void initialise();
 	void destroy();
 
 	std::string getModelName() const { return this->m_name; }
@@ -87,7 +86,7 @@ public:
 
 	void animate(MR::AnimationSourceHandle* animHandle);
 
-	//FLVER functions
+	// FLVER functions
 
 	int getNumFlverMeshes() const { return this->m_flver->header.meshCount; }
 	int getNumFlverDummies() const { return this->m_flver->header.dummyCount; }
@@ -97,11 +96,11 @@ public:
 	cfr::FLVER2::Dummy getFlverDummy(int idx) const { return this->m_flver->dummies[idx]; }
 	cfr::FLVER2::Bone getFlverBone(int idx) const { return this->m_flver->bones[idx]; }
 	std::string getFlverBoneName(int idx);
-	Matrix* getFlverBoneTransform(int idx);
-	Matrix* getFlverBoneBindPose(int idx);
+	Matrix* getFlverBoneGlobalTransform(int idx);
+	Matrix* getFlverBoneBindPoseGlobalTransform(int idx);
 
-	Matrix* getFlverRootBoneTransform();
-	Matrix* getFlverTrajectoryBoneTransform();
+	Matrix* getFlverRootBoneGlobalTransform();
+	Matrix* getFlverTrajectoryBoneGlobalTransform();
 
 	Vector3 getBoundingBoxMin();
 	Vector3 getBoundingBoxMax();
@@ -115,25 +114,25 @@ public:
 	std::vector<Vector4> getFlverMeshBoneWeights(int idx);
 	std::vector<std::vector<int>> getFlverMeshBoneIndices(int idx);
 
-	//Morpheme functions
+	// Morpheme functions
 
 	MR::AnimRigDef* getRig() const { return this->m_nmRig; }
 	int getNumMorphemeBones() const { return this->m_nmRig->getNumBones(); }
 	std::string getMorphemeBoneName(int idx);
-	Matrix* getMorphemeBoneTransform(int idx);
-	Matrix* getMorphemeBoneBindPose(int idx);
+	Matrix* getMorphemeBoneGlobalTransform(int idx);
+	Matrix* getMorphemeBoneBindPoseGlobalTransform(int idx);
 
-	Matrix* getMorphemeRootBoneTransform();
-	Matrix* getMorphemeTrajectoryBoneTransform();
+	Matrix* getMorphemeRootBoneGlobalTransform();
+	Matrix* getMorphemeTrajectoryBoneGlobalTransform();
 
 	int getMorphemeBoneIndexByName(const char* name);
 
 private:
-	FlverModel();
+	FlverModel() {}
 	FlverModel(UMEM* umem, MR::AnimRigDef* rig);
-	~FlverModel();
+	~FlverModel() {}
 
-	std::wstring m_fileOrigin;
+	std::wstring m_fileOrigin = L"";
 	Settings m_settings;
 
 	bool m_loaded = false;
@@ -142,18 +141,20 @@ private:
 	Matrix m_position = Matrix::Identity;
 	Vector3 m_focusPoint = Vector3::Zero;
 
-	cfr::FLVER2* m_flver;
+	cfr::FLVER2* m_flver = nullptr;
 	MR::AnimRigDef* m_nmRig = nullptr;
 	std::vector<int> m_flverToMorphemeBoneMap;
 	std::vector<int> m_morphemeToFlverBoneMap;
 	std::vector<std::vector<SkinnedVertex>> m_verts;
 	std::vector<std::vector<SkinnedVertex>> m_vertBindPose;
 	std::vector<Matrix> m_boneTransforms;
-	std::vector<Matrix> m_boneBindPose;
+	std::vector<Matrix> m_boneBindPoseTransforms;
 	std::vector<Matrix> m_morphemeBoneTransforms;
-	std::vector<Matrix> m_morphemeBoneBindPose;
+	std::vector<Matrix> m_morphemeBoneBindPoseTransforms;
 	std::vector<Matrix> m_dummyPolygons;
 	float m_scale = 1.5f;
+
+	bool initialise();
 
 	void createFlverToMorphemeBoneMap();
 	void createMorphemeToFlverBoneMap();

@@ -286,11 +286,36 @@ namespace
 
 namespace GLTFTranslator
 {
+    enum UpAxis
+    {
+        kUpX,
+        kUpY,
+        kUpZ
+    };
+
 	tinygltf::Model* createModel(MR::AnimRigDef* rig, FlverModel* model, bool includeMeshes)
 	{
 		tinygltf::Model* gltfModel = new tinygltf::Model;
 		gltfModel->asset.version = "2.0";
 		gltfModel->asset.generator = APPNAME_A;
+
+        Quaternion sceneRootRot = Quaternion::Identity;
+        UpAxis upAxis = kUpY;
+
+        switch (upAxis)
+        {
+        case GLTFTranslator::kUpX:
+            sceneRootRot = Quaternion::CreateFromAxisAngle(Vector3::Up, DirectX::XM_PIDIV2);
+            break;
+        case GLTFTranslator::kUpY:
+            sceneRootRot = Quaternion::Identity;
+            break;
+        case GLTFTranslator::kUpZ:
+            sceneRootRot = Quaternion::CreateFromAxisAngle(Vector3::Right, DirectX::XM_PIDIV2);
+            break;
+        default:
+            break;
+        }
 
         addRootNode(gltfModel, "SceneRoot"/*, Quaternion::CreateFromAxisAngle(Vector3::Right, -DirectX::XM_PIDIV2)*/);
 
@@ -389,10 +414,11 @@ namespace GLTFTranslator
 
         const MR::AnimRigDef* rig = model->getRig();
 
+        // Skip the first bone because it's not a part of the actual morpheme rig, it's added by morpheme:connect
         for (size_t i = 1; i < rig->getNumBones(); i++)
         {
             Matrix bindPoseTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(i), *rig->getBindPoseBonePos(i));
-            clampMatrix(bindPoseTransform);
+
             inverseBindMatrices.push_back(bindPoseTransform.Invert());
         }
 
