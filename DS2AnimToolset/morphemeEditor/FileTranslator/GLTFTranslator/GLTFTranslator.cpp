@@ -181,7 +181,7 @@ namespace
         }
     }
 
-    int getGltfNodeByName(tinygltf::Model* gltf, std::string name)
+    int getGltfNodeIndexByName(tinygltf::Model* gltf, std::string name)
     {
         for (size_t i = 0; i < gltf->nodes.size(); i++)
         {
@@ -190,6 +190,29 @@ namespace
         }
 
         return -1;
+    }
+
+    tinygltf::Node* getGltfNodeByName(tinygltf::Model* gltf, std::string name)
+    {
+        for (size_t i = 0; i < gltf->nodes.size(); i++)
+        {
+            if (gltf->nodes[i].name == name)
+                return &gltf->nodes[i];
+        }
+
+        return nullptr;
+    }
+
+    int addBoneInfluence(std::vector<int>& jointArray, int boneID)
+    {
+        for (size_t i = 0; i < jointArray.size(); i++)
+        {
+            if (boneID == jointArray[i])
+                return i;
+        }
+
+        jointArray.push_back(boneID);
+        return jointArray.size() - 1;
     }
 
     // This doesn't work, I don't know why, but it's all wrong
@@ -212,9 +235,10 @@ namespace
         }
     }
 
-    void getSkinnedVertices(std::vector<Vector4>& weights, std::vector<JointIndicesVec>& indices, FlverModel* model, int meshIndex)
+    void getSkinnedVertices(tinygltf::Model* gltf, std::vector<int>& jointArray, std::vector<Vector4>& weights, std::vector<JointIndicesVec>& indices, FlverModel* model, int meshIndex)
     {
         // Make sure the input is empty before adding anything
+        jointArray.clear();
         weights.clear();
         indices.clear();
 
@@ -237,29 +261,36 @@ namespace
             JointIndicesVec jointIndexData(-1, -1, -1, -1);
             for (size_t j = 0; j < 4; j++)
             {
-                const int morphemeBoneIdx = model->getMorphemeBoneIdByFlverBoneId(jointIndices[i][j]);
+                const int morphemeBoneID = model->getMorphemeBoneIdByFlverBoneId(jointIndices[i][j]);
 
-                if (morphemeBoneIdx != -1)
+                if (morphemeBoneID != -1)
                 {
-                    switch (j)
+                    const tinygltf::Node* jointNode = getGltfNodeByName(gltf, model->getMorphemeBoneName(morphemeBoneID));
+
+                    if (jointNode)
                     {
-                    case 0:
-                        jointWeightData.x = jointWeights[i].x;
-                        jointIndexData.x = morphemeBoneIdx;
-                        break;
-                    case 1:
-                        jointWeightData.y = jointWeights[i].y;
-                        jointIndexData.y = morphemeBoneIdx;
-                        break;
-                    case 2:
-                        jointWeightData.z = jointWeights[i].z;
-                        jointIndexData.z = morphemeBoneIdx;
-                        break;
-                    case 3:
-                        jointWeightData.w = jointWeights[i].w;
-                        jointIndexData.w = morphemeBoneIdx;
-                        break;
-                    }
+                        const int influenceArrayIndex = addBoneInfluence(jointArray, morphemeBoneID);
+
+                        switch (j)
+                        {
+                        case 0:
+                            jointWeightData.x = jointWeights[i].x;
+                            jointIndexData.x = influenceArrayIndex;
+                            break;
+                        case 1:
+                            jointWeightData.y = jointWeights[i].y;
+                            jointIndexData.y = influenceArrayIndex;
+                            break;
+                        case 2:
+                            jointWeightData.z = jointWeights[i].z;
+                            jointIndexData.z = influenceArrayIndex;
+                            break;
+                        case 3:
+                            jointWeightData.w = jointWeights[i].w;
+                            jointIndexData.w = influenceArrayIndex;
+                            break;
+                        }
+                    }           
                 }
             }
 
@@ -331,8 +362,8 @@ namespace GLTFTranslator
         //Loop back over to add all children
         for (size_t i = 1; i < rig->getNumBones(); i++)
         {
-            int jointIndex = getGltfNodeByName(gltfModel, rig->getBoneName(i));
-            int parentIndex = getGltfNodeByName(gltfModel, rig->getBoneName(rig->getParentBoneIndex(i)));
+            int jointIndex = getGltfNodeIndexByName(gltfModel, rig->getBoneName(i));
+            int parentIndex = getGltfNodeIndexByName(gltfModel, rig->getBoneName(rig->getParentBoneIndex(i)));
 
             // If the parent bone was not found, add to the root node
             if (parentIndex == -1)
@@ -395,9 +426,10 @@ namespace GLTFTranslator
             reinterpret_cast<const unsigned char*>(indices.data()),
             reinterpret_cast<const unsigned char*>(indices.data() + indices.size()));
 
+        std::vector<int> jointArray;
         std::vector<Vector4> jointWeights;
         std::vector<JointIndicesVec> jointIndices;
-        getSkinnedVertices(jointWeights, jointIndices, model, meshIndex);
+        getSkinnedVertices(gltf, jointArray, jointWeights, jointIndices, model, meshIndex);
 
         // Add joint indices to the buffer
         size_t jointDataSize = jointIndices.size() * sizeof(Vector4);
@@ -481,20 +513,10 @@ namespace GLTFTranslator
         primitive.attributes["JOINTS_0"] = boneIndicesDataIdx;
         primitive.attributes["WEIGHTS_0"] = boneWeightsDataIdx;
 
-        std::vector<int> jointNodeIndices;
-        jointNodeIndices.reserve(rig->getNumBones());
-        for (uint32_t boneIndex = 0; boneIndex < rig->getNumBones(); ++boneIndex) 
-        {
-            int jointNodeIndex = getGltfNodeByName(gltf, rig->getBoneName(boneIndex));
-
-            if (jointNodeIndex != -1)
-                jointNodeIndices.push_back(jointNodeIndex);
-        }
-
         // Create a Skin
         tinygltf::Skin skin;
         skin.name = "Skin_" + std::to_string(meshIndex);
-        skin.joints = jointNodeIndices;
+        skin.joints = jointArray;
         skin.inverseBindMatrices = ibmDataIdx;
 
         // Add the skin to the model
