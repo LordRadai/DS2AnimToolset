@@ -553,7 +553,7 @@ namespace GLTFTranslator
         return &gltf->nodes.back();
     }
 
-    tinygltf::Animation* createAnimation(tinygltf::Model* gltf, AnimObject* animObj, int fps)
+    tinygltf::Animation* createAnimation(tinygltf::Model* gltf, AnimObject* animObj, const char* takeName, int fps)
     {
         const MR::AnimationSourceHandle* animHandle = animObj->getHandle();
         const MR::AnimRigDef* rig = animHandle->getRig();
@@ -568,9 +568,11 @@ namespace GLTFTranslator
             timeData.push_back(i / fps);
 
         tinygltf::Animation animation;
+        animation.name = takeName;
 
         for (uint32_t channelID = 1; channelID < rig->getNumBones(); channelID++)
         {
+            const int targetBoneIndex = getGltfNodeIndexByName(gltf, rig->getBoneName(channelID));
             std::vector<Vector3> translationData;
             std::vector<Quaternion> rotationData;
 
@@ -629,35 +631,36 @@ namespace GLTFTranslator
             translationSampler.output = translationDataAccessorIdx;
             translationSampler.interpolation = "LINEAR";
 
+            animation.samplers.push_back(translationSampler);
+
+            const int translationSamplerIdx = animation.samplers.size() - 1;
+
             tinygltf::AnimationSampler rotationSampler;
             rotationSampler.input = animTimeAccessorIdx;
             rotationSampler.output = rotationDataAccessorIdx;
             rotationSampler.interpolation = "LINEAR";
 
+            animation.samplers.push_back(rotationSampler);
+
+            const int rotationSamplerIdx = animation.samplers.size() - 1;
+
             // Create animation channels
             tinygltf::AnimationChannel translationChannel;
-            translationChannel.sampler = 0;
-            translationChannel.target_node = 0;
+            translationChannel.sampler = translationSamplerIdx;
+            translationChannel.target_node = targetBoneIndex;
             translationChannel.target_path = "translation";
 
+            animation.channels.push_back(translationChannel);
+
             tinygltf::AnimationChannel rotationChannel;
-            rotationChannel.sampler = 1;
-            rotationChannel.target_node = 0;
+            rotationChannel.sampler = rotationSamplerIdx;
+            rotationChannel.target_node = targetBoneIndex;
             rotationChannel.target_path = "rotation";
 
-            // Create animation
-            animation.samplers.push_back(translationSampler);
-            animation.samplers.push_back(rotationSampler);
-            animation.channels.push_back(translationChannel);
             animation.channels.push_back(rotationChannel);
         }
 
         gltf->animations.push_back(animation);
-
-        // Create a node
-        tinygltf::Node node;
-        node.name = "AnimatedNode_";
-        gltf->nodes.push_back(node);
 
         return &gltf->animations.back();
     }

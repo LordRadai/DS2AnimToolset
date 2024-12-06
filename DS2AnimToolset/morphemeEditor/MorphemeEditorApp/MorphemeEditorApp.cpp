@@ -662,7 +662,7 @@ namespace
 		MR::AnimRigDef* rig = character->getRig(0);
 
 		tinygltf::Model* gltfModel = GLTFTranslator::createModel(rig, model, true);
-		GLTFTranslator::createAnimation(gltfModel, anim, fps);
+		GLTFTranslator::createAnimation(gltfModel, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
 
 		tinygltf::Scene scene;
 		scene.nodes.push_back(0); // Root node of the model

@@ -26,5 +26,5 @@ namespace GLTFTranslator
 	tinygltf::Model* createModel(MR::AnimRigDef* rig, FlverModel* model, bool includeMeshes);
 	tinygltf::Mesh* createMesh(tinygltf::Model* gltf, FlverModel* model, int meshIndex);
 	tinygltf::Node* createJoint(tinygltf::Model* gltf, const MR::AnimRigDef* rig, const int boneID);
-	tinygltf::Animation* createAnimation(tinygltf::Model* gltf, AnimObject* animObj, int fps);
+	tinygltf::Animation* createAnimation(tinygltf::Model* gltf, AnimObject* animObj, const char* takeName, int fps);
 }
