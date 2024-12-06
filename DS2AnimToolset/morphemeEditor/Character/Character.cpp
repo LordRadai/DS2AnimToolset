@@ -542,7 +542,7 @@ void Character::draw(RenderManager* renderManager)
     drawFlverModel(this->m_characterModelCtrl->getModelFg(kFgFace), renderManager);
     drawFlverModel(this->m_characterModelCtrl->getModelFg(kFgHair), renderManager);
 
-    drawCharacterController(this, renderManager);
+    //drawCharacterController(this, renderManager);
 }
 
 void Character::destroy()
