@@ -453,7 +453,7 @@ namespace GLTFTranslator
         // Skip the first bone because it's not a part of the actual morpheme rig, it's added by morpheme:connect
         for (size_t i = 1; i < rig->getNumBones(); i++)
         {
-            Matrix bindPoseTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(i), *rig->getBindPoseBonePos(i));
+            Matrix bindPoseTransform = *model->getMorphemeBoneBindPoseGlobalTransform(i);
 
             inverseBindMatrices.push_back(bindPoseTransform.Invert());
         }

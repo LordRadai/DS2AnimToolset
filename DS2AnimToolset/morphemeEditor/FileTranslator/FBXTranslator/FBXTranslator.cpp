@@ -87,7 +87,7 @@ FbxNode* CreateMorphemeBoneNode(FbxScene* pScene, FbxPose* pBindPoses, MR::AnimR
 
 	pBoneNode->LclTranslation.Set(boneTransform.GetT());
 	pBoneNode->LclRotation.Set(boneTransform.GetR());
-	pBoneNode->LclScaling.Set(FbxDouble3(1.0, 1.0, 1.0));
+	pBoneNode->LclScaling.Set(boneTransform.GetS());
 
 	FbxSkeleton* pBone = FbxSkeleton::Create(pScene, pRig->getBoneName(id));
 	pBone->SetSkeletonType(FbxSkeleton::eLimbNode);
