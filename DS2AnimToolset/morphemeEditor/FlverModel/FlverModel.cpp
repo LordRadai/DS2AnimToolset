@@ -233,18 +233,16 @@ namespace
 
 	void applyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix> bindPose, Matrix transform, int boneID)
 	{
-		//Transform the bone
+		// Transform the bone
 		buffer[boneID] = bindPose[boneID] * transform;
 
-		int siblingIndex = flv->bones[boneID].nextSiblingIndex;
-
-		//Transforms all the children of the current bone
+		// Transforms all the children of the current bone
 		int childIndex = flv->bones[boneID].childIndex;
 
 		if (childIndex != -1)
 		{
 			buffer[childIndex] = bindPose[childIndex] * transform;
-			siblingIndex = flv->bones[childIndex].nextSiblingIndex;
+			int siblingIndex = flv->bones[childIndex].nextSiblingIndex;
 
 			while (siblingIndex != -1)
 			{
@@ -1106,30 +1104,31 @@ void FlverModel::animate(MR::AnimationSourceHandle* animHandle)
 	this->m_morphemeBoneTransforms = this->m_morphemeBoneBindPoseTransforms;
 	this->m_verts = this->m_vertBindPose;
 
-	const int flverTrajectoryBone = this->getFlverBoneIndexByMorphemeBoneIndex(animHandle->getRig()->getTrajectoryBoneIndex());
-
 	if (animHandle)
 	{
+		// Compute animation global transforms
 		for (uint32_t i = 0; i < this->m_nmRig->getNumBones(); i++)
 			this->m_morphemeBoneTransforms[i] = computeNmBoneGlobalTransform(animHandle, i);
 
+		// Apply root motion
 		this->m_position = getNmTrajectoryTransform(animHandle) * Matrix::CreateRotationY(DirectX::XM_PI);
 
+		// Apply the morpheme rig transforms to the flver skeleton
 		for (uint32_t i = 0; i < this->m_flver->header.boneCount; i++)
 		{
-			int morphemeBoneIdx = this->m_flverToMorphemeBoneMap[i];
+			const int morphemeBoneID = this->m_flverToMorphemeBoneMap[i];
 
-			if (morphemeBoneIdx != -1)
+			if (morphemeBoneID != -1)
 			{
-				//Take the morpheme animation transform relative to the morpheme bind pose, mirror it on the ZY plane, and then apply them to the flver bind pose. Propagate to all children of the current bone
-				Matrix morphemeRelativeTransform = (this->m_morphemeBoneBindPoseTransforms[morphemeBoneIdx].Invert() * this->m_morphemeBoneTransforms[morphemeBoneIdx]);
+				// Take the morpheme animation transform relative to the morpheme bind pose, align it to the flver bind pose, and then apply it to the flver bind pose.
+				Matrix morphemeRelativeTransform = (this->m_morphemeBoneBindPoseTransforms[morphemeBoneID].Invert() * this->m_morphemeBoneTransforms[morphemeBoneID]);
 
 				applyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPoseTransforms, (Matrix::CreateReflection(Plane(Vector3::Right)) * Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
 			}
 		}
 	}
 
-	//Compute the relative transform to the flver bind pose. This will be used to transform model meshes in the skinning process
+	// Compute the bone transform relative to it's bind pose transform
 	std::vector<Matrix> boneRelativeTransforms;
 	boneRelativeTransforms.reserve(this->m_flver->header.boneCount);
 
@@ -1150,7 +1149,8 @@ void FlverModel::animate(MR::AnimationSourceHandle* animHandle)
 			{
 				int boneID = indices[wt];
 
-				if ((boneID < 0) || (boneID >= boneRelativeTransforms.size()))
+				// Skip weighting for bones outside of range, or that are invalid
+				if ((boneID == -1) || (boneID >= boneRelativeTransforms.size()))
 					continue;
 
 				newPos += Vector3::Transform(this->m_vertBindPose[meshIdx][vertexIndex].vertexData.position, boneRelativeTransforms[boneID]) * weights[wt];
