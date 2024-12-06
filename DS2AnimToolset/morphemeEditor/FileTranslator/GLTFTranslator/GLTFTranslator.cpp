@@ -194,13 +194,12 @@ namespace
 
     tinygltf::Node* getGltfNodeByName(tinygltf::Model* gltf, std::string name)
     {
-        for (size_t i = 0; i < gltf->nodes.size(); i++)
-        {
-            if (gltf->nodes[i].name == name)
-                return &gltf->nodes[i];
-        }
+        const int nodeIdx = getGltfNodeIndexByName(gltf, name);
 
-        return nullptr;
+        if (nodeIdx == -1)
+            return nullptr;
+        
+        return &gltf->nodes[nodeIdx];
     }
 
     int addBoneInfluence(std::vector<int>& jointArray, int boneID)
