@@ -7,9 +7,10 @@
 
 namespace
 {
-    tinygltf::BufferView* createBufferView(tinygltf::Model* gltf, int targetBuffer, size_t byteOffset, size_t byteLength, int target)
+    tinygltf::BufferView* createBufferView(tinygltf::Model* gltf, std::string name, int targetBuffer, size_t byteOffset, size_t byteLength, int target)
     {
         tinygltf::BufferView bufferView;
+        bufferView.name = name;
         bufferView.buffer = targetBuffer;
         bufferView.byteOffset = byteOffset;
         bufferView.byteLength = byteLength;
@@ -19,9 +20,10 @@ namespace
         return &gltf->bufferViews.back();
     }
 
-    tinygltf::Accessor* createAccessor(tinygltf::Model* gltf, int targetBufferView, size_t byteOffset, int componentType, int type, int count)
+    tinygltf::Accessor* createAccessor(tinygltf::Model* gltf, std::string name, int targetBufferView, size_t byteOffset, int componentType, int type, int count)
     {
         tinygltf::Accessor accessor;
+        accessor.name = name;
         accessor.bufferView = targetBufferView;
         accessor.byteOffset = byteOffset;
         accessor.componentType = componentType;
@@ -124,9 +126,9 @@ namespace
         gltf->buffers.push_back(buffer);
 
         // Create buffer views for position, normals, and indices
-        createBufferView(gltf, 0, 0, vertices.size() * sizeof(float), TINYGLTF_TARGET_ARRAY_BUFFER);
-        createBufferView(gltf, 1, vertices.size() * sizeof(float), normals.size() * sizeof(float), TINYGLTF_TARGET_ARRAY_BUFFER);
-        createBufferView(gltf, 2, normals.size() * sizeof(float), indices.size() * sizeof(unsigned int), TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
+        createBufferView(gltf, "VertexBufferView", 0, 0, vertices.size() * sizeof(float), TINYGLTF_TARGET_ARRAY_BUFFER);
+        createBufferView(gltf, "NormalsBufferView", 1, vertices.size() * sizeof(float), normals.size() * sizeof(float), TINYGLTF_TARGET_ARRAY_BUFFER);
+        createBufferView(gltf, "IndexBufferView", 2, normals.size() * sizeof(float), indices.size() * sizeof(unsigned int), TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
 
         // Create a mesh object
         tinygltf::Primitive primitive;
@@ -202,13 +204,15 @@ namespace
         return &gltf->nodes[nodeIdx];
     }
 
-    int addBoneInfluence(std::vector<int>& jointArray, int boneID)
+    int addBoneInfluence(std::vector<int>& jointArray, std::vector<Matrix>& ibm, FlverModel* model, int boneID)
     {
         for (size_t i = 0; i < jointArray.size(); i++)
         {
             if (boneID == jointArray[i])
                 return i;
         }
+
+        ibm.push_back(model->getMorphemeBoneBindPoseGlobalTransform(boneID)->Invert());
 
         jointArray.push_back(boneID);
         return jointArray.size() - 1;
@@ -234,9 +238,10 @@ namespace
         }
     }
 
-    void getSkinnedVertices(tinygltf::Model* gltf, std::vector<int>& jointArray, std::vector<Vector4>& weights, std::vector<JointIndicesVec>& indices, FlverModel* model, int meshIndex)
+    void getSkinnedVertices(tinygltf::Model* gltf, std::vector<Matrix>& ibm, std::vector<int>& jointArray, std::vector<Vector4>& weights, std::vector<JointIndicesVec>& indices, FlverModel* model, int meshIndex)
     {
         // Make sure the input is empty before adding anything
+        ibm.clear();
         jointArray.clear();
         weights.clear();
         indices.clear();
@@ -253,6 +258,8 @@ namespace
                 jointWeights[i] /= totalWeight;
         }
 
+        const MR::AnimRigDef* rig = model->getRig();
+
         // Convert flver bone indices to morpheme bone indices
         for (size_t i = 0; i < jointIndices.size(); i++)
         {
@@ -268,7 +275,7 @@ namespace
 
                     if (jointNode)
                     {
-                        const int influenceArrayIndex = addBoneInfluence(jointArray, morphemeBoneID);
+                        const int influenceArrayIndex = addBoneInfluence(jointArray, ibm, model, morphemeBoneID);
 
                         switch (j)
                         {
@@ -317,42 +324,37 @@ namespace
                 matrix.m[i][j] = clampValue(matrix.m[i][j]);
         }
     }
+
+    std::vector<Vector3> getMeshVertices(FlverModel* model, int meshIdx)
+    {
+        std::vector<Vector3> vertices = model->getFlverMeshVertices(meshIdx, true);
+
+        for (size_t i = 0; i < vertices.size(); i++)
+            vertices[i] = Vector3::Transform(vertices[i], Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateRotationX(DirectX::XM_PI));
+
+        return vertices;
+    }
+
+    std::vector<Vector3> getMeshNormals(FlverModel* model, int meshIdx)
+    {
+        std::vector<Vector3> normals = model->getFlverMeshNormals(meshIdx, true);
+
+        for (size_t i = 0; i < normals.size(); i++)
+            normals[i] = Vector3::Transform(normals[i], Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateRotationX(DirectX::XM_PI));
+
+        return normals;
+    }
 }
 
 namespace GLTFTranslator
 {
-    enum UpAxis
-    {
-        kUpX,
-        kUpY,
-        kUpZ
-    };
-
 	tinygltf::Model* createModel(MR::AnimRigDef* rig, FlverModel* model, bool includeMeshes)
 	{
 		tinygltf::Model* gltfModel = new tinygltf::Model;
 		gltfModel->asset.version = "2.0";
 		gltfModel->asset.generator = APPNAME_A;
 
-        Quaternion sceneRootRot = Quaternion::Identity;
-        UpAxis upAxis = kUpY;
-
-        switch (upAxis)
-        {
-        case GLTFTranslator::kUpX:
-            sceneRootRot = Quaternion::CreateFromAxisAngle(Vector3::Up, DirectX::XM_PIDIV2);
-            break;
-        case GLTFTranslator::kUpY:
-            sceneRootRot = Quaternion::Identity;
-            break;
-        case GLTFTranslator::kUpZ:
-            sceneRootRot = Quaternion::CreateFromAxisAngle(Vector3::Right, DirectX::XM_PIDIV2);
-            break;
-        default:
-            break;
-        }
-
-        addRootNode(gltfModel, "SceneRoot"/*, Quaternion::CreateFromAxisAngle(Vector3::Right, -DirectX::XM_PIDIV2)*/);
+        addRootNode(gltfModel, "SceneRoot");
 
         //Add all the bones
         for (size_t i = 1; i < rig->getNumBones(); i++)
@@ -384,8 +386,8 @@ namespace GLTFTranslator
 
     tinygltf::Mesh* createMesh(tinygltf::Model* gltf, FlverModel* model, int meshIndex)
     {
-        std::vector<Vector3> vertices = model->getFlverMeshVertices(meshIndex, true);
-        std::vector<Vector3> normals = model->getFlverMeshNormals(meshIndex, true);
+        std::vector<Vector3> vertices = getMeshVertices(model, meshIndex);
+        std::vector<Vector3> normals = getMeshNormals(model, meshIndex);
 
         Vector3 minBound, maxBound;
 
@@ -428,7 +430,8 @@ namespace GLTFTranslator
         std::vector<int> jointArray;
         std::vector<Vector4> jointWeights;
         std::vector<JointIndicesVec> jointIndices;
-        getSkinnedVertices(gltf, jointArray, jointWeights, jointIndices, model, meshIndex);
+        std::vector<Matrix> inverseBindMatrices;
+        getSkinnedVertices(gltf, inverseBindMatrices, jointArray, jointWeights, jointIndices, model, meshIndex);
 
         // Add joint indices to the buffer
         size_t jointDataSize = jointIndices.size() * sizeof(Vector4);
@@ -444,19 +447,6 @@ namespace GLTFTranslator
             reinterpret_cast<const unsigned char*>(jointWeights.data()),
             reinterpret_cast<const unsigned char*>(jointWeights.data() + jointWeights.size()));
 
-        // Prepare joints and inverse bind matrices
-        std::vector<Matrix> inverseBindMatrices; // Replace with your matrix type
-
-        const MR::AnimRigDef* rig = model->getRig();
-
-        // Skip the first bone because it's not a part of the actual morpheme rig, it's added by morpheme:connect
-        for (size_t i = 1; i < rig->getNumBones(); i++)
-        {
-            Matrix bindPoseTransform = *model->getMorphemeBoneBindPoseGlobalTransform(i);
-
-            inverseBindMatrices.push_back(bindPoseTransform.Invert());
-        }
-
         // Add inverse bind matrices to the buffer
         size_t inverseBindMatrixDataSize = inverseBindMatrices.size() * sizeof(Matrix);
         size_t inverseBindMatrixOffset = buffer.data.size();
@@ -467,40 +457,40 @@ namespace GLTFTranslator
         gltf->buffers.push_back(buffer);
 
         // Vertices
-        createBufferView(gltf, gltf->buffers.size() - 1, positionOffset, positionDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
-        tinygltf::Accessor* positionAccessor = createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, vertices.size());
+        createBufferView(gltf, "VertexBufferView_" + std::to_string(meshIndex), gltf->buffers.size() - 1, positionOffset, positionDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
+        tinygltf::Accessor* positionAccessor = createAccessor(gltf, "VertexBufAccessor_" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, vertices.size());
         positionAccessor->minValues = { minBound.x, minBound.y, minBound.z };
         positionAccessor->maxValues = { maxBound.x, maxBound.y, maxBound.z };
 
         const int positionDataIdx = gltf->accessors.size() - 1;
 
         // Normals
-        createBufferView(gltf, gltf->buffers.size() - 1, normalOffset, normalDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
-        createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, normals.size());
+        createBufferView(gltf, "NormalsBufferView_" + std::to_string(meshIndex), gltf->buffers.size() - 1, normalOffset, normalDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
+        createAccessor(gltf, "NormalsBufAccessor_" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, normals.size());
 
         const int normalsDataIdx = gltf->accessors.size() - 1;
 
         // Vertex indices
-        createBufferView(gltf, gltf->buffers.size() - 1, indexOffset, indexDataSize, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
-        createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_SCALAR, indices.size());
+        createBufferView(gltf, "IndexBufferView_" + std::to_string(meshIndex), gltf->buffers.size() - 1, indexOffset, indexDataSize, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
+        createAccessor(gltf, "IndexBufAccessor_" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_SCALAR, indices.size());
 
         const int indicesDataIdx = gltf->accessors.size() - 1;
 
         // Bone indices
-        createBufferView(gltf, gltf->buffers.size() - 1, jointOffset, jointDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
-        createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_VEC4, jointIndices.size());
+        createBufferView(gltf, "JointIndicesBufferView_" + std::to_string(meshIndex), gltf->buffers.size() - 1, jointOffset, jointDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
+        createAccessor(gltf, "JointIndicesBufAccessor_" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_VEC4, jointIndices.size());
 
         const int boneIndicesDataIdx = gltf->accessors.size() - 1;
 
         // Bone weights
-        createBufferView(gltf, gltf->buffers.size() - 1, weightOffset, weightDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
-        createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC4, jointWeights.size());
+        createBufferView(gltf, "JointWeightBufferView_" + std::to_string(meshIndex), gltf->buffers.size() - 1, weightOffset, weightDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
+        createAccessor(gltf, "JointWeightBufAccessor_" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC4, jointWeights.size());
 
         const int boneWeightsDataIdx = gltf->accessors.size() - 1;
 
         // IBM
-        createBufferView(gltf, gltf->buffers.size() - 1, inverseBindMatrixOffset, inverseBindMatrixDataSize, 0);
-        createAccessor(gltf, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_MAT4, inverseBindMatrices.size());
+        createBufferView(gltf, "IbmBufferView_" + std::to_string(meshIndex), gltf->buffers.size() - 1, inverseBindMatrixOffset, inverseBindMatrixDataSize, 0);
+        createAccessor(gltf, "IbmBufAccessor" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_MAT4, inverseBindMatrices.size());
         
         const int ibmDataIdx = gltf->accessors.size() - 1;
 
