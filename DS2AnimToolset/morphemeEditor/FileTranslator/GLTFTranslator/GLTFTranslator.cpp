@@ -330,7 +330,7 @@ namespace
         std::vector<Vector3> vertices = model->getFlverMeshVertices(meshIdx, true);
 
         for (size_t i = 0; i < vertices.size(); i++)
-            vertices[i] = Vector3::Transform(vertices[i], Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateRotationX(DirectX::XM_PI));
+            vertices[i] = Vector3::Transform(vertices[i], /*Matrix::CreateRotationZ(DirectX::XM_PI) **/ Matrix::CreateRotationX(DirectX::XM_PI));
 
         return vertices;
     }
@@ -340,7 +340,7 @@ namespace
         std::vector<Vector3> normals = model->getFlverMeshNormals(meshIdx, true);
 
         for (size_t i = 0; i < normals.size(); i++)
-            normals[i] = Vector3::Transform(normals[i], Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateRotationX(DirectX::XM_PI));
+            normals[i] = Vector3::Transform(normals[i], /*Matrix::CreateRotationZ(DirectX::XM_PI) **/ Matrix::CreateRotationX(DirectX::XM_PI));
 
         return normals;
     }
@@ -388,6 +388,9 @@ namespace GLTFTranslator
     {
         std::vector<Vector3> vertices = getMeshVertices(model, meshIndex);
         std::vector<Vector3> normals = getMeshNormals(model, meshIndex);
+
+        //std::vector<Vector3> vertices = model->getFlverMeshVertices(meshIndex, true);
+        //std::vector<Vector3> normals = model->getFlverMeshNormals(meshIndex, true);
 
         Vector3 minBound, maxBound;
 
