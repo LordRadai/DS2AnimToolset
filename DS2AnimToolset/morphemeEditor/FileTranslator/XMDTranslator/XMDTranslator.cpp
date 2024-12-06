@@ -580,7 +580,7 @@ namespace XMDTranslator
 
 				for (size_t j = 0; j < animLenFrames; j++)
 				{
-					float time = RMath::frameToTime(j, 30);
+					float time = RMath::frameToTime(j, fps);
 
 					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
 					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);

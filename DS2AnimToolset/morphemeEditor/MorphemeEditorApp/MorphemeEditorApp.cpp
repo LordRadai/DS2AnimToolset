@@ -544,7 +544,7 @@ namespace
 		return success;
 	}
 
-	bool exportAnimationToFbx(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool addModel)
+	bool exportAnimationToFbx(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool addModel = true)
 	{
 		bool status = true;
 
@@ -568,9 +568,7 @@ namespace
 		try
 		{
 			if (!pExporter->Initialize(outPath.c_str()), g_pFbxManager->GetIOPluginRegistry()->GetNativeWriterFormat(), g_pFbxManager->GetIOSettings())
-			{
 				return false;
-			}
 		}
 		catch (const std::exception& e)
 		{
@@ -656,7 +654,30 @@ namespace
 
 	bool exportAnimationToGltf(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps)
 	{
-		return false;
+		MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
+		AnimObject* anim = characterDef->getAnimation(animSetIdx, animIdx);
+		int animId = anim->getAnimID();
+
+		FlverModel* model = character->getCharacterModelCtrl()->getModel();
+		MR::AnimRigDef* rig = character->getRig(0);
+
+		tinygltf::Model* gltfModel = GLTFTranslator::createModel(rig, model, true);
+		GLTFTranslator::createAnimation(gltfModel, anim, fps);
+
+		tinygltf::Scene scene;
+		scene.nodes.push_back(0); // Root node of the model
+
+		gltfModel->scenes.push_back(scene);
+		gltfModel->defaultScene = 0;
+
+		std::string outPath = RString::toNarrow(path) + RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId)) + ".gltf";
+
+		tinygltf::TinyGLTF gltfWriter;
+		bool success = gltfWriter.WriteGltfSceneToFile(gltfModel, outPath, false, true, true, false);
+
+		delete gltfModel;
+
+		return success;
 	}
 
 	void addEventGroupToTimeActTrack(TimeAct::TimeActTrack* dst, TimeAct::TaeExport::TimeActGroupExportXML* groupXML)
@@ -1205,8 +1226,8 @@ void MorphemeEditorApp::update(float dt)
 
 	if (this->m_camera)
 	{
-		int width = RenderManager::getInstance()->getWidth();
-		int height = RenderManager::getInstance()->getHeight();
+		const int width = RenderManager::getInstance()->getWidth();
+		const int height = RenderManager::getInstance()->getHeight();
 
 		this->m_camera->update(float(width), float(height), dt);
 
@@ -1937,10 +1958,13 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 	switch (this->m_exportSettings.exportFormat)
 	{
 	case kFbx:
-		animExportPath = L"FBX\\";
+		animExportPath = L"motion_fbx\\";
 		break;
 	case kXmd:
 		animExportPath = L"motion_xmd\\";
+		break;
+	case kGltf:
+		animExportPath = L"motion_gltf\\";
 		break;
 	default:
 		break;
@@ -2147,7 +2171,7 @@ bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
 
 bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int animId)
 {
-	const int fps = 30;
+	constexpr int fps = 30;
 
 	switch (this->m_exportSettings.exportFormat)
 	{

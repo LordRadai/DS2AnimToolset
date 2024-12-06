@@ -552,4 +552,113 @@ namespace GLTFTranslator
 
         return &gltf->nodes.back();
     }
+
+    tinygltf::Animation* createAnimation(tinygltf::Model* gltf, AnimObject* animObj, int fps)
+    {
+        const MR::AnimationSourceHandle* animHandle = animObj->getHandle();
+        const MR::AnimRigDef* rig = animHandle->getRig();
+
+        tinygltf::Buffer buffer;
+
+        const int numKeyframes = fps * animHandle->getDuration();
+
+        std::vector<float> timeData;
+        timeData.reserve(numKeyframes);
+        for (size_t i = 0; i < numKeyframes; i++)
+            timeData.push_back(i / fps);
+
+        tinygltf::Animation animation;
+
+        for (uint32_t channelID = 1; channelID < rig->getNumBones(); channelID++)
+        {
+            std::vector<Vector3> translationData;
+            std::vector<Quaternion> rotationData;
+
+            for (uint32_t i = 0; i < numKeyframes; i++)
+            {
+                float animTime = RMath::frameToTime(i, fps);
+                animObj->setAnimTime(animTime);
+
+                Matrix transform = utils::NMDX::getTransformMatrix(animHandle->getChannelData()[channelID].m_quat, animHandle->getChannelData()[channelID].m_pos);
+                Vector3 position;
+                Quaternion rotation;
+                Vector3 scale;
+                transform.Decompose(scale, rotation, position);
+
+                translationData.push_back(position);
+                rotationData.push_back(rotation);
+            }
+
+            // Add time data to buffer
+            size_t timeOffset = buffer.data.size();
+            buffer.data.insert(buffer.data.end(),
+                reinterpret_cast<const unsigned char*>(timeData.data()),
+                reinterpret_cast<const unsigned char*>(timeData.data() + timeData.size()));
+
+            // Add translation data to buffer
+            size_t translationOffset = buffer.data.size();
+            buffer.data.insert(buffer.data.end(),
+                reinterpret_cast<const unsigned char*>(translationData.data()),
+                reinterpret_cast<const unsigned char*>(translationData.data() + translationData.size()));
+
+            // Add rotation data to buffer
+            size_t rotationOffset = buffer.data.size();
+            buffer.data.insert(buffer.data.end(),
+                reinterpret_cast<const unsigned char*>(rotationData.data()),
+                reinterpret_cast<const unsigned char*>(rotationData.data() + rotationData.size()));
+
+            gltf->buffers.push_back(buffer);
+            createBufferView(gltf, "TimeData_" + std::to_string(channelID), gltf->buffers.size() - 1, timeOffset, timeData.size() * sizeof(float), 0);
+            createAccessor(gltf, "TimeDataAccessor_" + std::to_string(channelID), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_SCALAR, static_cast<unsigned int>(timeData.size()));
+            
+            const int animTimeAccessorIdx = gltf->accessors.size() - 1;
+
+            createBufferView(gltf, "TranslationData_" + std::to_string(channelID), gltf->buffers.size() - 1, translationOffset, translationData.size() * sizeof(Vector3), 0);
+            createAccessor(gltf, "TranslationDataAccessor_" + std::to_string(channelID), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, static_cast<unsigned int>(translationData.size()));
+
+            const int translationDataAccessorIdx = gltf->accessors.size() - 1;
+
+            createBufferView(gltf, "RotationData_" + std::to_string(channelID), gltf->buffers.size() - 1, rotationOffset, rotationData.size() * sizeof(Quaternion), 0);
+            createAccessor(gltf, "RotationDataAccessor_" + std::to_string(channelID), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC4, static_cast<unsigned int>(rotationData.size()));
+
+            const int rotationDataAccessorIdx = gltf->accessors.size() - 1;
+
+            // Create samplers for translation and rotation
+            tinygltf::AnimationSampler translationSampler;
+            translationSampler.input = animTimeAccessorIdx;
+            translationSampler.output = translationDataAccessorIdx;
+            translationSampler.interpolation = "LINEAR";
+
+            tinygltf::AnimationSampler rotationSampler;
+            rotationSampler.input = animTimeAccessorIdx;
+            rotationSampler.output = rotationDataAccessorIdx;
+            rotationSampler.interpolation = "LINEAR";
+
+            // Create animation channels
+            tinygltf::AnimationChannel translationChannel;
+            translationChannel.sampler = 0;
+            translationChannel.target_node = 0;
+            translationChannel.target_path = "translation";
+
+            tinygltf::AnimationChannel rotationChannel;
+            rotationChannel.sampler = 1;
+            rotationChannel.target_node = 0;
+            rotationChannel.target_path = "rotation";
+
+            // Create animation
+            animation.samplers.push_back(translationSampler);
+            animation.samplers.push_back(rotationSampler);
+            animation.channels.push_back(translationChannel);
+            animation.channels.push_back(rotationChannel);
+        }
+
+        gltf->animations.push_back(animation);
+
+        // Create a node
+        tinygltf::Node node;
+        node.name = "AnimatedNode_";
+        gltf->nodes.push_back(node);
+
+        return &gltf->animations.back();
+    }
 }

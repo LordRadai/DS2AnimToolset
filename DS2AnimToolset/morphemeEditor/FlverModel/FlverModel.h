@@ -53,6 +53,9 @@ public:
 
 	static FlverModel* createFromBnd(std::wstring path, MR::AnimRigDef* rig);
 
+	void update(float dt);
+	void animate(MR::AnimationSourceHandle* animHandle);
+	void draw(RenderManager* renderManager);
 	void destroy();
 
 	std::string getModelName() const { return this->m_name; }
@@ -65,8 +68,8 @@ public:
 
 	Matrix getWorldMatrix() const { return this->m_position * Matrix::CreateScale(this->m_scale); }
 
-	int getNumMeshes() const { return this->m_verts.size(); }
-	int getNumVerticesInMesh(int meshIdx) const { return this->m_verts[meshIdx].size(); }
+	int getNumMeshes() const { return this->m_meshVerticesTransforms.size(); }
+	int getNumVerticesInMesh(int meshIdx) const { return this->m_meshVerticesTransforms[meshIdx].size(); }
 
 	std::vector<int> getFlverToMorphemeBoneMap() const { return this->m_flverToMorphemeBoneMap; }
 	std::vector<int> getMorphemeToFlverBoneMap() const { return this->m_morphemeToFlverBoneMap; }
@@ -76,15 +79,10 @@ public:
 	SkinnedVertex* getVertex(int meshIdx, int idx);
 	SkinnedVertex* getVertexBindPose(int meshIdx, int idx);
 
-	void update(float dt);
-	void draw(RenderManager* renderManager);
-
 	int getMorphemeBoneIdByFlverBoneId(int idx);
 	int getFlverBoneIndexByMorphemeBoneIndex(int idx);
 
 	Matrix getDummyPolygonTransform(int id);
-
-	void animate(MR::AnimationSourceHandle* animHandle);
 
 	// FLVER functions
 
@@ -145,12 +143,14 @@ private:
 	MR::AnimRigDef* m_nmRig = nullptr;
 	std::vector<int> m_flverToMorphemeBoneMap;
 	std::vector<int> m_morphemeToFlverBoneMap;
-	std::vector<std::vector<SkinnedVertex>> m_verts;
-	std::vector<std::vector<SkinnedVertex>> m_vertBindPose;
+	std::vector<std::vector<SkinnedVertex>> m_meshVerticesTransforms;
+	std::vector<std::vector<SkinnedVertex>> m_meshVerticesBindPoseTransforms;
 	std::vector<Matrix> m_boneTransforms;
 	std::vector<Matrix> m_boneBindPoseTransforms;
+	std::vector<Matrix> m_boneInverseBindPoseTransforms;
 	std::vector<Matrix> m_morphemeBoneTransforms;
 	std::vector<Matrix> m_morphemeBoneBindPoseTransforms;
+	std::vector<Matrix> m_morphemeInverseBoneBindPoseTransforms;
 	std::vector<Matrix> m_dummyPolygons;
 	float m_scale = 1.5f;
 

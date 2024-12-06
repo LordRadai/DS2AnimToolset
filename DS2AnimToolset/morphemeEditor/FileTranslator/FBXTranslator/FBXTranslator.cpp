@@ -15,126 +15,126 @@ namespace
 	{
 		return FbxVector4(vec.x, vec.y, vec.z, vec.w);
 	}
-}
 
-//Converts a DirectX::XMMATRIX to an FbxAMatrix
-FbxAMatrix CreateFbxMatrixFromDXMatrix(DirectX::XMMATRIX m)
-{
-	FbxAMatrix fbxMatrix;
+	//Converts a DirectX::XMMATRIX to an FbxAMatrix
+	FbxAMatrix createFbxMatrixFromDXMatrix(DirectX::XMMATRIX m)
+	{
+		FbxAMatrix fbxMatrix;
 
-	fbxMatrix.mData[0][0] = m.r[0].m128_f32[0]; fbxMatrix.mData[0][1] = m.r[0].m128_f32[1]; fbxMatrix.mData[0][2] = m.r[0].m128_f32[2]; fbxMatrix.mData[0][3] = m.r[0].m128_f32[3];
-	fbxMatrix.mData[1][0] = m.r[1].m128_f32[0]; fbxMatrix.mData[1][1] = m.r[1].m128_f32[1]; fbxMatrix.mData[1][2] = m.r[1].m128_f32[2]; fbxMatrix.mData[1][3] = m.r[1].m128_f32[3];
-	fbxMatrix.mData[2][0] = m.r[2].m128_f32[0]; fbxMatrix.mData[2][1] = m.r[2].m128_f32[1]; fbxMatrix.mData[2][2] = m.r[2].m128_f32[2]; fbxMatrix.mData[2][3] = m.r[2].m128_f32[3];
-	fbxMatrix.mData[3][0] = m.r[3].m128_f32[0]; fbxMatrix.mData[3][1] = m.r[3].m128_f32[1]; fbxMatrix.mData[3][2] = m.r[3].m128_f32[2]; fbxMatrix.mData[3][3] = m.r[3].m128_f32[3];
+		fbxMatrix.mData[0][0] = m.r[0].m128_f32[0]; fbxMatrix.mData[0][1] = m.r[0].m128_f32[1]; fbxMatrix.mData[0][2] = m.r[0].m128_f32[2]; fbxMatrix.mData[0][3] = m.r[0].m128_f32[3];
+		fbxMatrix.mData[1][0] = m.r[1].m128_f32[0]; fbxMatrix.mData[1][1] = m.r[1].m128_f32[1]; fbxMatrix.mData[1][2] = m.r[1].m128_f32[2]; fbxMatrix.mData[1][3] = m.r[1].m128_f32[3];
+		fbxMatrix.mData[2][0] = m.r[2].m128_f32[0]; fbxMatrix.mData[2][1] = m.r[2].m128_f32[1]; fbxMatrix.mData[2][2] = m.r[2].m128_f32[2]; fbxMatrix.mData[2][3] = m.r[2].m128_f32[3];
+		fbxMatrix.mData[3][0] = m.r[3].m128_f32[0]; fbxMatrix.mData[3][1] = m.r[3].m128_f32[1]; fbxMatrix.mData[3][2] = m.r[3].m128_f32[2]; fbxMatrix.mData[3][3] = m.r[3].m128_f32[3];
 
-	return fbxMatrix;
-}
-
-//Converts an FbxMatrix into an FbxAMatrix
-FbxAMatrix ConvertFbxMatrixToAMatrix(FbxMatrix m)
-{
-	FbxVector4 translation, rotation, scale, shearing;
-	double sign;
-
-	m.GetElements(translation, rotation, shearing, scale, sign);
-
-	FbxAMatrix fbxAMatrix;
-
-	fbxAMatrix.SetTRS(translation, rotation, scale);
-
-	return fbxAMatrix;
-}
-
-//Gets FLVER bone local transform
-FbxAMatrix GetBoneLocalTransform(cfr::FLVER2::Bone bone)
-{
-	DirectX::XMMATRIX world = DirectX::XMMatrixScaling(bone.scale.x, bone.scale.y, bone.scale.z);
-	world *= DirectX::XMMatrixRotationX(bone.rot.x);
-	world *= DirectX::XMMatrixRotationZ(bone.rot.z);
-	world *= DirectX::XMMatrixRotationY(bone.rot.y);
-	world *= DirectX::XMMatrixTranslation(bone.translation.x, bone.translation.y, bone.translation.z);
-
-	return CreateFbxMatrixFromDXMatrix(world);
-}
-
-FbxNode* CreateFlverBoneNode(FbxScene* pScene, FbxPose* pBindPoses, cfr::FLVER2::Bone bone, int id)
-{
-	FbxNode* pBoneNode = FbxNode::Create(pScene, RString::toNarrow(bone.name).c_str());
-
-	FbxAMatrix boneTransform = GetBoneLocalTransform(bone);
-
-	pBoneNode->LclTranslation.Set(boneTransform.GetT());
-	pBoneNode->LclRotation.Set(boneTransform.GetR());
-	pBoneNode->LclScaling.Set(boneTransform.GetS());
-
-	FbxSkeleton* pBone = FbxSkeleton::Create(pScene, RString::toNarrow(bone.name).c_str());
-	pBone->SetSkeletonType(FbxSkeleton::eLimbNode);
-	pBone->Color.Set(FbxDouble3(0, 0.769, 0.769));
-	pBone->LimbLength = 0.1;
-
-	pBoneNode->SetNodeAttribute(pBone);
-	pBindPoses->Add(pBoneNode, boneTransform);
-
-	return pBoneNode;
-}
-
-FbxNode* CreateMorphemeBoneNode(FbxScene* pScene, FbxPose* pBindPoses, MR::AnimRigDef* pRig, int id)
-{
-	FbxNode* pBoneNode = FbxNode::Create(pScene, pRig->getBoneName(id));
-
-	Matrix bonePose = utils::NMDX::getTransformMatrix(*pRig->getBindPoseBoneQuat(id), *pRig->getBindPoseBonePos(id));
-	FbxAMatrix boneTransform = CreateFbxMatrixFromDXMatrix(bonePose);
-
-	pBoneNode->LclTranslation.Set(boneTransform.GetT());
-	pBoneNode->LclRotation.Set(boneTransform.GetR());
-	pBoneNode->LclScaling.Set(boneTransform.GetS());
-
-	FbxSkeleton* pBone = FbxSkeleton::Create(pScene, pRig->getBoneName(id));
-	pBone->SetSkeletonType(FbxSkeleton::eLimbNode);
-	pBone->Color.Set(FbxDouble3(1.0, 0.66, 0.0));
-	pBone->LimbLength = 0.1;
-
-	pBoneNode->SetNodeAttribute(pBone);
-	pBindPoses->Add(pBoneNode, boneTransform);
-
-	return pBoneNode;
-}
-
-//Creates an FbxNode* object called Skeleton and rotates it by 180 degrees
-FbxNode* CreateDummyRootBoneNode(FbxScene* pScene)
-{
-	FbxNode* pBoneNode = FbxNode::Create(pScene, "Skeleton");
-
-	pBoneNode->LclTranslation.Set(FbxVector4(0.0, 0.0, 0.0));
-	pBoneNode->LclRotation.Set(FbxVector4(0.0, 180.0, 0.0));
-	pBoneNode->LclScaling.Set(FbxVector4(1.0, 1.0, 1.0));
-
-	FbxSkeleton* pBone = FbxSkeleton::Create(pScene, "Skeleton");
-	pBone->SetSkeletonType(FbxSkeleton::eRoot);
-	pBone->Color.Set(FbxDouble3(0, 0.769, 0.769));
-	pBone->LimbLength = 0.1;
-
-	pBoneNode->SetNodeAttribute(pBone);
-
-	return pBoneNode;
-}
-
-inline double GetTimeByAnimFrame(float animLenght, float fps, int frameNum)
-{
-	return (animLenght / fps) * frameNum;
-}
-
-FbxAMatrix ConvertToFbxAMatrix(const DirectX::SimpleMath::Matrix& dxMatrix)
-{
-	FbxAMatrix fbxMatrix;
-
-	for (int i = 0; i < 4; ++i) {
-		for (int j = 0; j < 4; ++j) {
-			fbxMatrix[i][j] = dxMatrix.m[i][j];
-		}
+		return fbxMatrix;
 	}
 
-	return fbxMatrix;
+	//Converts an FbxMatrix into an FbxAMatrix
+	FbxAMatrix convertFbxMatrixToAMatrix(FbxMatrix m)
+	{
+		FbxVector4 translation, rotation, scale, shearing;
+		double sign;
+
+		m.GetElements(translation, rotation, shearing, scale, sign);
+
+		FbxAMatrix fbxAMatrix;
+
+		fbxAMatrix.SetTRS(translation, rotation, scale);
+
+		return fbxAMatrix;
+	}
+
+	//Gets FLVER bone local transform
+	FbxAMatrix getBoneLocalTransform(cfr::FLVER2::Bone bone)
+	{
+		DirectX::XMMATRIX world = DirectX::XMMatrixScaling(bone.scale.x, bone.scale.y, bone.scale.z);
+		world *= DirectX::XMMatrixRotationX(bone.rot.x);
+		world *= DirectX::XMMatrixRotationZ(bone.rot.z);
+		world *= DirectX::XMMatrixRotationY(bone.rot.y);
+		world *= DirectX::XMMatrixTranslation(bone.translation.x, bone.translation.y, bone.translation.z);
+
+		return createFbxMatrixFromDXMatrix(world);
+	}
+
+	FbxNode* createFlverBoneNode(FbxScene* pScene, FbxPose* pBindPoses, cfr::FLVER2::Bone bone, int id)
+	{
+		FbxNode* pBoneNode = FbxNode::Create(pScene, RString::toNarrow(bone.name).c_str());
+
+		FbxAMatrix boneTransform = getBoneLocalTransform(bone);
+
+		pBoneNode->LclTranslation.Set(boneTransform.GetT());
+		pBoneNode->LclRotation.Set(boneTransform.GetR());
+		pBoneNode->LclScaling.Set(boneTransform.GetS());
+
+		FbxSkeleton* pBone = FbxSkeleton::Create(pScene, RString::toNarrow(bone.name).c_str());
+		pBone->SetSkeletonType(FbxSkeleton::eLimbNode);
+		pBone->Color.Set(FbxDouble3(0, 0.769, 0.769));
+		pBone->LimbLength = 0.1;
+
+		pBoneNode->SetNodeAttribute(pBone);
+		pBindPoses->Add(pBoneNode, boneTransform);
+
+		return pBoneNode;
+	}
+
+	FbxNode* createMorphemeBoneNode(FbxScene* pScene, FbxPose* pBindPoses, MR::AnimRigDef* pRig, int id)
+	{
+		FbxNode* pBoneNode = FbxNode::Create(pScene, pRig->getBoneName(id));
+
+		Matrix bonePose = utils::NMDX::getTransformMatrix(*pRig->getBindPoseBoneQuat(id), *pRig->getBindPoseBonePos(id));
+		FbxAMatrix boneTransform = createFbxMatrixFromDXMatrix(bonePose);
+
+		pBoneNode->LclTranslation.Set(boneTransform.GetT());
+		pBoneNode->LclRotation.Set(boneTransform.GetR());
+		pBoneNode->LclScaling.Set(boneTransform.GetS());
+
+		FbxSkeleton* pBone = FbxSkeleton::Create(pScene, pRig->getBoneName(id));
+		pBone->SetSkeletonType(FbxSkeleton::eLimbNode);
+		pBone->Color.Set(FbxDouble3(1.0, 0.66, 0.0));
+		pBone->LimbLength = 0.1;
+
+		pBoneNode->SetNodeAttribute(pBone);
+		pBindPoses->Add(pBoneNode, boneTransform);
+
+		return pBoneNode;
+	}
+
+	//Creates an FbxNode* object called Skeleton and rotates it by 180 degrees
+	FbxNode* createDummyRootBoneNode(FbxScene* pScene)
+	{
+		FbxNode* pBoneNode = FbxNode::Create(pScene, "Skeleton");
+
+		pBoneNode->LclTranslation.Set(FbxVector4(0.0, 0.0, 0.0));
+		pBoneNode->LclRotation.Set(FbxVector4(0.0, 180.0, 0.0));
+		pBoneNode->LclScaling.Set(FbxVector4(1.0, 1.0, 1.0));
+
+		FbxSkeleton* pBone = FbxSkeleton::Create(pScene, "Skeleton");
+		pBone->SetSkeletonType(FbxSkeleton::eRoot);
+		pBone->Color.Set(FbxDouble3(0, 0.769, 0.769));
+		pBone->LimbLength = 0.1;
+
+		pBoneNode->SetNodeAttribute(pBone);
+
+		return pBoneNode;
+	}
+
+	inline double getTimeByAnimFrame(float animLenght, float fps, int frameNum)
+	{
+		return (animLenght / fps) * frameNum;
+	}
+
+	FbxAMatrix convertToFbxAMatrix(const DirectX::SimpleMath::Matrix& dxMatrix)
+	{
+		FbxAMatrix fbxMatrix;
+
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				fbxMatrix[i][j] = dxMatrix.m[i][j];
+			}
+		}
+
+		return fbxMatrix;
+	}
 }
 
 //Creates an FbxNode object containing vertices, normals and bone weights
@@ -257,7 +257,7 @@ FbxNode* FBXTranslator::createModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	FbxMesh* pMesh = FbxMesh::Create(pScene, std::string(mesh_node_name + "_mesh").c_str());
 	pMesh->CreateLayer();
 
-	//Add vertices
+	// Add vertices
 	std::vector<Vector3> vertices = pFlverModel->getFlverMeshVertices(idx, true);
 
 	pMesh->InitControlPoints(vertices.size());
@@ -265,7 +265,7 @@ FbxNode* FBXTranslator::createModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	for (int i = 0; i < vertices.size(); i++)
 		pMesh->SetControlPointAt(getFbxVector4(vertices[i]), i);
 
-	//Add normals
+	// Add normals
 	std::vector<Vector3> normals = pFlverModel->getFlverMeshNormals(idx, true);
 
 	FbxLayerElementNormal* pLayerNormal = (FbxLayerElementNormal*)pMesh->GetLayer(0)->CreateLayerElementOfType(FbxLayerElement::eNormal);
@@ -275,7 +275,7 @@ FbxNode* FBXTranslator::createModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 	for (int i = 0; i < normals.size(); i++)
 		pLayerNormal->GetDirectArray().Add(getFbxVector4(normals[i]));
 
-	//Create polygons
+	// Create polygons
 	for (int i = 0; i < vertices.size(); i += 3)
 	{
 		pMesh->BeginPolygon();
@@ -324,7 +324,7 @@ FbxNode* FBXTranslator::createModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 				{
 					int boneID = flverToMorphemeBoneMap[indices[wt]];
 
-					if (boneID == boneIndex)
+					if ((boneID != -1) && (boneID == boneIndex))
 					{
 						switch (wt)
 						{
@@ -341,7 +341,7 @@ FbxNode* FBXTranslator::createModelFbxMesh(FbxScene* pScene, FlverModel* pFlverM
 							pCluster->AddControlPointIndex(vertexIndex, weights.w);
 							break;
 						}
-					}
+					}				
 				}
 			}
 
@@ -367,7 +367,7 @@ std::vector<FbxNode*> FBXTranslator::createFbxFlverSkeleton(FbxScene* pScene, Fl
 	{
 		cfr::FLVER2::Bone bone = pFlverModel->getFlverBone(i);
 
-		boneNodes.push_back(CreateFlverBoneNode(pScene, pBindPoses, bone, i));
+		boneNodes.push_back(createFlverBoneNode(pScene, pBindPoses, bone, i));
 	}
 
 	for (int i = 0; i < pFlverModel->getNumFlverBones(); i++)
@@ -390,7 +390,7 @@ std::vector<FbxNode*> FBXTranslator::createFbxMorphemeSkeleton(FbxScene* pScene,
 
 	for (int i = 0; i < pRig->getNumBones(); i++)
 	{
-		FbxNode* pMorphemeBoneNode = CreateMorphemeBoneNode(pScene, pBindPoses, pRig, i);
+		FbxNode* pMorphemeBoneNode = createMorphemeBoneNode(pScene, pBindPoses, pRig, i);
 
 		pMorphemeBoneList.push_back(pMorphemeBoneNode);
 	}
@@ -477,14 +477,14 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 		{
 			int keyIndex;
 
-			float animTime = GetTimeByAnimFrame(animDuration, fps, frame);
+			float animTime = getTimeByAnimFrame(animDuration, fps, frame);
 
-			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
+			FbxAMatrix transform = convertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
 
 			if (boneIndex == rootBoneIndex)
 			{
 				const int parentIdx = pAnim->getHandle()->getRig()->getParentBoneIndex(rootBoneIndex);
-				transform *= ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, parentIdx) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
+				transform *= convertToFbxAMatrix(pAnim->getTransformAtTime(animTime, parentIdx) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
 			}
 
 			FbxTime keyTime;
@@ -543,6 +543,7 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 	if (animHandle == nullptr)
 		return false;
 
+	const MR::AnimRigDef* rig = animHandle->getRig();
 	MR::AnimSourceNSA* animSourceNSA = (MR::AnimSourceNSA*)animHandle->getAnimation();
 
 	if (animSourceNSA->getType() != ANIM_TYPE_NSA)
@@ -569,11 +570,11 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 	FbxTimeSpan timeSpan = FbxTimeSpan(start, end);
 	pAnimStack->SetLocalTimeSpan(timeSpan);
 
-	int keyframeCount = fps * animDuration;
-	int boneCount = animHandle->getChannelCount();
+	const int keyframeCount = fps * animDuration;
+	const int boneCount = rig->getNumBones();
 
-	const int trajectoryBoneIndex = animHandle->getRig()->getTrajectoryBoneIndex();
-	const int rootBoneIndex = animHandle->getRig()->getCharacterRootBoneIndex();
+	const int trajectoryBoneIndex = rig->getTrajectoryBoneIndex();
+	const int rootBoneIndex = rig->getCharacterRootBoneIndex();
 
 	for (int boneIndex = 1; boneIndex < boneCount; boneIndex++)
 	{
@@ -599,13 +600,13 @@ bool FBXTranslator::createFbxTake(FbxScene* pScene, std::vector<FbxNode*> pSkele
 		{
 			int keyIndex;
 
-			float animTime = GetTimeByAnimFrame(animDuration, fps, frame);
-			FbxAMatrix transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
+			const float animTime = getTimeByAnimFrame(animDuration, fps, frame);
+			FbxAMatrix transform = convertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex));
 
 			if (boneIndex == rootBoneIndex)
 			{
-				const int parentIdx = pAnim->getHandle()->getRig()->getParentBoneIndex(rootBoneIndex);
-				transform = ConvertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex) * pAnim->getTransformAtTime(animTime, parentIdx) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
+				const int parentIdx = rig->getParentBoneIndex(rootBoneIndex);
+				transform = convertToFbxAMatrix(pAnim->getTransformAtTime(animTime, boneIndex) * pAnim->getTransformAtTime(animTime, parentIdx) * pAnim->getTransformAtTime(animTime, trajectoryBoneIndex));
 			}
 
 			FbxTime keyTime;
