@@ -274,13 +274,13 @@ namespace XMDTranslator
 		XMD::XSkinCluster* skin = static_cast<XMD::XSkinCluster*>(xmd->CreateNode(XMD::XFn::SkinCluster));
 		MR::AnimRigDef* rig = model->getRig();
 
-		char clusterName[256];
-		sprintf_s(clusterName, "Skin");
+		char skinName[256];
+		sprintf_s(skinName, "mesh[%d]Skin", meshIdx);
 
 		XMD::XBoneList bones;
 		xmd->GetBones(bones);
 
-		skin->SetName(clusterName);
+		skin->SetName(skinName);
 
 		skin->SetEnvelopeWeight(1.f);
 		skin->AddAffected(mesh);

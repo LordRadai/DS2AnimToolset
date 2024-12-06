@@ -214,13 +214,17 @@ namespace
 
     void getSkinnedVertices(std::vector<Vector4>& weights, std::vector<JointIndicesVec>& indices, FlverModel* model, int meshIndex)
     {
+        // Make sure the input is empty before adding anything
+        weights.clear();
+        indices.clear();
+
         std::vector<std::vector<int>> jointIndices = model->getFlverMeshBoneIndices(meshIndex);
         std::vector<Vector4> jointWeights = model->getFlverMeshBoneWeights(meshIndex);
 
         // Normalize weights
         for (size_t i = 0; i < jointWeights.size(); i++)
         {
-            float totalWeight = jointWeights[i].x + jointWeights[i].y + jointWeights[i].z + jointWeights[i].w;
+            const float totalWeight = jointWeights[i].x + jointWeights[i].y + jointWeights[i].z + jointWeights[i].w;
 
             if (totalWeight > 0.0f)
                 jointWeights[i] /= totalWeight;
@@ -264,6 +268,7 @@ namespace
         }
     }
 
+    // Truncate value to specified tolerance value
     float clampValue(float value, float tolerance = 1e-4f) 
     {
         if (std::abs(value - 1.0f) < tolerance) 
@@ -409,7 +414,6 @@ namespace GLTFTranslator
             reinterpret_cast<const unsigned char*>(jointWeights.data() + jointWeights.size()));
 
         // Prepare joints and inverse bind matrices
-        std::vector<int> jointNodeIndices;
         std::vector<Matrix> inverseBindMatrices; // Replace with your matrix type
 
         const MR::AnimRigDef* rig = model->getRig();
@@ -477,7 +481,9 @@ namespace GLTFTranslator
         primitive.attributes["JOINTS_0"] = boneIndicesDataIdx;
         primitive.attributes["WEIGHTS_0"] = boneWeightsDataIdx;
 
-        for (int boneIndex = 0; boneIndex < rig->getNumBones(); ++boneIndex) 
+        std::vector<int> jointNodeIndices;
+        jointNodeIndices.reserve(rig->getNumBones());
+        for (uint32_t boneIndex = 0; boneIndex < rig->getNumBones(); ++boneIndex) 
         {
             int jointNodeIndex = getGltfNodeByName(gltf, rig->getBoneName(boneIndex));
 
