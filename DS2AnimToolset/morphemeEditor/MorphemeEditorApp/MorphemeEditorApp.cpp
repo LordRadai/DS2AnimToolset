@@ -1860,6 +1860,11 @@ bool MorphemeEditorApp::exportAndProcess(std::wstring path)
 {
 	bool status = true;
 
+	// Force the export format to XMD since we're invoking the assetCompiler, and that wants .xmd assets
+	ExportFormat formatBak = this->m_exportSettings.exportFormat;
+
+	this->m_exportSettings.exportFormat = kXmd;
+
 	g_workerThread.load()->addProcess("Exporting and processing assets", 3);
 	g_workerThread.load()->setProcessStepName("Exporting assets");
 
@@ -1888,6 +1893,9 @@ bool MorphemeEditorApp::exportAndProcess(std::wstring path)
 	}
 
 	g_workerThread.load()->increaseProgressStep();
+
+	// Restore the export format to it's previous value
+	this->m_exportSettings.exportFormat = formatBak;
 
 	return status;
 }
