@@ -187,6 +187,9 @@ namespace MD
 
 		inline float calculateBiasByIkParams(NMRU::IKJointParams* jointParams, int numJointParams)
 		{
+			if (numJointParams <= 1)
+				return 1.f;
+
 			const float ratio = 1.f / float(numJointParams - 1);
 
 			return jointParams[1].weight * (numJointParams / (2 * ratio));
@@ -238,7 +241,7 @@ namespace MD
 				sprintf_s(paramName, "EndEffectorOffsetZ_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(headLookChain->m_endEffectorOffset.z, paramName);
 
-				float bias = calculateBiasByIkParams(headLookChain->m_ikParams->perJointParams, headLookChain->m_numJoints + 1);
+				float bias = calculateBiasByIkParams(headLookChain->m_ikParams->perJointParams, headLookChain->m_numJoints);
 
 				sprintf_s(paramName, "Bias_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(bias, paramName);
