@@ -1644,163 +1644,177 @@ void MorphemeEditorApp::saveFile()
 
 bool MorphemeEditorApp::exportTimeAct(std::wstring path)
 {
-	if (this->m_character == nullptr)
-		return false;
+	try
+	{
+		if (this->m_character == nullptr)
+			return false;
 
-	std::filesystem::current_path(path);
+		std::filesystem::current_path(path);
 
-	TimeAct::TaeExport::TimeActExportXML* tae = this->m_character->getTimeAct();
+		TimeAct::TaeExport::TimeActExportXML* tae = this->m_character->getTimeAct();
 
-	if (tae == nullptr)
-		return false;
+		if (tae == nullptr)
+			return false;
 
-	wchar_t filename[256];
-	swprintf_s(filename, L"%ws_tae.xml", RString::toWide(tae->getName()).c_str());
+		wchar_t filename[256];
+		swprintf_s(filename, L"%ws_tae.xml", RString::toWide(tae->getName()).c_str());
 
-	tae->setDstFileName(RString::toNarrow(filename));
-	tae->save();
+		tae->setDstFileName(RString::toNarrow(filename));
+		tae->save();
 
-	std::filesystem::current_path(getExeRootDir());
+		std::filesystem::current_path(getExeRootDir());
 
-	return true;
+		return true;
+	}
+	catch (const std::exception& e)
+	{
+		g_appLog->panicMessage(e.what());
+	}
 }
 
 bool MorphemeEditorApp::exportNetwork(std::wstring path)
 {
-	if (this->m_character->getMorphemeCharacter() == nullptr)
-		return false;
-
-	std::filesystem::current_path(path);
-
-	MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
-	std::wstring chrName = this->m_character->getCharacterName();
-
-	if (characterDef == nullptr)
-		throw("characterDef was nullptr\n");
-
-	g_workerThread.load()->addProcess("Export morpheme bundles", 5);
-	g_workerThread.load()->setProcessStepName("Exporting character controllers");
-
-	std::vector<ME::CharacterControllerExportXML*> controllerExports;
-	controllerExports.reserve(characterDef->getNumCharacterControllers());
-
-	g_workerThread.load()->addProcess("Export character controllers", characterDef->getNumCharacterControllers());
-
-	for (size_t i = 0; i < characterDef->getNumCharacterControllers(); i++)
+	try
 	{
-		wchar_t filename[256];
-		swprintf_s(filename, L"%ws_%d.mrctrl", chrName.c_str(), i);
+		if (this->m_character->getMorphemeCharacter() == nullptr)
+			return false;
 
-		g_appLog->debugMessage(MsgLevel_Info, "Exporting character controller %d for %ws (%ws)\n", i, chrName.c_str(), filename);
+		std::filesystem::current_path(path);
 
-		ME::CharacterControllerExportXML* characterControllerExport = MD::exportCharacterController(characterDef->getCharacterController(i), filename);
-	
-		char processName[256];
-		sprintf_s(processName, "Exporting character controller for anim set %d", i);
+		MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
+		std::wstring chrName = this->m_character->getCharacterName();
 
-		g_workerThread.load()->setProcessStepName(processName);
+		if (characterDef == nullptr)
+			throw("characterDef was nullptr\n");
 
-		if (!characterControllerExport->write())
-			g_appLog->debugMessage(MsgLevel_Error, "Failed to export character controller for %ws (animSet=%d)\n", chrName.c_str(), i);
-	
-		controllerExports.push_back(characterControllerExport);
+		g_workerThread.load()->addProcess("Export morpheme bundles", 5);
+		g_workerThread.load()->setProcessStepName("Exporting character controllers");
+
+		std::vector<ME::CharacterControllerExportXML*> controllerExports;
+		controllerExports.reserve(characterDef->getNumCharacterControllers());
+
+		g_workerThread.load()->addProcess("Export character controllers", characterDef->getNumCharacterControllers());
+
+		for (size_t i = 0; i < characterDef->getNumCharacterControllers(); i++)
+		{
+			wchar_t filename[256];
+			swprintf_s(filename, L"%ws_%d.mrctrl", chrName.c_str(), i);
+
+			g_appLog->debugMessage(MsgLevel_Info, "Exporting character controller %d for %ws (%ws)\n", i, chrName.c_str(), filename);
+
+			ME::CharacterControllerExportXML* characterControllerExport = MD::exportCharacterController(characterDef->getCharacterController(i), filename);
+
+			char processName[256];
+			sprintf_s(processName, "Exporting character controller for anim set %d", i);
+
+			g_workerThread.load()->setProcessStepName(processName);
+
+			if (!characterControllerExport->write())
+				g_appLog->debugMessage(MsgLevel_Error, "Failed to export character controller for %ws (animSet=%d)\n", chrName.c_str(), i);
+
+			controllerExports.push_back(characterControllerExport);
+
+			g_workerThread.load()->increaseProgressStep();
+		}
 
 		g_workerThread.load()->increaseProgressStep();
-	}
+		g_workerThread.load()->setProcessStepName("Exporting animation rigs");
 
-	g_workerThread.load()->increaseProgressStep();
-	g_workerThread.load()->setProcessStepName("Exporting animation rigs");
+		std::vector<ME::RigExportXML*> rigExports;
+		rigExports.reserve(characterDef->getNetworkDef()->getNumAnimSets());
 
-	std::vector<ME::RigExportXML*> rigExports;
-	rigExports.reserve(characterDef->getNetworkDef()->getNumAnimSets());
+		g_workerThread.load()->addProcess("Export animation rigs", characterDef->getNumCharacterControllers());
 
-	g_workerThread.load()->addProcess("Export animation rigs", characterDef->getNumCharacterControllers());
+		for (size_t i = 0; i < characterDef->getNetworkDef()->getNumAnimSets(); i++)
+		{
+			wchar_t filename[256];
+			swprintf_s(filename, L"%ws_%d.mrarig", chrName.c_str(), i);
 
-	for (size_t i = 0; i < characterDef->getNetworkDef()->getNumAnimSets(); i++)
-	{
-		wchar_t filename[256];
-		swprintf_s(filename, L"%ws_%d.mrarig", chrName.c_str(), i);
+			g_appLog->debugMessage(MsgLevel_Info, "Exporting rig for animation set %d for %ws (%ws)\n", i, chrName.c_str(), filename);
 
-		g_appLog->debugMessage(MsgLevel_Info, "Exporting rig for animation set %d for %ws (%ws)\n", i, chrName.c_str(), filename);
+			ME::RigExportXML* rigExport = MD::exportRig(characterDef->getNetworkDef(), characterDef->getNetworkDef()->getRig(i), i, filename);
 
-		ME::RigExportXML* rigExport = MD::exportRig(characterDef->getNetworkDef(), characterDef->getNetworkDef()->getRig(i), i, filename);
+			char processName[256];
+			sprintf_s(processName, "Exporting rig for anim set %d", i);
 
-		char processName[256];
-		sprintf_s(processName, "Exporting rig for anim set %d", i);
+			g_workerThread.load()->setProcessStepName(processName);
 
-		g_workerThread.load()->setProcessStepName(processName);
+			if (!rigExport->write())
+				g_appLog->debugMessage(MsgLevel_Error, "Failed to export rig for %ws (animSet=%d)\n", chrName.c_str(), i);
 
-		if (!rigExport->write())
-			g_appLog->debugMessage(MsgLevel_Error, "Failed to export rig for %ws (animSet=%d)\n", chrName.c_str(), i);
+			rigExports.push_back(rigExport);
 
-		rigExports.push_back(rigExport);
+			g_workerThread.load()->increaseProgressStep();
+		}
 
 		g_workerThread.load()->increaseProgressStep();
-	}
+		g_workerThread.load()->setProcessStepName("Exporting animation library");
 
-	g_workerThread.load()->increaseProgressStep();
-	g_workerThread.load()->setProcessStepName("Exporting animation library");
+		g_workerThread.load()->addProcess("Export animation library", 1);
 
-	g_workerThread.load()->addProcess("Export animation library", 1);
+		wchar_t libraryFilename[256];
+		swprintf_s(libraryFilename, L"%ws_Library.xml", chrName.c_str());
 
-	wchar_t libraryFilename[256];
-	swprintf_s(libraryFilename, L"%ws_Library.xml", chrName.c_str());
+		g_appLog->debugMessage(MsgLevel_Info, "Exporting animation library for %ws (%ws)\n", chrName.c_str(), libraryFilename);
 
-	g_appLog->debugMessage(MsgLevel_Info, "Exporting animation library for %ws (%ws)\n", chrName.c_str(), libraryFilename);
+		ME::AnimationLibraryXML* animLibraryExport = MD::exportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, chrName.c_str(), libraryFilename, getAnimFormatName(this->m_exportSettings.compressionFormat), !this->m_exportSettings.useSourceSampleFrequency, this->m_exportSettings.sampleFrequency);
 
-	ME::AnimationLibraryXML* animLibraryExport = MD::exportAnimLibrary(characterDef->getAnimFileLookUp(), characterDef->getNetworkDef(), rigExports, controllerExports, chrName.c_str(), libraryFilename, getAnimFormatName(this->m_exportSettings.compressionFormat), !this->m_exportSettings.useSourceSampleFrequency, this->m_exportSettings.sampleFrequency);
+		if (!animLibraryExport->write())
+			g_appLog->debugMessage(MsgLevel_Error, "Failed to export animation library for %ws\n", chrName.c_str());
 
-	if (!animLibraryExport->write())
-		g_appLog->debugMessage(MsgLevel_Error, "Failed to export animation library for %ws\n", chrName.c_str());
+		g_workerThread.load()->increaseProgressStep();
 
-	g_workerThread.load()->increaseProgressStep();
+		g_workerThread.load()->increaseProgressStep();
+		g_workerThread.load()->setProcessStepName("Exporting message preset library");
 
-	g_workerThread.load()->increaseProgressStep();
-	g_workerThread.load()->setProcessStepName("Exporting message preset library");
+		g_workerThread.load()->addProcess("Export message preset library", 1);
 
-	g_workerThread.load()->addProcess("Export message preset library", 1);
+		wchar_t messagePresetFilename[256];
+		swprintf_s(messagePresetFilename, L"%ws_Preset.xml", chrName.c_str());
 
-	wchar_t messagePresetFilename[256];
-	swprintf_s(messagePresetFilename, L"%ws_Preset.xml", chrName.c_str());
+		g_appLog->debugMessage(MsgLevel_Info, "Exporting message preset library for %ws (%ws)\n", chrName.c_str(), messagePresetFilename);
 
-	g_appLog->debugMessage(MsgLevel_Info, "Exporting message preset library for %ws (%ws)\n", chrName.c_str(), messagePresetFilename);
+		ME::MessagePresetLibraryExportXML* messagePresetExport = MD::exportMessagePresetLibrary(characterDef->getNetworkDef(), chrName, messagePresetFilename);
 
-	ME::MessagePresetLibraryExportXML* messagePresetExport = MD::exportMessagePresetLibrary(characterDef->getNetworkDef(), chrName, messagePresetFilename);
+		if (!messagePresetExport->write())
+			g_appLog->debugMessage(MsgLevel_Error, "Failed to export message library for %ws\n", chrName.c_str());
 
-	if (!messagePresetExport->write())
-		g_appLog->debugMessage(MsgLevel_Error, "Failed to export message library for %ws\n", chrName.c_str());
+		g_workerThread.load()->increaseProgressStep();
+		g_workerThread.load()->increaseProgressStep();
+		g_workerThread.load()->setProcessStepName("Exporting network definition");
 
-	g_workerThread.load()->increaseProgressStep();
-	g_workerThread.load()->increaseProgressStep();
-	g_workerThread.load()->setProcessStepName("Exporting network definition");
+		g_workerThread.load()->addProcess("Export network definition", 1);
 
-	g_workerThread.load()->addProcess("Export network definition", 1);
+		wchar_t networkFilename[256];
+		swprintf_s(networkFilename, L"%ws.xml", chrName.c_str());
 
-	wchar_t networkFilename[256];
-	swprintf_s(networkFilename, L"%ws.xml", chrName.c_str());
-
-	MR::NetworkDef* netDef = characterDef->getNetworkDef();
+		MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
 #ifdef _DEBUG
-	dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
-	dumpNetworkNodes(netDef, animLibraryExport, L"nodes.xml");
-	dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
-	dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
+		dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
+		dumpNetworkNodes(netDef, animLibraryExport, L"nodes.xml");
+		dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
+		dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
 #endif
 
-	g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for %ws (%ws):\n", chrName.c_str(), networkFilename);
+		g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for %ws (%ws):\n", chrName.c_str(), networkFilename);
 
-	ME::NetworkDefExportXML* netDefExport = MD::exportNetwork(netDef, animLibraryExport, messagePresetExport, chrName, networkFilename);
+		ME::NetworkDefExportXML* netDefExport = MD::exportNetwork(netDef, animLibraryExport, messagePresetExport, chrName, networkFilename);
 
-	if (!netDefExport->write())
-		g_appLog->debugMessage(MsgLevel_Error, "Failed to export networkDef for c%04d\n", chrName);
+		if (!netDefExport->write())
+			g_appLog->debugMessage(MsgLevel_Error, "Failed to export networkDef for c%04d\n", chrName);
 
-	g_workerThread.load()->increaseProgressStep();
-	g_workerThread.load()->increaseProgressStep();
+		g_workerThread.load()->increaseProgressStep();
+		g_workerThread.load()->increaseProgressStep();
 
-	std::filesystem::current_path(getExeRootDir());
+		std::filesystem::current_path(getExeRootDir());
 
-	return true;
+		return true;
+	}
+	catch (const std::exception& e)
+	{
+		g_appLog->panicMessage(e.what());
+	}
 }
 
 bool MorphemeEditorApp::exportAndCompileTae(std::wstring path)
@@ -1822,282 +1836,331 @@ bool MorphemeEditorApp::exportAndCompileTae(std::wstring path)
 
 bool MorphemeEditorApp::exportAll(std::wstring path)
 {
-	if (this->m_character != nullptr)
+	try
 	{
-		g_workerThread.load()->addProcess("Exporting all", 4);
-		g_workerThread.load()->setProcessStepName("Exporting model");
+		if (this->m_character != nullptr)
+		{
+			g_workerThread.load()->addProcess("Exporting all", 4);
+			g_workerThread.load()->setProcessStepName("Exporting model");
 
-		this->exportModel(path);
+			this->exportModel(path);
 
-		g_workerThread.load()->increaseProgressStep();
-		g_workerThread.load()->setProcessStepName("Exporting animations and markups");
+			g_workerThread.load()->increaseProgressStep();
+			g_workerThread.load()->setProcessStepName("Exporting animations and markups");
 
-		this->exportAnimationsAndMarkups(path);
+			this->exportAnimationsAndMarkups(path);
 
-		g_workerThread.load()->increaseProgressStep();
-		g_workerThread.load()->setProcessStepName("Exporting network");
+			g_workerThread.load()->increaseProgressStep();
+			g_workerThread.load()->setProcessStepName("Exporting network");
 
-		this->exportNetwork(path);
+			this->exportNetwork(path);
 
-		g_workerThread.load()->increaseProgressStep();
-		g_workerThread.load()->setProcessStepName("Exporting TimeAct");
+			g_workerThread.load()->increaseProgressStep();
+			g_workerThread.load()->setProcessStepName("Exporting TimeAct");
 
-		this->exportTimeAct(path);
+			this->exportTimeAct(path);
 
-		g_workerThread.load()->increaseProgressStep();
+			g_workerThread.load()->increaseProgressStep();
+		}
+		else
+		{
+			g_appLog->alertMessage(MsgLevel_Error, "No character is loaded\n");
+
+			return false;
+		}
+
+		return true;
 	}
-	else
+	catch (const std::exception& e)
 	{
-		g_appLog->alertMessage(MsgLevel_Error, "No character is loaded\n");
-
-		return false;
+		g_appLog->panicMessage(e.what());
 	}
-
-	return true;
 }
 
 bool MorphemeEditorApp::exportAndProcess(std::wstring path)
 {
-	bool status = true;
-
-	// Force the export format to XMD since we're invoking the assetCompiler, and that wants .xmd assets
-	ExportFormat formatBak = this->m_exportSettings.exportFormat;
-
-	this->m_exportSettings.exportFormat = kXmd;
-
-	g_workerThread.load()->addProcess("Exporting and processing assets", 3);
-	g_workerThread.load()->setProcessStepName("Exporting assets");
-
-	if (!this->exportAll(path))
+	try
 	{
-		g_appLog->alertMessage(MsgLevel_Error, "Failed to process assets\n");
-		return false;
+		bool status = true;
+
+		// Force the export format to XMD since we're invoking the assetCompiler, and that wants .xmd assets
+		ExportFormat formatBak = this->m_exportSettings.exportFormat;
+
+		this->m_exportSettings.exportFormat = kXmd;
+
+		g_workerThread.load()->addProcess("Exporting and processing assets", 3);
+		g_workerThread.load()->setProcessStepName("Exporting assets");
+
+		if (!this->exportAll(path))
+		{
+			g_appLog->alertMessage(MsgLevel_Error, "Failed to process assets\n");
+			return false;
+		}
+
+		g_workerThread.load()->increaseProgressStep();
+		g_workerThread.load()->setProcessStepName("Compiling TimeAct files");
+
+		if (!this->compileTimeActFiles(path))
+		{
+			g_appLog->alertMessage(MsgLevel_Error, "Failed to compile TimeAct files\n");
+			status = false;
+		}
+
+		g_workerThread.load()->increaseProgressStep();
+		g_workerThread.load()->setProcessStepName("Compiling morpheme assets");
+
+		if (!this->compileMorphemeAssets(path))
+		{
+			g_appLog->alertMessage(MsgLevel_Error, "Failed to compile TimeAct files\n");
+			return false;
+		}
+
+		g_workerThread.load()->increaseProgressStep();
+
+		// Restore the export format to it's previous value
+		this->m_exportSettings.exportFormat = formatBak;
+
+		return status;
 	}
-
-	g_workerThread.load()->increaseProgressStep();
-	g_workerThread.load()->setProcessStepName("Compiling TimeAct files");
-
-	if (!this->compileTimeActFiles(path))
+	catch (const std::exception& e)
 	{
-		g_appLog->alertMessage(MsgLevel_Error, "Failed to compile TimeAct files\n");
-		status = false;
+		g_appLog->panicMessage(e.what());
 	}
-
-	g_workerThread.load()->increaseProgressStep();
-	g_workerThread.load()->setProcessStepName("Compiling morpheme assets");
-
-	if (!this->compileMorphemeAssets(path))
-	{
-		g_appLog->alertMessage(MsgLevel_Error, "Failed to compile TimeAct files\n");
-		return false;
-	}
-
-	g_workerThread.load()->increaseProgressStep();
-
-	// Restore the export format to it's previous value
-	this->m_exportSettings.exportFormat = formatBak;
-
-	return status;
 }
 
 bool MorphemeEditorApp::exportAnimations(std::wstring path)
 {
-	MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
-
-	const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
-	const int numAnims = characterDef->getNumAnims(animSetIdx);
-
-	g_workerThread.load()->addProcess("Exporting animations", numAnims);
-	g_appLog->debugMessage(MsgLevel_Info, "Exporting animations:\n");
-
-	for (size_t i = 0; i < numAnims; i++)
+	try
 	{
-		std::string animName = RString::removeExtension(characterDef->getAnimationById(animSetIdx, i)->getAnimName());
-		g_workerThread.load()->setProcessStepName(animName);
+		MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
 
-		this->exportAnimation(path, animSetIdx, i);
+		const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
+		const int numAnims = characterDef->getNumAnims(animSetIdx);
 
-		g_workerThread.load()->increaseProgressStep();
+		g_workerThread.load()->addProcess("Exporting animations", numAnims);
+		g_appLog->debugMessage(MsgLevel_Info, "Exporting animations:\n");
+
+		for (size_t i = 0; i < numAnims; i++)
+		{
+			std::string animName = RString::removeExtension(characterDef->getAnimationById(animSetIdx, i)->getAnimName());
+			g_workerThread.load()->setProcessStepName(animName);
+
+			this->exportAnimation(path, animSetIdx, i);
+
+			g_workerThread.load()->increaseProgressStep();
+		}
+
+		return true;
 	}
-
-	return true;
+	catch (const std::exception& e)
+	{
+		g_appLog->panicMessage(e.what());
+	}
 }
 
 bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 {
-	MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
-
-	const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
-	const int numAnims = characterDef->getNumAnims(animSetIdx);
-
-	g_workerThread.load()->addProcess("Exporting anim markup", numAnims);
-	g_appLog->debugMessage(MsgLevel_Info, "Exporting animation markups:\n");
-
-	std::vector<ME::EventTrackExport*> exportedTracks;
-	for (size_t i = 0; i < numAnims; i++)
+	try
 	{
-		std::string animName = RString::removeExtension(characterDef->getAnimationById(animSetIdx, i)->getAnimName());
-		g_workerThread.load()->setProcessStepName(animName);
+		MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
 
-		this->exportAnimMarkup(path, animSetIdx, i, exportedTracks);
+		const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
+		const int numAnims = characterDef->getNumAnims(animSetIdx);
 
-		g_workerThread.load()->increaseProgressStep();
+		g_workerThread.load()->addProcess("Exporting anim markup", numAnims);
+		g_appLog->debugMessage(MsgLevel_Info, "Exporting animation markups:\n");
+
+		std::vector<ME::EventTrackExport*> exportedTracks;
+		for (size_t i = 0; i < numAnims; i++)
+		{
+			std::string animName = RString::removeExtension(characterDef->getAnimationById(animSetIdx, i)->getAnimName());
+			g_workerThread.load()->setProcessStepName(animName);
+
+			this->exportAnimMarkup(path, animSetIdx, i, exportedTracks);
+
+			g_workerThread.load()->increaseProgressStep();
+		}
+
+		return true;
 	}
-
-	return true;
+	catch (const std::exception& e)
+	{
+		g_appLog->panicMessage(e.what());
+	}
 }
 
 void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 {
-	std::filesystem::current_path(path);
-
-	g_workerThread.load()->addProcess("Export animations", 2);
-
-	std::wstring markupExportPath = L"morphemeMarkup\\";
-	std::filesystem::create_directories(markupExportPath);
-
-	g_workerThread.load()->setProcessStepName("Exporting anim markups...");
-	this->exportAnimMarkups(markupExportPath);
-
-	g_workerThread.load()->increaseProgressStep();
-
-	std::wstring animExportPath;
-
-	switch (this->m_exportSettings.exportFormat)
+	try
 	{
-	case kFbx:
-		animExportPath = L"motion_fbx\\";
-		break;
-	case kXmd:
-		animExportPath = L"motion_xmd\\";
-		break;
-	case kGltf:
-		animExportPath = L"motion_gltf\\";
-		break;
-	default:
-		break;
+		std::filesystem::current_path(path);
+
+		g_workerThread.load()->addProcess("Export animations", 2);
+
+		std::wstring markupExportPath = L"morphemeMarkup\\";
+		std::filesystem::create_directories(markupExportPath);
+
+		g_workerThread.load()->setProcessStepName("Exporting anim markups...");
+		this->exportAnimMarkups(markupExportPath);
+
+		g_workerThread.load()->increaseProgressStep();
+
+		std::wstring animExportPath;
+
+		switch (this->m_exportSettings.exportFormat)
+		{
+		case kFbx:
+			animExportPath = L"motion_fbx\\";
+			break;
+		case kXmd:
+			animExportPath = L"motion_xmd\\";
+			break;
+		case kGltf:
+			animExportPath = L"motion_gltf\\";
+			break;
+		default:
+			break;
+		}
+
+		std::filesystem::create_directories(animExportPath);
+
+		g_workerThread.load()->setProcessStepName("Exporting animations...");
+
+		this->exportAnimations(animExportPath);
+
+		g_workerThread.load()->increaseProgressStep();
+
+		std::filesystem::current_path(getExeRootDir());
 	}
-
-	std::filesystem::create_directories(animExportPath);
-
-	g_workerThread.load()->setProcessStepName("Exporting animations...");
-
-	this->exportAnimations(animExportPath);
-
-	g_workerThread.load()->increaseProgressStep();
-
-	std::filesystem::current_path(getExeRootDir());
+	catch (const std::exception& e)
+	{
+		g_appLog->panicMessage(e.what());
+	}
 }
 
 bool MorphemeEditorApp::exportModel(std::wstring path)
 {
-	FlverModel* model = this->m_character->getCharacterModelCtrl()->getModel();
+	try
+	{
+		FlverModel* model = this->m_character->getCharacterModelCtrl()->getModel();
 
-	if (model == nullptr)
-		return false;
+		if (model == nullptr)
+			return false;
 
-	g_workerThread.load()->addProcess("Exporting model", 1);
+		g_workerThread.load()->addProcess("Exporting model", 1);
 
-	std::filesystem::current_path(path);
+		std::filesystem::current_path(path);
 
 #ifdef _DEBUG
-	exportFlverToMorphemeBoneMap(model, path + L"morpheme_bone_map.txt");
+		exportFlverToMorphemeBoneMap(model, path + L"morpheme_bone_map.txt");
 #endif
 
-	switch (this->m_exportSettings.exportFormat)
-	{
-	case MorphemeEditorApp::kFbx:
-		exportModelToFbx(this->m_character);
-		break;
-	case MorphemeEditorApp::kXmd:
-		exportModelToXmd(this->m_character);
-		break;
-	case MorphemeEditorApp::kGltf:
-		exportModelToGltf(this->m_character);
-		break;
+		switch (this->m_exportSettings.exportFormat)
+		{
+		case MorphemeEditorApp::kFbx:
+			exportModelToFbx(this->m_character);
+			break;
+		case MorphemeEditorApp::kXmd:
+			exportModelToXmd(this->m_character);
+			break;
+		case MorphemeEditorApp::kGltf:
+			exportModelToGltf(this->m_character);
+			break;
+		}
+
+		g_workerThread.load()->increaseProgressStep();
+
+		std::filesystem::current_path(getExeRootDir());
 	}
-
-	g_workerThread.load()->increaseProgressStep();
-
-	std::filesystem::current_path(getExeRootDir());
+	catch (const std::exception& e)
+	{
+		g_appLog->panicMessage(e.what());
+	}
 }
 
 bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 {
-	if (this->m_character == nullptr)
+	try
 	{
-		g_appLog->debugMessage(MsgLevel_Info, "Skipping assets compilation because no character file was loaded\n");
+		if (this->m_character == nullptr)
+		{
+			g_appLog->debugMessage(MsgLevel_Info, "Skipping assets compilation because no character file was loaded\n");
+
+			return false;
+		}
+
+		char networkFileName[256];
+		sprintf_s(networkFileName, "%ws.xml", this->m_character->getCharacterName().c_str());
+
+		char exePath[MAX_PATH];
+		GetModuleFileNameA(NULL, exePath, MAX_PATH);
+		std::string exeParentPath = std::filesystem::path(exePath).parent_path().string();
+
+		std::string fullPath = exeParentPath + std::string("\\") + RString::toNarrow(path);
+
+		const int successCode = 1;
+		const int failureCode = -1;
+
+		std::string assetCompilerName = std::string("\"") + exeParentPath + "\\" + std::string(ASSET_COMPILER_EXE) + std::string("\"");
+		std::string assetPath = "-asset " + std::string("\"") + fullPath + "\\" + std::string(networkFileName) + std::string("\"");
+		std::string baseDir = "-basedir " + std::string("\"") + fullPath + std::string("\"");
+		std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "\\cache" + std::string("\"");
+		std::string outputDir = "-outputdir " + std::string("\"") + fullPath + "\\runtimeBinary" + std::string("\"");
+		std::string logFile = "-logFile " + std::string("\"") + fullPath + "\\assetCompiler.log" + std::string("\"");
+		std::string errFile = "-errFile " + std::string("\"") + fullPath + "\\assetCompilerError.log" + std::string("\"");
+
+		std::string successCodeStr = "-successCode " + std::to_string(successCode);
+		std::string failureCodeStr = "-failureCode " + std::to_string(failureCode);
+
+		std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
+
+#ifdef _DEBUG
+		exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"\\assetCompilerCommand.txt");
+#endif
+
+		g_appLog->debugMessage(MsgLevel_Info, "Invoking asset compiler with command %s\n", assetCompilerCommand.c_str());
+
+		//If it exists, delete any previous output in this folder toa void cluttering
+		if (std::filesystem::exists(fullPath + "\\runtimeBinary"))
+			std::filesystem::remove_all(fullPath + "\\runtimeBinary");
+
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+		ZeroMemory(&si, sizeof(si));
+		si.cb = sizeof(si);
+		ZeroMemory(&pi, sizeof(pi));
+
+		if (CreateProcess(nullptr, LPWSTR(RString::toWide(assetCompilerCommand).c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi))
+		{
+			WaitForSingleObject(pi.hProcess, INFINITE);
+
+			DWORD exitCode;
+			GetExitCodeProcess(pi.hProcess, &exitCode);
+
+			g_appLog->debugMessage(MsgLevel_Info, "\tAsset compiler exited with code %d\n", exitCode);
+
+			if (exitCode == failureCode)
+				g_appLog->alertMessage(MsgLevel_Error, "There were errors while compiling assets. Check assetCompilerError.log");
+
+			CloseHandle(pi.hProcess);
+			CloseHandle(pi.hThread);
+
+			g_appLog->debugMessage(MsgLevel_Info, "\tPerforming post-compilation cleanup\n", exitCode);
+
+			//Delete the cache folder
+			std::filesystem::remove_all(fullPath + "\\cache");
+
+			return true;
+		}
+
+		g_appLog->alertMessage(MsgLevel_Error, "Failed to create assetCompiler process\n");
 
 		return false;
 	}
-
-	char networkFileName[256];
-	sprintf_s(networkFileName, "%ws.xml", this->m_character->getCharacterName().c_str());
-
-	char exePath[MAX_PATH];
-	GetModuleFileNameA(NULL, exePath, MAX_PATH);
-	std::string exeParentPath = std::filesystem::path(exePath).parent_path().string();
-
-	std::string fullPath = exeParentPath + std::string("\\") + RString::toNarrow(path);
-
-	const int successCode = 1;
-	const int failureCode = -1;
-
-	std::string assetCompilerName = std::string("\"") + exeParentPath + "\\" + std::string(ASSET_COMPILER_EXE) + std::string("\"");
-	std::string assetPath = "-asset " + std::string("\"") + fullPath + "\\" + std::string(networkFileName) + std::string("\"");
-	std::string baseDir = "-basedir " + std::string("\"") + fullPath + std::string("\"");
-	std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "\\cache" + std::string("\"");
-	std::string outputDir = "-outputdir " + std::string("\"") + fullPath + "\\runtimeBinary" + std::string("\"");
-	std::string logFile = "-logFile " + std::string("\"") + fullPath + "\\assetCompiler.log" + std::string("\"");
-	std::string errFile = "-errFile " + std::string("\"") + fullPath + "\\assetCompilerError.log" + std::string("\"");
-
-	std::string successCodeStr = "-successCode " + std::to_string(successCode);
-	std::string failureCodeStr = "-failureCode " + std::to_string(failureCode);
-
-	std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
-	
-#ifdef _DEBUG
-	exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"\\assetCompilerCommand.txt");
-#endif
-
-	g_appLog->debugMessage(MsgLevel_Info, "Invoking asset compiler with command %s\n", assetCompilerCommand.c_str());
-
-	//If it exists, delete any previous output in this folder toa void cluttering
-	if (std::filesystem::exists(fullPath + "\\runtimeBinary"))
-		std::filesystem::remove_all(fullPath + "\\runtimeBinary");
-
-	STARTUPINFO si;
-	PROCESS_INFORMATION pi;
-	ZeroMemory(&si, sizeof(si));
-	si.cb = sizeof(si);
-	ZeroMemory(&pi, sizeof(pi));
-
-	if (CreateProcess(nullptr, LPWSTR(RString::toWide(assetCompilerCommand).c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi))
+	catch (const std::exception& e)
 	{
-		WaitForSingleObject(pi.hProcess, INFINITE);
-
-		DWORD exitCode;
-		GetExitCodeProcess(pi.hProcess, &exitCode);
-
-		g_appLog->debugMessage(MsgLevel_Info, "\tAsset compiler exited with code %d\n", exitCode);
-
-		if (exitCode == failureCode)
-			g_appLog->alertMessage(MsgLevel_Error, "There were errors while compiling assets. Check assetCompilerError.log");
-
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
-
-		g_appLog->debugMessage(MsgLevel_Info, "\tPerforming post-compilation cleanup\n", exitCode);
-
-		//Delete the cache folder
-		std::filesystem::remove_all(fullPath + "\\cache");
-
-		return true;
+		g_appLog->panicMessage(e.what());
 	}
-
-	g_appLog->alertMessage(MsgLevel_Error, "Failed to create assetCompiler process\n");
-
-	return false;
 }
 
 bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
