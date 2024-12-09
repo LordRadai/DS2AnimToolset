@@ -212,7 +212,7 @@ namespace MD
 			nodeDataBlock->writeBool(headLookSetup->m_worldSpaceTarget, "WorldSpaceTarget");
 
 			CHAR paramName[256];
-			for (int animSetIndex = 0; animSetIndex < netDef->getNumAnimSets(); animSetIndex++)
+			for (uint32_t animSetIndex = 0; animSetIndex < netDef->getNumAnimSets(); animSetIndex++)
 			{
 				MR::AttribDataHeadLookChain* headLookChain = static_cast<MR::AttribDataHeadLookChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET, animSetIndex));
 
