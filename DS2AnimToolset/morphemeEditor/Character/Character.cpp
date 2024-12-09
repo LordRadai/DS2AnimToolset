@@ -427,8 +427,6 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
     if (!character->m_morphemeCharacter)
         throw("Failed to create MorphemeCharacter instance (%s)", filename);
 
-    characterDef->loadAnimations();
-
     std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
     const int animCount = characterDef->getAnimFileLookUp()->getNumAnims();
 

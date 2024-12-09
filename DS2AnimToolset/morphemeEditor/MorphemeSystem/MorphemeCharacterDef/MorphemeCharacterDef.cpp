@@ -168,6 +168,8 @@ bool MorphemeCharacterDef::init(void* bundle, size_t bundleSize)
     return false;
   }
 
+  this->loadAnimations();
+
   for (size_t i = 0; i < m_netDef->getNumAnimSets(); i++)
       m_anims.push_back(std::vector<AnimObject*>());
 
