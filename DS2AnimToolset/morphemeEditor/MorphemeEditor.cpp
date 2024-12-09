@@ -136,11 +136,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             {
                 ::TranslateMessage(&msg);
                 ::DispatchMessage(&msg);
+
                 if (msg.message == WM_QUIT)
                     done = true;
             }
-            if (done)
-                break;
 
             // Handle window resize (we don't resize directly in the WM_SIZE handler)
             if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
@@ -153,7 +152,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
             timer.Tick([&]()
                 {
-                    float dt = float(timer.GetElapsedSeconds());
+                    const float dt = float(timer.GetElapsedSeconds());
 
                     renderManager->update(dt);
                     guiManager->update(dt);
