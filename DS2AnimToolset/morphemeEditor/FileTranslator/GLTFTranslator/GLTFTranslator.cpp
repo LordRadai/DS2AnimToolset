@@ -357,11 +357,11 @@ namespace GLTFTranslator
         addRootNode(gltfModel, "SceneRoot");
 
         //Add all the bones
-        for (size_t i = 1; i < rig->getNumBones(); i++)
+        for (uint32_t i = 1; i < rig->getNumBones(); i++)
             createJoint(gltfModel, rig, i);
 
         //Loop back over to add all children
-        for (size_t i = 1; i < rig->getNumBones(); i++)
+        for (uint32_t i = 1; i < rig->getNumBones(); i++)
         {
             int jointIndex = getGltfNodeIndexByName(gltfModel, rig->getBoneName(i));
             int parentIndex = getGltfNodeIndexByName(gltfModel, rig->getBoneName(rig->getParentBoneIndex(i)));
@@ -373,11 +373,11 @@ namespace GLTFTranslator
             gltfModel->nodes[parentIndex].children.push_back(jointIndex);
         }
 
-        //addBoneVisuals(gltfModel, rig);
-
-        if (includeMeshes && (model != nullptr))
+        if (!includeMeshes)
+            addBoneVisuals(gltfModel, rig);
+        else if (model != nullptr)
         {
-            for (size_t i = 0; i < model->getNumMeshes(); i++)
+            for (uint32_t i = 0; i < model->getNumMeshes(); i++)
                 createMesh(gltfModel, model, i);
         }
 

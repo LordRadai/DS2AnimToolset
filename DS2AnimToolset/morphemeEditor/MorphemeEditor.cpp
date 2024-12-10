@@ -129,18 +129,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         try
         {
-            // Poll and handle messages (inputs, window resize, etc.)
-            // See the WndProc() function below for our to dispatch events to the Win32 backend.
-            MSG msg;
-            while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
-            {
-                ::TranslateMessage(&msg);
-                ::DispatchMessage(&msg);
-
-                if (msg.message == WM_QUIT)
-                    done = true;
-            }
-
             // Handle window resize (we don't resize directly in the WM_SIZE handler)
             if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
             {
@@ -164,6 +152,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 renderManager->render();
 
             renderManager->present();
+
+            // Poll and handle messages (inputs, window resize, etc.)
+            // See the WndProc() function below for our to dispatch events to the Win32 backend.
+            MSG msg;
+            while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
+            {
+                ::TranslateMessage(&msg);
+                ::DispatchMessage(&msg);
+
+                if (msg.message == WM_QUIT)
+                    done = true;
+            }
         }
         catch (const std::exception& e)
         {
