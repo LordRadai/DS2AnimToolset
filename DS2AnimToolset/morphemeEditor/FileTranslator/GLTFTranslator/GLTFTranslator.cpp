@@ -359,7 +359,7 @@ namespace GLTFTranslator
             gltfModel->nodes[parentIndex].children.push_back(jointIndex);
         }
 
-        //addBoneVisuals(gltfModel, rig);
+        addBoneVisuals(gltfModel, rig);
 
         if (includeMeshes && (model != nullptr))
         {
