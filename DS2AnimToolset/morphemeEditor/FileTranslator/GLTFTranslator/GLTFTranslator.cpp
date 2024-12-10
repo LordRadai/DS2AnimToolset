@@ -37,9 +37,9 @@ namespace
 
     void createSphere(tinygltf::Model* gltf, std::string name, Vector3 center, float radius, int latitudeDivisions = 50, int longitudeDivisions = 50)
     {
-        std::vector<float> vertices;
-        std::vector<unsigned int> indices;
-        std::vector<float> normals;
+        std::vector<Vector3> vertices;
+        std::vector<Vector3> normals;
+        std::vector<uint16_t> indices;
 
         // Generate the vertices and normals
         for (int lat = 0; lat <= latitudeDivisions; ++lat) {
@@ -63,22 +63,18 @@ namespace
                 float nz = sinPhi * sinTheta;
 
                 // Add vertex position
-                vertices.push_back(x);
-                vertices.push_back(y);
-                vertices.push_back(z);
+                vertices.push_back(Vector3(x, y, z));
 
                 // Add normal
-                normals.push_back(nx);
-                normals.push_back(ny);
-                normals.push_back(nz);
+                normals.push_back(Vector3(nx, ny, nz));
             }
         }
 
         // Generate the indices for the sphere's triangles
-        for (int lat = 0; lat < latitudeDivisions; ++lat) {
-            for (int lon = 0; lon < longitudeDivisions; ++lon) {
-                int first = (lat * (longitudeDivisions + 1)) + lon;
-                int second = first + longitudeDivisions + 1;
+        for (uint16_t lat = 0; lat < latitudeDivisions; ++lat) {
+            for (uint16_t lon = 0; lon < longitudeDivisions; ++lon) {
+                uint16_t first = (lat * (longitudeDivisions + 1)) + lon;
+                uint16_t second = first + longitudeDivisions + 1;
 
                 // Create two triangles for each quad
                 indices.push_back(first);
@@ -91,51 +87,43 @@ namespace
             }
         }
 
+        // Add the buffers
+        tinygltf::Buffer buffer;
+        buffer.name = "Buffer_" + name;
+        buffer.data.insert(buffer.data.end(), reinterpret_cast<const unsigned char*>(vertices.data()), reinterpret_cast<const unsigned char*>(vertices.data() + vertices.size()));
+        buffer.data.insert(buffer.data.end(), reinterpret_cast<const unsigned char*>(normals.data()), reinterpret_cast<const unsigned char*>(normals.data() + normals.size()));
+        buffer.data.insert(buffer.data.end(), reinterpret_cast<const unsigned char*>(indices.data()), reinterpret_cast<const unsigned char*>(indices.data() + indices.size()));
+        gltf->buffers.push_back(buffer);
+
         // Create the mesh and the corresponding buffer
         tinygltf::Mesh mesh;
 
-        // Add position attribute (vertices)
-        tinygltf::Accessor positionAccessor;
-        positionAccessor.bufferView = 0; // Assuming the buffer view will be added to the buffer after this step
-        positionAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
-        positionAccessor.type = TINYGLTF_TYPE_VEC3;
-        positionAccessor.count = vertices.size() / 3;
-        gltf->accessors.push_back(positionAccessor);
-
-        // Add normal attribute (normals)
-        tinygltf::Accessor normalAccessor;
-        normalAccessor.bufferView = 1; // Assuming normal buffer view
-        normalAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
-        normalAccessor.type = TINYGLTF_TYPE_VEC3;
-        normalAccessor.count = normals.size() / 3;
-        gltf->accessors.push_back(normalAccessor);
-
-        // Add index buffer
-        tinygltf::Accessor indexAccessor;
-        indexAccessor.bufferView = 2; // Assuming index buffer view
-        indexAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT;
-        indexAccessor.type = TINYGLTF_TYPE_SCALAR;
-        indexAccessor.count = indices.size();
-        gltf->accessors.push_back(indexAccessor);
-
-        // Add the buffers
-        tinygltf::Buffer buffer;
-        buffer.data.insert(buffer.data.end(), vertices.begin(), vertices.end());
-        buffer.data.insert(buffer.data.end(), normals.begin(), normals.end());
-        buffer.data.insert(buffer.data.end(), indices.begin(), indices.end());
-        gltf->buffers.push_back(buffer);
+        ptrdiff_t positionOffset = 0;
+        ptrdiff_t normalsOffset = vertices.size() * sizeof(Vector3);
+        ptrdiff_t indicesOffset = normalsOffset + normals.size() * sizeof(Vector3);
 
         // Create buffer views for position, normals, and indices
-        createBufferView(gltf, "VertexBufferView", 0, 0, vertices.size() * sizeof(float), TINYGLTF_TARGET_ARRAY_BUFFER);
-        createBufferView(gltf, "NormalsBufferView", 1, vertices.size() * sizeof(float), normals.size() * sizeof(float), TINYGLTF_TARGET_ARRAY_BUFFER);
-        createBufferView(gltf, "IndexBufferView", 2, normals.size() * sizeof(float), indices.size() * sizeof(unsigned int), TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
+        createBufferView(gltf, "VertexBufferView_" + name, gltf->buffers.size() - 1, positionOffset, vertices.size() * sizeof(Vector3), TINYGLTF_TARGET_ARRAY_BUFFER);
+        createAccessor(gltf, "VertexAccessor_" + name, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, vertices.size());
+
+        const int vertexIdx = gltf->accessors.size() - 1;
+
+        createBufferView(gltf, "NormalsBufferView_" + name, gltf->buffers.size() - 1, normalsOffset, normals.size() * sizeof(Vector3), TINYGLTF_TARGET_ARRAY_BUFFER);
+        createAccessor(gltf, "NormalsAccessor_" + name, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, normals.size());
+
+        const int normalIdx = gltf->accessors.size() - 1;
+
+        createBufferView(gltf, "IndexBufferView_" + name, gltf->buffers.size() - 1, indicesOffset, indices.size() * sizeof(uint16_t), TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
+        createAccessor(gltf, "IndexAccessor_" + name, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_SCALAR, indices.size());
+
+        const int indicesIdx = gltf->accessors.size() - 1;
 
         // Create a mesh object
         tinygltf::Primitive primitive;
-        primitive.attributes["POSITION"] = 0;  // Position attribute
-        primitive.attributes["NORMAL"] = 1;    // Normal attribute
+        primitive.attributes["POSITION"] = vertexIdx;
+        primitive.attributes["NORMAL"] = normalIdx;
         primitive.mode = TINYGLTF_MODE_TRIANGLES;
-        primitive.indices = 2;                  // Index accessor
+        primitive.indices = indicesIdx;
 
         // Create the mesh
         mesh.name = name;
@@ -212,7 +200,7 @@ namespace
                 return i;
         }
 
-        ibm.push_back(*model->getMorphemeBoneBindPoseGlobalTransform(boneID));
+        ibm.push_back(model->getMorphemeBoneBindPoseGlobalTransform(boneID)->Invert());
 
         jointArray.push_back(boneID);
         return jointArray.size() - 1;
@@ -221,20 +209,18 @@ namespace
     // This doesn't work, I don't know why, but it's all wrong
     void addBoneVisuals(tinygltf::Model* gltf, MR::AnimRigDef* rig) 
     {
-        // Debug bone view material
-        tinygltf::Material lineMaterial;
-        lineMaterial.name = "DebugBoneMaterial";
-        lineMaterial.pbrMetallicRoughness.baseColorFactor = { 0.0, 0.0, 1.0, 1.0 };
-        lineMaterial.pbrMetallicRoughness.metallicFactor = 0.0;
-        lineMaterial.pbrMetallicRoughness.roughnessFactor = 1.0;
-        gltf->materials.push_back(lineMaterial);
-        int lineMaterialIndex = gltf->materials.size() - 1;
-
         // Iterate through all joints
         for (uint32_t boneID = 1; boneID < rig->getNumBones(); ++boneID) 
-        {        
-            Matrix bindPoseTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(boneID), *rig->getBindPoseBonePos(boneID));
-            createSphere(gltf, "BoneMarker_" + std::to_string(boneID), Vector3::Transform(Vector3::Zero, bindPoseTransform), 0.3f);
+        {                
+            tinygltf::Node* joint = getGltfNodeByName(gltf, rig->getBoneName(boneID));
+
+            if (joint)
+            {
+                Matrix bindPoseTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(boneID), *rig->getBindPoseBonePos(boneID));
+                createSphere(gltf, "BoneMarker_" + std::to_string(boneID), Vector3::Zero, 0.05f);
+
+                joint->mesh = gltf->meshes.size() - 1;
+            }
         }
     }
 
@@ -330,7 +316,7 @@ namespace
         std::vector<Vector3> vertices = model->getFlverMeshVertices(meshIdx, true);
 
         for (size_t i = 0; i < vertices.size(); i++)
-            vertices[i] = Vector3::Transform(vertices[i], /*Matrix::CreateRotationZ(DirectX::XM_PI) **/ Matrix::CreateRotationX(DirectX::XM_PI));
+            vertices[i] = Vector3::Transform(vertices[i], Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateRotationX(DirectX::XM_PIDIV2));
 
         return vertices;
     }
@@ -340,7 +326,7 @@ namespace
         std::vector<Vector3> normals = model->getFlverMeshNormals(meshIdx, true);
 
         for (size_t i = 0; i < normals.size(); i++)
-            normals[i] = Vector3::Transform(normals[i], /*Matrix::CreateRotationZ(DirectX::XM_PI) **/ Matrix::CreateRotationX(DirectX::XM_PI));
+            normals[i] = Vector3::Transform(normals[i], Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateRotationX(DirectX::XM_PIDIV2));
 
         return normals;
     }
@@ -373,9 +359,9 @@ namespace GLTFTranslator
             gltfModel->nodes[parentIndex].children.push_back(jointIndex);
         }
 
-        if (!includeMeshes)
-            addBoneVisuals(gltfModel, rig);
-        else if (model != nullptr)
+        //addBoneVisuals(gltfModel, rig);
+
+        if (includeMeshes && (model != nullptr))
         {
             for (uint32_t i = 0; i < model->getNumMeshes(); i++)
                 createMesh(gltfModel, model, i);
@@ -386,11 +372,8 @@ namespace GLTFTranslator
 
     tinygltf::Mesh* createMesh(tinygltf::Model* gltf, FlverModel* model, int meshIndex)
     {
-        //std::vector<Vector3> vertices = getMeshVertices(model, meshIndex);
-        //std::vector<Vector3> normals = getMeshNormals(model, meshIndex);
-
-        std::vector<Vector3> vertices = model->getFlverMeshVertices(meshIndex, true);
-        std::vector<Vector3> normals = model->getFlverMeshNormals(meshIndex, true);
+        std::vector<Vector3> vertices = getMeshVertices(model, meshIndex);
+        std::vector<Vector3> normals = getMeshNormals(model, meshIndex);
 
         Vector3 minBound, maxBound;
 
