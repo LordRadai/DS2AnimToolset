@@ -48,7 +48,6 @@ namespace
 	{
 		std::vector<FbxVector4> pointList;
 
-		//Get vertices directly from the Flver data. Our processed bind pose is Y-up while Flver is z-up
 		std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
 
 		for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
