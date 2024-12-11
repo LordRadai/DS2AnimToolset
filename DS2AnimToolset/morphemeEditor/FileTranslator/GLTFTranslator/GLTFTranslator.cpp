@@ -546,6 +546,10 @@ namespace GLTFTranslator
     tinygltf::Animation* createAnimation(tinygltf::Model* gltf, AnimObject* animObj, const char* takeName, int fps)
     {
         const MR::AnimationSourceHandle* animHandle = animObj->getHandle();
+
+        if (animHandle == nullptr)
+            return nullptr;
+
         const MR::AnimRigDef* rig = animHandle->getRig();
 
         tinygltf::Buffer buffer;
