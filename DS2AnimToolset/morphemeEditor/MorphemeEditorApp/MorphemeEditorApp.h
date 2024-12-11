@@ -41,6 +41,7 @@ public:
 	{
 		kFbx,
 		kXmd,
+		kGltf,
 		kNumExportFormats
 	};
 

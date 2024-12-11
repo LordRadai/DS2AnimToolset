@@ -95,7 +95,7 @@ void RenderManager::initialise(HWND hwnd)
 
     m_physicalEffect->SetLightEnabled(2, true);
     m_physicalEffect->SetLightDirection(2, Vector3(0.0f, 0.577f, -0.577f));
-    m_physicalEffect->SetLightDiffuseColor(2, Colors::Gray);
+    m_physicalEffect->SetLightDiffuseColor(2, Colors::White);
     m_physicalEffect->SetLightSpecularColor(2, Colors::White);
 
     DX::ThrowIfFailed(

@@ -808,7 +808,7 @@ void GuiManager::rootWindow()
 
 			int currentItem = editorApp->getExportSettings()->exportFormat;
 
-			const char* exportFormat[] = { "FBX", "XMD" };
+			const char* exportFormat[] = { "FBX", "XMD", "GLTF"};
 
 			if (ImGui::BeginCombo("Export Format", exportFormat[editorApp->getExportSettings()->exportFormat]))
 			{

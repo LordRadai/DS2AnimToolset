@@ -14,7 +14,7 @@ namespace utils
 			return Quaternion(in.x, in.y, in.z, in.w);
 		}
 
-		Matrix getWorldMatrix(NMP::Quat quat, NMP::Vector3 pos)
+		Matrix getTransformMatrix(NMP::Quat quat, NMP::Vector3 pos)
 		{
 			return Matrix::CreateScale(1.f) * Matrix::CreateFromQuaternion(getDxQuat(quat)) * Matrix::CreateTranslation(getDxVector(pos));
 		}

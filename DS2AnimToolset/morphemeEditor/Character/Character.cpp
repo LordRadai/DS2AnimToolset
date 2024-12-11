@@ -3,6 +3,10 @@
 #include "extern.h"
 #include "utils/utils.h"
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
+#include "DebugDraw/DebugDraw.h"
+#include "RenderManager/RenderManager.h"
+#include <PrimitiveBatch.h>
+#include <VertexTypes.h>
 
 namespace
 {
@@ -68,6 +72,26 @@ namespace
             return;
 
         model->draw(renderManager);
+    }
+
+    void drawCharacterController(Character* character, RenderManager* renderManager) 
+    {
+        Matrix world = Matrix::Identity;
+
+        renderManager->applyDebugEffect(world);
+        renderManager->setInputLayout(kDebugLayout);
+
+        MR::CharacterControllerDef* ccDef = character->getMorphemeNetwork()->getActiveCharacterControllerDef();
+        DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(renderManager->getDeviceContext());
+        prim.Begin();
+
+        const Vector3 vertexA = Vector3(0, ccDef->getRadius(), 0);
+        const Vector3 vertexB = vertexA + Vector3(0, ccDef->getHeight() - ccDef->getRadius(), 0);
+        const NMP::Colour color = ccDef->getColour();
+
+        DX::DrawCapsule(&prim, Matrix::CreateScale(character->getCharacterModelCtrl()->getScale()) * Matrix::CreateTranslation(character->getPosition()), vertexA, vertexB, ccDef->getRadius(), RMath::getFloatColor(color.getR(), color.getG(), color.getB(), color.getA()), true);
+        
+        prim.End();
     }
 
     void writeArgumentValue(const TimeAct::Argument* arg, TimeAct::TaeExport::TimeActArgumentExportXML* argExport)
@@ -403,8 +427,6 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
     if (!character->m_morphemeCharacter)
         throw("Failed to create MorphemeCharacter instance (%s)", filename);
 
-    characterDef->loadAnimations();
-
     std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
     const int animCount = characterDef->getAnimFileLookUp()->getNumAnims();
 
@@ -517,6 +539,8 @@ void Character::draw(RenderManager* renderManager)
     drawFlverModel(this->m_characterModelCtrl->getModelFg(kFgEyes), renderManager);
     drawFlverModel(this->m_characterModelCtrl->getModelFg(kFgFace), renderManager);
     drawFlverModel(this->m_characterModelCtrl->getModelFg(kFgHair), renderManager);
+
+    //drawCharacterController(this, renderManager);
 }
 
 void Character::destroy()

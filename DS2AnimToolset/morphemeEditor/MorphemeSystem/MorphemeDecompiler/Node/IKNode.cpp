@@ -185,6 +185,16 @@ namespace MD
 			return -1;
 		}
 
+		inline float calculateBiasByIkParams(NMRU::IKJointParams* jointParams, int numJointParams)
+		{
+			if (numJointParams <= 1)
+				return 1.f;
+
+			const float ratio = 1.f / float(numJointParams - 1);
+
+			return jointParams[1].weight * (numJointParams / (2 * ratio));
+		}
+
 		ME::NodeExportXML* exportHeadLookNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_HEAD_LOOK);
@@ -202,9 +212,9 @@ namespace MD
 			nodeDataBlock->writeBool(headLookSetup->m_worldSpaceTarget, "WorldSpaceTarget");
 
 			CHAR paramName[256];
-			for (int animSetIndex = 0; animSetIndex < netDef->getNumAnimSets(); animSetIndex++)
+			for (uint32_t animSetIndex = 0; animSetIndex < netDef->getNumAnimSets(); animSetIndex++)
 			{
-				MR::AttribDataHeadLookChain* headLookChain = static_cast<MR::AttribDataHeadLookChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET));
+				MR::AttribDataHeadLookChain* headLookChain = static_cast<MR::AttribDataHeadLookChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET, animSetIndex));
 
 				if (animSetIndex == 0)
 				{
@@ -231,8 +241,10 @@ namespace MD
 				sprintf_s(paramName, "EndEffectorOffsetZ_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(headLookChain->m_endEffectorOffset.z, paramName);
 
+				float bias = calculateBiasByIkParams(headLookChain->m_ikParams->perJointParams, headLookChain->m_numJoints);
+
 				sprintf_s(paramName, "Bias_%d", animSetIndex + 1);
-				nodeDataBlock->writeFloat(headLookChain->m_ikParams->bias, paramName);
+				nodeDataBlock->writeFloat(bias, paramName);
 
 				sprintf_s(paramName, "EndJointIndex_%d", animSetIndex + 1);
 				nodeDataBlock->writeUInt(headLookChain->m_endJointIndex, paramName);
@@ -454,7 +466,7 @@ namespace MD
 			CHAR paramName[256];
 			for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
 			{
-				const MR::AttribDataGunAimIKChain* gunAimChainAttrib = static_cast<MR::AttribDataGunAimIKChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET));
+				const MR::AttribDataGunAimIKChain* gunAimChainAttrib = static_cast<MR::AttribDataGunAimIKChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET, animSetIdx));
 
 				sprintf_s(paramName, "GunJointIndex_%d", animSetIdx + 1);
 				nodeDataBlock->writeUInt(gunAimChainAttrib->m_gunJointIndex, paramName);

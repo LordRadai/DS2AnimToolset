@@ -10,6 +10,6 @@ namespace utils
 	{
 		Vector3 getDxVector(const NMP::Vector3 in);
 		Quaternion getDxQuat(const NMP::Quat in);
-		Matrix getWorldMatrix(NMP::Quat quat, NMP::Vector3 pos);
+		Matrix getTransformMatrix(NMP::Quat quat, NMP::Vector3 pos);
 	}
 }
