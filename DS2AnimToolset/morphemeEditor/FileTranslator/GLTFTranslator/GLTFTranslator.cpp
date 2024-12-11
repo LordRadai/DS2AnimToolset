@@ -7,6 +7,31 @@
 
 namespace
 {
+    std::vector<Vector3> getVertices(FlverModel* model, int meshIdx)
+    {
+        std::vector<Vector3> pointList;
+
+        //Get vertices directly from the Flver data. Our processed bind pose is Y-up while Flver is z-up
+        std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
+
+        for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
+            pointList.push_back(Vector3::Transform(skinnedVertices[i].vertexData.position, Matrix::CreateRotationZ(DirectX::XM_PI)));
+
+        return pointList;
+    }
+
+    std::vector<Vector3> getNormals(FlverModel* model, int meshIdx)
+    {
+        std::vector<Vector3> normalList;
+
+        std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
+
+        for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
+            normalList.push_back(Vector3::TransformNormal(skinnedVertices[i].vertexData.normal, Matrix::CreateRotationZ(DirectX::XM_PI)));
+
+        return normalList;
+    }
+
     tinygltf::BufferView* createBufferView(tinygltf::Model* gltf, std::string name, int targetBuffer, size_t byteOffset, size_t byteLength, int target)
     {
         tinygltf::BufferView bufferView;
@@ -232,28 +257,18 @@ namespace
         weights.clear();
         indices.clear();
 
-        std::vector<std::vector<int>> jointIndices = model->getFlverMeshBoneIndices(meshIndex);
-        std::vector<Vector4> jointWeights = model->getFlverMeshBoneWeights(meshIndex);
-
-        // Normalize weights
-        for (size_t i = 0; i < jointWeights.size(); i++)
-        {
-            const float totalWeight = jointWeights[i].x + jointWeights[i].y + jointWeights[i].z + jointWeights[i].w;
-
-            if (totalWeight > 0.0f)
-                jointWeights[i] /= totalWeight;
-        }
+        std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIndex);
 
         const MR::AnimRigDef* rig = model->getRig();
 
         // Convert flver bone indices to morpheme bone indices
-        for (size_t i = 0; i < jointIndices.size(); i++)
+        for (size_t i = 0; i < skinnedVertices.size(); i++)
         {
             Vector4 jointWeightData = Vector4::Zero;
             JointIndicesVec jointIndexData(-1, -1, -1, -1);
             for (size_t j = 0; j < 4; j++)
             {
-                const int morphemeBoneID = model->getMorphemeBoneIdByFlverBoneId(jointIndices[i][j]);
+                const int morphemeBoneID = model->getMorphemeBoneIdByFlverBoneId(skinnedVertices[i].boneIndices[j]);
 
                 if (morphemeBoneID != -1)
                 {
@@ -266,19 +281,19 @@ namespace
                         switch (j)
                         {
                         case 0:
-                            jointWeightData.x = jointWeights[i].x;
+                            jointWeightData.x = skinnedVertices[i].boneWeights[j];
                             jointIndexData.x = influenceArrayIndex;
                             break;
                         case 1:
-                            jointWeightData.y = jointWeights[i].y;
+                            jointWeightData.y = skinnedVertices[i].boneWeights[j];
                             jointIndexData.y = influenceArrayIndex;
                             break;
                         case 2:
-                            jointWeightData.z = jointWeights[i].z;
+                            jointWeightData.z = skinnedVertices[i].boneWeights[j];
                             jointIndexData.z = influenceArrayIndex;
                             break;
                         case 3:
-                            jointWeightData.w = jointWeights[i].w;
+                            jointWeightData.w = skinnedVertices[i].boneWeights[j];
                             jointIndexData.w = influenceArrayIndex;
                             break;
                         }
@@ -311,24 +326,17 @@ namespace
         }
     }
 
-    std::vector<Vector3> getMeshVertices(FlverModel* model, int meshIdx)
+    std::vector<FlverModel::SkinnedVertex> getMeshSkinnedVertices(FlverModel* model, int meshIdx)
     {
-        std::vector<Vector3> vertices = model->getFlverMeshVertices(meshIdx, true);
+        std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
 
-        for (size_t i = 0; i < vertices.size(); i++)
-            vertices[i] = Vector3::Transform(vertices[i], Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateRotationX(DirectX::XM_PIDIV2));
+        for (size_t i = 0; i < skinnedVertices.size(); i++)
+        {
+            skinnedVertices[i].vertexData.position = Vector3::Transform(skinnedVertices[i].vertexData.position, Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateRotationX(DirectX::XM_PIDIV2));
+            skinnedVertices[i].vertexData.normal = Vector3::Transform(skinnedVertices[i].vertexData.normal, Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateRotationX(DirectX::XM_PIDIV2));
+        }
 
-        return vertices;
-    }
-
-    std::vector<Vector3> getMeshNormals(FlverModel* model, int meshIdx)
-    {
-        std::vector<Vector3> normals = model->getFlverMeshNormals(meshIdx, true);
-
-        for (size_t i = 0; i < normals.size(); i++)
-            normals[i] = Vector3::Transform(normals[i], Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateRotationX(DirectX::XM_PIDIV2));
-
-        return normals;
+        return skinnedVertices;
     }
 }
 
@@ -359,7 +367,7 @@ namespace GLTFTranslator
             gltfModel->nodes[parentIndex].children.push_back(jointIndex);
         }
 
-        addBoneVisuals(gltfModel, rig);
+        //addBoneVisuals(gltfModel, rig);
 
         if (includeMeshes && (model != nullptr))
         {
@@ -372,20 +380,19 @@ namespace GLTFTranslator
 
     tinygltf::Mesh* createMesh(tinygltf::Model* gltf, FlverModel* model, int meshIndex)
     {
-        std::vector<Vector3> vertices = getMeshVertices(model, meshIndex);
-        std::vector<Vector3> normals = getMeshNormals(model, meshIndex);
+        std::vector<FlverModel::SkinnedVertex> skinnedVertices = getMeshSkinnedVertices(model, meshIndex);
 
         Vector3 minBound, maxBound;
 
-        calculateMinMax(vertices, minBound, maxBound);
+        std::vector<Vector3> verts = getVertices(model, meshIndex);
 
-        // Normalize the normals, or gltf will complain about the small errors
-        for (size_t i = 0; i < normals.size(); i++)
-            normals[i].Normalize();
+        calculateMinMax(verts, minBound, maxBound);
+
+        std::vector<Vector3> normals = getNormals(model, meshIndex);
 
         std::vector<uint16_t> indices;
-        indices.reserve(vertices.size());
-        for (size_t i = 0; i < vertices.size(); i++)
+        indices.reserve(skinnedVertices.size());
+        for (size_t i = 0; i < skinnedVertices.size(); i++)
             indices.push_back(i);
 
         // Create a buffer to hold all data (positions, normals, indices)
@@ -393,11 +400,11 @@ namespace GLTFTranslator
         buffer.name = "MeshBuffer_" + std::to_string(meshIndex);
 
         // Add vertex positions to the buffer
-        size_t positionDataSize = vertices.size() * sizeof(Vector3);
+        size_t positionDataSize = skinnedVertices.size() * sizeof(Vector3);
         size_t positionOffset = buffer.data.size();
         buffer.data.insert(buffer.data.end(),
-            reinterpret_cast<const unsigned char*>(vertices.data()),
-            reinterpret_cast<const unsigned char*>(vertices.data() + vertices.size()));
+            reinterpret_cast<const unsigned char*>(verts.data()),
+            reinterpret_cast<const unsigned char*>(verts.data() + verts.size()));
 
         // Add vertex normals to the buffer
         size_t normalDataSize = normals.size() * sizeof(Vector3);
@@ -444,7 +451,7 @@ namespace GLTFTranslator
 
         // Vertices
         createBufferView(gltf, "VertexBufferView_" + std::to_string(meshIndex), gltf->buffers.size() - 1, positionOffset, positionDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
-        tinygltf::Accessor* positionAccessor = createAccessor(gltf, "VertexBufAccessor_" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, vertices.size());
+        tinygltf::Accessor* positionAccessor = createAccessor(gltf, "VertexBufAccessor_" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, verts.size());
         positionAccessor->minValues = { minBound.x, minBound.y, minBound.z };
         positionAccessor->maxValues = { maxBound.x, maxBound.y, maxBound.z };
 
@@ -594,8 +601,10 @@ namespace GLTFTranslator
 
             gltf->buffers.push_back(buffer);
             createBufferView(gltf, "TimeData_" + std::to_string(channelID), gltf->buffers.size() - 1, timeOffset, timeData.size() * sizeof(float), 0);
-            createAccessor(gltf, "TimeDataAccessor_" + std::to_string(channelID), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_SCALAR, static_cast<unsigned int>(timeData.size()));
-            
+            tinygltf::Accessor* timeAccessor = createAccessor(gltf, "TimeDataAccessor_" + std::to_string(channelID), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_SCALAR, static_cast<unsigned int>(timeData.size()));
+            timeAccessor->minValues = { timeData[0] };
+            timeAccessor->maxValues = { timeData.back() };
+
             const int animTimeAccessorIdx = gltf->accessors.size() - 1;
 
             createBufferView(gltf, "TranslationData_" + std::to_string(channelID), gltf->buffers.size() - 1, translationOffset, translationData.size() * sizeof(Vector3), 0);

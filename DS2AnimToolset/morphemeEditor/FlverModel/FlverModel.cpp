@@ -14,57 +14,14 @@ namespace
 
 		std::string boneName = pFlverModel->getFlverBoneName(boneId);
 
-		if (boneName == "LCalfTwist")
-			boneName = "L_Calf";
-		else if (boneName == "RCalfTwist")
-			boneName = "R_Calf";
-
-		if (boneName == "L_CalfTwist")
-			boneName = "L_Calf";
-		else if (boneName == "R_CalfTwist")
-			boneName = "R_Calf";
-
-		else if (boneName == "LThighTwist")
-			boneName = "L_Thigh";
-		else if (boneName == "RThighTwist")
-			boneName = "R_Thigh";
-
-		else if (boneName == "L_ThighTwist")
-			boneName = "L_Thigh";
-		else if (boneName == "R_ThighTwist")
-			boneName = "R_Thigh";
-
-		else if (boneName == "L_UpArmTwist")
-			boneName = "L_UpperArm";
-		else if (boneName == "R_UpArmTwist")
-			boneName = "R_UpperArm";
-
-		else if (boneName == "LUpArmTwist")
-			boneName = "L_UpperArm";
-		else if (boneName == "RUpArmTwist")
-			boneName = "R_UpperArm";
-
-		else if (boneName == "L_ForeTwist")
-			boneName = "L_Forearm";
-		else if (boneName == "R_ForeTwist")
-			boneName = "R_Forearm";
-
-		else if (boneName == "LForeTwist")
-			boneName = "L_Forearm";
-		else if (boneName == "RForeTwist")
-			boneName = "R_Forearm";
-
-		int boneIdx = pRig->getBoneIndexFromName(boneName.c_str());
-
-		return boneIdx;
+		return pRig->getBoneIndexFromName(boneName.c_str());
 	}
 
 	int getFlverBoneIDByMorphemeBoneID(MR::AnimRigDef* pRig, FlverModel* pFlverModel, int idx)
 	{
 		std::string boneName = pRig->getBoneName(idx);
-		int flverIdx = pFlverModel->getFlverBoneIndexByName(boneName.c_str());
 
-		return flverIdx;
+		return pFlverModel->getFlverBoneIndexByName(boneName.c_str());
 	}
 
 	Matrix getNmTrajectoryTransform(MR::AnimationSourceHandle* animHandle)
@@ -668,6 +625,62 @@ std::vector<std::vector<int>> FlverModel::getFlverMeshBoneIndices(int idx)
 	return buffer;
 }
 
+std::vector<FlverModel::SkinnedVertex> FlverModel::getBindPoseSkinnedVertices(int idx)
+{
+	return this->m_meshVerticesBindPoseTransforms[idx];
+}
+
+void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex)
+{
+	float totalWeight = 0.f;
+	for (size_t wt = 0; wt < 4; wt++)
+	{
+		const uint32_t morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(skinnedVertex.boneIndices[wt]);
+
+		// Only factor in the bones that are present in the morpheme rig
+		if (morphemeBoneID != -1)
+			totalWeight += skinnedVertex.boneWeights[wt];
+		else
+		{
+			//skinnedVertex.boneWeights[wt] = 0.f;
+			//skinnedVertex.boneIndices[wt] = -1;
+		}
+	}
+
+	if (totalWeight != 0.f)
+	{
+		if (totalWeight != 1.f)
+		{
+			for (size_t wt = 0; wt < 4; wt++)
+				skinnedVertex.boneWeights[wt] /= totalWeight;
+		}
+	}
+	else
+	{
+		for (size_t wt = 0; wt < 4; wt++)
+		{
+			const int boneID = skinnedVertex.boneIndices[wt];
+			int parentID = this->m_flver->bones[boneID].previousSiblingIndex;
+
+			while (parentID != -1)
+			{
+				int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(parentID);
+
+				if (morphemeBoneID != -1)
+				{
+					skinnedVertex.boneIndices[wt] = parentID;
+
+					break;
+				}
+
+				parentID = this->m_flver->bones[parentID].previousSiblingIndex;
+			}
+		}
+
+		validateSkinnedVertexData(skinnedVertex);
+	}
+}
+
 // Gets all the model vertices for all the meshes and stores them into m_verts
 bool FlverModel::initialise()
 {
@@ -774,8 +787,10 @@ bool FlverModel::initialise()
 				float norm_z = mesh->vertexData->normals[(vertexIndex * 3) + 1];
 
 				Vector3 normal = Vector3::Transform(Vector3(norm_x, norm_y, norm_z), Matrix::CreateReflection(Plane(Vector3::Right)));
+				normal.Normalize();
 
 				meshSkinnedVertices.push_back(SkinnedVertex(pos, normal, weights, indices));
+				validateSkinnedVertexData(meshSkinnedVertices.back());
 			}
 		}
 
@@ -1140,29 +1155,44 @@ void FlverModel::animate(MR::AnimationSourceHandle* animHandle)
 	std::vector<Matrix> boneRelativeTransforms;
 	boneRelativeTransforms.reserve(this->m_boneTransforms.size());
 
-	for (size_t i = 0; i < this->m_boneTransforms.size(); i++)
+	for (int i = 0; i < this->m_boneTransforms.size(); i++)
 		boneRelativeTransforms.push_back(this->m_boneInverseBindPoseTransforms[i] * this->m_boneTransforms[i]);
 
-	for (size_t meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
+	for (int meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
 	{
-		for (size_t vertexIndex = 0; vertexIndex < this->m_meshVerticesBindPoseTransforms[meshIdx].size(); vertexIndex++)
+		for (int vertexIndex = 0; vertexIndex < this->m_meshVerticesBindPoseTransforms[meshIdx].size(); vertexIndex++)
 		{
 			int* indices = this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].boneIndices;
 			float* weights = this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].boneWeights;
 
 			Vector3 newPos = Vector3::Zero;
 			Vector3 newNorm = Vector3::Zero;
+			bool hasInfluence = false;
 
-			for (size_t wt = 0; wt < 4; wt++)
+			for (int wt = 0; wt < 4; wt++)
 			{
-				int boneID = indices[wt];
+				const int boneID = indices[wt];
 
-				// Skip weighting for bones outside of range, or that are invalid
-				if ((boneID == -1) || (boneID >= boneRelativeTransforms.size()))
-					continue;
+				if (boneID != -1)
+				{
+					const int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(boneID);
+					const float weight = weights[wt];
 
-				newPos += Vector3::Transform(this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].vertexData.position, boneRelativeTransforms[boneID]) * weights[wt];
-				newNorm += Vector3::Transform(this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].vertexData.normal, boneRelativeTransforms[boneID]) * weights[wt];
+					if ((morphemeBoneID != -1) && (weight != 0.f))
+					{
+						hasInfluence = true;
+						newPos += Vector3::Transform(this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].vertexData.position, boneRelativeTransforms[boneID]) * weight;
+						newNorm += Vector3::Transform(this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].vertexData.normal, boneRelativeTransforms[boneID]) * weight;
+					}
+				}
+			}
+
+			if (!hasInfluence)
+			{
+				g_appLog->debugMessage(MsgLevel_Debug, "Vertex %d of mesh %d has an invalid influence:\n", vertexIndex, meshIdx);
+				g_appLog->debugMessage(MsgLevel_Debug, "\tIndices: (%d, %d, %d, %d)\n", indices[0], indices[1], indices[2], indices[3]);
+				g_appLog->debugMessage(MsgLevel_Debug, "\tWeights: (%.3f, %.3f, %.3f, %.3f)\n", weights[0], weights[1], weights[2], weights[3]);
+				g_appLog->panicMessage("Invalid bone influence data for %s (meshIdx=%d, vertexIdx=%d)\n", this->m_name.c_str(), meshIdx, vertexIndex);
 			}
 
 			this->m_meshVerticesTransforms[meshIdx][vertexIndex].vertexData.position = newPos;

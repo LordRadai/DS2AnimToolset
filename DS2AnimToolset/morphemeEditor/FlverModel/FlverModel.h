@@ -105,12 +105,8 @@ public:
 
 	int getFlverBoneIndexByName(const char* name);
 
-	std::vector<Vector3> getFlverMeshVertices(int idx, bool flip);
-	std::vector<Vector3> getFlverMeshNormals(int idx, bool flip);
-	std::vector<Vector3> getFlverMeshTangents(int idx, bool flip);
-	std::vector<Vector3> getFlverMeshBiTangents(int idx, bool flip);
-	std::vector<Vector4> getFlverMeshBoneWeights(int idx);
-	std::vector<std::vector<int>> getFlverMeshBoneIndices(int idx);
+	std::vector<SkinnedVertex> getBindPoseSkinnedVertices(int idx);
+	void validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex);
 
 	// Morpheme functions
 
@@ -158,4 +154,11 @@ private:
 
 	void createFlverToMorphemeBoneMap();
 	void createMorphemeToFlverBoneMap();
+
+	std::vector<Vector3> getFlverMeshVertices(int idx, bool flip);
+	std::vector<Vector3> getFlverMeshNormals(int idx, bool flip);
+	std::vector<Vector3> getFlverMeshTangents(int idx, bool flip);
+	std::vector<Vector3> getFlverMeshBiTangents(int idx, bool flip);
+	std::vector<Vector4> getFlverMeshBoneWeights(int idx);
+	std::vector<std::vector<int>> getFlverMeshBoneIndices(int idx);
 };

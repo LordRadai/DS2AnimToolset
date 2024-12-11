@@ -59,15 +59,15 @@ namespace
 		return children;
 	}
 	
-	XMD::XVector3Array getPoints(FlverModel* model, int meshIdx)
+	XMD::XVector3Array getVertices(FlverModel* model, int meshIdx)
 	{
 		XMD::XVector3Array pointList;
 
 		//Get vertices directly from the Flver data. Our processed bind pose is Y-up while Flver is z-up
-		std::vector<Vector3> vertices = model->getFlverMeshVertices(meshIdx, true);
+		std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
 
 		for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
-			pointList.push_back(convertToXmdVec3(vertices[i]));
+			pointList.push_back(convertToXmdVec3(Vector3::Transform(skinnedVertices[i].vertexData.position, Matrix::CreateRotationX(DirectX::XM_PIDIV2))));
 
 		return pointList;
 	}
@@ -76,36 +76,12 @@ namespace
 	{
 		XMD::XNormalList normalList;
 
-		std::vector<Vector3> normals = model->getFlverMeshNormals(meshIdx, true);
+		std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
 
 		for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
-			normalList.push_back(convertToXmdVec3(normals[i]));
+			normalList.push_back(convertToXmdVec3(Vector3::TransformNormal(skinnedVertices[i].vertexData.normal, Matrix::CreateRotationX(DirectX::XM_PIDIV2))));
 
 		return normalList;
-	}
-
-	XMD::XVector3Array getTangents(FlverModel* model, int meshIdx)
-	{
-		XMD::XVector3Array tangentList;
-
-		std::vector<Vector3> tangents = model->getFlverMeshTangents(meshIdx, true);
-
-		for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
-			tangentList.push_back(convertToXmdVec3(tangents[i]));
-
-		return tangentList;
-	}
-
-	XMD::XVector3Array getBiTangents(FlverModel* model, int meshIdx)
-	{
-		XMD::XVector3Array bitangentList;
-
-		std::vector<Vector3> bitangents = model->getFlverMeshBiTangents(meshIdx, true);
-
-		for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
-			bitangentList.push_back(convertToXmdVec3(bitangents[i]));
-
-		return bitangentList;
 	}
 
 	XM2::XQuaternion getBoneTransformQuatAtTime(AnimObject* animObj, float time, int boneId)
@@ -335,16 +311,15 @@ namespace XMDTranslator
 
 		int numVertices = model->getNumVerticesInMesh(meshIdx);
 
-		std::vector<Vector4> weights = model->getFlverMeshBoneWeights(meshIdx);
-		std::vector<std::vector<int>> indices = model->getFlverMeshBoneIndices(meshIdx);
+		std::vector<FlverModel::SkinnedVertex> vertexData = model->getBindPoseSkinnedVertices(meshIdx);
 
-		for (size_t i = 0; i < weights.size(); i++)
+		for (size_t i = 0; i < skinnedVertices.size(); i++)
 		{
 			XMD::XSkinnedVertex skinnedVertex;
 
 			for (size_t j = 0; j < 4; j++)
 			{
-				int boneIdx = model->getMorphemeBoneIdByFlverBoneId(indices[i][j]);
+				int boneIdx = model->getMorphemeBoneIdByFlverBoneId(vertexData[i].boneIndices[j]);
 
 				if (boneIdx != -1)
 				{
@@ -357,16 +332,16 @@ namespace XMDTranslator
 						switch (j)
 						{
 						case 0:
-							skinnedVertex.push_back(XMD::XSkinWeight(weights[i].x, id));
+							skinnedVertex.push_back(XMD::XSkinWeight(vertexData[i].boneWeights[0], id));
 							break;
 						case 1:
-							skinnedVertex.push_back(XMD::XSkinWeight(weights[i].y, id));
+							skinnedVertex.push_back(XMD::XSkinWeight(vertexData[i].boneWeights[1], id));
 							break;
 						case 2:
-							skinnedVertex.push_back(XMD::XSkinWeight(weights[i].z, id));
+							skinnedVertex.push_back(XMD::XSkinWeight(vertexData[i].boneWeights[2], id));
 							break;
 						case 3:
-							skinnedVertex.push_back(XMD::XSkinWeight(weights[i].w, id));
+							skinnedVertex.push_back(XMD::XSkinWeight(vertexData[i].boneWeights[3], id));
 							break;
 						}
 					}
@@ -408,7 +383,7 @@ namespace XMDTranslator
 		char meshName[256];
 		sprintf_s(meshName, "mesh[%d]Shape", meshIdx);
 
-		XMD::XVector3Array points = getPoints(model, meshIdx);
+		XMD::XVector3Array points = getVertices(model, meshIdx);
 
 		mesh->SetName(meshName);
 		mesh->SetIsIntermediateObject(false);		
@@ -427,7 +402,7 @@ namespace XMDTranslator
 		char meshName[256];
 		sprintf_s(meshName, "mesh[%d]Shape", meshIdx);
 
-		XMD::XVector3Array points = getPoints(model, meshIdx);
+		XMD::XVector3Array points = getVertices(model, meshIdx);
 
 		mesh->SetName(meshName);
 		mesh->SetIsIntermediateObject(false);
@@ -461,25 +436,6 @@ namespace XMDTranslator
 			normals->SetElement(normalList[i], i);
 
 		normals->SetIndexSet(normalIndices);
-
-		//We leave these out because it seems to be causing corruption issues within the XMD. Probably a FLVER lib bug
-		/*
-		XMD::XVector3Array tangentsList = getTangents(model, meshIdx);
-		XMD::XVertexSet* tangents = mesh->CreateVertexSet("tangents", tangentsList.size(), 3, XMD::XVertexSet::kTangent);
-
-		for (size_t i = 0; i < tangentsList.size(); i++)
-			tangents->SetElement(tangentsList[i], i);
-
-		tangents->SetIndexSet(normalIndices);
-
-		XMD::XVector3Array bitangentsList = getBiTangents(model, meshIdx);
-		XMD::XVertexSet* bitangents = mesh->CreateVertexSet("bitangents", bitangentsList.size(), 3, XMD::XVertexSet::kBiTangent);
-
-		for (size_t i = 0; i < bitangentsList.size(); i++)
-			bitangents->SetElement(bitangentsList[i], i);
-
-		bitangents->SetIndexSet(normalIndices);
-		*/
 
 		XMDTranslator::createSkin(xmd, mesh, model, meshIdx);
 		XMDTranslator::createMeshBone(xmd, mesh, meshIdx);

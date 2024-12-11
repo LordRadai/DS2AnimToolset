@@ -487,7 +487,7 @@ namespace
 
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
 
-		if (!FBXTranslator::createFbxModel(pScene, model, RString::toNarrow(character->getCharacterName()), pBindPoses, morphemeRig, modelOutPath, model->getFlverToMorphemeBoneMap()))
+		if (!FBXTranslator::createFbxModel(pScene, model, RString::toNarrow(character->getCharacterName()), pBindPoses, morphemeRig, modelOutPath))
 		{
 			g_appLog->debugMessage(MsgLevel_Error, "Failed to create FBX model/skeleton (chr=%ws)\n", character->getCharacterName().c_str());
 			status = false;
@@ -593,11 +593,13 @@ namespace
 
 		std::vector<FbxNode*> morphemeRig = FBXTranslator::createFbxMorphemeSkeleton(pScene, character->getMorphemeCharacter()->getNetwork()->getRig(0), pBindPoses);
 
+		pScene->AddPose(pBindPoses);
+
 		if (addModel)
 		{
 			FlverModel* model = character->getCharacterModelCtrl()->getModel();
 
-			if (!FBXTranslator::createFbxModel(pScene, model, RString::toNarrow(character->getCharacterName()), pBindPoses, morphemeRig, outPath, model->getFlverToMorphemeBoneMap()))
+			if (!FBXTranslator::createFbxModel(pScene, model, RString::toNarrow(character->getCharacterName()), pBindPoses, morphemeRig, outPath))
 			{
 				g_appLog->debugMessage(MsgLevel_Error, "Failed to create FBX model/skeleton (%ws)\n", character->getCharacterName().c_str());
 				status = false;
@@ -609,8 +611,6 @@ namespace
 			g_appLog->debugMessage(MsgLevel_Error, "Failed to create FBX take (%ws)\n", character->getCharacterName().c_str());
 			status = false;
 		}
-
-		pScene->AddPose(pBindPoses);
 
 		//Shutdown
 		pExporter->Export(pScene);
@@ -2247,7 +2247,7 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 	switch (this->m_exportSettings.exportFormat)
 	{
 	case MorphemeEditorApp::kFbx:
-		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, false);
+		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, true);
 	case MorphemeEditorApp::kXmd:
 		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, fps);
 	case MorphemeEditorApp::kGltf:
