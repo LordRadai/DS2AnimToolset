@@ -61,11 +61,12 @@ namespace
 	
 	XMD::XVector3Array getVertices(FlverModel* model, int meshIdx)
 	{
-		XMD::XVector3Array pointList;
-
 		std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
 
-		for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
+		XMD::XVector3Array pointList;
+		pointList.reserve(skinnedVertices.size());
+
+		for (size_t i = 0; i < skinnedVertices.size(); i++)
 			pointList.push_back(convertToXmdVec3(Vector3::Transform(skinnedVertices[i].vertexData.position, Matrix::CreateRotationX(DirectX::XM_PIDIV2))));
 
 		return pointList;
@@ -73,11 +74,12 @@ namespace
 
 	XMD::XNormalList getNormals(FlverModel* model, int meshIdx)
 	{
-		XMD::XNormalList normalList;
-
 		std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
 
-		for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
+		XMD::XVector3Array normalList;
+		normalList.reserve(skinnedVertices.size());
+
+		for (size_t i = 0; i < skinnedVertices.size(); i++)
 			normalList.push_back(convertToXmdVec3(Vector3::TransformNormal(skinnedVertices[i].vertexData.normal, Matrix::CreateRotationX(DirectX::XM_PIDIV2))));
 
 		return normalList;

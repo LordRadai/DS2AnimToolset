@@ -46,11 +46,12 @@ namespace
 
 	std::vector<FbxVector4> getVertices(FlverModel* model, int meshIdx)
 	{
-		std::vector<FbxVector4> pointList;
-
 		std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
 
-		for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
+		std::vector<FbxVector4> pointList;
+		pointList.reserve(skinnedVertices.size());
+
+		for (size_t i = 0; i < skinnedVertices.size(); i++)
 			pointList.push_back(getFbxVector4(Vector3::Transform(skinnedVertices[i].vertexData.position, Matrix::CreateRotationX(DirectX::XM_PIDIV2))));
 
 		return pointList;
@@ -58,11 +59,12 @@ namespace
 
 	std::vector<FbxVector4> getNormals(FlverModel* model, int meshIdx)
 	{
-		std::vector<FbxVector4> normalList;
-
 		std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
 
-		for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
+		std::vector<FbxVector4> normalList;
+		normalList.reserve(skinnedVertices.size());
+
+		for (size_t i = 0; i < skinnedVertices.size(); i++)
 			normalList.push_back(getFbxVector4(Vector3::TransformNormal(skinnedVertices[i].vertexData.normal, Matrix::CreateRotationX(DirectX::XM_PIDIV2))));
 
 		return normalList;

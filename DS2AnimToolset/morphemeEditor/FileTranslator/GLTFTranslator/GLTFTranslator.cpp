@@ -9,11 +9,11 @@ namespace
 {
     std::vector<Vector3> getVertices(FlverModel* model, int meshIdx)
     {
-        std::vector<Vector3> pointList;
-
         std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
+        std::vector<Vector3> pointList;
+        pointList.reserve(skinnedVertices.size());
 
-        for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
+        for (size_t i = 0; i < skinnedVertices.size(); i++)
             pointList.push_back(Vector3::Transform(skinnedVertices[i].vertexData.position, Matrix::CreateRotationZ(DirectX::XM_PI)));
 
         return pointList;
@@ -21,11 +21,12 @@ namespace
 
     std::vector<Vector3> getNormals(FlverModel* model, int meshIdx)
     {
-        std::vector<Vector3> normalList;
-
         std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
 
-        for (size_t i = 0; i < model->getNumVerticesInMesh(meshIdx); i++)
+        std::vector<Vector3> normalList;
+        normalList.reserve(skinnedVertices.size());
+
+        for (size_t i = 0; i < skinnedVertices.size(); i++)
             normalList.push_back(Vector3::TransformNormal(skinnedVertices[i].vertexData.normal, Matrix::CreateRotationZ(DirectX::XM_PI)));
 
         return normalList;
