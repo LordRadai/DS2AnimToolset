@@ -400,7 +400,7 @@ namespace GLTFTranslator
         buffer.name = "MeshBuffer_" + std::to_string(meshIndex);
 
         // Add vertex positions to the buffer
-        size_t positionDataSize = skinnedVertices.size() * sizeof(Vector3);
+        size_t positionDataSize = verts.size() * sizeof(Vector3);
         size_t positionOffset = buffer.data.size();
         buffer.data.insert(buffer.data.end(),
             reinterpret_cast<const unsigned char*>(verts.data()),
@@ -413,13 +413,6 @@ namespace GLTFTranslator
             reinterpret_cast<const unsigned char*>(normals.data()),
             reinterpret_cast<const unsigned char*>(normals.data() + normals.size()));
 
-        // Add index data to the buffer
-        size_t indexDataSize = indices.size() * sizeof(uint16_t);
-        size_t indexOffset = buffer.data.size();
-        buffer.data.insert(buffer.data.end(),
-            reinterpret_cast<const unsigned char*>(indices.data()),
-            reinterpret_cast<const unsigned char*>(indices.data() + indices.size()));
-
         std::vector<int> jointArray;
         std::vector<Vector4> jointWeights;
         std::vector<JointIndicesVec> jointIndices;
@@ -427,7 +420,7 @@ namespace GLTFTranslator
         getSkinnedVertices(gltf, inverseBindMatrices, jointArray, jointWeights, jointIndices, model, meshIndex);
 
         // Add joint indices to the buffer
-        size_t jointDataSize = jointIndices.size() * sizeof(Vector4);
+        size_t jointDataSize = jointIndices.size() * sizeof(JointIndicesVec);
         size_t jointOffset = buffer.data.size();
         buffer.data.insert(buffer.data.end(),
             reinterpret_cast<const unsigned char*>(jointIndices.data()),
@@ -447,6 +440,13 @@ namespace GLTFTranslator
             reinterpret_cast<const unsigned char*>(inverseBindMatrices.data()),
             reinterpret_cast<const unsigned char*>(inverseBindMatrices.data() + inverseBindMatrices.size()));
 
+        // Add index data to the buffer
+        size_t indexDataSize = indices.size() * sizeof(uint16_t);
+        size_t indexOffset = buffer.data.size();
+        buffer.data.insert(buffer.data.end(),
+            reinterpret_cast<const unsigned char*>(indices.data()),
+            reinterpret_cast<const unsigned char*>(indices.data() + indices.size()));
+
         gltf->buffers.push_back(buffer);
 
         // Vertices
@@ -462,12 +462,6 @@ namespace GLTFTranslator
         createAccessor(gltf, "NormalsBufAccessor_" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, normals.size());
 
         const int normalsDataIdx = gltf->accessors.size() - 1;
-
-        // Vertex indices
-        createBufferView(gltf, "IndexBufferView_" + std::to_string(meshIndex), gltf->buffers.size() - 1, indexOffset, indexDataSize, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
-        createAccessor(gltf, "IndexBufAccessor_" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_SCALAR, indices.size());
-
-        const int indicesDataIdx = gltf->accessors.size() - 1;
 
         // Bone indices
         createBufferView(gltf, "JointIndicesBufferView_" + std::to_string(meshIndex), gltf->buffers.size() - 1, jointOffset, jointDataSize, TINYGLTF_TARGET_ARRAY_BUFFER);
@@ -486,6 +480,12 @@ namespace GLTFTranslator
         createAccessor(gltf, "IbmBufAccessor" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_MAT4, inverseBindMatrices.size());
         
         const int ibmDataIdx = gltf->accessors.size() - 1;
+
+        // Vertex indices
+        createBufferView(gltf, "IndexBufferView_" + std::to_string(meshIndex), gltf->buffers.size() - 1, indexOffset, indexDataSize, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
+        createAccessor(gltf, "IndexBufAccessor_" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_SCALAR, indices.size());
+
+        const int indicesDataIdx = gltf->accessors.size() - 1;
 
         tinygltf::Primitive primitive;
         primitive.indices = indicesDataIdx;

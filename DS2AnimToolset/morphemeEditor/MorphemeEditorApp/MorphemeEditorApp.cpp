@@ -544,7 +544,7 @@ namespace
 		return success;
 	}
 
-	bool exportAnimationToFbx(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool addModel = true)
+	bool exportAnimationToFbx(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool addModel)
 	{
 		bool status = true;
 
@@ -652,7 +652,7 @@ namespace
 		return status;
 	}
 
-	bool exportAnimationToGltf(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps)
+	bool exportAnimationToGltf(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool includeModel)
 	{
 		MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
 		AnimObject* anim = characterDef->getAnimation(animSetIdx, animIdx);
@@ -661,7 +661,7 @@ namespace
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
 		MR::AnimRigDef* rig = character->getRig(0);
 
-		tinygltf::Model* gltfModel = GLTFTranslator::createModel(rig, model, true);
+		tinygltf::Model* gltfModel = GLTFTranslator::createModel(rig, model, includeModel);
 		GLTFTranslator::createAnimation(gltfModel, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
 
 		tinygltf::Scene scene;
@@ -1995,7 +1995,7 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 	{
 		std::filesystem::current_path(path);
 
-		g_workerThread.load()->addProcess("Export animations", 2);
+		g_workerThread.load()->addProcess("Export animations", 3);
 
 		std::wstring markupExportPath = L"morphemeMarkup\\";
 		std::filesystem::create_directories(markupExportPath);
@@ -2247,11 +2247,11 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 	switch (this->m_exportSettings.exportFormat)
 	{
 	case MorphemeEditorApp::kFbx:
-		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, true);
+		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, false);
 	case MorphemeEditorApp::kXmd:
 		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, fps);
 	case MorphemeEditorApp::kGltf:
-		return exportAnimationToGltf(path, this->m_character, animSetIdx, animId, fps);
+		return exportAnimationToGltf(path, this->m_character, animSetIdx, animId, fps, false);
 	default:
 		return false;
 	}
