@@ -309,17 +309,15 @@ namespace XMDTranslator
 
 		XM2::vector<XMD::XSkinnedVertex> skinnedVertices;
 
-		int numVertices = model->getNumVerticesInMesh(meshIdx);
-
 		std::vector<FlverModel::SkinnedVertex> vertexData = model->getBindPoseSkinnedVertices(meshIdx);
 
-		for (size_t i = 0; i < skinnedVertices.size(); i++)
+		for (size_t i = 0; i < vertexData.size(); i++)
 		{
 			XMD::XSkinnedVertex skinnedVertex;
 
-			for (size_t j = 0; j < 4; j++)
+			for (size_t wt = 0; wt < 4; wt++)
 			{
-				int boneIdx = model->getMorphemeBoneIdByFlverBoneId(vertexData[i].boneIndices[j]);
+				int boneIdx = model->getMorphemeBoneIdByFlverBoneId(vertexData[i].boneIndices[wt]);
 
 				if (boneIdx != -1)
 				{
@@ -328,22 +326,7 @@ namespace XMDTranslator
 					if (bone != nullptr)
 					{
 						XM2::XU32 id = skin->AddInfluence(bone);
-
-						switch (j)
-						{
-						case 0:
-							skinnedVertex.push_back(XMD::XSkinWeight(vertexData[i].boneWeights[0], id));
-							break;
-						case 1:
-							skinnedVertex.push_back(XMD::XSkinWeight(vertexData[i].boneWeights[1], id));
-							break;
-						case 2:
-							skinnedVertex.push_back(XMD::XSkinWeight(vertexData[i].boneWeights[2], id));
-							break;
-						case 3:
-							skinnedVertex.push_back(XMD::XSkinWeight(vertexData[i].boneWeights[3], id));
-							break;
-						}
+						skinnedVertex.push_back(XMD::XSkinWeight(vertexData[i].boneWeights[wt], id));
 					}
 				}
 			}
