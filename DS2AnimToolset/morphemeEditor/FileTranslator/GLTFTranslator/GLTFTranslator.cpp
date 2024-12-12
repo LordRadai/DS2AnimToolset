@@ -60,7 +60,7 @@ namespace
         return &gltf->accessors.back();
     }
 
-    void createSphere(tinygltf::Model* gltf, std::string name, Vector3 center, float radius, int latitudeDivisions = 50, int longitudeDivisions = 50)
+    void createSphere(tinygltf::Model* gltf, std::string name, Vector3 center, float radius, int latitudeDivisions = 50, int longitudeDivisions = 50, DirectX::XMVECTORF32 color = DirectX::Colors::Blue)
     {
         std::vector<Vector3> vertices;
         std::vector<Vector3> normals;
@@ -143,12 +143,72 @@ namespace
 
         const int indicesIdx = gltf->accessors.size() - 1;
 
+        tinygltf::Material material;
+
+        material.name = "DebugMaterial";
+        material.pbrMetallicRoughness.baseColorFactor = { color[0], color[1], color[2], color[3] };
+
+        gltf->materials.push_back(material);
+        const int materialIndex = gltf->materials.size() - 1;
+
         // Create a mesh object
         tinygltf::Primitive primitive;
         primitive.attributes["POSITION"] = vertexIdx;
         primitive.attributes["NORMAL"] = normalIdx;
         primitive.mode = TINYGLTF_MODE_TRIANGLES;
         primitive.indices = indicesIdx;
+        primitive.material = materialIndex;
+
+        // Create the mesh
+        mesh.name = name;
+        mesh.primitives.push_back(primitive);
+
+        gltf->meshes.push_back(mesh);
+    }
+
+    void createLine(tinygltf::Model* gltf, std::string name, Vector3 pointA, Vector3 pointB, DirectX::XMVECTORF32 color = DirectX::Colors::Blue)
+    {
+        Vector3 vertices[2] = { pointA, pointB };
+        uint16_t indices[2] = { 0, 1 };
+
+        // Add the buffers
+        tinygltf::Buffer buffer;
+        buffer.name = "Buffer_" + name;
+        buffer.data.insert(buffer.data.end(), reinterpret_cast<const unsigned char*>(vertices), reinterpret_cast<const unsigned char*>(vertices + 2));
+        buffer.data.insert(buffer.data.end(), reinterpret_cast<const unsigned char*>(indices), reinterpret_cast<const unsigned char*>(indices + 2));
+        gltf->buffers.push_back(buffer);
+
+        // Create the mesh and the corresponding buffer
+        tinygltf::Mesh mesh;
+
+        ptrdiff_t positionOffset = 0;
+        ptrdiff_t indicesOffset = 2 * sizeof(Vector3);
+
+        // Create buffer views for position, normals, and indices
+        createBufferView(gltf, "VertexBufferView_" + name, gltf->buffers.size() - 1, positionOffset, 2 * sizeof(Vector3), TINYGLTF_TARGET_ARRAY_BUFFER);
+        createAccessor(gltf, "VertexAccessor_" + name, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3, 2);
+
+        const int vertexIdx = gltf->accessors.size() - 1;
+
+        createBufferView(gltf, "IndexBufferView_" + name, gltf->buffers.size() - 1, indicesOffset, 2 * sizeof(uint16_t), TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
+        createAccessor(gltf, "IndexAccessor_" + name, gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT, TINYGLTF_TYPE_SCALAR, 2);
+
+        const int indicesIdx = gltf->accessors.size() - 1;
+
+        tinygltf::Material material;
+
+        material.name = "DebugMaterial";
+        material.pbrMetallicRoughness.baseColorFactor = { color[0], color[1], color[2], color[3] };
+
+        gltf->materials.push_back(material);
+        const int materialIndex = gltf->materials.size() - 1;
+
+        // Create a mesh object
+        tinygltf::Primitive primitive;
+        primitive.attributes["POSITION"] = vertexIdx;
+        primitive.mode = TINYGLTF_MODE_LINE;
+        primitive.indices = indicesIdx;
+        primitive.material = materialIndex;
 
         // Create the mesh
         mesh.name = name;
@@ -231,7 +291,7 @@ namespace
         return jointArray.size() - 1;
     }
 
-    // This doesn't work, I don't know why, but it's all wrong
+    // Adds a debug visualizer to all bones
     void addBoneVisuals(tinygltf::Model* gltf, MR::AnimRigDef* rig) 
     {
         // Iterate through all joints
@@ -241,15 +301,31 @@ namespace
 
             if (joint)
             {
-                Matrix bindPoseTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(boneID), *rig->getBindPoseBonePos(boneID));
-                createSphere(gltf, "BoneMarker_" + std::to_string(boneID), Vector3::Zero, 0.05f);
+                /*
+                const int parentID = rig->getParentBoneIndex(boneID);
+
+                if (parentID != -1)
+                {
+                    Matrix boneTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(boneID), *rig->getBindPoseBonePos(boneID));
+                    Matrix parentTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(parentID), *rig->getBindPoseBonePos(parentID));
+
+                    createLine(gltf, "BoneMarker_" + std::to_string(boneID), Vector3::Transform(Vector3::Zero, parentTransform.Invert()), Vector3::Transform(Vector3::Zero, boneTransform * parentTransform.Invert()));
+                }
+                else
+                {
+                    createSphere(gltf, "BoneMarker_" + std::to_string(boneID), Vector3::Zero, 0.05f);
+                }
+                */
+
+                createSphere(gltf, "BoneMarker_" + std::to_string(boneID), Vector3::Zero, 0.01f);
 
                 joint->mesh = gltf->meshes.size() - 1;
             }
         }
     }
 
-    void getSkinnedVertices(tinygltf::Model* gltf, std::vector<Matrix>& ibm, std::vector<int>& jointArray, std::vector<Vector4>& weights, std::vector<JointIndicesVec>& indices, FlverModel* model, int meshIndex)
+    // Retrieve the data necessary for the skinning process from the flver model
+    void getSkinningData(tinygltf::Model* gltf, std::vector<Matrix>& ibm, std::vector<int>& jointArray, std::vector<Vector4>& weights, std::vector<JointIndicesVec>& indices, FlverModel* model, int meshIndex)
     {
         // Make sure the input is empty before adding anything
         ibm.clear();
@@ -367,7 +443,9 @@ namespace GLTFTranslator
             gltfModel->nodes[parentIndex].children.push_back(jointIndex);
         }
 
-        //addBoneVisuals(gltfModel, rig);
+#ifdef _DEBUG
+        addBoneVisuals(gltfModel, rig);
+#endif
 
         if (includeMeshes && (model != nullptr))
         {
@@ -417,7 +495,7 @@ namespace GLTFTranslator
         std::vector<Vector4> jointWeights;
         std::vector<JointIndicesVec> jointIndices;
         std::vector<Matrix> inverseBindMatrices;
-        getSkinnedVertices(gltf, inverseBindMatrices, jointArray, jointWeights, jointIndices, model, meshIndex);
+        getSkinningData(gltf, inverseBindMatrices, jointArray, jointWeights, jointIndices, model, meshIndex);
 
         // Add joint indices to the buffer
         size_t jointDataSize = jointIndices.size() * sizeof(JointIndicesVec);
@@ -564,6 +642,9 @@ namespace GLTFTranslator
         tinygltf::Animation animation;
         animation.name = takeName;
 
+        const int rootBoneID = rig->getCharacterRootBoneIndex();
+        const int trajecotryBoneID = rig->getTrajectoryBoneIndex();
+
         for (uint32_t channelID = 1; channelID < rig->getNumBones(); channelID++)
         {
             const int targetBoneIndex = getGltfNodeIndexByName(gltf, rig->getBoneName(channelID));
@@ -575,7 +656,14 @@ namespace GLTFTranslator
                 float animTime = RMath::frameToTime(i, fps);
                 animObj->setAnimTime(animTime);
 
-                Matrix transform = utils::NMDX::getTransformMatrix(animHandle->getChannelData()[channelID].m_quat, animHandle->getChannelData()[channelID].m_pos);
+                Matrix transform = animObj->getTransformAtTime(animTime, channelID);
+                
+                if (channelID == rootBoneID)
+                {
+                    const int parentID = rig->getParentBoneIndex(rootBoneID);
+                    transform = animObj->getTransformAtTime(animTime, channelID) * animObj->getTransformAtTime(animTime, parentID) * animObj->getTransformAtTime(animTime, trajecotryBoneID);
+                }
+
                 Vector3 position;
                 Quaternion rotation;
                 Vector3 scale;

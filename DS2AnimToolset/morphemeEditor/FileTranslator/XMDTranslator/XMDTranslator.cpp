@@ -511,7 +511,7 @@ namespace XMDTranslator
 			{
 				const int channelID = animToRigMap->getAnimToRigMapEntry(i);
 
-				//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export
+				//CharacterWorldSpaceTM is never animated since its a control bone added by morpheme on export. If a rigToAnimMap maps to it, then the map is wrong
 				if (channelID == 0)
 					g_appLog->panicMessage("Incorrect rigToAnimMap data. CharacterWorldSpaceTM should not be animated! (anim=%s)\n", animObj->getAnimName());
 

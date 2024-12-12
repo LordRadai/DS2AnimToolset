@@ -11,8 +11,10 @@
 
 #ifndef _DEBUG
 #define ASSET_COMPILER_EXE "morphemeAssetCompiler.exe"
+#define ANIM_INCLUDES_MESH false
 #else
 #define ASSET_COMPILER_EXE "morphemeAssetCompiler_debug.exe"
+#define ANIM_INCLUDES_MESH true
 #endif
 
 namespace
@@ -620,7 +622,7 @@ namespace
 		return status;
 	}
 
-	bool exportAnimationToXmd(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps)
+	bool exportAnimationToXmd(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool includeMeshes)
 	{
 		bool status = true;
 
@@ -641,7 +643,7 @@ namespace
 
 		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to XMD (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
 
-		XMD::XModel* xmd = XMDTranslator::createModel(rig, character->getCharacterModelCtrl()->getModel(), characterDef->getAnimFileLookUp()->getFilename(animId), false);
+		XMD::XModel* xmd = XMDTranslator::createModel(rig, character->getCharacterModelCtrl()->getModel(), characterDef->getAnimFileLookUp()->getFilename(animId), includeMeshes);
 		XMDTranslator::createAnimCycle(xmd, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
 
 		if (xmd->Save(animName) != XMD::XFileError::Success)
@@ -657,6 +659,8 @@ namespace
 		MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
 		AnimObject* anim = characterDef->getAnimation(animSetIdx, animIdx);
 		int animId = anim->getAnimID();
+
+		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to GLTF (%ws)\n", anim->getAnimName(), character->getCharacterName().c_str());
 
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
 		MR::AnimRigDef* rig = character->getRig(0);
@@ -1995,7 +1999,7 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 	{
 		std::filesystem::current_path(path);
 
-		g_workerThread.load()->addProcess("Export animations", 3);
+		g_workerThread.load()->addProcess("Export animations", 2);
 
 		std::wstring markupExportPath = L"morphemeMarkup\\";
 		std::filesystem::create_directories(markupExportPath);
@@ -2247,11 +2251,11 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 	switch (this->m_exportSettings.exportFormat)
 	{
 	case MorphemeEditorApp::kFbx:
-		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, false);
+		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, ANIM_INCLUDES_MESH);
 	case MorphemeEditorApp::kXmd:
-		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, fps);
+		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, fps, ANIM_INCLUDES_MESH);
 	case MorphemeEditorApp::kGltf:
-		return exportAnimationToGltf(path, this->m_character, animSetIdx, animId, fps, false);
+		return exportAnimationToGltf(path, this->m_character, animSetIdx, animId, fps, ANIM_INCLUDES_MESH);
 	default:
 		return false;
 	}
