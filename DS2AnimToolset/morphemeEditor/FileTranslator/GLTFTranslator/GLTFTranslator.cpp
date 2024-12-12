@@ -566,6 +566,9 @@ namespace GLTFTranslator
         tinygltf::Animation animation;
         animation.name = takeName;
 
+        const int rootBoneID = rig->getCharacterRootBoneIndex();
+        const int trajecotryBoneID = rig->getTrajectoryBoneIndex();
+
         for (uint32_t channelID = 1; channelID < rig->getNumBones(); channelID++)
         {
             const int targetBoneIndex = getGltfNodeIndexByName(gltf, rig->getBoneName(channelID));
@@ -577,7 +580,14 @@ namespace GLTFTranslator
                 float animTime = RMath::frameToTime(i, fps);
                 animObj->setAnimTime(animTime);
 
-                Matrix transform = utils::NMDX::getTransformMatrix(animHandle->getChannelData()[channelID].m_quat, animHandle->getChannelData()[channelID].m_pos);
+                Matrix transform = animObj->getTransformAtTime(animTime, channelID);
+                
+                if (channelID == rootBoneID)
+                {
+                    const int parentID = rig->getParentBoneIndex(rootBoneID);
+                    transform = animObj->getTransformAtTime(animTime, channelID) * animObj->getTransformAtTime(animTime, parentID) * animObj->getTransformAtTime(animTime, trajecotryBoneID);
+                }
+
                 Vector3 position;
                 Quaternion rotation;
                 Vector3 scale;
