@@ -11,8 +11,10 @@
 
 #ifndef _DEBUG
 #define ASSET_COMPILER_EXE "morphemeAssetCompiler.exe"
+#define ANIM_INCLUDES_MESH false
 #else
 #define ASSET_COMPILER_EXE "morphemeAssetCompiler_debug.exe"
+#define ANIM_INCLUDES_MESH true
 #endif
 
 namespace
@@ -2247,11 +2249,11 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 	switch (this->m_exportSettings.exportFormat)
 	{
 	case MorphemeEditorApp::kFbx:
-		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, false);
+		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, ANIM_INCLUDES_MESH);
 	case MorphemeEditorApp::kXmd:
 		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, fps);
 	case MorphemeEditorApp::kGltf:
-		return exportAnimationToGltf(path, this->m_character, animSetIdx, animId, fps, false);
+		return exportAnimationToGltf(path, this->m_character, animSetIdx, animId, fps, ANIM_INCLUDES_MESH);
 	default:
 		return false;
 	}
