@@ -622,7 +622,7 @@ namespace
 		return status;
 	}
 
-	bool exportAnimationToXmd(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps)
+	bool exportAnimationToXmd(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool includeMeshes)
 	{
 		bool status = true;
 
@@ -643,7 +643,7 @@ namespace
 
 		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to XMD (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
 
-		XMD::XModel* xmd = XMDTranslator::createModel(rig, character->getCharacterModelCtrl()->getModel(), characterDef->getAnimFileLookUp()->getFilename(animId), false);
+		XMD::XModel* xmd = XMDTranslator::createModel(rig, character->getCharacterModelCtrl()->getModel(), characterDef->getAnimFileLookUp()->getFilename(animId), includeMeshes);
 		XMDTranslator::createAnimCycle(xmd, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
 
 		if (xmd->Save(animName) != XMD::XFileError::Success)
@@ -2251,7 +2251,7 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 	case MorphemeEditorApp::kFbx:
 		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, ANIM_INCLUDES_MESH);
 	case MorphemeEditorApp::kXmd:
-		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, fps);
+		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, fps, ANIM_INCLUDES_MESH);
 	case MorphemeEditorApp::kGltf:
 		return exportAnimationToGltf(path, this->m_character, animSetIdx, animId, fps, ANIM_INCLUDES_MESH);
 	default:
