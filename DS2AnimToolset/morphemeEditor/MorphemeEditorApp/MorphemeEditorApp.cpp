@@ -1997,7 +1997,7 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 	{
 		std::filesystem::current_path(path);
 
-		g_workerThread.load()->addProcess("Export animations", 3);
+		g_workerThread.load()->addProcess("Export animations", 2);
 
 		std::wstring markupExportPath = L"morphemeMarkup\\";
 		std::filesystem::create_directories(markupExportPath);
