@@ -660,6 +660,8 @@ namespace
 		AnimObject* anim = characterDef->getAnimation(animSetIdx, animIdx);
 		int animId = anim->getAnimID();
 
+		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to GLTF (%ws)\n", anim->getAnimName(), character->getCharacterName().c_str());
+
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
 		MR::AnimRigDef* rig = character->getRig(0);
 
