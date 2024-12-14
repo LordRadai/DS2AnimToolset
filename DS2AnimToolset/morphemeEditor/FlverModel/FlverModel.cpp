@@ -996,7 +996,6 @@ int FlverModel::getMorphemeBoneIdByFlverBoneId(int idx)
 	if (idx < this->m_flverToMorphemeBoneMap.size())
 		return this->m_flverToMorphemeBoneMap[idx];
 
-	throw(std::out_of_range("Requesting out of range value for m_flverToMorphemeBoneMap"));
 	return -1;
 }
 
@@ -1005,7 +1004,6 @@ int FlverModel::getFlverBoneIndexByMorphemeBoneIndex(int idx)
 	if (idx < this->m_morphemeToFlverBoneMap.size())
 		return this->m_morphemeToFlverBoneMap[idx];
 
-	throw(std::out_of_range("Requesting out of range value for m_morphemeToFlverBoneMap"));
 	return -1;
 }
 

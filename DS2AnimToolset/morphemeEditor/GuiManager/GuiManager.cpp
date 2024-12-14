@@ -1448,16 +1448,62 @@ void GuiManager::eventTrackInfoWindow()
 
 		if (selectedEvent != nullptr)
 		{
-			float fps = eventTrackEditor->getFps();
-			float step = 1.f / fps;
+			switch (eventTrackEditor->getTimeCodeFormat())
+			{
+			case TrackEditor::kSeconds:
+				{
+					float fps = eventTrackEditor->getFps();
+					float step = 1.f / fps;
 
-			float startTime = RMath::frameToTime(selectedEvent->frameStart, fps);
-			float endTime = RMath::frameToTime(selectedEvent->frameEnd, fps);
+					float startTime = RMath::frameToTime(selectedEvent->frameStart, fps);
+					float endTime = RMath::frameToTime(selectedEvent->frameEnd, fps);
 
-			ImGui::InputFloat("Start Time", &startTime, step);
+					ImGui::InputFloat("Start Time", &startTime, step);
 
-			if (!selectedTrack->discrete)
-				ImGui::InputFloat("End Time", &endTime, step);
+					if (!selectedTrack->discrete)
+						ImGui::InputFloat("End Time", &endTime, step);
+
+					selectedEvent->frameStart = RMath::timeToFrame(startTime, fps);
+					selectedEvent->frameEnd = RMath::timeToFrame(endTime, fps);
+				}
+				break;
+			case TrackEditor::kMilliseconds:
+				{
+					float fps = eventTrackEditor->getFps();
+					float step = 1.f / fps;
+
+					float startTime = RMath::frameToTime(selectedEvent->frameStart, fps) * 1000.f;
+					float endTime = RMath::frameToTime(selectedEvent->frameEnd, fps) * 1000.f;
+
+					ImGui::InputFloat("Start Time", &startTime, step);
+
+					if (!selectedTrack->discrete)
+						ImGui::InputFloat("End Time", &endTime, step);
+
+					selectedEvent->frameStart = RMath::timeToFrame(startTime, fps);
+					selectedEvent->frameEnd = RMath::timeToFrame(endTime, fps);
+				}
+				break;
+			case TrackEditor::kFrames:
+				{
+					float fps = eventTrackEditor->getFps();
+
+					int startFrame = selectedEvent->frameStart;
+					int endFrame = selectedEvent->frameEnd;
+
+					ImGui::InputInt("Start Frame", &startFrame);
+
+					if (!selectedTrack->discrete)
+						ImGui::InputInt("End Frame", &endFrame);
+
+					selectedEvent->frameStart = startFrame;
+					selectedEvent->frameEnd = endFrame;
+				}
+				break;
+			default:
+				break;
+			}
+			
 
 			ImGui::InputInt("User Data", &selectedEvent->userData);
 
@@ -1467,9 +1513,6 @@ void GuiManager::eventTrackInfoWindow()
 				ImGui::Text(getEventTrackEventTooltip(selectedEvent->userData).c_str());
 				ImGui::PopTextWrapPos();
 			}
-
-			selectedEvent->frameStart = RMath::timeToFrame(startTime, fps);
-			selectedEvent->frameEnd = RMath::timeToFrame(endTime, fps);
 		}
 	}
 
