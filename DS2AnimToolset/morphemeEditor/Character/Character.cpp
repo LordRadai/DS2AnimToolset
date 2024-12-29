@@ -157,18 +157,16 @@ namespace
         }
     }
 
-    TimeAct::TimeAct* mergeTimeActFiles(TimeAct::TimeAct* taePl, TimeAct::TimeAct* taeSfx, TimeAct::TimeAct* taeSnd)
+    bool mergeTimeActFiles(TimeAct::TimeAct* out, TimeAct::TimeAct* in)
     {
-        if (taePl == nullptr)
-            return nullptr;
+        if (in == nullptr)
+            return false;
 
-        TimeAct::TimeAct* mergedFile = TimeAct::TimeAct::create(taePl->getFileId(), taePl->getSibFileId(), taePl->getSkeletonFileId(), taePl->getSibName(), taePl->getSkeletonName(), g_taeTemplate);
-
-        for (size_t trackIdx = 0; trackIdx < taePl->getNumTimeActTracks(); trackIdx++)
+        for (size_t trackIdx = 0; trackIdx < in->getNumTimeActTracks(); trackIdx++)
         {
-            TimeAct::TimeActTrack* track = taePl->getTimeActTrack(trackIdx);
+            TimeAct::TimeActTrack* track = in->getTimeActTrack(trackIdx);
 
-            TimeAct::TimeActTrack* mergedTrack = mergedFile->addTimeActTrack(track->getId(), track->getLenght(), track->getFps());
+            TimeAct::TimeActTrack* mergedTrack = out->addTimeActTrack(track->getId(), track->getLenght(), track->getFps());
 
             for (size_t groupIdx = 0; groupIdx < track->getNumEventGroups(); groupIdx++)
             {
@@ -233,156 +231,28 @@ namespace
             }
         }
 
-        if (taeSfx != nullptr)
-        {
-            for (size_t trackIdx = 0; trackIdx < taeSfx->getNumTimeActTracks(); trackIdx++)
-            {
-                TimeAct::TimeActTrack* track = taeSfx->getTimeActTrack(trackIdx);
+        return true;
+    }
 
-                TimeAct::TimeActTrack* mergedTrack = mergedFile->addTimeActTrack(track->getId(), track->getLenght(), track->getFps());
+    TimeAct::TimeAct* createMergedTimeActFile(TimeAct::TimeAct* taePl, TimeAct::TimeAct* taeSfx, TimeAct::TimeAct* taeSnd)
+    {
+        TimeAct::TimeAct* mergedFile = TimeAct::TimeAct::create(taePl->getFileId(), taePl->getSibFileId(), taePl->getSkeletonFileId(), taePl->getSibName(), taePl->getSkeletonName(), g_taeTemplate);
 
-                for (size_t groupIdx = 0; groupIdx < track->getNumEventGroups(); groupIdx++)
-                {
-                    TimeAct::EventGroup* group = track->getEventGroup(groupIdx);
+        if (!mergeTimeActFiles(mergedFile, taePl))
+            g_appLog->debugMessage(MsgLevel_Error, "Failed to merge TimeAct_Pl\n");
 
-                    TimeAct::EventGroup* mergedGroup = mergedTrack->addGroup(group->getGroupTypeID());
+        if (!mergeTimeActFiles(mergedFile, taeSfx))
+            g_appLog->debugMessage(MsgLevel_Error, "Failed to merge TimeAct_Sfx\n");
 
-                    for (size_t eventIdx = 0; eventIdx < group->getNumEvents(); eventIdx++)
-                    {
-                        TimeAct::TimeActEvent* event = group->getEvent(eventIdx);
-
-                        TimeAct::TimeActEvent* mergedEvent = mergedGroup->addEvent(event->getStartTime(), event->getEndTime(), event->getEventValue(), g_taeTemplate);
-
-                        for (size_t argIdx = 0; argIdx < event->getNumArguments(); argIdx++)
-                        {
-                            if (event->getNumArguments() != mergedEvent->getNumArguments())
-                                g_appLog->panicMessage("Arg count mismath\n");
-
-                            TimeAct::Argument* arg = event->getArgument(argIdx);
-
-                            TimeAct::Argument* mergedArg = mergedEvent->getArgument(argIdx);
-
-                            TimeAct::DataType type = arg->getType();
-
-                            switch (type)
-                            {
-                            case TimeAct::kBool:
-                                mergedArg->setValue(arg->getValue<bool>());
-                                break;
-                            case TimeAct::kByte:
-                                mergedArg->setValue(arg->getValue<INT8>());
-                                break;
-                            case TimeAct::kUByte:
-                                mergedArg->setValue(arg->getValue<UINT8>());
-                                break;
-                            case TimeAct::kShort:
-                                mergedArg->setValue(arg->getValue<INT16>());
-                                break;
-                            case TimeAct::kUShort:
-                                mergedArg->setValue(arg->getValue<UINT16>());
-                                break;
-                            case TimeAct::kInt:
-                                mergedArg->setValue(arg->getValue<INT>());
-                                break;
-                            case TimeAct::kUInt:
-                                mergedArg->setValue(arg->getValue<UINT>());
-                                break;
-                            case TimeAct::kFloat:
-                                mergedArg->setValue(arg->getValue<float>());
-                                break;
-                            case TimeAct::kInt64:
-                                mergedArg->setValue(arg->getValue<INT64>());
-                                break;
-                            case TimeAct::kUInt64:
-                                mergedArg->setValue(arg->getValue<UINT64>());
-                                break;
-                            default:
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (taeSnd != nullptr)
-        {
-            for (size_t trackIdx = 0; trackIdx < taeSnd->getNumTimeActTracks(); trackIdx++)
-            {
-                TimeAct::TimeActTrack* track = taeSnd->getTimeActTrack(trackIdx);
-
-                TimeAct::TimeActTrack* mergedTrack = mergedFile->addTimeActTrack(track->getId(), track->getLenght(), track->getFps());
-
-                for (size_t groupIdx = 0; groupIdx < track->getNumEventGroups(); groupIdx++)
-                {
-                    TimeAct::EventGroup* group = track->getEventGroup(groupIdx);
-
-                    TimeAct::EventGroup* mergedGroup = mergedTrack->addGroup(group->getGroupTypeID());
-
-                    for (size_t eventIdx = 0; eventIdx < group->getNumEvents(); eventIdx++)
-                    {
-                        TimeAct::TimeActEvent* event = group->getEvent(eventIdx);
-
-                        TimeAct::TimeActEvent* mergedEvent = mergedGroup->addEvent(event->getStartTime(), event->getEndTime(), event->getEventValue(), g_taeTemplate);
-
-                        for (size_t argIdx = 0; argIdx < event->getNumArguments(); argIdx++)
-                        {
-                            if (event->getNumArguments() != mergedEvent->getNumArguments())
-                                g_appLog->panicMessage("Arg count mismath\n");
-
-                            TimeAct::Argument* arg = event->getArgument(argIdx);
-
-                            TimeAct::Argument* mergedArg = mergedEvent->getArgument(argIdx);
-
-                            TimeAct::DataType type = arg->getType();
-
-                            switch (type)
-                            {
-                            case TimeAct::kBool:
-                                mergedArg->setValue(arg->getValue<bool>());
-                                break;
-                            case TimeAct::kByte:
-                                mergedArg->setValue(arg->getValue<INT8>());
-                                break;
-                            case TimeAct::kUByte:
-                                mergedArg->setValue(arg->getValue<UINT8>());
-                                break;
-                            case TimeAct::kShort:
-                                mergedArg->setValue(arg->getValue<INT16>());
-                                break;
-                            case TimeAct::kUShort:
-                                mergedArg->setValue(arg->getValue<UINT16>());
-                                break;
-                            case TimeAct::kInt:
-                                mergedArg->setValue(arg->getValue<INT>());
-                                break;
-                            case TimeAct::kUInt:
-                                mergedArg->setValue(arg->getValue<UINT>());
-                                break;
-                            case TimeAct::kFloat:
-                                mergedArg->setValue(arg->getValue<float>());
-                                break;
-                            case TimeAct::kInt64:
-                                mergedArg->setValue(arg->getValue<INT64>());
-                                break;
-                            case TimeAct::kUInt64:
-                                mergedArg->setValue(arg->getValue<UINT64>());
-                                break;
-                            default:
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        if (!mergeTimeActFiles(mergedFile, taeSnd))
+            g_appLog->debugMessage(MsgLevel_Error, "Failed to merge TimeAct_Snd\n");
 
         return mergedFile;
     }
 
     TimeAct::TaeExport::TimeActExportXML* createTimeActXML(std::string name, TimeAct::TimeAct* taePl, TimeAct::TimeAct* taeSfx, TimeAct::TimeAct* taeSnd)
     {
-        TimeAct::TimeAct* mergedTae = mergeTimeActFiles(taePl, taeSfx, taeSnd);
+        TimeAct::TimeAct* mergedTae = createMergedTimeActFile(taePl, taeSfx, taeSnd);
 
         if (mergedTae == nullptr)
             return nullptr;
@@ -408,14 +278,11 @@ namespace
     }
 }
 
-Character::Character()
-{
-    this->m_characterModelCtrl = new CharacterModelCtrl();
-}
-
 Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork)
 {
     Character* character = new Character();
+
+    character->m_characterModelCtrl = new CharacterModelCtrl();
 
     MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, doSimulateNetwork);
 
@@ -471,7 +338,7 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
 
             std::wstring partsFolder = modelFolder + L"\\parts";
 
-            bool female = preset->isFemale();
+            const bool female = preset->isFemale();
 
             character->loadPartsFaceGenBnd(partsFolder, kFgHair, preset->getFgHairId(), female);
             character->loadPartsFaceGenBnd(partsFolder, kFgFace, preset->getFgFaceId(), female);
@@ -501,6 +368,7 @@ Character* Character::createFromTimeAct(const char* filename)
 {
     Character* character = new Character;
 
+    character->m_characterModelCtrl = new CharacterModelCtrl();
     character->m_characterName = std::filesystem::path(filename).filename().replace_extension("");
     character->loadTimeAct(filename);
 

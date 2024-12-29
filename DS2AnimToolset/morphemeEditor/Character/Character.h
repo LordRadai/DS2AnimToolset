@@ -39,13 +39,13 @@ public:
 	void loadPartsBnd(std::wstring root, PartType type, int id, bool female);
 
 private:
-	Character();
+	Character() {}
 	~Character() {}
 
-	int m_chrId;
-	std::wstring m_characterName;
-	MorphemeCharacter* m_morphemeCharacter;
-	CharacterModelCtrl* m_characterModelCtrl;
-	Vector3 m_position;
-	TimeAct::TaeExport::TimeActExportXML* m_timeAct;
+	int m_chrId = -1;
+	std::wstring m_characterName = L"";
+	MorphemeCharacter* m_morphemeCharacter = nullptr;
+	CharacterModelCtrl* m_characterModelCtrl = nullptr;
+	Vector3 m_position = Vector3::Zero;
+	TimeAct::TaeExport::TimeActExportXML* m_timeAct = nullptr;
 };
