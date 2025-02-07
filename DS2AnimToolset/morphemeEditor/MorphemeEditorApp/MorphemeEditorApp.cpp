@@ -1828,6 +1828,8 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 		g_workerThread.load()->increaseProgressStep();
 
 		std::filesystem::current_path(getExeRootDir());
+
+		return true;
 	}
 	catch (const std::exception& e)
 	{
