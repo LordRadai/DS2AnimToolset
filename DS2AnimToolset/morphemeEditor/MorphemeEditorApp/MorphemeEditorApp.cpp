@@ -2002,7 +2002,7 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 	constexpr int fps = 30;
 
 	FT::FileTranslator fileTranslator;
-	fileTranslator.exportAnimation(this->m_character, path, animSetIdx, animId, fps, false, this->m_exportSettings.exportFormat);
+	return fileTranslator.exportAnimation(this->m_character, path, animSetIdx, animId, fps, false, this->m_exportSettings.exportFormat);
 }
 
 bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int animId, std::vector<ME::EventTrackExport*>& exportedTracks)
