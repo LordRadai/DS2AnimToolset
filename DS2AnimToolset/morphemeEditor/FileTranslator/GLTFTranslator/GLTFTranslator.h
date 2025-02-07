@@ -3,6 +3,7 @@
 #include "AnimObject/AnimObject.h"
 #include "Character/Character.h"
 #include "morpheme/mrRig.h"
+#include "../FileTranslatorBase.h"
 
 struct JointIndicesVec
 {
@@ -21,10 +22,21 @@ struct JointIndicesVec
 	}
 };
 
-namespace GLTFTranslator
+namespace FT
 {
-	tinygltf::Model* createModel(MR::AnimRigDef* rig, FlverModel* model, bool includeMeshes);
-	tinygltf::Mesh* createMesh(tinygltf::Model* gltf, FlverModel* model, int meshIndex);
-	tinygltf::Node* createJoint(tinygltf::Model* gltf, const MR::AnimRigDef* rig, const int boneID);
-	tinygltf::Animation* createAnimation(tinygltf::Model* gltf, AnimObject* animObj, const char* takeName, int fps);
+	class GltfFileTranslator : public FileTranslatorBase
+	{
+	public:
+		GltfFileTranslator() {}
+		~GltfFileTranslator() {}
+
+		bool exportModel(Character* character);
+		bool exportAnimation(Character* character, std::wstring path, int animSetIdx, int animIdx, int fps, bool includeMeshes);
+	private:
+
+		tinygltf::Model* createModel(MR::AnimRigDef* rig, FlverModel* model, bool includeMeshes);
+		tinygltf::Mesh* createMesh(tinygltf::Model* gltf, FlverModel* model, int meshIndex);
+		tinygltf::Node* createJoint(tinygltf::Model* gltf, const MR::AnimRigDef* rig, const int boneID);
+		tinygltf::Animation* createAnimation(tinygltf::Model* gltf, AnimObject* animObj, const char* takeName, int fps);
+	};
 }

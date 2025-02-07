@@ -416,13 +416,13 @@ namespace
     }
 }
 
-namespace GLTFTranslator
+namespace FT
 {
-	tinygltf::Model* createModel(MR::AnimRigDef* rig, FlverModel* model, bool includeMeshes)
-	{
-		tinygltf::Model* gltfModel = new tinygltf::Model;
-		gltfModel->asset.version = "2.0";
-		gltfModel->asset.generator = APPNAME_A;
+    tinygltf::Model* GltfFileTranslator::createModel(MR::AnimRigDef* rig, FlverModel* model, bool includeMeshes)
+    {
+        tinygltf::Model* gltfModel = new tinygltf::Model;
+        gltfModel->asset.version = "2.0";
+        gltfModel->asset.generator = APPNAME_A;
 
         addRootNode(gltfModel, "SceneRoot");
 
@@ -453,10 +453,10 @@ namespace GLTFTranslator
                 createMesh(gltfModel, model, i);
         }
 
-		return gltfModel;
-	}
+        return gltfModel;
+    }
 
-    tinygltf::Mesh* createMesh(tinygltf::Model* gltf, FlverModel* model, int meshIndex)
+    tinygltf::Mesh* GltfFileTranslator::createMesh(tinygltf::Model* gltf, FlverModel* model, int meshIndex)
     {
         std::vector<FlverModel::SkinnedVertex> skinnedVertices = getMeshSkinnedVertices(model, meshIndex);
 
@@ -556,7 +556,7 @@ namespace GLTFTranslator
         // IBM
         createBufferView(gltf, "IbmBufferView_" + std::to_string(meshIndex), gltf->buffers.size() - 1, inverseBindMatrixOffset, inverseBindMatrixDataSize, 0);
         createAccessor(gltf, "IbmBufAccessor" + std::to_string(meshIndex), gltf->bufferViews.size() - 1, 0, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_MAT4, inverseBindMatrices.size());
-        
+
         const int ibmDataIdx = gltf->accessors.size() - 1;
 
         // Vertex indices
@@ -605,7 +605,7 @@ namespace GLTFTranslator
         return &gltf->meshes.back();
     }
 
-    tinygltf::Node* createJoint(tinygltf::Model* gltf, const MR::AnimRigDef* rig, const int boneID) 
+    tinygltf::Node* GltfFileTranslator::createJoint(tinygltf::Model* gltf, const MR::AnimRigDef* rig, const int boneID)
     {
         const NMP::Vector3* translation = rig->getBindPoseBonePos(boneID);
         const NMP::Quat* rotation = rig->getBindPoseBoneQuat(boneID);
@@ -621,7 +621,7 @@ namespace GLTFTranslator
         return &gltf->nodes.back();
     }
 
-    tinygltf::Animation* createAnimation(tinygltf::Model* gltf, AnimObject* animObj, const char* takeName, int fps)
+    tinygltf::Animation* GltfFileTranslator::createAnimation(tinygltf::Model* gltf, AnimObject* animObj, const char* takeName, int fps)
     {
         const MR::AnimationSourceHandle* animHandle = animObj->getHandle();
 
@@ -657,7 +657,7 @@ namespace GLTFTranslator
                 animObj->setAnimTime(animTime);
 
                 Matrix transform = animObj->getTransformAtTime(animTime, channelID);
-                
+
                 if (channelID == rootBoneID)
                 {
                     const int parentID = rig->getParentBoneIndex(rootBoneID);
@@ -747,5 +747,58 @@ namespace GLTFTranslator
         gltf->animations.push_back(animation);
 
         return &gltf->animations.back();
+    }
+
+    bool GltfFileTranslator::exportModel(Character* character)
+    {
+        FlverModel* model = character->getCharacterModelCtrl()->getModel();
+        MR::AnimRigDef* rig = character->getRig(0);
+
+        tinygltf::Model* gltfModel = createModel(rig, model, true);
+
+        tinygltf::Scene scene;
+        scene.nodes.push_back(0); // Root node of the model
+
+        gltfModel->scenes.push_back(scene);
+        gltfModel->defaultScene = 0;
+
+        std::string modelOutPath = RString::toNarrow(character->getCharacterName()) + ".gltf";
+
+        tinygltf::TinyGLTF gltfWriter;
+        bool success = gltfWriter.WriteGltfSceneToFile(gltfModel, modelOutPath, false, true, true, false);
+
+        delete gltfModel;
+
+        return success;
+    }
+
+    bool GltfFileTranslator::exportAnimation(Character* character, std::wstring path, int animSetIdx, int animIdx, int fps, bool includeModel)
+    {
+        MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
+        AnimObject* anim = characterDef->getAnimation(animSetIdx, animIdx);
+        int animId = anim->getAnimID();
+
+        g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to GLTF (%ws)\n", anim->getAnimName(), character->getCharacterName().c_str());
+
+        FlverModel* model = character->getCharacterModelCtrl()->getModel();
+        MR::AnimRigDef* rig = character->getRig(0);
+
+        tinygltf::Model* gltfModel = createModel(rig, model, includeModel);
+        createAnimation(gltfModel, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
+
+        tinygltf::Scene scene;
+        scene.nodes.push_back(0); // Root node of the model
+
+        gltfModel->scenes.push_back(scene);
+        gltfModel->defaultScene = 0;
+
+        std::string outPath = RString::toNarrow(path) + RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId)) + ".gltf";
+
+        tinygltf::TinyGLTF gltfWriter;
+        bool success = gltfWriter.WriteGltfSceneToFile(gltfModel, outPath, false, true, true, false);
+
+        delete gltfModel;
+
+        return success;
     }
 }

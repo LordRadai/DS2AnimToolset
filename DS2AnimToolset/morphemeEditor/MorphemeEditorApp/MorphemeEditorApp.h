@@ -1,4 +1,5 @@
 #include "Application/Application.h"
+#include "FileTranslator/FileTranslator.h"
 
 #include "extern.h"
 #include "framework.h"
@@ -37,14 +38,6 @@ struct FlverResources
 class MorphemeEditorApp : public Application
 {
 public:
-	enum ExportFormat
-	{
-		kFbx,
-		kXmd,
-		kGltf,
-		kNumExportFormats
-	};
-
 	struct TaskFlags
 	{
 		bool resetCamera = false;
@@ -87,7 +80,7 @@ public:
 
 	struct ExportSettings
 	{
-		ExportFormat exportFormat = kFbx;
+		FT::ExportFormat exportFormat = FT::kFbx;
 		uint8_t compressionFormat = 2;
 		bool useSourceSampleFrequency = true;
 		int sampleFrequency = 30;

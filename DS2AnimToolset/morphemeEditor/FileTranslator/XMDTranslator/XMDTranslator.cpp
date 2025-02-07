@@ -203,9 +203,9 @@ namespace
 	}
 }
 
-namespace XMDTranslator
+namespace FT
 {
-	XMD::XModel* createModel(MR::AnimRigDef* rig, FlverModel* model, const char* originalFile, bool includeMeshes)
+	XMD::XModel* XMDFileTranslator::createModel(MR::AnimRigDef* rig, FlverModel* model, const char* originalFile, bool includeMeshes)
 	{
 		XMD::XModel* xmd = new XMD::XModel;
 		XMD::XInfo* info = xmd->CreateInfo();
@@ -217,7 +217,7 @@ namespace XMDTranslator
 
 		//Create all joints
 		for (size_t i = 1; i < rig->getNumBones(); i++)
-			joints.push_back(XMDTranslator::createJoint(xmd, rig, i));
+			joints.push_back(createJoint(xmd, rig, i));
 
 		//Loop back over to set children
 		for (size_t i = 1; i < rig->getNumBones(); i++)
@@ -240,13 +240,13 @@ namespace XMDTranslator
 			}
 
 			for (size_t i = 0; i < model->getNumMeshes(); i++)
-				XMDTranslator::createPolygonMesh(xmd, model, i);
+				createPolygonMesh(xmd, model, i);
 		}
 
 		return xmd;
 	}
 
-	XMD::XSkinCluster* createSkin(XMD::XModel* xmd, XMD::XPolygonMesh* mesh, FlverModel* model, int meshIdx)
+	XMD::XSkinCluster* XMDFileTranslator::createSkin(XMD::XModel* xmd, XMD::XPolygonMesh* mesh, FlverModel* model, int meshIdx)
 	{
 		XMD::XSkinCluster* skin = static_cast<XMD::XSkinCluster*>(xmd->CreateNode(XMD::XFn::SkinCluster));
 		MR::AnimRigDef* rig = model->getRig();
@@ -262,7 +262,7 @@ namespace XMDTranslator
 		skin->SetEnvelopeWeight(1.f);
 		skin->AddAffected(mesh);
 
-		XM2::vector<XMD::XSkinnedVertex> skinnedVertices = XMDTranslator::createSkinnedVertexList(bones, skin, model, meshIdx);
+		XM2::vector<XMD::XSkinnedVertex> skinnedVertices = createSkinnedVertexList(bones, skin, model, meshIdx);
 
 		skin->SetSkinWeights(skinnedVertices);
 
@@ -270,12 +270,12 @@ namespace XMDTranslator
 
 		mesh->SetDeformerQueue(deformerList);
 
-		XMDTranslator::createClusterObjSet(xmd, skin, mesh, meshIdx);
+		createClusterObjSet(xmd, skin, mesh, meshIdx);
 
 		return skin;
 	}
 
-	XMD::XSkinCluster* createSkin(XMD::XModel* xmd, XMD::XMesh* mesh, FlverModel* model, int meshIdx)
+	XMD::XSkinCluster* XMDFileTranslator::createSkin(XMD::XModel* xmd, XMD::XMesh* mesh, FlverModel* model, int meshIdx)
 	{
 		XMD::XSkinCluster* skin = static_cast<XMD::XSkinCluster*>(xmd->CreateNode(XMD::XFn::SkinCluster));
 		MR::AnimRigDef* rig = model->getRig();
@@ -291,7 +291,7 @@ namespace XMDTranslator
 		skin->SetEnvelopeWeight(1.f);
 		skin->AddAffected(mesh);
 
-		XM2::vector<XMD::XSkinnedVertex> skinnedVertices = XMDTranslator::createSkinnedVertexList(bones, skin, model, meshIdx);
+		XM2::vector<XMD::XSkinnedVertex> skinnedVertices = createSkinnedVertexList(bones, skin, model, meshIdx);
 
 		skin->SetSkinWeights(skinnedVertices);
 
@@ -299,12 +299,12 @@ namespace XMDTranslator
 
 		mesh->SetDeformerQueue(deformerList);
 
-		XMDTranslator::createClusterObjSet(xmd, skin, mesh, meshIdx);
+		createClusterObjSet(xmd, skin, mesh, meshIdx);
 
 		return skin;
 	}
 
-	XM2::vector<XMD::XSkinnedVertex> createSkinnedVertexList(XMD::XBoneList bones, XMD::XSkinCluster* skin, FlverModel* model, int meshIdx)
+	XM2::vector<XMD::XSkinnedVertex> XMDFileTranslator::createSkinnedVertexList(XMD::XBoneList bones, XMD::XSkinCluster* skin, FlverModel* model, int meshIdx)
 	{
 		MR::AnimRigDef* rig = model->getRig();
 
@@ -338,7 +338,7 @@ namespace XMDTranslator
 		return skinnedVertices;
 	}
 
-	XMD::XBone* createBone(XMD::XModel* xmd, MR::AnimRigDef* rig, int idx)
+	XMD::XBone* XMDFileTranslator::createBone(XMD::XModel* xmd, MR::AnimRigDef* rig, int idx)
 	{
 		XMD::XBone* bone = static_cast<XMD::XBone*>(xmd->CreateNode(XMD::XFn::Bone));
 		bone->SetName(rig->getBoneName(idx));
@@ -349,7 +349,7 @@ namespace XMDTranslator
 		return bone;
 	}
 
-	XMD::XJoint* createJoint(XMD::XModel* xmd, MR::AnimRigDef* rig, int idx)
+	XMD::XJoint* XMDFileTranslator::createJoint(XMD::XModel* xmd, MR::AnimRigDef* rig, int idx)
 	{
 		XMD::XJoint* joint = static_cast<XMD::XJoint*>(xmd->CreateNode(XMD::XFn::Joint));
 
@@ -360,7 +360,7 @@ namespace XMDTranslator
 		return joint;
 	}
 
-	XMD::XMesh* createMesh(XMD::XModel* xmd, FlverModel* model, int meshIdx)
+	XMD::XMesh* XMDFileTranslator::createMesh(XMD::XModel* xmd, FlverModel* model, int meshIdx)
 	{
 		XMD::XMesh* mesh = static_cast<XMD::XMesh*>(xmd->CreateNode(XMD::XFn::Mesh));
 
@@ -370,19 +370,19 @@ namespace XMDTranslator
 		XMD::XVector3Array points = getVertices(model, meshIdx);
 
 		mesh->SetName(meshName);
-		mesh->SetIsIntermediateObject(false);		
+		mesh->SetIsIntermediateObject(false);
 		mesh->SetPoints(points);
 
-		XMDTranslator::createSkin(xmd, mesh, model, meshIdx);
-		XMDTranslator::createMeshBone(xmd, mesh, meshIdx);
+		createSkin(xmd, mesh, model, meshIdx);
+		createMeshBone(xmd, mesh, meshIdx);
 
 		return mesh;
 	}
 
-	XMD::XPolygonMesh* createPolygonMesh(XMD::XModel* xmd, FlverModel* model, int meshIdx)
+	XMD::XPolygonMesh* XMDFileTranslator::createPolygonMesh(XMD::XModel* xmd, FlverModel* model, int meshIdx)
 	{
 		XMD::XPolygonMesh* mesh = static_cast<XMD::XPolygonMesh*>(xmd->CreateNode(XMD::XFn::PolygonMesh));
-		
+
 		char meshName[256];
 		sprintf_s(meshName, "mesh[%d]Shape", meshIdx);
 
@@ -421,13 +421,13 @@ namespace XMDTranslator
 
 		normals->SetIndexSet(normalIndices);
 
-		XMDTranslator::createSkin(xmd, mesh, model, meshIdx);
-		XMDTranslator::createMeshBone(xmd, mesh, meshIdx);
+		createSkin(xmd, mesh, model, meshIdx);
+		createMeshBone(xmd, mesh, meshIdx);
 
 		return mesh;
 	}
 
-	XMD::XBone* createMeshBone(XMD::XModel* xmd, XMD::XPolygonMesh* mesh, int meshIdx)
+	XMD::XBone* XMDFileTranslator::createMeshBone(XMD::XModel* xmd, XMD::XPolygonMesh* mesh, int meshIdx)
 	{
 		XMD::XBone* bone = static_cast<XMD::XBone*>(xmd->CreateNode(XMD::XFn::Bone));
 
@@ -441,7 +441,7 @@ namespace XMDTranslator
 		return bone;
 	}
 
-	XMD::XBone* createMeshBone(XMD::XModel* xmd, XMD::XMesh* mesh, int meshIdx)
+	XMD::XBone* XMDFileTranslator::createMeshBone(XMD::XModel* xmd, XMD::XMesh* mesh, int meshIdx)
 	{
 		XMD::XBone* bone = static_cast<XMD::XBone*>(xmd->CreateNode(XMD::XFn::Bone));
 
@@ -456,7 +456,7 @@ namespace XMDTranslator
 	}
 
 	//XAnimCycle is deprecated in the XMD SDK, but it's supported by morphemeConnect 3.6.2
-	XMD::XAnimCycle* createBindPoseAnimCycle(XMD::XModel* xmd, MR::AnimRigDef* rig)
+	XMD::XAnimCycle* XMDFileTranslator::createBindPoseAnimCycle(XMD::XModel* xmd, MR::AnimRigDef* rig)
 	{
 		XMD::XAnimCycle* animCycle = static_cast<XMD::XAnimCycle*>(xmd->CreateNode(XMD::XFn::AnimCycle));
 
@@ -487,7 +487,7 @@ namespace XMDTranslator
 	}
 
 	//XAnimCycle is deprecated in the XMD SDK, but it's supported by morphemeConnect 3.6.2
-	XMD::XAnimCycle* createAnimCycle(XMD::XModel* xmd, AnimObject* animObj, const char* takeName, int fps)
+	XMD::XAnimCycle* XMDFileTranslator::createAnimCycle(XMD::XModel* xmd, AnimObject* animObj, const char* takeName, int fps)
 	{
 		if (animObj->getHandle() == nullptr)
 			return nullptr;
@@ -554,7 +554,7 @@ namespace XMDTranslator
 		return animCycle;
 	}
 
-	XMD::XAnimationTake* createBindPoseAnimTake(XMD::XModel* xmd, MR::AnimRigDef* rig)
+	XMD::XAnimationTake* XMDFileTranslator::createBindPoseAnimTake(XMD::XModel* xmd, MR::AnimRigDef* rig)
 	{
 		XMD::XAnimationTake* animTake = static_cast<XMD::XAnimationTake*>(xmd->CreateNode(XMD::XFn::AnimationTake));
 
@@ -600,7 +600,7 @@ namespace XMDTranslator
 		return animTake;
 	}
 
-	XMD::XAnimationTake* createAnimTake(XMD::XModel* xmd, AnimObject* animObj, const char* takeName)
+	XMD::XAnimationTake* XMDFileTranslator::createAnimTake(XMD::XModel* xmd, AnimObject* animObj, const char* takeName)
 	{
 		if (animObj->getHandle() == nullptr)
 			return nullptr;
@@ -623,14 +623,12 @@ namespace XMDTranslator
 		xmd->GetBones(boneList);
 
 		for (size_t i = 1; i < rig->getNumBones(); i++)
-		{
-			XMDTranslator::createAnimatedNode(animTake, boneList, animObj, i, fps);
-		}
+			createAnimatedNode(animTake, boneList, animObj, i, fps);
 
 		return animTake;
 	}
 
-	XMD::XAnimatedNode* createAnimatedNode(XMD::XAnimationTake* animTake, XMD::XBoneList boneList, AnimObject* animObj, int boneId, int fps)
+	XMD::XAnimatedNode* XMDFileTranslator::createAnimatedNode(XMD::XAnimationTake* animTake, XMD::XBoneList boneList, AnimObject* animObj, int boneId, int fps)
 	{
 		const MR::AnimRigDef* rig = animObj->getHandle()->getRig();
 		int animLenFrames = RMath::timeToFrame(animObj->getAnimLenght(), fps);
@@ -684,7 +682,7 @@ namespace XMDTranslator
 		return nullptr;
 	}
 
-	XMD::XObjectSet* createClusterObjSet(XMD::XModel* xmd, XMD::XSkinCluster* skin, XMD::XPolygonMesh* mesh, int meshIdx)
+	XMD::XObjectSet* XMDFileTranslator::createClusterObjSet(XMD::XModel* xmd, XMD::XSkinCluster* skin, XMD::XPolygonMesh* mesh, int meshIdx)
 	{
 		XMD::XObjectSet* objectSet = static_cast<XMD::XObjectSet*>(xmd->CreateNode(XMD::XFn::ObjectSet));
 
@@ -701,7 +699,7 @@ namespace XMDTranslator
 		return objectSet;
 	}
 
-	XMD::XObjectSet* createClusterObjSet(XMD::XModel* xmd, XMD::XSkinCluster* skin, XMD::XMesh* mesh, int meshIdx)
+	XMD::XObjectSet* XMDFileTranslator::createClusterObjSet(XMD::XModel* xmd, XMD::XSkinCluster* skin, XMD::XMesh* mesh, int meshIdx)
 	{
 		XMD::XObjectSet* objectSet = static_cast<XMD::XObjectSet*>(xmd->CreateNode(XMD::XFn::ObjectSet));
 
@@ -716,5 +714,57 @@ namespace XMDTranslator
 		objectSet->SetItems(items);
 
 		return objectSet;
+	}
+
+	bool XMDFileTranslator::exportModel(Character* character)
+	{
+		bool status = true;
+
+		g_appLog->debugMessage(MsgLevel_Info, "Exporting model to XMD for character %ws\n", character->getCharacterName().c_str());
+
+		FlverModel* model = character->getCharacterModelCtrl()->getModel();
+		MR::AnimRigDef* rig = character->getRig(0);
+
+		XMD::XModel* modelXmd = createModel(rig, model, RString::toNarrow(model->getFileOrigin()).c_str(), true);
+		createBindPoseAnimCycle(modelXmd, rig);
+
+		if (modelXmd->Save(RString::toNarrow(character->getCharacterName()) + ".xmd") != XMD::XFileError::Success)
+			status = false;
+
+		delete modelXmd;
+
+		return status;
+	}
+
+	bool XMDFileTranslator::exportAnimation(Character* character, std::wstring path, int animSetIdx, int animIdx, int fps, bool includeMeshes)
+	{
+		bool status = true;
+
+		MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
+		AnimObject* anim = characterDef->getAnimation(animSetIdx, animIdx);
+
+		int animId = anim->getAnimID();
+
+		if (!anim->isLoaded())
+			anim = characterDef->getAnimation(0, 0);
+
+		if (!anim->isLoaded())
+			return false;
+
+		MR::AnimRigDef* rig = character->getRig(0);
+
+		std::string animName = RString::toNarrow(path) + RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId)) + ".xmd";
+
+		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to XMD (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
+
+		XMD::XModel* xmd = createModel(rig, character->getCharacterModelCtrl()->getModel(), characterDef->getAnimFileLookUp()->getFilename(animId), includeMeshes);
+		createAnimCycle(xmd, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
+
+		if (xmd->Save(animName) != XMD::XFileError::Success)
+			status = false;
+
+		delete xmd;
+
+		return status;
 	}
 }
