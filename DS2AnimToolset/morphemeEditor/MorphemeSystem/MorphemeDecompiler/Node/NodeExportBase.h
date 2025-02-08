@@ -14,7 +14,7 @@ namespace MD
 			NodeExportBase() {}
 			~NodeExportBase() {}
 
-			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
+			virtual ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 			void exportNodeTransitions(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport);
 		};
 	}
