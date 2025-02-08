@@ -13,10 +13,10 @@ namespace MD
 
 		protected:
 			virtual void writeTimeStretchMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
-			virtual void writeBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
+			virtual void writeBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock) {}
 			virtual void writeEventBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
 			virtual void writeBlendFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
-			virtual void writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
+			virtual void writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock) {}
 			virtual void writePassThroughMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
 			virtual bool isBlendNodeWrapWeights(MR::NodeDef* nodeDef);
 		};
