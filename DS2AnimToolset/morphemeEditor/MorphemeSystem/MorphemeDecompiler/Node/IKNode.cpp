@@ -1,15 +1,14 @@
 #include "IKNode.h"
-#include "Node.h"
 #include "extern.h"
 #include "RCore.h"
 #include "morpheme/mrAttribData.h"
-#include "NMIK/NMPointIK.h"
+#include "NodeUtils.h"
 
 namespace MD
 {
 	namespace Node
 	{
-		inline bool isAxisFlipped(NMP::Vector3 vec)
+		bool IKNodeExportBase::isAxisFlipped(NMP::Vector3 vec)
 		{
 			if ((vec.x < 0) || (vec.y < 0) || (vec.z < 0))
 				return true;
@@ -17,7 +16,7 @@ namespace MD
 			return false;
 		}
 
-		inline float getAngleFromClampedCosine(float in)
+		float IKNodeExportBase::getAngleFromClampedCosine(float in)
 		{
 			float cos = NMP::clampValue(in, 0.f, 1.f);
 			float angleRad = acosf(cos);
@@ -25,152 +24,7 @@ namespace MD
 			return NMP::radiansToDegrees(angleRad);
 		}
 
-		void writeBasicUnevenTerrainChainAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataBasicUnevenTerrainChain* chainAttrib)
-		{
-			CHAR paramName[256];
-
-			sprintf_s(paramName, "HipsIndex_%d", animSetIdx + 1);
-			nodeDataBlock->writeUInt(chainAttrib->m_hipsChannelID, paramName);
-
-			sprintf_s(paramName, "HipsHeightControlEnable_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(chainAttrib->m_hipsHeightControlEnable, paramName);
-
-			sprintf_s(paramName, "HipsPosVelLimitEnable_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(chainAttrib->m_hipsPosVelLimitEnable, paramName);
-
-			sprintf_s(paramName, "HipsPosVelLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(chainAttrib->m_hipsPosVelLimit, paramName);
-
-			sprintf_s(paramName, "HipsPosAccelLimitEnable_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(chainAttrib->m_hipsPosAccelLimitEnable, paramName);
-
-			sprintf_s(paramName, "HipsPosAccelLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(chainAttrib->m_hipsPosAccelLimit, paramName);
-
-			// Common leg options
-			sprintf_s(paramName, "StraightestLegFactor_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(chainAttrib->m_straightestLegFactor, paramName);
-
-			sprintf_s(paramName, "AnklePosVelLimitEnable_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(chainAttrib->m_endJointPosVelLimitEnable, paramName);
-
-			sprintf_s(paramName, "AnklePosVelLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(chainAttrib->m_endJointPosVelLimit, paramName);
-
-			sprintf_s(paramName, "AnklePosAccelLimitEnable_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(chainAttrib->m_endJointPosAccelLimitEnable, paramName);
-
-			sprintf_s(paramName, "AnklePosAccelLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(chainAttrib->m_endJointPosAccelLimit, paramName);
-
-			sprintf_s(paramName, "AnkleAngVelLimitEnable_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(chainAttrib->m_endJointAngVelLimitEnable, paramName);
-
-			sprintf_s(paramName, "AnkleAngVelLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(chainAttrib->m_endJointAngVelLimit / (2 * NM_PI), paramName);
-
-			sprintf_s(paramName, "AnkleAngAccelLimitEnable_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(chainAttrib->m_endJointAngAccelLimitEnable, paramName);
-
-			sprintf_s(paramName, "AnkleAngAccelLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(chainAttrib->m_endJointAngAccelLimit / (2 * NM_PI), paramName);
-
-			sprintf_s(paramName, "UseGroundPenetrationFixup_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(chainAttrib->m_useGroundPenetrationFixup, paramName);
-
-			sprintf_s(paramName, "UseTrajectorySlopeAlignment_%d", animSetIdx + 1);
-			nodeDataBlock->writeBool(chainAttrib->m_useTrajectorySlopeAlignment, paramName);
-
-			sprintf_s(paramName, "FootAlignToSurfaceAngleLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(getAngleFromClampedCosine(chainAttrib->m_footAlignToSurfaceAngleLimit), paramName);
-
-			sprintf_s(paramName, "FootAlignToSurfaceMaxSlopeAngle_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(getAngleFromClampedCosine(chainAttrib->m_footAlignToSurfaceMaxSlopeAngle), paramName);
-		
-			sprintf_s(paramName, "FootLiftingHeightLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(chainAttrib->m_footLiftingHeightLimit, paramName);
-
-			//Leg IK Chain options
-			assert(chainAttrib->m_numLimbs == 2);
-
-			const CHAR* legNames[2] = { "Left", "Right" };
-
-			for (uint32_t i = 0; i < 2; i++)
-			{
-				MR::AttribDataBasicUnevenTerrainChain::ChainData* chainData = chainAttrib->m_chainInfo[i];
-
-				sprintf_s(paramName, "%sHipIndex_%d", legNames[i], animSetIdx + 1);
-				nodeDataBlock->writeUInt(chainData->m_channelIDs[0], paramName);
-
-				sprintf_s(paramName, "%sKneeIndex_%d", legNames[i], animSetIdx + 1);
-				nodeDataBlock->writeUInt(chainData->m_channelIDs[1], paramName);
-
-				sprintf_s(paramName, "%sAnkleIndex_%d", legNames[i], animSetIdx + 1);
-				nodeDataBlock->writeUInt(chainData->m_channelIDs[2], paramName);
-
-				sprintf_s(paramName, "%sBallIndex_%d", legNames[i], animSetIdx + 1);
-				nodeDataBlock->writeUInt(chainData->m_channelIDs[3], paramName);
-
-				sprintf_s(paramName, "%sToeIndex_%d", legNames[i], animSetIdx + 1);
-				nodeDataBlock->writeUInt(chainData->m_channelIDs[4], paramName);
-
-				const bool flippedAxis = isAxisFlipped(chainData->m_kneeRotationAxis);
-
-				sprintf_s(paramName, "%sFlipKneeRotationDirection_%d", legNames[i], animSetIdx + 1);
-				nodeDataBlock->writeBool(flippedAxis, paramName);
-
-				if (flippedAxis)
-				{
-					sprintf_s(paramName, "%sKneeRotationAxisX_%d", legNames[i], animSetIdx + 1);
-					nodeDataBlock->writeFloat(-chainData->m_kneeRotationAxis.x, paramName);
-
-					sprintf_s(paramName, "%sKneeRotationAxisY_%d", legNames[i], animSetIdx + 1);
-					nodeDataBlock->writeFloat(-chainData->m_kneeRotationAxis.y, paramName);
-
-					sprintf_s(paramName, "%sKneeRotationAxisZ_%d", legNames[i], animSetIdx + 1);
-					nodeDataBlock->writeFloat(-chainData->m_kneeRotationAxis.z, paramName);
-				}
-				else
-				{
-					sprintf_s(paramName, "%sKneeRotationAxisX_%d", legNames[i], animSetIdx + 1);
-					nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.x, paramName);
-
-					sprintf_s(paramName, "%sKneeRotationAxisY_%d", legNames[i], animSetIdx + 1);
-					nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.y, paramName);
-
-					sprintf_s(paramName, "%sKneeRotationAxisZ_%d", legNames[i], animSetIdx + 1);
-					nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.z, paramName);
-				}
-			}
-		}
-
-		void writePredictiveUnevenTerrainPredictionDefAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataPredictiveUnevenTerrainPredictionDef* predictionDefAttrib)
-		{
-			CHAR paramName[256];
-
-			sprintf_s(paramName, "PredictionSlopeAngleLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(NMP::radiansToDegrees(atanf(predictionDefAttrib->m_footLiftingSlopeAngleLimit)), paramName);
-		
-			sprintf_s(paramName, "PredictionLateralAngleLimit_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(NMP::radiansToDegrees(atanf(predictionDefAttrib->m_footLiftingLateralAngleLimit)), paramName);
-
-			sprintf_s(paramName, "PredictionCloseFootbaseTolFrac_%d", animSetIdx + 1);
-			nodeDataBlock->writeFloat(predictionDefAttrib->m_closeFootbaseTolFrac, paramName);
-		
-			assert(predictionDefAttrib->m_numLimbs == 2);
-
-			// Limb data
-			const CHAR* legNames[2] = { "Left", "Right" };
-			for (uint32_t i = 0; i < 2; i++)
-			{
-				MR::AttribDataPredictiveUnevenTerrainPredictionDef::LimbData* limbData = predictionDefAttrib->m_limbInfo[i];
-
-				sprintf_s(paramName, "%sEventTrackID_%d", legNames[i], animSetIdx + 1);
-				nodeDataBlock->writeUInt(limbData->m_eventTrackID, paramName);
-			}
-		}
-
-		uint32_t getUpAxisIndex(NMP::Vector3 upAxisVector)
+		uint32_t IKNodeExportBase::getUpAxisIndex(NMP::Vector3 upAxisVector)
 		{
 			uint32_t upAxisIndex = 1;
 
@@ -181,11 +35,11 @@ namespace MD
 			}
 
 			g_appLog->panicMessage("Invalid up axis vector (%.3f, %.3f, %.3f)\n", upAxisVector[0], upAxisVector[1], upAxisVector[2]);
-			
+
 			return -1;
 		}
 
-		inline float calculateBiasByIkParams(NMRU::IKJointParams* jointParams, int numJointParams)
+		float IKNodeExportBase::getBias(NMRU::IKJointParams* jointParams, int numJointParams)
 		{
 			if (numJointParams <= 1)
 				return 1.f;
@@ -195,11 +49,11 @@ namespace MD
 			return jointParams[1].weight * (numJointParams / (2 * ratio));
 		}
 
-		ME::NodeExportXML* exportHeadLookNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeExportHeadLook::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_HEAD_LOOK);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
@@ -241,7 +95,7 @@ namespace MD
 				sprintf_s(paramName, "EndEffectorOffsetZ_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(headLookChain->m_endEffectorOffset.z, paramName);
 
-				float bias = calculateBiasByIkParams(headLookChain->m_ikParams->perJointParams, headLookChain->m_numJoints);
+				float bias = getBias(headLookChain->m_ikParams->perJointParams, headLookChain->m_numJoints);
 
 				sprintf_s(paramName, "Bias_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(bias, paramName);
@@ -256,11 +110,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportHipsIKNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeExportHipsIK::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_HIPS_IK);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -331,11 +185,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportLockFootNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeExportLockFoot::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_LOCK_FOOT);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -440,11 +294,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportGunAimIKNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeExportGunAimIK::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_GUN_AIM_IK);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -568,11 +422,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportTwoBoneIKNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeExportTwoBoneIK::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_TWO_BONE_IK);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -655,11 +509,130 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportBasicUnevenTerrainNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		void NodeExportBasicUnevenTerrain::writeChainAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataBasicUnevenTerrainChain* chainAttrib)
+		{
+			CHAR paramName[256];
+
+			sprintf_s(paramName, "HipsIndex_%d", animSetIdx + 1);
+			nodeDataBlock->writeUInt(chainAttrib->m_hipsChannelID, paramName);
+
+			sprintf_s(paramName, "HipsHeightControlEnable_%d", animSetIdx + 1);
+			nodeDataBlock->writeBool(chainAttrib->m_hipsHeightControlEnable, paramName);
+
+			sprintf_s(paramName, "HipsPosVelLimitEnable_%d", animSetIdx + 1);
+			nodeDataBlock->writeBool(chainAttrib->m_hipsPosVelLimitEnable, paramName);
+
+			sprintf_s(paramName, "HipsPosVelLimit_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(chainAttrib->m_hipsPosVelLimit, paramName);
+
+			sprintf_s(paramName, "HipsPosAccelLimitEnable_%d", animSetIdx + 1);
+			nodeDataBlock->writeBool(chainAttrib->m_hipsPosAccelLimitEnable, paramName);
+
+			sprintf_s(paramName, "HipsPosAccelLimit_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(chainAttrib->m_hipsPosAccelLimit, paramName);
+
+			// Common leg options
+			sprintf_s(paramName, "StraightestLegFactor_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(chainAttrib->m_straightestLegFactor, paramName);
+
+			sprintf_s(paramName, "AnklePosVelLimitEnable_%d", animSetIdx + 1);
+			nodeDataBlock->writeBool(chainAttrib->m_endJointPosVelLimitEnable, paramName);
+
+			sprintf_s(paramName, "AnklePosVelLimit_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(chainAttrib->m_endJointPosVelLimit, paramName);
+
+			sprintf_s(paramName, "AnklePosAccelLimitEnable_%d", animSetIdx + 1);
+			nodeDataBlock->writeBool(chainAttrib->m_endJointPosAccelLimitEnable, paramName);
+
+			sprintf_s(paramName, "AnklePosAccelLimit_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(chainAttrib->m_endJointPosAccelLimit, paramName);
+
+			sprintf_s(paramName, "AnkleAngVelLimitEnable_%d", animSetIdx + 1);
+			nodeDataBlock->writeBool(chainAttrib->m_endJointAngVelLimitEnable, paramName);
+
+			sprintf_s(paramName, "AnkleAngVelLimit_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(chainAttrib->m_endJointAngVelLimit / (2 * NM_PI), paramName);
+
+			sprintf_s(paramName, "AnkleAngAccelLimitEnable_%d", animSetIdx + 1);
+			nodeDataBlock->writeBool(chainAttrib->m_endJointAngAccelLimitEnable, paramName);
+
+			sprintf_s(paramName, "AnkleAngAccelLimit_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(chainAttrib->m_endJointAngAccelLimit / (2 * NM_PI), paramName);
+
+			sprintf_s(paramName, "UseGroundPenetrationFixup_%d", animSetIdx + 1);
+			nodeDataBlock->writeBool(chainAttrib->m_useGroundPenetrationFixup, paramName);
+
+			sprintf_s(paramName, "UseTrajectorySlopeAlignment_%d", animSetIdx + 1);
+			nodeDataBlock->writeBool(chainAttrib->m_useTrajectorySlopeAlignment, paramName);
+
+			sprintf_s(paramName, "FootAlignToSurfaceAngleLimit_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(getAngleFromClampedCosine(chainAttrib->m_footAlignToSurfaceAngleLimit), paramName);
+
+			sprintf_s(paramName, "FootAlignToSurfaceMaxSlopeAngle_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(getAngleFromClampedCosine(chainAttrib->m_footAlignToSurfaceMaxSlopeAngle), paramName);
+
+			sprintf_s(paramName, "FootLiftingHeightLimit_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(chainAttrib->m_footLiftingHeightLimit, paramName);
+
+			//Leg IK Chain options
+			assert(chainAttrib->m_numLimbs == 2);
+
+			const CHAR* legNames[2] = { "Left", "Right" };
+
+			for (uint32_t i = 0; i < 2; i++)
+			{
+				MR::AttribDataBasicUnevenTerrainChain::ChainData* chainData = chainAttrib->m_chainInfo[i];
+
+				sprintf_s(paramName, "%sHipIndex_%d", legNames[i], animSetIdx + 1);
+				nodeDataBlock->writeUInt(chainData->m_channelIDs[0], paramName);
+
+				sprintf_s(paramName, "%sKneeIndex_%d", legNames[i], animSetIdx + 1);
+				nodeDataBlock->writeUInt(chainData->m_channelIDs[1], paramName);
+
+				sprintf_s(paramName, "%sAnkleIndex_%d", legNames[i], animSetIdx + 1);
+				nodeDataBlock->writeUInt(chainData->m_channelIDs[2], paramName);
+
+				sprintf_s(paramName, "%sBallIndex_%d", legNames[i], animSetIdx + 1);
+				nodeDataBlock->writeUInt(chainData->m_channelIDs[3], paramName);
+
+				sprintf_s(paramName, "%sToeIndex_%d", legNames[i], animSetIdx + 1);
+				nodeDataBlock->writeUInt(chainData->m_channelIDs[4], paramName);
+
+				const bool flippedAxis = isAxisFlipped(chainData->m_kneeRotationAxis);
+
+				sprintf_s(paramName, "%sFlipKneeRotationDirection_%d", legNames[i], animSetIdx + 1);
+				nodeDataBlock->writeBool(flippedAxis, paramName);
+
+				if (flippedAxis)
+				{
+					sprintf_s(paramName, "%sKneeRotationAxisX_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(-chainData->m_kneeRotationAxis.x, paramName);
+
+					sprintf_s(paramName, "%sKneeRotationAxisY_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(-chainData->m_kneeRotationAxis.y, paramName);
+
+					sprintf_s(paramName, "%sKneeRotationAxisZ_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(-chainData->m_kneeRotationAxis.z, paramName);
+				}
+				else
+				{
+					sprintf_s(paramName, "%sKneeRotationAxisX_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.x, paramName);
+
+					sprintf_s(paramName, "%sKneeRotationAxisY_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.y, paramName);
+
+					sprintf_s(paramName, "%sKneeRotationAxisZ_%d", legNames[i], animSetIdx + 1);
+					nodeDataBlock->writeFloat(chainData->m_kneeRotationAxis.z, paramName);
+				}
+			}
+		}
+
+		ME::NodeExportXML* NodeExportBasicUnevenTerrain::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BASIC_UNEVEN_TERRAIN);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -678,17 +651,43 @@ namespace MD
 			{
 				MR::AttribDataBasicUnevenTerrainChain* chainAttrib = static_cast<MR::AttribDataBasicUnevenTerrainChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET, animSetIdx));
 
-				writeBasicUnevenTerrainChainAttrib(nodeDataBlock, animSetIdx, chainAttrib);
+				writeChainAttrib(nodeDataBlock, animSetIdx, chainAttrib);
 			}
 
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportPredictiveUnevenTerrainNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		void NodeExportPredictiveUnevenTerrain::writeChainAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataPredictiveUnevenTerrainPredictionDef* predictionDefAttrib)
+		{
+			CHAR paramName[256];
+
+			sprintf_s(paramName, "PredictionSlopeAngleLimit_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(NMP::radiansToDegrees(atanf(predictionDefAttrib->m_footLiftingSlopeAngleLimit)), paramName);
+
+			sprintf_s(paramName, "PredictionLateralAngleLimit_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(NMP::radiansToDegrees(atanf(predictionDefAttrib->m_footLiftingLateralAngleLimit)), paramName);
+
+			sprintf_s(paramName, "PredictionCloseFootbaseTolFrac_%d", animSetIdx + 1);
+			nodeDataBlock->writeFloat(predictionDefAttrib->m_closeFootbaseTolFrac, paramName);
+
+			assert(predictionDefAttrib->m_numLimbs == 2);
+
+			// Limb data
+			const CHAR* legNames[2] = { "Left", "Right" };
+			for (uint32_t i = 0; i < 2; i++)
+			{
+				MR::AttribDataPredictiveUnevenTerrainPredictionDef::LimbData* limbData = predictionDefAttrib->m_limbInfo[i];
+
+				sprintf_s(paramName, "%sEventTrackID_%d", legNames[i], animSetIdx + 1);
+				nodeDataBlock->writeUInt(limbData->m_eventTrackID, paramName);
+			}
+		}
+
+		ME::NodeExportXML* NodeExportPredictiveUnevenTerrain::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -708,11 +707,11 @@ namespace MD
 			{
 				MR::AttribDataBasicUnevenTerrainChain* chainAttrib = static_cast<MR::AttribDataBasicUnevenTerrainChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET, animSetIdx));
 
-				writeBasicUnevenTerrainChainAttrib(nodeDataBlock, animSetIdx, chainAttrib);
+				NodeExportBasicUnevenTerrain::writeChainAttrib(nodeDataBlock, animSetIdx, chainAttrib);
 
 				MR::AttribDataPredictiveUnevenTerrainPredictionDef* predictionDefAttrib = static_cast<MR::AttribDataPredictiveUnevenTerrainPredictionDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_UNEVEN_TERRAIN_PREDICTION_DEF, animSetIdx));
 			
-				writePredictiveUnevenTerrainPredictionDefAttrib(nodeDataBlock, animSetIdx, predictionDefAttrib);
+				writeChainAttrib(nodeDataBlock, animSetIdx, predictionDefAttrib);
 			}
 
 			return nodeExportXML;

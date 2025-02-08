@@ -18,7 +18,7 @@ namespace MD
 {
 	namespace Node
 	{
-		void writeTimeStretchModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void BlendNodeExportBase::writeTimeStretchMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			int timeStretchMode = AP::kNodeTimeStretchNone;
 
@@ -42,7 +42,347 @@ namespace MD
 				attribDataBlock->writeInt(startSyncEventIndex->m_value, "StartEventIndex");
 		}
 
-		void writeFeatherBlendModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void BlendNodeExportBase::writeEventBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			AP::NodeSampledEventBlendModes eventBlendMode = AP::kSampledEventBlendModeInvalid;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER);
+			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+			if ((taskQueueFn == MR::nodeBlend2SyncEventsQueueSampledEventsBuffers) || (taskQueueFn == MR::nodeBlend2QueueSampledEventsBuffers))
+				eventBlendMode = AP::kMergeSampledEvents;
+			else if ((taskQueueFn == MR::nodeBlend2SyncEventsQueueAddSampledEventsBuffers) || (taskQueueFn == MR::nodeBlend2QueueAddSampledEventsBuffers))
+				eventBlendMode = AP::kAddSampledEvents;
+
+			attribDataBlock->writeInt(eventBlendMode, "EventsBlendMode");
+		}
+
+		void BlendNodeExportBase::writeBlendFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			MR::AttribDataBlendFlags* blendFlags = static_cast<MR::AttribDataBlendFlags*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BLEND_FLAGS));
+			attribDataBlock->writeBool(blendFlags->m_alwaysCombineSampledEvents, "AlwaysCombineSampledEvents");
+		}
+
+		void NodeExportBlend2::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			bool slerpTrajPos = false;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM_BUFFER);
+
+			if ((taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsAddAttAddPosSlerpTraj) ||
+				(taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsAddAttInterpPosSlerpTraj) ||
+				(taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsInterpAttAddPosSlerpTraj) ||
+				(taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsInterpAttInterpPosSlerpTraj))
+				slerpTrajPos = true;
+
+			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
+		}
+
+		void NodeExportBlend2x2::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			bool slerpTrajPos = false;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM_BUFFER);
+
+			if ((taskQueueFn == MR::nodeBlend2x2QueueTrajectoryDeltaAndTransformsInterpPosInterpAttSlerpTraj))
+				slerpTrajPos = true;
+
+			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
+		}
+
+		void NodeExportBlendN::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			bool slerpTrajPos = false;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM_BUFFER);
+
+			if ((taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsInterpAttInterpPosSlerpTraj))
+				slerpTrajPos = true;
+
+			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
+		}
+
+		void NodeExportBlendNxM::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			bool slerpTrajPos = false;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM_BUFFER);
+
+			if ((taskQueueFn == MR::nodeBlend2x2QueueTrajectoryDeltaAndTransformsInterpPosInterpAttSlerpTraj))
+				slerpTrajPos = true;
+
+			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
+		}
+
+		void NodeExportFeatherBlend::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			bool slerpTrajPos = false;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM_BUFFER);
+
+			if ((taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsAddAttAddPosSlerpTraj) ||
+				(taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsAddAttInterpPosSlerpTraj) ||
+				(taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsInterpAttAddPosSlerpTraj) ||
+				(taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsInterpAttInterpPosSlerpTraj))
+				slerpTrajPos = true;
+
+			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
+		}
+
+		void NodeExportSubtractiveBlend::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			bool slerpTrajPos = false;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM_BUFFER);
+			if ((taskQueueFn == MR::nodeSubtractiveBlendQueueTrajectoryDeltaAndTransformsSubtractAttSubtractPosSlerpTraj))
+				slerpTrajPos = true;
+
+			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
+		}
+
+		void BlendNodeExportBase::writePassThroughMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			if (nodeDef->getNodeFlags() & MR::NodeDef::NODE_FLAG_IS_FILTER)
+			{
+				uint16_t passThroughChildIndex = nodeDef->getPassThroughChildIndex();
+
+				switch (passThroughChildIndex)
+				{
+				case 0:
+					attribDataBlock->writeInt(AP::kNodePassThroughSource0, "PassThroughMode");
+					break;
+				case 1:
+					attribDataBlock->writeInt(AP::kNodePassThroughSource1, "PassThroughMode");
+					break;
+				}
+
+				return;
+			}
+
+			attribDataBlock->writeInt(AP::kNodePassThroughNone, "PassThroughMode");
+		}
+
+		bool BlendNodeExportBase::isBlendNodeWrapWeights(MR::NodeDef* nodeDef)
+		{
+			int numSourceNodes = nodeDef->getNumChildNodes();
+
+			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+
+			if (weights->m_numValues == numSourceNodes)
+				return false;
+
+			return true;
+		}
+
+		void NodeExportBlend2::writeBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		{
+			AP::NodeBlendModes blendMode = AP::kNodeBlendInvalid;
+
+			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
+			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
+
+			if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttAddPos)
+				blendMode = AP::kAddQuatAddPos;
+			else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttInterpPos)
+				blendMode = AP::kAddQuatInterpPos;
+			else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttAddPos)
+				blendMode = AP::kInterpQuatAddPos;
+			else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttInterpPos)
+				blendMode = AP::kInterpQuatInterpPos;
+			else
+				g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
+
+			attribDataBlock->writeInt(blendMode, "BlendMode");
+		}
+
+		ME::NodeExportXML* NodeExportBlend2::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_2);
+
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0), true);
+
+			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+
+			assert(weights->m_numValues == 2);
+
+			nodeDataBlock->writeFloat(weights->m_values[0], "BlendWeight_0");
+			nodeDataBlock->writeFloat(weights->m_values[1], "BlendWeight_1");
+
+			writePassThroughMode(nodeDef, nodeDataBlock);
+			writeEventBlendMode(nodeDef, nodeDataBlock);
+			writeSlerpTrajPos(nodeDef, nodeDataBlock);
+			writeBlendMode(nodeDef, nodeDataBlock);
+			writeTimeStretchMode(nodeDef, nodeDataBlock);
+			writeBlendFlags(nodeDef, nodeDataBlock);
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* NodeExportBlend2x2::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_2X2);
+
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(2), "Source2NodeID");
+			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(3), "Source3NodeID");
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightX", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightY", nodeDef->getInputCPConnection(1), true);
+
+			MR::AttribDataBlendNxMDef* weights = static_cast<MR::AttribDataBlendNxMDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+
+			nodeDataBlock->writeFloat(weights->m_weightsX[0], "BlendWeightX_0");
+			nodeDataBlock->writeFloat(weights->m_weightsX[1], "BlendWeightX_1");
+			nodeDataBlock->writeFloat(weights->m_weightsY[0], "BlendWeightY_0");
+			nodeDataBlock->writeFloat(weights->m_weightsY[1], "BlendWeightY_1");
+
+			writeSlerpTrajPos(nodeDef, nodeDataBlock);
+			writeTimeStretchMode(nodeDef, nodeDataBlock);
+			writeBlendFlags(nodeDef, nodeDataBlock);
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* NodeExportBlendN::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_N);
+
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int sourceNodeCount = nodeDef->getNumChildNodes();
+
+			nodeDataBlock->writeInt(sourceNodeCount, "SourceNodeCount");
+
+			CHAR paramName[256];
+			for (int i = 0; i < sourceNodeCount; i++)
+			{
+				sprintf_s(paramName, "Source%dNodeID", i);
+
+				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
+			}
+
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0), true);
+
+			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+			for (int i = 0; i < sourceNodeCount; i++)
+			{
+				sprintf_s(paramName, "SourceWeight_%d", i);
+
+				nodeDataBlock->writeFloat(weights->m_values[i], paramName);
+			}
+
+			bool wrapWeights = isBlendNodeWrapWeights(nodeDef);
+			nodeDataBlock->writeBool(wrapWeights, "WrapWeights");
+
+			if (wrapWeights)
+				nodeDataBlock->writeFloat(weights->m_values[sourceNodeCount], "WrapWeight");
+
+			writeTimeStretchMode(nodeDef, nodeDataBlock);
+			writeSlerpTrajPos(nodeDef, nodeDataBlock);
+			writeBlendFlags(nodeDef, nodeDataBlock);
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* NodeExportBlendNxM::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_NXM);
+
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int sourceNodeCount = nodeDef->getNumChildNodes();
+
+			MR::AttribDataBlendNxMDef* blendNxMAttrib = static_cast<MR::AttribDataBlendNxMDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
+
+			nodeDataBlock->writeInt(blendNxMAttrib->m_numWeightsX, "NodeCountX");
+			nodeDataBlock->writeInt(blendNxMAttrib->m_numWeightsY, "NodeCountY");
+
+			assert(sourceNodeCount == blendNxMAttrib->m_numWeightsX * blendNxMAttrib->m_numWeightsY);
+
+			CHAR paramName[256];
+			for (int i = 0; i < sourceNodeCount; i++)
+			{
+				sprintf_s(paramName, "Source%dNodeID", i);
+
+				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
+			}
+
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightX", nodeDef->getInputCPConnection(0), true);
+			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightY", nodeDef->getInputCPConnection(1), true);
+
+			nodeDataBlock->writeBool(blendNxMAttrib->m_wrapWeightsX, "WrapWeightsX");
+			nodeDataBlock->writeBool(blendNxMAttrib->m_wrapWeightsY, "WrapWeightsY");
+
+			for (uint32_t i = 0; i < blendNxMAttrib->m_numWeightsX; i++)
+			{
+				sprintf_s(paramName, "BlendWeightX_%d", i);
+				nodeDataBlock->writeFloat(blendNxMAttrib->m_weightsX[i], paramName);
+			}
+
+			if (blendNxMAttrib->m_wrapWeightsX)
+				nodeDataBlock->writeFloat(blendNxMAttrib->m_weightsX[blendNxMAttrib->m_numWeightsX], "WrapWeightX");
+
+			for (uint32_t i = 0; i < blendNxMAttrib->m_numWeightsY; i++)
+			{
+				sprintf_s(paramName, "BlendWeightY_%d", i);
+				nodeDataBlock->writeFloat(blendNxMAttrib->m_weightsY[i], paramName);
+			}
+
+			if (blendNxMAttrib->m_wrapWeightsX)
+				nodeDataBlock->writeFloat(blendNxMAttrib->m_weightsY[blendNxMAttrib->m_numWeightsY], "WrapWeightY");
+
+			writeTimeStretchMode(nodeDef, nodeDataBlock);
+			writeSlerpTrajPos(nodeDef, nodeDataBlock);
+			writeBlendFlags(nodeDef, nodeDataBlock);
+
+			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* NodeExportBlendAll::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		{
+			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_ALL);
+
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+
+			const int sourceNodeCount = nodeDef->getNumChildNodes();
+			const int inputCPCount = nodeDef->getNumInputCPConnections();
+
+			if (inputCPCount != sourceNodeCount)
+				g_appLog->panicMessage("Mismatch between inputCPCount and sourceNodeCount (nodeID=%d)\n", nodeDef->getNodeID());
+
+			nodeDataBlock->writeInt(sourceNodeCount, "SourceNodeCount");
+
+			CHAR paramName[256];
+			for (int i = 0; i < sourceNodeCount; i++)
+			{
+				sprintf_s(paramName, "Source%dNodeID", i);
+				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
+			}
+
+			for (int i = 0; i < inputCPCount; i++)
+			{
+				sprintf_s(paramName, "Weight%d", i);
+				NodeUtils::writeInputCPConnection(nodeDataBlock, paramName, nodeDef->getInputCPConnection(i), true);
+			}
+
+			writeTimeStretchMode(nodeDef, nodeDataBlock);
+			writeSlerpTrajPos(nodeDef, nodeDataBlock);
+
+			return nodeExportXML;
+		}
+
+		void NodeExportFeatherBlend::writeBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			AP::NodeBlendModes blendMode = AP::kNodeBlendInvalid;
 
@@ -89,333 +429,11 @@ namespace MD
 			attribDataBlock->writeBool(additiveBlendPos, "AdditiveBlendPosition");
 		}
 
-		void writeBlend2BlendModeFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-		{
-			AP::NodeBlendModes blendMode = AP::kNodeBlendInvalid;
-
-			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
-			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
-
-			if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttAddPos)
-				blendMode = AP::kAddQuatAddPos;
-			else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsAddAttInterpPos)
-				blendMode = AP::kAddQuatInterpPos;
-			else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttAddPos)
-				blendMode = AP::kInterpQuatAddPos;
-			else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttInterpPos)
-				blendMode = AP::kInterpQuatInterpPos;
-			else
-				g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
-
-			attribDataBlock->writeInt(blendMode, "BlendMode");
-		}
-
-		void writeBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-		{
-			switch (nodeDef->getNodeTypeID())
-			{
-			case NODE_TYPE_BLEND_2:
-				return writeBlend2BlendModeFlags(nodeDef, attribDataBlock);
-			case NODE_TYPE_FEATHER_BLEND_2:
-				return writeFeatherBlendModeFlags(nodeDef, attribDataBlock);
-			default:
-				break;
-			}
-		}
-
-		void writeEventBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-		{
-			AP::NodeSampledEventBlendModes eventBlendMode = AP::kSampledEventBlendModeInvalid;
-
-			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_SAMPLED_EVENTS_BUFFER);
-			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
-
-			if ((taskQueueFn == MR::nodeBlend2SyncEventsQueueSampledEventsBuffers) || (taskQueueFn == MR::nodeBlend2QueueSampledEventsBuffers))
-				eventBlendMode = AP::kMergeSampledEvents;
-			else if ((taskQueueFn == MR::nodeBlend2SyncEventsQueueAddSampledEventsBuffers) || (taskQueueFn == MR::nodeBlend2QueueAddSampledEventsBuffers))
-				eventBlendMode = AP::kAddSampledEvents;
-
-			attribDataBlock->writeInt(eventBlendMode, "EventsBlendMode");
-		}
-
-		void writeBlendFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-		{
-			MR::AttribDataBlendFlags* blendFlags = static_cast<MR::AttribDataBlendFlags*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BLEND_FLAGS));
-			attribDataBlock->writeBool(blendFlags->m_alwaysCombineSampledEvents, "AlwaysCombineSampledEvents");
-		}
-
-		void writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-		{
-			bool slerpTrajPos = false;
-
-			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM_BUFFER);
-
-			switch (nodeDef->getNodeTypeID())
-			{
-			case NODE_TYPE_FEATHER_BLEND_2:
-				if ((taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsAddAttAddPosSlerpTraj) ||
-					(taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsAddAttInterpPosSlerpTraj) ||
-					(taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsInterpAttAddPosSlerpTraj) || 
-					(taskQueueFn == MR::nodeFeatherBlend2QueueTrajectoryDeltaAndTransformsInterpAttInterpPosSlerpTraj))
-					slerpTrajPos = true;
-				break;
-			case NODE_TYPE_BLEND_2:
-				if ((taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsAddAttAddPosSlerpTraj) || 
-					(taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsAddAttInterpPosSlerpTraj) ||
-					(taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsInterpAttAddPosSlerpTraj) ||
-					(taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsInterpAttInterpPosSlerpTraj))
-					slerpTrajPos = true;
-				break;
-			case NODE_TYPE_SUBTRACTIVE_BLEND:
-				if ((taskQueueFn == MR::nodeSubtractiveBlendQueueTrajectoryDeltaAndTransformsSubtractAttSubtractPosSlerpTraj))
-					slerpTrajPos = true;
-				break;
-			case NODE_TYPE_BLEND_N:
-				if ((taskQueueFn == MR::nodeBlend2QueueTrajectoryDeltaAndTransformsInterpAttInterpPosSlerpTraj))
-					slerpTrajPos = true;
-				break;
-			case NODE_TYPE_BLEND_2X2:
-				if ((taskQueueFn == MR::nodeBlend2x2QueueTrajectoryDeltaAndTransformsInterpPosInterpAttSlerpTraj))
-					slerpTrajPos = true;
-				break;
-			case NODE_TYPE_BLEND_NXM:
-				if ((taskQueueFn == MR::nodeBlend2x2QueueTrajectoryDeltaAndTransformsInterpPosInterpAttSlerpTraj))
-					slerpTrajPos = true;
-				break;
-			default:
-				g_appLog->panicMessage("Invalid node type %d (expecting a blend node)");
-				break;
-			}
-
-			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
-		}
-
-		void writePassThroughMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
-		{
-			if (nodeDef->getNodeFlags() & MR::NodeDef::NODE_FLAG_IS_FILTER)
-			{
-				uint16_t passThroughChildIndex = nodeDef->getPassThroughChildIndex();
-
-				switch (passThroughChildIndex)
-				{
-				case 0:
-					attribDataBlock->writeInt(AP::kNodePassThroughSource0, "PassThroughMode");
-					break;
-				case 1:
-					attribDataBlock->writeInt(AP::kNodePassThroughSource1, "PassThroughMode");
-					break;
-				}
-
-				return;
-			}
-
-			attribDataBlock->writeInt(AP::kNodePassThroughNone, "PassThroughMode");
-		}
-
-		bool isBlendNodeWrapWeights(MR::NodeDef* nodeDef)
-		{
-			int numSourceNodes = nodeDef->getNumChildNodes();
-
-			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
-
-			if (weights->m_numValues == numSourceNodes)
-				return false;
-
-			return true;
-		}
-
-		ME::NodeExportXML* exportBlend2Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
-		{
-			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_2);
-
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
-			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
-
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0), true);
-
-			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
-
-			assert(weights->m_numValues == 2);
-
-			nodeDataBlock->writeFloat(weights->m_values[0], "BlendWeight_0");
-			nodeDataBlock->writeFloat(weights->m_values[1], "BlendWeight_1");
-
-			writePassThroughMode(nodeDef, nodeDataBlock);
-			writeEventBlendMode(nodeDef, nodeDataBlock);
-			writeSlerpTrajPos(nodeDef, nodeDataBlock);
-			writeBlendMode(nodeDef, nodeDataBlock);
-			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
-			writeBlendFlags(nodeDef, nodeDataBlock);
-
-			return nodeExportXML;
-		}
-
-		ME::NodeExportXML* exportBlend2x2Node(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
-		{
-			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_2X2);
-
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
-			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
-
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(2), "Source2NodeID");
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(3), "Source3NodeID");
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightX", nodeDef->getInputCPConnection(0), true);
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightY", nodeDef->getInputCPConnection(1), true);
-
-			MR::AttribDataBlendNxMDef* weights = static_cast<MR::AttribDataBlendNxMDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
-
-			nodeDataBlock->writeFloat(weights->m_weightsX[0], "BlendWeightX_0");
-			nodeDataBlock->writeFloat(weights->m_weightsX[1], "BlendWeightX_1");
-			nodeDataBlock->writeFloat(weights->m_weightsY[0], "BlendWeightY_0");
-			nodeDataBlock->writeFloat(weights->m_weightsY[1], "BlendWeightY_1");
-
-			writeSlerpTrajPos(nodeDef, nodeDataBlock);
-			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
-			writeBlendFlags(nodeDef, nodeDataBlock);
-
-			return nodeExportXML;
-		}
-
-		ME::NodeExportXML* exportBlendNNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
-		{
-			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_N);
-
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
-			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
-
-			const int sourceNodeCount = nodeDef->getNumChildNodes();
-
-			nodeDataBlock->writeInt(sourceNodeCount, "SourceNodeCount");
-
-			CHAR paramName[256];
-			for (int i = 0; i < sourceNodeCount; i++)
-			{
-				sprintf_s(paramName, "Source%dNodeID", i);
-
-				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
-			}
-
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "Weight", nodeDef->getInputCPConnection(0), true);
-
-			MR::AttribDataFloatArray* weights = static_cast<MR::AttribDataFloatArray*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
-			for (int i = 0; i < sourceNodeCount; i++)
-			{
-				sprintf_s(paramName, "SourceWeight_%d", i);
-
-				nodeDataBlock->writeFloat(weights->m_values[i], paramName);
-			}
-
-			bool wrapWeights = isBlendNodeWrapWeights(nodeDef);
-			nodeDataBlock->writeBool(wrapWeights, "WrapWeights");
-
-			if (wrapWeights)
-				nodeDataBlock->writeFloat(weights->m_values[sourceNodeCount], "WrapWeight");
-
-			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
-			writeSlerpTrajPos(nodeDef, nodeDataBlock);
-			writeBlendFlags(nodeDef, nodeDataBlock);
-
-			return nodeExportXML;
-		}
-
-		ME::NodeExportXML* exportBlendNxMNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
-		{
-			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_NXM);
-
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
-			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
-
-			const int sourceNodeCount = nodeDef->getNumChildNodes();
-
-			MR::AttribDataBlendNxMDef* blendNxMAttrib = static_cast<MR::AttribDataBlendNxMDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_CHILD_NODE_WEIGHTS));
-
-			nodeDataBlock->writeInt(blendNxMAttrib->m_numWeightsX, "NodeCountX");
-			nodeDataBlock->writeInt(blendNxMAttrib->m_numWeightsY, "NodeCountY");
-
-			assert(sourceNodeCount == blendNxMAttrib->m_numWeightsX * blendNxMAttrib->m_numWeightsY);
-
-			CHAR paramName[256];
-			for (int i = 0; i < sourceNodeCount; i++)
-			{
-				sprintf_s(paramName, "Source%dNodeID", i);
-
-				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
-			}
-
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightX", nodeDef->getInputCPConnection(0), true);
-			NodeUtils::writeInputCPConnection(nodeDataBlock, "WeightY", nodeDef->getInputCPConnection(1), true);
-
-			nodeDataBlock->writeBool(blendNxMAttrib->m_wrapWeightsX, "WrapWeightsX");
-			nodeDataBlock->writeBool(blendNxMAttrib->m_wrapWeightsY, "WrapWeightsY");
-
-			for (uint32_t i = 0; i < blendNxMAttrib->m_numWeightsX; i++)
-			{
-				sprintf_s(paramName, "BlendWeightX_%d", i);
-				nodeDataBlock->writeFloat(blendNxMAttrib->m_weightsX[i], paramName);
-			}
-
-			if (blendNxMAttrib->m_wrapWeightsX)
-				nodeDataBlock->writeFloat(blendNxMAttrib->m_weightsX[blendNxMAttrib->m_numWeightsX], "WrapWeightX");
-
-			for (uint32_t i = 0; i < blendNxMAttrib->m_numWeightsY; i++)
-			{
-				sprintf_s(paramName, "BlendWeightY_%d", i);
-				nodeDataBlock->writeFloat(blendNxMAttrib->m_weightsY[i], paramName);
-			}
-
-			if (blendNxMAttrib->m_wrapWeightsX)
-				nodeDataBlock->writeFloat(blendNxMAttrib->m_weightsY[blendNxMAttrib->m_numWeightsY], "WrapWeightY");
-
-			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
-			writeSlerpTrajPos(nodeDef, nodeDataBlock);
-			writeBlendFlags(nodeDef, nodeDataBlock);
-
-			return nodeExportXML;
-		}
-
-		ME::NodeExportXML* exportBlendAllNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
-		{
-			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_ALL);
-
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
-			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
-
-			const int sourceNodeCount = nodeDef->getNumChildNodes();
-			const int inputCPCount = nodeDef->getNumInputCPConnections();
-
-			if (inputCPCount != sourceNodeCount)
-				g_appLog->panicMessage("Mismatch between inputCPCount and sourceNodeCount (nodeID=%d)\n", nodeDef->getNodeID());
-
-			nodeDataBlock->writeInt(sourceNodeCount, "SourceNodeCount");
-
-			CHAR paramName[256];
-			for (int i = 0; i < sourceNodeCount; i++)
-			{
-				sprintf_s(paramName, "Source%dNodeID", i);
-				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(i), paramName);
-			}
-
-			for (int i = 0; i < inputCPCount; i++)
-			{
-				sprintf_s(paramName, "Weight%d", i);
-				NodeUtils::writeInputCPConnection(nodeDataBlock, paramName, nodeDef->getInputCPConnection(i), true);
-			}
-
-			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
-			writeSlerpTrajPos(nodeDef, nodeDataBlock);
-
-			return nodeExportXML;
-		}
-
-		ME::NodeExportXML* exportFeatherBlendNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeExportFeatherBlend::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_FEATHER_BLEND_2);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -430,7 +448,7 @@ namespace MD
 			nodeDataBlock->writeFloat(childWeights->m_values[1], "BlendWeight_1");
 
 			writePassThroughMode(nodeDef, nodeDataBlock);
-			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
+			writeTimeStretchMode(nodeDef, nodeDataBlock);
 			writeBlendMode(nodeDef, nodeDataBlock);
 			writeEventBlendMode(nodeDef, nodeDataBlock);
 			writeSlerpTrajPos(nodeDef, nodeDataBlock);
@@ -459,11 +477,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportSubtractiveBlendNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeExportSubtractiveBlend::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SUBTRACTIVE_BLEND);
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -471,7 +489,7 @@ namespace MD
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "Source1NodeID");
 
-			writeTimeStretchModeFlags(nodeDef, nodeDataBlock);
+			writeTimeStretchMode(nodeDef, nodeDataBlock);
 			writeSlerpTrajPos(nodeDef, nodeDataBlock);
 			writePassThroughMode(nodeDef, nodeDataBlock);
 			writeEventBlendMode(nodeDef, nodeDataBlock);

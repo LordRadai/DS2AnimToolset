@@ -230,6 +230,7 @@
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\ControlParamNode.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\Node.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\NodeExportBase.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.h" />
@@ -310,6 +311,7 @@
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\ControlParamNode.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\Node.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\NodeExportBase.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.cpp" />
