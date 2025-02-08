@@ -41,7 +41,7 @@ namespace MD
 				//This is supposed to be a global state. If this condition is not met then I'm doing something wrong
 				assert(transitStateDef->getTransitSourceStateID() == MR::INVALID_NODE_ID);
 
-				int targetNodeID = transitStateDef->getNodeID();
+				const int targetNodeID = transitStateDef->getNodeID();
 				MD::TransitCondition::exportTransitCommonConditionSet(nodeExport, targetNodeID, indices);
 			}
 		}
