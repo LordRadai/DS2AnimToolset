@@ -539,6 +539,8 @@ namespace MD
 
 		nodeExport->exportNodeTransitions(nodeDef, node);
 
+		delete nodeExport;
+
 		return node;
 	}
 }
