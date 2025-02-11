@@ -5,56 +5,56 @@ namespace MD
 {
 	namespace Node
 	{
-		class NodeExportCPFloat : public NodeExportBase
+		class NodeCPFloatDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportCPFloat() {}
-			~NodeExportCPFloat() {}
+			NodeCPFloatDecompiler() {}
+			~NodeCPFloatDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportCPVector3 : public NodeExportBase
+		class NodeCPVector3Decompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportCPVector3() {}
-			~NodeExportCPVector3() {}
+			NodeCPVector3Decompiler() {}
+			~NodeCPVector3Decompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportCPVector4 : public NodeExportBase
+		class NodeCPVector4Decompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportCPVector4() {}
-			~NodeExportCPVector4() {}
+			NodeCPVector4Decompiler() {}
+			~NodeCPVector4Decompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportCPBool : public NodeExportBase
+		class NodeCPBoolDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportCPBool() {}
-			~NodeExportCPBool() {}
+			NodeCPBoolDecompiler() {}
+			~NodeCPBoolDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportCPInt : public NodeExportBase
+		class NodeCPIntDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportCPInt() {}
-			~NodeExportCPInt() {}
+			NodeCPIntDecompiler() {}
+			~NodeCPIntDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportCPUInt : public NodeExportBase
+		class NodeCPUIntDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportCPUInt() {}
-			~NodeExportCPUInt() {}
+			NodeCPUIntDecompiler() {}
+			~NodeCPUIntDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};

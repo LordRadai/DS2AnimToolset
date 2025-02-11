@@ -12,7 +12,7 @@ namespace MD
 {
 	namespace Node
 	{
-		bool NodeExportExtractJointInfo::getOutputSpace(MR::NodeDef* nodeDef)
+		bool NodeExtractJointInfoDecompiler::getOutputSpace(MR::NodeDef* nodeDef)
 		{
 			MR::QueueAttrTaskFn transformBufferFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
 
@@ -24,7 +24,7 @@ namespace MD
 				g_appLog->panicMessage("Invalid transform buffer function for ExtractJointInfo node %s (nodeID=%d)\n", MR::Manager::getInstance().getTaskQueuingFnName(transformBufferFn), nodeDef->getNodeID());
 		}
 
-		bool NodeExportFreeze::isPassThroughTransformsOnce(MR::NodeDef* nodeDef)
+		bool NodeFreezeDecompiler::isPassThroughTransformsOnce(MR::NodeDef* nodeDef)
 		{
 			MR::QueueAttrTaskFn taskQueueFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRANSFORM_BUFFER);
 			const char* fnName = MR::Manager::getInstance().getTaskQueuingFnName(taskQueueFn);
@@ -41,9 +41,9 @@ namespace MD
 			return false;
 		}
 
-		ME::NodeExportXML* NodeExportUnhandled::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeUnhandledDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 
 			g_appLog->debugMessage(MsgLevel_Warn, "\tUnhandled node exporter for node type %d\n", nodeDef->getNodeTypeID());
 			
@@ -60,18 +60,18 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportNetwork::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeNetworkDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_NETWORK);
 
-			return NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			return NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 		}
 
-		ME::NodeExportXML* NodeExportAnimSyncEvents::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeAnimSyncEventsDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_ANIM_EVENTS);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			int numAnimSets = netDef->getNumAnimSets();
@@ -114,11 +114,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportMirrorTransforms::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeMirrorTransformsDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_MIRROR_TRANSFORMS_ID);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			int numAnimSets = netDef->getNumAnimSets();
@@ -164,11 +164,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportFilterTransforms::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeFilterTransformsDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_FILTER_TRANSFORMS);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -195,11 +195,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportSingleFrame::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeSingleFrameDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SINGLEFRAME);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
@@ -208,11 +208,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportFreeze::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeFreezeDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_FREEZE);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeBool(isPassThroughTransformsOnce(nodeDef), "passThroughTransformsOnce");
@@ -220,7 +220,7 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		MR::AttribDataEmittedMessagesMap::RequestType NodeExportEmitRequestOnDiscreteEvent::getRequestTypeID(MR::AttribDataEmittedMessagesMap* emittedMessageMap, uint32_t index)
+		MR::AttribDataEmittedMessagesMap::RequestType NodeEmitRequestOnDiscreteEventDecompiler::getRequestTypeID(MR::AttribDataEmittedMessagesMap* emittedMessageMap, uint32_t index)
 		{
 			if ((emittedMessageMap->getEmittedMessageEntry(index)->stateMachineNodeID == MR::INVALID_NODE_ID) && (emittedMessageMap->getEmittedMessageEntry(index)->messageID == MR::INVALID_MESSAGE_ID))
 				return MR::AttribDataEmittedMessagesMap::UNUSED;
@@ -236,11 +236,11 @@ namespace MD
 				return MR::AttribDataEmittedMessagesMap::UNUSED;
 		}
 
-		ME::NodeExportXML* NodeExportEmitRequestOnDiscreteEvent::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeEmitRequestOnDiscreteEventDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_EMIT_MESSAGE_ON_DISCRETE_EVENT);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "SourceNodeID");
@@ -291,11 +291,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportPlaySpeedModifier::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodePlaySpeedModifierDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_PLAY_SPEED_MODIFIER);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
@@ -304,11 +304,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportPassThrough::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodePassThroughDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_PASSTHROUGH);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "NodeConnectedTo");
@@ -316,11 +316,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportSmoothTransforms::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeSmoothTransformsDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SMOOTH_TRANSFORMS);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "SourceNodeID");
@@ -347,11 +347,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportSwitch::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeSwitchDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SWITCH);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int childNodeCount = nodeDef->getNumChildNodes();
@@ -384,11 +384,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportSequence::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeSequenceDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SEQUENCE);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int childNodeCount = nodeDef->getNumChildNodes();
@@ -408,11 +408,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportScaleToDuration::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeScaleToDurationDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SCALE_TO_DURATION);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
@@ -421,11 +421,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportApplyGlobalTime::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeApplyGlobalTimeDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_APPLY_GLOBAL_TIME);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "NodeConnectedTo");
@@ -433,11 +433,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportApplyBindPose::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeApplyBindPoseDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_APPLY_BIND_POSE);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "NodeConnectedTo");
@@ -445,11 +445,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportExtractJointInfo::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeExtractJointInfoDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_EMIT_JOINT_CP_INFO);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "SourceNodeID");
@@ -477,11 +477,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportClosestAnim::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeClosestAnimDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_CLOSEST_ANIM);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 			
 			const int numSourceNodes = nodeDef->getNumChildNodes();
@@ -529,11 +529,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportRetarget::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeRetargetDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_RETARGET);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numSourceNodes = nodeDef->getNumChildNodes();
@@ -557,11 +557,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportScaleCharacter::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeScaleCharacterDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SCALE_CHARACTER);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numSourceNodes = nodeDef->getNumChildNodes();

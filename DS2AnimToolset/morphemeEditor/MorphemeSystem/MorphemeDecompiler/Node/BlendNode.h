@@ -5,11 +5,11 @@ namespace MD
 {
 	namespace Node
 	{
-		class BlendNodeExportBase : public NodeExportBase
+		class NodeBlendDecompilerBase : public NodeDecompilerBase
 		{
 		public:
-			BlendNodeExportBase() {}
-			~BlendNodeExportBase() {}
+			NodeBlendDecompilerBase() {}
+			~NodeBlendDecompilerBase() {}
 
 		protected:
 			virtual void writeTimeStretchMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
@@ -21,11 +21,11 @@ namespace MD
 			virtual bool isBlendNodeWrapWeights(MR::NodeDef* nodeDef);
 		};
 
-		class NodeExportBlend2 : public BlendNodeExportBase
+		class NodeBlend2Decompiler : public NodeBlendDecompilerBase
 		{
 		public:
-			NodeExportBlend2() {}
-			~NodeExportBlend2() {}
+			NodeBlend2Decompiler() {}
+			~NodeBlend2Decompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		private:
@@ -33,53 +33,53 @@ namespace MD
 			void writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
 		};
 
-		class NodeExportBlend2x2 : public BlendNodeExportBase
+		class NodeBlend2x2Decompiler : public NodeBlendDecompilerBase
 		{
 		public:
-			NodeExportBlend2x2() {}
-			~NodeExportBlend2x2() {}
+			NodeBlend2x2Decompiler() {}
+			~NodeBlend2x2Decompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		private:
 			void writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
 		};
 
-		class NodeExportBlendN : public BlendNodeExportBase
+		class NodeBlendNDecompiler : public NodeBlendDecompilerBase
 		{
 		public:
-			NodeExportBlendN() {}
-			~NodeExportBlendN() {}
+			NodeBlendNDecompiler() {}
+			~NodeBlendNDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		private:
 			void writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
 		};
 
-		class NodeExportBlendNxM : public BlendNodeExportBase
+		class NodeBlendNxMDecompiler : public NodeBlendDecompilerBase
 		{
 		public:
-			NodeExportBlendNxM() {}
-			~NodeExportBlendNxM() {}
+			NodeBlendNxMDecompiler() {}
+			~NodeBlendNxMDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		private:
 			void writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
 		};
 
-		class NodeExportBlendAll : public BlendNodeExportBase
+		class NodeBlendAllDecompiler : public NodeBlendDecompilerBase
 		{
 		public:
-			NodeExportBlendAll() {}
-			~NodeExportBlendAll() {}
+			NodeBlendAllDecompiler() {}
+			~NodeBlendAllDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportFeatherBlend : public BlendNodeExportBase
+		class NodeFeatherBlendDecompiler : public NodeBlendDecompilerBase
 		{
 		public:
-			NodeExportFeatherBlend() {}
-			~NodeExportFeatherBlend() {}
+			NodeFeatherBlendDecompiler() {}
+			~NodeFeatherBlendDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		private:
@@ -87,11 +87,11 @@ namespace MD
 			void writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock);
 		};
 
-		class NodeExportSubtractiveBlend : public BlendNodeExportBase
+		class NodeSubtractiveBlendDecompiler : public NodeBlendDecompilerBase
 		{
 		public:
-			NodeExportSubtractiveBlend() {}
-			~NodeExportSubtractiveBlend() {}
+			NodeSubtractiveBlendDecompiler() {}
+			~NodeSubtractiveBlendDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		private:

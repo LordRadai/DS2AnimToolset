@@ -7,7 +7,7 @@ namespace MD
 {
 	namespace Node
 	{
-		void NodeExportBase::exportNodeTransitions(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
+		void NodeDecompilerBase::exportNodeTransitions(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport)
 		{
 			MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
 
@@ -54,7 +54,7 @@ namespace MD
 			}
 		}
 
-		ME::NodeExportXML* NodeExportBase::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeDecompilerBase::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			bool persistent = false;
 			bool downstreamMultiplyConnected = false;

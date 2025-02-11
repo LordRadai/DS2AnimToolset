@@ -8,11 +8,11 @@ namespace MD
 {
 	namespace Node
 	{
-		class NodeExportBase
+		class NodeDecompilerBase
 		{
 		public:
-			NodeExportBase() {}
-			~NodeExportBase() {}
+			NodeDecompilerBase() {}
+			~NodeDecompilerBase() {}
 
 			virtual ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 			void exportNodeTransitions(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport);

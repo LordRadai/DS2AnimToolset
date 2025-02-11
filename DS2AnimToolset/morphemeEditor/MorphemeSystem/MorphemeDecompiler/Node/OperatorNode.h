@@ -5,186 +5,186 @@ namespace MD
 {
 	namespace Node
 	{
-		class NodeExportOperatorFunction : public NodeExportBase
+		class NodeOperatorFunctionDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorFunction() {}
-			~NodeExportOperatorFunction() {}
+			NodeOperatorFunctionDecompiler() {}
+			~NodeOperatorFunctionDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorArithmetic : public NodeExportBase
+		class NodeOperatorArithmeticDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorArithmetic() {}
-			~NodeExportOperatorArithmetic() {}
+			NodeOperatorArithmeticDecompiler() {}
+			~NodeOperatorArithmeticDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorOneInputArithmetic : public NodeExportBase
+		class NodeOperatorOneInputArithmeticDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorOneInputArithmetic() {}
-			~NodeExportOperatorOneInputArithmetic() {}
+			NodeOperatorOneInputArithmeticDecompiler() {}
+			~NodeOperatorOneInputArithmeticDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorFloatsToVector3 : public NodeExportBase
+		class NodeOperatorFloatsToVector3Decompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorFloatsToVector3() {}
-			~NodeExportOperatorFloatsToVector3() {}
+			NodeOperatorFloatsToVector3Decompiler() {}
+			~NodeOperatorFloatsToVector3Decompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorFloatToInt : public NodeExportBase
+		class NodeOperatorFloatToIntDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorFloatToInt() {}
-			~NodeExportOperatorFloatToInt() {}
+			NodeOperatorFloatToIntDecompiler() {}
+			~NodeOperatorFloatToIntDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorIntToFloat : public NodeExportBase
+		class NodeOperatorIntToFloatDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorIntToFloat() {}
-			~NodeExportOperatorIntToFloat() {}
+			NodeOperatorIntToFloatDecompiler() {}
+			~NodeOperatorIntToFloatDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorNoiseGen : public NodeExportBase
+		class NodeOperatorNoiseGenDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorNoiseGen() {}
-			~NodeExportOperatorNoiseGen() {}
+			NodeOperatorNoiseGenDecompiler() {}
+			~NodeOperatorNoiseGenDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorSmoothFloat : public NodeExportBase
+		class NodeOperatorSmoothFloatDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorSmoothFloat() {}
-			~NodeExportOperatorSmoothFloat() {}
-
-			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
-		private:
-			bool isScalar(MR::NodeDef* nodeDef);
-		};
-
-		class NodeExportOperatorRampFloat : public NodeExportBase
-		{
-		public:
-			NodeExportOperatorRampFloat() {}
-			~NodeExportOperatorRampFloat() {}
-
-			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
-		};
-
-		class NodeExportOperatorRandomFloat : public NodeExportBase
-		{
-		public:
-			NodeExportOperatorRandomFloat() {}
-			~NodeExportOperatorRandomFloat() {}
-
-			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
-		};
-
-		class NodeExportOperatorRateOfChange: public NodeExportBase
-		{
-		public:
-			NodeExportOperatorRateOfChange() {}
-			~NodeExportOperatorRateOfChange() {}
+			NodeOperatorSmoothFloatDecompiler() {}
+			~NodeOperatorSmoothFloatDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		private:
 			bool isScalar(MR::NodeDef* nodeDef);
 		};
 
-		class NodeExportOperatorArithmeticVector3 : public NodeExportBase
+		class NodeOperatorRampFloatDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorArithmeticVector3() {}
-			~NodeExportOperatorArithmeticVector3() {}
+			NodeOperatorRampFloatDecompiler() {}
+			~NodeOperatorRampFloatDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorOneInputArithmeticVector3 : public NodeExportBase
+		class NodeOperatorRandomFloatDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorOneInputArithmeticVector3() {}
-			~NodeExportOperatorOneInputArithmeticVector3() {}
+			NodeOperatorRandomFloatDecompiler() {}
+			~NodeOperatorRandomFloatDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorVector3ToFloats : public NodeExportBase
+		class NodeOperatorRateOfChangeDecompiler: public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorVector3ToFloats() {}
-			~NodeExportOperatorVector3ToFloats() {}
+			NodeOperatorRateOfChangeDecompiler() {}
+			~NodeOperatorRateOfChangeDecompiler() {}
+
+			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
+		private:
+			bool isScalar(MR::NodeDef* nodeDef);
+		};
+
+		class NodeOperatorArithmeticVector3Decompiler : public NodeDecompilerBase
+		{
+		public:
+			NodeOperatorArithmeticVector3Decompiler() {}
+			~NodeOperatorArithmeticVector3Decompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorVector3Dot : public NodeExportBase
+		class NodeOperatorOneInputArithmeticVector3 : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorVector3Dot() {}
-			~NodeExportOperatorVector3Dot() {}
+			NodeOperatorOneInputArithmeticVector3() {}
+			~NodeOperatorOneInputArithmeticVector3() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorVector3Distance : public NodeExportBase
+		class NodeOperatorVector3ToFloatsDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorVector3Distance() {}
-			~NodeExportOperatorVector3Distance() {}
+			NodeOperatorVector3ToFloatsDecompiler() {}
+			~NodeOperatorVector3ToFloatsDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorVector3CrossProduct : public NodeExportBase
+		class NodeOperatorVector3DotDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorVector3CrossProduct() {}
-			~NodeExportOperatorVector3CrossProduct() {}
+			NodeOperatorVector3DotDecompiler() {}
+			~NodeOperatorVector3DotDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorVector3Angle : public NodeExportBase
+		class NodeOperatorVector3DistanceDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorVector3Angle() {}
-			~NodeExportOperatorVector3Angle() {}
+			NodeOperatorVector3DistanceDecompiler() {}
+			~NodeOperatorVector3DistanceDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorVector3Normalise : public NodeExportBase
+		class NodeOperatorVector3CrossProductDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorVector3Normalise() {}
-			~NodeExportOperatorVector3Normalise() {}
+			NodeOperatorVector3CrossProductDecompiler() {}
+			~NodeOperatorVector3CrossProductDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportOperatorRayCast : public NodeExportBase
+		class NodeOperatorVector3AngleDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportOperatorRayCast() {}
-			~NodeExportOperatorRayCast() {}
+			NodeOperatorVector3AngleDecompiler() {}
+			~NodeOperatorVector3AngleDecompiler() {}
+
+			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
+		};
+
+		class NodeOperatorVector3NormaliseDecompiler : public NodeDecompilerBase
+		{
+		public:
+			NodeOperatorVector3NormaliseDecompiler() {}
+			~NodeOperatorVector3NormaliseDecompiler() {}
+
+			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
+		};
+
+		class NodeOperatorRayCastDecompiler : public NodeDecompilerBase
+		{
+		public:
+			NodeOperatorRayCastDecompiler() {}
+			~NodeOperatorRayCastDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};

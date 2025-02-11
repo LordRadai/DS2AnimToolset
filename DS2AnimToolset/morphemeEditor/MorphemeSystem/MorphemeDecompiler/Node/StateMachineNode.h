@@ -6,11 +6,11 @@ namespace MD
 {
 	namespace Node
 	{
-		class NodeExportStateMachine : public NodeExportBase
+		class NodeStateMachineDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportStateMachine() {}
-			~NodeExportStateMachine() {}
+			NodeStateMachineDecompiler() {}
+			~NodeStateMachineDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		private:

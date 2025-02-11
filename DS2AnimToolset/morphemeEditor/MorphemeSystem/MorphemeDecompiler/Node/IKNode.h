@@ -6,11 +6,11 @@ namespace MD
 {
 	namespace Node
 	{
-		class IKNodeExportBase : public NodeExportBase
+		class NodeIKDecompilerBase : public NodeDecompilerBase
 		{
 		public:
-			IKNodeExportBase() {}
-			~IKNodeExportBase() {}
+			NodeIKDecompilerBase() {}
+			~NodeIKDecompilerBase() {}
 
 		protected:
 			bool isAxisFlipped(NMP::Vector3 axisVector);
@@ -19,67 +19,67 @@ namespace MD
 			float getBias(NMRU::IKJointParams* jointParams, int numJointParams);
 		};
 
-		class NodeExportHeadLook : public IKNodeExportBase
+		class NodeHeadLookDecompiler : public NodeIKDecompilerBase
 		{
 		public:
-			NodeExportHeadLook() {}
-			~NodeExportHeadLook() {}
+			NodeHeadLookDecompiler() {}
+			~NodeHeadLookDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportHipsIK : public IKNodeExportBase
+		class NodeHipsIKDecompiler : public NodeIKDecompilerBase
 		{
 		public:
-			NodeExportHipsIK() {}
-			~NodeExportHipsIK() {}
+			NodeHipsIKDecompiler() {}
+			~NodeHipsIKDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportLockFoot : public IKNodeExportBase
+		class NodeLockFootDecompiler : public NodeIKDecompilerBase
 		{
 		public:
-			NodeExportLockFoot() {}
-			~NodeExportLockFoot() {}
+			NodeLockFootDecompiler() {}
+			~NodeLockFootDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportGunAimIK : public IKNodeExportBase
+		class NodeGunAimIKDecompiler : public NodeIKDecompilerBase
 		{
 		public:
-			NodeExportGunAimIK() {}
-			~NodeExportGunAimIK() {}
+			NodeGunAimIKDecompiler() {}
+			~NodeGunAimIKDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportTwoBoneIK : public IKNodeExportBase
+		class NodeTwoBoneIKDecompiler : public NodeIKDecompilerBase
 		{
 		public:
-			NodeExportTwoBoneIK() {}
-			~NodeExportTwoBoneIK() {}
+			NodeTwoBoneIKDecompiler() {}
+			~NodeTwoBoneIKDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportBasicUnevenTerrain : public IKNodeExportBase
+		class NodeBasicUnevenTerrainDecompiler : public NodeIKDecompilerBase
 		{
 		public:
-			NodeExportBasicUnevenTerrain() {}
-			~NodeExportBasicUnevenTerrain() {}
+			NodeBasicUnevenTerrainDecompiler() {}
+			~NodeBasicUnevenTerrainDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		protected:
 			virtual void writeChainAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataBasicUnevenTerrainChain* chainAttrib);
 		};
 
-		class NodeExportPredictiveUnevenTerrain : public NodeExportBasicUnevenTerrain
+		class NodePredictiveUnevenTerrainDecompiler : public NodeBasicUnevenTerrainDecompiler
 		{
 		public:
-			NodeExportPredictiveUnevenTerrain() {}
-			~NodeExportPredictiveUnevenTerrain() {}
+			NodePredictiveUnevenTerrainDecompiler() {}
+			~NodePredictiveUnevenTerrainDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		private:

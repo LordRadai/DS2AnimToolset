@@ -10,7 +10,7 @@ namespace MD
 {
 	namespace Node
 	{
-		void NodeExportStateMachine::writeActiveStateTransitions(MR::AttribDataStateMachineDef* stateMachineDef, ME::NodeExportXML* nodeExport)
+		void NodeStateMachineDecompiler::writeActiveStateTransitions(MR::AttribDataStateMachineDef* stateMachineDef, ME::NodeExportXML* nodeExport)
 		{
 			MR::StateDef* globalStateDef = stateMachineDef->getGlobalStateDef();
 
@@ -46,7 +46,7 @@ namespace MD
 			}
 		}
 
-		void NodeExportStateMachine::writeChildStates(MR::NodeDef* nodeDef, ME::DataBlockExportXML* nodeDataBlock)
+		void NodeStateMachineDecompiler::writeChildStates(MR::NodeDef* nodeDef, ME::DataBlockExportXML* nodeDataBlock)
 		{
 			MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
 
@@ -86,11 +86,11 @@ namespace MD
 				g_appLog->panicMessage("Total parsed node count is different from the total node children count (expected %d, got %d)\n", nodeDef->getNumChildNodes(), childTransitCount + childNodeCount);
 		}
 
-		ME::NodeExportXML* NodeExportStateMachine::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeStateMachineDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_STATE_MACHINE);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));

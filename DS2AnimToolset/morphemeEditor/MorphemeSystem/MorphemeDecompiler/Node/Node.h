@@ -4,65 +4,65 @@ namespace MD
 {
 	namespace Node
 	{
-		class NodeExportUnhandled : public NodeExportBase
+		class NodeUnhandledDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportUnhandled() {}
-			~NodeExportUnhandled() {}
+			NodeUnhandledDecompiler() {}
+			~NodeUnhandledDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportNetwork : public NodeExportBase
+		class NodeNetworkDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportNetwork() {}
-			~NodeExportNetwork() {}
+			NodeNetworkDecompiler() {}
+			~NodeNetworkDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportAnimSyncEvents : public NodeExportBase
+		class NodeAnimSyncEventsDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportAnimSyncEvents() {}
-			~NodeExportAnimSyncEvents() {}
+			NodeAnimSyncEventsDecompiler() {}
+			~NodeAnimSyncEventsDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportMirrorTransforms : public NodeExportBase
+		class NodeMirrorTransformsDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportMirrorTransforms() {}
-			~NodeExportMirrorTransforms() {}
+			NodeMirrorTransformsDecompiler() {}
+			~NodeMirrorTransformsDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportFilterTransforms : public NodeExportBase
+		class NodeFilterTransformsDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportFilterTransforms() {}
-			~NodeExportFilterTransforms() {}
+			NodeFilterTransformsDecompiler() {}
+			~NodeFilterTransformsDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportSingleFrame : public NodeExportBase
+		class NodeSingleFrameDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportSingleFrame() {}
-			~NodeExportSingleFrame() {}
+			NodeSingleFrameDecompiler() {}
+			~NodeSingleFrameDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportFreeze : public NodeExportBase
+		class NodeFreezeDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportFreeze() {}
-			~NodeExportFreeze() {}
+			NodeFreezeDecompiler() {}
+			~NodeFreezeDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 
@@ -70,11 +70,11 @@ namespace MD
 			bool isPassThroughTransformsOnce(MR::NodeDef* nodeDef);
 		};
 
-		class NodeExportEmitRequestOnDiscreteEvent : public NodeExportBase
+		class NodeEmitRequestOnDiscreteEventDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportEmitRequestOnDiscreteEvent() {}
-			~NodeExportEmitRequestOnDiscreteEvent() {}
+			NodeEmitRequestOnDiscreteEventDecompiler() {}
+			~NodeEmitRequestOnDiscreteEventDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 
@@ -82,83 +82,83 @@ namespace MD
 			MR::AttribDataEmittedMessagesMap::RequestType getRequestTypeID(MR::AttribDataEmittedMessagesMap* emittedMessageMap, uint32_t index);
 		};
 
-		class NodeExportPlaySpeedModifier : public NodeExportBase
+		class NodePlaySpeedModifierDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportPlaySpeedModifier() {}
-			~NodeExportPlaySpeedModifier() {}
+			NodePlaySpeedModifierDecompiler() {}
+			~NodePlaySpeedModifierDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportPassThrough : public NodeExportBase
+		class NodePassThroughDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportPassThrough() {}
-			~NodeExportPassThrough() {}
+			NodePassThroughDecompiler() {}
+			~NodePassThroughDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportSmoothTransforms : public NodeExportBase
+		class NodeSmoothTransformsDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportSmoothTransforms() {}
-			~NodeExportSmoothTransforms() {}
+			NodeSmoothTransformsDecompiler() {}
+			~NodeSmoothTransformsDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportSwitch : public NodeExportBase
+		class NodeSwitchDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportSwitch() {}
-			~NodeExportSwitch() {}
+			NodeSwitchDecompiler() {}
+			~NodeSwitchDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportSequence : public NodeExportBase
+		class NodeSequenceDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportSequence() {}
-			~NodeExportSequence() {}
+			NodeSequenceDecompiler() {}
+			~NodeSequenceDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportScaleToDuration : public NodeExportBase
+		class NodeScaleToDurationDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportScaleToDuration() {}
-			~NodeExportScaleToDuration() {}
+			NodeScaleToDurationDecompiler() {}
+			~NodeScaleToDurationDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportApplyGlobalTime : public NodeExportBase
+		class NodeApplyGlobalTimeDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportApplyGlobalTime() {}
-			~NodeExportApplyGlobalTime() {}
+			NodeApplyGlobalTimeDecompiler() {}
+			~NodeApplyGlobalTimeDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportApplyBindPose : public NodeExportBase
+		class NodeApplyBindPoseDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportApplyBindPose() {}
-			~NodeExportApplyBindPose() {}
+			NodeApplyBindPoseDecompiler() {}
+			~NodeApplyBindPoseDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportExtractJointInfo : public NodeExportBase
+		class NodeExtractJointInfoDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportExtractJointInfo() {}
-			~NodeExportExtractJointInfo() {}
+			NodeExtractJointInfoDecompiler() {}
+			~NodeExtractJointInfoDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		
@@ -166,29 +166,29 @@ namespace MD
 			bool getOutputSpace(MR::NodeDef* nodeDef);
 		};
 
-		class NodeExportClosestAnim : public NodeExportBase
+		class NodeClosestAnimDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportClosestAnim() {}
-			~NodeExportClosestAnim() {}
+			NodeClosestAnimDecompiler() {}
+			~NodeClosestAnimDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportRetarget : public NodeExportBase
+		class NodeRetargetDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportRetarget() {}
-			~NodeExportRetarget() {}
+			NodeRetargetDecompiler() {}
+			~NodeRetargetDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportScaleCharacter : public NodeExportBase
+		class NodeScaleCharacterDecompiler : public NodeDecompilerBase
 		{
 		public:
-			NodeExportScaleCharacter() {}
-			~NodeExportScaleCharacter() {}
+			NodeScaleCharacterDecompiler() {}
+			~NodeScaleCharacterDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};

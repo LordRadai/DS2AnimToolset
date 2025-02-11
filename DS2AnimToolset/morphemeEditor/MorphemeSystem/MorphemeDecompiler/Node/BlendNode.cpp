@@ -18,7 +18,7 @@ namespace MD
 {
 	namespace Node
 	{
-		void BlendNodeExportBase::writeTimeStretchMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeBlendDecompilerBase::writeTimeStretchMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			int timeStretchMode = AP::kNodeTimeStretchNone;
 
@@ -42,7 +42,7 @@ namespace MD
 				attribDataBlock->writeInt(startSyncEventIndex->m_value, "StartEventIndex");
 		}
 
-		void BlendNodeExportBase::writeEventBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeBlendDecompilerBase::writeEventBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			AP::NodeSampledEventBlendModes eventBlendMode = AP::kSampledEventBlendModeInvalid;
 
@@ -57,13 +57,13 @@ namespace MD
 			attribDataBlock->writeInt(eventBlendMode, "EventsBlendMode");
 		}
 
-		void BlendNodeExportBase::writeBlendFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeBlendDecompilerBase::writeBlendFlags(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			MR::AttribDataBlendFlags* blendFlags = static_cast<MR::AttribDataBlendFlags*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_BLEND_FLAGS));
 			attribDataBlock->writeBool(blendFlags->m_alwaysCombineSampledEvents, "AlwaysCombineSampledEvents");
 		}
 
-		void NodeExportBlend2::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeBlend2Decompiler::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			bool slerpTrajPos = false;
 
@@ -78,7 +78,7 @@ namespace MD
 			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
 		}
 
-		void NodeExportBlend2x2::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeBlend2x2Decompiler::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			bool slerpTrajPos = false;
 
@@ -90,7 +90,7 @@ namespace MD
 			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
 		}
 
-		void NodeExportBlendN::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeBlendNDecompiler::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			bool slerpTrajPos = false;
 
@@ -102,7 +102,7 @@ namespace MD
 			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
 		}
 
-		void NodeExportBlendNxM::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeBlendNxMDecompiler::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			bool slerpTrajPos = false;
 
@@ -114,7 +114,7 @@ namespace MD
 			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
 		}
 
-		void NodeExportFeatherBlend::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeFeatherBlendDecompiler::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			bool slerpTrajPos = false;
 
@@ -129,7 +129,7 @@ namespace MD
 			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
 		}
 
-		void NodeExportSubtractiveBlend::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeSubtractiveBlendDecompiler::writeSlerpTrajPos(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			bool slerpTrajPos = false;
 
@@ -140,7 +140,7 @@ namespace MD
 			attribDataBlock->writeBool(slerpTrajPos, "SphericallyInterpolateTrajectoryPosition");
 		}
 
-		void BlendNodeExportBase::writePassThroughMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeBlendDecompilerBase::writePassThroughMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			if (nodeDef->getNodeFlags() & MR::NodeDef::NODE_FLAG_IS_FILTER)
 			{
@@ -162,7 +162,7 @@ namespace MD
 			attribDataBlock->writeInt(AP::kNodePassThroughNone, "PassThroughMode");
 		}
 
-		bool BlendNodeExportBase::isBlendNodeWrapWeights(MR::NodeDef* nodeDef)
+		bool NodeBlendDecompilerBase::isBlendNodeWrapWeights(MR::NodeDef* nodeDef)
 		{
 			int numSourceNodes = nodeDef->getNumChildNodes();
 
@@ -174,7 +174,7 @@ namespace MD
 			return true;
 		}
 
-		void NodeExportBlend2::writeBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeBlend2Decompiler::writeBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			AP::NodeBlendModes blendMode = AP::kNodeBlendInvalid;
 
@@ -195,11 +195,11 @@ namespace MD
 			attribDataBlock->writeInt(blendMode, "BlendMode");
 		}
 
-		ME::NodeExportXML* NodeExportBlend2::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeBlend2Decompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_2);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
@@ -223,11 +223,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportBlend2x2::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeBlend2x2Decompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_2X2);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "Source0NodeID");
@@ -251,11 +251,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportBlendN::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeBlendNDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_N);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int sourceNodeCount = nodeDef->getNumChildNodes();
@@ -293,11 +293,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportBlendNxM::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeBlendNxMDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_NXM);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int sourceNodeCount = nodeDef->getNumChildNodes();
@@ -348,11 +348,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportBlendAll::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeBlendAllDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BLEND_ALL);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int sourceNodeCount = nodeDef->getNumChildNodes();
@@ -382,7 +382,7 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		void NodeExportFeatherBlend::writeBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
+		void NodeFeatherBlendDecompiler::writeBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
 		{
 			AP::NodeBlendModes blendMode = AP::kNodeBlendInvalid;
 
@@ -429,11 +429,11 @@ namespace MD
 			attribDataBlock->writeBool(additiveBlendPos, "AdditiveBlendPosition");
 		}
 
-		ME::NodeExportXML* NodeExportFeatherBlend::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeFeatherBlendDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_FEATHER_BLEND_2);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -477,11 +477,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportSubtractiveBlend::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeSubtractiveBlendDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_SUBTRACTIVE_BLEND);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();

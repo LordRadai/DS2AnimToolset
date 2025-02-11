@@ -8,30 +8,30 @@ namespace MD
 {
 	namespace Node
 	{
-		class TransitNodeExportBase : public NodeExportBase
+		class NodeTransitDecompilerBase : public NodeDecompilerBase
 		{
 		public:
-			TransitNodeExportBase() {}
-			~TransitNodeExportBase() {}
+			NodeTransitDecompilerBase() {}
+			~NodeTransitDecompilerBase() {}
 
 		protected:
 			void writeDeltaTrajSrouce(MR::NodeDef* nodeDef, ME::DataBlockExportXML* dataBlockExport);
 		};
 
-		class NodeExportTransit : public TransitNodeExportBase
+		class NodeTransitDecompiler : public NodeTransitDecompilerBase
 		{
 		public:
-			NodeExportTransit() {}
-			~NodeExportTransit() {}
+			NodeTransitDecompiler() {}
+			~NodeTransitDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 
-		class NodeExportTransitSyncEvents : public TransitNodeExportBase
+		class NodeTransitSyncEventsDecompiler : public NodeTransitDecompilerBase
 		{
 		public:
-			NodeExportTransitSyncEvents() {}
-			~NodeExportTransitSyncEvents() {}
+			NodeTransitSyncEventsDecompiler() {}
+			~NodeTransitSyncEventsDecompiler() {}
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};

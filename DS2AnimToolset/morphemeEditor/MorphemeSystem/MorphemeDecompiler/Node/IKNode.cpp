@@ -8,7 +8,7 @@ namespace MD
 {
 	namespace Node
 	{
-		bool IKNodeExportBase::isAxisFlipped(NMP::Vector3 vec)
+		bool NodeIKDecompilerBase::isAxisFlipped(NMP::Vector3 vec)
 		{
 			if ((vec.x < 0) || (vec.y < 0) || (vec.z < 0))
 				return true;
@@ -16,7 +16,7 @@ namespace MD
 			return false;
 		}
 
-		float IKNodeExportBase::getAngleFromClampedCosine(float in)
+		float NodeIKDecompilerBase::getAngleFromClampedCosine(float in)
 		{
 			float cos = NMP::clampValue(in, 0.f, 1.f);
 			float angleRad = acosf(cos);
@@ -24,7 +24,7 @@ namespace MD
 			return NMP::radiansToDegrees(angleRad);
 		}
 
-		uint32_t IKNodeExportBase::getUpAxisIndex(NMP::Vector3 upAxisVector)
+		uint32_t NodeIKDecompilerBase::getUpAxisIndex(NMP::Vector3 upAxisVector)
 		{
 			uint32_t upAxisIndex = 1;
 
@@ -39,7 +39,7 @@ namespace MD
 			return -1;
 		}
 
-		float IKNodeExportBase::getBias(NMRU::IKJointParams* jointParams, int numJointParams)
+		float NodeIKDecompilerBase::getBias(NMRU::IKJointParams* jointParams, int numJointParams)
 		{
 			if (numJointParams <= 1)
 				return 1.f;
@@ -49,11 +49,11 @@ namespace MD
 			return jointParams[1].weight * (numJointParams / (2 * ratio));
 		}
 
-		ME::NodeExportXML* NodeExportHeadLook::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeHeadLookDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_HEAD_LOOK);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "InputNodeID");
@@ -110,11 +110,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportHipsIK::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeHipsIKDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_HIPS_IK);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -185,11 +185,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportLockFoot::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeLockFootDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_LOCK_FOOT);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -294,11 +294,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportGunAimIK::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeGunAimIKDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_GUN_AIM_IK);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -422,11 +422,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeExportTwoBoneIK::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeTwoBoneIKDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_TWO_BONE_IK);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -509,7 +509,7 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		void NodeExportBasicUnevenTerrain::writeChainAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataBasicUnevenTerrainChain* chainAttrib)
+		void NodeBasicUnevenTerrainDecompiler::writeChainAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataBasicUnevenTerrainChain* chainAttrib)
 		{
 			CHAR paramName[256];
 
@@ -628,11 +628,11 @@ namespace MD
 			}
 		}
 
-		ME::NodeExportXML* NodeExportBasicUnevenTerrain::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeBasicUnevenTerrainDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_BASIC_UNEVEN_TERRAIN);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -657,7 +657,7 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		void NodeExportPredictiveUnevenTerrain::writeChainAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataPredictiveUnevenTerrainPredictionDef* predictionDefAttrib)
+		void NodePredictiveUnevenTerrainDecompiler::writeChainAttrib(ME::DataBlockExportXML* nodeDataBlock, uint32_t animSetIdx, MR::AttribDataPredictiveUnevenTerrainPredictionDef* predictionDefAttrib)
 		{
 			CHAR paramName[256];
 
@@ -683,11 +683,11 @@ namespace MD
 			}
 		}
 
-		ME::NodeExportXML* NodeExportPredictiveUnevenTerrain::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodePredictiveUnevenTerrainDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			THROW_NODE_TYPE_MISMATCH(nodeDef, NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN);
 
-			ME::NodeExportXML* nodeExportXML = NodeExportBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			const int numAnimSets = netDef->getNumAnimSets();
@@ -707,7 +707,7 @@ namespace MD
 			{
 				MR::AttribDataBasicUnevenTerrainChain* chainAttrib = static_cast<MR::AttribDataBasicUnevenTerrainChain*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF_ANIM_SET, animSetIdx));
 
-				NodeExportBasicUnevenTerrain::writeChainAttrib(nodeDataBlock, animSetIdx, chainAttrib);
+				NodeBasicUnevenTerrainDecompiler::writeChainAttrib(nodeDataBlock, animSetIdx, chainAttrib);
 
 				MR::AttribDataPredictiveUnevenTerrainPredictionDef* predictionDefAttrib = static_cast<MR::AttribDataPredictiveUnevenTerrainPredictionDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_UNEVEN_TERRAIN_PREDICTION_DEF, animSetIdx));
 			
