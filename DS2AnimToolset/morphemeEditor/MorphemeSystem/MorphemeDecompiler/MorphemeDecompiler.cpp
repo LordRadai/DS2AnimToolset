@@ -5,7 +5,6 @@
 #include "morpheme/mrCharacterControllerDef.h"
 #include "morpheme/mrMirroredAnimMapping.h"
 #include "NMGeomUtils/NMJointLimits.h"
-
 #include "Node/Node.h"
 #include "Node/StateMachineNode.h"
 #include "Node/ControlParamNode.h"
@@ -13,6 +12,21 @@
 #include "Node/TransitNode.h"
 #include "Node/IKNode.h"
 #include "Node/OperatorNode.h"
+
+namespace
+{
+	ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId, std::string nodeName)
+	{
+		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
+		MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
+
+		g_appLog->debugMessage(MsgLevel_Info, "\tExporting node %d (name=\"%s\", typeId=%d)\n", nodeId, nodeName.c_str(), nodeTypeID);
+
+		MD::Node::NodeDecompiler nodeDecompiler;
+
+		return nodeDecompiler.exportNode(netDefExport, netDef, nodeDef, nodeName);
+	}
+}
 
 namespace MD
 {
@@ -330,17 +344,5 @@ namespace MD
 			netDefExport->setMessagePresetLibrary(messagePresetLibraryExport);
 
 		return netDefExport;
-	}
-
-	ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId, std::string nodeName)
-	{
-		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
-		MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
-
-		g_appLog->debugMessage(MsgLevel_Info, "\tExporting node %d (name=\"%s\", typeId=%d)\n", nodeId, nodeName.c_str(), nodeTypeID);
-
-		Node::NodeDecompiler nodeDecompiler;
-
-		return nodeDecompiler.exportNode(netDefExport, netDef, nodeDef, nodeName);
 	}
 }
