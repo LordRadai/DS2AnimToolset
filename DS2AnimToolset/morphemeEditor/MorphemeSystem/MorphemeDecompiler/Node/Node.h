@@ -192,5 +192,14 @@ namespace MD
 
 			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
+
+		class NodeDecompiler
+		{
+		public:
+			NodeDecompiler() {}
+			~NodeDecompiler() {}
+
+			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, int nodeTypeID, std::string nodeName);
+		};
 	}
 }

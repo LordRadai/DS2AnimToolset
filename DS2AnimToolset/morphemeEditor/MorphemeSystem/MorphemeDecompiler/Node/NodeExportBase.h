@@ -14,6 +14,7 @@ namespace MD
 			NodeDecompilerBase() {}
 			~NodeDecompilerBase() {}
 
+			// TODO: Remove MR::NetworkDef* and ME::NetworkDefExportXML* since they are never used
 			virtual ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 			void exportNodeTransitions(MR::NodeDef* nodeDef, ME::NodeExportXML* nodeExport);
 		};

@@ -7,6 +7,12 @@
 #include "morpheme/Nodes/mrNodeFreeze.h"
 #include "morpheme/Nodes/mrNodeExtractJointInfo.h"
 #include "NodeUtils.h"
+#include "StateMachineNode.h"
+#include "ControlParamNode.h"
+#include "BlendNode.h"
+#include "TransitNode.h"
+#include "IKNode.h"
+#include "OperatorNode.h"
 
 namespace MD
 {
@@ -572,6 +578,11 @@ namespace MD
 			nodeDataBlock->writeUInt(-1, "ScaleMessageID");
 
 			return nodeExportXML;
+		}
+
+		ME::NodeExportXML* NodeDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, int nodeTypeID, std::string nodeName)
+		{
+
 		}
 	}
 }
