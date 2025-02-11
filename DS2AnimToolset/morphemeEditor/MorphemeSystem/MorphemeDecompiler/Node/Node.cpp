@@ -580,9 +580,212 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, int nodeTypeID, std::string nodeName)
+		ME::NodeExportXML* NodeDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, MR::NodeType nodeTypeID, std::string nodeName)
 		{
+			NodeDecompilerBase* nodeExport = nullptr;
 
+			switch (nodeTypeID)
+			{
+			case NODE_TYPE_NETWORK:
+				nodeExport = new Node::NodeNetworkDecompiler;
+				break;
+			case NODE_TYPE_STATE_MACHINE:
+				nodeExport = new Node::NodeStateMachineDecompiler;
+				break;
+			case NODE_TYPE_CP_FLOAT:
+				nodeExport = new Node::NodeCPFloatDecompiler;
+				break;
+			case NODE_TYPE_CP_VECTOR3:
+				nodeExport = new Node::NodeCPVector3Decompiler;
+				break;
+			case NODE_TYPE_CP_VECTOR4:
+				nodeExport = new Node::NodeCPVector4Decompiler;
+				break;
+			case NODE_TYPE_CP_BOOL:
+				nodeExport = new Node::NodeCPBoolDecompiler;
+				break;
+			case NODE_TYPE_CP_INT:
+				nodeExport = new Node::NodeCPIntDecompiler;
+				break;
+			case NODE_TYPE_CP_UINT:
+				nodeExport = new Node::NodeCPUIntDecompiler;
+				break;
+			case NODE_TYPE_ANIM_EVENTS:
+				nodeExport = new Node::NodeAnimSyncEventsDecompiler;
+				break;
+			case NODE_TYPE_FILTER_TRANSFORMS:
+				nodeExport = new Node::NodeFilterTransformsDecompiler;
+				break;
+			case NODE_TYPE_BLEND_2:
+				nodeExport = new Node::NodeBlend2Decompiler;
+				break;
+			case NODE_TYPE_BLEND_N:
+				nodeExport = new Node::NodeBlendNDecompiler;
+				break;
+			case NODE_TYPE_BLEND_2X2:
+				nodeExport = new Node::NodeBlend2x2Decompiler;
+				break;
+			case NODE_TYPE_BLEND_NXM:
+				nodeExport = new Node::NodeBlendNxMDecompiler;
+				break;
+			case NODE_TYPE_BLEND_ALL:
+				nodeExport = new Node::NodeBlendAllDecompiler;
+				break;
+			case NODE_TYPE_FEATHER_BLEND_2:
+				nodeExport = new Node::NodeFeatherBlendDecompiler;
+				break;
+			case NODE_TYPE_SUBTRACTIVE_BLEND:
+				nodeExport = new Node::NodeSubtractiveBlendDecompiler;
+				break;
+			case NODE_TYPE_SINGLEFRAME:
+				nodeExport = new Node::NodeSingleFrameDecompiler;
+				break;
+			case NODE_TYPE_FREEZE:
+				nodeExport = new Node::NodeFreezeDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_FUNCTION:
+				nodeExport = new Node::NodeOperatorFunctionDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_ARITHMETIC:
+				nodeExport = new Node::NodeOperatorArithmeticDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_ARITHMETIC_VECTOR3:
+				nodeExport = new Node::NodeOperatorArithmeticVector3Decompiler;
+				break;
+			case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC:
+				nodeExport = new Node::NodeOperatorOneInputArithmeticDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_ONE_INPUT_ARITHMETIC_VECTOR3:
+				nodeExport = new Node::NodeOperatorOneInputArithmeticVector3;
+				break;
+			case NODE_TYPE_CP_OP_NOISE_GEN:
+				nodeExport = new Node::NodeOperatorNoiseGenDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_INT_TO_FLOAT:
+				nodeExport = new Node::NodeOperatorIntToFloatDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_RAY_CAST:
+				nodeExport = new Node::NodeOperatorRayCastDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_SMOOTH_FLOAT:
+				nodeExport = new Node::NodeOperatorSmoothFloatDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_RAMP_FLOAT:
+				nodeExport = new Node::NodeOperatorRampFloatDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_FLOATS_TO_VECTOR3:
+				nodeExport = new Node::NodeOperatorFloatsToVector3Decompiler;
+				break;
+			case NODE_TYPE_CP_OP_FLOAT_TO_INT:
+				nodeExport = new Node::NodeOperatorFloatToIntDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_RANDOM_FLOAT:
+				nodeExport = new Node::NodeOperatorRandomFloatDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_RATE_OF_CHANGE:
+				nodeExport = new Node::NodeOperatorRateOfChangeDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_TO_FLOATS:
+				nodeExport = new Node::NodeOperatorVector3ToFloatsDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_DOT:
+				nodeExport = new Node::NodeOperatorVector3DotDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_DISTANCE:
+				nodeExport = new Node::NodeOperatorVector3DistanceDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_CROSSPRODUCT:
+				nodeExport = new Node::NodeOperatorVector3CrossProductDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_ANGLE:
+				nodeExport = new Node::NodeOperatorVector3AngleDecompiler;
+				break;
+			case NODE_TYPE_CP_OP_VECTOR3_NORMALISE:
+				nodeExport = new Node::NodeOperatorVector3NormaliseDecompiler;
+				break;
+			case NODE_TYPE_APPLY_BIND_POSE:
+				nodeExport = new Node::NodeApplyBindPoseDecompiler;
+				break;
+			case NODE_TYPE_APPLY_GLOBAL_TIME:
+				nodeExport = new Node::NodeApplyGlobalTimeDecompiler;
+				break;
+			case NODE_TYPE_TWO_BONE_IK:
+				nodeExport = new Node::NodeTwoBoneIKDecompiler;
+				break;
+			case NODE_TYPE_LOCK_FOOT:
+				nodeExport = new Node::NodeLockFootDecompiler;
+				break;
+			case NODE_TYPE_HEAD_LOOK:
+				nodeExport = new Node::NodeHeadLookDecompiler;
+				break;
+			case NODE_TYPE_HIPS_IK:
+				nodeExport = new Node::NodeHipsIKDecompiler;
+				break;
+			case NODE_TYPE_PLAY_SPEED_MODIFIER:
+				nodeExport = new Node::NodePlaySpeedModifierDecompiler;
+				break;
+			case NODE_TYPE_SCALE_TO_DURATION:
+				nodeExport = new Node::NodeScaleToDurationDecompiler;
+				break;
+			case NODE_TYPE_EMIT_JOINT_CP_INFO:
+				nodeExport = new Node::NodeExtractJointInfoDecompiler;
+				break;
+			case NODE_TYPE_EMIT_MESSAGE_ON_DISCRETE_EVENT:
+				nodeExport = new Node::NodeEmitRequestOnDiscreteEventDecompiler;
+				break;
+			case NODE_TYPE_CLOSEST_ANIM:
+				nodeExport = new Node::NodeClosestAnimDecompiler;
+				break;
+			case NODE_TYPE_SWITCH:
+				nodeExport = new Node::NodeSwitchDecompiler;
+				break;
+			case NODE_TYPE_SEQUENCE:
+				nodeExport = new Node::NodeSequenceDecompiler;
+				break;
+			case NODE_TYPE_PASSTHROUGH:
+				nodeExport = new Node::NodePassThroughDecompiler;
+				break;
+			case NODE_MIRROR_TRANSFORMS_ID:
+				nodeExport = new Node::NodeMirrorTransformsDecompiler;
+				break;
+			case NODE_TYPE_BASIC_UNEVEN_TERRAIN:
+				nodeExport = new Node::NodeBasicUnevenTerrainDecompiler;
+				break;
+			case NODE_TYPE_PREDICTIVE_UNEVEN_TERRAIN:
+				nodeExport = new Node::NodePredictiveUnevenTerrainDecompiler;
+				break;
+			case NODE_TYPE_RETARGET:
+				nodeExport = new Node::NodeRetargetDecompiler;
+				break;
+			case NODE_TYPE_SCALE_CHARACTER:
+				nodeExport = new Node::NodeScaleCharacterDecompiler;
+				break;
+			case NODE_TYPE_GUN_AIM_IK:
+				nodeExport = new Node::NodeGunAimIKDecompiler;
+				break;
+			case NODE_TYPE_TRANSIT_SYNC_EVENTS:
+			case NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS:
+				nodeExport = new Node::NodeTransitSyncEventsDecompiler;
+				break;
+			case NODE_TYPE_TRANSIT:
+			case NODE_TYPE_TRANSIT_PHYSICS:
+				nodeExport = new Node::NodeTransitDecompiler;
+				break;
+			case NODE_TYPE_SMOOTH_TRANSFORMS:
+				nodeExport = new Node::NodeSmoothTransformsDecompiler;
+				break;
+			default:
+				nodeExport = new Node::NodeUnhandledDecompiler;
+				break;
+			}
+
+			ME::NodeExportXML* node = nodeExport->exportNode(netDefExport, netDef, nodeDef, nodeName);
+
+			nodeExport->exportNodeTransitions(nodeDef, node);
+
+			delete nodeExport;
+
+			return node;
 		}
 	}
 }
