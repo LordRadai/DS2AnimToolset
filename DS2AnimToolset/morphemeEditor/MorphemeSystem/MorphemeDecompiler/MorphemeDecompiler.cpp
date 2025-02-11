@@ -341,6 +341,6 @@ namespace MD
 
 		Node::NodeDecompiler nodeDecompiler;
 
-		return nodeDecompiler.exportNode(netDefExport, netDef, nodeDef, nodeDef->getNodeTypeID(), nodeName);
+		return nodeDecompiler.exportNode(netDefExport, netDef, nodeDef, nodeName);
 	}
 }

@@ -580,11 +580,11 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* NodeDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, MR::NodeType nodeTypeID, std::string nodeName)
+		ME::NodeExportXML* NodeDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			NodeDecompilerBase* nodeExport = nullptr;
 
-			switch (nodeTypeID)
+			switch (nodeDef->getNodeTypeID())
 			{
 			case NODE_TYPE_NETWORK:
 				nodeExport = new Node::NodeNetworkDecompiler;

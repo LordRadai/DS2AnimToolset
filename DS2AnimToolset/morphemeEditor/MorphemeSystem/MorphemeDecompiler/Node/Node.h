@@ -199,7 +199,7 @@ namespace MD
 			NodeDecompiler() {}
 			~NodeDecompiler() {}
 
-			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, MR::NodeType nodeTypeID, std::string nodeName);
+			ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName);
 		};
 	}
 }
