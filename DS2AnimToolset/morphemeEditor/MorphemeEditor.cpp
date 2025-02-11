@@ -70,9 +70,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
         g_taeTemplate = TimeAct::TaeTemplate::load(L"Data\\res\\TimeActTemplate.xml");
     }
-    catch (const std::exception& exc)
+    catch (const std::exception& e)
     {
-        g_appLog->alertMessage(MsgLevel_Error, exc.what());
+        g_appLog->alertMessage(MsgLevel_Error, e.what());
     }
 
     try
