@@ -732,6 +732,8 @@ namespace
 
 	ME::EventTrackExport* getExportedTrack(std::vector<ME::EventTrackExport*>& exportedTracks, ME::EventTrackExport* track)
 	{
+		ME::EventTrackExport* targetTrack = nullptr;
+
 		for (size_t i = 0; i < exportedTracks.size(); i++)
 		{
 			if ((exportedTracks[i]->getEventTrackType() == track->getEventTrackType()) &&
@@ -740,7 +742,7 @@ namespace
 				(exportedTracks[i]->getNumEvents() == track->getNumEvents()) &&
 				(strcmp(exportedTracks[i]->getName(), track->getName()) == 0))
 			{
-				ME::EventTrackExport* targetTrack = exportedTracks[i];
+				targetTrack = exportedTracks[i];
 
 				switch (track->getEventTrackType())
 				{
@@ -807,7 +809,7 @@ namespace
 			}
 		}
 
-		return nullptr;
+		return targetTrack;
 	}
 
 	ME::TakeListXML* createOptimisedTakeList(ME::TakeListXML* takeList, std::vector<ME::EventTrackExport*>& exportedTracks)
@@ -822,14 +824,14 @@ namespace
 
 			for (size_t eventTrackIdx = 0; eventTrackIdx < originalTake->getNumEventTracks(); eventTrackIdx++)
 			{
+				ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalTake->getEventTrack(eventTrackIdx));
+
 				switch (originalTake->getEventTrack(eventTrackIdx)->getEventTrackType())
 				{
 				case ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE:
 				{
 					ME::DiscreteEventTrackExport* originalEventTrack = static_cast<ME::DiscreteEventTrackExport*>(originalTake->getEventTrack(eventTrackIdx));
 					std::string guid = originalEventTrack->getGUID();
-
-					ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalEventTrack);
 
 					if (targetTrack)
 						guid = targetTrack->getGUID();
@@ -843,7 +845,12 @@ namespace
 					}
 
 					if (targetTrack == nullptr)
+					{
 						exportedTracks.push_back(originalEventTrack);
+						g_appLog->debugMessage(MsgLevel_Debug, "Added discrete track %s to export list (channelID=%d, type=%d, numEvents=%d, name=%s)\n", originalEventTrack->getGUID(), originalEventTrack->getEventTrackChannelID(), originalEventTrack->getEventTrackType(), originalEventTrack->getNumEvents(), originalEventTrack->getName());
+					}
+					else
+						g_appLog->debugMessage(MsgLevel_Debug, "Found discrete track %s (channelID=%d, type=%d, numEvents=%d, name=%s)\n", targetTrack->getGUID(), targetTrack->getEventTrackChannelID(), targetTrack->getEventTrackType(), targetTrack->getNumEvents(), targetTrack->getName());
 
 					break;
 				}
@@ -851,8 +858,6 @@ namespace
 				{
 					ME::DurationEventTrackExport* originalEventTrack = static_cast<ME::DurationEventTrackExport*>(originalTake->getEventTrack(eventTrackIdx));
 					std::string guid = originalEventTrack->getGUID();
-
-					ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalEventTrack);
 
 					if (targetTrack)
 						guid = targetTrack->getGUID();
@@ -866,7 +871,12 @@ namespace
 					}
 
 					if (targetTrack == nullptr)
+					{
 						exportedTracks.push_back(originalEventTrack);
+						g_appLog->debugMessage(MsgLevel_Debug, "Added duration track %s to export list (channelID=%d, type=%d, numEvents=%d, name=%s)\n", originalEventTrack->getGUID(), originalEventTrack->getEventTrackChannelID(), originalEventTrack->getEventTrackType(), originalEventTrack->getNumEvents(), originalEventTrack->getName());
+					}
+					else
+						g_appLog->debugMessage(MsgLevel_Debug, "Found duration track %s (channelID=%d, type=%d, numEvents=%d, name=%s)\n", targetTrack->getGUID(), targetTrack->getEventTrackChannelID(), targetTrack->getEventTrackType(), targetTrack->getNumEvents(), targetTrack->getName());
 
 					break;
 				}
@@ -874,8 +884,6 @@ namespace
 				{
 					ME::CurveEventTrackExport* originalEventTrack = static_cast<ME::CurveEventTrackExport*>(originalTake->getEventTrack(eventTrackIdx));
 					std::string guid = originalEventTrack->getGUID();
-
-					ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalEventTrack);
 
 					if (targetTrack)
 						guid = targetTrack->getGUID();
@@ -889,7 +897,12 @@ namespace
 					}
 
 					if (targetTrack == nullptr)
+					{
 						exportedTracks.push_back(originalEventTrack);
+						g_appLog->debugMessage(MsgLevel_Debug, "Added curve track %s to export list (channelID=%d, type=%d, numEvents=%d, name=%s)\n", originalEventTrack->getGUID(), originalEventTrack->getEventTrackChannelID(), originalEventTrack->getEventTrackType(), originalEventTrack->getNumEvents(), originalEventTrack->getName());
+					}
+					else
+						g_appLog->debugMessage(MsgLevel_Debug, "Found curve track %s (channelID=%d, type=%d, numEvents=%d, name=%s)\n", targetTrack->getGUID(), targetTrack->getEventTrackChannelID(), targetTrack->getEventTrackType(), targetTrack->getNumEvents(), targetTrack->getName());
 
 					break;
 				}
