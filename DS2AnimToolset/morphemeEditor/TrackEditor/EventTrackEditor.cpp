@@ -21,10 +21,11 @@ namespace TrackEditor
 		return editor;
 	}
 
-
 	void EventTrackEditor::update(float dt)
 	{
 		TrackEditorBase::update(dt);
+
+		this->m_timeCodeFormat = kSeconds;
 
 		if (this->m_reload)
 			this->reload();
