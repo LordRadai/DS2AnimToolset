@@ -859,7 +859,15 @@ namespace TrackEditor
                         this->m_selectedEvent = this->m_movingEvent;
 
                         ImGui::SetNextFrameWantCaptureMouse(true);
-                        int diffFrame = int((mouseX - this->m_movingPos) / framePixelWidth);
+                        const float minThreshold = 2.0f;
+
+                        int diffFrame = 0;
+                        float movement = mouseX - this->m_movingPos;
+
+                        if (std::fabs(movement) < minThreshold)
+                            diffFrame = 0;
+                        else
+                            diffFrame = int(movement / framePixelWidth);
 
                         if (diffFrame != 0)
                             this->m_edited = true;
