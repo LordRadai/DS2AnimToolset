@@ -11,9 +11,11 @@
 #ifndef _DEBUG
 #define ASSET_COMPILER_EXE "morphemeAssetCompiler.exe"
 #define ANIM_INCLUDES_MESH false
+#define OPTIMISE_TAKE_EXPORT
 #else
 #define ASSET_COMPILER_EXE "morphemeAssetCompiler_debug.exe"
 #define ANIM_INCLUDES_MESH true
+#define EXPORT_DEBUG_NETWORK_INFO
 #endif
 
 namespace
@@ -800,8 +802,7 @@ namespace
 				}
 				}
 
-				if (targetTrack)
-					return targetTrack;
+				return targetTrack;
 			}
 		}
 
@@ -828,7 +829,6 @@ namespace
 					std::string guid = originalEventTrack->getGUID();
 
 					ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalEventTrack);
-					//ME::EventTrackExport* targetTrack = nullptr;
 
 					if (targetTrack)
 						guid = targetTrack->getGUID();
@@ -1557,12 +1557,12 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 		MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
-#ifdef _DEBUG
+#ifdef EXPORT_DEBUG_NETWORK_INFO
 		dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
 		dumpNetworkNodes(netDef, animLibraryExport, L"nodes.xml");
 		dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
 		dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
-#endif
+#endif // EXPORT_DEBUG_NETWORK_INFO
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for %ws (%ws):\n", chrName.c_str(), networkFilename);
 
@@ -1818,9 +1818,7 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 
 		std::filesystem::current_path(path);
 
-#ifdef _DEBUG
 		exportFlverToMorphemeBoneMap(model, path + L"morpheme_bone_map.txt");
-#endif
 
 		FT::FileTranslator fileTranslator;
 		fileTranslator.exportModel(this->m_character, this->m_exportSettings.exportFormat);
@@ -1873,9 +1871,7 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 
 		std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
 
-#ifdef _DEBUG
 		exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"\\assetCompilerCommand.txt");
-#endif
 
 		g_appLog->debugMessage(MsgLevel_Info, "Invoking asset compiler with command %s\n", assetCompilerCommand.c_str());
 
@@ -2023,6 +2019,14 @@ bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int 
 	{
 		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation markup for animation \"%s\" (%ws)\n", animName.c_str(), this->m_character->getCharacterName().c_str());
 
+#ifndef OPTIMISE_TAKE_EXPORT
+		if (!takeListXML->write())
+		{
+			g_appLog->debugMessage(MsgLevel_Error, "\tFailed to export take list for animation %d\n", animId);
+
+			return false;
+		}
+#else
 		ME::TakeListXML* optimisedTakeList = createOptimisedTakeList(takeListXML, exportedTracks);
 
 		if (!optimisedTakeList->write())
@@ -2033,6 +2037,7 @@ bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int 
 		}
 
 		delete optimisedTakeList;
+#endif // !OPTIMISE_TAKE_EXPORT
 	}
 
 	return true;
