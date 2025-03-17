@@ -96,6 +96,7 @@ namespace TrackEditor
 		TimeActEditor* editor = new TimeActEditor;
 
 		editor->m_fps = 30;
+		editor->m_frameMax = editor->m_fps;
 		editor->m_editorOptions = (TrackEditorOptions)options;
 		editor->m_timeCodeFormat = timeCodeFormat;
 		editor->m_template = templateRes;

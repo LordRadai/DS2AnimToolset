@@ -12,6 +12,7 @@ namespace TrackEditor
 		EventTrackEditor* editor = new EventTrackEditor;
 
 		editor->m_fps = 1000;
+		editor->m_frameMax = editor->m_fps;
 		editor->m_editorOptions = (TrackEditorOptions)options;
 		editor->m_timeCodeFormat = timeCodeFormat;
 		editor->m_eventLabelAlignment = kCenter;
