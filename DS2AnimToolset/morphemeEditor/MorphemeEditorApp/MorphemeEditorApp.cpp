@@ -802,7 +802,8 @@ namespace
 				}
 				}
 
-				return targetTrack;
+				if (targetTrack)
+					return targetTrack;
 			}
 		}
 
@@ -813,14 +814,14 @@ namespace
 	{
 		ME::ExportFactoryXML exportFactory;
 		ME::TakeListXML* optimisedTakeList = static_cast<ME::TakeListXML*>(exportFactory.createTakeList(RString::toWide(takeList->getSourceAnimFilename()).c_str(), RString::toWide(takeList->getDestFilename()).c_str()));
-	
+
 		for (size_t takeIdx = 0; takeIdx < takeList->getNumTakes(); takeIdx++)
 		{
 			ME::TakeExport* originalTake = takeList->getTake(takeIdx);
 			ME::TakeExportXML* optimisedTake = static_cast<ME::TakeExportXML*>(optimisedTakeList->createTake(RString::toWide(originalTake->getName()).c_str(), originalTake->getCachedTakeSecondsDuration(), originalTake->getCachedTakeFPS(), originalTake->getLoop(), originalTake->getClipStart(), originalTake->getClipEnd()));
-		
+
 			for (size_t eventTrackIdx = 0; eventTrackIdx < originalTake->getNumEventTracks(); eventTrackIdx++)
-			{	
+			{
 				switch (originalTake->getEventTrack(eventTrackIdx)->getEventTrackType())
 				{
 				case ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE:
@@ -891,7 +892,7 @@ namespace
 						exportedTracks.push_back(originalEventTrack);
 
 					break;
-				}				
+				}
 				default:
 					break;
 				}
@@ -2031,7 +2032,7 @@ bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int 
 
 		if (!optimisedTakeList->write())
 		{
-			g_appLog->debugMessage(MsgLevel_Error, "\tFailed to export take list for animation %d\n", animId);
+			g_appLog->debugMessage(MsgLevel_Error, "\tFailed to export optimised take list for animation %d\n", animId);
 
 			return false;
 		}
