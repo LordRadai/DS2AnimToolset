@@ -167,6 +167,7 @@
     <ClInclude Include="FileIDNamesTable\FileIDNamesTable.h" />
     <ClInclude Include="FileTranslator\FBXTranslator\FBXTranslator.h" />
     <ClInclude Include="FileTranslator\FileTranslator.h" />
+    <ClInclude Include="FileTranslator\FileTranslatorBase.h" />
     <ClInclude Include="FileTranslator\GLTFTranslator\GLTFTranslator.h" />
     <ClInclude Include="FileTranslator\GLTFTranslator\tinygltf\json.hpp" />
     <ClInclude Include="FileTranslator\GLTFTranslator\tinygltf\stb_image.h" />
@@ -229,6 +230,7 @@
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\ControlParamNode.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\Node.h" />
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\NodeExportBase.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.h" />
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.h" />
@@ -262,6 +264,7 @@
     <ClCompile Include="DebugDraw\DebugDraw.cpp" />
     <ClCompile Include="FileIDNamesTable\FileIDNamesTable.cpp" />
     <ClCompile Include="FileTranslator\FBXTranslator\FBXTranslator.cpp" />
+    <ClCompile Include="FileTranslator\FileTranslator.cpp" />
     <ClCompile Include="FileTranslator\GLTFTranslator\GLTFTranslator.cpp" />
     <ClCompile Include="FileTranslator\GLTFTranslator\tinygltf\tiny_gltf.cc" />
     <ClCompile Include="FileTranslator\XMDTranslator\XMDTranslator.cpp" />
@@ -308,6 +311,7 @@
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\ControlParamNode.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\IKNode.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\Node.cpp" />
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\NodeExportBase.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\NodeUtils.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\OperatorNode.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\StateMachineNode.cpp" />

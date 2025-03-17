@@ -2,7 +2,6 @@
 #include "extern.h"
 #include "RenderManager/RenderManager.h"
 #include "WorkerThread/WorkerThread.h"
-#include "FileTranslator/FileTranslator.h"
 #include "FromSoftware/TimeAct/TaeExport/TaeExport.h"
 #include "FromSoftware/TimeAct/TaeTemplate/TaeTemplateXML/TaeTemplateXML.h"
 #include "MorphemeSystem/MorphemeDecompiler/Node/NodeUtils.h"
@@ -12,9 +11,11 @@
 #ifndef _DEBUG
 #define ASSET_COMPILER_EXE "morphemeAssetCompiler.exe"
 #define ANIM_INCLUDES_MESH false
+#define OPTIMISE_TAKE_EXPORT
 #else
 #define ASSET_COMPILER_EXE "morphemeAssetCompiler_debug.exe"
 #define ANIM_INCLUDES_MESH true
+#define EXPORT_DEBUG_NETWORK_INFO
 #endif
 
 namespace
@@ -448,242 +449,6 @@ namespace
 		out.close();
 	}
 
-	bool exportModelToFbx(Character* character)
-	{
-		bool status = true;
-
-		g_appLog->debugMessage(MsgLevel_Info, "Exporting model to FBX for character %s\n", character->getCharacterName().c_str());
-
-		FbxExporter* pExporter = FbxExporter::Create(g_pFbxManager, "Flver Exporter");
-		pExporter->SetFileExportVersion(FBX_2014_00_COMPATIBLE);
-
-		std::string modelOutPath = RString::toNarrow(character->getCharacterName()) + ".fbx";
-
-		try
-		{
-			if (!pExporter->Initialize(modelOutPath.c_str()), g_pFbxManager->GetIOPluginRegistry()->GetNativeWriterFormat(), g_pFbxManager->GetIOSettings())
-				return false;
-		}
-		catch (const std::exception& e)
-		{
-			g_appLog->panicMessage(e.what());
-		}
-
-		FbxScene* pScene = FbxScene::Create(g_pFbxManager, RString::toNarrow(character->getCharacterName()).c_str());
-		pScene->GetGlobalSettings().SetAxisSystem(FbxAxisSystem::eMax);
-		pScene->GetGlobalSettings().SetSystemUnit(FbxSystemUnit::m);
-
-		FBXTranslator::createLightNode(pScene, FbxVector4(1000.f, 0.f, 0.f), "Forward");
-		FBXTranslator::createLightNode(pScene, FbxVector4(-1000.f, 0.f, 0.f), "Backward");
-
-		FBXTranslator::createLightNode(pScene, FbxVector4(0.f, 1000.f, 0.f), "Up");
-		FBXTranslator::createLightNode(pScene, FbxVector4(0.f, -1000.f, 0.f), "Down");
-
-		FBXTranslator::createLightNode(pScene, FbxVector4(0.f, 0.f, 1000.f), "Left");
-		FBXTranslator::createLightNode(pScene, FbxVector4(0.f, 0.f, -1000.f), "Right");
-
-		FbxPose* pBindPoses = FbxPose::Create(g_pFbxManager, "BindPoses");
-		pBindPoses->SetIsBindPose(true);
-
-		std::vector<FbxNode*> morphemeRig = FBXTranslator::createFbxMorphemeSkeleton(pScene, character->getMorphemeCharacter()->getNetwork()->getRig(0), pBindPoses);
-
-		FlverModel* model = character->getCharacterModelCtrl()->getModel();
-
-		if (!FBXTranslator::createFbxModel(pScene, model, RString::toNarrow(character->getCharacterName()), pBindPoses, morphemeRig, modelOutPath))
-		{
-			g_appLog->debugMessage(MsgLevel_Error, "Failed to create FBX model/skeleton (chr=%ws)\n", character->getCharacterName().c_str());
-			status = false;
-		}
-
-		pScene->AddPose(pBindPoses);
-
-		//Shutdown
-		pExporter->Export(pScene);
-		pScene->Destroy(true);
-		pExporter->Destroy(true);
-	}
-
-	bool exportModelToXmd(Character* character)
-	{
-		bool status = true;
-
-		g_appLog->debugMessage(MsgLevel_Info, "Exporting model to XMD for character %ws\n", character->getCharacterName().c_str());
-
-		FlverModel* model = character->getCharacterModelCtrl()->getModel();
-		MR::AnimRigDef* rig = character->getRig(0);
-
-		XMD::XModel* modelXmd = XMDTranslator::createModel(rig, model, RString::toNarrow(model->getFileOrigin()).c_str(), true);
-		XMDTranslator::createBindPoseAnimCycle(modelXmd, rig);
-
-		if (modelXmd->Save(RString::toNarrow(character->getCharacterName()) + ".xmd") != XMD::XFileError::Success)
-			status = false;
-
-		delete modelXmd;
-
-		return status;
-	}
-
-	bool exportModelToGltf(Character* character)
-	{
-		FlverModel* model = character->getCharacterModelCtrl()->getModel();
-		MR::AnimRigDef* rig = character->getRig(0);
-
-		tinygltf::Model* gltfModel = GLTFTranslator::createModel(rig, model, true);
-
-		tinygltf::Scene scene;
-		scene.nodes.push_back(0); // Root node of the model
-
-		gltfModel->scenes.push_back(scene);
-		gltfModel->defaultScene = 0;
-
-		std::string modelOutPath = RString::toNarrow(character->getCharacterName()) + ".gltf";
-
-		tinygltf::TinyGLTF gltfWriter;
-		bool success = gltfWriter.WriteGltfSceneToFile(gltfModel, modelOutPath, false, true, true, false);
-
-		delete gltfModel;
-
-		return success;
-	}
-
-	bool exportAnimationToFbx(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool addModel)
-	{
-		bool status = true;
-
-		MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
-		AnimObject* anim = characterDef->getAnimation(0, animIdx);
-
-		int animId = anim->getAnimID();
-
-		if (characterDef == nullptr)
-			throw("characterDef was nullptr\n");
-
-		std::string animName = RString::toNarrow(path) + RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId));
-
-		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to FBX (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
-
-		FbxExporter* pExporter = FbxExporter::Create(g_pFbxManager, "Flver Exporter");
-		pExporter->SetFileExportVersion(FBX_2014_00_COMPATIBLE);
-
-		std::string outPath = animName + ".fbx";
-
-		try
-		{
-			if (!pExporter->Initialize(outPath.c_str()), g_pFbxManager->GetIOPluginRegistry()->GetNativeWriterFormat(), g_pFbxManager->GetIOSettings())
-				return false;
-		}
-		catch (const std::exception& e)
-		{
-			g_appLog->panicMessage(e.what());
-		}
-
-		FbxScene* pScene = FbxScene::Create(g_pFbxManager, animName.c_str());
-		pScene->GetGlobalSettings().SetAxisSystem(FbxAxisSystem::eMax);
-		pScene->GetGlobalSettings().SetSystemUnit(FbxSystemUnit::m);
-
-		FBXTranslator::createLightNode(pScene, FbxVector4(1000.f, 0.f, 0.f), "Forward");
-		FBXTranslator::createLightNode(pScene, FbxVector4(-1000.f, 0.f, 0.f), "Backward");
-
-		FBXTranslator::createLightNode(pScene, FbxVector4(0.f, 1000.f, 0.f), "Up");
-		FBXTranslator::createLightNode(pScene, FbxVector4(0.f, -1000.f, 0.f), "Down");
-
-		FBXTranslator::createLightNode(pScene, FbxVector4(0.f, 0.f, 1000.f), "Left");
-		FBXTranslator::createLightNode(pScene, FbxVector4(0.f, 0.f, -1000.f), "Right");
-
-		FbxPose* pBindPoses = FbxPose::Create(g_pFbxManager, "BindPoses");
-		pBindPoses->SetIsBindPose(true);
-
-		std::vector<FbxNode*> morphemeRig = FBXTranslator::createFbxMorphemeSkeleton(pScene, character->getMorphemeCharacter()->getNetwork()->getRig(0), pBindPoses);
-
-		pScene->AddPose(pBindPoses);
-
-		if (addModel)
-		{
-			FlverModel* model = character->getCharacterModelCtrl()->getModel();
-
-			if (!FBXTranslator::createFbxModel(pScene, model, RString::toNarrow(character->getCharacterName()), pBindPoses, morphemeRig, outPath))
-			{
-				g_appLog->debugMessage(MsgLevel_Error, "Failed to create FBX model/skeleton (%ws)\n", character->getCharacterName().c_str());
-				status = false;
-			}
-		}
-
-		if (!FBXTranslator::createFbxTake(pScene, morphemeRig, characterDef->getAnimationById(animSetIdx, animId), characterDef->getAnimFileLookUp()->getTakeName(animId), fps))
-		{
-			g_appLog->debugMessage(MsgLevel_Error, "Failed to create FBX take (%ws)\n", character->getCharacterName().c_str());
-			status = false;
-		}
-
-		//Shutdown
-		pExporter->Export(pScene);
-		pScene->Destroy(true);
-		pExporter->Destroy(true);
-
-		return status;
-	}
-
-	bool exportAnimationToXmd(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool includeMeshes)
-	{
-		bool status = true;
-
-		MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
-		AnimObject* anim = characterDef->getAnimation(animSetIdx, animIdx);
-
-		int animId = anim->getAnimID();
-
-		if (!anim->isLoaded())
-			anim = characterDef->getAnimation(0, 0);
-
-		if (!anim->isLoaded())
-			return false;
-
-		MR::AnimRigDef* rig = character->getRig(0);
-
-		std::string animName = RString::toNarrow(path) + RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId)) + ".xmd";
-
-		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to XMD (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
-
-		XMD::XModel* xmd = XMDTranslator::createModel(rig, character->getCharacterModelCtrl()->getModel(), characterDef->getAnimFileLookUp()->getFilename(animId), includeMeshes);
-		XMDTranslator::createAnimCycle(xmd, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
-
-		if (xmd->Save(animName) != XMD::XFileError::Success)
-			status = false;
-
-		delete xmd;
-
-		return status;
-	}
-
-	bool exportAnimationToGltf(std::wstring path, Character* character, int animSetIdx, int animIdx, int fps, bool includeModel)
-	{
-		MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
-		AnimObject* anim = characterDef->getAnimation(animSetIdx, animIdx);
-		int animId = anim->getAnimID();
-
-		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to GLTF (%ws)\n", anim->getAnimName(), character->getCharacterName().c_str());
-
-		FlverModel* model = character->getCharacterModelCtrl()->getModel();
-		MR::AnimRigDef* rig = character->getRig(0);
-
-		tinygltf::Model* gltfModel = GLTFTranslator::createModel(rig, model, includeModel);
-		GLTFTranslator::createAnimation(gltfModel, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
-
-		tinygltf::Scene scene;
-		scene.nodes.push_back(0); // Root node of the model
-
-		gltfModel->scenes.push_back(scene);
-		gltfModel->defaultScene = 0;
-
-		std::string outPath = RString::toNarrow(path) + RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId)) + ".gltf";
-
-		tinygltf::TinyGLTF gltfWriter;
-		bool success = gltfWriter.WriteGltfSceneToFile(gltfModel, outPath, false, true, true, false);
-
-		delete gltfModel;
-
-		return success;
-	}
-
 	void addEventGroupToTimeActTrack(TimeAct::TimeActTrack* dst, TimeAct::TaeExport::TimeActGroupExportXML* groupXML)
 	{
 		TimeAct::EventGroup* group = dst->addGroup(groupXML->getGroupId());
@@ -967,6 +732,8 @@ namespace
 
 	ME::EventTrackExport* getExportedTrack(std::vector<ME::EventTrackExport*>& exportedTracks, ME::EventTrackExport* track)
 	{
+		ME::EventTrackExport* targetTrack = nullptr;
+
 		for (size_t i = 0; i < exportedTracks.size(); i++)
 		{
 			if ((exportedTracks[i]->getEventTrackType() == track->getEventTrackType()) &&
@@ -975,7 +742,7 @@ namespace
 				(exportedTracks[i]->getNumEvents() == track->getNumEvents()) &&
 				(strcmp(exportedTracks[i]->getName(), track->getName()) == 0))
 			{
-				ME::EventTrackExport* targetTrack = exportedTracks[i];
+				targetTrack = exportedTracks[i];
 
 				switch (track->getEventTrackType())
 				{
@@ -1042,30 +809,29 @@ namespace
 			}
 		}
 
-		return nullptr;
+		return targetTrack;
 	}
 
 	ME::TakeListXML* createOptimisedTakeList(ME::TakeListXML* takeList, std::vector<ME::EventTrackExport*>& exportedTracks)
 	{
 		ME::ExportFactoryXML exportFactory;
 		ME::TakeListXML* optimisedTakeList = static_cast<ME::TakeListXML*>(exportFactory.createTakeList(RString::toWide(takeList->getSourceAnimFilename()).c_str(), RString::toWide(takeList->getDestFilename()).c_str()));
-	
+
 		for (size_t takeIdx = 0; takeIdx < takeList->getNumTakes(); takeIdx++)
 		{
 			ME::TakeExport* originalTake = takeList->getTake(takeIdx);
 			ME::TakeExportXML* optimisedTake = static_cast<ME::TakeExportXML*>(optimisedTakeList->createTake(RString::toWide(originalTake->getName()).c_str(), originalTake->getCachedTakeSecondsDuration(), originalTake->getCachedTakeFPS(), originalTake->getLoop(), originalTake->getClipStart(), originalTake->getClipEnd()));
-		
+
 			for (size_t eventTrackIdx = 0; eventTrackIdx < originalTake->getNumEventTracks(); eventTrackIdx++)
-			{	
+			{
+				ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalTake->getEventTrack(eventTrackIdx));
+
 				switch (originalTake->getEventTrack(eventTrackIdx)->getEventTrackType())
 				{
 				case ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE:
 				{
 					ME::DiscreteEventTrackExport* originalEventTrack = static_cast<ME::DiscreteEventTrackExport*>(originalTake->getEventTrack(eventTrackIdx));
 					std::string guid = originalEventTrack->getGUID();
-
-					ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalEventTrack);
-					//ME::EventTrackExport* targetTrack = nullptr;
 
 					if (targetTrack)
 						guid = targetTrack->getGUID();
@@ -1079,7 +845,12 @@ namespace
 					}
 
 					if (targetTrack == nullptr)
+					{
 						exportedTracks.push_back(originalEventTrack);
+						g_appLog->debugMessage(MsgLevel_Debug, "Added discrete track %s to export list (channelID=%d, type=%d, numEvents=%d, name=%s)\n", originalEventTrack->getGUID(), originalEventTrack->getEventTrackChannelID(), originalEventTrack->getEventTrackType(), originalEventTrack->getNumEvents(), originalEventTrack->getName());
+					}
+					else
+						g_appLog->debugMessage(MsgLevel_Debug, "Found discrete track %s (channelID=%d, type=%d, numEvents=%d, name=%s)\n", targetTrack->getGUID(), targetTrack->getEventTrackChannelID(), targetTrack->getEventTrackType(), targetTrack->getNumEvents(), targetTrack->getName());
 
 					break;
 				}
@@ -1087,8 +858,6 @@ namespace
 				{
 					ME::DurationEventTrackExport* originalEventTrack = static_cast<ME::DurationEventTrackExport*>(originalTake->getEventTrack(eventTrackIdx));
 					std::string guid = originalEventTrack->getGUID();
-
-					ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalEventTrack);
 
 					if (targetTrack)
 						guid = targetTrack->getGUID();
@@ -1102,7 +871,12 @@ namespace
 					}
 
 					if (targetTrack == nullptr)
+					{
 						exportedTracks.push_back(originalEventTrack);
+						g_appLog->debugMessage(MsgLevel_Debug, "Added duration track %s to export list (channelID=%d, type=%d, numEvents=%d, name=%s)\n", originalEventTrack->getGUID(), originalEventTrack->getEventTrackChannelID(), originalEventTrack->getEventTrackType(), originalEventTrack->getNumEvents(), originalEventTrack->getName());
+					}
+					else
+						g_appLog->debugMessage(MsgLevel_Debug, "Found duration track %s (channelID=%d, type=%d, numEvents=%d, name=%s)\n", targetTrack->getGUID(), targetTrack->getEventTrackChannelID(), targetTrack->getEventTrackType(), targetTrack->getNumEvents(), targetTrack->getName());
 
 					break;
 				}
@@ -1110,8 +884,6 @@ namespace
 				{
 					ME::CurveEventTrackExport* originalEventTrack = static_cast<ME::CurveEventTrackExport*>(originalTake->getEventTrack(eventTrackIdx));
 					std::string guid = originalEventTrack->getGUID();
-
-					ME::EventTrackExport* targetTrack = getExportedTrack(exportedTracks, originalEventTrack);
 
 					if (targetTrack)
 						guid = targetTrack->getGUID();
@@ -1125,10 +897,15 @@ namespace
 					}
 
 					if (targetTrack == nullptr)
+					{
 						exportedTracks.push_back(originalEventTrack);
+						g_appLog->debugMessage(MsgLevel_Debug, "Added curve track %s to export list (channelID=%d, type=%d, numEvents=%d, name=%s)\n", originalEventTrack->getGUID(), originalEventTrack->getEventTrackChannelID(), originalEventTrack->getEventTrackType(), originalEventTrack->getNumEvents(), originalEventTrack->getName());
+					}
+					else
+						g_appLog->debugMessage(MsgLevel_Debug, "Found curve track %s (channelID=%d, type=%d, numEvents=%d, name=%s)\n", targetTrack->getGUID(), targetTrack->getEventTrackChannelID(), targetTrack->getEventTrackType(), targetTrack->getNumEvents(), targetTrack->getName());
 
 					break;
-				}				
+				}
 				default:
 					break;
 				}
@@ -1448,7 +1225,7 @@ void MorphemeEditorApp::loadSettings()
 		return;
 	}
 
-	this->m_exportSettings.exportFormat = (ExportFormat)settings->getInt("Export", "export_format", 0);
+	this->m_exportSettings.exportFormat = static_cast<FT::ExportFormat>(settings->getInt("Export", "export_format", 0));
 	this->m_exportSettings.compressionFormat = settings->getInt("Export", "compression_format", 2);
 	this->m_exportSettings.useSourceSampleFrequency = settings->getBool("Export", "compression_use_source_sample_frequency", true);
 	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "compression_sample_frequency", 30);
@@ -1794,12 +1571,12 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 		MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
-#ifdef _DEBUG
+#ifdef EXPORT_DEBUG_NETWORK_INFO
 		dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
 		dumpNetworkNodes(netDef, animLibraryExport, L"nodes.xml");
 		dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
 		dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
-#endif
+#endif // EXPORT_DEBUG_NETWORK_INFO
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for %ws (%ws):\n", chrName.c_str(), networkFilename);
 
@@ -1888,9 +1665,9 @@ bool MorphemeEditorApp::exportAndProcess(std::wstring path)
 		bool status = true;
 
 		// Force the export format to XMD since we're invoking the assetCompiler, and that wants .xmd assets
-		ExportFormat formatBak = this->m_exportSettings.exportFormat;
+		FT::ExportFormat formatBak = this->m_exportSettings.exportFormat;
 
-		this->m_exportSettings.exportFormat = kXmd;
+		this->m_exportSettings.exportFormat = FT::kXmd;
 
 		g_workerThread.load()->addProcess("Exporting and processing assets", 3);
 		g_workerThread.load()->setProcessStepName("Exporting assets");
@@ -2013,13 +1790,13 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 
 		switch (this->m_exportSettings.exportFormat)
 		{
-		case kFbx:
+		case FT::kFbx:
 			animExportPath = L"motion_fbx\\";
 			break;
-		case kXmd:
+		case FT::kXmd:
 			animExportPath = L"motion_xmd\\";
 			break;
-		case kGltf:
+		case FT::kGltf:
 			animExportPath = L"motion_gltf\\";
 			break;
 		default:
@@ -2055,26 +1832,16 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 
 		std::filesystem::current_path(path);
 
-#ifdef _DEBUG
 		exportFlverToMorphemeBoneMap(model, path + L"morpheme_bone_map.txt");
-#endif
 
-		switch (this->m_exportSettings.exportFormat)
-		{
-		case MorphemeEditorApp::kFbx:
-			exportModelToFbx(this->m_character);
-			break;
-		case MorphemeEditorApp::kXmd:
-			exportModelToXmd(this->m_character);
-			break;
-		case MorphemeEditorApp::kGltf:
-			exportModelToGltf(this->m_character);
-			break;
-		}
+		FT::FileTranslator fileTranslator;
+		fileTranslator.exportModel(this->m_character, this->m_exportSettings.exportFormat);
 
 		g_workerThread.load()->increaseProgressStep();
 
 		std::filesystem::current_path(getExeRootDir());
+
+		return true;
 	}
 	catch (const std::exception& e)
 	{
@@ -2118,9 +1885,7 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 
 		std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
 
-#ifdef _DEBUG
 		exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"\\assetCompilerCommand.txt");
-#endif
 
 		g_appLog->debugMessage(MsgLevel_Info, "Invoking asset compiler with command %s\n", assetCompilerCommand.c_str());
 
@@ -2248,17 +2013,8 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 {
 	constexpr int fps = 30;
 
-	switch (this->m_exportSettings.exportFormat)
-	{
-	case MorphemeEditorApp::kFbx:
-		return exportAnimationToFbx(path, this->m_character, animSetIdx, animId, fps, ANIM_INCLUDES_MESH);
-	case MorphemeEditorApp::kXmd:
-		return exportAnimationToXmd(path, this->m_character, animSetIdx, animId, fps, ANIM_INCLUDES_MESH);
-	case MorphemeEditorApp::kGltf:
-		return exportAnimationToGltf(path, this->m_character, animSetIdx, animId, fps, ANIM_INCLUDES_MESH);
-	default:
-		return false;
-	}
+	FT::FileTranslator fileTranslator;
+	return fileTranslator.exportAnimation(this->m_character, path, animSetIdx, animId, fps, false, this->m_exportSettings.exportFormat);
 }
 
 bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int animId, std::vector<ME::EventTrackExport*>& exportedTracks)
@@ -2277,16 +2033,25 @@ bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int 
 	{
 		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation markup for animation \"%s\" (%ws)\n", animName.c_str(), this->m_character->getCharacterName().c_str());
 
-		ME::TakeListXML* optimisedTakeList = createOptimisedTakeList(takeListXML, exportedTracks);
-
-		if (!optimisedTakeList->write())
+#ifndef OPTIMISE_TAKE_EXPORT
+		if (!takeListXML->write())
 		{
 			g_appLog->debugMessage(MsgLevel_Error, "\tFailed to export take list for animation %d\n", animId);
 
 			return false;
 		}
+#else
+		ME::TakeListXML* optimisedTakeList = createOptimisedTakeList(takeListXML, exportedTracks);
+
+		if (!optimisedTakeList->write())
+		{
+			g_appLog->debugMessage(MsgLevel_Error, "\tFailed to export optimised take list for animation %d\n", animId);
+
+			return false;
+		}
 
 		delete optimisedTakeList;
+#endif // !OPTIMISE_TAKE_EXPORT
 	}
 
 	return true;

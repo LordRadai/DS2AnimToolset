@@ -11,7 +11,7 @@ namespace TrackEditor
 	{
 		EventTrackEditor* editor = new EventTrackEditor;
 
-		editor->m_fps = 60;
+		editor->m_fps = 1000;
 		editor->m_editorOptions = (TrackEditorOptions)options;
 		editor->m_timeCodeFormat = timeCodeFormat;
 		editor->m_eventLabelAlignment = kCenter;
@@ -21,10 +21,11 @@ namespace TrackEditor
 		return editor;
 	}
 
-
 	void EventTrackEditor::update(float dt)
 	{
 		TrackEditorBase::update(dt);
+
+		this->m_timeCodeFormat = kSeconds;
 
 		if (this->m_reload)
 			this->reload();

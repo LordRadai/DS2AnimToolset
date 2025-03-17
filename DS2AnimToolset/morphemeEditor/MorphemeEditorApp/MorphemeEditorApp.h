@@ -1,4 +1,5 @@
 #include "Application/Application.h"
+#include "FileTranslator/FileTranslator.h"
 
 #include "extern.h"
 #include "framework.h"
@@ -37,14 +38,6 @@ struct FlverResources
 class MorphemeEditorApp : public Application
 {
 public:
-	enum ExportFormat
-	{
-		kFbx,
-		kXmd,
-		kGltf,
-		kNumExportFormats
-	};
-
 	struct TaskFlags
 	{
 		bool resetCamera = false;
@@ -87,8 +80,8 @@ public:
 
 	struct ExportSettings
 	{
-		ExportFormat exportFormat = kFbx;
-		uint8_t compressionFormat = 2;
+		FT::ExportFormat exportFormat = FT::kFbx;
+		MR::AnimType compressionFormat = ANIM_TYPE_NSA;
 		bool useSourceSampleFrequency = true;
 		int sampleFrequency = 30;
 	};
@@ -98,8 +91,20 @@ public:
 	MorphemeEditorApp(const MorphemeEditorApp&) = delete;
 	void operator=(const MorphemeEditorApp&) = delete;
 
+	/*
+	* @brief Performs initialising step. Should be called before the first update cycle.
+	*/
 	void initialise();
+
+	/*
+	* @brief Performs time based operations and non time based operations for the current frame.
+	* @param dt: The time delta from the previous frame.
+	*/
 	void update(float dt);
+
+	/*
+	* @brief Performs cleanup and deletes instance.
+	*/
 	void shutdown();
 
 	Character* getCharacter() const { return this->m_character; }
@@ -122,7 +127,14 @@ public:
 private:
 	MorphemeEditorApp();
 
+	/*
+	* @brief Initialises the Settings struct from file.
+	*/
 	void loadSettings();
+
+	/*
+	* @brief Write the current Settings struct values to file.
+	*/
 	void saveSettings();
 
 	void loadPlayerModelPreset();

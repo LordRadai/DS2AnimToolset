@@ -10,7 +10,7 @@ namespace MD
 {
 	namespace Node
 	{
-		void writeDeltaTrajSrouce(MR::NodeDef* nodeDef, ME::DataBlockExportXML* dataBlockExport)
+		void NodeTransitDecompilerBase::writeDeltaTrajSrouce(MR::NodeDef* nodeDef, ME::DataBlockExportXML* dataBlockExport)
 		{
 			MR::QueueAttrTaskFn trajDeltaTransformTaskFn = nodeDef->getTaskQueueingFn(MR::ATTRIB_SEMANTIC_TRAJECTORY_DELTA_TRANSFORM);
 
@@ -24,12 +24,12 @@ namespace MD
 			dataBlockExport->writeUInt(deltaTrajSource, "DeltaTrajSource");
 		}
 
-		ME::NodeExportXML* exportTransitNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeTransitDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			if ((nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT) && (nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_PHYSICS))
 				g_appLog->panicMessage("Expecting node type %d or %d (got %d)\n", NODE_TYPE_TRANSIT, NODE_TYPE_TRANSIT_PHYSICS, nodeDef->getNodeTypeID());
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			if (nodeDef->getChildNodeID(0) != MR::INVALID_NODE_ID)
@@ -150,12 +150,12 @@ namespace MD
 			return nodeExportXML;
 		}
 
-		ME::NodeExportXML* exportTransitSyncEventsNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+		ME::NodeExportXML* NodeTransitSyncEventsDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			if ((nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_SYNC_EVENTS) && (nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS))
 				g_appLog->panicMessage("Expecting node type %d or %d (got %d)\n", NODE_TYPE_TRANSIT_SYNC_EVENTS, NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS, nodeDef->getNodeTypeID());
 
-			ME::NodeExportXML* nodeExportXML = exportNodeCore(netDefExport, netDef, nodeDef, nodeName);
+			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
 
 			if (nodeDef->getChildNodeID(0) != MR::INVALID_NODE_ID)

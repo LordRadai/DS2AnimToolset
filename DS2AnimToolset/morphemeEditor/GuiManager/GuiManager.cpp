@@ -812,12 +812,12 @@ void GuiManager::rootWindow()
 
 			if (ImGui::BeginCombo("Export Format", exportFormat[editorApp->getExportSettings()->exportFormat]))
 			{
-				for (size_t i = 0; i < MorphemeEditorApp::kNumExportFormats; i++)
+				for (size_t i = 0; i < FT::kNumExportFormats; i++)
 				{
 					const bool selected = (editorApp->getExportSettings()->exportFormat == i);
 
 					if (ImGui::Selectable(exportFormat[i], selected))
-						editorApp->getExportSettings()->exportFormat = (MorphemeEditorApp::ExportFormat)i;
+						editorApp->getExportSettings()->exportFormat = static_cast<FT::ExportFormat>(i);
 
 					if (selected)
 						ImGui::SetItemDefaultFocus();

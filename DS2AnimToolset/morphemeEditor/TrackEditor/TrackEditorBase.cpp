@@ -248,9 +248,14 @@ namespace
         return overDel;
     }
 
-    inline float calculateZoomLevel(int width, int targetNumFrames)
+    float calculateZoomLevel(int width, int targetNumFrames)
     {
-        return (float)width / (float)targetNumFrames;
+        float zoomLevel = (float)width / (float)targetNumFrames;
+
+        if (zoomLevel * targetNumFrames > width)
+            zoomLevel = width / (float)targetNumFrames;
+
+        return zoomLevel;
     }
 }
 
@@ -435,7 +440,7 @@ namespace TrackEditor
 
         const int editorCanvasSize = (availableSpace.x - this->m_legendWidth);
 
-        this->m_zoomLevel = std::fmax(calculateZoomLevel(editorCanvasSize, frameCount), 1.f);
+        this->m_zoomLevel = calculateZoomLevel(editorCanvasSize, frameCount);
 
         float framePixelWidth = this->m_zoomLevel;
         float framePixelWidthTarget = this->m_zoomLevel;
@@ -854,7 +859,15 @@ namespace TrackEditor
                         this->m_selectedEvent = this->m_movingEvent;
 
                         ImGui::SetNextFrameWantCaptureMouse(true);
-                        int diffFrame = int((mouseX - this->m_movingPos) / framePixelWidth);
+                        const float minThreshold = 2.0f;
+
+                        int diffFrame = 0;
+                        float movement = mouseX - this->m_movingPos;
+
+                        if (std::fabs(movement) < minThreshold)
+                            diffFrame = 0;
+                        else
+                            diffFrame = int(movement / framePixelWidth);
 
                         if (diffFrame != 0)
                             this->m_edited = true;

@@ -303,6 +303,12 @@
     <ClInclude Include="FileTranslator\GLTFTranslator\GLTFTranslator.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="FileTranslator\FileTranslatorBase.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\NodeExportBase.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -522,6 +528,12 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="FileTranslator\GLTFTranslator\GLTFTranslator.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="FileTranslator\FileTranslator.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\NodeExportBase.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
