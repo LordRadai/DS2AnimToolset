@@ -798,6 +798,11 @@ bool FlverModel::initialise()
 
 	this->m_meshVerticesTransforms = this->m_meshVerticesBindPoseTransforms;
 
+	const Vector3 modelSize = this->getBoundingBoxMax() - this->getBoundingBoxMin();
+	const float largestDirection = std::fmax(std::fmax(modelSize.x, modelSize.y), modelSize.z);
+
+	this->m_scale = std::fmin(20.f / largestDirection, 1.f);
+
 	return true;
 }
 
