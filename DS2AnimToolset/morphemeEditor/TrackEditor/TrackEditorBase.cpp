@@ -582,6 +582,7 @@ namespace TrackEditor
                 modFrameCount *= 2;
                 frameStep *= 2;
             };
+
             int halfModFrameCount = modFrameCount / 2;
 
             auto drawLine = [&](int i, int regionHeight) {
@@ -648,8 +649,11 @@ namespace TrackEditor
             drawLine(this->m_frameMin, ItemHeight);
             drawLine(this->m_frameMax, ItemHeight);
 
-            for (int i = this->m_frameMax + 1; i <= 500; i += frameStep)
-                drawLine(i, ItemHeight);
+            if (this->m_fps <= CANVAS_LINESKIP_FPS_THRESHOLD)
+            {
+                for (int i = this->m_frameMax; i <= this->m_frameMax + 500; i += frameStep)
+                    drawLine(i, ItemHeight);
+            }
 
             // clip content
             draw_list->PushClipRect(childFramePos, childFramePos + childFrameSize, true);
