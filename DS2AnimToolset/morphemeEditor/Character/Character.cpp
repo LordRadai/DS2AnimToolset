@@ -278,7 +278,7 @@ namespace
     }
 }
 
-Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork)
+Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork)
 {
     Character* character = new Character();
 

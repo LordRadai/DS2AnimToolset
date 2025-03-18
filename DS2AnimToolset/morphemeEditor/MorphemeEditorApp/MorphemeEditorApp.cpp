@@ -1341,7 +1341,7 @@ void MorphemeEditorApp::loadFile()
 						this->m_gamePath = utils::findGamePath(filepath);
 
 						if (filepath.extension() == ".nmb")
-							this->m_character = Character::createFromNmb(this->m_timeActFileList, RString::toNarrow(filepath).c_str(), false);
+							this->m_character = Character::createFromMorphemeBundle(this->m_timeActFileList, RString::toNarrow(filepath).c_str(), false);
 						else if (filepath.extension() == ".tae")
 							this->m_character = Character::createFromTimeAct(RString::toNarrow(filepath).c_str());
 

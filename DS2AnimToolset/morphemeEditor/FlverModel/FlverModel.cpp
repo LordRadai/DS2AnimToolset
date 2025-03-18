@@ -250,42 +250,40 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 
 FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 {
-	FlverModel* model = nullptr;
-
-	BND4::Bnd4* bnd = BND4::Bnd4::loadFromFile(path);
-
-	if (bnd == nullptr)
-		return nullptr;
-
-	bool found = false;
-
-	for (size_t i = 0; i < bnd->getNumFiles(); i++)
+	try
 	{
-		std::filesystem::path name = bnd->getFile(i)->name;
+		FlverModel* model = nullptr;
 
-		if (name.extension().compare(".flv") == 0)
+		BND4::Bnd4* bnd = BND4::Bnd4::loadFromFile(path);
+
+		if (bnd == nullptr)
+			return nullptr;
+
+		BND4::BndFile* flverFile = bnd->getFirstFileWithExtension(".flv");
+
+		if (flverFile)
 		{
 			g_appLog->debugMessage(MsgLevel_Debug, "Loading model \"%ws\"\n", path.c_str());
 
-			UMEM* umem = uopenMem((char*)bnd->getFile(i)->data, bnd->getFile(i)->uncompressedSize);
+			UMEM* umem = uopenMem((char*)flverFile->data, flverFile->uncompressedSize);
 
 			model = new FlverModel(umem, rig);
 			model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
-			model->m_fileOrigin = path + L"\\" + name.c_str();
-
-			found = true;
-			break;
+			model->m_fileOrigin = path + L"\\" + RString::toWide(flverFile->name.c_str());
 		}
+		else
+			g_appLog->debugMessage(MsgLevel_Error, "Could not find a .flver file inside \"%ws\"\n", path);
+
+		bnd->destroy();
+
+		delete bnd;
+
+		return model;
 	}
-
-	if (!found)
-		g_appLog->debugMessage(MsgLevel_Error, "Could not find model %ws\n", path);
-
-	bnd->destroy();
-
-	delete bnd;
-
-	return model;
+	catch (const std::exception& e)
+	{
+		g_appLog->alertMessage(MsgLevel_Error, "Failed to create FlverModel object from file %ws (error=%s)\n", path.c_str(), e.what());
+	}
 }
 
 void FlverModel::destroy()
