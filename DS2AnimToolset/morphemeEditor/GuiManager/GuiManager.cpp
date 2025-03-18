@@ -1453,7 +1453,7 @@ void GuiManager::eventTrackInfoWindow()
 			case TrackEditor::kSeconds:
 				{
 					float fps = eventTrackEditor->getFps();
-					float step = 1.f / fps;
+					float step = 0.f;
 
 					float startTime = RMath::frameToTime(selectedEvent->frameStart, fps);
 					float endTime = RMath::frameToTime(selectedEvent->frameEnd, fps);
@@ -1470,7 +1470,7 @@ void GuiManager::eventTrackInfoWindow()
 			case TrackEditor::kMilliseconds:
 				{
 					float fps = eventTrackEditor->getFps();
-					float step = (1.f / fps) * 1000.f;
+					float step = 0.f;
 
 					float startTime = RMath::frameToTime(selectedEvent->frameStart, fps) * 1000.f;
 					float endTime = RMath::frameToTime(selectedEvent->frameEnd, fps) * 1000.f;
@@ -1487,14 +1487,15 @@ void GuiManager::eventTrackInfoWindow()
 			case TrackEditor::kFrames:
 				{
 					float fps = eventTrackEditor->getFps();
+					int step = 0;
 
 					int startFrame = selectedEvent->frameStart;
 					int endFrame = selectedEvent->frameEnd;
 
-					ImGui::InputInt("Start Frame", &startFrame);
+					ImGui::InputInt("Start Frame", &startFrame, step);
 
 					if (!selectedTrack->discrete)
-						ImGui::InputInt("End Frame", &endFrame);
+						ImGui::InputInt("End Frame", &endFrame, step);
 
 					selectedEvent->frameStart = startFrame;
 					selectedEvent->frameEnd = endFrame;
@@ -1590,14 +1591,15 @@ void GuiManager::timeActInfoWindow()
 			case TrackEditor::kFrames:
 			{
 				float fps = timeActEditor->getFps();
+				int step = 1;
 
 				int startFrame = selectedEvent->frameStart;
 				int endFrame = selectedEvent->frameEnd;
 
-				ImGui::InputInt("Start Frame", &startFrame);
+				ImGui::InputInt("Start Frame", &startFrame, step);
 
 				if (!selectedTrack->discrete)
-					ImGui::InputInt("End Frame", &endFrame);
+					ImGui::InputInt("End Frame", &endFrame, step);
 
 				selectedEvent->frameStart = startFrame;
 				selectedEvent->frameEnd = endFrame;
