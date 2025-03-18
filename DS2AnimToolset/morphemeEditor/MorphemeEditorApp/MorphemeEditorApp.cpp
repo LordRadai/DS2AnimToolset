@@ -975,7 +975,7 @@ void MorphemeEditorApp::update(float dt)
 			else
 				this->m_animPlayer->setTime(this->m_eventTrackEditor->getCurrentTime());
 
-			this->m_eventTrackEditor->setTimeCodeFormat(TrackEditor::kSeconds);
+			this->m_eventTrackEditor->setTimeCodeFormat(this->m_timeActEditor->getTimeCodeFormat());
 		}
 
 		const float timeActEditorTime = calcTimeActEditorCurrentTime(this->m_eventTrackEditor, RMath::frameToTime(this->m_timeActEditor->getFrameMax(), this->m_timeActEditor->getFps()), this->m_animPlayer->getTime());
