@@ -88,9 +88,9 @@ namespace TrackEditor
 		{
 		case TimeAct::kBool:
 			if (getValue<bool>())
-				sprintf_s(buffer, "true");
+				sprintf_s(buffer, "True");
 			else
-				sprintf_s(buffer, "false");
+				sprintf_s(buffer, "False");
 
 			break;
 		case TimeAct::kByte:

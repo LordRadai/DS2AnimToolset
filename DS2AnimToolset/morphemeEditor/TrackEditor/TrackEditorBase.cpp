@@ -530,7 +530,7 @@ namespace TrackEditor
             const ImRect contentRect(contentMin, contentMax);
             const float contentHeight = contentMax.y - contentMin.y;
 
-            const int editorCanvasStart = contentMin.x + this->m_legendWidth;
+            const int editorCanvasStart = contentMin.x + this->m_legendWidth + 5;
 
             // full background
             draw_list->AddRectFilled(canvas_pos, canvas_pos + availableSpace, 0xFF242424, 0);
@@ -682,6 +682,8 @@ namespace TrackEditor
                     {
                         if (io.MouseReleased[1])
                         {
+                            this->m_selectedTrack = i;
+                            this->m_selectedEvent = -1;
                             renameTrack = true;
                         }
                     }
