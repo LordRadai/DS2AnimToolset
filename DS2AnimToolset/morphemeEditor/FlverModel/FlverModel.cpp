@@ -250,10 +250,10 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 
 FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 {
+	FlverModel* model = nullptr;
+
 	try
 	{
-		FlverModel* model = nullptr;
-
 		BND4::Bnd4* bnd = BND4::Bnd4::loadFromFile(path);
 
 		if (bnd == nullptr)
@@ -283,6 +283,7 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 	catch (const std::exception& e)
 	{
 		g_appLog->alertMessage(MsgLevel_Error, "Failed to create FlverModel object from file %ws (error=%s)\n", path.c_str(), e.what());
+		return model;
 	}
 }
 
