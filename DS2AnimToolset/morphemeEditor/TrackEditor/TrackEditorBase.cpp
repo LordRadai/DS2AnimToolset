@@ -497,10 +497,6 @@ namespace TrackEditor
         if (this->m_panningView && !io.MouseDown[2])
             this->m_panningView = false;
 
-        framePixelWidthTarget = ImClamp(framePixelWidthTarget, 0.1f, 50.f);
-
-        framePixelWidth = ImLerp(framePixelWidth, framePixelWidthTarget, 0.33f);
-
         if (visibleFrameCount >= frameCount)
             this->m_firstFrame = this->m_frameMin;
 
@@ -756,8 +752,10 @@ namespace TrackEditor
 
                 draw_list->PushClipRect(childFramePos + ImVec2(float(this->m_legendWidth - 5), 0.f), childFramePos + childFrameSize, true);
 
+                const int numFramesToDraw = max(2 * this->m_frameMax, 60);
+
                 // vertical frame lines in content area
-                for (int i = this->m_frameMin; i < this->m_frameMax + 500; i += frameStep)
+                for (int i = this->m_frameMin; i < numFramesToDraw; i += frameStep)
                     drawLineContent(i);
 
                 draw_list->AddRectFilled(ImVec2(editorCanvasStart - firstFrameUsed * framePixelWidth + this->m_frameMax * framePixelWidth, canvas_pos.y), canvas_pos + availableSpace, 0x40000000, 0);
