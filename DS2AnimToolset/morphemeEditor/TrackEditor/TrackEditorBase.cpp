@@ -5,6 +5,7 @@
 #include <imgui/imstb_rectpack.h>
 #include "extern.h"
 #include "framework.h"
+#define CANVAS_LINESKIP_FPS_THRESHOLD 60
 
 namespace
 {
@@ -485,7 +486,6 @@ namespace TrackEditor
         if (visibleFrameCount >= frameCount)
             this->m_firstFrame = this->m_frameMin;
 
-        // --
         if (!this->m_expanded)
         {
             ImGui::InvisibleButton("canvas", ImVec2(availableSpace.x - canvas_pos.x, (float)ItemHeight));
@@ -496,7 +496,7 @@ namespace TrackEditor
         }
         else
         {
-            bool hasScrollBar(false);
+            bool hasScrollBar = false;
 
             // test scroll area
             ImVec2 headerSize(availableSpace.x, (float)ItemHeight);
@@ -510,6 +510,7 @@ namespace TrackEditor
 
             ImGui::BeginChild("trackEditorCanvas", childFrameSize);
             ImGui::InvisibleButton("contentBar", ImVec2(availableSpace.x, float(controlHeight)));
+
             const ImVec2 contentMin = ImGui::GetItemRectMin();
             const ImVec2 contentMax = ImGui::GetItemRectMax();
             const ImRect contentRect(contentMin, contentMax);
@@ -638,8 +639,11 @@ namespace TrackEditor
                 }
             };
 
-            for (int i = this->m_frameMin + 1; i <= this->m_frameMax; i += frameStep)
-                drawLine(i, ItemHeight);
+            if (this->m_fps <= CANVAS_LINESKIP_FPS_THRESHOLD)
+            {
+                for (int i = this->m_frameMin; i < this->m_frameMax; i += frameStep)
+                    drawLine(i, ItemHeight);
+            }
 
             drawLine(this->m_frameMin, ItemHeight);
             drawLine(this->m_frameMax, ItemHeight);
