@@ -100,37 +100,41 @@
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="2100" name="SfxCtrl">
-        <EventTemplate id="2100" name="ChrSfxCtrl_2100">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
-            <ArgTemplate name="Unk04" type="int" hidden="false"/>
-            <ArgTemplate name="Unk08" type="short" hidden="false"/>
-            <ArgTemplate name="Unk0A" type="short" hidden="false"/>
-            <ArgTemplate name="Unk0C" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk0D" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk0E" type="byte" hidden="false"/>
+        <EventTemplate id="2100" name="SetSfxTurretBehaviour">
+            <ArgTemplate name="Slot" type="int" hidden="false"/>
+            <ArgTemplate name="Sfx ID" type="int" hidden="false"/>
+            <ArgTemplate name="DmyPoly ID" type="int" hidden="false"/>
+            <ArgTemplate name="Unk0C" type="bool" hidden="false"/>
+            <ArgTemplate name="Unk0D" type="bool" hidden="false"/>
+            <ArgTemplate name="bIsHorizontalSfx" type="bool" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="2101" name="ChrSfxCtrl_2101">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
-            <ArgTemplate name="Unk04" type="int" hidden="false"/>
+        <EventTemplate id="2101" name="EmitSfx">
+            <ArgTemplate name="Slot" type="int" hidden="false"/>
+            <ArgTemplate name="bIsTurret" type="bool" hidden="false"/>
+            <ArgTemplate name="Unk05" type="byte" hidden="true"/>
+            <ArgTemplate name="Unk06" type="byte" hidden="true"/>
+            <ArgTemplate name="Unk07" type="byte" hidden="true"/>
+            <ArgTemplate name="Turret Duration" type="float" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="2102" name="ChrSfxCtrl_2102">
-            <ArgTemplate name="Unk00" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk01" type="byte" hidden="false"/>
+            <ArgTemplate name="Sfx ID" type="int" hidden="false"/>
+            <ArgTemplate name="DmyPoly ID" type="int" hidden="false"/>
+            <ArgTemplate name="Unk09" type="bool" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="2103" name="InvokeChrFullBodySfx">
             <ArgTemplate name="ChrFullBodySfxParam ID" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="2104" name="InvokeSfx">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
+            <ArgTemplate name="State" type="int" hidden="false"/>
             <ArgTemplate name="Sfx ID" type="int" hidden="false"/>
             <ArgTemplate name="DmyPoly ID" type="int" hidden="false"/>
-            <ArgTemplate name="Unk0C" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk0D" type="byte" hidden="false"/>
+            <ArgTemplate name="Unk0C" type="bool" hidden="false"/>
+            <ArgTemplate name="Unk0D" type="bool" hidden="false"/>
             <ArgTemplate name="Slot Type" type="byte" hidden="false"/>
             <ArgTemplate name="Unk0F" type="byte" hidden="false"/>
             <ArgTemplate name="Unk10" type="int" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="2105" name="ChrSfxCtrl_2105">
+        <EventTemplate id="2105" name="InvokeSfxInDefaultSlot">
             <ArgTemplate name="Sfx ID" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="2106" name="InvokeSimpletonRingSfx">
@@ -221,8 +225,10 @@
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="230000" name="ChrGenerateCtrl">
-        <EventTemplate id="230000" name="ChrGenerateCtrl_230000"/>
-        <EventTemplate id="230001" name="ChrGenerateCtrl_230001"/>
+        <EventTemplate id="230000" name="GenerateCharacter">
+            <ArgTemplate name="Index" type="byte" hidden="false"/>
+        </EventTemplate>
+        <EventTemplate id="230001" name="InvokeUnknownChrGenerateBehaviour"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="240000" name="DeadCtrl">
         <EventTemplate id="240000" name="ChrDeadCtrl"/>
