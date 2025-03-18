@@ -1453,7 +1453,7 @@ void GuiManager::eventTrackInfoWindow()
 			case TrackEditor::kSeconds:
 				{
 					float fps = eventTrackEditor->getFps();
-					float step = 0.f;
+					float step = 0;
 
 					float startTime = RMath::frameToTime(selectedEvent->frameStart, fps);
 					float endTime = RMath::frameToTime(selectedEvent->frameEnd, fps);
@@ -1470,7 +1470,7 @@ void GuiManager::eventTrackInfoWindow()
 			case TrackEditor::kMilliseconds:
 				{
 					float fps = eventTrackEditor->getFps();
-					float step = 0.f;
+					float step = 0;
 
 					float startTime = RMath::frameToTime(selectedEvent->frameStart, fps) * 1000.f;
 					float endTime = RMath::frameToTime(selectedEvent->frameEnd, fps) * 1000.f;
@@ -1487,18 +1487,18 @@ void GuiManager::eventTrackInfoWindow()
 			case TrackEditor::kFrames:
 				{
 					float fps = eventTrackEditor->getFps();
-					int step = 0;
+					float step = 0;
 
-					int startFrame = selectedEvent->frameStart;
-					int endFrame = selectedEvent->frameEnd;
+					float startFrame = RMath::frameToTime(selectedEvent->frameStart, fps) * 30;
+					float endFrame = RMath::frameToTime(selectedEvent->frameEnd, fps) * 30;
 
-					ImGui::InputInt("Start Frame", &startFrame, step);
+					ImGui::InputFloat("Start Frame", &startFrame, step);
 
 					if (!selectedTrack->discrete)
-						ImGui::InputInt("End Frame", &endFrame, step);
+						ImGui::InputFloat("End Frame", &endFrame, step);
 
-					selectedEvent->frameStart = startFrame;
-					selectedEvent->frameEnd = endFrame;
+					selectedEvent->frameStart = RMath::timeToFrame(startFrame / 30, fps);
+					selectedEvent->frameEnd = RMath::timeToFrame(endFrame / 30, fps);;
 				}
 				break;
 			default:
@@ -1552,6 +1552,15 @@ void GuiManager::timeActInfoWindow()
 
 		if (selectedEvent != nullptr)
 		{
+			ImGui::InputInt("Event ID", &selectedEvent->userData, 0, 0, ImGuiInputTextFlags_ReadOnly);
+
+			if (ImGui::IsItemHovered())
+			{
+				ImGui::PushTextWrapPos(ImGui::GetWindowContentWidth());
+				ImGui::Text(getTimeActEventTooltip(selectedEvent->userData).c_str());
+				ImGui::PopTextWrapPos();
+			}
+
 			switch (timeActEditor->getTimeCodeFormat())
 			{
 			case TrackEditor::kSeconds:
