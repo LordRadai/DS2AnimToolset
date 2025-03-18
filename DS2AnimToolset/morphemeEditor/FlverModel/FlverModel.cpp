@@ -801,7 +801,10 @@ bool FlverModel::initialise()
 	const Vector3 modelSize = this->getBoundingBoxMax() - this->getBoundingBoxMin();
 	const float largestDirection = std::fmax(std::fmax(modelSize.x, modelSize.y), modelSize.z);
 
-	this->m_scale = std::fmin(20.f / largestDirection, 1.f);
+	this->m_scale = std::fmin(20.f / largestDirection, 1.5f);
+
+	if (this->m_scale < 1.5f)
+		this->m_scale = 1.5f;
 
 	return true;
 }
