@@ -83,21 +83,6 @@ void RenderManager::initialise(HWND hwnd)
     m_physicalEffect->SetSpecularColor(Vector4(0.04f, 0.04f, 0.04f, 1.f));
     m_physicalEffect->SetSpecularPower(32.f);
 
-    m_physicalEffect->SetLightEnabled(0, true);
-    m_physicalEffect->SetLightDirection(0, Vector3(0.577f, -0.577f, -0.577f));
-    m_physicalEffect->SetLightDiffuseColor(0, Colors::White);
-    m_physicalEffect->SetLightSpecularColor(0, Colors::White);
-
-    m_physicalEffect->SetLightEnabled(1, true);
-    m_physicalEffect->SetLightDirection(1, Vector3(-0.577f, -0.577f, 0.577f));
-    m_physicalEffect->SetLightDiffuseColor(1, Colors::Gray);
-    m_physicalEffect->SetLightSpecularColor(1, Colors::Gray);
-
-    m_physicalEffect->SetLightEnabled(2, true);
-    m_physicalEffect->SetLightDirection(2, Vector3(0.0f, 0.577f, -0.577f));
-    m_physicalEffect->SetLightDiffuseColor(2, Colors::White);
-    m_physicalEffect->SetLightSpecularColor(2, Colors::White);
-
     DX::ThrowIfFailed(
         CreateInputLayoutFromEffect<VertexPositionNormalColor>(this->m_device, m_physicalEffect.get(),
             m_physicalInputLayout.ReleaseAndGetAddressOf())
