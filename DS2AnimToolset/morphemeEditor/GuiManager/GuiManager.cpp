@@ -848,7 +848,7 @@ void GuiManager::rootWindow()
 
 			ImGui::BeginDisabled(editorApp->getExportSettings()->useSourceSampleFrequency);
 
-			ImGui::InputDragInt("Sample frequency", &editorApp->getExportSettings()->sampleFrequency, 0.5f, 0, 120);
+			ImGui::InputDragInt("Sample frequency", &editorApp->getExportSettings()->sampleFrequency, 0.5f, 1, 120);
 
 			ImGui::EndDisabled();
 
