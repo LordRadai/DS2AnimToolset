@@ -639,11 +639,6 @@ void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVer
 		// Only factor in the bones that are present in the morpheme rig
 		if (morphemeBoneID != -1)
 			totalWeight += skinnedVertex.boneWeights[wt];
-		else
-		{
-			//skinnedVertex.boneWeights[wt] = 0.f;
-			//skinnedVertex.boneIndices[wt] = -1;
-		}
 	}
 
 	if (totalWeight != 0.f)
@@ -659,20 +654,20 @@ void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVer
 		for (size_t wt = 0; wt < 4; wt++)
 		{
 			const int boneID = skinnedVertex.boneIndices[wt];
-			int parentID = this->m_flver->bones[boneID].previousSiblingIndex;
+			int prevSibling = this->m_flver->bones[boneID].previousSiblingIndex;
 
-			while (parentID != -1)
+			while (prevSibling != -1)
 			{
-				int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(parentID);
+				int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(prevSibling);
 
 				if (morphemeBoneID != -1)
 				{
-					skinnedVertex.boneIndices[wt] = parentID;
+					skinnedVertex.boneIndices[wt] = prevSibling;
 
 					break;
 				}
 
-				parentID = this->m_flver->bones[parentID].previousSiblingIndex;
+				prevSibling = this->m_flver->bones[prevSibling].previousSiblingIndex;
 			}
 		}
 
@@ -775,17 +770,21 @@ bool FlverModel::initialise()
 				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 3] < mesh->header.boneCount)
 					indices[3] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 3]];
 
+				Vector3 pos(mesh->vertexData->positions[(vertexIndex * 3) + 0], mesh->vertexData->positions[(vertexIndex * 3) + 2], mesh->vertexData->positions[(vertexIndex * 3) + 1]);
+
 				float x = mesh->vertexData->positions[(vertexIndex * 3) + 0];
 				float y = mesh->vertexData->positions[(vertexIndex * 3) + 2];
 				float z = mesh->vertexData->positions[(vertexIndex * 3) + 1];
 
-				Vector3 pos = Vector3::Transform(Vector3(x, y, z), Matrix::CreateReflection(Plane(Vector3::Right)));
+				pos = Vector3::Transform(Vector3(x, y, z), Matrix::CreateReflection(Plane(Vector3::Right)));
+
+				Vector3 normal;
 
 				float norm_x = mesh->vertexData->normals[(vertexIndex * 3) + 0];
 				float norm_y = mesh->vertexData->normals[(vertexIndex * 3) + 2];
 				float norm_z = mesh->vertexData->normals[(vertexIndex * 3) + 1];
 
-				Vector3 normal = Vector3::Transform(Vector3(norm_x, norm_y, norm_z), Matrix::CreateReflection(Plane(Vector3::Right)));
+				normal = Vector3::Transform(Vector3(norm_x, norm_y, norm_z), Matrix::CreateReflection(Plane(Vector3::Right)));
 				normal.Normalize();
 
 				meshSkinnedVertices.push_back(SkinnedVertex(pos, normal, weights, indices));
