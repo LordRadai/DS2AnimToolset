@@ -161,4 +161,9 @@ private:
 	std::vector<Vector3> getFlverMeshBiTangents(int idx, bool flip);
 	std::vector<Vector4> getFlverMeshBoneWeights(int idx);
 	std::vector<std::vector<int>> getFlverMeshBoneIndices(int idx);
+	void resetBoneTransformsToBindPose();
+	void computeAnimationTransformBuffers(MR::AnimationSourceHandle* animHandle);
+	std::vector<Matrix> computeBoneRelativeTransforms(MR::AnimationSourceHandle* animHandle);
+	void transformMesh(int meshIdx, const std::vector<Matrix>& boneRelativeTransforms);
+	void transformVertex(int meshIdx, int vertexIndex, const std::vector<Matrix>& boneRelativeTransforms);
 };
