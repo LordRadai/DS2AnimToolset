@@ -85,7 +85,7 @@ namespace
 		return normalList;
 	}
 
-	XM2::XQuaternion getBoneTransformQuatAtTime(AnimObject* animObj, float time, int boneId)
+	Matrix getBoneTransformAtTime(AnimObject* animObj, float time, int boneId)
 	{
 		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
@@ -96,6 +96,15 @@ namespace
 			const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
 			transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
 		}
+
+		return transform;
+	}
+
+	XM2::XQuaternion getBoneTransformQuatAtTime(AnimObject* animObj, float time, int boneId)
+	{
+		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
+		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
+		Matrix transform = getBoneTransformAtTime(animObj, time, boneId);
 
 		Vector3 position;
 		Quaternion rotation;
@@ -110,13 +119,7 @@ namespace
 	{
 		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
-		Matrix transform = animObj->getTransformAtTime(time, boneId);
-
-		if (boneId == rootBoneID)
-		{
-			const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
-			transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
-		}
+		Matrix transform = getBoneTransformAtTime(animObj, time, boneId);
 
 		Vector3 position;
 		Quaternion rotation;
@@ -131,13 +134,7 @@ namespace
 	{
 		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
 		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
-		Matrix transform = animObj->getTransformAtTime(time, boneId);
-
-		if (boneId == rootBoneID)
-		{
-			const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
-			transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
-		}
+		Matrix transform = getBoneTransformAtTime(animObj, time, boneId);
 
 		Vector3 position;
 		Quaternion rotation;
@@ -758,9 +755,9 @@ namespace FT
 		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to XMD (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
 
 		XMD::XModel* xmd = createModel(rig, character->getCharacterModelCtrl()->getModel(), characterDef->getAnimFileLookUp()->getFilename(animId), includeMeshes);
-		createAnimCycle(xmd, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
+		XMD::XAnimCycle* animTake = createAnimCycle(xmd, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
 
-		if (xmd->Save(animName) != XMD::XFileError::Success)
+		if ((animTake == nullptr) || (xmd->Save(animName) != XMD::XFileError::Success))
 			status = false;
 
 		delete xmd;
