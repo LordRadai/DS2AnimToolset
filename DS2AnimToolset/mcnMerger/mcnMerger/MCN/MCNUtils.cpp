@@ -265,6 +265,12 @@ namespace MCNUtils
 		return name;
 	}
 
+	void setNodePan(tinyxml2::XMLElement* parent, float x, float y)
+	{
+		RXML::createFloatElement(parent, "PanX", x);
+		RXML::createFloatElement(parent, "PanY", y);
+	}
+
 	tinyxml2::XMLElement* createBoolElement(tinyxml2::XMLElement* parent, const char* name, bool value)
 	{
 		tinyxml2::XMLElement* element = parent->InsertNewChildElement(name);

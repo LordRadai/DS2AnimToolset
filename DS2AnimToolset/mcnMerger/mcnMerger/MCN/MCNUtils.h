@@ -13,6 +13,8 @@ namespace MCNUtils
 	std::string getNodeTypeName(ME::NodeExportXML* node);
 	std::string getNodeName(ME::NodeExportXML* node, ME::AnimationLibraryXML* animLibrary);
 
+	void setNodePan(tinyxml2::XMLElement* parent, float x, float y);
+
 	tinyxml2::XMLElement* createBoolElement(tinyxml2::XMLElement* parent, const char* name, bool value);
 	tinyxml2::XMLElement* createVector3Element(tinyxml2::XMLElement* parent, std::string name, float x, float y, float z);
 	tinyxml2::XMLElement* createVector4Element(tinyxml2::XMLElement* parent, std::string name, float x, float y, float z, float w);

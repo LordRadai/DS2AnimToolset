@@ -260,7 +260,7 @@ namespace TrackEditor
 
 			this->notifyListeners();
 
-			ImGui::InputInt("Event ID", &this->eventBuffer->userData);
+			ImGui::InputInt("User Data", &this->eventBuffer->userData);
 
 			if (ImGui::Button("Add Event") || RInput::isKeyStateChanged(VK_RETURN))
 			{
