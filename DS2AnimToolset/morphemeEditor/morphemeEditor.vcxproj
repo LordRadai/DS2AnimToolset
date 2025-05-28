@@ -340,7 +340,6 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="fromloader\src\util\stringio\simple_sjis_table.bin" />
     <None Include="packages.config" />
   </ItemGroup>

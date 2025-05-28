@@ -754,7 +754,7 @@ namespace FT
 
 		g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to XMD (%ws)\n", animName.c_str(), character->getCharacterName().c_str());
 
-		XMD::XModel* xmd = createModel(rig, character->getCharacterModelCtrl()->getModel(), characterDef->getAnimFileLookUp()->getFilename(animId), includeMeshes);
+		XMD::XModel* xmd = createModel(rig, character->getCharacterModelCtrl()->getModel(), anim->getAnimFileName(), includeMeshes);
 		XMD::XAnimCycle* animTake = createAnimCycle(xmd, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);
 
 		if ((animTake == nullptr) || (xmd->Save(animName) != XMD::XFileError::Success))

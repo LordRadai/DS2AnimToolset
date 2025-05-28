@@ -551,7 +551,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="fromloader\src\util\stringio\simple_sjis_table.bin">
       <Filter>File di risorse</Filter>
     </None>
