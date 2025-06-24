@@ -82,7 +82,7 @@
     </EventGroupTemplate>
     <EventGroupTemplate id="1220" name="ParryCtrl">
         <EventTemplate id="1220" name="InvokeParry"/>
-        <EventTemplate id="1230" name="ChrParryCtrl_1230"/>
+        <EventTemplate id="1230" name="EnableSideWalk"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="1500" name="CameraCtrl">
         <EventTemplate id="1500" name="ChrCameraCtrl_1500"/>
