@@ -24,7 +24,7 @@ void AnimPlayer::clear()
 
 void AnimPlayer::update(float dt)
 {
-	if (this->m_anim->getHandle() == nullptr)
+	if (this->m_anim == nullptr)
 	{
 		this->m_pause = true;
 		return;
