@@ -3,6 +3,14 @@
 #include "CharacterMotionCtrl.h"
 #include "MorphemeSystem/MorphemeUtils/MorphemeUtils.h"
 
+namespace
+{
+    bool compareAnimObjs(AnimObject* first, AnimObject* second)
+    {
+        return std::string(first->getAnimName()) < std::string(second->getAnimName());
+    }
+}
+
 bool CharacterMotionCtrlBase::initialize(const char* filename, bool doSimulateNetwork)
 {
     MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename);
@@ -110,5 +118,5 @@ void CharacterMotionCtrlAnimPreview::addAnimation(const char* filename, int anim
 void CharacterMotionCtrlAnimPreview::sortAnimations()
 {
     for (uint32_t i = 0; i < this->m_animations.size(); i++)
-        std::sort(this->m_animations[i].begin(), this->m_animations[i].end());
+        std::sort(this->m_animations[i].begin(), this->m_animations[i].end(), compareAnimObjs);
 }
