@@ -1185,8 +1185,6 @@ void MorphemeEditorApp::shutdown()
 	this->saveSettings();
 	this->savePlayerModelPreset();
 
-	MorphemeSystem::termMorpheme();
-
 	if (this->m_flverResources)
 	{
 		delete this->m_flverResources;
@@ -1213,6 +1211,8 @@ void MorphemeEditorApp::shutdown()
 
 	if (this->_instance)
 		delete this->_instance;
+
+	MorphemeSystem::termMorpheme();
 }
 
 void MorphemeEditorApp::loadSettings()
