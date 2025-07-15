@@ -1124,9 +1124,14 @@ std::string FlverModel::getFlverBoneName(int idx)
 	return "";
 }
 
-void FlverModel::animate(MR::AnimationSourceHandle* animHandle)
+void FlverModel::animate(AnimObject* anim)
 {
 	resetBoneTransformsToBindPose();
+
+	if (anim == nullptr)
+		return;
+
+	MR::AnimationSourceHandle* animHandle = anim->getHandle();
 
 	if (animHandle)
 	{
@@ -1137,7 +1142,7 @@ void FlverModel::animate(MR::AnimationSourceHandle* animHandle)
 	}
 
 	// Compute the bones transform relative to their bind pose transform
-	std::vector<Matrix> boneRelativeTransforms = computeBoneRelativeTransforms(animHandle);
+	std::vector<Matrix> boneRelativeTransforms = computeBoneRelativeTransforms();
 
 	for (int meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
 		transformMesh(meshIdx, boneRelativeTransforms);
@@ -1172,7 +1177,7 @@ void FlverModel::computeAnimationTransformBuffers(MR::AnimationSourceHandle* ani
 	}
 }
 
-std::vector<Matrix> FlverModel::computeBoneRelativeTransforms(MR::AnimationSourceHandle* animHandle)
+std::vector<Matrix> FlverModel::computeBoneRelativeTransforms()
 {
 	// Compute the bone transform relative to it's bind pose transform
 	std::vector<Matrix> boneRelativeTransforms;

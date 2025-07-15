@@ -24,12 +24,7 @@ void AnimPlayer::clear()
 
 void AnimPlayer::update(float dt)
 {
-	MR::AnimationSourceHandle* animHandle = nullptr;
-
-	if (this->m_anim)
-		animHandle = this->m_anim->getHandle();
-
-	if (animHandle == nullptr)
+	if (this->m_anim->getHandle() == nullptr)
 	{
 		this->m_pause = true;
 		return;
@@ -39,19 +34,19 @@ void AnimPlayer::update(float dt)
 	{
 		this->m_time += (this->m_playSpeed * dt);
 
-		if (this->m_time > animHandle->getDuration())
+		if (this->m_time > this->m_anim->getAnimLenght())
 		{
 			if (this->m_loop)
 				this->m_time = 0.f;
 			else
-				this->m_time = animHandle->getDuration();
+				this->m_time = this->m_anim->getAnimLenght();
 		}
 	}
 
-	animHandle->setTime(this->m_time);
+	this->m_anim->setTime(this->m_time);
 
 	if (this->m_character)
-		this->m_character->getCharacterModelCtrl()->animate(animHandle);
+		this->m_character->getCharacterModelCtrl()->animate(this->m_anim);
 }
 
 void AnimPlayer::reset()

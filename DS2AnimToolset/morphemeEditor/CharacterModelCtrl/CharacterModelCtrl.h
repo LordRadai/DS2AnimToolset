@@ -63,7 +63,7 @@ public:
 	float getScale();
 
 	void update(float dt);
-	void animate(MR::AnimationSourceHandle* animHandle);
+	void animate(AnimObject* anim);
 private:
 	FlverModel* m_model;
 

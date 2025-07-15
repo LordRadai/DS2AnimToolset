@@ -27,6 +27,8 @@ public:
 	MR::AnimationSourceHandle* getHandle() const { return this->m_animHandle; }
 	ME::TakeListXML* getTakeList() const { return this->m_takeList; }
 	float getAnimLenght() const { return this->m_animHandle->getDuration(); }
+	float getTime() const { return this->m_animHandle->getTime(); }
+	void setTime(float time) { this->m_animHandle->setTime(time); }
 
 	Matrix getTransformAtTime(float time, int channelId);
 	Vector3 getTransformPosAtTime(float time, int channelId);

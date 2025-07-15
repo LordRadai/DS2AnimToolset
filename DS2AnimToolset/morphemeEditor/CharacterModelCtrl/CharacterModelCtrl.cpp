@@ -572,49 +572,49 @@ void CharacterModelCtrl::update(float dt)
 		this->m_faceGen.m_fgHair->update(dt);
 }
 
-void CharacterModelCtrl::animate(MR::AnimationSourceHandle* animHandle)
+void CharacterModelCtrl::animate(AnimObject* anim)
 {
 	if (this->m_model)
-		this->m_model->animate(animHandle);
+		this->m_model->animate(anim);
 
 	if (this->m_head)
-		this->m_head->animate(animHandle);
+		this->m_head->animate(anim);
 
 	if (this->m_face)
-		this->m_face->animate(animHandle);
+		this->m_face->animate(anim);
 
 	if (this->m_body)
-		this->m_body->animate(animHandle);
+		this->m_body->animate(anim);
 
 	if (this->m_arm)
-		this->m_arm->animate(animHandle);
+		this->m_arm->animate(anim);
 
 	if (this->m_leg)
-		this->m_leg->animate(animHandle);
+		this->m_leg->animate(anim);
 
 	/*
 	if (this->m_weaponRight)
-		this->m_weaponRight->animate(animHandle);
+		this->m_weaponRight->animate(anim);
 
 	if (this->m_weaponLeft)
-		this->m_weaponLeft->animate(animHandle);
+		this->m_weaponLeft->animate(anim);
 	*/
 
 	if (this->m_faceGen.m_fgFace)
-		this->m_faceGen.m_fgFace->animate(animHandle);
+		this->m_faceGen.m_fgFace->animate(anim);
 
 	if (this->m_faceGen.m_fgHead)
-		this->m_faceGen.m_fgHead->animate(animHandle);
+		this->m_faceGen.m_fgHead->animate(anim);
 
 	if (this->m_faceGen.m_fgEyes)
-		this->m_faceGen.m_fgEyes->animate(animHandle);
+		this->m_faceGen.m_fgEyes->animate(anim);
 
 	if (this->m_faceGen.m_fgEyeBrows)
-		this->m_faceGen.m_fgEyeBrows->animate(animHandle);
+		this->m_faceGen.m_fgEyeBrows->animate(anim);
 
 	if (this->m_faceGen.m_fgBeard)
-		this->m_faceGen.m_fgBeard->animate(animHandle);
+		this->m_faceGen.m_fgBeard->animate(anim);
 
 	if (this->m_faceGen.m_fgHair)
-		this->m_faceGen.m_fgHair->animate(animHandle);
+		this->m_faceGen.m_fgHair->animate(anim);
 }

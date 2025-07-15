@@ -12,6 +12,7 @@
 
 #include "fromloader/fromloader.h"
 #include "MorphemeSystem/MorphemeSystem.h"
+#include "AnimObject/AnimObject.h"
 
 class RenderManager;
 
@@ -54,7 +55,7 @@ public:
 	static FlverModel* createFromBnd(std::wstring path, MR::AnimRigDef* rig);
 
 	void update(float dt);
-	void animate(MR::AnimationSourceHandle* animHandle);
+	void animate(AnimObject* anim);
 	void draw(RenderManager* renderManager);
 	void destroy();
 
@@ -163,7 +164,7 @@ private:
 	std::vector<std::vector<int>> getFlverMeshBoneIndices(int idx);
 	void resetBoneTransformsToBindPose();
 	void computeAnimationTransformBuffers(MR::AnimationSourceHandle* animHandle);
-	std::vector<Matrix> computeBoneRelativeTransforms(MR::AnimationSourceHandle* animHandle);
+	std::vector<Matrix> computeBoneRelativeTransforms();
 	void transformMesh(int meshIdx, const std::vector<Matrix>& boneRelativeTransforms);
 	void transformVertex(int meshIdx, int vertexIndex, const std::vector<Matrix>& boneRelativeTransforms);
 };
