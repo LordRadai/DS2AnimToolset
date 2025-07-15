@@ -37,8 +37,6 @@ void CharacterMotionCtrlBase::update(float dt)
 {
     if (this->m_pMorphemeCharacter && this->m_pMorphemeCharacter->getDoSimulateNetwork())
         this->m_pMorphemeCharacter->update(dt);
-    else
-        g_appLog->debugMessage(MsgLevel_Error, "CharacterMotionCtrlBase::update: m_pMorphemeCharacter is null!\n");
 }
 
 bool CharacterMotionCtrlAnimPreview::initialize(const char* filename, bool doSimulateNetwork)
