@@ -19,11 +19,8 @@ public:
 	static Character* createFromTimeAct(const char* filename);
 
 	CharacterModelCtrl* getCharacterModelCtrl() const { return this->m_characterModelCtrl; }
-	MorphemeCharacter* getMorphemeCharacter() const { return this->m_characterMotionCtrl->getMorphemeCharacter(); }
-	MorphemeCharacterDef* getMorphemeCharacterDef() const { return this->m_characterMotionCtrl->getMorphemeCharacterDef(); }
-	MR::Network* getMorphemeNetwork() const { return this->getMorphemeCharacter()->getNetwork(); }
-	MR::NetworkDef* getMorphemeNetworkDef() const { return this->getMorphemeCharacterDef()->getNetworkDef(); }
-	MR::AnimRigDef* getRig(int idx) const { return this->getMorphemeCharacterDef()->getNetworkDef()->getRig(idx); }
+	CharacterMotionCtrlAnimPreview* getCharacterMotionCtrl() const { return this->m_characterMotionCtrl; }
+
 	int getCharacterId() const { return this->m_chrId; }
 	std::wstring getCharacterName() const { return this->m_characterName; }
 	Vector3 getPosition() const { return this->m_position; }

@@ -720,7 +720,7 @@ namespace FT
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting model to XMD for character %ws\n", character->getCharacterName().c_str());
 
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
-		MR::AnimRigDef* rig = character->getRig(0);
+		MR::AnimRigDef* rig = character->getCharacterMotionCtrl()->getAnimRigDef();
 
 		XMD::XModel* modelXmd = createModel(rig, model, RString::toNarrow(model->getFileOrigin()).c_str(), true);
 		createBindPoseAnimCycle(modelXmd, rig);
@@ -737,18 +737,19 @@ namespace FT
 	{
 		bool status = true;
 
-		MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
-		AnimObject* anim = characterDef->getAnimation(animSetIdx, animIdx);
+		CharacterMotionCtrlAnimPreview* motionCtrl = character->getCharacterMotionCtrl();
+		MorphemeCharacterDef* characterDef = motionCtrl->getMorphemeCharacterDef();
+		AnimObject* anim = motionCtrl->getAnimation(animSetIdx, animIdx);
 
 		int animId = anim->getAnimID();
 
 		if (!anim->isLoaded())
-			anim = characterDef->getAnimation(0, 0);
+			anim = motionCtrl->getAnimation(0, 0);
 
 		if (!anim->isLoaded())
 			return false;
 
-		MR::AnimRigDef* rig = character->getRig(0);
+		MR::AnimRigDef* rig = motionCtrl->getAnimRigDef();
 
 		std::string animName = RString::toNarrow(path) + RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(animId)) + ".xmd";
 

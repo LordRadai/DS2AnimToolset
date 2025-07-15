@@ -527,7 +527,7 @@ namespace FT
 		FbxPose* pBindPoses = FbxPose::Create(g_pFbxManager, "BindPoses");
 		pBindPoses->SetIsBindPose(true);
 
-		std::vector<FbxNode*> morphemeRig = createFbxMorphemeSkeleton(pScene, character->getMorphemeCharacter()->getNetwork()->getRig(0), pBindPoses);
+		std::vector<FbxNode*> morphemeRig = createFbxMorphemeSkeleton(pScene, character->getCharacterMotionCtrl()->getAnimRigDef(), pBindPoses);
 
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
 
@@ -549,8 +549,10 @@ namespace FT
 	{
 		bool status = true;
 
-		MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
-		AnimObject* anim = characterDef->getAnimation(0, animIdx);
+		CharacterMotionCtrlAnimPreview* characterMotionCtrl = character->getCharacterMotionCtrl();
+
+		MorphemeCharacterDef* characterDef = characterMotionCtrl->getMorphemeCharacterDef();
+		AnimObject* anim = characterMotionCtrl->getAnimation(0, animIdx);
 
 		int animId = anim->getAnimID();
 
@@ -592,7 +594,7 @@ namespace FT
 		FbxPose* pBindPoses = FbxPose::Create(g_pFbxManager, "BindPoses");
 		pBindPoses->SetIsBindPose(true);
 
-		std::vector<FbxNode*> morphemeRig = createFbxMorphemeSkeleton(pScene, character->getMorphemeCharacter()->getNetwork()->getRig(0), pBindPoses);
+		std::vector<FbxNode*> morphemeRig = createFbxMorphemeSkeleton(pScene, character->getCharacterMotionCtrl()->getAnimRigDef(), pBindPoses);
 
 		pScene->AddPose(pBindPoses);
 
@@ -607,7 +609,7 @@ namespace FT
 			}
 		}
 
-		if (!createFbxTake(pScene, morphemeRig, characterDef->getAnimationById(animSetIdx, animId), characterDef->getAnimFileLookUp()->getTakeName(animId), fps))
+		if (!createFbxTake(pScene, morphemeRig, characterMotionCtrl->getAnimationById(animSetIdx, animId), characterDef->getAnimFileLookUp()->getTakeName(animId), fps))
 		{
 			g_appLog->debugMessage(MsgLevel_Error, "Failed to create FBX take (%ws)\n", character->getCharacterName().c_str());
 			status = false;

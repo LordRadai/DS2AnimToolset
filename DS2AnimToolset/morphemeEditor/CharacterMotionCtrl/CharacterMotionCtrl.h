@@ -17,6 +17,10 @@ public:
 
     MorphemeCharacter* getMorphemeCharacter() const { return this->m_pMorphemeCharacter; }
 	MorphemeCharacterDef* getMorphemeCharacterDef() const { return this->m_pMorphemeCharacter->getCharacterDef(); }
+	MR::Network* getNetwork() const { return this->m_pMorphemeCharacter->getNetwork(); }
+	MR::NetworkDef* getNetworkDef() const { return this->m_pMorphemeCharacter->getCharacterDef()->getNetworkDef(); }
+	MR::AnimRigDef* getAnimRigDef() const { return this->getNetwork()->getNetworkDef()->getRig(this->getActiveAnimSetIndex()); }
+	const uint32_t getActiveAnimSetIndex() const { return this->getNetwork()->getActiveAnimSetIndex(); }
 };
 
 class CharacterMotionCtrlAnimPreview : public CharacterMotionCtrlBase

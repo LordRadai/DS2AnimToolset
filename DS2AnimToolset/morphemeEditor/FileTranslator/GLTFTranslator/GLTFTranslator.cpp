@@ -751,8 +751,10 @@ namespace FT
 
     bool GltfFileTranslator::exportModel(Character* character)
     {
+        CharacterMotionCtrlAnimPreview* motionCtrl = character->getCharacterMotionCtrl();
+
         FlverModel* model = character->getCharacterModelCtrl()->getModel();
-        MR::AnimRigDef* rig = character->getRig(0);
+        MR::AnimRigDef* rig = motionCtrl->getAnimRigDef();
 
         tinygltf::Model* gltfModel = createModel(rig, model, true);
 
@@ -774,14 +776,16 @@ namespace FT
 
     bool GltfFileTranslator::exportAnimation(Character* character, std::wstring path, int animSetIdx, int animIdx, int fps, bool includeModel)
     {
-        MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
-        AnimObject* anim = characterDef->getAnimation(animSetIdx, animIdx);
+        CharacterMotionCtrlAnimPreview* motionCtrl = character->getCharacterMotionCtrl();
+		MorphemeCharacterDef* characterDef = motionCtrl->getMorphemeCharacterDef();
+
+        AnimObject* anim = motionCtrl->getAnimation(animSetIdx, animIdx);
         int animId = anim->getAnimID();
 
         g_appLog->debugMessage(MsgLevel_Info, "\tExporting animation \"%s\" to GLTF (%ws)\n", anim->getAnimName(), character->getCharacterName().c_str());
 
         FlverModel* model = character->getCharacterModelCtrl()->getModel();
-        MR::AnimRigDef* rig = character->getRig(0);
+        MR::AnimRigDef* rig = motionCtrl->getAnimRigDef();
 
         tinygltf::Model* gltfModel = createModel(rig, model, includeModel);
         createAnimation(gltfModel, anim, characterDef->getAnimFileLookUp()->getTakeName(animId), fps);

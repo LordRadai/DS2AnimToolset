@@ -444,7 +444,7 @@ namespace
 							character->getCharacterModelCtrl()->setModelPart(type, nullptr);
 						else
 						{
-							FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getRig(0));
+							FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getCharacterMotionCtrl()->getAnimRigDef());
 
 							character->getCharacterModelCtrl()->setModelPart(type, model);
 						}
@@ -482,7 +482,7 @@ namespace
 						character->getCharacterModelCtrl()->setModelPart(type, nullptr);
 					else
 					{
-						FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getRig(0));
+						FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getCharacterMotionCtrl()->getAnimRigDef());
 
 						character->getCharacterModelCtrl()->setModelPart(type, model);
 					}
@@ -519,7 +519,7 @@ namespace
 						character->getCharacterModelCtrl()->setModelFg(type, nullptr);
 					else
 					{
-						FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getRig(0));
+						FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getCharacterMotionCtrl()->getAnimRigDef());
 
 						character->getCharacterModelCtrl()->setModelFg(type, model);
 					}
@@ -1187,11 +1187,11 @@ void GuiManager::assetsWindow()
 
 			if (character)
 			{
-				MorphemeCharacter* morphemeCharacter = character->getMorphemeCharacter();
+				CharacterMotionCtrlAnimPreview* motionCtrl = character->getCharacterMotionCtrl();
 
-				if (morphemeCharacter)
+				if (motionCtrl)
 				{
-					MorphemeCharacterDef* characterDef = morphemeCharacter->getCharacterDef();
+					MorphemeCharacterDef* characterDef = motionCtrl->getMorphemeCharacterDef();
 
 					if (characterDef->isLoaded())
 						ImGui::Text(characterDef->getFilename());
@@ -1208,16 +1208,16 @@ void GuiManager::assetsWindow()
 						ImGui::BeginChild("anim_list");
 						{
 							const int numAnims = characterDef->getAnimFileLookUp()->getNumAnims();
-							const int animSetIdx = character->getMorphemeNetwork()->getActiveAnimSetIndex();
+							const uint32_t animSetIdx = motionCtrl->getActiveAnimSetIndex();
 
-							for (int i = 0; i < numAnims; i++)
+							for (uint32_t i = 0; i < numAnims; i++)
 							{
 								std::string anim_name = "";
 
 								//if (eventTrackEditor->isEdited())
 									//anim_name += "*";
 
-								AnimObject* currentAnim = characterDef->getAnimation(animSetIdx, i);
+								AnimObject* currentAnim = motionCtrl->getAnimation(animSetIdx, i);
 
 								anim_name += RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(currentAnim->getAnimID()));
 
@@ -1379,7 +1379,7 @@ void GuiManager::eventTrackEditorWindow()
 	TrackEditor::EventTrackEditor* eventTrackEditor = editorApp->getEventTrackEditor();
 
 	if (eventTrackEditor->getSource() != nullptr)
-		ImGui::Text(RString::removeExtension(editorApp->getCharacter()->getMorphemeCharacterDef()->getAnimFileLookUp()->getSourceFilename(eventTrackEditor->getSource()->getAnimID())).c_str());
+		ImGui::Text(RString::removeExtension(editorApp->getCharacter()->getCharacterMotionCtrl()->getMorphemeCharacterDef()->getAnimFileLookUp()->getSourceFilename(eventTrackEditor->getSource()->getAnimID())).c_str());
 
 	if (ImGui::Button("Load"))
 		eventTrackEditor->setReload(true);
