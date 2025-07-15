@@ -161,6 +161,7 @@
     <ClInclude Include="Application\Application.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="CharacterModelCtrl\CharacterModelCtrl.h" />
+    <ClInclude Include="CharacterMotionCtrl\CharacterMotionCtrl.h" />
     <ClInclude Include="Character\Character.h" />
     <ClInclude Include="DebugDraw\DebugDraw.h" />
     <ClInclude Include="extern.h" />
@@ -260,6 +261,7 @@
     <ClCompile Include="AnimObject\AnimObject.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="CharacterModelCtrl\CharacterModelCtrl.cpp" />
+    <ClCompile Include="CharacterMotionCtrl\CharacterMotionCtrl.cpp" />
     <ClCompile Include="Character\Character.cpp" />
     <ClCompile Include="DebugDraw\DebugDraw.cpp" />
     <ClCompile Include="FileIDNamesTable\FileIDNamesTable.cpp" />

@@ -309,6 +309,9 @@
     <ClInclude Include="MorphemeSystem\MorphemeDecompiler\Node\NodeExportBase.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="CharacterMotionCtrl\CharacterMotionCtrl.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -534,6 +537,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeSystem\MorphemeDecompiler\Node\NodeExportBase.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterMotionCtrl\CharacterMotionCtrl.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

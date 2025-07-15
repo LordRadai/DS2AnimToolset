@@ -20,11 +20,6 @@
 
 namespace
 {
-    bool compareAnimObjs(AnimObject* first, AnimObject* second)
-    {
-        return std::string(first->getAnimName()) < std::string(second->getAnimName());
-    }
-
     int getChrIdFromNmbFileName(std::wstring name)
     {
         std::wstring chr_id_str;
@@ -164,14 +159,9 @@ bool MorphemeCharacterDef::init(void* bundle, size_t bundleSize)
                    m_metadata.m_animFileLookUp);
 
   if (!m_netDef)
-  {
     return false;
-  }
 
   this->loadAnimations();
-
-  for (size_t i = 0; i < m_netDef->getNumAnimSets(); i++)
-      m_anims.push_back(std::vector<AnimObject*>());
 
   m_isLoaded = true;
 
@@ -228,38 +218,4 @@ MR::CharacterControllerDef* MorphemeCharacterDef::getCharacterController(int idx
         return m_characterControllerDefs[idx];
 
     return nullptr;
-}
-
-AnimObject* MorphemeCharacterDef::getAnimation(int animSetIdx, int idx)
-{
-    if (idx < m_anims[animSetIdx].size())
-        return m_anims[animSetIdx][idx];
-
-    return nullptr;
-}
-
-AnimObject* MorphemeCharacterDef::getAnimationById(int animSetIdx, int id)
-{
-    for (size_t i = 0; i < this->m_anims[animSetIdx].size(); i++)
-    {
-        if (this->m_anims[animSetIdx][i]->getAnimID() == id)
-            return this->m_anims[animSetIdx][i];
-    }
-
-    return nullptr;
-}
-
-void MorphemeCharacterDef::addAnimation(const char* filename, int animSetIdx)
-{
-    g_appLog->debugMessage(MsgLevel_Debug, "\tAdding animation \"%s\"\n", filename);
-
-    const int idx = m_anims[animSetIdx].size();
-    
-    m_anims[animSetIdx].push_back(AnimObject::createFromMorphemeAssets(this, this->m_netDef->getRig(animSetIdx), MorphemeUtils::getRigToAnimMapByAnimID(this->m_netDef, idx, animSetIdx), filename, idx));
-}
-
-void MorphemeCharacterDef::sortAnimations()
-{
-    for (uint32_t i = 0; i < m_anims.size(); i++)
-        std::sort(m_anims[i].begin(), m_anims[i].end(), compareAnimObjs);
 }

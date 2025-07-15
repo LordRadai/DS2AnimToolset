@@ -129,7 +129,7 @@ void MorphemeCharacter::runInitialisingUpdateStep()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// Update the morpheme network (this GameCharacter instance)
+// Update the morpheme network
 bool MorphemeCharacter::update(float timeDelta)
 {
   m_net->startUpdate(timeDelta);

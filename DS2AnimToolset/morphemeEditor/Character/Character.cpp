@@ -284,33 +284,7 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
 
     character->m_characterModelCtrl = new CharacterModelCtrl();
 
-    MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, doSimulateNetwork);
-
-    if (!characterDef)
-        throw("Failed to create MorphemeCharacterDef instance (%s)", filename);
-
-    character->m_morphemeCharacter = MorphemeCharacter::create(characterDef);
-
-    if (!character->m_morphemeCharacter)
-        throw("Failed to create MorphemeCharacter instance (%s)", filename);
-
-    std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
-    const int animCount = characterDef->getAnimFileLookUp()->getNumAnims();
-
-    for (uint32_t animSetIdx = 0; animSetIdx < characterDef->getNetworkDef()->getNumAnimSets(); animSetIdx++)
-    {
-        g_appLog->debugMessage(MsgLevel_Debug, "\Adding animations for animSet %d:\n", animSetIdx);
-
-        for (uint32_t i = 0; i < animCount; i++)
-        {
-            std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
-            std::wstring animFilePath = animFolder + L"\\" + animFileName;
-
-            characterDef->addAnimation(RString::toNarrow(animFilePath).c_str(), animSetIdx);
-        }
-    }
-
-    characterDef->sortAnimations();
+	character->m_characterMotionCtrl = new CharacterMotionCtrlAnimPreview();
 
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
     character->m_characterName = generateCharacterName(character->m_chrId);
@@ -319,6 +293,8 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
 
     if (gamePath != L"")
     {
+        MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
+
         std::wstring modelFolder = gamePath + L"\\model";
         std::wstring timeActFolder = gamePath + L"\\timeact";
         std::wstring chrFolder = modelFolder + L"\\chr\\";
@@ -385,8 +361,8 @@ void Character::update(float dt)
     if (model)
         this->m_position = Vector3::Transform(Vector3::Zero, model->getWorldMatrix());
 
-    if (this->m_morphemeCharacter && this->m_morphemeCharacter->getCharacterDef()->getDoSimulateNetwork())
-        this->m_morphemeCharacter->update(dt);
+    if (this->m_characterMotionCtrl)
+		this->m_characterMotionCtrl->update(dt);
 }
 
 void Character::draw(RenderManager* renderManager)
@@ -510,7 +486,7 @@ void Character::loadPartsFaceGenBnd(std::wstring root, FgPartType type, int id, 
 
     filepath += modelName;
 
-    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_morphemeCharacter->getNetwork()->getRig(0));
+    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_characterMotionCtrl->getMorphemeCharacter()->getNetwork()->getRig(0));
 
     this->m_characterModelCtrl->setModelFg(type, model);
 }
@@ -527,7 +503,7 @@ void Character::loadWeaponBnd(std::wstring root, PartType type, int id, bool shi
 
     filepath += modelName;
 
-    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_morphemeCharacter->getNetwork()->getRig(0));
+    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_characterMotionCtrl->getMorphemeCharacter()->getNetwork()->getRig(0));
 
     if (model)
         this->m_characterModelCtrl->setModelPart(type, model);
@@ -576,7 +552,7 @@ void Character::loadPartsBnd(std::wstring root, PartType type, int id, bool fema
 
     filepath += modelName;
 
-    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_morphemeCharacter->getNetwork()->getRig(0));
+    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_characterMotionCtrl->getMorphemeCharacter()->getNetwork()->getRig(0));
 
     this->m_characterModelCtrl->setModelPart(type, model);
 }
