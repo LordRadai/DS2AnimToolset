@@ -81,7 +81,7 @@ namespace
         renderManager->applyDebugEffect(world);
         renderManager->setInputLayout(kDebugLayout);
 
-        MR::CharacterControllerDef* ccDef = character->getMorphemeNetwork()->getActiveCharacterControllerDef();
+        MR::CharacterControllerDef* ccDef = character->getCharacterMotionCtrl()->getNetwork()->getActiveCharacterControllerDef();
         DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(renderManager->getDeviceContext());
         prim.Begin();
 
@@ -283,7 +283,6 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
     Character* character = new Character();
 
     character->m_characterModelCtrl = new CharacterModelCtrl();
-
 	character->m_characterMotionCtrl = new CharacterMotionCtrlAnimPreview();
 
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
@@ -293,7 +292,7 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
 
     if (gamePath != L"")
     {
-        MorphemeCharacterDef* characterDef = character->getMorphemeCharacterDef();
+        MorphemeCharacterDef* characterDef = character->m_characterMotionCtrl->getMorphemeCharacterDef();
 
         std::wstring modelFolder = gamePath + L"\\model";
         std::wstring timeActFolder = gamePath + L"\\timeact";
