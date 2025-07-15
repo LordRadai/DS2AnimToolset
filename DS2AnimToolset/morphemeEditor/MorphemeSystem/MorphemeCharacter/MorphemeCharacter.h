@@ -34,7 +34,7 @@ public:
 
   //----------------------------
   // Static function to create an instance of a morpheme network (GameCharacter)
-  static MorphemeCharacter* create(MorphemeCharacterDef* gameCharacterDef);
+  static MorphemeCharacter* create(MorphemeCharacterDef* gameCharacterDef, bool doSimulateNetwork);
 
   //----------------------------
   // Static function to release an instance of Character

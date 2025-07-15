@@ -18,12 +18,10 @@ bool CharacterMotionCtrlBase::initialize(const char* filename, bool doSimulateNe
     if (!characterDef)
         throw("Failed to create MorphemeCharacterDef instance (%s)", filename);
 
-    this->m_pMorphemeCharacter = MorphemeCharacter::create(characterDef);
+    this->m_pMorphemeCharacter = MorphemeCharacter::create(characterDef, doSimulateNetwork);
 
     if (!this->m_pMorphemeCharacter)
         throw("Failed to create MorphemeCharacter instance (%s)", filename);
-
-	this->getMorphemeCharacter()->setDoSimulateNetwork(doSimulateNetwork);
 
     return true;
 }

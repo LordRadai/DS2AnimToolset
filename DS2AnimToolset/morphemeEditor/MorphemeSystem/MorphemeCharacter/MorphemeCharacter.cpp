@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-MorphemeCharacter* MorphemeCharacter::create(MorphemeCharacterDef* networkDef)
+MorphemeCharacter* MorphemeCharacter::create(MorphemeCharacterDef* networkDef, bool doSimulateNetwork)
 {
   //----------------------------
   // Make sure the networkDef and charCtrl have been initialised
@@ -29,6 +29,8 @@ MorphemeCharacter* MorphemeCharacter::create(MorphemeCharacterDef* networkDef)
   // Create and initialise an instance of our character
   MorphemeCharacter* const instance = static_cast<MorphemeCharacter*>(NMPMemoryAlloc(sizeof(MorphemeCharacter)));
   new(instance) MorphemeCharacter(networkDef);
+
+  instance->setDoSimulateNetwork(doSimulateNetwork);
 
   //----------------------------
   // Initialise Game Character, allocate memory etc
