@@ -1131,7 +1131,7 @@ void MorphemeEditorApp::update(float dt)
 	{
 		this->m_taskFlags.exportAnimations = false;
 
-		if (this->m_character != nullptr && this->m_character->getMorphemeCharacter() != nullptr)
+		if (this->m_character != nullptr && this->m_character->getCharacterMotionCtrl()->getMorphemeCharacter() != nullptr)
 		{
 			wchar_t exportPath[256];
 			swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
@@ -1457,12 +1457,13 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 {
 	try
 	{
-		if (this->m_character->getMorphemeCharacter() == nullptr)
+		MorphemeCharacterDef* characterDef = this->m_character->getCharacterMotionCtrl()->getMorphemeCharacterDef();
+
+		if (characterDef == nullptr)
 			return false;
 
 		std::filesystem::current_path(path);
 
-		MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
 		std::wstring chrName = this->m_character->getCharacterName();
 
 		if (characterDef == nullptr)
@@ -1713,17 +1714,17 @@ bool MorphemeEditorApp::exportAnimations(std::wstring path)
 {
 	try
 	{
-		MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
+		CharacterMotionCtrlAnimPreview* motionCtrl = this->m_character->getCharacterMotionCtrl();
 
-		const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
-		const int numAnims = characterDef->getNumAnims(animSetIdx);
+		const int animSetIdx = motionCtrl->getNetwork()->getActiveAnimSetIndex();
+		const int numAnims = motionCtrl->getNumAnimsInAnimSet(animSetIdx);
 
 		g_workerThread.load()->addProcess("Exporting animations", numAnims);
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting animations:\n");
 
 		for (size_t i = 0; i < numAnims; i++)
 		{
-			std::string animName = RString::removeExtension(characterDef->getAnimationById(animSetIdx, i)->getAnimName());
+			std::string animName = RString::removeExtension(motionCtrl->getAnimationById(animSetIdx, i)->getAnimName());
 			g_workerThread.load()->setProcessStepName(animName);
 
 			this->exportAnimation(path, animSetIdx, i);
@@ -1743,10 +1744,10 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 {
 	try
 	{
-		MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
+		CharacterMotionCtrlAnimPreview* motionCtrl = this->m_character->getCharacterMotionCtrl();
 
-		const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
-		const int numAnims = characterDef->getNumAnims(animSetIdx);
+		const int animSetIdx = motionCtrl->getNetwork()->getActiveAnimSetIndex();
+		const int numAnims = motionCtrl->getNumAnimsInAnimSet(animSetIdx);
 
 		g_workerThread.load()->addProcess("Exporting anim markup", numAnims);
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting animation markups:\n");
@@ -1754,7 +1755,7 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 		std::vector<ME::EventTrackExport*> exportedTracks;
 		for (size_t i = 0; i < numAnims; i++)
 		{
-			std::string animName = RString::removeExtension(characterDef->getAnimationById(animSetIdx, i)->getAnimName());
+			std::string animName = RString::removeExtension(motionCtrl->getAnimationById(animSetIdx, i)->getAnimName());
 			g_workerThread.load()->setProcessStepName(animName);
 
 			this->exportAnimMarkup(path, animSetIdx, i, exportedTracks);
@@ -2021,12 +2022,12 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 
 bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int animId, std::vector<ME::EventTrackExport*>& exportedTracks)
 {
-	MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
+	CharacterMotionCtrlAnimPreview* motionCtrl = this->m_character->getCharacterMotionCtrl();
 	
-	if (characterDef == nullptr)
-		throw("characterDef was nullptr\n");
+	if (motionCtrl == nullptr)
+		throw("characterMotionCtrl was nullptr\n");
 
-	AnimObject* anim = characterDef->getAnimationById(animSetIdx, animId);
+	AnimObject* anim = motionCtrl->getAnimationById(animSetIdx, animId);
 
 	ME::TakeListXML* takeListXML = anim->getTakeList();
 	std::string animName = RString::removeExtension(anim->getAnimName());

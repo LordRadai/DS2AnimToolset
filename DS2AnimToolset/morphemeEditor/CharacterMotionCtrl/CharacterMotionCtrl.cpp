@@ -20,7 +20,7 @@ bool CharacterMotionCtrlBase::initialize(const char* filename, bool doSimulateNe
     return true;
 }
 
-void CharacterMotionCtrlBase::finalize()
+void CharacterMotionCtrlBase::destroy()
 {
 	MorphemeCharacter::destroy(this->m_pMorphemeCharacter);
 }
@@ -66,9 +66,9 @@ bool CharacterMotionCtrlAnimPreview::initialize(const char* filename, bool doSim
     return true;
 }
 
-void CharacterMotionCtrlAnimPreview::finalize()
+void CharacterMotionCtrlAnimPreview::destroy()
 {
-    CharacterMotionCtrlBase::finalize();
+    CharacterMotionCtrlBase::destroy();
 
     for (size_t i = 0; i < this->m_animations.size(); i++)
         this->m_animations[i].clear();

@@ -12,7 +12,7 @@ public:
 
 	virtual ~CharacterMotionCtrlBase() {};
 	virtual bool initialize(const char* filename, bool doSimulateNetwork);
-	virtual void finalize();
+	virtual void destroy();
 	virtual void update(float dt);
 
     MorphemeCharacter* getMorphemeCharacter() const { return this->m_pMorphemeCharacter; }
@@ -31,7 +31,7 @@ public:
 	CharacterMotionCtrlAnimPreview() : CharacterMotionCtrlBase() {}
 
 	bool initialize(const char* filename, bool doSimulateNetwork) override;
-	void finalize() override;
+	void destroy() override;
 
 	int getNumAnimSets() const { return static_cast<int>(this->m_animations.size()); }
 	int getNumAnimsInAnimSet(int animSetIdx) const { return static_cast<int>(this->m_animations[animSetIdx].size()); }

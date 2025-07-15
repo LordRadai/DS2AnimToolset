@@ -285,6 +285,9 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
     character->m_characterModelCtrl = new CharacterModelCtrl();
 	character->m_characterMotionCtrl = new CharacterMotionCtrlAnimPreview();
 
+    if (character->m_characterMotionCtrl)
+		character->m_characterMotionCtrl->initialize(filename, doSimulateNetwork);
+
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
     character->m_characterName = generateCharacterName(character->m_chrId);
 
@@ -390,6 +393,9 @@ void Character::destroy()
 {
     if (this->m_characterModelCtrl)
         this->m_characterModelCtrl->destroy();
+
+    if (this->m_characterMotionCtrl)
+        this->m_characterMotionCtrl->destroy();
 
     if (this->m_timeAct)
         this->m_timeAct->destroy();
