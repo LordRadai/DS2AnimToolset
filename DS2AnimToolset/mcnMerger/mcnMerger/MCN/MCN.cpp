@@ -3,6 +3,10 @@
 #include "RCore.h"
 #include "extern.h"
 
+#define CONNECT_VERSION "3.6.2"
+#define DATA_VERSION 3506
+#define PRODUCT_VERSION 5
+
 namespace MCN
 {
 	Node* Node::create(Network* owner, ME::NodeExportXML* nodeXml)
@@ -957,9 +961,9 @@ namespace MCN
 		mcn->m_xmlElement = mcn->m_xmlDoc->NewElement("NaturalMotion");
 
 		mcn->m_xmlElement->SetAttribute("typeString", "ConnectNetwork");
-		mcn->m_xmlElement->SetAttribute("productVersion", "3.6.2");
-		mcn->m_xmlElement->SetAttribute("dataVersion", 3506);
-		mcn->m_xmlElement->SetAttribute("formatVersion", 5);
+		mcn->m_xmlElement->SetAttribute("productVersion", CONNECT_VERSION);
+		mcn->m_xmlElement->SetAttribute("dataVersion", DATA_VERSION);
+		mcn->m_xmlElement->SetAttribute("formatVersion", PRODUCT_VERSION);
 
 		mcn->m_xmlDoc->InsertEndChild(decl);
 		mcn->m_xmlDoc->InsertEndChild(mcn->m_xmlElement);
