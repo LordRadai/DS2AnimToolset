@@ -27,6 +27,18 @@
     <ClCompile Include="MCN\NodeMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MCN\Node\NodePins\NodePins.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MCN\Node\mcnNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MCN\Node\NodeAttributes\NodeAttributes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MCN\Node\mcnAnimSyncEventsNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MCN\MCN.h">
@@ -39,6 +51,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="extern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MCN\Node\mcnNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MCN\Node\NodeAttributes\NodeAttributes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MCN\Node\NodePins\NodePins.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MCN\Node\mcnAnimSyncEventsNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

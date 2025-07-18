@@ -148,12 +148,20 @@
     <ClCompile Include="MCN\MCN.cpp" />
     <ClCompile Include="MCN\MCNUtils.cpp" />
     <ClCompile Include="MCN\NodeMap.cpp" />
+    <ClCompile Include="MCN\Node\mcnAnimSyncEventsNode.cpp" />
+    <ClCompile Include="MCN\Node\mcnNode.cpp" />
+    <ClCompile Include="MCN\Node\NodeAttributes\NodeAttributes.cpp" />
+    <ClCompile Include="MCN\Node\NodePins\NodePins.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="extern.h" />
     <ClInclude Include="MCN\MCN.h" />
     <ClInclude Include="MCN\MCNUtils.h" />
     <ClInclude Include="MCN\NodeMap.h" />
+    <ClInclude Include="MCN\Node\mcnAnimSyncEventsNode.h" />
+    <ClInclude Include="MCN\Node\mcnNode.h" />
+    <ClInclude Include="MCN\Node\NodeAttributes\NodeAttributes.h" />
+    <ClInclude Include="MCN\Node\NodePins\NodePins.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
