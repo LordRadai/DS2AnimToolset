@@ -18,7 +18,7 @@ namespace db
 		std::string m_rig = "";
 		std::string m_assetManagerSkin = "";
 		std::vector<Skin> m_skins;
-		Format m_format = kNsa;
+		Format m_format = Format::kNsa;
 		std::vector<std::string> m_channelNames;
 		int m_networkFollowJoint = 0;
 		int m_assetManagerFollowJoint = 0;
