@@ -1,18 +1,15 @@
 #pragma once
 #include "RCore.h"
+#include "../Node/Node.h"
 
 namespace db
 {
-	class Request
+	class Request : public Node
 	{
-		std::string m_name;
-
 	public:
-		Request(std::string name)
-			: m_name(name) {}
+		Request() : Node("Request") {}
+		Request(std::string name) : Node(name) {}
 
 		~Request() {};
-
-		std::string getName() const { return m_name; }
 	};
 }

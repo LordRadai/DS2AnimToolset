@@ -1,16 +1,16 @@
 #pragma once
 #include "RCore.h"
+#include "../Node/Node.h"
 
 namespace db
 {
-	class Pin
-	{
-		std::string m_name;
+	typedef std::string Interface;
 
+	class Pin : public Node
+	{
 	public:
-		Pin(std::string name)
-			: m_name(name) {
-		};
+		Pin() {}
+		Pin(std::string name) : Node(name) {};
 		~Pin() {};
 
 		std::string getName() const { return m_name; };
@@ -21,23 +21,20 @@ namespace db
 		bool m_bReference;
 
 	public:
-		PassDownPin(std::string name, bool bReference = true)
-			: Pin(name), m_bReference(bReference) {
-		};
+		PassDownPin() {};
+		PassDownPin(std::string name, bool bReference = true) : Pin(name), m_bReference(bReference) {};
 		~PassDownPin() {};
 
 		bool isReference() const { return m_bReference; };
-		void setReference(bool bReference) { m_bReference = bReference; };
 	};
 
 	class FunctionalPin : public Pin
 	{
-		std::vector<std::string> m_interfaces;
+		std::vector<Interface> m_interfaces;
 
 	public:
-		FunctionalPin(std::string name)
-			: Pin(name){
-		};
+		FunctionalPin() {};
+		FunctionalPin(std::string name) : Pin(name){};
 
 		~FunctionalPin() {};
 
@@ -46,5 +43,18 @@ namespace db
 		void removeInterface(int index);
 
 		size_t getNumInterfaces() const { return m_interfaces.size(); }
+	};
+
+	class DataPin : public Pin
+	{
+		std::string m_dataType;
+
+	public:
+		DataPin() {};
+		DataPin(std::string name, std::string dataType) : Pin(name), m_dataType(dataType) {};
+
+		~DataPin() {};
+
+		std::string getDataType() const { return m_dataType; };
 	};
 }

@@ -1,35 +1,28 @@
 #pragma once
 #include "RCore.h"
+#include "NMPlatform/NMVector3.h"
+#include "NMPlatform/NMQuat.h"
+#include "NMPlatform/NMMatrix.h"
+#include "NMPlatform/NMMatrix34.h"
+#include "../Pin/Pin.h"
+#include "../Node/Node.h"
 
 namespace db
 {
-	class ControlParameter
+	class ControlParameter : public Node
 	{
+		friend class Network;
 	protected:
-		enum class CpType
-		{
-			kBool,
-			kInt,
-			kUInt,
-			kFloat,
-			kVector3,
-			kVector4,
-			kQuaternion
-		};
+		std::string m_type;
+		DataPin m_dataPin;
 
-		CpType m_type;
-		std::string m_name;
+		ControlParameter() : Node("ControlParameter"), m_type("undefined") {};
+		ControlParameter(std::string name, std::string type) : Node(name), m_type(type) {};
 
-		ControlParameter(std::string name, CpType type)
-			: m_name(name), m_type(type) {
-		};
 		~ControlParameter() {};
 
 	public:
-		std::string getName() const { return m_name; };
-		void setName(std::string name) { m_name = name; };
-
-		CpType getType() const { return m_type; };
+		std::string getType() const { return m_type; };
 	};
 
 	class ControlParameterBool : public ControlParameter
@@ -38,7 +31,9 @@ namespace db
 
 	public:
 		ControlParameterBool(std::string name, bool value) 
-			: ControlParameter(name, CpType::kBool), m_value(value) {
+			: ControlParameter(name, "bool"), m_value(value) 
+		{
+			m_dataPin = DataPin("Result", "bool");
 		};
 
 		~ControlParameterBool() {};
@@ -55,7 +50,9 @@ namespace db
 
 	public:
 		ControlParameterInt(std::string name, int value, int min, int max) 
-			: ControlParameter(name, CpType::kInt), m_value(value), m_min(min), m_max(max) {
+			: ControlParameter(name, "int"), m_value(value), m_min(min), m_max(max) 
+		{
+			m_dataPin = DataPin("Result", "int");
 		};
 
 		~ControlParameterInt() {};
@@ -78,8 +75,11 @@ namespace db
 
 	public:
 		ControlParameterUInt(std::string name, uint32_t value, uint32_t min, uint32_t max) 
-			: ControlParameter(name, CpType::kUInt), m_value(value), m_min(min), m_max(max) {
+			: ControlParameter(name, "uint"), m_value(value), m_min(min), m_max(max) 
+		{
+			m_dataPin = DataPin("Result", "uint");
 		};
+
 		~ControlParameterUInt() {};
 
 		uint32_t getValue() const { return m_value; };
@@ -100,8 +100,11 @@ namespace db
 
 	public:
 		ControlParameterFloat(std::string name, float value, float min, float max) 
-			: ControlParameter(name, CpType::kFloat), m_value(value), m_min(min), m_max(max) {
+			: ControlParameter(name, "float"), m_value(value), m_min(min), m_max(max) 
+		{
+			m_dataPin = DataPin("Result", "float");
 		};
+
 		~ControlParameterFloat() {};
 
 		float getValue() const { return m_value; };
@@ -116,70 +119,79 @@ namespace db
 
 	class ControlParameterVector3 : public ControlParameter
 	{
-		DirectX::SimpleMath::Vector3 m_value;
-		DirectX::SimpleMath::Vector3 m_min;
-		DirectX::SimpleMath::Vector3 m_max;
+		NMP::Vector3 m_value;
+		NMP::Vector3 m_min;
+		NMP::Vector3 m_max;
 
 	public:
-		ControlParameterVector3(std::string name, DirectX::SimpleMath::Vector3 value, 
-			DirectX::SimpleMath::Vector3 min, DirectX::SimpleMath::Vector3 max) 
-			: ControlParameter(name, CpType::kVector3), m_value(value), m_min(min), m_max(max) {
+		ControlParameterVector3(std::string name, NMP::Vector3 value,
+			NMP::Vector3 min, NMP::Vector3 max) 
+			: ControlParameter(name, "vector3"), m_value(value), m_min(min), m_max(max) 
+		{
+			m_dataPin = DataPin("Result", "vector3");
 		};
+
 		~ControlParameterVector3() {};
 
-		DirectX::SimpleMath::Vector3 getValue() const { return m_value; };
-		void setValue(DirectX::SimpleMath::Vector3 value) { m_value = value; };
+		NMP::Vector3 getValue() const { return m_value; };
+		void setValue(NMP::Vector3 value) { m_value = value; };
 
-		DirectX::SimpleMath::Vector3 getMin() const { return m_min; };
-		void setMin(DirectX::SimpleMath::Vector3 min) { m_min = min; };
+		NMP::Vector3 getMin() const { return m_min; };
+		void setMin(NMP::Vector3 min) { m_min = min; };
 
-		DirectX::SimpleMath::Vector3 getMax() const { return m_max; };
-		void setMax(DirectX::SimpleMath::Vector3 max) { m_max = max; };
+		NMP::Vector3 getMax() const { return m_max; };
+		void setMax(NMP::Vector3 max) { m_max = max; };
 	};
 
 	class ControlParameterVector4 : public ControlParameter
 	{
-		DirectX::SimpleMath::Vector4 m_value;
-		DirectX::SimpleMath::Vector4 m_min;
-		DirectX::SimpleMath::Vector4 m_max;
+		NMP::Quat m_value;
+		NMP::Quat m_min;
+		NMP::Quat m_max;
 
 	public:
-		ControlParameterVector4(std::string name, DirectX::SimpleMath::Vector4 value, 
-			DirectX::SimpleMath::Vector4 min, DirectX::SimpleMath::Vector4 max) 
-			: ControlParameter(name, CpType::kVector4), m_value(value), m_min(min), m_max(max) {
+		ControlParameterVector4(std::string name, NMP::Quat value, 
+			NMP::Quat min, NMP::Quat max) 
+			: ControlParameter(name, "vector4"), m_value(value), m_min(min), m_max(max) 
+		{
+			m_dataPin = DataPin("Result", "vector4");
 		};
+
 		~ControlParameterVector4() {};
 
-		DirectX::SimpleMath::Vector4 getValue() const { return m_value; };
-		void setValue(DirectX::SimpleMath::Vector4 value) { m_value = value; };
+		NMP::Quat getValue() const { return m_value; };
+		void setValue(NMP::Quat value) { m_value = value; };
 
-		DirectX::SimpleMath::Vector4 getMin() const { return m_min; };
-		void setMin(DirectX::SimpleMath::Vector4 min) { m_min = min; };
+		NMP::Quat getMin() const { return m_min; };
+		void setMin(NMP::Quat min) { m_min = min; };
 
-		DirectX::SimpleMath::Vector4 getMax() const { return m_max; };
-		void setMax(DirectX::SimpleMath::Vector4 max) { m_max = max; };
+		NMP::Quat getMax() const { return m_max; };
+		void setMax(NMP::Quat max) { m_max = max; };
 	};
 
 	class ControlParameterQuaternion : public ControlParameter
 	{
-		DirectX::SimpleMath::Quaternion m_value;
-		DirectX::SimpleMath::Quaternion m_min;
-		DirectX::SimpleMath::Quaternion m_max;
+		NMP::Quat m_value;
+		NMP::Quat m_min;
+		NMP::Quat m_max;
 
 	public:
-		ControlParameterQuaternion(std::string name, DirectX::SimpleMath::Quaternion value, 
-			DirectX::SimpleMath::Quaternion min, DirectX::SimpleMath::Quaternion max) 
-			: ControlParameter(name, CpType::kQuaternion), m_value(value), m_min(min), m_max(max) {
+		ControlParameterQuaternion(std::string name, NMP::Quat value, 
+			NMP::Quat min, NMP::Quat max) 
+			: ControlParameter(name, "quaternion"), m_value(value), m_min(min), m_max(max) 
+		{
+			m_dataPin = DataPin("Result", "quaternion");
 		};
+
 		~ControlParameterQuaternion() {};
 
-		DirectX::SimpleMath::Quaternion getValue() const { return m_value; };
-		void setValue(DirectX::SimpleMath::Quaternion value) { m_value = value; };
+		NMP::Quat getValue() const { return m_value; };
+		void setValue(NMP::Quat value) { m_value = value; };
 
-		DirectX::SimpleMath::Quaternion getMin() const { return m_min; };
-		void setMin(DirectX::SimpleMath::Quaternion min) { m_min = min; };
+		NMP::Quat getMin() const { return m_min; };
+		void setMin(NMP::Quat min) { m_min = min; };
 
-		DirectX::SimpleMath::Quaternion getMax() const { return m_max; };
-		void setMax(DirectX::SimpleMath::Quaternion max) { m_max = max; };
+		NMP::Quat getMax() const { return m_max; };
+		void setMax(NMP::Quat max) { m_max = max; };
 	};
 }

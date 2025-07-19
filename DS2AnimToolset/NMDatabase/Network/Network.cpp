@@ -2,220 +2,248 @@
 
 namespace db
 {
-	Network::Network()
+	Network::Network() : Node("Network")
 	{
 		CoCreateGuid(&m_GUID);
-		m_passDownPin = new PassDownPin("Result", true);
+		m_passDownPin = PassDownPin("Result", true);
+		m_sceneGraphRoot = SceneGraphRoot();
 	}
 
 	AnimationLocation* Network::getAnimationLocation(int index) const
 	{
-		if (index < 0 || index >= m_animationLocations.size())
+		if (index < 0 || index >= m_animationLocations.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		return m_animationLocations[index];
+
+		return static_cast<AnimationLocation*>(m_animationLocations.getNode(index));
 	}
 
 	AnimationLocation* Network::addAnimationLocation(const std::string& sourceDir, const std::string& markupDir, bool bIncludeSubDirs = true)
 	{
-		m_animationLocations.push_back(new AnimationLocation(sourceDir, markupDir, bIncludeSubDirs));
-		return m_animationLocations.back();
+		AnimationLocation* newLocation = new AnimationLocation(sourceDir, markupDir, bIncludeSubDirs);
+
+		m_animationLocations.addNode(newLocation);
+		return newLocation;
 	}
 
 	void Network::removeAnimationLocation(int index)
 	{
-		if (index < 0 || index >= m_animationLocations.size())
+		if (index < 0 || index >= m_animationLocations.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		delete m_animationLocations[index];
-		m_animationLocations.erase(m_animationLocations.begin() + index);
+
+		m_animationLocations.removeNode(index);
 	}
 
 	PreviewScript* Network::getPreviewScript(int index) const
 	{
-		if (index < 0 || index >= m_previewScripts.size())
+		if (index < 0 || index >= m_previewScripts.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		return m_previewScripts[index];
+
+		return static_cast<PreviewScript*>(m_previewScripts.getNode(index));
 	}
 
 	PreviewScript* Network::addPreviewScript(const std::string& filepath)
 	{
-		m_previewScripts.push_back(new PreviewScript(filepath));
-		return m_previewScripts.back();
+		PreviewScript* newScript = new PreviewScript(filepath);
+
+		m_previewScripts.addNode(newScript);
+		return newScript;
 	}
 
 	void Network::removePreviewScript(int index)
 	{
-		if (index < 0 || index >= m_previewScripts.size())
+		if (index < 0 || index >= m_previewScripts.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		delete m_previewScripts[index];
-		m_previewScripts.erase(m_previewScripts.begin() + index);
+
+		m_previewScripts.removeNode(index);
 	}
 
 	ControlParameter* Network::getControlParameter(int index) const
 	{
-		if (index < 0 || index >= m_controlParameters.size())
+		if (index < 0 || index >= m_controlParameters.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		return m_controlParameters[index];
+
+		return static_cast<ControlParameter*>(m_controlParameters.getNode(index));
 	}
 
 	ControlParameter* Network::getControlParameterByName(const std::string& name) const
 	{
-		for (const auto& cp : m_controlParameters)
+		for (size_t i = 0; i < m_controlParameters.getNumNodes(); i++)
 		{
+			ControlParameter* cp = static_cast<ControlParameter*>(m_controlParameters.getNode(i));
+
 			if (cp->getName() == name)
 				return cp;
 		}
 
-		return nullptr; // Not found
+		return nullptr;
 	}
 
 	ControlParameter* Network::addControlParameter(ControlParameter* controlParameter)
 	{
-		m_controlParameters.push_back(controlParameter);
-		return m_controlParameters.back();
+		m_controlParameters.addNode(controlParameter);
+		return controlParameter;
 	}
 
 	void Network::removeControlParameter(int index)
 	{
-		if (index < 0 || index >= m_controlParameters.size())
+		if (index < 0 || index >= m_controlParameters.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		delete m_controlParameters[index];
-		m_controlParameters.erase(m_controlParameters.begin() + index);
+
+		m_controlParameters.removeNode(index);
 	}
 
 	EmittedControlParameter* Network::getEmittedControlParameter(int index) const
 	{
-		if (index < 0 || index >= m_emittedControlParameters.size())
+		if (index < 0 || index >= m_emittedControlParameters.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		return m_emittedControlParameters[index];
+
+		return static_cast<EmittedControlParameter*>(m_emittedControlParameters.getNode(index));
 	}
 
 	EmittedControlParameter* Network::addEmittedControlParameter(EmittedControlParameter* emittedControlParameter) 
 	{ 
-		m_emittedControlParameters.push_back(emittedControlParameter); 
-		return m_emittedControlParameters.back();
+		m_emittedControlParameters.addNode(emittedControlParameter); 
+		return emittedControlParameter;
 	}
 
 	void Network::removeEmittedControlParameter(int index)
 	{
-		if (index < 0 || index >= m_emittedControlParameters.size())
+		if (index < 0 || index >= m_emittedControlParameters.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		delete m_emittedControlParameters[index];
-		m_emittedControlParameters.erase(m_emittedControlParameters.begin() + index);
+
+		m_emittedControlParameters.removeNode(index);
 	}
 
 	AnimationSet* Network::getAnimationSet(int index) const
 	{
-		if (index < 0 || index >= m_animationSets.size())
+		if (index < 0 || index >= m_animationSets.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		return m_animationSets[index];
+
+		return static_cast<AnimationSet*>(m_animationSets.getNode(index));
 	}
 
 	AnimationSet* Network::addAnimationSet()
 	{
-		m_animationSets.push_back(new AnimationSet());
-		return m_animationSets.back();
+		AnimationSet* newSet = new AnimationSet();
+		m_animationSets.addNode(newSet);
+
+		return newSet;
 	}
 
 	void  Network::removeAnimationSet(int index)
 	{
-		if (index < 0 || index >= m_animationSets.size())
+		if (index < 0 || index >= m_animationSets.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		delete m_animationSets[index];
-		m_animationSets.erase(m_animationSets.begin() + index);
+
+		m_animationSets.removeNode(index);
 	}
 
 	BodyGroup* Network::getBodyGroup(int index) const
 	{
-		if (index < 0 || index >= m_bodyGroups.size())
+		if (index < 0 || index >= m_bodyGroups.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		return m_bodyGroups[index];
+
+		return static_cast<BodyGroup*>(m_bodyGroups.getNode(index));
 	}
 
 	BodyGroup* Network::addBodyGroup(const std::string& name)
 	{
-		m_bodyGroups.push_back(new BodyGroup(name));
-		return m_bodyGroups.back();
+		BodyGroup* newGroup = new BodyGroup(name);
+		m_bodyGroups.addNode(newGroup);
+
+		return newGroup;
 	}
 
 	void  Network::removeBodyGroup(int index)
 	{
-		if (index < 0 || index >= m_bodyGroups.size())
+		if (index < 0 || index >= m_bodyGroups.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		delete m_bodyGroups[index];
-		m_bodyGroups.erase(m_bodyGroups.begin() + index);
+
+		m_bodyGroups.removeNode(index);
 	}
 
 	Request* Network::getRequest(int index) const
 	{
-		if (index < 0 || index >= m_requests.size())
+		if (index < 0 || index >= m_requests.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		return m_requests[index];
+
+		return static_cast<Request*>(m_requests.getNode(index));
 	}
 
 	Request* Network::getRequestByName(const std::string& name) const
 	{
-		for (const auto& request : m_requests)
+		for (size_t i = 0; i < m_requests.getNumNodes(); i++)
 		{
+			Request* request = static_cast<Request*>(m_requests.getNode(i));
+
 			if (request->getName() == name)
 				return request;
 		}
 
-		return nullptr; // Not found
+		return nullptr;
 	}
 
 	Request* Network::addRequest(const std::string& name)
 	{
-		m_requests.push_back(new Request(name));
-		return m_requests.back();
+		Request* newRequest = new Request(name);
+
+		m_requests.addNode(newRequest);
+		return newRequest;
 	}
 
 	void  Network::removeRequest(int index)
 	{
-		if (index < 0 || index >= m_requests.size())
+		if (index < 0 || index >= m_requests.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		delete m_requests[index];
-		m_requests.erase(m_requests.begin() + index);
+
+		m_requests.removeNode(index);
 	}
 
 	RequestPreset* Network::getRequestPreset(int index) const
 	{
-		if (index < 0 || index >= m_requestPresets.size())
+		if (index < 0 || index >= m_requestPresets.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		return m_requestPresets[index];
+
+		return static_cast<RequestPreset*>(m_requestPresets.getNode(index));
 	}
 
-	RequestPreset* Network::addRequestPreset(Request* request)
+	RequestPreset* Network::addRequestPreset(Request request)
 	{
-		m_requestPresets.push_back(new RequestPreset(request));
-		return m_requestPresets.back();
+		RequestPreset* newPreset = new RequestPreset(request);
+		m_requestPresets.addNode(newPreset);
+
+		return newPreset;
 	}
 
 	void  Network::removeRequestPreset(int index)
 	{
-		if (index < 0 || index >= m_requestPresets.size())
+		if (index < 0 || index >= m_requestPresets.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		delete m_requestPresets[index];
-		m_requestPresets.erase(m_requestPresets.begin() + index);
+
+		m_requestPresets.removeNode(index);
 	}
 
 	CharacterStartPoint* Network::getCharacterStartPoint(int index) const
 	{
-		if (index < 0 || index >= m_characterStartPoints.size())
+		if (index < 0 || index >= m_characterStartPoints.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		return m_characterStartPoints[index];
+
+		return static_cast<CharacterStartPoint*>(m_characterStartPoints.getNode(index));
 	}
 
 	CharacterStartPoint* Network::addCharacterStartPoint(AnimationSet* animationSet)
 	{
-		m_characterStartPoints.push_back(new CharacterStartPoint(animationSet));
-		return m_characterStartPoints.back();
+		CharacterStartPoint* newStartPoint = new CharacterStartPoint(animationSet);
+		m_characterStartPoints.addNode(newStartPoint);
+
+		return newStartPoint;
 	}
 
 	void  Network::removeCharacterStartPoint(int index)
 	{
-		if (index < 0 || index >= m_characterStartPoints.size())
+		if (index < 0 || index >= m_characterStartPoints.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		delete m_characterStartPoints[index];
-		m_characterStartPoints.erase(m_characterStartPoints.begin() + index);
+
+		m_characterStartPoints.removeNode(index);
 	}
 }

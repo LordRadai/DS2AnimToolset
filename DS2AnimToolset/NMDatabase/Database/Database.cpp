@@ -4,22 +4,24 @@ namespace db
 {
 	Network* Database::getNetwork(int index) const
 	{
-		if (index < 0 || index >= m_networks.size())
+		if (index < 0 || index >= m_networks.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		return m_networks[index];
+
+		return static_cast<Network*>(m_networks.getNode(index));
 	}
 
 	Network* Database::addNetwork()
 	{
-		m_networks.push_back(new Network());
-		return m_networks.back();
+		Network* newNetwork = new Network();
+		m_networks.addNode(newNetwork);
+		return newNetwork;
 	}
 
 	void Database::removeNetwork(int index)
 	{
-		if (index < 0 || index >= m_networks.size())
+		if (index < 0 || index >= m_networks.getNumNodes())
 			throw std::out_of_range("Index out of range");
-		delete m_networks[index];
-		m_networks.erase(m_networks.begin() + index);
+
+		m_networks.removeNode(index);
 	}
 }

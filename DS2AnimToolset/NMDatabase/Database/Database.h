@@ -1,8 +1,7 @@
 #pragma once
 #include "RCore.h"
-#include <string>
-#include <vector>
 #include "../Network/Network.h"
+#include "../NodeContainer/NodeContainer.h"
 
 namespace db
 {
@@ -11,7 +10,7 @@ namespace db
 		std::string m_productVersion = "3.6.2";
 		uint32_t m_dataVersion = 3506;
 		uint32_t m_formatVersion = 5;
-		std::vector<Network*> m_networks;
+		NodeContainer m_networks;
 
 	public:
 		Database() {};
@@ -31,6 +30,6 @@ namespace db
 
 		void removeNetwork(int index);
 
-		size_t getNumNetworks() const { return m_networks.size(); }
+		size_t getNumNetworks() const { return m_networks.getNumNodes(); }
 	};
 }

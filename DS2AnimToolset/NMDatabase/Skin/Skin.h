@@ -1,15 +1,16 @@
 #pragma once
 #include "RCore.h"
+#include "../Node/Node.h"
 
 namespace db
 {
-	class Skin
+	class Skin : public Node
 	{
 		std::string m_path;
 
 	public:
-		Skin() {};
-		Skin(const std::string& path) : m_path(path) {}
+		Skin() : Node("Skin") {};
+		Skin(const std::string& name, const std::string& path) : Node(name), m_path(path) {}
 		~Skin() {};
 
 		std::string getPath() const { return m_path; }

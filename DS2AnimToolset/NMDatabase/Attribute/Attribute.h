@@ -1,52 +1,30 @@
 #pragma once
 #include "RCore.h"
+#include "NMPlatform/NMVector3.h"
+#include "NMPlatform/NMQuat.h"
+#include "NMPlatform/NMMatrix.h"
+#include "NMPlatform/NMMatrix34.h"
+#include "../Node/Node.h"
 
 namespace db
 {
-	class Attribute
+	class Attribute : public Node
 	{
 	protected:
-		enum class AttributeType
-		{
-			kInt,
-			kFloat,
-			kBool,
-			kVector3,
-			kVector4,
-			kQuaternion,
-			kAnimationTake,
-			kAnimationSet
-		};
-
 		std::string m_name;
-		AttributeType m_type;
+		std::string m_type;
+		bool m_bPerAnimSet;
 
-		Attribute(std::string name, AttributeType type)
-			: m_name(name), m_type(type) {
+		Attribute(std::string name, std::string type, bool bPerAnimSet)
+			: m_name(name), m_type(type), m_bPerAnimSet(bPerAnimSet) {
 		};
 
 		~Attribute() {};
 
 	public:
 		std::string getName() const { return m_name; };
-		void setName(std::string name) { m_name = name; };
-		AttributeType getType() const { return m_type; };
-		void setType(AttributeType type) { m_type = type; };
-	};
-
-	class AnimationSetAttribute : public Attribute
-	{
-		Attribute* m_attribute;
-
-	public:
-		AnimationSetAttribute(std::string name, Attribute* attribute)
-			: Attribute(name, AttributeType::kAnimationSet), m_attribute(attribute) {
-		};
-
-		~AnimationSetAttribute() {};
-
-		Attribute* getAttribute() const { return m_attribute; };
-		void setAttribute(Attribute* attribute) { m_attribute = attribute; };
+		std::string getType() const { return m_type; };
+		bool isPerAnimSet() const { return m_bPerAnimSet; };
 	};
 
 	class BoolAttribute : public Attribute
@@ -55,7 +33,7 @@ namespace db
 
 	public:
 		BoolAttribute(std::string name, bool value)
-			: Attribute(name, AttributeType::kBool), m_value(value) {
+			: Attribute(name, "bool", false), m_value(value) {
 		};
 		~BoolAttribute() {};
 		bool getValue() const { return m_value; };
@@ -67,9 +45,10 @@ namespace db
 		float m_value;
 	public:
 		FloatAttribute(std::string name, float value)
-			: Attribute(name, AttributeType::kFloat), m_value(value) {
+			: Attribute(name, "float", false), m_value(value) {
 		};
 		~FloatAttribute() {};
+
 		float getValue() const { return m_value; };
 		void setValue(float value) { m_value = value; };
 	};

@@ -51,13 +51,25 @@
     <ClInclude Include="RequestPreset\RequestPreset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Node\Node.h">
+    <ClInclude Include="NodeDef\NodeDef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Attribute\Attribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Pin\Pin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Layer\Layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneGraphRoot\SceneGraphRoot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeContainer\NodeContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -96,6 +108,30 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Pin\Pin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RequestPreset\RequestPreset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeContainer\NodeContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\Node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeDef\NodeDef.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneGraphRoot\SceneGraphRoot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Layer\Layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Attribute\Attribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterStartPoint\CharacterStartPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

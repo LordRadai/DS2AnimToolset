@@ -1,9 +1,10 @@
 #pragma once
 #include "RCore.h"
+#include "../Node/Node.h"
 
 namespace db
 {
-	class BodyGroup
+	class BodyGroup : public Node
 	{
 		std::string m_name;
 
