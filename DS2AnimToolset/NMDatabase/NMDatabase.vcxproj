@@ -147,10 +147,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h" />
+    <ClInclude Include="AnimationLocation\AnimationLocation.h" />
+    <ClInclude Include="AnimationSet\AnimationSet.h" />
+    <ClInclude Include="BodyGroup\BodyGroup.h" />
+    <ClInclude Include="Database\Database.h" />
+    <ClInclude Include="Network\Network.h" />
+    <ClInclude Include="PreviewScript\PreviewScript.h" />
+    <ClInclude Include="Request\Request.h" />
+    <ClInclude Include="Skin\Skin.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationLocation\AnimationLocation.cpp" />
+    <ClCompile Include="AnimationSet\AnimationSet.cpp" />
+    <ClCompile Include="BodyGroup\BodyGroup.cpp" />
+    <ClCompile Include="Database\Database.cpp" />
+    <ClCompile Include="Network\Network.cpp" />
     <ClCompile Include="NMDatabase.cpp" />
+    <ClCompile Include="PreviewScript\PreviewScript.cpp" />
+    <ClCompile Include="Request\Request.cpp" />
+    <ClCompile Include="Skin\Skin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
