@@ -1,6 +1,6 @@
 #pragma once
-#include "../EmittedControlParameter/EmittedControlParameter.h"
-#include "../NodeContainer/NodeContainer.h"
+#include "../../EmittedControlParameter/EmittedControlParameter.h"
+#include "../../NodeContainer/NodeContainer.h"
 
 namespace db
 {

@@ -50,6 +50,8 @@ namespace db
 		mcnSerializer::createStringElement(element, "AssetManagerFollowJoint", getChannelName(m_assetManagerFollowJoint));
 		mcnSerializer::createStringElement(element, "Template", m_template);
 		mcnSerializer::createMatrix34Element(element, "RetargetSrcStartPointLocation", m_retargetSrcStartPointLocation);
+
+		return element;
 	}
 
 	void AnimationSet::setRetargetSrcStartPointLocation(const NMP::Vector3 rx, const NMP::Vector3 ry, const NMP::Vector3 rz, const NMP::Vector3 position)

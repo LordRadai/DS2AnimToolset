@@ -1,6 +1,6 @@
 #pragma once
-#include "../BodyGroup/BodyGroup.h"
-#include "../NodeContainer/NodeContainer.h"
+#include "../../BodyGroup/BodyGroup.h"
+#include "../../NodeContainer/NodeContainer.h"
 
 namespace db
 {

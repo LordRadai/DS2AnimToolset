@@ -1,6 +1,6 @@
 #pragma once
-#include "../AnimationSet/AnimationSet.h"
-#include "../NodeContainer/NodeContainer.h"
+#include "../../AnimationSet/AnimationSet.h"
+#include "../../NodeContainer/NodeContainer.h"
 
 namespace db
 {

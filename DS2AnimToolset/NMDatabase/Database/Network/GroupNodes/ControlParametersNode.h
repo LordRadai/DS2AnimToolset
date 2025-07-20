@@ -1,6 +1,6 @@
 #pragma once
-#include "../NodeContainer/NodeContainer.h"
-#include "../ControlParameter/ControlParameter.h"
+#include "../../NodeContainer/NodeContainer.h"
+#include "../../ControlParameter/ControlParameter.h"
 
 namespace db
 {

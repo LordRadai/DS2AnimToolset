@@ -1,6 +1,6 @@
 #pragma once
-#include "../CharacterStartPoint/CharacterStartPoint.h"
-#include "../NodeContainer/NodeContainer.h"
+#include "../../CharacterStartPoint/CharacterStartPoint.h"
+#include "../../NodeContainer/NodeContainer.h"
 
 namespace db
 {

@@ -22,6 +22,8 @@ namespace db
 		tinyxml2::XMLElement* pinElement = Node::serialize(parent);
 		
 		mcnSerializer::createStringArrayElement(pinElement, "Interfaces", m_interfaces);
+
+		return pinElement;
 	}
 
 	std::string FunctionalPin::getInterface(int index) const
