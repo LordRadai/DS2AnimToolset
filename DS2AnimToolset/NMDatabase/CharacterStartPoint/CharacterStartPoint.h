@@ -9,7 +9,7 @@ namespace db
 		AnimationSet* m_animationSet;
 
 	public:
-		CharacterStartPoint(AnimationSet* animationSet) : Node("StartPoint"), m_animationSet(animationSet) {};
+		CharacterStartPoint(Node* parent, AnimationSet* animationSet) : Node(parent, "StartPoint"), m_animationSet(animationSet) {};
 		~CharacterStartPoint() {};
 
 		AnimationSet* getAnimationSet() const { return m_animationSet; };

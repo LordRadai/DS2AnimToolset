@@ -12,13 +12,12 @@ namespace db
 	class ControlParameter : public Node
 	{
 		friend class Network;
+
 	protected:
 		std::string m_type;
 		DataPin m_dataPin;
 
-		ControlParameter() : Node("ControlParameter"), m_type("undefined") {};
-		ControlParameter(std::string name, std::string type) : Node(name), m_type(type) {};
-
+		ControlParameter(Node* parent, std::string name, std::string type) : Node(parent, name), m_type(type), m_dataPin(this, "Result", type) {};
 		~ControlParameter() {};
 
 	public:
@@ -30,12 +29,7 @@ namespace db
 		bool m_value;
 
 	public:
-		ControlParameterBool(std::string name, bool value) 
-			: ControlParameter(name, "bool"), m_value(value) 
-		{
-			m_dataPin = DataPin("Result", "bool");
-		};
-
+		ControlParameterBool(Node* parent, std::string name, bool value) : ControlParameter(parent, name, "bool"), m_value(value) {};
 		~ControlParameterBool() {};
 
 		bool getValue() const { return m_value; };
@@ -49,12 +43,7 @@ namespace db
 		int m_max;
 
 	public:
-		ControlParameterInt(std::string name, int value, int min, int max) 
-			: ControlParameter(name, "int"), m_value(value), m_min(min), m_max(max) 
-		{
-			m_dataPin = DataPin("Result", "int");
-		};
-
+		ControlParameterInt(Node* parent, std::string name, int value, int min, int max) : ControlParameter(parent, name, "int"), m_value(value), m_min(min), m_max(max) {};
 		~ControlParameterInt() {};
 
 		int getValue() const { return m_value; };
@@ -74,12 +63,7 @@ namespace db
 		uint32_t m_max;
 
 	public:
-		ControlParameterUInt(std::string name, uint32_t value, uint32_t min, uint32_t max) 
-			: ControlParameter(name, "uint"), m_value(value), m_min(min), m_max(max) 
-		{
-			m_dataPin = DataPin("Result", "uint");
-		};
-
+		ControlParameterUInt(Node* parent, std::string name, uint32_t value, uint32_t min, uint32_t max) : ControlParameter(parent, name, "uint"), m_value(value), m_min(min), m_max(max) {};
 		~ControlParameterUInt() {};
 
 		uint32_t getValue() const { return m_value; };
@@ -99,12 +83,7 @@ namespace db
 		float m_max;
 
 	public:
-		ControlParameterFloat(std::string name, float value, float min, float max) 
-			: ControlParameter(name, "float"), m_value(value), m_min(min), m_max(max) 
-		{
-			m_dataPin = DataPin("Result", "float");
-		};
-
+		ControlParameterFloat(Node* parent, std::string name, float value, float min, float max) : ControlParameter(parent, name, "float"), m_value(value), m_min(min), m_max(max) {};
 		~ControlParameterFloat() {};
 
 		float getValue() const { return m_value; };
@@ -124,13 +103,7 @@ namespace db
 		NMP::Vector3 m_max;
 
 	public:
-		ControlParameterVector3(std::string name, NMP::Vector3 value,
-			NMP::Vector3 min, NMP::Vector3 max) 
-			: ControlParameter(name, "vector3"), m_value(value), m_min(min), m_max(max) 
-		{
-			m_dataPin = DataPin("Result", "vector3");
-		};
-
+		ControlParameterVector3(Node* parent, std::string name, NMP::Vector3 value, NMP::Vector3 min, NMP::Vector3 max) : ControlParameter(parent, name, "vector3"), m_value(value), m_min(min), m_max(max) {};
 		~ControlParameterVector3() {};
 
 		NMP::Vector3 getValue() const { return m_value; };
@@ -150,13 +123,7 @@ namespace db
 		NMP::Quat m_max;
 
 	public:
-		ControlParameterVector4(std::string name, NMP::Quat value, 
-			NMP::Quat min, NMP::Quat max) 
-			: ControlParameter(name, "vector4"), m_value(value), m_min(min), m_max(max) 
-		{
-			m_dataPin = DataPin("Result", "vector4");
-		};
-
+		ControlParameterVector4(Node* parent, std::string name, NMP::Quat value, NMP::Quat min, NMP::Quat max) : ControlParameter(parent, name, "vector4"), m_value(value), m_min(min), m_max(max) {};
 		~ControlParameterVector4() {};
 
 		NMP::Quat getValue() const { return m_value; };
@@ -176,13 +143,7 @@ namespace db
 		NMP::Quat m_max;
 
 	public:
-		ControlParameterQuaternion(std::string name, NMP::Quat value, 
-			NMP::Quat min, NMP::Quat max) 
-			: ControlParameter(name, "quaternion"), m_value(value), m_min(min), m_max(max) 
-		{
-			m_dataPin = DataPin("Result", "quaternion");
-		};
-
+		ControlParameterQuaternion(Node* parent, std::string name, NMP::Quat value, NMP::Quat min, NMP::Quat max) : ControlParameter(parent, name, "quaternion"), m_value(value), m_min(min), m_max(max) {};
 		~ControlParameterQuaternion() {};
 
 		NMP::Quat getValue() const { return m_value; };

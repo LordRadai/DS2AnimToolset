@@ -14,7 +14,7 @@ namespace db
 		std::vector<AddedManifestPreset> m_addedManifestPresets;
 
 	public:
-		RequestPreset(Request request) : Node("RequestPresets"), m_request(request) {};
+		RequestPreset(Node* parent, Request request) : Node(parent, "RequestPresets"), m_request(request) {};
 		~RequestPreset() {};
 
 		Request getRequest() const { return m_request; };

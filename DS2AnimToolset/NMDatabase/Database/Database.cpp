@@ -12,7 +12,7 @@ namespace db
 
 	Network* Database::addNetwork()
 	{
-		Network* newNetwork = new Network();
+		Network* newNetwork = new Network(this);
 		m_networks.addNode(newNetwork);
 		return newNetwork;
 	}

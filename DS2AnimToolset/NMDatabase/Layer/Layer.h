@@ -6,9 +6,7 @@ namespace db
 	class Layer : public Node
 	{
 	public:
-		Layer() : Node("Layer") {};
-		Layer(const std::string& name) : Node(name) {};
-
+		Layer(Node* parent, const std::string name) : Node(parent, name) {};
 		~Layer() {};
 	};
 }

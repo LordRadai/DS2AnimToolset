@@ -4,13 +4,13 @@
 
 namespace db
 {
-	class NodeContainer
+	class NodeContainer : public Node
 	{
 	protected:
 		std::vector<Node*> m_nodes;
 
 	public:
-		NodeContainer() {};
+		NodeContainer(Node* parent) : Node(parent, "") {};
 		~NodeContainer() {};
 
 		void addNode(Node* node) { m_nodes.push_back(node); }

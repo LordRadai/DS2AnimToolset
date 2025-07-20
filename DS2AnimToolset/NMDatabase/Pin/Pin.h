@@ -9,8 +9,7 @@ namespace db
 	class Pin : public Node
 	{
 	public:
-		Pin() {}
-		Pin(std::string name) : Node(name) {};
+		Pin(Node* parent, std::string name) : Node(parent, name) {};
 		~Pin() {};
 
 		std::string getName() const { return m_name; };
@@ -21,8 +20,7 @@ namespace db
 		bool m_bReference;
 
 	public:
-		PassDownPin() {};
-		PassDownPin(std::string name, bool bReference = true) : Pin(name), m_bReference(bReference) {};
+		PassDownPin(Node* parent, std::string name, bool bReference = true) : Pin(parent, name), m_bReference(bReference) {};
 		~PassDownPin() {};
 
 		bool isReference() const { return m_bReference; };
@@ -33,9 +31,7 @@ namespace db
 		std::vector<Interface> m_interfaces;
 
 	public:
-		FunctionalPin() {};
-		FunctionalPin(std::string name) : Pin(name){};
-
+		FunctionalPin(Node* parent, std::string name) : Pin(parent, name){};
 		~FunctionalPin() {};
 
 		std::string getInterface(int index) const;
@@ -50,9 +46,7 @@ namespace db
 		std::string m_dataType;
 
 	public:
-		DataPin() {};
-		DataPin(std::string name, std::string dataType) : Pin(name), m_dataType(dataType) {};
-
+		DataPin(Node* parent, std::string name, std::string dataType) : Pin(parent, name), m_dataType(dataType) {};
 		~DataPin() {};
 
 		std::string getDataType() const { return m_dataType; };

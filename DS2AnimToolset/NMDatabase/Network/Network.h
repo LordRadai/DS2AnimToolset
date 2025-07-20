@@ -37,7 +37,7 @@ namespace db
 		NodeContainer m_characterStartPoints;
 
 	public:
-		Network();
+		Network(Node* parent);
 		~Network() {};
 
 		GUID getGUID() const { return m_GUID; }
@@ -70,7 +70,7 @@ namespace db
 		size_t getNumEmittedControlParameters() const { return m_emittedControlParameters.getNumNodes(); }
 
 		AnimationSet* getAnimationSet(int index) const;
-		AnimationSet* addAnimationSet();
+		AnimationSet* addAnimationSet(std::string name);
 		void removeAnimationSet(int index);
 		size_t getNumAnimationSets() const { return m_animationSets.getNumNodes(); }
 

@@ -21,8 +21,7 @@ namespace db
 		NMP::Matrix34 m_retargetSrcStartPointLocation;
 
 	public:
-		AnimationSet() : Node("AnimationSet") {};
-		AnimationSet(std::string name) : Node(name) {};
+		AnimationSet(Node* parent, std::string name) : Node(parent, name), m_skins(this) {};
 		~AnimationSet() {};
 
 		std::string getRig() const { return m_rig; }

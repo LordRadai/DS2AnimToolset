@@ -10,8 +10,7 @@ namespace db
 		ControlParameter* m_controlParameter;
 
 	public:
-		EmittedControlParameter() {};
-		EmittedControlParameter(std::string name, ControlParameter* controlParameter) : Node(name), m_controlParameter(controlParameter) {};
+		EmittedControlParameter(Node* parent, std::string name, ControlParameter* controlParameter) : Node(parent, name), m_controlParameter(controlParameter) {};
 		~EmittedControlParameter() {};
 
 		ControlParameter* getControlParameter() const { return m_controlParameter; };

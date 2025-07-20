@@ -2,11 +2,21 @@
 
 namespace db
 {
-	Network::Network() : Node("Network")
+	Network::Network(Node* parent) : Node(parent, "Network"),
+		m_passDownPin(this, "Result", true),
+		m_animationLocations(this),
+		m_previewScripts(this),
+		m_controlParameters(this),
+		m_emittedControlParameters(this),
+		m_layers(),
+		m_sceneGraphRoot(this),
+		m_animationSets(this),
+		m_bodyGroups(this),
+		m_requests(this),
+		m_requestPresets(this),
+		m_characterStartPoints(this)
 	{
 		CoCreateGuid(&m_GUID);
-		m_passDownPin = PassDownPin("Result", true);
-		m_sceneGraphRoot = SceneGraphRoot();
 	}
 
 	AnimationLocation* Network::getAnimationLocation(int index) const
@@ -17,9 +27,9 @@ namespace db
 		return static_cast<AnimationLocation*>(m_animationLocations.getNode(index));
 	}
 
-	AnimationLocation* Network::addAnimationLocation(const std::string& sourceDir, const std::string& markupDir, bool bIncludeSubDirs = true)
+	AnimationLocation* Network::addAnimationLocation(const std::string& sourceDir, const std::string& markupDir, bool bIncludeSubDirs)
 	{
-		AnimationLocation* newLocation = new AnimationLocation(sourceDir, markupDir, bIncludeSubDirs);
+		AnimationLocation* newLocation = new AnimationLocation(this, sourceDir, markupDir, bIncludeSubDirs);
 
 		m_animationLocations.addNode(newLocation);
 		return newLocation;
@@ -43,7 +53,7 @@ namespace db
 
 	PreviewScript* Network::addPreviewScript(const std::string& filepath)
 	{
-		PreviewScript* newScript = new PreviewScript(filepath);
+		PreviewScript* newScript = new PreviewScript(this, "Preview script", filepath);
 
 		m_previewScripts.addNode(newScript);
 		return newScript;
@@ -122,9 +132,9 @@ namespace db
 		return static_cast<AnimationSet*>(m_animationSets.getNode(index));
 	}
 
-	AnimationSet* Network::addAnimationSet()
+	AnimationSet* Network::addAnimationSet(std::string name)
 	{
-		AnimationSet* newSet = new AnimationSet();
+		AnimationSet* newSet = new AnimationSet(this, name);
 		m_animationSets.addNode(newSet);
 
 		return newSet;
@@ -148,7 +158,7 @@ namespace db
 
 	BodyGroup* Network::addBodyGroup(const std::string& name)
 	{
-		BodyGroup* newGroup = new BodyGroup(name);
+		BodyGroup* newGroup = new BodyGroup(this, name);
 		m_bodyGroups.addNode(newGroup);
 
 		return newGroup;
@@ -185,7 +195,7 @@ namespace db
 
 	Request* Network::addRequest(const std::string& name)
 	{
-		Request* newRequest = new Request(name);
+		Request* newRequest = new Request(this, name);
 
 		m_requests.addNode(newRequest);
 		return newRequest;
@@ -209,7 +219,7 @@ namespace db
 
 	RequestPreset* Network::addRequestPreset(Request request)
 	{
-		RequestPreset* newPreset = new RequestPreset(request);
+		RequestPreset* newPreset = new RequestPreset(this, request);
 		m_requestPresets.addNode(newPreset);
 
 		return newPreset;
@@ -233,7 +243,7 @@ namespace db
 
 	CharacterStartPoint* Network::addCharacterStartPoint(AnimationSet* animationSet)
 	{
-		CharacterStartPoint* newStartPoint = new CharacterStartPoint(animationSet);
+		CharacterStartPoint* newStartPoint = new CharacterStartPoint(this, animationSet);
 		m_characterStartPoints.addNode(newStartPoint);
 
 		return newStartPoint;

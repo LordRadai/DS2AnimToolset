@@ -11,14 +11,10 @@ namespace db
 	class Attribute : public Node
 	{
 	protected:
-		std::string m_name;
 		std::string m_type;
 		bool m_bPerAnimSet;
 
-		Attribute(std::string name, std::string type, bool bPerAnimSet)
-			: m_name(name), m_type(type), m_bPerAnimSet(bPerAnimSet) {
-		};
-
+		Attribute(Node* parent, std::string name, std::string type, bool bPerAnimSet) : Node(parent, name), m_type(type), m_bPerAnimSet(bPerAnimSet) {};
 		~Attribute() {};
 
 	public:
@@ -32,9 +28,7 @@ namespace db
 		bool m_value;
 
 	public:
-		BoolAttribute(std::string name, bool value)
-			: Attribute(name, "bool", false), m_value(value) {
-		};
+		BoolAttribute(Node* parent, std::string name, bool value) : Attribute(parent, name, "bool", false), m_value(value) {};
 		~BoolAttribute() {};
 		bool getValue() const { return m_value; };
 		void setValue(bool value) { m_value = value; };
@@ -44,9 +38,7 @@ namespace db
 	{
 		float m_value;
 	public:
-		FloatAttribute(std::string name, float value)
-			: Attribute(name, "float", false), m_value(value) {
-		};
+		FloatAttribute(Node* parent, std::string name, float value) : Attribute(parent, name, "float", false), m_value(value) {};
 		~FloatAttribute() {};
 
 		float getValue() const { return m_value; };

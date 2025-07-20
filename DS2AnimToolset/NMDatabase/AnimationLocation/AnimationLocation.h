@@ -11,8 +11,12 @@ namespace db
 		bool m_bIncludeSubDirs;
 
 	public:
-		AnimationLocation() : Node("AnimationLocation") {};
-		AnimationLocation(const std::string& sourceDir, const std::string& markupDir, bool bIncludeSubDirs = false) : Node("AnimationLocation"), m_sourceDir(sourceDir), m_markupDir(markupDir), m_bIncludeSubDirs(bIncludeSubDirs) {};
+		AnimationLocation(Node* parent, const std::string& sourceDir, const std::string& markupDir, bool bIncludeSubDirs = false) :
+			Node(parent, "AnimationLocation"),
+			m_sourceDir(sourceDir),
+			m_markupDir(markupDir),
+			m_bIncludeSubDirs(bIncludeSubDirs) {
+		};
 
 		~AnimationLocation() {};
 

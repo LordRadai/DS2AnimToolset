@@ -6,11 +6,8 @@ namespace db
 {
 	class BodyGroup : public Node
 	{
-		std::string m_name;
-
 	public:
-		BodyGroup() {};
-		BodyGroup(const std::string& name) : m_name(name) {}
+		BodyGroup(Node* parent, const std::string& name) : Node(parent, name) {};
 		~BodyGroup() {};
 
 		std::string getName() const { return m_name; }

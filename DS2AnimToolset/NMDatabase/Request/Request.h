@@ -7,9 +7,7 @@ namespace db
 	class Request : public Node
 	{
 	public:
-		Request() : Node("Request") {}
-		Request(std::string name) : Node(name) {}
-
+		Request(Node* parent, std::string name) : Node(parent, name) {}
 		~Request() {};
 	};
 }

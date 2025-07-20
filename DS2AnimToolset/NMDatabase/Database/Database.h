@@ -1,11 +1,12 @@
 #pragma once
 #include "RCore.h"
 #include "../Network/Network.h"
+#include "../Node/Node.h"
 #include "../NodeContainer/NodeContainer.h"
 
 namespace db
 {
-	class Database
+	class Database : public Node
 	{
 		std::string m_productVersion = "3.6.2";
 		uint32_t m_dataVersion = 3506;
@@ -13,7 +14,7 @@ namespace db
 		NodeContainer m_networks;
 
 	public:
-		Database() {};
+		Database() : Node(nullptr, "MorphemeDB"), m_networks(this) {};
 		~Database() {};
 
 		std::string getProductVersion() const { return m_productVersion; }
