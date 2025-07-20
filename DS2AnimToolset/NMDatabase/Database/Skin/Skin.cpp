@@ -15,6 +15,6 @@ namespace db
 
 		mcnSerializer::createStringElement(skinElement, "Path", m_path);
 
-		return skinElement
+		return skinElement;
 	}
 }
