@@ -14,6 +14,7 @@ namespace db
 
 		virtual ~Node() {};
 		virtual bool isValid() const { return true; }
+
 		/*
 		* @brief Serializes the node to an XML element.
 		* Be sure to set the proper name for the XML element since it will be left empty by this function.
