@@ -1,7 +1,8 @@
 #pragma once
 #include "RCore.h"
-#include "Morpheme/mrNodeDef.h"
 #include "../Node/Node.h"
+#include "../Attribute/Attribute.h"
+#include "../Pin/Pin.h"
 
 namespace db
 {

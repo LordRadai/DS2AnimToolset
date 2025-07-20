@@ -108,6 +108,24 @@
     <ClCompile Include="NMDatabase.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcnSerializer\mcnSerializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\NodeDef\StateMachine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\TransitionEdge\TransitionEdge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\TransitionEdge\Condition\Condition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\TransitionEdge\Condition\MessageCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\TransitionEdge\Condition\ControlParamInRange.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Database\AnimationLocation\AnimationLocation.h">
@@ -195,6 +213,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Database\Database.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcnSerializer\mcnSerializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\NodeDef\StateMachine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\TransitionEdge\TransitionEdge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\TransitionEdge\Condition\Condition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\TransitionEdge\Condition\MessageCondition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\TransitionEdge\Condition\ControlParamInRange.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

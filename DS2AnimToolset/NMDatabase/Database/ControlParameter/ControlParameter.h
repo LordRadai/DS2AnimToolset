@@ -25,6 +25,8 @@ namespace db
 		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		std::string getType() const { return m_type; };
+
+		DataPin* getDataPin() { return &m_dataPin; }
 	};
 
 	class ControlParameterBool : public ControlParameter

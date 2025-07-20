@@ -73,6 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)lib\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)lib\$(Platform)\$(Configuration)\</OutDir>
@@ -172,6 +173,7 @@
     <ClCompile Include="Database\Network\Network.cpp" />
     <ClCompile Include="Database\NodeContainer\NodeContainer.cpp" />
     <ClCompile Include="Database\NodeDef\NodeDef.cpp" />
+    <ClCompile Include="Database\NodeDef\StateMachine.cpp" />
     <ClCompile Include="Database\Node\Node.cpp" />
     <ClCompile Include="Database\Pin\Pin.cpp" />
     <ClCompile Include="Database\PreviewScript\PreviewScript.cpp" />
@@ -179,6 +181,11 @@
     <ClCompile Include="Database\Request\Request.cpp" />
     <ClCompile Include="Database\SceneGraphRoot\SceneGraphRoot.cpp" />
     <ClCompile Include="Database\Skin\Skin.cpp" />
+    <ClCompile Include="Database\TransitionEdge\Condition\Condition.cpp" />
+    <ClCompile Include="Database\TransitionEdge\Condition\ControlParamInRange.cpp" />
+    <ClCompile Include="Database\TransitionEdge\Condition\MessageCondition.cpp" />
+    <ClCompile Include="Database\TransitionEdge\TransitionEdge.cpp" />
+    <ClCompile Include="mcnSerializer\mcnSerializer.cpp" />
     <ClCompile Include="NMDatabase.h" />
   </ItemGroup>
   <ItemGroup>
@@ -204,6 +211,7 @@
     <ClInclude Include="Database\Network\Network.h" />
     <ClInclude Include="Database\NodeContainer\NodeContainer.h" />
     <ClInclude Include="Database\NodeDef\NodeDef.h" />
+    <ClInclude Include="Database\NodeDef\StateMachine.h" />
     <ClInclude Include="Database\Node\Node.h" />
     <ClInclude Include="Database\Pin\Pin.h" />
     <ClInclude Include="Database\PreviewScript\PreviewScript.h" />
@@ -211,6 +219,11 @@
     <ClInclude Include="Database\Request\Request.h" />
     <ClInclude Include="Database\SceneGraphRoot\SceneGraphRoot.h" />
     <ClInclude Include="Database\Skin\Skin.h" />
+    <ClInclude Include="Database\TransitionEdge\Condition\Condition.h" />
+    <ClInclude Include="Database\TransitionEdge\Condition\ControlParamInRange.h" />
+    <ClInclude Include="Database\TransitionEdge\Condition\MessageCondition.h" />
+    <ClInclude Include="Database\TransitionEdge\TransitionEdge.h" />
+    <ClInclude Include="mcnSerializer\mcnSerializer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
