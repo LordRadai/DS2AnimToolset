@@ -119,7 +119,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\common\NMNumerics\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)Morpheme4\common\NMRuntimeUtils\include;$(SolutionDir)RCore\RCore\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\common\NMNumerics\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)Morpheme4\common\NMRuntimeUtils\include;$(ProjectDir);$(SolutionDir)RCore\RCore\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -138,7 +138,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\common\NMNumerics\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)Morpheme4\common\NMRuntimeUtils\include;$(SolutionDir)RCore\RCore\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\common\NMNumerics\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)Morpheme4\common\NMRuntimeUtils\include;$(ProjectDir);$(SolutionDir)RCore\RCore\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -147,54 +147,70 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AnimationLocation\AnimationLocation.h" />
-    <ClInclude Include="AnimationSet\AnimationSet.h" />
-    <ClInclude Include="Attribute\Attribute.h" />
-    <ClInclude Include="BodyGroup\BodyGroup.h" />
-    <ClInclude Include="CharacterStartPoint\CharacterStartPoint.h" />
-    <ClInclude Include="ControlParameter\ControlParameter.h" />
-    <ClInclude Include="Database\Database.h" />
-    <ClInclude Include="EmittedControlParameter\EmittedControlParameter.h" />
-    <ClInclude Include="FlowEdge\FlowEdge.h" />
-    <ClInclude Include="Layer\Layer.h" />
-    <ClInclude Include="Network\Network.h" />
-    <ClInclude Include="NodeContainer\NodeContainer.h" />
-    <ClInclude Include="NodeDef\NodeDef.h" />
-    <ClInclude Include="Node\Node.h" />
-    <ClInclude Include="Pin\Pin.h" />
-    <ClInclude Include="PreviewScript\PreviewScript.h" />
-    <ClInclude Include="RequestPreset\RequestPreset.h" />
-    <ClInclude Include="Request\Request.h" />
-    <ClInclude Include="SceneGraphRoot\SceneGraphRoot.h" />
-    <ClInclude Include="mcnSerializer\mcnSerializer.h" />
-    <ClInclude Include="Skin\Skin.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="AnimationLocation\AnimationLocation.cpp" />
-    <ClCompile Include="AnimationSet\AnimationSet.cpp" />
-    <ClCompile Include="Attribute\Attribute.cpp" />
-    <ClCompile Include="BodyGroup\BodyGroup.cpp" />
-    <ClCompile Include="CharacterStartPoint\CharacterStartPoint.cpp" />
-    <ClCompile Include="ControlParameter\ControlParameter.cpp" />
-    <ClCompile Include="Database\Database.cpp" />
-    <ClCompile Include="EmittedControlParameter\EmittedControlParameter.cpp" />
-    <ClCompile Include="FlowEdge\FlowEdge.cpp" />
-    <ClCompile Include="Layer\Layer.cpp" />
-    <ClCompile Include="Network\Network.cpp" />
-    <ClCompile Include="NMDatabase.cpp" />
-    <ClCompile Include="NodeContainer\NodeContainer.cpp" />
-    <ClCompile Include="NodeDef\NodeDef.cpp" />
-    <ClCompile Include="Node\Node.cpp" />
-    <ClCompile Include="Pin\Pin.cpp" />
-    <ClCompile Include="PreviewScript\PreviewScript.cpp" />
-    <ClCompile Include="RequestPreset\RequestPreset.cpp" />
-    <ClCompile Include="Request\Request.cpp" />
-    <ClCompile Include="SceneGraphRoot\SceneGraphRoot.cpp" />
-    <ClCompile Include="mcnSerializer\mcnSerializer.cpp" />
-    <ClCompile Include="Skin\Skin.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Database\AnimationLocation\AnimationLocation.cpp" />
+    <ClCompile Include="Database\AnimationSet\AnimationSet.cpp" />
+    <ClCompile Include="Database\Attribute\Attribute.cpp" />
+    <ClCompile Include="Database\BodyGroup\BodyGroup.cpp" />
+    <ClCompile Include="Database\CharacterStartPoint\CharacterStartPoint.cpp" />
+    <ClCompile Include="Database\ControlParameter\ControlParameter.cpp" />
+    <ClCompile Include="Database\Database.cpp" />
+    <ClCompile Include="Database\EmittedControlParameter\EmittedControlParameter.cpp" />
+    <ClCompile Include="Database\FlowEdge\FlowEdge.cpp" />
+    <ClCompile Include="Database\Layer\Layer.cpp" />
+    <ClCompile Include="Database\Network\GroupNodes\AnimationSetsNode.cpp" />
+    <ClCompile Include="Database\Network\GroupNodes\BodyGroupsNode.cpp" />
+    <ClCompile Include="Database\Network\GroupNodes\CharacterStartPointsNode.cpp" />
+    <ClCompile Include="Database\Network\GroupNodes\ControlParametersNode.cpp" />
+    <ClCompile Include="Database\Network\GroupNodes\EmittedControlParametersNode.cpp" />
+    <ClCompile Include="Database\Network\GroupNodes\LayersNode.cpp" />
+    <ClCompile Include="Database\Network\GroupNodes\MessagePresetsGroupNode.cpp" />
+    <ClCompile Include="Database\Network\GroupNodes\RequestPresetsNode.cpp" />
+    <ClCompile Include="Database\Network\GroupNodes\RequestsNode.cpp" />
+    <ClCompile Include="Database\Network\Network.cpp" />
+    <ClCompile Include="Database\NodeContainer\NodeContainer.cpp" />
+    <ClCompile Include="Database\NodeDef\NodeDef.cpp" />
+    <ClCompile Include="Database\Node\Node.cpp" />
+    <ClCompile Include="Database\Pin\Pin.cpp" />
+    <ClCompile Include="Database\PreviewScript\PreviewScript.cpp" />
+    <ClCompile Include="Database\RequestPreset\RequestPreset.cpp" />
+    <ClCompile Include="Database\Request\Request.cpp" />
+    <ClCompile Include="Database\SceneGraphRoot\SceneGraphRoot.cpp" />
+    <ClCompile Include="Database\Skin\Skin.cpp" />
+    <ClCompile Include="NMDatabase.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Database\AnimationLocation\AnimationLocation.h" />
+    <ClInclude Include="Database\AnimationSet\AnimationSet.h" />
+    <ClInclude Include="Database\Attribute\Attribute.h" />
+    <ClInclude Include="Database\BodyGroup\BodyGroup.h" />
+    <ClInclude Include="Database\CharacterStartPoint\CharacterStartPoint.h" />
+    <ClInclude Include="Database\ControlParameter\ControlParameter.h" />
+    <ClInclude Include="Database\Database.h" />
+    <ClInclude Include="Database\EmittedControlParameter\EmittedControlParameter.h" />
+    <ClInclude Include="Database\FlowEdge\FlowEdge.h" />
+    <ClInclude Include="Database\Layer\Layer.h" />
+    <ClInclude Include="Database\Network\GroupNodes\AnimationSetsNode.h" />
+    <ClInclude Include="Database\Network\GroupNodes\BodyGroupsNode.h" />
+    <ClInclude Include="Database\Network\GroupNodes\CharacterStartPointsNode.h" />
+    <ClInclude Include="Database\Network\GroupNodes\ControlParametersNode.h" />
+    <ClInclude Include="Database\Network\GroupNodes\EmittedControlParametersNode.h" />
+    <ClInclude Include="Database\Network\GroupNodes\LayersNode.h" />
+    <ClInclude Include="Database\Network\GroupNodes\MessagePresetsGroupNode.h" />
+    <ClInclude Include="Database\Network\GroupNodes\RequestPresetsNode.h" />
+    <ClInclude Include="Database\Network\GroupNodes\RequestsNode.h" />
+    <ClInclude Include="Database\Network\Network.h" />
+    <ClInclude Include="Database\NodeContainer\NodeContainer.h" />
+    <ClInclude Include="Database\NodeDef\NodeDef.h" />
+    <ClInclude Include="Database\Node\Node.h" />
+    <ClInclude Include="Database\Pin\Pin.h" />
+    <ClInclude Include="Database\PreviewScript\PreviewScript.h" />
+    <ClInclude Include="Database\RequestPreset\RequestPreset.h" />
+    <ClInclude Include="Database\Request\Request.h" />
+    <ClInclude Include="Database\SceneGraphRoot\SceneGraphRoot.h" />
+    <ClInclude Include="Database\Skin\Skin.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

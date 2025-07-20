@@ -1,8 +1,10 @@
 #include "Network.h"
+#include "mcnSerializer/mcnSerializer.h"
 
 namespace db
 {
 	Network::Network(Node* parent) : Node(parent, "Network", "Network"),
+		m_nodes(this, "GraphEntry"),
 		m_passDownPin(this, "Result", true),
 		m_animationLocations(this, "AnimationLocations"),
 		m_previewScripts(this, "PreviewScripts"),
@@ -14,9 +16,39 @@ namespace db
 		m_bodyGroups(this),
 		m_requests(this),
 		m_requestPresets(this),
+		m_messagePresetsGroup(this),
 		m_characterStartPoints(this)
 	{
 		CoCreateGuid(&m_GUID);
+	}
+
+	bool Network::isValid() const
+	{
+		return Node::isValid();
+	}
+
+	tinyxml2::XMLElement* Network::serialize(tinyxml2::XMLElement* parent)
+	{
+		tinyxml2::XMLElement* element = Node::serialize(parent);
+		m_nodes.serialize(element);
+		mcnSerializer::createStringElement(element, "GUID", RString::guidToString(m_GUID));
+		mcnSerializer::createStringElement(element, "AnimLibraryGUID", m_animLibraryGUID);
+		mcnSerializer::createStringElement(element, "AssetManagerSelectedSet", m_assetManagerSelectedSet);
+		m_passDownPin.serialize(element);
+		m_animationLocations.serialize(element);
+		m_previewScripts.serialize(element);
+		m_controlParameters.serialize(element);
+		m_emittedControlParameters.serialize(element);
+		m_layers.serialize(element);
+		m_sceneGraphRoot.serialize(element);
+		m_animationSets.serialize(element);
+		m_bodyGroups.serialize(element);
+		m_requests.serialize(element);
+		m_requestPresets.serialize(element);
+		m_messagePresetsGroup.serialize(element);
+		m_characterStartPoints.serialize(element);
+
+		return element;
 	}
 
 	AnimationLocation* Network::getAnimationLocation(int index) const

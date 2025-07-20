@@ -1,8 +1,8 @@
 #pragma once
 #include "RCore.h"
-#include "../Network/Network.h"
-#include "../Node/Node.h"
-#include "../NodeContainer/NodeContainer.h"
+#include "Network/Network.h"
+#include "Node/Node.h"
+#include "NodeContainer/NodeContainer.h"
 
 namespace db
 {
@@ -12,7 +12,7 @@ namespace db
 		NodeContainer m_networks;
 
 	public:
-		Database() : Node(nullptr, "MorphemeDB", "MorphemeDB"), m_namespace("mcd"), m_networks(this) {};
+		Database() : Node(nullptr, "MorphemeDB", "MorphemeDB"), m_namespace("mcd"), m_networks(this, "Networks") {};
 		
 		virtual ~Database() {};
 		virtual bool isValid() const;

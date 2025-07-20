@@ -21,7 +21,7 @@ namespace db
 		NMP::Matrix34 m_retargetSrcStartPointLocation;
 
 	public:
-		AnimationSet(Node* parent, std::string name) : Node(parent, "AnimationSet", name), m_skins(this) {};
+		AnimationSet(Node* parent, std::string name) : Node(parent, "AnimationSet", name), m_skins(this, "Skin") {};
 
 		virtual ~AnimationSet() {};
 		virtual bool isValid() const;

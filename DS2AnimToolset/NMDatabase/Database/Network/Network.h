@@ -14,20 +14,21 @@
 #include "../SceneGraphRoot/SceneGraphRoot.h"
 #include "../Node/Node.h"
 #include "../NodeDef/NodeDef.h"
-#include "AnimationSetsNode.h"
-#include "BodyGroupsNode.h"
-#include "CharacterStartPointsNode.h"
-#include "ControlParametersNode.h"
-#include "EmittedControlParametersNode.h"
-#include "LayersNode.h"
-#include "RequestPresetsNode.h"
-#include "RequestsNode.h"
+#include "GroupNodes/AnimationSetsNode.h"
+#include "GroupNodes/BodyGroupsNode.h"
+#include "GroupNodes/CharacterStartPointsNode.h"
+#include "GroupNodes/ControlParametersNode.h"
+#include "GroupNodes/EmittedControlParametersNode.h"
+#include "GroupNodes/MessagePresetsGroupNode.h"
+#include "GroupNodes/LayersNode.h"
+#include "GroupNodes/RequestPresetsNode.h"
+#include "GroupNodes/RequestsNode.h"
 
 namespace db
 {
 	class Network : public Node
 	{
-		std::vector<NodeDef> m_nodes;
+		NodeContainer m_nodes;
 		NodeContainer m_animationLocations;
 		NodeContainer m_previewScripts;
 		GUID m_GUID;
@@ -42,6 +43,7 @@ namespace db
 		BodyGroupsNode m_bodyGroups;
 		RequestsNode m_requests;
 		RequestPresetsNode m_requestPresets;
+		MessagePresetsGroupNode m_messagePresetsGroup;
 		CharacterStartPointsNode m_characterStartPoints;
 
 	public:

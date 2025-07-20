@@ -1,5 +1,5 @@
 #include "ControlParameter.h"
-#include "../mcnSerializer/mcnSerializer.h"
+#include "mcnSerializer/mcnSerializer.h"
 
 namespace db
 {
