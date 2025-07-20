@@ -14,7 +14,14 @@
 #include "../SceneGraphRoot/SceneGraphRoot.h"
 #include "../Node/Node.h"
 #include "../NodeDef/NodeDef.h"
-#include "../NodeContainer/NodeContainer.h"
+#include "AnimationSetsNode.h"
+#include "BodyGroupsNode.h"
+#include "CharacterStartPointsNode.h"
+#include "ControlParametersNode.h"
+#include "EmittedControlParametersNode.h"
+#include "LayersNode.h"
+#include "RequestPresetsNode.h"
+#include "RequestsNode.h"
 
 namespace db
 {
@@ -27,15 +34,15 @@ namespace db
 		std::string m_animLibraryGUID;
 		std::string m_assetManagerSelectedSet;
 		PassDownPin m_passDownPin;
-		NodeContainer m_controlParameters;
-		NodeContainer m_emittedControlParameters;
-		std::vector<Layer> m_layers;
+		ControlParametersNode m_controlParameters;
+		EmittedControlParametersNode m_emittedControlParameters;
+		LayersNode m_layers;
 		SceneGraphRoot m_sceneGraphRoot;
-		NodeContainer m_animationSets;
-		NodeContainer m_bodyGroups;
-		NodeContainer m_requests;
-		NodeContainer m_requestPresets;
-		NodeContainer m_characterStartPoints;
+		AnimationSetsNode m_animationSets;
+		BodyGroupsNode m_bodyGroups;
+		RequestsNode m_requests;
+		RequestPresetsNode m_requestPresets;
+		CharacterStartPointsNode m_characterStartPoints;
 
 	public:
 		Network(Node* parent);
@@ -66,37 +73,37 @@ namespace db
 		ControlParameter* getControlParameterByName(const std::string& name) const;
 		ControlParameter* addControlParameter(ControlParameter* controlParameter);
 		void removeControlParameter(int index);
-		size_t getNumControlParameters() const { return m_controlParameters.getNumNodes(); }
+		size_t getNumControlParameters() const { return m_controlParameters.getNumControlParameters(); }
 
 		EmittedControlParameter* getEmittedControlParameter(int index) const;
 		EmittedControlParameter* addEmittedControlParameter(EmittedControlParameter* emittedControlParameter);
 		void removeEmittedControlParameter(int index);
-		size_t getNumEmittedControlParameters() const { return m_emittedControlParameters.getNumNodes(); }
+		size_t getNumEmittedControlParameters() const { return m_emittedControlParameters.getNumEmittedControlParameters(); }
 
 		AnimationSet* getAnimationSet(int index) const;
 		AnimationSet* addAnimationSet(std::string name);
 		void removeAnimationSet(int index);
-		size_t getNumAnimationSets() const { return m_animationSets.getNumNodes(); }
+		size_t getNumAnimationSets() const { return m_animationSets.getNumAnimationSets(); }
 
 		BodyGroup* getBodyGroup(int index) const;
 		BodyGroup* addBodyGroup(const std::string& name);
 		void removeBodyGroup(int index);
-		size_t getNumBodyGroups() const { return m_bodyGroups.getNumNodes(); }
+		size_t getNumBodyGroups() const { return m_bodyGroups.getNumBodyGroups(); }
 
 		Request* getRequest(int index) const;
 		Request* getRequestByName(const std::string& name) const;
 		Request* addRequest(const std::string& name);
 		void removeRequest(int index);
-		size_t getNumRequests() const { return m_requests.getNumNodes(); }
+		size_t getNumRequests() const { return m_requests.getNumRequests(); }
 
 		RequestPreset* getRequestPreset(int index) const;
 		RequestPreset* addRequestPreset(Request request);
 		void removeRequestPreset(int index);
-		size_t getNumRequestPresets() const { return m_requestPresets.getNumNodes(); }
+		size_t getNumRequestPresets() const { return m_requestPresets.getNumRequestPresets(); }
 
 		CharacterStartPoint* getCharacterStartPoint(int index) const;
 		CharacterStartPoint* addCharacterStartPoint(AnimationSet* animationSet);
 		void removeCharacterStartPoint(int index);
-		size_t getNumCharacterStartPoints() const { return m_characterStartPoints.getNumNodes(); }
+		size_t getNumCharacterStartPoints() const { return m_characterStartPoints.getNumCharacterStartPoints(); }
 	};
 }

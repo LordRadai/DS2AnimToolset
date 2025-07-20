@@ -2,13 +2,13 @@
 
 namespace db
 {
-	Network::Network(Node* parent) : Node(parent, "Network"),
+	Network::Network(Node* parent) : Node(parent, "Network", "Network"),
 		m_passDownPin(this, "Result", true),
-		m_animationLocations(this),
-		m_previewScripts(this),
+		m_animationLocations(this, "AnimationLocations"),
+		m_previewScripts(this, "PreviewScripts"),
 		m_controlParameters(this),
 		m_emittedControlParameters(this),
-		m_layers(),
+		m_layers(this),
 		m_sceneGraphRoot(this),
 		m_animationSets(this),
 		m_bodyGroups(this),
@@ -24,7 +24,7 @@ namespace db
 		if (index < 0 || index >= m_animationLocations.getNumNodes())
 			throw std::out_of_range("Index out of range");
 
-		return static_cast<AnimationLocation*>(m_animationLocations.getNode(index));
+		return dynamic_cast<AnimationLocation*>(m_animationLocations.getNode(index));
 	}
 
 	AnimationLocation* Network::addAnimationLocation(const std::string& sourceDir, const std::string& markupDir, bool bIncludeSubDirs)
@@ -48,7 +48,7 @@ namespace db
 		if (index < 0 || index >= m_previewScripts.getNumNodes())
 			throw std::out_of_range("Index out of range");
 
-		return static_cast<PreviewScript*>(m_previewScripts.getNode(index));
+		return dynamic_cast<PreviewScript*>(m_previewScripts.getNode(index));
 	}
 
 	PreviewScript* Network::addPreviewScript(const std::string& filepath)
@@ -69,17 +69,14 @@ namespace db
 
 	ControlParameter* Network::getControlParameter(int index) const
 	{
-		if (index < 0 || index >= m_controlParameters.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		return static_cast<ControlParameter*>(m_controlParameters.getNode(index));
+		return m_controlParameters.getControlParameter(index);
 	}
 
 	ControlParameter* Network::getControlParameterByName(const std::string& name) const
 	{
-		for (size_t i = 0; i < m_controlParameters.getNumNodes(); i++)
+		for (size_t i = 0; i < m_controlParameters.getNumControlParameters(); i++)
 		{
-			ControlParameter* cp = static_cast<ControlParameter*>(m_controlParameters.getNode(i));
+			ControlParameter* cp = m_controlParameters.getControlParameter(i);
 
 			if (cp->getName() == name)
 				return cp;
@@ -90,101 +87,77 @@ namespace db
 
 	ControlParameter* Network::addControlParameter(ControlParameter* controlParameter)
 	{
-		m_controlParameters.addNode(controlParameter);
+		m_controlParameters.addControlParameter(controlParameter);
 		return controlParameter;
 	}
 
 	void Network::removeControlParameter(int index)
 	{
-		if (index < 0 || index >= m_controlParameters.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		m_controlParameters.removeNode(index);
+		m_controlParameters.removeControlParameter(index);
 	}
 
 	EmittedControlParameter* Network::getEmittedControlParameter(int index) const
 	{
-		if (index < 0 || index >= m_emittedControlParameters.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		return static_cast<EmittedControlParameter*>(m_emittedControlParameters.getNode(index));
+		return m_emittedControlParameters.getEmittedControlParameter(index);
 	}
 
 	EmittedControlParameter* Network::addEmittedControlParameter(EmittedControlParameter* emittedControlParameter) 
 	{ 
-		m_emittedControlParameters.addNode(emittedControlParameter); 
+		m_emittedControlParameters.addEmittedControlParameter(emittedControlParameter); 
 		return emittedControlParameter;
 	}
 
 	void Network::removeEmittedControlParameter(int index)
 	{
-		if (index < 0 || index >= m_emittedControlParameters.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		m_emittedControlParameters.removeNode(index);
+		m_emittedControlParameters.removeEmittedControlParameter(index);
 	}
 
 	AnimationSet* Network::getAnimationSet(int index) const
 	{
-		if (index < 0 || index >= m_animationSets.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		return static_cast<AnimationSet*>(m_animationSets.getNode(index));
+		return m_animationSets.getAnimationSet(index);
 	}
 
 	AnimationSet* Network::addAnimationSet(std::string name)
 	{
 		AnimationSet* newSet = new AnimationSet(this, name);
-		m_animationSets.addNode(newSet);
+		m_animationSets.addAnimationSet(newSet);
 
 		return newSet;
 	}
 
 	void  Network::removeAnimationSet(int index)
 	{
-		if (index < 0 || index >= m_animationSets.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		m_animationSets.removeNode(index);
+		m_animationSets.removeAnimationSet(index);
 	}
 
 	BodyGroup* Network::getBodyGroup(int index) const
 	{
-		if (index < 0 || index >= m_bodyGroups.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		return static_cast<BodyGroup*>(m_bodyGroups.getNode(index));
+		return m_bodyGroups.getBodyGroup(index);
 	}
 
 	BodyGroup* Network::addBodyGroup(const std::string& name)
 	{
 		BodyGroup* newGroup = new BodyGroup(this, name);
-		m_bodyGroups.addNode(newGroup);
+		m_bodyGroups.addBodyGroup(newGroup);
 
 		return newGroup;
 	}
 
 	void  Network::removeBodyGroup(int index)
 	{
-		if (index < 0 || index >= m_bodyGroups.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		m_bodyGroups.removeNode(index);
+		m_bodyGroups.removeBodyGroup(index);
 	}
 
 	Request* Network::getRequest(int index) const
 	{
-		if (index < 0 || index >= m_requests.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		return static_cast<Request*>(m_requests.getNode(index));
+		return m_requests.getRequest(index);
 	}
 
 	Request* Network::getRequestByName(const std::string& name) const
 	{
-		for (size_t i = 0; i < m_requests.getNumNodes(); i++)
+		for (size_t i = 0; i < m_requests.getNumRequests(); i++)
 		{
-			Request* request = static_cast<Request*>(m_requests.getNode(i));
+			Request* request = m_requests.getRequest(i);
 
 			if (request->getName() == name)
 				return request;
@@ -197,63 +170,48 @@ namespace db
 	{
 		Request* newRequest = new Request(this, name);
 
-		m_requests.addNode(newRequest);
+		m_requests.addRequest(newRequest);
 		return newRequest;
 	}
 
-	void  Network::removeRequest(int index)
+	void Network::removeRequest(int index)
 	{
-		if (index < 0 || index >= m_requests.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		m_requests.removeNode(index);
+		m_requests.removeRequest(index);
 	}
 
 	RequestPreset* Network::getRequestPreset(int index) const
 	{
-		if (index < 0 || index >= m_requestPresets.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		return static_cast<RequestPreset*>(m_requestPresets.getNode(index));
+		return m_requestPresets.getRequestPreset(index);
 	}
 
 	RequestPreset* Network::addRequestPreset(Request request)
 	{
 		RequestPreset* newPreset = new RequestPreset(this, request);
-		m_requestPresets.addNode(newPreset);
+		m_requestPresets.addRequestPreset(newPreset);
 
 		return newPreset;
 	}
 
 	void  Network::removeRequestPreset(int index)
 	{
-		if (index < 0 || index >= m_requestPresets.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		m_requestPresets.removeNode(index);
+		m_requestPresets.removeRequestPreset(index);
 	}
 
 	CharacterStartPoint* Network::getCharacterStartPoint(int index) const
 	{
-		if (index < 0 || index >= m_characterStartPoints.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		return static_cast<CharacterStartPoint*>(m_characterStartPoints.getNode(index));
+		return m_characterStartPoints.getCharacterStartPoint(index);
 	}
 
 	CharacterStartPoint* Network::addCharacterStartPoint(AnimationSet* animationSet)
 	{
 		CharacterStartPoint* newStartPoint = new CharacterStartPoint(this, animationSet);
-		m_characterStartPoints.addNode(newStartPoint);
+		m_characterStartPoints.addCharacterStartPoint(newStartPoint);
 
 		return newStartPoint;
 	}
 
 	void  Network::removeCharacterStartPoint(int index)
 	{
-		if (index < 0 || index >= m_characterStartPoints.getNumNodes())
-			throw std::out_of_range("Index out of range");
-
-		m_characterStartPoints.removeNode(index);
+		m_characterStartPoints.removeCharacterStartPoint(index);
 	}
 }
