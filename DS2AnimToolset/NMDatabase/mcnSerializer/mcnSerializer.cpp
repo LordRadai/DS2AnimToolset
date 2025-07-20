@@ -1,6 +1,6 @@
 #include "mcnSerializer.h"
 
-tinyxml2::XMLElement* mcnSerializer::createElement(tinyxml2::XMLElement* parent, std::string name, std::string value)
+tinyxml2::XMLElement* mcnSerializer::createElement(tinyxml2::XMLElement* parent, std::string name, std::string text)
 {
 	tinyxml2::XMLElement* element = parent->InsertNewChildElement(name.c_str());
 
@@ -10,9 +10,9 @@ tinyxml2::XMLElement* mcnSerializer::createElement(tinyxml2::XMLElement* parent,
 	return element;
 }
 
-tinyxml2::XMLElement* mcnSerializer::createTypedElement(tinyxml2::XMLElement* parent, std::string name, std::string type, std::string value)
+tinyxml2::XMLElement* mcnSerializer::createTypedElement(tinyxml2::XMLElement* parent, std::string name, std::string type, std::string text)
 {
-	tinyxml2::XMLElement* element = createElement(parent, name, value);
+	tinyxml2::XMLElement* element = createElement(parent, name, text);
 	element->SetAttribute("type", type.c_str());
 
 	return element;

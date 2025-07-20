@@ -6,7 +6,7 @@ namespace db
 	class Layer : public Node
 	{
 	public:
-		Layer(Node* parent, const std::string name) : Node(parent, name) {};
+		Layer(Node* parent, const std::string name) : Node(parent, "Layer", name) {};
 
 		virtual ~Layer() {};
 		virtual bool isValid() const { return Node::isValid(); }

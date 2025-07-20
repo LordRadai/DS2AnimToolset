@@ -10,7 +10,6 @@ namespace db
 	tinyxml2::XMLElement* CharacterStartPoint::serialize(tinyxml2::XMLElement* parent)
 	{
 		tinyxml2::XMLElement* element = Node::serialize(parent);
-		element->SetName("CharacterStartPointLinkNode");
 		
 		if (m_animationSet)
 			tinyxml2::XMLElement* animSetElement = m_animationSet->serialize(element);

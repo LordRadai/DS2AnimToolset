@@ -17,7 +17,7 @@ namespace db
 		std::string m_type;
 		DataPin m_dataPin;
 
-		ControlParameter(Node* parent, std::string name, std::string type) : Node(parent, name), m_type(type), m_dataPin(this, "Result", type) {};
+		ControlParameter(Node* parent, std::string name, std::string type) : Node(parent, "ControlParameter", name), m_type(type), m_dataPin(this, "Result", type) {};
 		virtual ~ControlParameter() {};
 
 	public:

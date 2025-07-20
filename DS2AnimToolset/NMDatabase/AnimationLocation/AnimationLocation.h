@@ -12,7 +12,7 @@ namespace db
 
 	public:
 		AnimationLocation(Node* parent, const std::string& sourceDir, const std::string& markupDir, bool bIncludeSubDirs = false) :
-			Node(parent, "AnimationLocation"),
+			Node(parent, "AnimationLocation", "AnimationLocation"),
 			m_sourceDir(sourceDir),
 			m_markupDir(markupDir),
 			m_bIncludeSubDirs(bIncludeSubDirs) {

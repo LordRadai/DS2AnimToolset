@@ -11,7 +11,6 @@ namespace db
 	tinyxml2::XMLElement* ControlParameter::serialize(tinyxml2::XMLElement* parent)
 	{
 		tinyxml2::XMLElement* element = Node::serialize(parent);
-		element->SetName("ControlParameter");
 
 		m_dataPin.serialize(element);
 	}

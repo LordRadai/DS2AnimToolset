@@ -7,7 +7,6 @@ namespace db
 	tinyxml2::XMLElement* FlowEdge::serialize(tinyxml2::XMLElement* parent)
 	{
 		tinyxml2::XMLElement* element = Node::serialize(parent);
-		element->SetName("FlowEdge");
 
 		mcnSerializer::createPointerElement(element, "Source", m_source->getQualifiedName());
 		mcnSerializer::createPointerElement(element, "Destination", m_destination->getQualifiedName());

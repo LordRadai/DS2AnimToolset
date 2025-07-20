@@ -7,7 +7,7 @@ namespace db
 	class Request : public Node
 	{
 	public:
-		Request(Node* parent, std::string name) : Node(parent, name) {}
+		Request(Node* parent, std::string name) : Node(parent, "Request", name) {}
 
 		virtual ~Request() {};
 		virtual bool isValid() const { Node::isValid(); }

@@ -14,8 +14,9 @@ namespace db
 		scriptContent << scriptFile.rdbuf();
 
 		tinyxml2::XMLElement* element = Node::serialize(parent);
-		element->SetName("PreviewScriptNode");
 
-		mcnSerializer::createStringElement(element, "ScriptData", scriptContent.str());
+		tinyxml2::XMLElement* scriptData = mcnSerializer::createStringElement(element, "ScriptData", scriptContent.str());
+		tinyxml2::XMLText* textNode = element->FirstChildElement()->ToText();
+		textNode->SetCData(true);
 	}
 }

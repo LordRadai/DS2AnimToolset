@@ -10,7 +10,7 @@ namespace db
 		ControlParameter* m_controlParameter;
 
 	public:
-		EmittedControlParameter(Node* parent, std::string name, ControlParameter* controlParameter) : Node(parent, name), m_controlParameter(controlParameter) {};
+		EmittedControlParameter(Node* parent, ControlParameter* controlParameter) : Node(parent, "EmittedControlParameter", controlParameter->getName()), m_controlParameter(controlParameter) {};
 		
 		virtual ~EmittedControlParameter() {};
 		virtual bool isValid() const { return Node::isValid() && m_controlParameter != nullptr && m_controlParameter->isValid(); };

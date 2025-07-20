@@ -11,7 +11,7 @@ namespace db
 		Request m_request;
 
 	public:
-		RequestPreset(Node* parent, Request request) : Node(parent, "Message"), m_request(request) {};
+		RequestPreset(Node* parent, Request request) : Node(parent, "Message", request.getName()), m_request(request) {};
 		
 		virtual ~RequestPreset() {};
 		virtual bool isValid() const { return Node::isValid() && m_request.isValid(); };

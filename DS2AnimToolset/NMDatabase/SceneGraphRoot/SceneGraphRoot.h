@@ -6,7 +6,7 @@ namespace db
 	class SceneGraphRoot : public Node
 	{
 	public:
-		SceneGraphRoot(Node* parent) : Node(parent, "SceneGraphRoot") {};
+		SceneGraphRoot(Node* parent) : Node(parent, "SceneGraphRootNode", "SceneGraphRoot") {};
 		virtual ~SceneGraphRoot() {};
 		virtual bool isValid() const { return Node::isValid(); }
 		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent) { return Node::serialize(parent); }

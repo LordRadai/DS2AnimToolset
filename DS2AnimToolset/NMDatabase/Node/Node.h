@@ -6,11 +6,12 @@ namespace db
 	class Node
 	{
 	protected:
-		std::string m_name = "";
-		Node* m_parent = nullptr;
+		std::string m_identifier;
+		std::string m_label;
+		Node* m_parent;
 
 	public:
-		Node(Node* parent, std::string name) : m_parent(parent), m_name(name) {};
+		Node(Node* parent, std::string identifier, std::string label) : m_parent(parent), m_identifier(identifier), m_label(label) {};
 
 		virtual ~Node() {};
 		virtual bool isValid() const { return true; }
@@ -23,8 +24,10 @@ namespace db
 		*/
 		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent) const;
 
-		std::string getName() const { return m_name; };
-		void setName(const std::string& name) { m_name = name; };
+		std::string getIdentifier() const { return m_identifier; };
+
+		std::string getName() const { return m_label; };
+		void setName(const std::string& name) { m_label = name; };
 
 		Node* getParent() const { return m_parent; };
 		void setParent(Node* parent) { m_parent = parent; };

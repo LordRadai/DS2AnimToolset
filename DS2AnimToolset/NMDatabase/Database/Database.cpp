@@ -37,7 +37,6 @@ namespace db
 	tinyxml2::XMLElement* Database::serialize(tinyxml2::XMLElement* parent)
 	{
 		tinyxml2::XMLElement* dbElement = Node::serialize(parent);
-		dbElement->SetName("MorphemeDB");
 
 		tinyxml2::XMLElement* networksElement = m_networks.serialize(dbElement);
 		networksElement->SetName("Networks");

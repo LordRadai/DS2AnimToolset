@@ -9,7 +9,7 @@ namespace db
 		AnimationSet* m_animationSet;
 
 	public:
-		CharacterStartPoint(Node* parent, AnimationSet* animationSet) : Node(parent, "StartPoint"), m_animationSet(animationSet) {};
+		CharacterStartPoint(Node* parent, AnimationSet* animationSet) : Node(parent, "CharacterStartPointLinkNode", "StartPoint"), m_animationSet(animationSet) {};
 		
 		virtual ~CharacterStartPoint() {};
 		virtual bool isValid() const;

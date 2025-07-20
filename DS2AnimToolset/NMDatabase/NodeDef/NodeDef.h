@@ -11,7 +11,7 @@ namespace db
 		std::string m_nodeType;
 		int m_manifestVersion;
 
-		NodeDef(Node* parent, std::string name, std::string nodeType, int manifestVersion) : Node(parent, name), m_nodeType(nodeType), m_manifestVersion(manifestVersion) {};
+		NodeDef(Node* parent, std::string name, std::string identifier, std::string nodeType, int manifestVersion) : Node(parent, identifier, name), m_nodeType(nodeType), m_manifestVersion(manifestVersion) {};
 		
 		virtual ~NodeDef() {};
 

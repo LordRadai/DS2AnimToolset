@@ -37,7 +37,6 @@ namespace db
 	tinyxml2::XMLElement* AnimationSet::serialize(tinyxml2::XMLElement* parent)
 	{
 		tinyxml2::XMLElement* element = Node::serialize(parent);
-		element->SetName("AnimationSet");
 
 		mcnSerializer::createStringElement(element, "Rig", m_rig);
 		mcnSerializer::createStringElement(element, "AssetManagerSkin", m_assetManagerSkin);

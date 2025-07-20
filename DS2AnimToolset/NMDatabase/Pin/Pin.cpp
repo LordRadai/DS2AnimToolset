@@ -20,7 +20,6 @@ namespace db
 	tinyxml2::XMLElement* FunctionalPin::serialize(tinyxml2::XMLElement* parent)
 	{
 		tinyxml2::XMLElement* pinElement = Node::serialize(parent);
-		pinElement->SetName("FunctionalPin");
 		
 		mcnSerializer::createStringArrayElement(pinElement, "Interfaces", m_interfaces);
 	}
@@ -29,6 +28,7 @@ namespace db
 	{
 		if (index < 0 || index >= m_interfaces.size())
 			throw std::out_of_range("Index out of range");
+
 		return m_interfaces[index];
 	}
 
@@ -73,7 +73,6 @@ namespace db
 	tinyxml2::XMLElement* DataPin::serialize(tinyxml2::XMLElement* parent)
 	{
 		tinyxml2::XMLElement* pinElement = Node::serialize(parent);
-		pinElement->SetName("DataPin");
 
 		mcnSerializer::createEnumElement(pinElement, "Type", m_dataType);
 
@@ -83,7 +82,6 @@ namespace db
 	tinyxml2::XMLElement* PassDownPin::serialize(tinyxml2::XMLElement* parent)
 	{
 		tinyxml2::XMLElement* pinElement = Node::serialize(parent);
-		pinElement->SetName("PassDownPin");
 
 		mcnSerializer::createBoolElement(pinElement, "Reference", m_bReference);
 

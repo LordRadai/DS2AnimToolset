@@ -9,7 +9,7 @@ namespace db
 		std::string m_filepath;
 
 	public:
-		PreviewScript(Node* parent, const std::string name, const std::string filepath) : Node(parent, name), m_filepath(filepath) {};
+		PreviewScript(Node* parent, const std::string name, const std::string filepath) : Node(parent, "PreviewScriptNode", name), m_filepath(filepath) {};
 		
 		virtual ~PreviewScript() {};
 		virtual bool isValid() const { return Node::isValid(); }

@@ -10,7 +10,7 @@ namespace db
 		std::vector<Node*> m_nodes;
 
 	public:
-		NodeContainer(Node* parent) : Node(parent, "") {};
+		NodeContainer(Node* parent, std::string identifier) : Node(parent, identifier, "") {};
 
 		virtual ~NodeContainer() {};
 		virtual bool isValid() const;

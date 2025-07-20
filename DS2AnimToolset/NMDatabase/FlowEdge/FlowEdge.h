@@ -12,7 +12,7 @@ namespace db
 		NodeDef* m_destination;
 
 	public:
-		FlowEdge(Node* parent, NodeDef* from, NodeDef* to) : Node(parent, "FlowEdge"), m_source(from), m_destination(to) {};
+		FlowEdge(Node* parent, NodeDef* from, NodeDef* to, std::string name) : Node(parent, "FlowEdge", name), m_source(from), m_destination(to) {}
 
 		virtual ~FlowEdge() {};
 		virtual bool isValid() const { return Node::isValid() && m_source != nullptr && m_destination != nullptr; };

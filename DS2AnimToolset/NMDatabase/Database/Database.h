@@ -12,7 +12,7 @@ namespace db
 		NodeContainer m_networks;
 
 	public:
-		Database() : Node(nullptr, "MorphemeDB"), m_namespace("mcd"), m_networks(this) {};
+		Database() : Node(nullptr, "MorphemeDB", "MorphemeDB"), m_namespace("mcd"), m_networks(this) {};
 		
 		virtual ~Database() {};
 		virtual bool isValid() const;
