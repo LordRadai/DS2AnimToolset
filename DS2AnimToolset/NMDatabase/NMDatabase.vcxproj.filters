@@ -72,6 +72,12 @@
     <ClInclude Include="NodeContainer\NodeContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FlowEdge\FlowEdge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcnSerializer\mcnSerializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NMDatabase.cpp">
@@ -132,6 +138,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CharacterStartPoint\CharacterStartPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FlowEdge\FlowEdge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcnSerializer\mcnSerializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -8,6 +8,9 @@ namespace db
 	{
 	public:
 		Request(Node* parent, std::string name) : Node(parent, name) {}
-		~Request() {};
+
+		virtual ~Request() {};
+		virtual bool isValid() const { Node::isValid(); }
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 	};
 }

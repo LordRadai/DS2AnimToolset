@@ -10,7 +10,10 @@ namespace db
 
 	public:
 		PreviewScript(Node* parent, const std::string name, const std::string filepath) : Node(parent, name), m_filepath(filepath) {};
-		~PreviewScript() {};
+		
+		virtual ~PreviewScript() {};
+		virtual bool isValid() const { return Node::isValid(); }
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		std::string getFilepath() const { return m_filepath; };
 	};

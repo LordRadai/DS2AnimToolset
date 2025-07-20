@@ -11,7 +11,10 @@ namespace db
 
 	public:
 		NodeContainer(Node* parent) : Node(parent, "") {};
-		~NodeContainer() {};
+
+		virtual ~NodeContainer() {};
+		virtual bool isValid() const;
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		void addNode(Node* node) { m_nodes.push_back(node); }
 		void removeNode(int index);

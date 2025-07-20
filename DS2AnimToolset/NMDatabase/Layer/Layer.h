@@ -7,6 +7,9 @@ namespace db
 	{
 	public:
 		Layer(Node* parent, const std::string name) : Node(parent, name) {};
-		~Layer() {};
+
+		virtual ~Layer() {};
+		virtual bool isValid() const { return Node::isValid(); }
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 	};
 }

@@ -13,13 +13,14 @@
 #include "../Layer/Layer.h"
 #include "../SceneGraphRoot/SceneGraphRoot.h"
 #include "../Node/Node.h"
+#include "../NodeDef/NodeDef.h"
 #include "../NodeContainer/NodeContainer.h"
 
 namespace db
 {
 	class Network : public Node
 	{
-		//std::vector<NodeDef> m_nodes;
+		std::vector<NodeDef> m_nodes;
 		NodeContainer m_animationLocations;
 		NodeContainer m_previewScripts;
 		GUID m_GUID;
@@ -38,7 +39,10 @@ namespace db
 
 	public:
 		Network(Node* parent);
-		~Network() {};
+
+		virtual ~Network() {};
+		virtual bool isValid() const;
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		GUID getGUID() const { return m_GUID; }
 		void setGUID(const GUID& guid) { m_GUID = guid; }

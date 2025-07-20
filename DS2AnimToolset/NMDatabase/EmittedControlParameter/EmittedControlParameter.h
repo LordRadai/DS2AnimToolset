@@ -11,7 +11,10 @@ namespace db
 
 	public:
 		EmittedControlParameter(Node* parent, std::string name, ControlParameter* controlParameter) : Node(parent, name), m_controlParameter(controlParameter) {};
-		~EmittedControlParameter() {};
+		
+		virtual ~EmittedControlParameter() {};
+		virtual bool isValid() const { return Node::isValid() && m_controlParameter != nullptr && m_controlParameter->isValid(); };
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		ControlParameter* getControlParameter() const { return m_controlParameter; };
 	};

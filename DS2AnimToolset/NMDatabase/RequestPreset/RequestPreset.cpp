@@ -1,12 +1,10 @@
 #include "RequestPreset.h"
+#include "../mcnSerializer/mcnSerializer.h"
 
 namespace db
 {
-	std::string RequestPreset::getManfiestPreset(int index)
+	tinyxml2::XMLElement* RequestPreset::serialize(tinyxml2::XMLElement* parent)
 	{
-		if (index < 0 || index >= m_addedManifestPresets.size())
-			throw std::out_of_range("Index out of range");
-
-		return m_addedManifestPresets[index];
+		return Node::serialize(parent);
 	}
 }

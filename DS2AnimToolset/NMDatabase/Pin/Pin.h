@@ -8,9 +8,13 @@ namespace db
 
 	class Pin : public Node
 	{
-	public:
+	protected:
 		Pin(Node* parent, std::string name) : Node(parent, name) {};
-		~Pin() {};
+		virtual ~Pin() {};
+		
+	public:
+		virtual bool isValid() const { return Node::isValid(); }
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent) { return nullptr; }
 
 		std::string getName() const { return m_name; };
 	};
@@ -21,7 +25,9 @@ namespace db
 
 	public:
 		PassDownPin(Node* parent, std::string name, bool bReference = true) : Pin(parent, name), m_bReference(bReference) {};
-		~PassDownPin() {};
+		virtual ~PassDownPin() {};
+		virtual bool isValid() const { return true; }
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		bool isReference() const { return m_bReference; };
 	};
@@ -31,8 +37,11 @@ namespace db
 		std::vector<Interface> m_interfaces;
 
 	public:
-		FunctionalPin(Node* parent, std::string name) : Pin(parent, name){};
-		~FunctionalPin() {};
+		FunctionalPin(Node* parent, std::string name) : Pin(parent, name) {};
+
+		virtual ~FunctionalPin() {};
+		virtual bool isValid() const;
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		std::string getInterface(int index) const;
 		void addInterface(const std::string& interf);
@@ -47,7 +56,10 @@ namespace db
 
 	public:
 		DataPin(Node* parent, std::string name, std::string dataType) : Pin(parent, name), m_dataType(dataType) {};
-		~DataPin() {};
+
+		virtual ~DataPin() {};
+		virtual bool isValid() const;
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		std::string getDataType() const { return m_dataType; };
 	};

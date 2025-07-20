@@ -10,7 +10,10 @@ namespace db
 
 	public:
 		Skin(Node* parent, const std::string& name, const std::string& path) : Node(parent, name), m_path(path) {}
-		~Skin() {};
+		
+		virtual ~Skin() {};
+		virtual bool isValid() const;
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		std::string getPath() const { return m_path; }
 	};

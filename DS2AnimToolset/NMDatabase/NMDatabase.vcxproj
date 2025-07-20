@@ -155,6 +155,7 @@
     <ClInclude Include="ControlParameter\ControlParameter.h" />
     <ClInclude Include="Database\Database.h" />
     <ClInclude Include="EmittedControlParameter\EmittedControlParameter.h" />
+    <ClInclude Include="FlowEdge\FlowEdge.h" />
     <ClInclude Include="Layer\Layer.h" />
     <ClInclude Include="Network\Network.h" />
     <ClInclude Include="NodeContainer\NodeContainer.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="RequestPreset\RequestPreset.h" />
     <ClInclude Include="Request\Request.h" />
     <ClInclude Include="SceneGraphRoot\SceneGraphRoot.h" />
+    <ClInclude Include="mcnSerializer\mcnSerializer.h" />
     <ClInclude Include="Skin\Skin.h" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +178,7 @@
     <ClCompile Include="ControlParameter\ControlParameter.cpp" />
     <ClCompile Include="Database\Database.cpp" />
     <ClCompile Include="EmittedControlParameter\EmittedControlParameter.cpp" />
+    <ClCompile Include="FlowEdge\FlowEdge.cpp" />
     <ClCompile Include="Layer\Layer.cpp" />
     <ClCompile Include="Network\Network.cpp" />
     <ClCompile Include="NMDatabase.cpp" />
@@ -187,6 +190,7 @@
     <ClCompile Include="RequestPreset\RequestPreset.cpp" />
     <ClCompile Include="Request\Request.cpp" />
     <ClCompile Include="SceneGraphRoot\SceneGraphRoot.cpp" />
+    <ClCompile Include="mcnSerializer\mcnSerializer.cpp" />
     <ClCompile Include="Skin\Skin.cpp" />
   </ItemGroup>
   <ItemGroup>

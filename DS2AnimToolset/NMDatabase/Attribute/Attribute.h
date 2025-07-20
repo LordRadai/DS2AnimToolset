@@ -15,9 +15,12 @@ namespace db
 		bool m_bPerAnimSet;
 
 		Attribute(Node* parent, std::string name, std::string type, bool bPerAnimSet) : Node(parent, name), m_type(type), m_bPerAnimSet(bPerAnimSet) {};
-		~Attribute() {};
+		virtual ~Attribute() {};
 
 	public:
+		virtual bool isValid() const;
+		virtual tinyxml2::XMLElement* serialize();
+
 		std::string getName() const { return m_name; };
 		std::string getType() const { return m_type; };
 		bool isPerAnimSet() const { return m_bPerAnimSet; };
@@ -29,7 +32,11 @@ namespace db
 
 	public:
 		BoolAttribute(Node* parent, std::string name, bool value) : Attribute(parent, name, "bool", false), m_value(value) {};
-		~BoolAttribute() {};
+		
+		virtual ~BoolAttribute() {};
+		virtual bool isValid() const;
+		virtual tinyxml2::XMLElement* serialize();
+
 		bool getValue() const { return m_value; };
 		void setValue(bool value) { m_value = value; };
 	};
@@ -39,7 +46,10 @@ namespace db
 		float m_value;
 	public:
 		FloatAttribute(Node* parent, std::string name, float value) : Attribute(parent, name, "float", false), m_value(value) {};
-		~FloatAttribute() {};
+		
+		virtual ~FloatAttribute() {};
+		virtual bool isValid() const;
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		float getValue() const { return m_value; };
 		void setValue(float value) { m_value = value; };

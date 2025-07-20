@@ -1,7 +1,58 @@
 #include "AnimationSet.h"
+#include "../mcnSerializer/mcnSerializer.h"
 
 namespace db
 {
+	bool AnimationSet::isValid() const
+	{
+		if (!Node::isValid())
+			return false;
+
+		if (m_rig.empty())
+			return false;
+
+		if (m_skins.getNumNodes() == 0)
+			return false;
+
+		if (m_format.empty())
+			return false;
+
+		if (m_networkFollowJoint < 0)
+			return false;
+
+		if (m_assetManagerFollowJoint < 0)
+			return false;
+
+		for (size_t i = 0; i < m_skins.getNumNodes(); i++)
+		{
+			Skin* skin = static_cast<Skin*>(m_skins.getNode(i));
+
+			if (skin == nullptr || !skin->isValid())
+				return false;
+		}
+
+		return true;
+	}
+
+	tinyxml2::XMLElement* AnimationSet::serialize(tinyxml2::XMLElement* parent)
+	{
+		tinyxml2::XMLElement* element = Node::serialize(parent);
+		element->SetName("AnimationSet");
+
+		mcnSerializer::createStringElement(element, "Rig", m_rig);
+		mcnSerializer::createStringElement(element, "AssetManagerSkin", m_assetManagerSkin);
+
+		for (size_t i = 0; i < m_skins.getNumNodes(); i++)
+			m_skins.getNode(i)->serialize(element);
+
+		mcnSerializer::createStringElement(element, "Format", m_format);
+		mcnSerializer::createStringArrayElement(element, "RigChannelNames", m_channelNames);
+		mcnSerializer::createStringElement(element, "NetworkFollowJoint", getChannelName(m_networkFollowJoint));
+		mcnSerializer::createStringElement(element, "AssetManagerFollowJoint", getChannelName(m_assetManagerFollowJoint));
+		mcnSerializer::createStringElement(element, "Template", m_template);
+		mcnSerializer::createMatrix34Element(element, "RetargetSrcStartPointLocation", m_retargetSrcStartPointLocation);
+	}
+
 	void AnimationSet::setRetargetSrcStartPointLocation(const NMP::Vector3 rx, const NMP::Vector3 ry, const NMP::Vector3 rz, const NMP::Vector3 position)
 	{
 		this->m_retargetSrcStartPointLocation.r[0] = rx;

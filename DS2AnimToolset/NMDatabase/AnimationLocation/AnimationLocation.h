@@ -18,7 +18,9 @@ namespace db
 			m_bIncludeSubDirs(bIncludeSubDirs) {
 		};
 
-		~AnimationLocation() {};
+		virtual ~AnimationLocation() {};
+		virtual bool isValid() const { return Node::isValid() && !m_sourceDir.empty() && !m_markupDir.empty(); };
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		std::string getSourceDir() const { return m_sourceDir; };
 		std::string getMarkupDir() const { return m_markupDir; };

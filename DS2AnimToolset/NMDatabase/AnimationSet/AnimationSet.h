@@ -22,7 +22,10 @@ namespace db
 
 	public:
 		AnimationSet(Node* parent, std::string name) : Node(parent, name), m_skins(this) {};
-		~AnimationSet() {};
+
+		virtual ~AnimationSet() {};
+		virtual bool isValid() const;
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		std::string getRig() const { return m_rig; }
 		void setRig(const std::string& rig) { m_rig = rig; }

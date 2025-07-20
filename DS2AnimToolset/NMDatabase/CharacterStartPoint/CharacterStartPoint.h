@@ -10,7 +10,10 @@ namespace db
 
 	public:
 		CharacterStartPoint(Node* parent, AnimationSet* animationSet) : Node(parent, "StartPoint"), m_animationSet(animationSet) {};
-		~CharacterStartPoint() {};
+		
+		virtual ~CharacterStartPoint() {};
+		virtual bool isValid() const;
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		AnimationSet* getAnimationSet() const { return m_animationSet; };
 		void setAnimationSet(AnimationSet* animationSet) { m_animationSet = animationSet; };
