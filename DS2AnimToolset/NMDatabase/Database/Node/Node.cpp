@@ -3,7 +3,7 @@
 
 namespace db
 {
-	tinyxml2::XMLElement* db::Node::serialize(tinyxml2::XMLElement* parent) const
+	tinyxml2::XMLElement* Node::serialize(tinyxml2::XMLElement* parent)
 	{
 		return mcnSerializer::createNodeElement(parent, m_identifier, m_label);
 	}

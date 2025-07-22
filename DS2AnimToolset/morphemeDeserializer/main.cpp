@@ -5,17 +5,15 @@ RLog* g_appLog = nullptr;
 
 void testDb()
 {
+	std::filesystem::create_directories("MorphemeDeserializer");
+
 	db::Database database;
 	
 	db::Network* network = database.addNetwork();
 
-	tinyxml2::XMLDocument doc;
-	tinyxml2::XMLElement* root = database.serialize(doc.NewElement("PlaceholderRoot"));
+	network->addPreviewScript("MorphemeDeserializer//DefaultPreviewScript.lua");
 
-	doc.InsertFirstChild(root);
-
-	std::filesystem::create_directories("MorphemeDeserializer");
-	doc.SaveFile("MorphemeDeserializer//testDatabase.xml");
+	database.exportXML("MorphemeDeserializer//testDatabase.mcn");
 }
 
 int main(int argc, char* argv[]) 

@@ -31,12 +31,12 @@ namespace db
 	{
 		tinyxml2::XMLElement* element = Node::serialize(parent);
 		m_nodes.serialize(element);
+		m_animationLocations.serialize(element);
+		m_previewScripts.serialize(element);
 		mcnSerializer::createStringElement(element, "GUID", RString::guidToString(m_GUID));
 		mcnSerializer::createStringElement(element, "AnimLibraryGUID", m_animLibraryGUID);
 		mcnSerializer::createStringElement(element, "AssetManagerSelectedSet", m_assetManagerSelectedSet);
 		m_passDownPin.serialize(element);
-		m_animationLocations.serialize(element);
-		m_previewScripts.serialize(element);
 		m_controlParameters.serialize(element);
 		m_emittedControlParameters.serialize(element);
 		m_layers.serialize(element);
