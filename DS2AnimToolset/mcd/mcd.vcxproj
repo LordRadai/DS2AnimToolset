@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{cec6fc21-32d3-4b97-8929-7292819f2437}</ProjectGuid>
-    <RootNamespace>NMDatabase</RootNamespace>
+    <ProjectGuid>{6fa6298b-bb5d-4f35-a42f-841c277247d0}</ProjectGuid>
+    <RootNamespace>mcd</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -108,6 +108,8 @@
     <Link>
       <SubSystem>
       </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -115,12 +117,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)XMLWriter\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)NMDatabase;$(SolutionDir)XMLWriter</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -134,39 +135,33 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)XMLWriter\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)NMDatabase;$(SolutionDir)XMLWriter</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ClCompile Include="Attribute\Attribute.cpp" />
+    <ClCompile Include="GraphNode\GraphNode.cpp" />
+    <ClCompile Include="Graph\Graph.cpp" />
+    <ClCompile Include="mcd.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="NMDatabase.h" />
-    <ClCompile Include="NodeContainer\NodeContainer.cpp" />
-    <ClCompile Include="Node\Node.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="NodeContainer\NodeContainer.h" />
-    <ClInclude Include="Node\Node.h" />
+    <ClInclude Include="Attribute\Attribute.h" />
+    <ClInclude Include="GraphNode\GraphNode.h" />
+    <ClInclude Include="Graph\Graph.h" />
+    <ClInclude Include="StateMachine\StateMachine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\directxtk_uwp.2025.7.10.1\build\native\directxtk_uwp.targets" Condition="Exists('..\packages\directxtk_uwp.2025.7.10.1\build\native\directxtk_uwp.targets')" />
   </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\directxtk_uwp.2025.7.10.1\build\native\directxtk_uwp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk_uwp.2025.7.10.1\build\native\directxtk_uwp.targets'))" />
-  </Target>
 </Project>

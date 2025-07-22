@@ -15,24 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="NMDatabase.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Node\Node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeContainer\NodeContainer.cpp">
+    <ClCompile Include="XMLWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Node\Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeContainer\NodeContainer.h">
+    <ClInclude Include="XMLWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
