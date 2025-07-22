@@ -15,8 +15,9 @@ namespace db
 		virtual ~NodeContainer() {};
 		virtual bool isValid() const;
 		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
+		virtual std::string getQualifiedName() const;
 
-		void addNode(Node* node) { m_nodes.push_back(node); }
+		void addNode(Node* node);
 		void removeNode(int index);
 		Node* getNode(int index) const;
 		size_t getNumNodes() const { return m_nodes.size(); }

@@ -25,6 +25,17 @@ class mcnSerializer
 	 */
 	static tinyxml2::XMLElement* createTypedElement(tinyxml2::XMLElement* parent, std::string name, std::string type, std::string value);
 
+	/**
+	 * Creates an XMLElement with a name and a type, and sets the text content to the specified value.
+	 *
+	 * \param parent The parent XML element to which the new element will be added.
+	 * \param name The name of the element to be created.
+	 * \param type The type of the element (e.g., "string", "int", etc.).
+	 * \param value The value to be set as the text content of the element.
+	 * \return A pointer to the newly created XMLElement, or nullptr if the creation failed.
+	 */
+	static tinyxml2::XMLElement* createNamedAndTypedElement(tinyxml2::XMLElement* parent, std::string name, std::string attribName, std::string type, std::string value);
+
 public:
 	/**
 	 * Creates an XMLElement string element.

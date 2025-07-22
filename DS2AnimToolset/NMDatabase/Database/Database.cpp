@@ -58,6 +58,7 @@ namespace db
 	tinyxml2::XMLElement* Database::serialize(tinyxml2::XMLElement* parent)
 	{
 		tinyxml2::XMLElement* dbElement = Node::serialize(parent);
+		dbElement->SetAttribute("namespace", m_namespace.c_str());
 
 		tinyxml2::XMLElement* networksElement = m_networks.serialize(dbElement);
 

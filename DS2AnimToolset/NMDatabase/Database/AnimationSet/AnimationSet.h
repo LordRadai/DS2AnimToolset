@@ -11,9 +11,9 @@ namespace db
 	class AnimationSet : public Node
 	{
 		std::string m_rig = "";
-		std::string m_assetManagerSkin = "";
+		Skin* m_assetManagerSkin = nullptr;
 		NodeContainer m_skins;
-		std::string m_format;
+		std::string m_format = "nsa";
 		std::vector<std::string> m_channelNames;
 		int m_networkFollowJoint = 0;
 		int m_assetManagerFollowJoint = 0;
@@ -21,7 +21,7 @@ namespace db
 		NMP::Matrix34 m_retargetSrcStartPointLocation;
 
 	public:
-		AnimationSet(Node* parent, std::string name) : Node(parent, "AnimationSet", name), m_skins(this, "Skins") {};
+		AnimationSet(Node* parent, std::string name) : Node(parent, "AnimationSet", name), m_skins(this, "Skins"), m_retargetSrcStartPointLocation(NMP::Matrix34Identity()) {};
 
 		virtual ~AnimationSet() {};
 		virtual bool isValid() const;
@@ -30,11 +30,11 @@ namespace db
 		std::string getRig() const { return m_rig; }
 		void setRig(const std::string& rig) { m_rig = rig; }
 
-		std::string getAssetManagerSkin() const { return m_assetManagerSkin; }
-		void setAssetManagerSkin(const std::string& skin) { m_assetManagerSkin = skin; }
+		Skin* getAssetManagerSkin() const { return m_assetManagerSkin; }
+		void setAssetManagerSkin(Skin* skin) { m_assetManagerSkin = skin; }
 
 		Skin* getSkin(int index) const;
-		void addSkin(Skin skin) { m_skins.addNode(&skin); }
+		void addSkin(std::string name, std::string filepath) { m_skins.addNode(new Skin(this, name, filepath)); }
 		void removeSkin(int index);
 
 		std::string getFormat() const { return m_format; }

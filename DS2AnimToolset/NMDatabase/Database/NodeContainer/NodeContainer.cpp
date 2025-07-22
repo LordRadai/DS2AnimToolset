@@ -27,6 +27,20 @@ namespace db
 		return containerElement;
 	}
 
+	std::string NodeContainer::getQualifiedName() const
+	{
+		if (!m_parent)
+			return m_identifier;
+
+		return m_parent->getQualifiedName() + "." + m_identifier;
+	}
+
+	void NodeContainer::addNode(Node* node)
+	{ 
+		node->setParent(this);
+		m_nodes.push_back(node); 
+	}
+
 	void NodeContainer::removeNode(int index) {
 		if (index < 0 || index >= m_nodes.size())
 			throw std::out_of_range("Index out of range");
@@ -40,5 +54,4 @@ namespace db
 
 		return m_nodes[index];
 	}
-
 }

@@ -18,6 +18,15 @@ tinyxml2::XMLElement* mcnSerializer::createTypedElement(tinyxml2::XMLElement* pa
 	return element;
 }
 
+tinyxml2::XMLElement* mcnSerializer::createNamedAndTypedElement(tinyxml2::XMLElement* parent, std::string name, std::string attribName, std::string type, std::string text)
+{
+	tinyxml2::XMLElement* element = createElement(parent, name, text);
+	element->SetAttribute("name", attribName.c_str());
+	element->SetAttribute("type", type.c_str());
+
+	return element;
+}
+
 tinyxml2::XMLElement* mcnSerializer::createStringElement(tinyxml2::XMLElement* parent, std::string name, std::string value)
 {
 	return createTypedElement(parent, name, "string", value);
@@ -107,10 +116,7 @@ tinyxml2::XMLElement* mcnSerializer::createEnumElement(tinyxml2::XMLElement* par
 
 tinyxml2::XMLElement* mcnSerializer::createNodeElement(tinyxml2::XMLElement* parent, std::string name, std::string attributeName)
 {
-	tinyxml2::XMLElement* element = createTypedElement(parent, name, "node", "");
-	element->SetAttribute("name", attributeName.c_str());
-
-	return element;
+	return createNamedAndTypedElement(parent, name, attributeName, "node", "");
 }
 
 tinyxml2::XMLElement* mcnSerializer::createNodeContainerElement(tinyxml2::XMLElement* parent, std::string name)

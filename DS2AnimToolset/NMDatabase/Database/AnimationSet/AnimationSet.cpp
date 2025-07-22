@@ -39,7 +39,7 @@ namespace db
 		tinyxml2::XMLElement* element = Node::serialize(parent);
 
 		mcnSerializer::createStringElement(element, "Rig", m_rig);
-		mcnSerializer::createStringElement(element, "AssetManagerSkin", m_assetManagerSkin);
+		mcnSerializer::createStringElement(element, "AssetManagerSkin", m_assetManagerSkin->getQualifiedName());
 
 		for (size_t i = 0; i < m_skins.getNumNodes(); i++)
 			m_skins.getNode(i)->serialize(element);
