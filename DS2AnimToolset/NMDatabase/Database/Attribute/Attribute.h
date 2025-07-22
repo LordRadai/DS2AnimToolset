@@ -48,11 +48,14 @@ namespace db
 		AnimationSetAttribute(Node* parent, std::string name) : Attribute(parent, name, "AnimationSetAttribute"), m_attributePlaceholders(this, "AttributePlaceholders") {};
 		
 		virtual ~AnimationSetAttribute() {};
+		virtual bool isValid() const { return Attribute::isValid() && getNumAttributePlaceholders() == 1; } // AnimationSetAttribute should always have exactly one AttributePlaceholder, containing one Attribute.
 		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		void addAttributePlaceholder(AttributePlaceholder* placeholder) { m_attributePlaceholders.addNode(placeholder); }
 		AttributePlaceholder* getAttributePlaceholder(int index) const { return dynamic_cast<AttributePlaceholder*>(m_attributePlaceholders.getNode(index)); }
 		size_t getNumAttributePlaceholders() const { return m_attributePlaceholders.getNumNodes(); }
+
+		Attribute* getAttribute() const { return getAttributePlaceholder(0)->getAttribute(); }
 	};
 
 	class BoolAttribute : public Attribute

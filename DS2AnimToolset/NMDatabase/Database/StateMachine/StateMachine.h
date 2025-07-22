@@ -1,17 +1,17 @@
 #pragma once
-#include "NodeDef.h"
+#include "../GraphNode/GraphNode.h"
 #include "../NodeContainer/NodeContainer.h"
 #include "../TransitionEdge/TransitionEdge.h"
 
 namespace db
 {
-	class StateMachine : public NodeDef
+	class StateMachine : public GraphNode
 	{
 		NodeContainer m_stateMachineNodes;
 		float m_panX;
 		float m_panY;
 		NodeContainer m_transitions;
-		NodeDef* m_defaultState;
+		GraphNode* m_defaultState;
 
 	public:
 		StateMachine(Node* parent, std::string name, std::string identifier);

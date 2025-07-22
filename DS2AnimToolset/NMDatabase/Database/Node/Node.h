@@ -23,6 +23,12 @@ namespace db
 		* @return A pointer to the created XML element representing this node.
 		*/
 		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
+
+		/**
+		 * @brief Returns a qualified name for the node.
+		 * The format is "parent.node".
+		 * @return A string representing the qualified name of the node.
+		 */
 		virtual std::string getQualifiedName() const;
 
 		std::string getIdentifier() const { return m_identifier; };

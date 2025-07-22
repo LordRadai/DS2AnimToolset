@@ -172,8 +172,8 @@
     <ClCompile Include="Database\Network\GroupNodes\RequestsNode.cpp" />
     <ClCompile Include="Database\Network\Network.cpp" />
     <ClCompile Include="Database\NodeContainer\NodeContainer.cpp" />
-    <ClCompile Include="Database\NodeDef\NodeDef.cpp" />
-    <ClCompile Include="Database\NodeDef\StateMachine.cpp" />
+    <ClCompile Include="Database\GraphNode\GraphNode.cpp" />
+    <ClCompile Include="Database\StateMachine\StateMachine.cpp" />
     <ClCompile Include="Database\Node\Node.cpp" />
     <ClCompile Include="Database\Pin\Pin.cpp" />
     <ClCompile Include="Database\PreviewScript\PreviewScript.cpp" />
@@ -210,8 +210,8 @@
     <ClInclude Include="Database\Network\GroupNodes\RequestsNode.h" />
     <ClInclude Include="Database\Network\Network.h" />
     <ClInclude Include="Database\NodeContainer\NodeContainer.h" />
-    <ClInclude Include="Database\NodeDef\NodeDef.h" />
-    <ClInclude Include="Database\NodeDef\StateMachine.h" />
+    <ClInclude Include="Database\GraphNode\GraphNode.h" />
+    <ClInclude Include="Database\StateMachine\StateMachine.h" />
     <ClInclude Include="Database\Node\Node.h" />
     <ClInclude Include="Database\Pin\Pin.h" />
     <ClInclude Include="Database\PreviewScript\PreviewScript.h" />

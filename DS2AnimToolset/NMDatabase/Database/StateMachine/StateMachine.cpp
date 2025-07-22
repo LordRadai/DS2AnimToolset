@@ -5,7 +5,7 @@ namespace db
 {
 	bool StateMachine::isValid() const
 	{
-		if (!NodeDef::isValid())
+		if (!Node::isValid())
 			return false;
 
 		if (m_defaultState == nullptr)
@@ -16,7 +16,7 @@ namespace db
 
 	tinyxml2::XMLElement* StateMachine::serialize(tinyxml2::XMLElement* parent)
 	{
-		tinyxml2::XMLElement* element = NodeDef::serialize(parent);
+		tinyxml2::XMLElement* element = Node::serialize(parent);
 
 		mcnSerializer::createFloatElement(element, "PanX", m_panX);
 		mcnSerializer::createFloatElement(element, "PanY", m_panY);

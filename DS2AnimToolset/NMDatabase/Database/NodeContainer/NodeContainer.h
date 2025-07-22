@@ -20,6 +20,7 @@ namespace db
 		void addNode(Node* node);
 		void removeNode(int index);
 		Node* getNode(int index) const;
+		Node* findNodeByName(const std::string& name) const;
 		size_t getNumNodes() const { return m_nodes.size(); }
 	};
 }

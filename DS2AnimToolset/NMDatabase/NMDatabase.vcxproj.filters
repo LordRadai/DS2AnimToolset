@@ -81,7 +81,7 @@
     <ClCompile Include="Database\NodeContainer\NodeContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Database\NodeDef\NodeDef.cpp">
+    <ClCompile Include="Database\GraphNode\GraphNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Database\Pin\Pin.cpp">
@@ -111,7 +111,7 @@
     <ClCompile Include="mcnSerializer\mcnSerializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Database\NodeDef\StateMachine.cpp">
+    <ClCompile Include="Database\StateMachine\StateMachine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Database\TransitionEdge\TransitionEdge.cpp">
@@ -191,7 +191,7 @@
     <ClInclude Include="Database\NodeContainer\NodeContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Database\NodeDef\NodeDef.h">
+    <ClInclude Include="Database\GraphNode\GraphNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Database\Pin\Pin.h">
@@ -218,7 +218,7 @@
     <ClInclude Include="mcnSerializer\mcnSerializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Database\NodeDef\StateMachine.h">
+    <ClInclude Include="Database\StateMachine\StateMachine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Database\TransitionEdge\TransitionEdge.h">
