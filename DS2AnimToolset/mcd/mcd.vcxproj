@@ -154,6 +154,7 @@
     <ClCompile Include="GraphNode\GraphNode.cpp" />
     <ClCompile Include="Graph\Graph.cpp" />
     <ClCompile Include="mcd.h" />
+    <ClCompile Include="StateMachine\StateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Attribute\Attribute.h" />
