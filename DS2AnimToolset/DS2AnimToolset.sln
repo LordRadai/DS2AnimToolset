@@ -56,6 +56,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "morphemeBinderPacker", "mor
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NMDatabase", "NMDatabase\NMDatabase.vcxproj", "{CEC6FC21-32D3-4B97-8929-7292819F2437}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "morphemeDeserializer", "morphemeDeserializer\morphemeDeserializer.vcxproj", "{1BF864FE-3B4A-496F-97B0-483DF3D5D599}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CEC6FC21-32D3-4B97-8929-7292819F2437} = {CEC6FC21-32D3-4B97-8929-7292819F2437}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Tool|x64 = Debug Tool|x64
@@ -552,6 +557,30 @@ Global
 		{CEC6FC21-32D3-4B97-8929-7292819F2437}.Target LE64 Release|x64.Build.0 = Release|x64
 		{CEC6FC21-32D3-4B97-8929-7292819F2437}.Target LE64 Release|x86.ActiveCfg = Release|Win32
 		{CEC6FC21-32D3-4B97-8929-7292819F2437}.Target LE64 Release|x86.Build.0 = Release|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Debug Tool|x64.ActiveCfg = Debug|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Debug Tool|x64.Build.0 = Debug|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Debug Tool|x86.ActiveCfg = Debug|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Debug Tool|x86.Build.0 = Debug|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Debug|x64.ActiveCfg = Debug|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Debug|x64.Build.0 = Debug|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Debug|x86.ActiveCfg = Debug|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Debug|x86.Build.0 = Debug|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Release Tool|x64.ActiveCfg = Release|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Release Tool|x64.Build.0 = Release|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Release Tool|x86.ActiveCfg = Release|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Release Tool|x86.Build.0 = Release|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Release|x64.ActiveCfg = Release|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Release|x64.Build.0 = Release|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Release|x86.ActiveCfg = Release|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Release|x86.Build.0 = Release|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Target LE64 Debug|x64.ActiveCfg = Release|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Target LE64 Debug|x64.Build.0 = Release|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Target LE64 Debug|x86.ActiveCfg = Release|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Target LE64 Debug|x86.Build.0 = Release|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Target LE64 Release|x64.ActiveCfg = Release|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Target LE64 Release|x64.Build.0 = Release|x64
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Target LE64 Release|x86.ActiveCfg = Release|Win32
+		{1BF864FE-3B4A-496F-97B0-483DF3D5D599}.Target LE64 Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

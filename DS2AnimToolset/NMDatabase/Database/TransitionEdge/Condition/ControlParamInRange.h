@@ -6,7 +6,7 @@ namespace db
 	class ControlParamInRange : public Condition
 	{
 	public:
-		ControlParamInRange(Node* parent, std::string name, float lowerTest) : Condition(parent, name, "ControlParamInRange", 1) {}
+		ControlParamInRange(Node* parent, std::string name, float lowerTest);
 
 		virtual ~ControlParamInRange() {};
 		virtual bool isValid() const;

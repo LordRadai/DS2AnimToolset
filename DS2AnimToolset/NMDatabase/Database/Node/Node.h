@@ -22,7 +22,7 @@ namespace db
 		* @param parent The parent XML element to which this node will be added.
 		* @return A pointer to the created XML element representing this node.
 		*/
-		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent) const;
+		virtual tinyxml2::XMLElement* serialize(tinyxml2::XMLElement* parent);
 
 		std::string getIdentifier() const { return m_identifier; };
 

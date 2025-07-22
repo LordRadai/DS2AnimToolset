@@ -22,12 +22,7 @@ namespace db
 		tinyxml2::XMLElement* containerElement = mcnSerializer::createNodeContainerElement(parent, "");
 
 		for (const auto& node : m_nodes)
-		{
 			tinyxml2::XMLElement* nodeElement = node->serialize(containerElement);
-			
-			if (nodeElement)
-				containerElement->InsertEndChild(nodeElement);
-		}
 
 		return containerElement;
 	}

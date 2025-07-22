@@ -4,8 +4,8 @@ tinyxml2::XMLElement* mcnSerializer::createElement(tinyxml2::XMLElement* parent,
 {
 	tinyxml2::XMLElement* element = parent->InsertNewChildElement(name.c_str());
 
-	if (!value.empty())
-		element->SetText(value.c_str());
+	if (!text.empty())
+		element->SetText(text.c_str());
 
 	return element;
 }
@@ -96,6 +96,8 @@ tinyxml2::XMLElement* mcnSerializer::createStringArrayElement(tinyxml2::XMLEleme
 		tinyxml2::XMLElement* item = element->InsertNewChildElement("e");
 		item->SetText(str.c_str());
 	}
+
+	return element;
 }
 
 tinyxml2::XMLElement* mcnSerializer::createEnumElement(tinyxml2::XMLElement* parent, std::string name, std::string value)
