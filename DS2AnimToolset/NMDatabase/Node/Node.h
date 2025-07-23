@@ -43,7 +43,7 @@ namespace db
 		void addDoubleAttribute(const std::string& name, double value) { insertAttribute(getAttributeCount(), new DoubleAttribute(this, name, value)); }
 		void addIntAttribute(const std::string& name, int value) { insertAttribute(getAttributeCount(), new IntAttribute(this, name, value)); }
 		void addStringAttribute(const std::string& name, const std::string& value) { insertAttribute(getAttributeCount(), new StringAttribute(this, name, value)); }
-		void addEnumAttribute(const std::string& name, int value) { insertAttribute(getAttributeCount(), new EnumAttribute(this, name, value)); }
+		void addEnumAttribute(const std::string& name, std::string value) { insertAttribute(getAttributeCount(), new EnumAttribute(this, name, value)); }
 		void addMatrix34Attribute(const std::string& name, const NMP::Matrix34& value) { insertAttribute(getAttributeCount(), new Matrix34Attribute(this, name, value)); }
 		void addQuaternionAttribute(const std::string& name, const NMP::Quat& value) { insertAttribute(getAttributeCount(), new QuaternionAttribute(this, name, value)); }
 		void addVector3Attribute(const std::string& name, const NMP::Vector3& value) { insertAttribute(getAttributeCount(), new Vector3Attribute(this, name, value)); }
