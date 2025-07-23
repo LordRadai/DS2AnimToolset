@@ -2,6 +2,35 @@
 
 namespace db
 {
+	bool CompositeAttribute::compare(Attribute* other)
+	{
+		CompositeAttribute* otherComposite = dynamic_cast<CompositeAttribute*>(other);
+
+		if (otherComposite == nullptr)
+			throw std::runtime_error("CompositeAttribute::compare() failed - Other attribute is not a composite");
+
+		if (otherComposite->getAttributeCount() != this->getAttributeCount())
+			return false;
+
+		for (size_t i = 0; i < getAttributeCount(); i++)
+		{
+			if (!m_attributes[i]->compare(otherComposite->getAttribute(i)))
+				return false;
+		}
+
+		return true;
+	}
+
+	void CompositeAttribute::assign(Attribute* other)
+	{
+		CompositeAttribute* otherComposite = dynamic_cast<CompositeAttribute*>(other);
+
+		if (otherComposite == nullptr)
+			throw std::runtime_error("CompositeAttribute::assign() failed - Other attribute is not a composite");
+
+		//TODO: Figure out what it means to assign a composite attribute
+	}
+
 	int CompositeAttribute::getAttributeIndex(Attribute* attribute)
 	{
 		for (size_t i = 0; i < m_attributes.size(); i++)

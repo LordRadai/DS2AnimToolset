@@ -24,9 +24,6 @@ namespace db
 		m_xmlElement = m_parent->getXMLElement()->InsertNewChildElement(m_name.c_str());
 		m_xmlElement->SetAttribute("type", m_type.c_str());
 
-		if (m_label != "")
-			m_xmlElement->SetAttribute("name", m_label.c_str());
-
 		return true;
 	}
 

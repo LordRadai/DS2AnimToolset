@@ -121,7 +121,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)NMDatabase;$(SolutionDir)XMLWriter</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)NMDatabase</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -139,7 +139,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)NMDatabase;$(SolutionDir)XMLWriter</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)NMDatabase</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

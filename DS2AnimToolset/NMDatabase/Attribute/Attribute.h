@@ -10,15 +10,13 @@ namespace db
 	protected:
 		Attribute* m_parent;
 		std::string m_name;
-		std::string m_label;
 		std::string m_type;
 		tinyxml2::XMLElement* m_xmlElement = nullptr;
 
 	public:
-		Attribute(Attribute* parent, std::string name, std::string label, std::string type) :
+		Attribute(Attribute* parent, std::string name, std::string type) :
 			m_parent(parent),
 			m_name(name),
-			m_label(label),
 			m_type(type),
 			m_xmlElement(nullptr)
 		{};

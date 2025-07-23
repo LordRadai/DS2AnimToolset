@@ -7,8 +7,8 @@ namespace db
 	{
 		std::string m_value;
 	public:
-		PointerAttribute(Attribute* parent, std::string name, std::string label, Attribute* to) :
-			SingleValueAttribute(parent, name, label, "pointer"),
+		PointerAttribute(Attribute* parent, std::string name, Attribute* to) :
+			SingleValueAttribute(parent, name, "pointer"),
 			m_value(to->toDatabasePath())
 		{};
 

@@ -7,8 +7,8 @@ namespace db
 	{
 		NMP::Quat m_value;
 	public:
-		QuaternionAttribute(Attribute* parent, std::string name, std::string label, const NMP::Quat& value) :
-			SingleValueAttribute(parent, name, label, "quaternion"),
+		QuaternionAttribute(Attribute* parent, std::string name, const NMP::Quat& value) :
+			SingleValueAttribute(parent, name, "quaternion"),
 			m_value(value)
 		{
 		};

@@ -7,8 +7,8 @@ namespace db
 	{
 		float m_value;
 	public:
-		FloatAttribute(Attribute* parent, std::string name, std::string label, float value) :
-			SingleValueAttribute(parent, name, label, "float"),
+		FloatAttribute(Attribute* parent, std::string name, float value) :
+			SingleValueAttribute(parent, name, "float"),
 			m_value(value)
 		{
 		};

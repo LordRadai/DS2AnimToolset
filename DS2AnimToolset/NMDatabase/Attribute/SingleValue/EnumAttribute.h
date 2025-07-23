@@ -7,8 +7,8 @@ namespace db
 	{
 		int m_value;
 	public:
-		EnumAttribute(Attribute* parent, std::string name, std::string label, int value) :
-			SingleValueAttribute(parent, name, label, "enum"),
+		EnumAttribute(Attribute* parent, std::string name, int value) :
+			SingleValueAttribute(parent, name, "enum"),
 			m_value(value)
 		{
 		};

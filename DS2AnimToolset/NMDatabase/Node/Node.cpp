@@ -12,4 +12,16 @@ namespace db
 
 		return true;
 	}
+
+	bool Node::writeStartElementXML(int format)
+	{
+		if (!m_parent)
+			return false;
+
+		m_xmlElement = m_parent->getXMLElement()->InsertNewChildElement(m_name.c_str());
+		m_xmlElement->SetAttribute("name", m_nodeName.c_str());
+		m_xmlElement->SetAttribute("type", "node");
+
+		return true;
+	}
 }

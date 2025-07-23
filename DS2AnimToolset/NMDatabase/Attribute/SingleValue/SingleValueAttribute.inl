@@ -9,8 +9,8 @@ namespace db
 	class SingleValueAttribute : public Attribute
 	{
 	public:
-		SingleValueAttribute(Attribute* parent, std::string name, std::string label, std::string type)
-			: Attribute(parent, name, label, type) {};
+		SingleValueAttribute(Attribute* parent, std::string name, std::string type)
+			: Attribute(parent, name, type) {};
 
 		virtual ~SingleValueAttribute() override {};
 		virtual bool getValueAsBool() const = 0;

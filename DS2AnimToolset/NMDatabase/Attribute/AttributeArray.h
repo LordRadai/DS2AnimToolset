@@ -6,8 +6,8 @@ namespace db
 	class AttributeArray : public AttributeContainer
 	{
 	public:
-		AttributeArray(Attribute* parent, std::string name, std::string label, std::string type) :
-			AttributeContainer(parent, name, label, type) {};
+		AttributeArray(Attribute* parent, std::string name, std::string type) :
+			AttributeContainer(parent, name, type) {};
 
 		virtual ~AttributeArray() override {};
 		virtual bool writeValueXML(int format) override;

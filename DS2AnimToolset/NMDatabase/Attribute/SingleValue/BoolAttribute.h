@@ -7,8 +7,8 @@ namespace db
 	{
 		bool m_value;
 	public:
-		BoolAttribute(Attribute* parent, std::string name, std::string label, bool value) :
-			SingleValueAttribute(parent, name, label, "bool"),
+		BoolAttribute(Attribute* parent, std::string name, bool value) :
+			SingleValueAttribute(parent, name, "bool"),
 			m_value(value)
 		{};
 

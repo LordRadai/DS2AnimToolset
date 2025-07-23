@@ -7,8 +7,8 @@ namespace db
 	{
 		NMP::Vector3 m_value;
 	public:
-		Vector3Attribute(Attribute* parent, std::string name, std::string label, const NMP::Vector3& value) :
-			SingleValueAttribute(parent, name, label, "vector3"),
+		Vector3Attribute(Attribute* parent, std::string name, const NMP::Vector3& value) :
+			SingleValueAttribute(parent, name, "vector3"),
 			m_value(value)
 		{};
 

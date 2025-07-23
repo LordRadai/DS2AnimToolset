@@ -7,8 +7,8 @@ namespace db
 	{
 		double m_value;
 	public:
-		DoubleAttribute(Attribute* parent, std::string name, std::string label, double value) :
-			SingleValueAttribute(parent, name, label, "double"),
+		DoubleAttribute(Attribute* parent, std::string name, double value) :
+			SingleValueAttribute(parent, name, "double"),
 			m_value(value)
 		{
 		};

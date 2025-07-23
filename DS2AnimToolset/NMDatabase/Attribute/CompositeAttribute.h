@@ -11,13 +11,17 @@ namespace db
 		std::vector<Attribute*> m_attributes;
 
 	public:
-		CompositeAttribute(Attribute* parent, std::string name, std::string label, std::string type) : 
-			ArrayAttribute(parent, name, label, type) {};
+		CompositeAttribute(Attribute* parent, std::string name, std::string type) : 
+			ArrayAttribute(parent, name, type) {};
 
 		virtual ~CompositeAttribute() override {};
+		virtual bool compare(Attribute* other) override;
+		virtual void assign(Attribute* other) override;
 		virtual uint32_t size() const override { return m_attributes.size(); }
 		virtual bool empty() const override { return m_attributes.empty(); }
+		virtual void clearArray() override {};
 		virtual void removeAt(int idx) override;
+		virtual void resize(uint32_t newSize) override {};
 		virtual bool writeStartArrayXML(int format) const override { return false; }
 
 		void deleteChildren();
@@ -29,6 +33,7 @@ namespace db
 		Attribute* front() const { return m_attributes.front(); }
 		Attribute* getAttribute(int idx) const;
 		Attribute* findAttribute(std::string name) const;
+		uint32_t getAttributeCount() const { return static_cast<uint32_t>(m_attributes.size()); }
 
 		Attribute* operator[] (uint32_t idx) const
 		{

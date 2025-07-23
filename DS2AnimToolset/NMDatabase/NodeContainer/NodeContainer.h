@@ -9,7 +9,7 @@ namespace db
 	{
 	public:
 		NodeContainer(Node* parent, std::string identifier) : 
-			AttributeContainer(parent, identifier, "", "nodeContainer") {};
+			AttributeContainer(parent, identifier, "nodeContainer") {};
 
 		virtual ~NodeContainer() override {};
 		virtual bool writeValueXML(int format) override;

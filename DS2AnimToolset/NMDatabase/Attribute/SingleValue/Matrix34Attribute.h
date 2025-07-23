@@ -8,8 +8,8 @@ namespace db
 		NMP::Matrix34 m_value;
 
 	public:
-		Matrix34Attribute(Attribute* parent, std::string name, std::string label, const NMP::Matrix34& value) :
-			SingleValueAttribute(parent, name, label, "matrix34"),
+		Matrix34Attribute(Attribute* parent, std::string name, const NMP::Matrix34& value) :
+			SingleValueAttribute(parent, name, "matrix34"),
 			m_value(value)
 		{};
 
