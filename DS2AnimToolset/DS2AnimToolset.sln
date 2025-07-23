@@ -67,6 +67,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcd", "mcd\mcd.vcxproj", "{
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NMDBTest", "NMDBTest\NMDBTest.vcxproj", "{A2086A9B-8D7D-4754-82BB-0898A19C6768}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CEC6FC21-32D3-4B97-8929-7292819F2437} = {CEC6FC21-32D3-4B97-8929-7292819F2437}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
