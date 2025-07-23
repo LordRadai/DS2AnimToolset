@@ -26,6 +26,7 @@ namespace db
 	bool BoolArrayAttribute::writeStartArrayXML(int format) const
 	{
 		m_xmlElement->SetAttribute("size", size());
+		return true;
 	}
 
 	void BoolArrayAttribute::insert(int idx, bool value)

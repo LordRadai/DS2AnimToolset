@@ -26,6 +26,7 @@ namespace db
 	bool DoubleArrayAttribute::writeStartArrayXML(int format) const
 	{
 		m_xmlElement->SetAttribute("size", size());
+		return true;
 	}
 
 	void DoubleArrayAttribute::insert(int idx, double value)

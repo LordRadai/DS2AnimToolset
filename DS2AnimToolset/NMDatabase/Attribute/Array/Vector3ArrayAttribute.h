@@ -24,7 +24,7 @@ namespace db
 		void add(NMP::Vector3 value) { m_values.push_back(value); }
 		void insert(int idx, NMP::Vector3 value);
 		void setElement(int idx, NMP::Vector3 value);
-		bool getElement(int idx) const;
+		NMP::Vector3 getElement(int idx) const;
 
 		NMP::Vector3 operator[] (uint32_t idx) const
 		{

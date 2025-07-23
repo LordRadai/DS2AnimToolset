@@ -26,6 +26,7 @@ namespace db
 	bool FloatArrayAttribute::writeStartArrayXML(int format) const
 	{
 		m_xmlElement->SetAttribute("size", size());
+		return true;
 	}
 
 	void FloatArrayAttribute::insert(int idx, float value)

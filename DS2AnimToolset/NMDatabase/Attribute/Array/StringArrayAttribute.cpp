@@ -26,6 +26,7 @@ namespace db
 	bool StringArrayAttribute::writeStartArrayXML(int format) const
 	{
 		m_xmlElement->SetAttribute("size", size());
+		return true;
 	}
 
 	void StringArrayAttribute::insert(int idx, std::string value)

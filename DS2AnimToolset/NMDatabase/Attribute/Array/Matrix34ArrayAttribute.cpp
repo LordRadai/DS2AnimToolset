@@ -37,6 +37,7 @@ namespace db
 	bool Matrix34ArrayAttribute::writeStartArrayXML(int format) const
 	{
 		m_xmlElement->SetAttribute("size", size());
+		return true;
 	}
 
 	void Matrix34ArrayAttribute::insert(int idx, NMP::Matrix34 value)

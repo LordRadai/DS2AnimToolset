@@ -9,5 +9,15 @@
 #include "Attribute/SingleValue/QuaternionAttribute.h"
 #include "Attribute/SingleValue/Matrix34Attribute.h"
 
+#include "Attribute/Array/BoolArrayAttribute.h"
+#include "Attribute/Array/DoubleArrayAttribute.h"
+#include "Attribute/Array/FloatArrayAttribute.h"
+#include "Attribute/Array/IntArrayAttribute.h"
+#include "Attribute/Array/EnumArrayAttribute.h"
+#include "Attribute/Array/Vector3ArrayAttribute.h"
+#include "Attribute/Array/QuaternionArrayAttribute.h"
+#include "Attribute/Array/Matrix34ArrayAttribute.h"
+
 #include "Node/Node.h"
 #include "NodeContainer/NodeContainer.h"
+#include "Database/Database.h"

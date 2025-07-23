@@ -28,6 +28,7 @@ namespace db
 	bool QuaternionArrayAttribute::writeStartArrayXML(int format) const
 	{
 		m_xmlElement->SetAttribute("size", size());
+		return true;
 	}
 
 	void QuaternionArrayAttribute::insert(int idx, NMP::Quat value)
