@@ -26,6 +26,7 @@ namespace db
 	bool Vector3ArrayAttribute::writeStartArrayXML(int format) const
 	{
 		m_xmlElement->SetAttribute("size", size());
+		return true;
 	}
 
 	void Vector3ArrayAttribute::insert(int idx, NMP::Vector3 value)
