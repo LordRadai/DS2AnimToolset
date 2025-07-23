@@ -10,10 +10,11 @@ namespace db
 			Attribute(parent, name, label, type) {};
 
 		virtual ~ArrayAttribute() override {};
-		virtual uint32_t getAttributeCount() const = 0;
+		virtual uint32_t size() const = 0;
 		virtual bool empty() const = 0;
-		virtual void removeAt(int idx) = 0;
 		virtual void clearArray() = 0;
+		virtual void removeAt(int idx) = 0;
+		virtual void resize(uint32_t newSize) = 0;
 		virtual bool writeStartArrayXML(int format) const = 0;
 	};
 }

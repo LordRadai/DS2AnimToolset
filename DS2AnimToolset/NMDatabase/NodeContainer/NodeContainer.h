@@ -21,6 +21,6 @@ namespace db
 		bool hasNode(Node* node) const { return find(node->getName()) != nullptr; }
 		Node* front() const { return dynamic_cast<Node*>(AttributeContainer::front()); }
 		Node* back() const { return dynamic_cast<Node*>(AttributeContainer::back()); }
-		size_t getNumNodes() const { return AttributeContainer::getAttributeCount(); }
+		size_t getNumNodes() const { return AttributeContainer::size(); }
 	};
 }

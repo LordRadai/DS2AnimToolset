@@ -151,7 +151,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Attribute\Array\BoolArrayAttribute.cpp" />
+    <ClCompile Include="Attribute\Array\DoubleArrayAttribute.cpp" />
+    <ClCompile Include="Attribute\Array\EnumArrayAttribute.cpp" />
+    <ClCompile Include="Attribute\Array\FloatArrayAttribute.cpp" />
+    <ClCompile Include="Attribute\Array\IntArrayAttribute.cpp" />
+    <ClCompile Include="Attribute\Array\Matrix34ArrayAttribute.cpp" />
+    <ClCompile Include="Attribute\Array\QuaternionArrayAttribute.cpp" />
+    <ClCompile Include="Attribute\Array\StringArrayAttribute.cpp" />
+    <ClCompile Include="Attribute\Array\Vector3ArrayAttribute.cpp" />
     <ClCompile Include="Attribute\Attribute.cpp" />
+    <ClCompile Include="Attribute\AttributeArray.cpp" />
     <ClCompile Include="Attribute\AttributeContainer.cpp" />
     <ClCompile Include="Attribute\SingleValue\BoolAttribute.cpp" />
     <ClCompile Include="Attribute\CompositeAttribute.cpp" />
@@ -170,8 +180,18 @@
     <ClCompile Include="Node\Node.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Attribute\Array\ArrayAttribute.h" />
+    <ClInclude Include="Attribute\Array\ArrayAttribute.inl" />
+    <ClInclude Include="Attribute\Array\BoolArrayAttribute.h" />
+    <ClInclude Include="Attribute\Array\DoubleArrayAttribute.h" />
+    <ClInclude Include="Attribute\Array\EnumArrayAttribute.h" />
+    <ClInclude Include="Attribute\Array\FloatArrayAttribute.h" />
+    <ClInclude Include="Attribute\Array\IntArrayAttribute.h" />
+    <ClInclude Include="Attribute\Array\Matrix34ArrayAttribute.h" />
+    <ClInclude Include="Attribute\Array\QuaternionArrayAttribute.h" />
+    <ClInclude Include="Attribute\Array\StringArrayAttribute.h" />
+    <ClInclude Include="Attribute\Array\Vector3ArrayAttribute.h" />
     <ClInclude Include="Attribute\Attribute.h" />
+    <ClInclude Include="Attribute\AttributeArray.h" />
     <ClInclude Include="Attribute\AttributeContainer.h" />
     <ClInclude Include="Attribute\SingleValue\BoolAttribute.h" />
     <ClInclude Include="Attribute\CompositeAttribute.h" />

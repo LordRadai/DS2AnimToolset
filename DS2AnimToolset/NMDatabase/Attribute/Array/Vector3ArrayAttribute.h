@@ -1,0 +1,37 @@
+#pragma once
+#include "ArrayAttribute.inl"
+#include "NMPlatform/NMVector3.h"
+
+namespace db
+{
+	class Vector3ArrayAttribute : public ArrayAttribute
+	{
+		std::vector<NMP::Vector3> m_values;
+
+	public:
+		Vector3ArrayAttribute(Attribute* parent, std::string name, std::string label) :
+			ArrayAttribute(parent, name, label, "boolArray") {
+		};
+
+		virtual ~Vector3ArrayAttribute() override {};
+		virtual bool writeValueXML(int format) override;
+		virtual uint32_t size() const override { return m_values.size(); };
+		virtual bool empty() const override { return m_values.empty(); };
+		virtual void removeAt(int idx) override;
+		virtual void clearArray() override { m_values.clear(); }
+		virtual bool writeStartArrayXML(int format) const override;
+
+		void add(NMP::Vector3 value) { m_values.push_back(value); }
+		void insert(int idx, NMP::Vector3 value);
+		void setElement(int idx, NMP::Vector3 value);
+		bool getElement(int idx) const;
+
+		NMP::Vector3 operator[] (uint32_t idx) const
+		{
+			if (idx < 0 || idx >= static_cast<int>(m_values.size()))
+				throw std::out_of_range("Vector3ArrayAttribute::operator[] - Index out of range");
+
+			return m_values[idx];
+		}
+	};
+}

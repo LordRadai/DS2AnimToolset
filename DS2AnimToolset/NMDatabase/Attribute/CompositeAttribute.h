@@ -1,5 +1,5 @@
 #pragma once
-#include "Array/ArrayAttribute.h"
+#include "Array/ArrayAttribute.inl"
 
 namespace db
 {
@@ -15,7 +15,7 @@ namespace db
 			ArrayAttribute(parent, name, label, type) {};
 
 		virtual ~CompositeAttribute() override {};
-		virtual uint32_t getAttributeCount() const override { return m_attributes.size(); }
+		virtual uint32_t size() const override { return m_attributes.size(); }
 		virtual bool empty() const override { return m_attributes.empty(); }
 		virtual void removeAt(int idx) override;
 		virtual bool writeStartArrayXML(int format) const override { return false; }
