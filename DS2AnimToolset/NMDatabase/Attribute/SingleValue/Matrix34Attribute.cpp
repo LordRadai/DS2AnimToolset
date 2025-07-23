@@ -19,5 +19,7 @@ namespace db
 				rowElement->InsertNewChildElement(cName)->SetText(getValue().r[row][col]);
 			}
 		}
+
+		return true;
 	}
 }
