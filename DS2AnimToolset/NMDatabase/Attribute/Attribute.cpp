@@ -1,8 +1,21 @@
 #include "Attribute.h"
 #include "Node/Node.h"
+#include "Database/Database.h"
 
 namespace db
 {
+	Database* Attribute::getDatabase() const
+	{
+		Attribute* parent = m_parent;
+
+		while (parent)
+		{
+			if (parent == nullptr) return dynamic_cast<Database*>(parent);
+
+			parent = parent->getParentAttribute();
+		}
+	}
+
 	bool Attribute::writeStartElementXML(int format)
 	{
 		if (!m_parent)

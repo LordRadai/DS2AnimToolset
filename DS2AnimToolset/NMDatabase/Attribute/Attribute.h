@@ -3,6 +3,8 @@
 
 namespace db
 {
+	class Database;
+
 	class Attribute
 	{
 	protected:
@@ -21,8 +23,32 @@ namespace db
 			m_xmlElement(nullptr)
 		{};
 
+		/**
+		 * \brief Get the root node.
+		 * 
+		 * \return The root node of the database.
+		 */
+		Database* getDatabase() const;
+
+		/**
+		 * \brief Get the parent attribute.
+		 * 
+		 * \return The parent attribute of this attribute.
+		 */
 		Attribute* getParentAttribute() const { return m_parent; }
+
+		/**
+		 * \brief Get the type of the attribute.
+		 * 
+		 * \return The type of the attribute.
+		 */
 		std::string getType() const { return m_type; }
+
+		/**
+		 * \brief Get the XML element associated with this attribute.
+		 * 
+		 * \return The XML element for this attribute.
+		 */
 		tinyxml2::XMLElement* getXMLElement() const { return m_xmlElement; }
 
 		void setType(const std::string& type) { m_type = type; }
