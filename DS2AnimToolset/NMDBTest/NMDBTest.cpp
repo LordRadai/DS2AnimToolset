@@ -13,4 +13,12 @@ int main()
 	node->addIntAttribute("intAttr", 42);
 	node->addStringAttribute("stringAttr", "Hello World");
 	node->addEnumAttribute("enumAttr", "enumValue0");
+	node->addMatrix34Attribute("matrix34Attr", NMP::Matrix34Identity());
+	node->addQuaternionAttribute("quaternionAttr", NMP::QuatIdentity());
+	node->addVector3Attribute("vector3Attr", NMP::Vector3(1.0f, 2.0f, 3.0f));
+
+	db::Attribute* boolAttr = node->findAttribute("boolAttr");
+
+	if (boolAttr->getParentAttribute() != node)
+		printf_s("Error: boolAttr parent is not node\n");
 }
