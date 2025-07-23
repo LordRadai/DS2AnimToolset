@@ -17,8 +17,16 @@ namespace db
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<Vector3Attribute*>(other)->getValue(); }
 		virtual bool writeValueXML(int format) override;
 
+		virtual bool getValueAsBool() const override { return false; }
+		virtual int getValueAsEnum() const override { return 0; }
+		virtual int getValueAsInt() const override { return 0; }
+		virtual float getValueAsFloat() const override { return 0.0f; }
+		virtual double getValueAsDouble() const override { return 0.0; }
 		virtual std::string getValueAsString() const;
 		virtual NMP::Vector3 getValueAsVector3() const override { return m_value; }
+		virtual NMP::Matrix34 getValueAsMatrix34() const override { return NMP::Matrix34(m_value); }
+		virtual NMP::Quat getValueAsQuaternion() const override { return NMP::Quat(m_value.x, m_value.y, m_value.z, 0.f); }
+
 		NMP::Vector3 getValue() const { return getValueAsVector3(); }
 	};
 }

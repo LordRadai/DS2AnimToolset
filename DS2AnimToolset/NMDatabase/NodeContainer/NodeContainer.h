@@ -13,8 +13,9 @@ namespace db
 
 		virtual ~NodeContainer() override {};
 		virtual bool writeValueXML(int format) override;
+		virtual void resize(uint32_t newSize) override {}
 
-		void add(Node* node) { insertAttribute(getNumNodes() - 1, node); }
+		void add(Node* node) { insertAttribute(getNumNodes(), node); }
 		void remove(Attribute* attribute) { removeAttribute(attribute); }
 		Node* getNode(int idx) const { return dynamic_cast<Node*>(getAttribute(idx)); }
 		Node* find(std::string name) const { Attribute* attr = findAttribute(name); }

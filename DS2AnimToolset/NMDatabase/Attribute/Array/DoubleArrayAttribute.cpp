@@ -2,6 +2,39 @@
 
 namespace db
 {
+	bool DoubleArrayAttribute::compare(Attribute* other)
+	{
+		DoubleArrayAttribute* otherTyped = dynamic_cast<DoubleArrayAttribute*>(other);
+
+		if (otherTyped == nullptr)
+			throw std::runtime_error("DoubleArrayAttribute::compare() failed - Other attribute is not a bool array");
+
+		if (otherTyped->size() != this->size())
+			return false;
+
+		for (size_t i = 0; i < size(); i++)
+		{
+			if (m_values[i] != otherTyped->getElement(i))
+				return false;
+		}
+
+		return true;
+	}
+
+	void DoubleArrayAttribute::assign(Attribute* other)
+	{
+		DoubleArrayAttribute* otherComposite = dynamic_cast<DoubleArrayAttribute*>(other);
+
+		if (otherComposite == nullptr)
+			throw std::runtime_error("CompositeAttribute::assign() failed - Other attribute is not a composite");
+
+		m_values.clear();
+
+		m_values.reserve(otherComposite->size());
+		for (size_t i = 0; i < otherComposite->size(); ++i)
+			m_values.push_back(otherComposite->getElement(i));
+	}
+
 	bool DoubleArrayAttribute::writeValueXML(int format)
 	{
 		if (writeStartArrayXML(format))

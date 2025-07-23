@@ -10,4 +10,12 @@ namespace db
 		m_xmlElement->InsertNewChildElement("W")->SetText(m_value.w);
 		return true;
 	}
+
+	std::string QuaternionAttribute::getValueAsString() const
+	{
+		char buffer[256];
+		snprintf(buffer, sizeof(buffer), "(%f, %f, %f, %f)", m_value.x, m_value.y, m_value.z, m_value.w);
+
+		return std::string(buffer);
+	}
 }

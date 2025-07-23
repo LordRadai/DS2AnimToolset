@@ -8,16 +8,19 @@ namespace db
 		std::vector<std::string> m_values;
 
 	public:
-		StringArrayAttribute(Attribute* parent, std::string name, std::string label) :
-			ArrayAttribute(parent, name, label, "stringArray") {
+		StringArrayAttribute(Attribute* parent, std::string name) :
+			ArrayAttribute(parent, name, "stringArray") {
 		};
 
 		virtual ~StringArrayAttribute() override {};
+		virtual bool compare(Attribute* other) override;
+		virtual void assign(Attribute* other) override;
 		virtual bool writeValueXML(int format) override;
 		virtual uint32_t size() const override { return m_values.size(); };
 		virtual bool empty() const override { return m_values.empty(); };
 		virtual void removeAt(int idx) override;
 		virtual void clearArray() override { m_values.clear(); }
+		virtual void resize(uint32_t newSize) override { m_values.resize(newSize); }
 		virtual bool writeStartArrayXML(int format) const override;
 
 		void add(std::string value) { m_values.push_back(value); }

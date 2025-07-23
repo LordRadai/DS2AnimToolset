@@ -10,7 +10,7 @@ namespace db
 
 		virtual ~Database() override {};
 
-		void add(Node* node) { insertAttribute(getNumNodes() - 1, node); }
+		void add(Node* node) { insertAttribute(getNumNodes(), node); }
 		void remove(Attribute* attribute) { removeAttribute(attribute); }
 		Node* getNode(int idx) const { return dynamic_cast<Node*>(getAttribute(idx)); }
 		Node* find(std::string name) const { return dynamic_cast<Node*>(findAttribute(name)); }

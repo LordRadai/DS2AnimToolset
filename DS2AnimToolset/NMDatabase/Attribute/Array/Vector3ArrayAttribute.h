@@ -9,16 +9,19 @@ namespace db
 		std::vector<NMP::Vector3> m_values;
 
 	public:
-		Vector3ArrayAttribute(Attribute* parent, std::string name, std::string label) :
-			ArrayAttribute(parent, name, label, "boolArray") {
+		Vector3ArrayAttribute(Attribute* parent, std::string name) :
+			ArrayAttribute(parent, name, "boolArray") {
 		};
 
 		virtual ~Vector3ArrayAttribute() override {};
+		virtual bool compare(Attribute* other) override;
+		virtual void assign(Attribute* other) override;
 		virtual bool writeValueXML(int format) override;
 		virtual uint32_t size() const override { return m_values.size(); };
 		virtual bool empty() const override { return m_values.empty(); };
 		virtual void removeAt(int idx) override;
 		virtual void clearArray() override { m_values.clear(); }
+		virtual void resize(uint32_t newSize) override { m_values.resize(newSize); }
 		virtual bool writeStartArrayXML(int format) const override;
 
 		void add(NMP::Vector3 value) { m_values.push_back(value); }

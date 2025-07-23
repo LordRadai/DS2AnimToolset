@@ -17,7 +17,15 @@ namespace db
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<QuaternionAttribute*>(other)->getValue(); }
 		virtual bool writeValueXML(int format) override;
 
+		virtual bool getValueAsBool() const override { return false; }
+		virtual int getValueAsEnum() const override { return 0; }
+		virtual int getValueAsInt() const override { return 0; }
+		virtual float getValueAsFloat() const override { return 0.0f; }
+		virtual double getValueAsDouble() const override { return 0.0; }
+		virtual std::string getValueAsString() const override;
+		virtual NMP::Vector3 getValueAsVector3() const override { return NMP::Vector3Zero(); }
 		virtual NMP::Quat getValueAsQuaternion() const override { return m_value; }
+		virtual NMP::Matrix34 getValueAsMatrix34() const override { return NMP::Matrix34Zero(); }
 
 		NMP::Quat getValue() const { return getValueAsQuaternion(); }
 	};

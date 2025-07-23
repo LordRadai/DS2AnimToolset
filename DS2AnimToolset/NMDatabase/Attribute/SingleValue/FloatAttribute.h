@@ -23,6 +23,10 @@ namespace db
 		virtual float getValueAsFloat() const override { return m_value; }
 		virtual double getValueAsDouble() const override { return static_cast<double>(getValue()); }
 		virtual std::string getValueAsString() const override { return std::to_string(getValue()); }
+		virtual NMP::Vector3 getValueAsVector3() const override { return NMP::Vector3Zero(); }
+		virtual NMP::Matrix34 getValueAsMatrix34() const override { return NMP::Matrix34Zero(); }
+		virtual NMP::Quat getValueAsQuaternion() const override { return NMP::QuatIdentity(); }
+		virtual int getValueAsEnum() const override { return static_cast<int>(getValue()); }
 
 		float getValue() const { return getValueAsFloat(); }
 	};
