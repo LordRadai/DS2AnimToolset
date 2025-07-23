@@ -79,7 +79,7 @@ namespace db
 		 *
 		 * \return true if succeeded, false otherwise.
 		 */
-		bool writeXML(int format);
+		bool writeXML(int format = 3);
 
 		/**
 		 * \brief Converts the attribute to a database path.
