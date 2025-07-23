@@ -3,8 +3,6 @@
 
 namespace db
 {
-	class Database;
-
 	class BoolArrayAttribute : public ArrayAttribute
 	{
 		std::vector<bool> m_values;
