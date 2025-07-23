@@ -4,7 +4,7 @@ namespace db
 {
 	bool EnumAttribute::writeValueXML(int format)
 	{
-		m_xmlElement->SetText(getValue());
+		m_xmlElement->SetText(getValue().c_str());
 		return true;
 	}
 }
