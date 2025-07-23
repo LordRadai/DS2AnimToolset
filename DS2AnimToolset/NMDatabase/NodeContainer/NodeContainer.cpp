@@ -1,67 +1,10 @@
 #include "NodeContainer.h"
-#include "XMLWriter.h"
 
 namespace db
 {
-	bool NodeContainer::isValid() const 
+	bool NodeContainer::writeValueXML(int format)
 	{
-		for (const auto& node : m_nodes)
-		{
-			if (!node->isValid())
-				return false;
-		}
-
-		return true;
-	}
-
-	tinyxml2::XMLElement* NodeContainer::serialize(tinyxml2::XMLElement* parent)
-	{
-		tinyxml2::XMLElement* containerElement = XMLWriter::createNodeContainerElement(parent, m_identifier);
-
-		for (const auto& node : m_nodes)
-			tinyxml2::XMLElement* nodeElement = node->serialize(containerElement);
-
-		return containerElement;
-	}
-
-	std::string NodeContainer::getQualifiedName() const
-	{
-		if (!m_parent)
-			return m_identifier;
-
-		return m_parent->getQualifiedName() + "." + m_identifier;
-	}
-
-	void NodeContainer::addNode(Node* node)
-	{ 
-		node->setParent(this);
-		m_nodes.push_back(node); 
-	}
-
-	void NodeContainer::removeNode(int index) {
-		if (index < 0 || index >= m_nodes.size())
-			throw std::out_of_range("Index out of range");
-
-		m_nodes.erase(m_nodes.begin() + index);
-	}
-
-	Node* NodeContainer::getNode(int index) const {
-		if (index < 0 || index >= m_nodes.size())
-			throw std::out_of_range("Index out of range");
-
-		return m_nodes[index];
-	}
-
-	Node* NodeContainer::findNodeByName(const std::string& name) const
-	{
-		for (size_t i = 0; i < getNumNodes(); i++)
-		{
-			Node* node = getNode(i);
-
-			if (node->getName() == name)
-				return node;
-		}
-
-		return nullptr;
+		for (size_t i = 0; i < m_attributes.size(); i++)
+			m_attributes[i]->writeXML();
 	}
 }

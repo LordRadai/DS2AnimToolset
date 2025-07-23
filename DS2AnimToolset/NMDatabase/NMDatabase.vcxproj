@@ -120,7 +120,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)XMLWriter\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)XMLWriter\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -139,7 +139,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)XMLWriter\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)XMLWriter\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -151,11 +151,41 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Attribute\Attribute.cpp" />
+    <ClCompile Include="Attribute\AttributeContainer.cpp" />
+    <ClCompile Include="Attribute\SingleValue\BoolAttribute.cpp" />
+    <ClCompile Include="Attribute\CompositeAttribute.cpp" />
+    <ClCompile Include="Attribute\CompoundAttribute.cpp" />
+    <ClCompile Include="Attribute\SingleValue\DoubleAttribute.cpp" />
+    <ClCompile Include="Attribute\SingleValue\EnumAttribute.cpp" />
+    <ClCompile Include="Attribute\SingleValue\FloatAttribute.cpp" />
+    <ClCompile Include="Attribute\SingleValue\IntAttribute.cpp" />
+    <ClCompile Include="Attribute\SingleValue\Matrix34Attribute.cpp" />
+    <ClCompile Include="Attribute\SingleValue\PointerAttribute.cpp" />
+    <ClCompile Include="Attribute\SingleValue\QuaternionAttribute.cpp" />
+    <ClCompile Include="Attribute\SingleValue\StringAttribute.cpp" />
+    <ClCompile Include="Attribute\SingleValue\Vector3Attribute.cpp" />
     <ClCompile Include="NMDatabase.h" />
     <ClCompile Include="NodeContainer\NodeContainer.cpp" />
     <ClCompile Include="Node\Node.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Attribute\Array\ArrayAttribute.h" />
+    <ClInclude Include="Attribute\Attribute.h" />
+    <ClInclude Include="Attribute\AttributeContainer.h" />
+    <ClInclude Include="Attribute\SingleValue\BoolAttribute.h" />
+    <ClInclude Include="Attribute\CompositeAttribute.h" />
+    <ClInclude Include="Attribute\CompoundAttribute.h" />
+    <ClInclude Include="Attribute\SingleValue\DoubleAttribute.h" />
+    <ClInclude Include="Attribute\SingleValue\EnumAttribute.h" />
+    <ClInclude Include="Attribute\SingleValue\FloatAttribute.h" />
+    <ClInclude Include="Attribute\SingleValue\IntAttribute.h" />
+    <ClInclude Include="Attribute\SingleValue\Matrix34Attribute.h" />
+    <ClInclude Include="Attribute\SingleValue\PointerAttribute.h" />
+    <ClInclude Include="Attribute\SingleValue\QuaternionAttribute.h" />
+    <ClInclude Include="Attribute\SingleValue\SingleValueAttribute.inl" />
+    <ClInclude Include="Attribute\SingleValue\StringAttribute.h" />
+    <ClInclude Include="Attribute\SingleValue\Vector3Attribute.h" />
     <ClInclude Include="NodeContainer\NodeContainer.h" />
     <ClInclude Include="Node\Node.h" />
   </ItemGroup>

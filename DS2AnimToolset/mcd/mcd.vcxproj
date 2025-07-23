@@ -160,6 +160,8 @@
     <ClInclude Include="Attribute\Attribute.h" />
     <ClInclude Include="GraphNode\GraphNode.h" />
     <ClInclude Include="Graph\Graph.h" />
+    <ClInclude Include="Pin\Pin.h" />
+    <ClInclude Include="StateMachineNode\StateMachineNode.h" />
     <ClInclude Include="StateMachine\StateMachine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

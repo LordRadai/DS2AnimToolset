@@ -1,0 +1,29 @@
+#pragma once
+#include "SingleValueAttribute.inl"
+
+namespace db
+{
+	class FloatAttribute : public SingleValueAttribute
+	{
+		float m_value;
+	public:
+		FloatAttribute(Attribute* parent, std::string name, std::string label, float value) :
+			SingleValueAttribute(parent, name, label, "float"),
+			m_value(value)
+		{
+		};
+
+		virtual ~FloatAttribute() override {};
+		virtual bool compare(Attribute* other) override { return m_value == dynamic_cast<FloatAttribute*>(other)->getValue(); }
+		virtual void assign(Attribute* other) override { m_value = dynamic_cast<FloatAttribute*>(other)->getValue(); }
+		virtual bool writeValueXML(int format) override;
+
+		virtual bool getValueAsBool() const override { return getValue() != 0.0f; }
+		virtual int getValueAsInt() const override { return static_cast<int>(getValue()); }
+		virtual float getValueAsFloat() const override { return m_value; }
+		virtual double getValueAsDouble() const override { return static_cast<double>(getValue()); }
+		virtual std::string getValueAsString() const override { return std::to_string(getValue()); }
+
+		float getValue() const { return getValueAsFloat(); }
+	};
+}

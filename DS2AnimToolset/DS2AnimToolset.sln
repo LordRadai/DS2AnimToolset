@@ -66,8 +66,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcd", "mcd\mcd.vcxproj", "{
 		{CEC6FC21-32D3-4B97-8929-7292819F2437} = {CEC6FC21-32D3-4B97-8929-7292819F2437}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XMLWriter", "XMLWriter\XMLWriter.vcxproj", "{182FF8B5-CD08-48C0-97E7-BB50658CE59C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Tool|x64 = Debug Tool|x64
@@ -612,30 +610,6 @@ Global
 		{6FA6298B-BB5D-4F35-A42F-841C277247D0}.Target LE64 Release|x64.Build.0 = Release|x64
 		{6FA6298B-BB5D-4F35-A42F-841C277247D0}.Target LE64 Release|x86.ActiveCfg = Release|Win32
 		{6FA6298B-BB5D-4F35-A42F-841C277247D0}.Target LE64 Release|x86.Build.0 = Release|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Debug Tool|x64.ActiveCfg = Debug|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Debug Tool|x64.Build.0 = Debug|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Debug Tool|x86.ActiveCfg = Debug|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Debug Tool|x86.Build.0 = Debug|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Debug|x64.ActiveCfg = Debug|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Debug|x64.Build.0 = Debug|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Debug|x86.ActiveCfg = Debug|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Debug|x86.Build.0 = Debug|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Release Tool|x64.ActiveCfg = Release|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Release Tool|x64.Build.0 = Release|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Release Tool|x86.ActiveCfg = Release|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Release Tool|x86.Build.0 = Release|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Release|x64.ActiveCfg = Release|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Release|x64.Build.0 = Release|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Release|x86.ActiveCfg = Release|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Release|x86.Build.0 = Release|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Target LE64 Debug|x64.ActiveCfg = Release|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Target LE64 Debug|x64.Build.0 = Release|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Target LE64 Debug|x86.ActiveCfg = Release|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Target LE64 Debug|x86.Build.0 = Release|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Target LE64 Release|x64.ActiveCfg = Release|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Target LE64 Release|x64.Build.0 = Release|x64
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Target LE64 Release|x86.ActiveCfg = Release|Win32
-		{182FF8B5-CD08-48C0-97E7-BB50658CE59C}.Target LE64 Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
