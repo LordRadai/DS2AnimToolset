@@ -4,7 +4,7 @@ namespace db
 {
 	bool EnumArrayAttribute::compare(Attribute* other)
 	{
-		EnumArrayAttribute* otherTyped = dynamic_cast<EnumArrayAttribute*>(other);
+		EnumArrayAttribute* otherTyped = other->asEnumArray();
 
 		if (otherTyped == nullptr)
 			throw std::runtime_error("EnumArrayAttribute::compare() failed - Other attribute is not a bool array");
@@ -23,7 +23,7 @@ namespace db
 
 	void EnumArrayAttribute::assign(Attribute* other)
 	{
-		EnumArrayAttribute* otherComposite = dynamic_cast<EnumArrayAttribute*>(other);
+		EnumArrayAttribute* otherComposite = other->asEnumArray();
 
 		if (otherComposite == nullptr)
 			throw std::runtime_error("CompositeAttribute::assign() failed - Other attribute is not a composite");

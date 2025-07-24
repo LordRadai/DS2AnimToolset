@@ -17,6 +17,8 @@ namespace db
 		virtual ~CompositeAttribute() override {};
 		virtual bool compare(Attribute* other) override;
 		virtual void assign(Attribute* other) override;
+		virtual CompositeAttribute* asComposite() const override { return const_cast<CompositeAttribute*>(this); }
+		virtual bool isComposite() const override { return true; }
 		virtual uint32_t size() const override { return m_attributes.size(); }
 		virtual bool empty() const override { return m_attributes.empty(); }
 		virtual void clearArray() override {};

@@ -4,7 +4,7 @@ namespace db
 {
 	bool QuaternionArrayAttribute::compare(Attribute* other)
 	{
-		QuaternionArrayAttribute* otherTyped = dynamic_cast<QuaternionArrayAttribute*>(other);
+		QuaternionArrayAttribute* otherTyped = other->asQuaternionArray();
 
 		if (otherTyped == nullptr)
 			throw std::runtime_error("QuaternionArrayAttribute::compare() failed - Other attribute is not a bool array");
@@ -23,7 +23,7 @@ namespace db
 
 	void QuaternionArrayAttribute::assign(Attribute* other)
 	{
-		QuaternionArrayAttribute* otherComposite = dynamic_cast<QuaternionArrayAttribute*>(other);
+		QuaternionArrayAttribute* otherComposite = other->asQuaternionArray();
 
 		if (otherComposite == nullptr)
 			throw std::runtime_error("CompositeAttribute::assign() failed - Other attribute is not a composite");

@@ -31,7 +31,8 @@ namespace db
 		Node(Node* parent, std::string name, std::string nodeName) : CompoundAttribute(parent, name, "node"), m_nodeName(nodeName) {}
 		
 		virtual ~Node() override {};
-
+		virtual Node* asNode() const override { return const_cast<Node*>(this); }
+		virtual bool isNode() const override { return true; }
 		virtual bool writeValueXML(int format) override;
 		virtual bool writeStartElementXML(int format) override;
 

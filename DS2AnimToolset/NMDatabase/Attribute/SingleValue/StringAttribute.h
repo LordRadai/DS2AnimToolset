@@ -15,6 +15,8 @@ namespace db
 		virtual ~StringAttribute() override {};
 		virtual bool compare(Attribute* other) override { return m_value == dynamic_cast<StringAttribute*>(other)->getValue(); }
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<StringAttribute*>(other)->getValue(); }
+		virtual StringAttribute* asString() const override { return const_cast<StringAttribute*>(this); }
+		virtual bool isString() const override { return true; }
 		virtual bool writeValueXML(int format) override;
 
 		virtual bool getValueAsBool() const override { return !m_value.empty(); }

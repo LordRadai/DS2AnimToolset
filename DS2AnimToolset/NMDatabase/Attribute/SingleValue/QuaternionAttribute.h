@@ -15,6 +15,8 @@ namespace db
 		virtual ~QuaternionAttribute() override {};
 		virtual bool compare(Attribute* other) override { return m_value == (dynamic_cast<QuaternionAttribute*>(other)->getValue()); }
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<QuaternionAttribute*>(other)->getValue(); }
+		virtual QuaternionAttribute* asQuaternion() const override { return const_cast<QuaternionAttribute*>(this); }
+		virtual bool isQuaternion() const override { return true; }
 		virtual bool writeValueXML(int format) override;
 
 		virtual bool getValueAsBool() const override { return false; }

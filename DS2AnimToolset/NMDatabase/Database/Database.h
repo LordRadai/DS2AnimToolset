@@ -9,6 +9,8 @@ namespace db
 		Database(std::string identifier, std::string name) : Node(nullptr, identifier, name) {};
 
 		virtual ~Database() override {};
+		virtual Database* asDatabase() const override { return const_cast<Database*>(this); }
+		virtual bool isDatabase() const override { return true; }
 		virtual bool writeStartElementXML(int format = 3) override;
 
 		void makeNode(Node* node) { insertAttribute(getNumNodes(), node); }

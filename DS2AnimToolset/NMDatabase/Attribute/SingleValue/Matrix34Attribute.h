@@ -16,6 +16,8 @@ namespace db
 		virtual ~Matrix34Attribute() override {};
 		virtual bool compare(Attribute* other) override { return m_value == dynamic_cast<Matrix34Attribute*>(other)->getValue(); }
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<Matrix34Attribute*>(other)->getValue(); }
+		virtual Matrix34Attribute* asMatrix34() const override { return const_cast<Matrix34Attribute*>(this); }
+		virtual bool isMatrix34() const override { return true; }
 		virtual bool writeValueXML(int format) override;
 
 		virtual bool getValueAsBool() const override { return false; }

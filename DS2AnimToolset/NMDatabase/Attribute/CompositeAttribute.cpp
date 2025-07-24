@@ -4,17 +4,20 @@ namespace db
 {
 	bool CompositeAttribute::compare(Attribute* other)
 	{
-		CompositeAttribute* otherComposite = dynamic_cast<CompositeAttribute*>(other);
+		CompositeAttribute* otherComposite = other->asComposite();
 
 		if (otherComposite == nullptr)
 			throw std::runtime_error("CompositeAttribute::compare() failed - Other attribute is not a composite");
-
-		if (otherComposite->getAttributeCount() != this->getAttributeCount())
+		
+		if (this->getAttributeCount() != otherComposite->getAttributeCount())
 			return false;
 
 		for (size_t i = 0; i < getAttributeCount(); i++)
 		{
-			if (!m_attributes[i]->compare(otherComposite->getAttribute(i)))
+			Attribute* thisAttribute = getAttribute(i);
+			Attribute* otherAttribute = otherComposite->getAttribute(i);
+
+			if (!thisAttribute->compare(otherAttribute))
 				return false;
 		}
 
@@ -28,7 +31,19 @@ namespace db
 		if (otherComposite == nullptr)
 			throw std::runtime_error("CompositeAttribute::assign() failed - Other attribute is not a composite");
 
-		//TODO: Figure out what it means to assign a composite attribute
+		if (getAttributeCount() != otherComposite->getAttributeCount())
+			throw std::runtime_error("CompositeAttribute::assign() failed - Size mismatch");
+
+		for (size_t i = 0; i < getAttributeCount(); i++)
+		{
+			Attribute* thisAttribute = getAttribute(i);
+			Attribute* otherAttribute = nullptr;
+
+			if (i < otherComposite->getAttributeCount())
+				otherAttribute = otherComposite->getAttribute(i);
+
+			thisAttribute->assign(otherAttribute);
+		}
 	}
 
 	int CompositeAttribute::getAttributeIndex(Attribute* attribute)

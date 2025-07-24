@@ -19,7 +19,10 @@ namespace db
 			return false;
 
 		m_xmlElement = m_parent->getXMLElement()->InsertNewChildElement(m_name.c_str());
-		m_xmlElement->SetAttribute("name", m_nodeName.c_str());
+
+		if (m_nodeName != "")
+			m_xmlElement->SetAttribute("name", m_nodeName.c_str());
+
 		m_xmlElement->SetAttribute("type", "node");
 
 		return true;

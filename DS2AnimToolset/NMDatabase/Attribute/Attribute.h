@@ -3,7 +3,34 @@
 
 namespace db
 {
+	class IntAttribute;
+	class BoolAttribute;
+	class EnumAttribute;
+	class DoubleAttribute;
+	class FloatAttribute;
+	class StringAttribute;
+	class Vector3Attribute;
+	class Matrix34Attribute;
+	class PointerAttribute;
+	class QuaternionAttribute;
+	class IntArrayAttribute;
+	class BoolArrayAttribute;
+	class EnumArrayAttribute;
+	class FloatArrayAttribute;
+	class DoubleArrayAttribute;
+	class StringArrayAttribute;
+	class Vector3ArrayAttribute;
+	class Matrix34ArrayAttribute;
+	class QuaternionArrayAttribute;
+	class PointerArrayAttribute;
+	class CompositeAttribute;
+	class NodeContainer;
+	class AttributeArray;
+	class CompoundAttribute;
+	class Node;
 	class Database;
+	class SingleValueAttribute;
+	class ArrayAttribute;
 
 	class Attribute
 	{
@@ -53,10 +80,64 @@ namespace db
 		void setParentAttribute(Attribute* parent) { m_parent = parent; }
 
 		virtual ~Attribute() {};
-
 		virtual bool compare(Attribute* other) = 0;
 		virtual void assign(Attribute* other) = 0;
-
+		virtual IntAttribute* asInt() const { return nullptr; }
+		virtual BoolAttribute* asBool() const { return nullptr; }
+		virtual EnumAttribute* asEnum() const { return nullptr; }
+		virtual DoubleAttribute* asDouble() const { return nullptr; }
+		virtual FloatAttribute* asFloat() const { return nullptr; }
+		virtual StringAttribute* asString() const { return nullptr; }
+		virtual Vector3Attribute* asVector3() const { return nullptr; }
+		virtual Matrix34Attribute* asMatrix34() const { return nullptr; }
+		virtual PointerAttribute* asPointer() const { return nullptr; }
+		virtual QuaternionAttribute* asQuaternion() const { return nullptr; }
+		virtual IntArrayAttribute* asIntArray() const { return nullptr; }
+		virtual BoolArrayAttribute* asBoolArray() const { return nullptr; }
+		virtual EnumArrayAttribute* asEnumArray() const { return nullptr; }
+		virtual FloatArrayAttribute* asFloatArray() const { return nullptr; }
+		virtual DoubleArrayAttribute* asDoubleArray() const { return nullptr; }
+		virtual StringArrayAttribute* asStringArray() const { return nullptr; }
+		virtual Vector3ArrayAttribute* asVector3Array() const { return nullptr; }
+		virtual Matrix34ArrayAttribute* asMatrix34Array() const { return nullptr; }
+		virtual PointerArrayAttribute* asPointerArray() const { return nullptr; }
+		virtual QuaternionArrayAttribute* asQuaternionArray() const { return nullptr; }
+		virtual CompositeAttribute* asComposite() const { return nullptr; }
+		virtual NodeContainer* asNodeContainer() const { return nullptr; }
+		virtual AttributeArray* asAttributeArray() const { return nullptr; }
+		virtual CompoundAttribute* asCompound() const { return nullptr; }
+		virtual Node* asNode() const { return nullptr; }
+		virtual Database* asDatabase() const { return nullptr; }
+		virtual SingleValueAttribute* asSingleValue() const { return nullptr; }
+		virtual ArrayAttribute* asArray() const { return nullptr; }
+		virtual bool isInt() const { return false; }
+		virtual bool isBool() const { return false; }
+		virtual bool isEnum() const { return false; }
+		virtual bool isDouble() const { return false; }
+		virtual bool isFloat() const { return false; }
+		virtual bool isString() const { return false; }
+		virtual bool isVector3() const { return false; }
+		virtual bool isMatrix34() const { return false; }
+		virtual bool isPointer() const { return false; }
+		virtual bool isQuaternion() const { return false; }
+		virtual bool isIntArray() const { return false; }
+		virtual bool isBoolArray() const { return false; }
+		virtual bool isEnumArray() const { return false; }
+		virtual bool isFloatArray() const { return false; }
+		virtual bool isDoubleArray() const { return false; }
+		virtual bool isStringArray() const { return false; }
+		virtual bool isVector3Array() const { return false; }
+		virtual bool isMatrix34Array() const { return false; }
+		virtual bool isPointerArray() const { return false; }
+		virtual bool isQuaternionArray() const { return false; }
+		virtual bool isComposite() const { return false; }
+		virtual bool isNodeContainer() const { return false; }
+		virtual bool isAttributeArray() const { return false; }
+		virtual bool isSingleValue() const { return false; }
+		virtual bool isArray() const { return false; }
+		virtual bool isCompound() const { return false; }
+		virtual bool isNode() const { return false; }
+		virtual bool isDatabase() const { return false; }
 		virtual std::string getName() const { return m_name; }
 		virtual void setName(const std::string& name) { m_name = name; }
 

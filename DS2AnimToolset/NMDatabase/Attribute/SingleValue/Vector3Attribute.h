@@ -15,6 +15,8 @@ namespace db
 		virtual ~Vector3Attribute() override {};
 		virtual bool compare(Attribute* other) override { return m_value == (dynamic_cast<Vector3Attribute*>(other)->getValue()); }
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<Vector3Attribute*>(other)->getValue(); }
+		virtual Vector3Attribute* asVector3() const override { return const_cast<Vector3Attribute*>(this); }
+		virtual bool isVector3() const override { return true; }
 		virtual bool writeValueXML(int format) override;
 
 		virtual bool getValueAsBool() const override { return false; }

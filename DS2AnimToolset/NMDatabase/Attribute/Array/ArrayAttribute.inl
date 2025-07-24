@@ -10,6 +10,8 @@ namespace db
 			Attribute(parent, name, type) {};
 
 		virtual ~ArrayAttribute() override {};
+		virtual ArrayAttribute* asArray() const override { return const_cast<ArrayAttribute*>(this); }
+		virtual bool isArray() const override { return true; }
 		virtual uint32_t size() const = 0;
 		virtual bool empty() const = 0;
 		virtual void clearArray() = 0;

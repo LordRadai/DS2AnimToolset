@@ -13,6 +13,8 @@ namespace db
 			: Attribute(parent, name, type) {};
 
 		virtual ~SingleValueAttribute() override {};
+		virtual SingleValueAttribute* asSingleValue() const override { return const_cast<SingleValueAttribute*>(this); }
+		virtual bool isSingleValue() const override { return true; }
 		virtual bool getValueAsBool() const = 0;
 		virtual int getValueAsEnum() const = 0;
 		virtual int getValueAsInt() const = 0;

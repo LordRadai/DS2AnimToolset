@@ -4,7 +4,7 @@ namespace db
 {
 	bool Vector3ArrayAttribute::compare(Attribute* other)
 	{
-		Vector3ArrayAttribute* otherTyped = dynamic_cast<Vector3ArrayAttribute*>(other);
+		Vector3ArrayAttribute* otherTyped = other->asVector3Array();
 
 		if (otherTyped == nullptr)
 			throw std::runtime_error("Vector3ArrayAttribute::compare() failed - Other attribute is not a bool array");
@@ -23,7 +23,7 @@ namespace db
 
 	void Vector3ArrayAttribute::assign(Attribute* other)
 	{
-		Vector3ArrayAttribute* otherComposite = dynamic_cast<Vector3ArrayAttribute*>(other);
+		Vector3ArrayAttribute* otherComposite = other->asVector3Array();
 
 		if (otherComposite == nullptr)
 			throw std::runtime_error("CompositeAttribute::assign() failed - Other attribute is not a composite");

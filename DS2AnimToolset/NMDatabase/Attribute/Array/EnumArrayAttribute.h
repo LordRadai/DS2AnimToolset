@@ -15,6 +15,8 @@ namespace db
 		virtual ~EnumArrayAttribute() override {};
 		virtual bool compare(Attribute* other) override;
 		virtual void assign(Attribute* other) override;
+		virtual EnumArrayAttribute* asEnumArray() const override { return const_cast<EnumArrayAttribute*>(this); }
+		virtual bool isEnumArray() const override { return true; }
 		virtual bool writeValueXML(int format) override;
 		virtual uint32_t size() const override { return m_values.size(); };
 		virtual bool empty() const override { return m_values.empty(); };

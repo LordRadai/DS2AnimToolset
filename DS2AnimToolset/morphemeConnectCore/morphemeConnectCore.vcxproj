@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{6fa6298b-bb5d-4f35-a42f-841c277247d0}</ProjectGuid>
-    <RootNamespace>mcd</RootNamespace>
+    <ProjectGuid>{c3c36b5a-366b-4161-9333-f591fc48b727}</ProjectGuid>
+    <RootNamespace>morphemeConnectCore</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -108,8 +108,6 @@
     <Link>
       <SubSystem>
       </SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -119,9 +117,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)NMDatabase</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -137,32 +136,23 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)NMDatabase</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir)RCore\RCore\src;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Attribute\Attribute.cpp" />
-    <ClCompile Include="GraphNode\GraphNode.cpp" />
-    <ClCompile Include="Graph\Graph.cpp" />
-    <ClCompile Include="mcd.h" />
-    <ClCompile Include="StateMachine\StateMachine.cpp" />
+    <ClCompile Include="morphemeConnectCore.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Attribute\Attribute.h" />
-    <ClInclude Include="GraphNode\GraphNode.h" />
-    <ClInclude Include="Graph\Graph.h" />
-    <ClInclude Include="Pin\Pin.h" />
-    <ClInclude Include="StateMachineNode\StateMachineNode.h" />
-    <ClInclude Include="StateMachine\StateMachine.h" />
+    <ClInclude Include="mcd\Attribute\Attribute.h" />
+    <ClInclude Include="mcd\mcd.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

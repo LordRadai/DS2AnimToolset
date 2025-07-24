@@ -15,6 +15,8 @@ namespace db
 		virtual ~DoubleAttribute() override {};
 		virtual bool compare(Attribute* other) override { return m_value == dynamic_cast<DoubleAttribute*>(other)->getValue(); }
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<DoubleAttribute*>(other)->getValue(); }
+		virtual DoubleAttribute* asDouble() const override { return const_cast<DoubleAttribute*>(this); }
+		virtual bool isDouble() const override { return true; }
 		virtual bool writeValueXML(int format) override;
 		virtual bool getValueAsBool() const override { return m_value != 0.0; }
 		virtual int getValueAsEnum() const override { return static_cast<int>(getValue()); }

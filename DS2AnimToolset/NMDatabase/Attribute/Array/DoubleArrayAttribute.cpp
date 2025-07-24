@@ -4,7 +4,7 @@ namespace db
 {
 	bool DoubleArrayAttribute::compare(Attribute* other)
 	{
-		DoubleArrayAttribute* otherTyped = dynamic_cast<DoubleArrayAttribute*>(other);
+		DoubleArrayAttribute* otherTyped = other->asDoubleArray();
 
 		if (otherTyped == nullptr)
 			throw std::runtime_error("DoubleArrayAttribute::compare() failed - Other attribute is not a bool array");
@@ -23,7 +23,7 @@ namespace db
 
 	void DoubleArrayAttribute::assign(Attribute* other)
 	{
-		DoubleArrayAttribute* otherComposite = dynamic_cast<DoubleArrayAttribute*>(other);
+		DoubleArrayAttribute* otherComposite = other->asDoubleArray();
 
 		if (otherComposite == nullptr)
 			throw std::runtime_error("CompositeAttribute::assign() failed - Other attribute is not a composite");

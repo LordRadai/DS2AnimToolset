@@ -15,6 +15,8 @@ namespace db
 		virtual ~EnumAttribute() override {};
 		virtual bool compare(Attribute* other) override { return m_value == dynamic_cast<EnumAttribute*>(other)->getValue(); }
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<EnumAttribute*>(other)->getValue(); }
+		virtual EnumAttribute* asEnum() const override { return const_cast<EnumAttribute*>(this); }
+		virtual bool isEnum() const override { return true; }
 		virtual bool writeValueXML(int format) override;
 
 		virtual bool getValueAsBool() const override { return !m_value.empty(); }

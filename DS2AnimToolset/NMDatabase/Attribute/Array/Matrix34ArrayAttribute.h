@@ -16,6 +16,8 @@ namespace db
 		virtual ~Matrix34ArrayAttribute() override {};
 		virtual bool compare(Attribute* other) override;
 		virtual void assign(Attribute* other) override;
+		virtual Matrix34ArrayAttribute* asMatrix34Array() const override { return const_cast<Matrix34ArrayAttribute*>(this); }
+		virtual bool isMatrix34Array() const override { return true; }
 		virtual bool writeValueXML(int format) override;
 		virtual uint32_t size() const override { return m_values.size(); };
 		virtual bool empty() const override { return m_values.empty(); };

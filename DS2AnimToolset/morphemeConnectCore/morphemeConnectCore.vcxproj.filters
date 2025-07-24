@@ -15,39 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mcd.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graph\Graph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Attribute\Attribute.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphNode\GraphNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StateMachine\StateMachine.cpp">
+    <ClCompile Include="morphemeConnectCore.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Graph\Graph.h">
+    <ClInclude Include="mcd\mcd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Attribute\Attribute.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphNode\GraphNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StateMachine\StateMachine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StateMachineNode\StateMachineNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Pin\Pin.h">
+    <ClInclude Include="mcd\Attribute\Attribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
