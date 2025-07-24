@@ -18,6 +18,12 @@
     <ClCompile Include="morphemeConnectCore.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\Attribute\Attribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcd\Attribute\SingleValue\BoolAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -26,5 +32,14 @@
     <ClInclude Include="mcd\Attribute\Attribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mcd\Attribute\SingleValue\BoolAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\MorphemeDB\MorphemeDB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

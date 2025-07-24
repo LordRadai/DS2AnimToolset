@@ -30,5 +30,6 @@ namespace db
 		virtual std::string getValueAsString() const override { return m_value; }
 
 		std::string getValue() const { return getValueAsString(); }
+		void setValue(const std::string& value) { m_value = value; }
 	};
 }

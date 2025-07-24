@@ -63,10 +63,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "morphemeDeserializer", "mor
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NMDBTest", "NMDBTest\NMDBTest.vcxproj", "{A2086A9B-8D7D-4754-82BB-0898A19C6768}"
 	ProjectSection(ProjectDependencies) = postProject
+		{C3C36B5A-366B-4161-9333-F591FC48B727} = {C3C36B5A-366B-4161-9333-F591FC48B727}
 		{CEC6FC21-32D3-4B97-8929-7292819F2437} = {CEC6FC21-32D3-4B97-8929-7292819F2437}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "morphemeConnectCore", "morphemeConnectCore\morphemeConnectCore.vcxproj", "{C3C36B5A-366B-4161-9333-F591FC48B727}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CEC6FC21-32D3-4B97-8929-7292819F2437} = {CEC6FC21-32D3-4B97-8929-7292819F2437}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

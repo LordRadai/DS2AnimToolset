@@ -30,5 +30,6 @@ namespace db
 		virtual NMP::Quat getValueAsQuaternion() const override { return NMP::Quat(m_value.x, m_value.y, m_value.z, 0.f); }
 
 		NMP::Vector3 getValue() const { return getValueAsVector3(); }
+		void setValue(const NMP::Vector3& value) { m_value = value; }
 	};
 }

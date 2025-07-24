@@ -20,7 +20,7 @@ namespace db
 		if (m_xmlElement == nullptr)
 			return false;
 
-		m_xmlElement->SetAttribute("name", "Database");
+		m_xmlElement->SetAttribute("name", m_name.c_str());
 		m_xmlElement->SetAttribute("type", "node");
 		return true;
 	}

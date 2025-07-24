@@ -30,5 +30,6 @@ namespace db
 		virtual int getValueAsEnum() const override { return getValueAsInt(); }
 
 		std::string getValue() const { return getValueAsString(); }
+		void setValue(const std::string& value) { m_value = value; }
 	};
 }

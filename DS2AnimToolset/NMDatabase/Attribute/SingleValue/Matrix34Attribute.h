@@ -31,5 +31,6 @@ namespace db
 		virtual NMP::Matrix34 getValueAsMatrix34() const override { return m_value; }
 
 		NMP::Matrix34 getValue() const { return getValueAsMatrix34(); }
+		void setValue(const NMP::Matrix34& value) { m_value = value; }
 	};
 }

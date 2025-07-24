@@ -31,5 +31,6 @@ namespace db
 		virtual int getValueAsEnum() const override { return getValue(); }
 
 		int getValue() const { return getValueAsInt(); }
+		void setValue(int value) { m_value = value; }
 	};
 }

@@ -30,5 +30,6 @@ namespace db
 		virtual NMP::Matrix34 getValueAsMatrix34() const override { return NMP::Matrix34Zero(); }
 
 		NMP::Quat getValue() const { return getValueAsQuaternion(); }
+		void setValue(const NMP::Quat& value) { m_value = value; }
 	};
 }

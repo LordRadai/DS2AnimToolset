@@ -29,5 +29,6 @@ namespace db
 		virtual NMP::Quat getValueAsQuaternion() const override { return NMP::QuatIdentity(); }
 
 		double getValue() const { return getValueAsDouble(); }
+		void setValue(double value) { m_value = value; }
 	};
 }

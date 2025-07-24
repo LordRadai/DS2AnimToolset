@@ -26,9 +26,10 @@ namespace db
 {
 	class Node : public CompoundAttribute
 	{
+	protected:
 		std::string m_nodeName;
 	public:
-		Node(Node* parent, std::string name, std::string nodeName) : CompoundAttribute(parent, name, "node"), m_nodeName(nodeName) {}
+		Node(Attribute* parent, std::string name, std::string nodeName) : CompoundAttribute(parent, name, "node"), m_nodeName(nodeName) {}
 		
 		virtual ~Node() override {};
 		virtual Node* asNode() const override { return const_cast<Node*>(this); }
