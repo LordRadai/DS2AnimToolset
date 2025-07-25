@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="mcc\MorphemeDocument\MorphemeDocument.cpp" />
     <ClCompile Include="mcd\Attribute\Attribute.cpp" />
     <ClCompile Include="mcd\Attribute\AttributePlaceholder.cpp" />
     <ClCompile Include="mcd\Attribute\SingleValue\BoolAttribute.cpp" />
@@ -160,6 +161,8 @@
     <ClCompile Include="morphemeConnectCore.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DataTypes.h" />
+    <ClInclude Include="mcc\MorphemeDocument\MorphemeDocument.h" />
     <ClInclude Include="mcd\ControlParameter\ControlParameter.h" />
     <ClInclude Include="mcd\Pin\DataPin.h" />
     <ClInclude Include="mcd\Pin\Pin.h" />

@@ -3,10 +3,17 @@
 #include "NMDBExtensions/TypedNodeContainer.inl"
 #include "mcd/Pin/DataPin.h"
 
+namespace mcc
+{
+	class MorphemeDocument;
+}
+
 namespace mcd
 {
 	class ControlParameter : public db::Node
 	{
+		friend class mcc::MorphemeDocument;
+
 		db::TypedNodeContainer<mcd::DataPin> m_dataPins;
 		db::FloatAttribute m_min;
 		db::FloatAttribute m_max;

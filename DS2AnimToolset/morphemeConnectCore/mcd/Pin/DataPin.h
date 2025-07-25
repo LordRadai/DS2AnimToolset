@@ -1,5 +1,6 @@
 #pragma once
 #include "Pin.h"
+#include "DataTypes.h"
 
 namespace mcd
 {
@@ -7,11 +8,11 @@ namespace mcd
 	{
 		db::EnumAttribute m_dataType;
 	public:
-		DataPin(db::Node* parent, const std::string pinName, const std::string& dataType);
+		DataPin(db::Node* parent, const std::string pinName, DataTypes dataType);
 
 		virtual ~DataPin() override {};
 
-		const std::string& getDataType() const { return m_dataType.getValue(); }
-		void setDataType(const std::string& dataType) { m_dataType.setValue(dataType); }
+		const DataTypes getDataType() const;
+		void setDataType(DataTypes dataType);
 	};
 }

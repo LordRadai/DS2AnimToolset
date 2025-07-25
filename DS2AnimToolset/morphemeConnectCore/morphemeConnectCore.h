@@ -4,3 +4,5 @@
 #include "mcd/Attribute/SingleValue/FloatAttribute.h"
 #include "mcd/Attribute/SingleValue/IntAttribute.h"
 #include "mcd/Attribute/SingleValue/StringAttribute.h"
+
+#include "mcc/MorphemeDocument/MorphemeDocument.h"
