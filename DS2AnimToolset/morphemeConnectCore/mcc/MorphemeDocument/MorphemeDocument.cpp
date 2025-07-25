@@ -4,7 +4,10 @@ namespace mcc
 {
 	mcd::ControlParameter* MorphemeDocument::createControlParmeter(const std::string& name, DataTypes dataType)
 	{
-		return new mcd::ControlParameter(&m_morphemeDB, name);
+		mcd::ControlParameter* cp = new mcd::ControlParameter(&m_morphemeDB, name);
+		m_morphemeDB.addAttribute(cp);
+
+		return cp;
 	}
 
 	mcd::ControlParameter* MorphemeDocument::createFloatControlParameter(const std::string& name, float min, float max, float defaultValue)
