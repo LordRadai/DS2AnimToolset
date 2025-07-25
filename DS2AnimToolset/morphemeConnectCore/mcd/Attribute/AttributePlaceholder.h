@@ -1,6 +1,6 @@
 #pragma once
 #include "NMDatabase/Node/Node.h"
-#include "db/TypedNodeContainer.inl"
+#include "NMDBExtensions/TypedNodeContainer.inl"
 #include "Attribute.h"
 
 namespace mcd
@@ -10,9 +10,7 @@ namespace mcd
 		db::TypedNodeContainer<mcd::Attribute> m_attributes;
 
 	public:
-		AttributePlaceholder(db::Attribute* parent, std::string name, std::string nodeName) :
-			Node(parent, name, nodeName),
-			m_attributes(this, "AttributeEntry") {}
+		AttributePlaceholder(db::Attribute* parent, std::string name);
 
 		virtual ~AttributePlaceholder() override {}
 

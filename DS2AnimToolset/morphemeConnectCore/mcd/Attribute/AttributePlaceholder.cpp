@@ -2,6 +2,13 @@
 
 namespace mcd
 {
+	AttributePlaceholder::AttributePlaceholder(db::Attribute* parent, std::string name) :
+		Node(parent, "AttributePlaceholder", name),
+		m_attributes(this, "AttributeEntry") 
+	{
+		this->addAttribute(&m_attributes);
+	}
+
 	mcd::Attribute* AttributePlaceholder::getMcdAttribute() const
 	{
 		if (m_attributes.empty())

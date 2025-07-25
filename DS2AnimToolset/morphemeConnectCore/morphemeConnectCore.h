@@ -1,0 +1,6 @@
+#include "mcd/MorphemeDB/MorphemeDB.h"
+#include "mcd/Attribute/AttributePlaceholder.h"
+#include "mcd/Attribute/SingleValue/BoolAttribute.h"
+#include "mcd/Attribute/SingleValue/FloatAttribute.h"
+#include "mcd/Attribute/SingleValue/IntAttribute.h"
+#include "mcd/Attribute/SingleValue/StringAttribute.h"

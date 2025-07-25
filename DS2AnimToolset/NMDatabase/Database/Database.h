@@ -16,7 +16,15 @@ namespace db
 		void makeNode(Node* node) { insertAttribute(getNumNodes(), node); }
 		void removeNode(Attribute* attribute) { removeAttribute(attribute); }
 		Node* getNode(int idx) const { return dynamic_cast<Node*>(getAttribute(idx)); }
+
+		/**
+		 * \brief Looks up and return the first node with the specified name.
+		 * 
+		 * \param name The node name.
+		 * \return The node.
+		 */
 		Node* find(std::string name) const;
+
 		bool hasNode(Node* node) const { return find(node->getName()) != nullptr; }
 		Node* front() const { return dynamic_cast<Node*>(Node::front()); }
 		Node* back() const { return dynamic_cast<Node*>(Node::back()); }

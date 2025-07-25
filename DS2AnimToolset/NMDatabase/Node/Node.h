@@ -40,6 +40,8 @@ namespace db
 		std::string getName() const { return m_nodeName; }
 		void setName(const std::string& name) { m_nodeName = name; }
 
+		void addAttribute(Attribute* attribute) { insertAttribute(getAttributeCount(), attribute); }
+
 		void addBoolAttribute(const std::string& name, bool value) { insertAttribute(getAttributeCount(), new BoolAttribute(this, name, value)); }
 		void addFloatAttribute(const std::string& name, float value) { insertAttribute(getAttributeCount(), new FloatAttribute(this, name, value)); }
 		void addDoubleAttribute(const std::string& name, double value) { insertAttribute(getAttributeCount(), new DoubleAttribute(this, name, value)); }

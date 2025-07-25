@@ -40,5 +40,10 @@ namespace db
 		{
 			return dynamic_cast<T*>(db::NodeContainer::back());
 		}
+
+		T* operator[](uint32_t idx) const
+		{
+			return getNode(idx);
+		}
 	};
 }
