@@ -11,6 +11,7 @@ namespace mcd
 
 		virtual ~FloatAttribute() override {};
 		virtual bool assignValue(Attribute* other) override;
+		virtual bool isValueEqualTo(Attribute* attr) override;
 
 		float getValue() const { return m_valueAttr->getValue(); }
 		void setValue(float value) { return m_valueAttr->setValue(value); }

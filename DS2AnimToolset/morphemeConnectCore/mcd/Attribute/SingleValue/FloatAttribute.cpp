@@ -19,4 +19,16 @@ namespace mcd
 
 		this->m_valueAttr->assign(otherAttr->m_valueAttr);
 	}
+
+	bool FloatAttribute::isValueEqualTo(Attribute* attr)
+	{
+		FloatAttribute* otherAttr = dynamic_cast<FloatAttribute*>(attr);
+
+		if (otherAttr == nullptr)
+			return false;
+
+		return ((this->m_valueAttr->getValue() != NAN) &&
+			(otherAttr->m_valueAttr->getValue() != NAN) &&
+			(this->m_valueAttr->getValue() == otherAttr->m_valueAttr->getValue()));
+	}
 }

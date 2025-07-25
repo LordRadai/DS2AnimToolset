@@ -10,6 +10,16 @@ namespace mcd
 		setValue(value);
 	}
 
+	bool BoolAttribute::isValueEqualTo(Attribute* attr)
+	{
+		BoolAttribute* otherAttr = dynamic_cast<BoolAttribute*>(attr);
+		
+		if (otherAttr == nullptr)
+			return false;
+
+		return this->m_valueAttr->getValue() == otherAttr->m_valueAttr->getValue();
+	}
+
 	bool BoolAttribute::assignValue(Attribute* other)
 	{
 		BoolAttribute* otherBoolAttr = dynamic_cast<BoolAttribute*>(other);

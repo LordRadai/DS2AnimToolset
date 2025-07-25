@@ -11,6 +11,7 @@ namespace mcd
 
 		virtual ~BoolAttribute() override {};
 		virtual bool assignValue(Attribute* other) override;
+		virtual bool isValueEqualTo(Attribute* attr) override;
 
 		bool getValue() const { return m_valueAttr->getValue(); }
 		void setValue(bool value) { return m_valueAttr->setValue(value); }

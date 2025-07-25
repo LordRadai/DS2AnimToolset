@@ -151,6 +151,9 @@
     <ClCompile Include="mcd\Attribute\Attribute.cpp" />
     <ClCompile Include="mcd\Attribute\AttributePlaceholder.cpp" />
     <ClCompile Include="mcd\Attribute\SingleValue\BoolAttribute.cpp" />
+    <ClCompile Include="mcd\Attribute\SingleValue\FloatAttribute.cpp" />
+    <ClCompile Include="mcd\Attribute\SingleValue\IntAttribute.cpp" />
+    <ClCompile Include="mcd\Attribute\SingleValue\StringAttribute.cpp" />
     <ClCompile Include="morphemeConnectCore.h" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +161,9 @@
     <ClInclude Include="mcd\Attribute\Attribute.h" />
     <ClInclude Include="mcd\Attribute\AttributePlaceholder.h" />
     <ClInclude Include="mcd\Attribute\SingleValue\BoolAttribute.h" />
+    <ClInclude Include="mcd\Attribute\SingleValue\FloatAttribute.h" />
+    <ClInclude Include="mcd\Attribute\SingleValue\IntAttribute.h" />
+    <ClInclude Include="mcd\Attribute\SingleValue\StringAttribute.h" />
     <ClInclude Include="mcd\mcd.h" />
     <ClInclude Include="mcd\MorphemeDB\MorphemeDB.h" />
   </ItemGroup>
