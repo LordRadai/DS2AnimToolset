@@ -17,7 +17,7 @@ namespace mcd
 		m_defaultQuaternion(this, "DefaultQuaternion", NMP::QuatIdentity())
 	{
 		this->addAttribute(&m_dataPins);
-		m_dataPins.add(new mcd::DataPin(this, "Result", "bool"));
+		m_dataPins.add(new mcd::DataPin(this, "Result", DataTypes::kBool));
 	}
 
 	mcd::DataPin* ControlParameter::getResultDataPin() const
