@@ -36,9 +36,6 @@
     <ClCompile Include="mcd\Attribute\SingleValue\StringAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mcd\Pin\Pin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mcd\Pin\DataPin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -80,7 +77,7 @@
     <ClInclude Include="mcd\ControlParameter\ControlParameter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mcd\Pin\Pin.h">
+    <ClInclude Include="mcd\Pin\Pin.inl">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcd\Pin\DataPin.h">
