@@ -20,7 +20,7 @@ namespace db
 		if (m_xmlElement == nullptr)
 			return false;
 
-		m_xmlElement->SetAttribute("name", m_name.c_str());
+		m_xmlElement->SetAttribute("name", m_nodeName.c_str());
 		m_xmlElement->SetAttribute("type", "node");
 		return true;
 	}
@@ -29,7 +29,7 @@ namespace db
 	{
 		tinyxml2::XMLDocument doc;
 
-		m_xmlElement = doc.NewElement("Database");
+		m_xmlElement = doc.NewElement(m_name.c_str());
 		doc.InsertFirstChild(m_xmlElement);
 
 		if (!writeXML())
