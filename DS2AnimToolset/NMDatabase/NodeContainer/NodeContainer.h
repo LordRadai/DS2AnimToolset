@@ -17,11 +17,11 @@ namespace db
 
 		void add(Node* node) { insertAttribute(getNumNodes(), node); }
 		void remove(Attribute* attribute) { removeAttribute(attribute); }
-		Node* getNode(int idx) const { return dynamic_cast<Node*>(getAttribute(idx)); }
-		Node* find(std::string name) const { Attribute* attr = findAttribute(name); }
+		Node* getNode(int idx) const { return getAttribute(idx)->asNode(); }
+		Node* find(std::string name) const { return findAttribute(name)->asNode(); }
 		bool hasNode(Node* node) const { return find(node->getName()) != nullptr; }
-		Node* front() const { return dynamic_cast<Node*>(AttributeContainer::front()); }
-		Node* back() const { return dynamic_cast<Node*>(AttributeContainer::back()); }
+		Node* front() const { return AttributeContainer::front()->asNode(); }
+		Node* back() const { return AttributeContainer::back()->asNode(); }
 		size_t getNumNodes() const { return AttributeContainer::size(); }
 	};
 }
