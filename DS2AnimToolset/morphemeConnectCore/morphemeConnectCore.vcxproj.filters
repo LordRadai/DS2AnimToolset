@@ -45,6 +45,9 @@
     <ClCompile Include="mcc\MorphemeDocument\MorphemeDocument.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\MorphemeDB\MorphemeDB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -87,6 +90,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DataTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\Network\Network.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #pragma once
 #include "NMDatabase/NMDatabase.h"
+#include "mcd/Network/Network.h"
 
 namespace mcc
 {
@@ -11,7 +12,14 @@ namespace mcd
 	class MorphemeDB : public db::Database
 	{
 		friend class mcc::MorphemeDocument; // Allow MorphemeDocument to access private members if needed
+
+		db::NodeContainer m_networks;
 	public:
-		MorphemeDB() : db::Database("MorphemeDB", "MorphemeDB") {};
+		MorphemeDB();
+
+		~MorphemeDB() override {};
+
+		void createNetwork(const std::string& name);
+		Network* getNetwork() const;
 	};
 }
