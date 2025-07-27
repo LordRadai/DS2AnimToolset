@@ -6,7 +6,7 @@ namespace mcd
 		: Attribute(parent, "StringAttribute", name)
 	{
 		this->addStringAttribute("Value", value);
-		this->m_valueAttr = this->getAttribute(0)->asString();
+		this->m_valueAttr.reset(this->getAttribute(0)->asString());
 		setValue(value);
 	}
 
@@ -17,7 +17,7 @@ namespace mcd
 		if (otherAttr == nullptr)
 			return false;
 
-		this->m_valueAttr->assign(otherAttr->m_valueAttr);
+		this->m_valueAttr->assign(otherAttr->m_valueAttr.get());
 		return true;
 	}
 

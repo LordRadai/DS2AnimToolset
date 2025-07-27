@@ -6,7 +6,7 @@ namespace mcd
 		: Attribute(parent, "FloatAttribute", name)
 	{
 		this->addFloatAttribute("Value", value);
-		this->m_valueAttr = this->getAttribute(0)->asFloat();
+		this->m_valueAttr.reset(this->getAttribute(0)->asFloat());
 		setValue(value);
 	}
 
@@ -17,7 +17,7 @@ namespace mcd
 		if (otherAttr == nullptr)
 			return false;
 
-		this->m_valueAttr->assign(otherAttr->m_valueAttr);
+		this->m_valueAttr->assign(otherAttr->m_valueAttr.get());
 	}
 
 	bool FloatAttribute::isValueEqualTo(Attribute* attr)

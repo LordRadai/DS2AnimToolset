@@ -6,7 +6,7 @@ namespace mcd
 	{
 		this->addBoolAttribute("Value", value);
 
-		this->m_valueAttr = this->getAttribute(0)->asBool();
+		this->m_valueAttr.reset(this->getAttribute(0)->asBool());
 		setValue(value);
 	}
 
@@ -27,6 +27,6 @@ namespace mcd
 		if (otherBoolAttr == nullptr)
 			return false;
 
-		this->m_valueAttr->assign(otherBoolAttr->m_valueAttr);
+		this->m_valueAttr->assign(otherBoolAttr->m_valueAttr.get());
 	}
 }

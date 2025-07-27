@@ -9,7 +9,7 @@ namespace mcd
 {
 	class BlendTree : public Graph
 	{
-		db::TypedNodeContainer<mcd::BlendTreeNode> m_blendTreeNodes;
+		std::unique_ptr<db::TypedNodeContainer<mcd::BlendTreeNode>> m_blendTreeNodes;
 		std::unique_ptr<db::FloatAttribute> m_controlParamXPos;
 		std::unique_ptr<db::FloatAttribute> m_controlParamYPos;
 		std::unique_ptr<db::FloatAttribute> m_controlParamWidth;
@@ -28,8 +28,8 @@ namespace mcd
 
 		virtual ~BlendTree() override {};
 
-		mcd::BlendTreeNode* getBlendTreeNode(const uint32_t index) const { return m_blendTreeNodes.getNode(index); }
-		mcd::BlendTreeNode* findBlendTreeNode(const std::string& name) const { return m_blendTreeNodes.find(name); }
+		mcd::BlendTreeNode* getBlendTreeNode(const uint32_t index) const { return m_blendTreeNodes->getNode(index); }
+		mcd::BlendTreeNode* findBlendTreeNode(const std::string& name) const { return m_blendTreeNodes->find(name); }
 
 		float getControlParamXPos() const { return m_controlParamXPos->getValue(); }
 		float getControlParamYPos() const { return m_controlParamYPos->getValue(); }

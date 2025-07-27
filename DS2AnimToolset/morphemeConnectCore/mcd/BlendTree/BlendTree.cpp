@@ -3,32 +3,32 @@
 namespace mcd
 {
 	BlendTree::BlendTree(db::Attribute* parent, std::string name) : Graph(parent, "BlendTree", name),
-		m_blendTreeNodes(this, "BlendTreeNodes"),
-		m_controlParamXPos(this, "ControlParamXPos", 0.0f),
-		m_controlParamYPos(this, "ControlParamYPos", 0.0f),
-		m_controlParamWidth(this, "ControlParamWidth", 100.0f),
-		m_controlParamHeight(this, "ControlParamHeight", 100.0f),
-		m_emittedControlParamXPos(this, "EmittedControlParamXPos", 0.0f),
-		m_emittedControlParamYPos(this, "EmittedControlParamYPos", 0.0f),
-		m_emittedControlParamWidth(this, "EmittedControlParamWidth", 100.0f),
-		m_emittedControlParamHeight(this, "EmittedControlParamHeight", 100.0f),
-		m_outputPinXPos(this, "OutputPinXPos", 0.0f),
-		m_outputPinYPos(this, "OutputPinYPos", 0.0f),
-		m_outputPinWidth(this, "OutputPinWidth", 100.0f),
-		m_outputPinHeight(this, "OutputPinHeight", 100.0f)
+		m_blendTreeNodes(std::make_unique<db::TypedNodeContainer<mcd::BlendTreeNode>>(this, "BlendTreeNodes")),
+		m_controlParamXPos(std::make_unique<db::FloatAttribute>(this, "ControlParamXPos", -100.0f)),
+		m_controlParamYPos(std::make_unique<db::FloatAttribute>(this, "ControlParamYPos", -100.0f)),
+		m_controlParamWidth(std::make_unique<db::FloatAttribute>(this, "ControlParamWidth", 100.0f)),
+		m_controlParamHeight(std::make_unique<db::FloatAttribute>(this, "ControlParamHeight", 200.0f)),
+		m_emittedControlParamXPos(std::make_unique<db::FloatAttribute>(this, "EmittedControlParamXPos", 100.0f)),
+		m_emittedControlParamYPos(std::make_unique<db::FloatAttribute>(this, "EmittedControlParamYPos", 100.0f)),
+		m_emittedControlParamWidth(std::make_unique<db::FloatAttribute>(this, "EmittedControlParamWidth", 100.0f)),
+		m_emittedControlParamHeight(std::make_unique<db::FloatAttribute>(this, "EmittedControlParamHeight", 200.0f)),
+		m_outputPinXPos(std::make_unique<db::FloatAttribute>(this, "OutputPinXPos", 100.0f)),
+		m_outputPinYPos(std::make_unique<db::FloatAttribute>(this, "OutputPinYPos", 500.0f)),
+		m_outputPinWidth(std::make_unique<db::FloatAttribute>(this, "OutputPinWidth", 100.0f)),
+		m_outputPinHeight(std::make_unique<db::FloatAttribute>(this, "OutputPinHeight", 200.0f))
 	{
-		addAttribute(&m_blendTreeNodes);
-		addAttribute(&m_controlParamXPos);
-		addAttribute(&m_controlParamYPos);
-		addAttribute(&m_controlParamWidth);
-		addAttribute(&m_controlParamHeight);
-		addAttribute(&m_emittedControlParamXPos);
-		addAttribute(&m_emittedControlParamYPos);
-		addAttribute(&m_emittedControlParamWidth);
-		addAttribute(&m_emittedControlParamHeight);
-		addAttribute(&m_outputPinXPos);
-		addAttribute(&m_outputPinYPos);
-		addAttribute(&m_outputPinWidth);
-		addAttribute(&m_outputPinHeight);
+		addAttribute(m_blendTreeNodes.get());
+		addAttribute(m_controlParamXPos.get());
+		addAttribute(m_controlParamYPos.get());
+		addAttribute(m_controlParamWidth.get());
+		addAttribute(m_controlParamHeight.get());
+		addAttribute(m_emittedControlParamXPos.get());
+		addAttribute(m_emittedControlParamYPos.get());
+		addAttribute(m_emittedControlParamWidth.get());
+		addAttribute(m_emittedControlParamHeight.get());
+		addAttribute(m_outputPinXPos.get());
+		addAttribute(m_outputPinYPos.get());
+		addAttribute(m_outputPinWidth.get());
+		addAttribute(m_outputPinHeight.get());
 	}
 }
