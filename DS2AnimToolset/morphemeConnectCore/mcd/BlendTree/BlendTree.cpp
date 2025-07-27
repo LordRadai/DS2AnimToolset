@@ -31,4 +31,38 @@ namespace mcd
 		addAttribute(m_outputPinWidth.get());
 		addAttribute(m_outputPinHeight.get());
 	}
+
+	void BlendTree::getFreePosition(float& x, float& y)
+	{
+		x = 10.f;
+		y = 0.f;
+		
+		float maxX = 0.f;
+		float maxY = 0.f;
+
+		if (m_blendTreeNodes->empty())
+			return;
+
+		for (size_t i = 0; i < m_blendTreeNodes->size(); i++)
+		{
+			mcd::BlendTreeNode* node = m_blendTreeNodes->getNode(i);
+
+			if (node == nullptr) continue;
+
+			float nodexPos = node->getXPos();
+			float nodeyPos = node->getYPos();
+
+			float x = nodexPos ? nodexPos : 0.0f;
+			float y = nodeyPos ? nodeyPos : 0.0f;
+
+			if (!std::isnan(x) && x > maxX)
+				maxX = x;
+
+			if (!std::isnan(y) && y > maxY)
+				maxY = y;
+		}
+
+		x = 10.0f;
+		y = maxY + 100.0f;
+	}
 }

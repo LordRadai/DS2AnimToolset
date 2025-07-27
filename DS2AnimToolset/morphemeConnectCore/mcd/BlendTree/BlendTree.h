@@ -56,5 +56,13 @@ namespace mcd
 		void setOutputPinYPos(float y) { m_outputPinYPos->setValue(y); }
 		void setOutputPinWidth(float width) { m_outputPinWidth->setValue(width); }
 		void setOutputPinHeight(float height) { m_outputPinHeight->setValue(height); }
+
+		/**
+		 * \brief Returns the first free position in the graph.
+		 * 
+		 * \param x Output buffer for the x position.
+		 * \param y Output buffer for the y position.
+		 */
+		void getFreePosition(float& x, float& y);
 	};
 }
