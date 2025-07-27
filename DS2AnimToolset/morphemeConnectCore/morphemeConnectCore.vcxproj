@@ -156,6 +156,8 @@
     <ClCompile Include="mcd\Attribute\SingleValue\IntAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\SingleValue\StringAttribute.cpp" />
     <ClCompile Include="mcd\ControlParameter\ControlParameter.cpp" />
+    <ClCompile Include="mcd\Edge\FlowEdge.cpp" />
+    <ClCompile Include="mcd\Graph\Graph.cpp" />
     <ClCompile Include="mcd\MorphemeDB\MorphemeDB.cpp" />
     <ClCompile Include="mcd\Pin\DataPin.cpp" />
     <ClCompile Include="morphemeConnectCore.h" />
@@ -164,9 +166,13 @@
     <ClInclude Include="DataTypes.h" />
     <ClInclude Include="mcc\MorphemeDocument\MorphemeDocument.h" />
     <ClInclude Include="mcd\ControlParameter\ControlParameter.h" />
+    <ClInclude Include="mcd\Edge\Edge.inl" />
+    <ClInclude Include="mcd\Edge\FlowEdge.h" />
+    <ClInclude Include="mcd\Graph\Graph.h" />
     <ClInclude Include="mcd\Network\Network.h" />
     <ClInclude Include="mcd\Pin\DataPin.h" />
     <ClInclude Include="mcd\Pin\Pin.inl" />
+    <ClInclude Include="NMDBExtensions\Pointer.inl" />
     <ClInclude Include="NMDBExtensions\TypedNodeContainer.inl" />
     <ClInclude Include="mcd\Attribute\Attribute.h" />
     <ClInclude Include="mcd\Attribute\AttributePlaceholder.h" />
