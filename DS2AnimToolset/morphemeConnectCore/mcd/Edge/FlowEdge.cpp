@@ -3,13 +3,11 @@
 namespace mcd
 {
 	FlowEdge::FlowEdge(Attribute* parent, std::string name, mcd::Pin* to, mcd::Pin* from)
-		: Edge(parent, "FlowEdge", name), m_from(this, "From", from), m_to(this, "To", to)
+		: Edge(parent, "FlowEdge", name), 
+		m_from(std::make_unique<db::Pointer<mcd::Pin>>(this, "From", from)), 
+		m_to(std::make_unique<db::Pointer<mcd::Pin>>(this, "To", to))
 	{
-		addAttribute(&m_from);
-		addAttribute(&m_to);
-	}
-
-	FlowEdge::~FlowEdge()
-	{
+		addAttribute(m_from.get());
+		addAttribute(m_to.get());
 	}
 }

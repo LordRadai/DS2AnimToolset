@@ -155,8 +155,12 @@
     <ClCompile Include="mcd\Attribute\SingleValue\FloatAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\SingleValue\IntAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\SingleValue\StringAttribute.cpp" />
+    <ClCompile Include="mcd\BlendTree\BlendTree.cpp" />
+    <ClCompile Include="mcd\BlendTree\BlendTreeNode.cpp" />
+    <ClCompile Include="mcd\ControlParametersNode\ControlParametersNode.cpp" />
     <ClCompile Include="mcd\ControlParameter\ControlParameter.cpp" />
     <ClCompile Include="mcd\Edge\FlowEdge.cpp" />
+    <ClCompile Include="mcd\Graph\GraphNode.cpp" />
     <ClCompile Include="mcd\Graph\Graph.cpp" />
     <ClCompile Include="mcd\MorphemeDB\MorphemeDB.cpp" />
     <ClCompile Include="mcd\Pin\DataPin.cpp" />
@@ -165,9 +169,13 @@
   <ItemGroup>
     <ClInclude Include="DataTypes.h" />
     <ClInclude Include="mcc\MorphemeDocument\MorphemeDocument.h" />
+    <ClInclude Include="mcd\BlendTree\BlendTree.h" />
+    <ClInclude Include="mcd\BlendTree\BlendTreeNode.h" />
+    <ClInclude Include="mcd\ControlParametersNode\ControlParametersNode.h" />
     <ClInclude Include="mcd\ControlParameter\ControlParameter.h" />
     <ClInclude Include="mcd\Edge\Edge.inl" />
     <ClInclude Include="mcd\Edge\FlowEdge.h" />
+    <ClInclude Include="mcd\Graph\GraphNode.h" />
     <ClInclude Include="mcd\Graph\Graph.h" />
     <ClInclude Include="mcd\Network\Network.h" />
     <ClInclude Include="mcd\Pin\DataPin.h" />

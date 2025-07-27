@@ -5,7 +5,7 @@ namespace mcd
 {
 	class BoolAttribute : public Attribute
 	{
-		db::BoolAttribute* m_valueAttr = nullptr;
+		std::unique_ptr<db::BoolAttribute> m_valueAttr = nullptr;
 	public:
 		BoolAttribute(db::Node* parent, std::string name, bool value);
 

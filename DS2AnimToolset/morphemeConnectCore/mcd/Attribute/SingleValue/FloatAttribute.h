@@ -5,7 +5,7 @@ namespace mcd
 {
 	class FloatAttribute : public Attribute
 	{
-		db::FloatAttribute* m_valueAttr = nullptr;
+		std::unique_ptr<db::FloatAttribute> m_valueAttr = nullptr;
 	public:
 		FloatAttribute(db::Node* parent, std::string name, float value);
 

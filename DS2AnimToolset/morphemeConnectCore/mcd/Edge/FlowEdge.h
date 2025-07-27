@@ -7,8 +7,8 @@ namespace mcd
 {
 	class FlowEdge : public Edge
 	{
-		db::Pointer<mcd::Pin> m_from;
-		db::Pointer<mcd::Pin> m_to;
+		std::unique_ptr<db::Pointer<mcd::Pin>> m_from;
+		std::unique_ptr<db::Pointer<mcd::Pin>> m_to;
 
 	public:
 		FlowEdge(Attribute* parent, std::string name, mcd::Pin* to, mcd::Pin* from);

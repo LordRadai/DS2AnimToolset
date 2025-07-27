@@ -54,6 +54,18 @@
     <ClCompile Include="mcd\Graph\Graph.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\Graph\GraphNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcd\BlendTree\BlendTreeNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcd\BlendTree\BlendTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcd\ControlParametersNode\ControlParametersNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -111,6 +123,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcd\Edge\FlowEdge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\ControlParametersNode\ControlParametersNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\BlendTree\BlendTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\Graph\GraphNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\BlendTree\BlendTreeNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,7 +6,7 @@ namespace mcd
 {
 	class DataPin : public Pin
 	{
-		db::EnumAttribute m_dataType;
+		std::unique_ptr<db::EnumAttribute> m_dataType;
 	public:
 		DataPin(db::Node* parent, const std::string pinName, DataTypes dataType);
 

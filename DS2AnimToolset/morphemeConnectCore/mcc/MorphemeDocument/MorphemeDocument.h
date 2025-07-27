@@ -6,11 +6,18 @@ namespace mcc
 {
 	class MorphemeDocument
 	{
-		mcd::MorphemeDB m_morphemeDB;
+		std::unique_ptr<mcd::MorphemeDB> m_morphemeDB;
 	public:
-		MorphemeDocument() {}
+		MorphemeDocument() : m_morphemeDB(std::make_unique<mcd::MorphemeDB>()) {}
 		~MorphemeDocument() {}
 		
+		/**
+		 * \brief Returns the MorphemeDB instance.
+		 *
+		 * \return A reference to the MorphemeDB instance.
+		 */
+		mcd::MorphemeDB* getMorphemeDB() { return m_morphemeDB.get(); }
+
 		/**
 		 * \brief Creates a typed control parameter. This is unfinished, the parent is set to nullptr for now.
 		 * 

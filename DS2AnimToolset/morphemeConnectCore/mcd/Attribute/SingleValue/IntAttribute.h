@@ -5,7 +5,7 @@ namespace mcd
 {
 	class IntAttribute : public Attribute
 	{
-		db::IntAttribute* m_valueAttr = nullptr;
+		std::unique_ptr<db::IntAttribute> m_valueAttr = nullptr;
 
 	public:
 		IntAttribute(db::Node* parent, std::string name, int value);

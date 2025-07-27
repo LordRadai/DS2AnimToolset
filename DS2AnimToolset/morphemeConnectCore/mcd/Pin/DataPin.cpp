@@ -4,15 +4,15 @@ namespace mcd
 {
 	DataPin::DataPin(db::Node* parent, const std::string pinName, DataTypes dataType)
 		: Pin(parent, "DataPin", pinName),
-		m_dataType(this, "DataType", "")
+		m_dataType(std::make_unique<db::EnumAttribute>(this, "DataType", ""))
 	{
-		this->addAttribute(&m_dataType);
+		this->addAttribute(m_dataType.get());
 		setDataType(dataType);
 	}
 
 	const DataTypes DataPin::getDataType() const
 	{
-		const std::string& typeStr = m_dataType.getValue();
+		const std::string& typeStr = m_dataType->getValue();
 
 		if (typeStr == "float")
 			return DataTypes::kFloat;
@@ -37,25 +37,25 @@ namespace mcd
 		switch (dataType)
 		{
 		case DataTypes::kFloat:
-			m_dataType.setValue("float");
+			m_dataType->setValue("float");
 			break;
 		case DataTypes::kVector3:
-			m_dataType.setValue("vector3");
+			m_dataType->setValue("vector3");
 			break;
 		case DataTypes::kVector4:
-			m_dataType.setValue("vector4");
+			m_dataType->setValue("vector4");
 			break;
 		case DataTypes::kBool:
-			m_dataType.setValue("bool");
+			m_dataType->setValue("bool");
 			break;
 		case DataTypes::kQuaternion:
-			m_dataType.setValue("quaternion");
+			m_dataType->setValue("quaternion");
 			break;
 		case DataTypes::kInt:
-			m_dataType.setValue("int");
+			m_dataType->setValue("int");
 			break;
 		case DataTypes::kUInt:
-			m_dataType.setValue("uint");
+			m_dataType->setValue("uint");
 			break;
 		default:
 			throw std::invalid_argument("Unsupported data type for DataPin.");

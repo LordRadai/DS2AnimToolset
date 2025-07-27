@@ -7,6 +7,6 @@ namespace mcd
 {
 	class Network : public db::Node
 	{
-		db::TypedNodeContainer<mcd::Graph> m_graphs;
+		std::unique_ptr<db::TypedNodeContainer<mcd::Graph>> m_graphs;
 	};
 }

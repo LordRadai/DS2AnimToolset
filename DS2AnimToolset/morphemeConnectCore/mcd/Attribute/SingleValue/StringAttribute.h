@@ -5,7 +5,7 @@ namespace mcd
 {
 	class StringAttribute : public Attribute
 	{
-		db::StringAttribute* m_valueAttr = nullptr;
+		std::unique_ptr<db::StringAttribute> m_valueAttr = nullptr;
 
 	public:
 		StringAttribute(db::Node* parent, std::string name, const std::string& value);

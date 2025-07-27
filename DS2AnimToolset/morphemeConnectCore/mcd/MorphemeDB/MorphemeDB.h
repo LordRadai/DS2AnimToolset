@@ -1,6 +1,7 @@
 #pragma once
 #include "NMDatabase/NMDatabase.h"
 #include "mcd/Network/Network.h"
+#include "NMDBExtensions/TypedNodeContainer.inl"
 
 namespace mcc
 {
@@ -13,7 +14,7 @@ namespace mcd
 	{
 		friend class mcc::MorphemeDocument; // Allow MorphemeDocument to access private members if needed
 
-		db::NodeContainer m_networks;
+		std::unique_ptr<db::TypedNodeContainer<mcd::Network>> m_networks;
 	public:
 		MorphemeDB();
 

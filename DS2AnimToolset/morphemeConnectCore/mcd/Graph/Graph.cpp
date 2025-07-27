@@ -2,14 +2,14 @@
 
 namespace mcd
 {
-	Graph::Graph(Attribute* parent, std::string name)
-		: Node(parent, name, "Graph"),
-		m_flowEdges(this, "FlowEdges"),
-		m_panX(this, "PanX", 0.0f),
-		m_panY(this, "PanY", 0.0f)
+	Graph::Graph(Attribute* parent, std::string name, std::string graphName)
+		: Node(parent, name, graphName),
+		m_flowEdges(std::make_unique<db::TypedNodeContainer<mcd::FlowEdge>>(this, "FlowEdges")),
+		m_panX(std::make_unique<db::FloatAttribute>(this, "PanX", 0.0f)),
+		m_panY(std::make_unique<db::FloatAttribute>(this, "PanY", 0.0f))
 	{
-		addAttribute(&m_flowEdges);
-		addAttribute(&m_panX);
-		addAttribute(&m_panY);
+		addAttribute(m_flowEdges.get());
+		addAttribute(m_panX.get());
+		addAttribute(m_panY.get());
 	}
 }
