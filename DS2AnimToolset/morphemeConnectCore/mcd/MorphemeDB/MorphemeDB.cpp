@@ -11,6 +11,8 @@ namespace mcd
 	{
 		if (m_networks->size() > 0)
 			return; // Only one network is allowed.
+
+		m_networks->add(new mcd::Network(this, name));
 	}
 
 	Network* MorphemeDB::getNetwork() const
