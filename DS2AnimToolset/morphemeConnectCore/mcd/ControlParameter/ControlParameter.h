@@ -27,7 +27,7 @@ namespace mcd
 		std::unique_ptr<db::QuaternionAttribute> m_defaultQuaternion;
 
 	public:
-		ControlParameter(db::Node* parent, const std::string& name);
+		ControlParameter(db::Node* parent, const std::string& name, DataTypes dataType);
 
 		virtual ~ControlParameter() override {};
 

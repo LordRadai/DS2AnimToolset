@@ -4,8 +4,10 @@ namespace mcc
 {
 	mcd::ControlParameter* MorphemeDocument::createControlParmeter(const std::string& name, DataTypes dataType)
 	{
-		mcd::ControlParameter* cp = new mcd::ControlParameter(m_morphemeDB.get(), name);
-		m_morphemeDB->addAttribute(cp);
+		mcd::ControlParametersNode* cpNode = m_morphemeDB->getNetwork()->getControlParametersNode();
+
+		mcd::ControlParameter* cp = new mcd::ControlParameter(cpNode, name, dataType);
+		cpNode->addAttribute(cp);
 
 		return cp;
 	}
@@ -104,8 +106,20 @@ namespace mcc
 		return param;
 	}
 
+	void MorphemeDocument::save()
+	{
+		if (m_filepath.empty())
+			throw std::runtime_error("Filepath is not set. Please set the filepath before saving.");
+		if (!m_morphemeDB)
+			throw std::runtime_error("MorphemeDB is not initialized.");
+
+		m_morphemeDB->exportXML(m_filepath.c_str());
+	}
+
 	void MorphemeDocument::saveAs(const std::string& filename)
 	{
-		m_morphemeDB->exportXML(filename.c_str());
+		m_filepath = filename;
+
+		save();
 	}
 }

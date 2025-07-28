@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	ControlParameter::ControlParameter(db::Node* parent, const std::string& name)
+	ControlParameter::ControlParameter(db::Node* parent, const std::string& name, DataTypes dataType)
 		: db::Node(parent, "ControlParameter", name),
 		m_dataPins(std::make_unique<db::TypedNodeContainer<mcd::DataPin>>(this, "DataPins")),
 		m_min(std::make_unique<db::FloatAttribute>(this, "Min", 0.0f)),
@@ -17,7 +17,7 @@ namespace mcd
 		m_defaultQuaternion(std::make_unique<db::QuaternionAttribute>(this, "DefaultQuaternion", NMP::QuatIdentity()))
 	{
 		this->addAttribute(m_dataPins.get());
-		m_dataPins->add(new mcd::DataPin(this, "Result", DataTypes::kBool));
+		m_dataPins->add(new mcd::DataPin(this, "Result", dataType));
 	}
 
 	mcd::DataPin* ControlParameter::getResultDataPin() const

@@ -7,6 +7,7 @@ namespace mcc
 	class MorphemeDocument
 	{
 		std::unique_ptr<mcd::MorphemeDB> m_morphemeDB;
+		std::string m_filepath;
 	public:
 		MorphemeDocument() : m_morphemeDB(std::make_unique<mcd::MorphemeDB>()) {}
 		~MorphemeDocument() {}
@@ -101,6 +102,8 @@ namespace mcc
 		 * \return A pointer to the created unsigned integer control parameter.
 		 */
 		mcd::ControlParameter* createUIntControlParameter(const std::string& name, uint32_t min, uint32_t max, uint32_t defaultValue);
+
+		void save();
 
 		void saveAs(const std::string& filename);
 	};
