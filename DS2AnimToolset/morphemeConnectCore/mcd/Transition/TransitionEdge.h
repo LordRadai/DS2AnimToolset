@@ -2,13 +2,12 @@
 #include "NMDatabase/NMDatabase.h"
 #include "mcd/Attribute/Attribute.h"
 #include "mcd/Condition/Condition.h"
+#include "mcd/StateMachine/StateMachineNode.h"
 #include "NMDBExtensions/TypedNodeContainer.inl"
 #include "NMDBExtensions/Pointer.inl"
 
 namespace mcd
 {
-	class StateMachineNode;
-
 	class TransitionEdge : public db::Node
 	{
 		std::unique_ptr<db::TypedNodeContainer<mcd::Condition>> m_conditions;
@@ -23,8 +22,8 @@ namespace mcd
 
 		virtual ~TransitionEdge() override {};
 
-		mcd::StateMachineNode* getSourceNode() const { return m_sourceNode->get(); }
-		mcd::StateMachineNode* getTargetNode() const { return m_targetNode->get(); }
+		mcd::StateMachineNode* getSourceNode() const { return m_sourceNode->getValue(); }
+		mcd::StateMachineNode* getTargetNode() const { return m_targetNode->getValue(); }
 		const std::string& getEdgeType() const { return m_edgeType->getValue(); }
 		int getManifestVersion() const { return m_manifestVersion->getValue(); }
 
