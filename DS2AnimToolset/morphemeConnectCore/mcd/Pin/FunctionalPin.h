@@ -9,16 +9,12 @@ namespace mcd
 		std::unique_ptr<db::BoolAttribute> m_passThroughEnabled;
 
 	public:
-		FunctionalPin(db::Node* parent, const std::string& name)
-			: Pin(parent, "FunctionalPin", name),
-			  m_interfaces(std::make_unique<db::StringArrayAttribute>(this, "interfaces")),
-			  m_passThroughEnabled(std::make_unique<db::BoolAttribute>(this, "passThroughEnabled", false))
-		{
-		}
+		FunctionalPin(db::Node* parent, const std::string& name);
 
 		virtual ~FunctionalPin() override {};
 
 		void addInterface(const std::string& interfaceName) { m_interfaces->add(interfaceName); }
+		void removeInterface(const uint32_t index) { m_interfaces->removeAt(index); }
 		std::string getInterface(const uint32_t index) const { return m_interfaces->getElement(index); }
 		std::string findInterface(const std::string& name) const;
 		uint32_t getInterfaceCount() const { return m_interfaces->size(); }
