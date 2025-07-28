@@ -81,6 +81,9 @@
     <ClCompile Include="mcd\StateMachine\StateMachine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\Pin\FunctionalPin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -162,6 +165,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcd\Condition\Condition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\Pin\FunctionalPin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

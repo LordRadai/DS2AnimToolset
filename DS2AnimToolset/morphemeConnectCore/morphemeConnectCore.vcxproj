@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -166,6 +166,7 @@
     <ClCompile Include="mcd\MorphemeDB\MorphemeDB.cpp" />
     <ClCompile Include="mcd\Network\Network.cpp" />
     <ClCompile Include="mcd\Pin\DataPin.cpp" />
+    <ClCompile Include="mcd\Pin\FunctionalPin.cpp" />
     <ClCompile Include="mcd\StateMachine\StateMachine.cpp" />
     <ClCompile Include="mcd\StateMachine\StateMachineNode.cpp" />
     <ClCompile Include="mcd\Transition\TransitionEdge.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="mcd\Graph\Graph.h" />
     <ClInclude Include="mcd\Network\Network.h" />
     <ClInclude Include="mcd\Pin\DataPin.h" />
+    <ClInclude Include="mcd\Pin\FunctionalPin.h" />
     <ClInclude Include="mcd\Pin\Pin.inl" />
     <ClInclude Include="mcd\StateMachine\StateMachine.h" />
     <ClInclude Include="mcd\StateMachine\StateMachineNode.h" />
