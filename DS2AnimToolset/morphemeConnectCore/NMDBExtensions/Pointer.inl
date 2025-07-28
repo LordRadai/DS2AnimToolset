@@ -13,7 +13,7 @@ namespace db
 
 		virtual ~Pointer() override {};
 
-		T* get() const { return dynamic_cast<T*>(db::PointerAttribute::getValue()); }
-		void set(T* value) { db::PointerAttribute::setValue(value); }
+		T* getValue() const { return dynamic_cast<T*>(db::PointerAttribute::getValue()); }
+		void setValue(T* value) { db::PointerAttribute::setValue(value); }
 	};
 }

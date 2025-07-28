@@ -4,10 +4,10 @@ namespace mcd
 {
 	ControlParametersNode::ControlParametersNode(db::Attribute* parent, std::string name)
 		: Node(parent, "ControlParametersNode", name),
-		m_controlParameters(this, "ControlParameterArray"),
-		m_cpBlendTree(this, "ControlParameterBlendTree")
+		m_controlParameters(std::make_unique<db::TypedNodeContainer<mcd::ControlParameter>>(this, "ControlParameterArray")),
+		m_cpBlendTree(std::make_unique<mcd::BlendTree>(this, "ControlParameterBlendTree"))
 	{
-		addAttribute(&m_controlParameters);
-		addAttribute(&m_cpBlendTree);
+		addAttribute(m_controlParameters.get());
+		addAttribute(m_cpBlendTree.get());
 	}
 }
