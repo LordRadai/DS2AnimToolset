@@ -1,0 +1,148 @@
+{
+    "animId": 402,
+    "upgrade": null,
+    "interfaces": [
+        "Transforms",
+        "Time"
+    ],
+    "validate": null,
+    "serialize": null,
+    "version": 4,
+    "attributes": [
+        {
+            "min": 0,
+            "type": "float",
+            "name": "DurationInTime",
+            "value": 0.5,
+            "helptext": "Controls how long the transition will take in seconds."
+        },
+        {
+            "type": "bool",
+            "name": "AdditiveBlendAttitude",
+            "value": false,
+            "helptext": "When set, the rotations of Destination are added to Source.",
+            "displayName": "Additive Rotation"
+        },
+        {
+            "type": "bool",
+            "name": "AdditiveBlendPosition",
+            "value": false,
+            "helptext": "When set, the rotations and positions of Destination are added to Source.",
+            "displayName": "Additive Translation"
+        },
+        {
+            "type": "bool",
+            "name": "SphericallyInterpolateTrajectoryPosition",
+            "value": false,
+            "helptext": "Spherically interpolate between the two trajectory positions inputs. The trajectory orientation is always spherically interpolated.",
+            "displayName": "Slerp Trajectory"
+        },
+        {
+            "type": "bool",
+            "name": "DeadblendBreakoutToSource",
+            "value": false,
+            "helptext": "If turned on, a breakout transition to this transition's source will replace the source with a dead-reckoned animation.",
+            "displayName": "Dead blend source on breakout"
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "DestinationStartFraction",
+            "value": 0,
+            "helptext": "",
+            "max": 1
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "DestinationStartSyncEventIndex",
+            "value": 0,
+            "helptext": ""
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "DestinationStartSyncEventFraction",
+            "value": 0,
+            "helptext": "",
+            "max": 1
+        },
+        {
+            "type": "bool",
+            "name": "UseDestinationStartFraction",
+            "value": false,
+            "helptext": ""
+        },
+        {
+            "type": "bool",
+            "name": "UseDestinationStartSyncEventIndex",
+            "value": false,
+            "helptext": ""
+        },
+        {
+            "type": "bool",
+            "name": "UseDestinationStartSyncEventFraction",
+            "value": false,
+            "helptext": ""
+        },
+        {
+            "type": "bool",
+            "name": "ReversibleTransit",
+            "value": false,
+            "helptext": "Allow transition to be reversible."
+        },
+        {
+            "type": "controlParameter",
+            "name": "ReverseControlParameter",
+            "helptext": "Control parameter used to control transition reversing."
+        },
+        {
+            "type": "int",
+            "name": "DeltaTrajSource",
+            "value": 3,
+            "helptext": "Specifies which child/children we will use to source our delta trajectory."
+        },
+        {
+            "type": "ref",
+            "name": "DestinationSubState",
+            "kind": "transitionSubState",
+            "helptext": "An optional override for transitioning into sub-states other than the defaults."
+        },
+        {
+            "type": "bool",
+            "name": "BreakoutTransit",
+            "value": false,
+            "helptext": "Allows this transition to execute while a transition to its source state is still in progress."
+        },
+        {
+            "type": "bool",
+            "name": "FreezeSource",
+            "value": false,
+            "helptext": "Stop the source state until transit is complete"
+        },
+        {
+            "type": "bool",
+            "name": "FreezeDest",
+            "value": false,
+            "helptext": "Stop the destination state until transit is complete"
+        },
+        {
+            "type": "bool",
+            "name": "UseDeadReckoningWhenDeadBlending",
+            "value": true,
+            "helptext": "If turned on, then the transition source is replaced with a dead-reckoned animation source. If turned off, then the last output of the transition source is maintained during the transition.",
+            "displayName": "Use dead reckoning when dead blending"
+        },
+        {
+            "type": "bool",
+            "name": "BlendToDestinationPhysicsBones",
+            "value": false,
+            "helptext": "If turned on, then a normal blend between source and destination is performed on the transforms affected by the physics rig. If turned off, then the destination (physics) transforms are used.",
+            "displayName": "Blend to destination physics bones"
+        }
+    ],
+    "supportsTransitToSelf": true,
+    "euphoriaId": 403,
+    "helptext": "Performs a transition blend between two states over a given period of time.",
+    "physicsId": 403
+}

@@ -1,0 +1,48 @@
+{
+    "serialize": null,
+    "presets": {
+
+    },
+    "upgrade": null,
+    "id": 104,
+    "displayFunction": null,
+    "version": 3,
+    "attributes": [
+        {
+            "type": "string",
+            "name": "AnimationSetHint",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "SpeedScale",
+            "input": true,
+            "array": false,
+            "value": 1
+        },
+        {
+            "type": "float",
+            "name": "OverallScale",
+            "input": true,
+            "array": false,
+            "value": 1
+        },
+        {
+            "type": "floatArray",
+            "name": "JointScale",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "bool",
+            "name": "AdvancedScale",
+            "input": true,
+            "array": false,
+            "value": false
+        }
+    ],
+    "supportsPresets": true,
+    "helptext": "Orchestrates a shot performance.",
+    "compareToPreset": null
+}

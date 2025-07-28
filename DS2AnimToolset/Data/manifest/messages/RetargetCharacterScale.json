@@ -1,0 +1,16 @@
+{
+    "serialize": null,
+    "presets": {
+
+    },
+    "upgrade": null,
+    "id": 103,
+    "displayFunction": null,
+    "version": 1,
+    "supportsPresets": false,
+    "attributes": {
+
+    },
+    "helptext": "Internal message to update the retargeting system's characterScale",
+    "compareToPreset": null
+}

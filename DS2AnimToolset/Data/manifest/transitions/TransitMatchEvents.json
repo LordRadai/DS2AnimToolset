@@ -1,0 +1,145 @@
+{
+    "animId": 400,
+    "upgrade": null,
+    "interfaces": [
+        "Transforms",
+        "Time",
+        "Events"
+    ],
+    "validate": null,
+    "version": 5,
+    "serialize": null,
+    "supportsTransitToSelf": false,
+    "attributes": [
+        {
+            "min": 0,
+            "type": "float",
+            "name": "DurationInEvents",
+            "value": 0.5,
+            "helptext": "This controls how long the transition will last expressed in whole and fractional events."
+        },
+        {
+            "min": 0,
+            "type": "int",
+            "name": "DestEventSequenceOffset",
+            "value": 0,
+            "helptext": "Offset the destination synchronisation event track in relation to the source synchronisation event track."
+        },
+        {
+            "min": 0,
+            "type": "int",
+            "name": "DestStartEventIndex",
+            "value": 0,
+            "helptext": "Force a particular event from the destination synchronisation event track to be the destination start event (irrespective of the source start event)."
+        },
+        {
+            "type": "bool",
+            "name": "UsingDestStartEventIndex",
+            "value": false,
+            "helptext": "Method to determine the start event within the destination."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendPassThrough",
+            "value": false,
+            "helptext": "Merge the event tracks together into one resulting output track without blending."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendIgnoreEventOrder",
+            "value": false,
+            "helptext": "Ignore the order of events when blending means that events in the source tracks will be combined even if they have duration events in different orders."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendSameUserData",
+            "value": false,
+            "helptext": "Duration events will only be blended together when they share the same user data."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendOnOverlap",
+            "value": false,
+            "helptext": "Blend duration events when their durations overlap."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendWithinRange",
+            "value": false,
+            "helptext": "Blend duration events when they occur within a specified range of one another."
+        },
+        {
+            "type": "bool",
+            "name": "ReversibleTransit",
+            "value": false,
+            "helptext": "Make transition reversible."
+        },
+        {
+            "type": "controlParameter",
+            "name": "ReverseControlParameter",
+            "helptext": "Control parameter for transition reversing."
+        },
+        {
+            "type": "int",
+            "name": "DeltaTrajSource",
+            "value": 3,
+            "helptext": "Specifies which child/children we will use to source our delta trajectory."
+        },
+        {
+            "type": "bool",
+            "name": "AdditiveBlendAttitude",
+            "value": false,
+            "helptext": "When set, the rotations of Destination are added to Source.",
+            "displayName": "Additive Rotation"
+        },
+        {
+            "type": "bool",
+            "name": "AdditiveBlendPosition",
+            "value": false,
+            "helptext": "When set, the rotations and positions of Destination are added to Source.",
+            "displayName": "Additive Translation"
+        },
+        {
+            "type": "bool",
+            "name": "SphericallyInterpolateTrajectoryPosition",
+            "value": false,
+            "helptext": "Spherically interpolate between the two trajectory positions inputs. The trajectory orientation is always spherically interpolated.",
+            "displayName": "Slerp Trajectory"
+        },
+        {
+            "type": "bool",
+            "name": "DeadblendBreakoutToSource",
+            "value": false,
+            "helptext": "If turned on, a breakout transition to this transition's source will replace the source with a dead-reckoned animation.",
+            "displayName": "Dead Blend Source on Breakout"
+        },
+        {
+            "type": "ref",
+            "name": "DestinationSubState",
+            "kind": "transitionSubState",
+            "helptext": "An optional override for transitioning into sub-states other than the defaults."
+        },
+        {
+            "type": "bool",
+            "name": "BreakoutTransit",
+            "value": false,
+            "helptext": "Allows this transition to execute while a transition to its source state is still in progress."
+        },
+        {
+            "type": "bool",
+            "name": "UseDeadReckoningWhenDeadBlending",
+            "value": true,
+            "helptext": "If turned on, then the transition source is replaced with a dead-reckoned animation source. If turned off, then the last output of the transition source is maintained during the transition.",
+            "displayName": "Use dead reckoning when dead blending"
+        },
+        {
+            "type": "bool",
+            "name": "BlendToDestinationPhysicsBones",
+            "value": false,
+            "helptext": "If turned on, then a normal blend between source and destination is performed on the transforms affected by the physics rig. If turned off, then the destination (physics) transforms are used.",
+            "displayName": "Blend to destination physics bones"
+        }
+    ],
+    "helptext": "Performs a transition blend between two states over a given period of time. Blends and outputs Events.",
+    "physicsId": 401
+}

@@ -1,0 +1,484 @@
+{
+    "serialize": null,
+    "presets": {
+        "Shotgun": {
+            "ReflexLookSwitch": true,
+            "ReflexAnimRampDuration": 0.25,
+            "ReachDelay": 0,
+            "Priority": 1,
+            "ImpulseBalanceErrorDuration": 0.4,
+            "ReflexLookDuration": 4,
+            "ReflexAnim": 0,
+            "ReflexAnimStart": 0,
+            "ShotBodyImpactMagnitude": 70,
+            "ShotLiftBoost": 1,
+            "ShotTorqueMultiplier": 1,
+            "ReflexAnimMaxWeight": 1,
+            "ShotDeathBalanceStrength": 0,
+            "DeathTriggerOnHeadshot": false,
+            "ForcedFalldownSwitch": false,
+            "LookAtWoundOrShotSource": true,
+            "ReachSwitch": true,
+            "DeathRelaxDuration": 1.5,
+            "MaxReachSpeed": 20,
+            "DeathTrigger": false,
+            "ReachDuration": 4,
+            "TargetNumberOfStepsBeforeFalldown": 100,
+            "ShotPartImpactMagnitude": 10,
+            "TargetTimeBeforeFalldown": 100,
+            "ImpulseDirWorldOrLocal": true,
+            "DeathTriggerDelay": 1.5,
+            "ReachSku": 2,
+            "ReflexAnimDerampDuration": 0.75,
+            "ShotDeathBalanceErrorMagnitude": 1,
+            "ImpulseLegStrengthReduction": 0.75,
+            "ShotImpulseYield": 1,
+            "ReflexAnimFullDuration": 2,
+            "ImpulseYieldDuration": 0.4,
+            "ImpulseBalanceErrorMagnitude": 1,
+            "BalanceAssistance": 0,
+            "ImpulseLegStrengthReductionDuration": 10,
+            "ReflexAnimSwitch": true
+        },
+        "Handgun": {
+            "ReflexLookSwitch": true,
+            "ReflexAnimRampDuration": 0.25,
+            "ReachDelay": 0,
+            "Priority": 1,
+            "ImpulseBalanceErrorDuration": 0.4,
+            "ReflexLookDuration": 4,
+            "ReflexAnim": 0,
+            "ReflexAnimStart": 0,
+            "ShotBodyImpactMagnitude": 30,
+            "ShotLiftBoost": 1,
+            "ShotTorqueMultiplier": 1,
+            "ReflexAnimMaxWeight": 1,
+            "ShotDeathBalanceStrength": 0,
+            "ReachSku": 2,
+            "ForcedFalldownSwitch": false,
+            "LookAtWoundOrShotSource": true,
+            "ReachSwitch": true,
+            "DeathRelaxDuration": 1.5,
+            "MaxReachSpeed": 20,
+            "DeathTrigger": false,
+            "ReachDuration": 4,
+            "TargetNumberOfStepsBeforeFalldown": 100,
+            "ShotPartImpactMagnitude": 10,
+            "TargetTimeBeforeFalldown": 100,
+            "ImpulseDirWorldOrLocal": true,
+            "DeathTriggerDelay": 1.5,
+            "DeathTriggerOnHeadShot": false,
+            "ReflexAnimDerampDuration": 0.75,
+            "ShotDeathBalanceErrorMagnitude": 1,
+            "ImpulseLegStrengthReduction": 0.5,
+            "ShotImpulseYield": 1,
+            "ReflexAnimFullDuration": 2,
+            "ImpulseYieldDuration": 0.4,
+            "ImpulseBalanceErrorMagnitude": 1,
+            "BalanceAssistance": 0,
+            "ImpulseLegStrengthReductionDuration": 10,
+            "ReflexAnimSwitch": true
+        }
+    },
+    "upgrade": null,
+    "id": 101,
+    "displayFunction": null,
+    "version": 5,
+    "supportsPresets": true,
+    "attributes": [
+        {
+            "type": "int",
+            "name": "RigPartIndex",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitPointLocalX",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitPointLocalY",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitPointLocalZ",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitNormalLocalX",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitNormalLocalY",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitNormalLocalZ",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitDirectionLocalX",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitDirectionLocalY",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitDirectionLocalZ",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitDirectionWorldX",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitDirectionWorldY",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "HitDirectionWorldZ",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "SourcePointWorldX",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "SourcePointWorldY",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "float",
+            "name": "SourcePointWorldZ",
+            "input": true,
+            "array": false
+        },
+        {
+            "type": "int",
+            "name": "Priority",
+            "input": true,
+            "array": false,
+            "helptext": "Prioritisation can be used to arbitrate responses to multiple hits. The character's hit reaction will be interrupted and retargeted to respond (eg. reach for wound) on a shot with higher priority than the current one. So the character may reach for a head wound interrupting a reach for torso but not the other way around.",
+            "displayName": "Priority"
+        },
+        {
+            "type": "float",
+            "name": "ReachDelay",
+            "input": true,
+            "array": false,
+            "helptext": "The time delay before a reach for wound.",
+            "displayName": "Reach delay"
+        },
+        {
+            "type": "float",
+            "name": "ReachDuration",
+            "input": true,
+            "array": false,
+            "helptext": "This is the time the character should spend reaching for a wound.",
+            "displayName": "Reach duration"
+        },
+        {
+            "type": "float",
+            "name": "MaxReachSpeed",
+            "input": true,
+            "array": false,
+            "helptext": "The maximimum speed the hand should attain whilst reaching. In m/s on the standard character",
+            "displayName": "Reach speed limit"
+        },
+        {
+            "type": "float",
+            "name": "ReflexAnimStart",
+            "input": true,
+            "array": false,
+            "helptext": "The time delay between the arrival of a hit and the animated reflex response.",
+            "displayName": "Delay"
+        },
+        {
+            "type": "float",
+            "name": "ReflexAnimRampDuration",
+            "input": true,
+            "array": false,
+            "helptext": "Duration of blend in to reflex animation.",
+            "displayName": "Ramp-up duration"
+        },
+        {
+            "type": "float",
+            "name": "ReflexAnimFullDuration",
+            "input": true,
+            "array": false,
+            "helptext": "Time spent holding the reflex animation at full strength.",
+            "displayName": "Time at full strength"
+        },
+        {
+            "type": "float",
+            "name": "ReflexAnimDerampDuration",
+            "input": true,
+            "array": false,
+            "helptext": "Duration of blend back from reflex animation.",
+            "displayName": "Ramp-down time"
+        },
+        {
+            "type": "float",
+            "name": "ReflexAnimMaxWeight",
+            "input": true,
+            "array": false,
+            "helptext": "The maximum weight to be applied to the reflex animation (on a scale of 0 to 1).",
+            "displayName": "Full strength level"
+        },
+        {
+            "type": "float",
+            "name": "ReflexLookDuration",
+            "input": true,
+            "array": false,
+            "helptext": "This is the time the character should spend looking at either the wound or the shot source.",
+            "displayName": "Reflex look duration"
+        },
+        {
+            "type": "float",
+            "name": "DeathTriggerDelay",
+            "input": true,
+            "array": false,
+            "helptext": "Delay between setting of the death trigger and initiation of the death response (strength ramp-down).",
+            "displayName": "Death relax delay"
+        },
+        {
+            "type": "float",
+            "name": "DeathRelaxDuration",
+            "input": true,
+            "array": false,
+            "helptext": "Duration of the death relax (strength ramp-down).",
+            "displayName": "Death relax duration"
+        },
+        {
+            "type": "float",
+            "name": "ShotPartImpactMagnitude",
+            "input": true,
+            "array": false,
+            "helptext": "Magnitude of bullet impulse to be applied locally to the rig part. In kg.m/s on the standard character.",
+            "displayName": "Part impulse magnitude"
+        },
+        {
+            "type": "float",
+            "name": "ShotBodyImpactMagnitude",
+            "input": true,
+            "array": false,
+            "helptext": "Magnitude of bullet impulse to be applied globally to the rig as a whole. In kg.m/s on the standard character.",
+            "displayName": "Body impulse magnitude"
+        },
+        {
+            "type": "float",
+            "name": "ShotTorqueMultiplier",
+            "input": true,
+            "array": false,
+            "helptext": "Multiplier to allow modulation of angular response. The response to the bullet impact can be exaggerated (using values > 1) or attenuated (using a value between 0 and 1)",
+            "displayName": "Body impulse torque multiplier"
+        },
+        {
+            "type": "float",
+            "name": "ShotLiftBoost",
+            "input": true,
+            "array": false,
+            "helptext": "A vertical impulse most commonly used to reduce contact and the resulting friction between the character and the ground. Allows a shot impulse to flip or spin the character more easily. In kg.m/s on the standard character.",
+            "displayName": "Body lift impulse"
+        },
+        {
+            "type": "float",
+            "name": "ShotImpulseYield",
+            "input": true,
+            "array": false,
+            "helptext": "A value between between 0 and 1 sets the spine damping to be in effect when the bullet impulse is applied. A value closer to zero will make the spine react more to a given impulse, while a value closer to 1 will make it react less.",
+            "displayName": "Yield to impulse amount"
+        },
+        {
+            "type": "float",
+            "name": "ImpulseYieldDuration",
+            "input": true,
+            "array": false,
+            "helptext": "The duration of the spine yield following application of the shot impulse.",
+            "displayName": "Yield to impulse duration"
+        },
+        {
+            "type": "float",
+            "name": "ImpulseBalanceErrorMagnitude",
+            "input": true,
+            "array": false,
+            "helptext": "Stagger velocity applicable at point of impact. Can be used to exaggerate response to the shot by making the character step. In m/s on the standard character.",
+            "displayName": "Stagger on hit velocity"
+        },
+        {
+            "type": "float",
+            "name": "ImpulseBalanceErrorDuration",
+            "input": true,
+            "array": false,
+            "helptext": "Duration of the stagger due to bullet impact. Will effect how long the character steps for after the impact.",
+            "displayName": "Stagger on hit duration."
+        },
+        {
+            "type": "float",
+            "name": "BalanceAssistance",
+            "input": true,
+            "array": false,
+            "helptext": "Level of auxilliary balance assistance. A means to increase the likelyhood of the character remaining standing despite the impact of a shot. Small values between 0 and 1.5 can be useful in extreme cases but higher values may not look natural.",
+            "displayName": "Balance assistance amount"
+        },
+        {
+            "type": "float",
+            "name": "ImpulseLegStrengthReduction",
+            "input": true,
+            "array": false,
+            "helptext": "Amount between 0 and 1 to degrade the leg strength (balance and stepping capability) when the shot hits the particular leg.",
+            "displayName": "Leg strength reduction on hit"
+        },
+        {
+            "type": "float",
+            "name": "ImpulseLegStrengthReductionDuration",
+            "input": true,
+            "array": false,
+            "helptext": "Duration of leg weakening due to shot.",
+            "displayName": "Leg strength reduction duration"
+        },
+        {
+            "type": "float",
+            "name": "ShotDeathBalanceErrorMagnitude",
+            "input": true,
+            "array": false,
+            "helptext": "Stagger velocity applicable as death relax begins. Induces stepping, which can be useful to produce a good fall and avoid ragdoll-like crumpling.  In m/s on the standard character.",
+            "displayName": "Stagger on death velocity"
+        },
+        {
+            "type": "float",
+            "name": "ShotDeathBalanceStrength",
+            "input": true,
+            "array": false,
+            "helptext": "Overall body strength at start of death relax.",
+            "displayName": "Balance strength for death relax"
+        },
+        {
+            "type": "int",
+            "name": "ReachSku",
+            "input": true,
+            "array": false,
+            "helptext": "Determines which arms reach for wound: 0 for left arm only, 1 for right arm only, 2 for both.",
+            "displayName": "Reach mode"
+        },
+        {
+            "type": "int",
+            "name": "ReflexAnim",
+            "input": true,
+            "array": false,
+            "helptext": "Id of the reflex animation applicable for this type of shot.",
+            "displayName": "Reflex Anim Id"
+        },
+        {
+            "type": "bool",
+            "name": "ReachSwitch",
+            "input": true,
+            "array": false,
+            "helptext": "Enables or disables reach for wound reflex.",
+            "displayName": "Reach Reflex switch"
+        },
+        {
+            "type": "bool",
+            "name": "ReflexAnimSwitch",
+            "input": true,
+            "array": false,
+            "helptext": "Enables or disables animated reflex.",
+            "displayName": "Reflex Anim switch"
+        },
+        {
+            "type": "bool",
+            "name": "ReflexLookSwitch",
+            "input": true,
+            "array": false,
+            "helptext": "Enables or disables look at wound or shot source reflex.",
+            "displayName": "Reflex Look Switch"
+        },
+        {
+            "type": "bool",
+            "name": "ForcedFalldownSwitch",
+            "input": true,
+            "array": false,
+            "helptext": "Enables or diables a forced fall down (to guarantee that the character falls over as part of it response to the shot).",
+            "displayName": "Forced fall down switch"
+        },
+        {
+            "type": "float",
+            "name": "TargetTimeBeforeFalldown",
+            "input": true,
+            "array": false,
+            "helptext": "Target amount of time before the character should fall down in response to the hit.",
+            "displayName": "Target time before fall down"
+        },
+        {
+            "type": "int",
+            "name": "TargetNumberOfStepsBeforeFalldown",
+            "input": true,
+            "array": false,
+            "helptext": "Target number of steps the character should be allowed to take before falling down in response to the hit.",
+            "displayName": "Target step count before fall down"
+        },
+        {
+            "type": "bool",
+            "name": "ImpulseDirWorldOrLocal",
+            "input": true,
+            "array": false,
+            "helptext": "Direction of impulse determines direction of any induced stepping responses. When this flag is set direction is fixed relative to the world and character staggers uniformly. Otherwise, direction follows the part that was hit and stepping follows changes in orientation of the part. The former is more commonly used while the latter may be used to simulate loss of sense of equilibrium due to a head impact.",
+            "displayName": "Impulse direction fixed or follows character"
+        },
+        {
+            "type": "bool",
+            "name": "LookAtWoundOrShotSource",
+            "input": true,
+            "array": true,
+            "helptext": "If the look reflex is enabled this toggles the look target. If set the character looks at the wound, otherwise the character looks at the source of the shot.",
+            "displayName": "Reflex look at wound or shot source"
+        },
+        {
+            "type": "bool",
+            "name": "DeathTrigger",
+            "input": true,
+            "array": false,
+            "helptext": "Enables or disables death response to the hit.",
+            "displayName": "Killshot"
+        },
+        {
+            "type": "bool",
+            "name": "DeathTriggerOnHeadshot",
+            "input": true,
+            "array": false,
+            "helptext": "Enables or disables death response for hits to the head.",
+            "displayName": "Killshot for head hit"
+        }
+    ],
+    "helptext": "Orchestrates a shot performance.",
+    "compareToPreset": null
+}

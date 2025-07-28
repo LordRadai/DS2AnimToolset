@@ -1,0 +1,16 @@
+{
+    "image": "Note.png",
+    "attributes": [
+        {
+            "type": "string",
+            "name": "Message",
+            "value": "",
+            "helptext": "Type the Note to display in the Graph here"
+        }
+    ],
+    "getNoteDisplayText": null,
+    "group": "Notes",
+    "setNoteEditText": null,
+    "helptext": "A standard note",
+    "getNoteEditText": null
+}
