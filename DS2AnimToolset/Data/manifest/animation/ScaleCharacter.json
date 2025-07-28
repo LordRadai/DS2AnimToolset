@@ -1,0 +1,52 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "validate": null,
+    "pinOrder": [
+        "Source",
+        "Result"
+    ],
+    "image": "ScaleCharacter.png",
+    "version": 1,
+    "getTransformChannels": null,
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "interfaces": {
+                "optional": [
+                    "Time",
+                    "Events"
+                ],
+                "required": [
+                    "Transforms"
+                ]
+            },
+            "passThrough": true
+        },
+        "Source": {
+            "input": true,
+            "interfaces": {
+                "optional": [
+                    "Time",
+                    "Events"
+                ],
+                "required": [
+                    "Transforms"
+                ]
+            },
+            "passThrough": true
+        }
+    },
+    "attributes": [
+        {
+            "type": "request",
+            "name": "ScaleRigMessage",
+            "value": "",
+            "helptext": "The message that this node responds to for changing scale values.",
+            "supportedType": "ScaleRig"
+        }
+    ],
+    "helptext": "Scales bone lengths to reshape character (usually for a different mesh)",
+    "id": 162
+}

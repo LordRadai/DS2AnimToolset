@@ -1,0 +1,63 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Float Operators",
+    "validate": null,
+    "displayName": "Ramp Float",
+    "pinOrder": [
+        "Input",
+        "Result"
+    ],
+    "image": "OperatorRampFloat.png",
+    "version": 1,
+    "attributes": [
+        {
+            "type": "float",
+            "name": "Start",
+            "set": null,
+            "value": 0,
+            "helptext": "Initial value of Result."
+        },
+        {
+            "type": "float",
+            "name": "Rate",
+            "value": 1,
+            "helptext": "Amount that Result will increase or decrease per second, the node accounts for variable time steps. If Start is set to 1.0 and the rate is -1.0 Result will be 0.0 after 1 second. This rate can be modified at runtime by connecting an optional RateMultiplier."
+        },
+        {
+            "type": "bool",
+            "name": "Enable",
+            "set": null,
+            "value": true,
+            "helptext": "Enable clamping of Result."
+        },
+        {
+            "type": "float",
+            "name": "Minimum",
+            "set": null,
+            "value": 0,
+            "helptext": "Minimum value of Result."
+        },
+        {
+            "type": "float",
+            "name": "Maximum",
+            "set": null,
+            "value": 1,
+            "helptext": "Maximum value of Result."
+        }
+    ],
+    "dataPins": {
+        "RateMultiplier": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Modifies an initial value over time at a fixed rate",
+    "id": 143
+}

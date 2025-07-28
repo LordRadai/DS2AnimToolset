@@ -1,0 +1,53 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Vector3 Operators",
+    "validate": null,
+    "displayName": "Vec3 One Input Arithmetic",
+    "pinOrder": [
+        "Input",
+        "Result"
+    ],
+    "image": "OperatorVector3OneInputArithmetic.png",
+    "version": 3,
+    "attributes": [
+        {
+            "type": "string",
+            "name": "Operation",
+            "value": "*",
+            "helptext": "Change the mathematical operation performed by the node.  For instance, select '/' to perform the operation Result = Input / Constant. Min, max operations act per-component on vectors."
+        },
+        {
+            "type": "float",
+            "name": "ConstantValueX",
+            "value": 0,
+            "helptext": "Constant numerical value used in the operation Result = Input operation Constant.  For instance, select '/' to perform the operation Result = Input / Constant. "
+        },
+        {
+            "type": "float",
+            "name": "ConstantValueY",
+            "value": 0,
+            "helptext": "Constant numerical value used in the operation Result = Input operation Constant.  For instance, select '/' to perform the operation Result = Input / Constant. "
+        },
+        {
+            "type": "float",
+            "name": "ConstantValueZ",
+            "value": 0,
+            "helptext": "Constant numerical value used in the operation Result = Input operation Constant.  For instance, select '/' to perform the operation Result = Input / Constant. "
+        }
+    ],
+    "dataPins": {
+        "Input": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "vector3"
+        }
+    },
+    "helptext": "Simple mathematical element-wise operation using a single vector input and a vector constant",
+    "id": 185
+}

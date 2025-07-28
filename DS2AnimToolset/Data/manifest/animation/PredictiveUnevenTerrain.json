@@ -1,0 +1,373 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "IK",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Predictive Uneven Terrain",
+    "pinOrder": [
+        "Source",
+        "Result",
+        "IkHipsWeight",
+        "IkFkBlendWeight",
+        "PredictionEnable"
+    ],
+    "image": "PredictiveUnevenTerrain.png",
+    "version": 3,
+    "attributes": [
+        {
+            "type": "rigChannelName",
+            "name": "HipsName",
+            "value": "",
+            "helptext": "The root-most joint that is allowed to translate that is used for character height control. Height control increases the range of motion of the leg IK, allowing it to adapt better to uneven surfaces.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "HipsHeightControlEnable",
+            "value": true,
+            "helptext": "Enables character height control.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "HipsPosVelLimitEnable",
+            "value": true,
+            "helptext": "Enables velocity clamping of the vertical character height control.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "HipsPosVelLimit",
+            "value": 0.6,
+            "helptext": "The velocity limit of the character height control (in leg lengths per second).",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "HipsPosAccelLimitEnable",
+            "value": true,
+            "helptext": "Enables acceleration clamping of the vertical character height control motion.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "HipsPosAccelLimit",
+            "value": 40,
+            "helptext": "The acceleration limit of the character height control (in leg lengths per second^2).",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "BallJointEnable",
+            "value": false,
+            "helptext": "Enables the use of a specified ball joint. The footbase pivot is determined from the centroid of the foot joints. This point is lifted onto the terrain surface.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "ToeJointEnable",
+            "value": false,
+            "helptext": "Enables the use of a specified ball joint. The footbase pivot is determined from the centroid of the foot joints. This point is lifted onto the terrain surface.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "StraightestLegFactor",
+            "value": 0.98,
+            "helptext": "How straight the leg is allowed to become, as a fraction of the fully straightened (hip, knee and ankle all lined up). When the foot lifting target is out of reach, the leg will go straight and this can look unnatural.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "LeftAnkleName",
+            "value": "",
+            "helptext": "The name of the left ankle joint.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "LeftBallName",
+            "value": "",
+            "helptext": "An optional joint to specify the ball of the foot. The footbase pivot is determined from the centroid of the foot joints. This point is lifted onto the terrain surface.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "LeftToeName",
+            "value": "",
+            "helptext": "An optional joint to specify the toe of the foot. The footbase pivot is determined from the centroid of the foot joints. This point is lifted onto the terrain surface.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "LeftKneeRotationAxisX",
+            "value": 1,
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "LeftKneeRotationAxisY",
+            "value": 0,
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "LeftKneeRotationAxisZ",
+            "value": 0,
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "LeftFlipKneeRotationDirection",
+            "value": false,
+            "helptext": "Change the sign of the knee axis, which will flip its bending direction.",
+            "perAnimSet": true
+        },
+        {
+            "type": "int",
+            "name": "LeftEventTrackID",
+            "value": 11,
+            "helptext": "An integer identifying the footfall event track ID for this leg. Only duration events on the specified track will be used for foot plant prediction.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "RightAnkleName",
+            "value": "",
+            "helptext": "The name of the right ankle joint.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "RightBallName",
+            "value": "",
+            "helptext": "An optional joint to specify the ball of the foot. The footbase pivot is determined from the centroid of the foot joints. This point is lifted onto the terrain surface.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "RightToeName",
+            "value": "",
+            "helptext": "An optional joint to specify the toe of the foot. The footbase pivot is determined from the centroid of the foot joints. This point is lifted onto the terrain surface.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "RightKneeRotationAxisX",
+            "value": 1,
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "RightKneeRotationAxisY",
+            "value": 0,
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "RightKneeRotationAxisZ",
+            "value": 0,
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "RightFlipKneeRotationDirection",
+            "value": false,
+            "helptext": "Change the sign of the knee axis, which will flip its bending direction.",
+            "perAnimSet": true
+        },
+        {
+            "type": "int",
+            "name": "RightEventTrackID",
+            "value": 10,
+            "helptext": "An integer identifying the footfall event track ID for this leg. Only duration events on the specified track will be used for foot plant prediction.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "AnklePosVelLimitEnable",
+            "value": false,
+            "helptext": "Enables velocity clamping for the vertical foot lifting of the ankle joint.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "AnklePosVelLimit",
+            "value": 1,
+            "helptext": "The velocity limit of the ankle joint foot lifting (in leg lengths per second).",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "AnklePosAccelLimitEnable",
+            "value": true,
+            "helptext": "Enables acceleration clamping for the vertical foot lifting of the ankle joint.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "AnklePosAccelLimit",
+            "value": 80,
+            "helptext": "The acceleration limit of the ankle joint foot lifting (in leg lengths per second^2).",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "AnkleAngVelLimitEnable",
+            "value": false,
+            "helptext": "Enables velocity clamping for the ankle joint surface orientation alignment.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "AnkleAngVelLimit",
+            "value": 1,
+            "helptext": "The velocity limit of the ankle joint surface orientation alignment (revolutions per second).",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "AnkleAngAccelLimitEnable",
+            "value": true,
+            "helptext": "Enables acceleration clamping for the ankle joint surface orientation alignment.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "AnkleAngAccelLimit",
+            "value": 50,
+            "helptext": "The acceleration limit of the ankle joint surface orientation alignment (revolutions per second^2).",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "UseGroundPenetrationFixup",
+            "value": true,
+            "helptext": "If turned on prevents the foot penetrating onto the surface if the foot is moving downward from above with large velocity.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "UseTrajectorySlopeAlignment",
+            "value": true,
+            "helptext": "Consider vertical trajectory motion of the input source when computing foot lifting and surface alignment.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "FootAlignToSurfaceAngleLimit",
+            "value": 30,
+            "perAnimSet": true,
+            "helptext": "The maximum terrain surface angle limit (in degrees) that the foot can be aligned with. Foot alignment is clamped to this limit.",
+            "max": 90
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "FootAlignToSurfaceMaxSlopeAngle",
+            "value": 75,
+            "perAnimSet": true,
+            "helptext": "The maximum terrain slope gradient limit (in degrees) that is considered for foot alignment. The foot is aligned back to the ground plane if beyond this limit.",
+            "max": 90
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "FootLiftingHeightLimit",
+            "value": 0.6,
+            "perAnimSet": true,
+            "helptext": "The maximum height from the character root to the ankle joint that the foot can be lifted to (in leg lengths).",
+            "max": 1
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "PredictionSlopeAngleLimit",
+            "value": 45,
+            "perAnimSet": true,
+            "helptext": "The maximum foot lifting slope angle (in degrees) to the predicted foot plant positions on the terrain surface.",
+            "max": 90
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "PredictionLateralAngleLimit",
+            "value": 30,
+            "perAnimSet": true,
+            "helptext": "The maximum lateral angle limit (in degrees) for mantaining the cache of predicted terrain data. The conical section defined by the angle limit is used to invalidate terrain data due to abrupt changes in trajectory.",
+            "max": 90
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "PredictionCloseFootbaseTolFrac",
+            "value": 0.1,
+            "perAnimSet": true,
+            "helptext": "A tolerance distance (in leg lengths) used to determine if the current foot position is close to its predicted estimate.",
+            "max": 1
+        }
+    ],
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "PredictionEnable": {
+            "input": true,
+            "array": false,
+            "type": "bool"
+        },
+        "IkHipsWeight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "IkFkBlendWeight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Predictive Uneven Terrain: Lifts and aligns the feet of the character with the environment.",
+    "id": 138
+}

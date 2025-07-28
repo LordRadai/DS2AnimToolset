@@ -1,0 +1,57 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Play Speed Modifier",
+    "pinOrder": [
+        "Source",
+        "Result",
+        "Weight"
+    ],
+    "image": "PlaySpeedModifier.png",
+    "version": 3,
+    "attributes": {
+
+    },
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "Weight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Scales playback speed based on a connected control parameter.",
+    "id": 125
+}

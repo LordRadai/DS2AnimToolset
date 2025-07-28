@@ -1,0 +1,39 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Vector3 Operators",
+    "validate": null,
+    "displayName": "Vec3 To Floats",
+    "pinOrder": [
+        "Input",
+        "FloatX",
+        "FloatY",
+        "FloatZ"
+    ],
+    "image": "OperatorVector3ToFloat.png",
+    "version": 3,
+    "dataPins": {
+        "FloatZ": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        },
+        "Input": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "FloatY": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        },
+        "FloatX": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Simple Node that takes a vector3 and outputs the specified float value",
+    "id": 154
+}

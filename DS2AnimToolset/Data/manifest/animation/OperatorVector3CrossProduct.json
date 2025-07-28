@@ -1,0 +1,33 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Vector3 Operators",
+    "validate": null,
+    "displayName": "Cross Product",
+    "pinOrder": [
+        "Input0",
+        "Input1",
+        "Result"
+    ],
+    "image": "OperatorVector3CrossProduct.png",
+    "version": 2,
+    "dataPins": {
+        "Input1": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "Input0": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "vector3"
+        }
+    },
+    "helptext": "Takes one vector and outputs cross product vector, which is at right angles to both inputs.",
+    "id": 172
+}

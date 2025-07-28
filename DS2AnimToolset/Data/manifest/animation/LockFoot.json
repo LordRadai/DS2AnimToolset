@@ -1,0 +1,277 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "IK",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Lock Foot",
+    "pinOrder": [
+        "Source",
+        "Result",
+        "IkFkBlendWeight",
+        "SwivelContributionToOrientation"
+    ],
+    "image": "LockFoot.png",
+    "version": 8,
+    "attributes": [
+        {
+            "type": "float",
+            "name": "KneeRotationAxisX",
+            "value": 1,
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "KneeRotationAxisY",
+            "value": 0,
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "KneeRotationAxisZ",
+            "value": 0,
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "FlipKneeRotationDirection",
+            "value": false,
+            "helptext": "Change the sign of the knee axis, which will flip its bending direction.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "AnkleName",
+            "value": "",
+            "perAnimSet": true,
+            "helptext": "If Use Ball Joint is turned off, this must be specified to identify the IK chain (ankle, knee and hip).",
+            "displayName": "Ankle"
+        },
+        {
+            "type": "rigChannelName",
+            "name": "BallName",
+            "value": "",
+            "perAnimSet": true,
+            "helptext": "If Use Ball Joint is turned on, this must be specified to identify the IK chain (ball, ankle, knee and hip).",
+            "displayName": "Ball"
+        },
+        {
+            "type": "rigChannelName",
+            "name": "ToeName",
+            "value": "",
+            "perAnimSet": true,
+            "helptext": "Identifies the toe joint for use when Fix Toe Ground Penetration is turned on. Must be parented to the ball joint, which must be in use.",
+            "displayName": "Toe"
+        },
+        {
+            "type": "bool",
+            "name": "UseBallJoint",
+            "value": true,
+            "helptext": "If turned on, it is the ankle joint which is fixed during a footfall. If turned off, the ball joint is fixed.",
+            "perAnimSet": true
+        },
+        {
+            "type": "int",
+            "name": "FootfallEventID",
+            "value": 0,
+            "helptext": "A whole number which identifies the footfall duration events for this leg. Only duration events with this User ID will trigger footlocking.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "CatchUpSpeedFactor",
+            "value": 0.1,
+            "perAnimSet": true,
+            "helptext": "A float number between 0 and 1 which controls how quickly the trailing leg will match up with the source animation again after a footfall. 0 means that the leg will snap instantly back onto the source, and at 1 it will never catch up. Good values lie between 0.1 and 0.8, but it does depend on the nature of the source animation.",
+            "displayName": "Damping"
+        },
+        {
+            "type": "float",
+            "name": "SnapToSourceDistance",
+            "value": 0.01,
+            "perAnimSet": true,
+            "helptext": "When the controlled joint (either ball or ankle) is this close to its position in the source animation, the output animation matches the input from then until the next footfall.",
+            "displayName": "Tolerance"
+        },
+        {
+            "type": "float",
+            "name": "StraightestLegFactor",
+            "value": 1,
+            "perAnimSet": true,
+            "helptext": "How straight the leg is allowed to become, as a percentage of fully straightened (hip, knee and ankle all lined up). When the foot is locked to a point out of reach (usually towards the end of a footfall), the leg will go straight and this can look unnatural.",
+            "displayName": "Max Extension"
+        },
+        {
+            "type": "bool",
+            "name": "UpAxisX",
+            "value": false,
+            "helptext": "The vertical axis is in the x-direction.  This attribute is hidden, and set from preferences."
+        },
+        {
+            "type": "bool",
+            "name": "UpAxisY",
+            "value": false,
+            "helptext": "The vertical axis is in the y-direction.  This attribute is hidden, and set from preferences."
+        },
+        {
+            "type": "bool",
+            "name": "UpAxisZ",
+            "value": false,
+            "helptext": "The vertical axis is in the z-direction.  This attribute is hidden, and set from preferences."
+        },
+        {
+            "type": "bool",
+            "name": "LockVerticalMotion",
+            "value": false,
+            "helptext": "If turned off (the default), the foot's horizontal motion is locked during a footplant, but not vertical motion, which is usually preferred.",
+            "perAnimSet": false
+        },
+        {
+            "type": "bool",
+            "name": "FixGroundPenetration",
+            "value": false,
+            "helptext": "If turned on, the locking position is prevented from dropping below the Lower Height Bound.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "AnkleLowerHeightBound",
+            "value": 0,
+            "helptext": "The minimum allowable height of the ankle joint (if using the ball joint), before there is apparent ground penetration.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "LowerHeightBound",
+            "value": 0,
+            "helptext": "The minimum allowable height of the controlled joint (ankle or ball), before there is apparent ground penetration.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "FixToeGroundPenetration",
+            "value": false,
+            "helptext": "If turned on, the toe joint is prevented from dropping below the Toe Lower Height Bound by rotation of the ball joint.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "ToeLowerHeightBound",
+            "value": 0,
+            "helptext": "The minimum allowable height of the toe joint before there is apparent ground penetration.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "BallRotationAxisX",
+            "value": 1,
+            "helptext": "The axis around which the ball joint can rotate, local to its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "BallRotationAxisY",
+            "value": 0,
+            "helptext": "The axis around which the ball joint can rotate, local to its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "BallRotationAxisZ",
+            "value": 0,
+            "helptext": "The axis around which the ball joint can rotate, local to its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "FixFootOrientation",
+            "value": false,
+            "helptext": "If turned on, the ankle is allowed to rotate to level the foot where appropriate.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "FootLevelVectorX",
+            "value": 1,
+            "helptext": "The direction side-on to the foot which is parallel to the ground when the foot is flat, used for correcting foot roll.  Specified in the coordinate frame of the ankle.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "FootLevelVectorY",
+            "value": 0,
+            "helptext": "The direction side-on to the foot which is parallel to the ground when the foot is flat, used for correcting foot roll.  Specified in the coordinate frame of the ankle.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "FootLevelVectorZ",
+            "value": 0,
+            "helptext": "The direction side-on to the foot which is parallel to the ground when the foot is flat, used for correcting foot roll.  Specified in the coordinate frame of the ankle.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "FootPivotResistance",
+            "value": 0,
+            "perAnimSet": true,
+            "helptext": "A value between 0 and 1 indicating the resistance of the foot to pivoting about the vertical when locked.  Only applies when Fix Foot Orientation is turned on.  When 0, the foot can pivot freely.  When 1, the foot will never pivot while locked.",
+            "max": 1
+        },
+        {
+            "type": "bool",
+            "name": "TrackCharacterController",
+            "value": false,
+            "helptext": "Enabling this will help eliminate footslip caused by movement of the character controller in nodes above this one, or in game code.",
+            "perAnimSet": false
+        }
+    ],
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "SwivelContributionToOrientation": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "IkFkBlendWeight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Lock Foot: prevents horizontal translation of a chosen joint during a footfall duration event",
+    "id": 121
+}

@@ -1,0 +1,75 @@
+{
+    "serialize": null,
+    "group": "Physics",
+    "validate": null,
+    "displayName": "Ragdoll",
+    "pinOrder": [
+        "Source",
+        "Result"
+    ],
+    "image": "Ragdoll.png",
+    "version": 3,
+    "getTransformChannels": null,
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "attributes": [
+        {
+            "type": "float",
+            "name": "DampingMultiplier",
+            "value": 1,
+            "perAnimSet": true,
+            "helptext": "If the character has been set up correctly, then the joint damping will represent damping due to the skeletal joints and clothes and so on, so that the limbs are not completely floppy. This joint damping will be modulated by the damping multiplier, which would normally be set to 1 (its default value).",
+            "displayName": "Damping"
+        },
+        {
+            "type": "float",
+            "name": "PoseStrengthMultiplier",
+            "value": 0.02,
+            "perAnimSet": true,
+            "helptext": "The maximum strength of each joint is multiplied by this value and then used to drive towards the centre of the rigs joint limits. This represents the tendency for joints to relax weakly towards a central position. If the centre of the joint limit isn't a suitable target, then the same effect can be achieved with the Active Animation node using a suitable pose.",
+            "displayName": "Strength"
+        },
+        {
+            "type": "bool",
+            "name": "EnableJointLimits",
+            "value": true,
+            "helptext": "Enable joint limit clamping, keeping the physics joints inside the joint limits.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "DisableSleeping",
+            "value": false,
+            "helptext": "Disable sleeping when stationary.",
+            "perAnimSet": true
+        }
+    ],
+    "helptext": "Physics rig collapses given the current local space transforms as starting point. Animation input is used only to set the non-physical bones.",
+    "id": 123
+}

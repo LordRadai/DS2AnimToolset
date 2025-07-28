@@ -1,0 +1,157 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "validate": null,
+    "displayName": "Emit Request",
+    "pinOrder": [
+        "Source",
+        "Result"
+    ],
+    "image": "EmitRequestOnDiscreteEvent.png",
+    "version": 1,
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Time"
+                ]
+            },
+            "passThrough": true
+        },
+        "Source": {
+            "input": true,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Time"
+                ]
+            },
+            "passThrough": true
+        }
+    },
+    "getTransformChannels": null,
+    "attributes": [
+        {
+            "type": "int",
+            "name": "EventUserData0"
+        },
+        {
+            "type": "request",
+            "name": "EmittedRequest0"
+        },
+        {
+            "value": "Set",
+            "type": "string",
+            "name": "Action0"
+        },
+        {
+            "type": "ref",
+            "name": "Target0",
+            "kind": "allStateMachines",
+            "weak": true
+        },
+        {
+            "type": "int",
+            "name": "EventUserData1"
+        },
+        {
+            "type": "request",
+            "name": "EmittedRequest1"
+        },
+        {
+            "value": "Set",
+            "type": "string",
+            "name": "Action1"
+        },
+        {
+            "type": "ref",
+            "name": "Target1",
+            "kind": "allStateMachines",
+            "weak": true
+        },
+        {
+            "type": "int",
+            "name": "EventUserData2"
+        },
+        {
+            "type": "request",
+            "name": "EmittedRequest2"
+        },
+        {
+            "value": "Set",
+            "type": "string",
+            "name": "Action2"
+        },
+        {
+            "type": "ref",
+            "name": "Target2",
+            "kind": "allStateMachines",
+            "weak": true
+        },
+        {
+            "type": "int",
+            "name": "EventUserData3"
+        },
+        {
+            "type": "request",
+            "name": "EmittedRequest3"
+        },
+        {
+            "value": "Set",
+            "type": "string",
+            "name": "Action3"
+        },
+        {
+            "type": "ref",
+            "name": "Target3",
+            "kind": "allStateMachines",
+            "weak": true
+        },
+        {
+            "type": "int",
+            "name": "EventUserData4"
+        },
+        {
+            "type": "request",
+            "name": "EmittedRequest4"
+        },
+        {
+            "value": "Set",
+            "type": "string",
+            "name": "Action4"
+        },
+        {
+            "type": "ref",
+            "name": "Target4",
+            "kind": "allStateMachines",
+            "weak": true
+        },
+        {
+            "type": "int",
+            "name": "EventUserData5"
+        },
+        {
+            "type": "request",
+            "name": "EmittedRequest5"
+        },
+        {
+            "value": "Set",
+            "type": "string",
+            "name": "Action5"
+        },
+        {
+            "type": "ref",
+            "name": "Target5",
+            "kind": "allStateMachines",
+            "weak": true
+        }
+    ],
+    "id": 153
+}

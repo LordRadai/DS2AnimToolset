@@ -1,0 +1,34 @@
+{
+    "serialize": null,
+    "group": "Float Operators",
+    "validate": null,
+    "displayName": "Function",
+    "pinOrder": [
+        "Input",
+        "Result"
+    ],
+    "image": "OperatorFunction.png",
+    "version": 1,
+    "attributes": [
+        {
+            "type": "string",
+            "name": "Operation",
+            "value": "sin",
+            "helptext": "Change the mathematical operation performed on the input"
+        }
+    ],
+    "dataPins": {
+        "Input": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Simple mathmatical operation on one float parameter",
+    "id": 110
+}

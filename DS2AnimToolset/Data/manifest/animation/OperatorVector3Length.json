@@ -1,0 +1,27 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Vector3 Operators",
+    "validate": null,
+    "displayName": "Vec3 Length",
+    "pinOrder": [
+        "Input",
+        "Length"
+    ],
+    "image": "OperatorVector3Length.png",
+    "version": 2,
+    "dataPins": {
+        "Input": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "Length": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Returns the length, or magnitude of a vector",
+    "id": 171
+}

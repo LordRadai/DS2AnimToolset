@@ -1,0 +1,15 @@
+{
+    "serialize": null,
+    "version": 1,
+    "id": 605,
+    "validate": null,
+    "helptext": "Requires that the source state is at the given event index in the sync track. This condition does not care about the previous event index on the sync track, and is true everywhere between the specified event and the event that follows.  For instance, if the event index 3 is specified the condition is true anywhere in the region between the third and forth event index (or from the third event until the end of the cycle if there is not a forth event).",
+    "attributes": {
+        "EventIndex": {
+            "min": 0,
+            "type": "int",
+            "value": 0,
+            "helptext": "Index of synchronisation event to monitor for."
+        }
+    }
+}

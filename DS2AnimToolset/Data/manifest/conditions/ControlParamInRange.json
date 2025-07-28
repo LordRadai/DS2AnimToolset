@@ -1,0 +1,28 @@
+{
+    "serialize": null,
+    "version": 1,
+    "id": 609,
+    "validate": null,
+    "helptext": "Ensure that a control parameter is between a lower and upper test value before the transition is started. For instance, require that the 'speed' control parameter is between 0.2 and 0.6",
+    "attributes": {
+        "NotInRange": {
+            "value": false,
+            "type": "bool",
+            "helptext": "Flag to negate the condition. If checked, the condition becomes true when the control parameter is not within the specified range."
+        },
+        "UpperTestValue": {
+            "value": 0.5,
+            "type": "float",
+            "helptext": "Upper value of the test to check against."
+        },
+        "LowerTestValue": {
+            "value": 0.5,
+            "type": "float",
+            "helptext": "Lower value of the test to check against."
+        },
+        "ControlParameter": {
+            "type": "controlParameter",
+            "helptext": "The name of the control parameter to monitor."
+        }
+    }
+}

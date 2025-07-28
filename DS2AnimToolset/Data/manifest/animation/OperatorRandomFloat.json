@@ -1,0 +1,66 @@
+{
+    "serialize": null,
+    "group": "Float Operators",
+    "validate": null,
+    "displayName": "Random Float",
+    "pinOrder": [
+        "Result"
+    ],
+    "image": "OperatorRandomFloat.png",
+    "version": 1,
+    "attributes": [
+        {
+            "type": "float",
+            "name": "Min",
+            "value": 0,
+            "helptext": "The minimum number that can be output.",
+            "displayName": "Min"
+        },
+        {
+            "type": "float",
+            "name": "Max",
+            "value": 1,
+            "helptext": "The maximum number that can be output.",
+            "displayName": "Max"
+        },
+        {
+            "type": "string",
+            "name": "DurationMode",
+            "value": "Every Update",
+            "helptext": "If set to Every Update, a new random number will be generated every network update. If set to Specify, a random number will be generated every specified number of seconds.",
+            "displayName": "Mode"
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "Interval",
+            "value": 0,
+            "helptext": "The number of seconds to wait before generating a new random number.",
+            "displayName": "Interval"
+        },
+        {
+            "min": 1,
+            "type": "int",
+            "name": "Seed",
+            "value": 1,
+            "helptext": "Used to initialize the random number generator.",
+            "displayName": "Seed"
+        },
+        {
+            "type": "string",
+            "name": "GenerateSeed",
+            "value": "User Specified",
+            "helptext": "If set to Generated, the runtime target will generate a seed instead of using the specified seed.",
+            "displayName": "Generate Seed"
+        }
+    ],
+    "dataPins": {
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Node used to generate a random number in a specified range, that changes over time",
+    "id": 146
+}

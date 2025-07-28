@@ -1,0 +1,196 @@
+{
+    "upgrade": null,
+    "group": "Blends",
+    "image": "FeatherBlend2.png",
+    "attributes": [
+        {
+            "type": "floatArray",
+            "name": "BlendWeights",
+            "value": [
+                0,
+                1
+            ],
+            "helptext": "Specify the weights values used to determine which source nodes are blended."
+        },
+        {
+            "min": 0,
+            "type": "int",
+            "name": "TimeStretchMode",
+            "value": 1,
+            "max": 1,
+            "helptext": "Changes the time stretching functionality of this node.",
+            "affectsPins": true
+        },
+        {
+            "type": "int",
+            "set": null,
+            "max": 2,
+            "min": 0,
+            "name": "PassThroughMode",
+            "value": 2,
+            "helptext": "Changes the interface pass through functionality of this node.",
+            "affectsPins": true
+        },
+        {
+            "min": 0,
+            "type": "int",
+            "name": "EventsBlendMode",
+            "value": 0,
+            "max": 1,
+            "helptext": "Changes events blending mode functionality between additive blending and merging.",
+            "affectsPins": true
+        },
+        {
+            "type": "bool",
+            "name": "AlwaysBlendTrajectoryAndTransforms",
+            "set": null,
+            "value": false,
+            "helptext": "Always blend evaluates the trajectory delta and transform value for Source0 and Source1 even if it is completely weighted to one input. This option will improve performance if the weight usually falls somewhere between 0 and 1 but is not precisely 0 or 1. When this option is disabled it  may improve performance if the weight is usually 0 or 1."
+        },
+        {
+            "type": "bool",
+            "name": "AlwaysCombineSampledEvents",
+            "set": null,
+            "value": false,
+            "helptext": "Always blend evaluates the event value for Source0 and Source1 even if it is completely weighted to one input. This option will improve performance if the weight usually falls somewhere between 0 and 1 but is not precisely 0 or 1. When this option is disabled it  may improve performance if the weight is usually 0 or 1."
+        },
+        {
+            "min": 0,
+            "type": "floatArray",
+            "name": "ChannelAlphas",
+            "max": 1,
+            "syncWithRigChannels": true,
+            "helptext": "Weighting factors that influence the importance of each channel during the blending process.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "AdditiveBlendAttitude",
+            "set": null,
+            "value": false,
+            "helptext": "Add the rotation of Source1 to Source0 instead of blending with spherical interpolation.",
+            "displayName": "Additive Rotation"
+        },
+        {
+            "type": "bool",
+            "name": "AdditiveBlendPosition",
+            "set": null,
+            "value": false,
+            "helptext": "Add the translation of Source1 to Source0 instead of blending with linear interpolation.",
+            "displayName": "Additive Translation"
+        },
+        {
+            "type": "bool",
+            "name": "SphericallyInterpolateTrajectoryPosition",
+            "value": false,
+            "helptext": "Spherically interpolate between the two trajectory translation inputs. The trajectory orientation is always spherically interpolated.",
+            "displayName": "Slerp Trajectory"
+        },
+        {
+            "min": 0,
+            "type": "int",
+            "name": "StartEventIndex",
+            "value": 0,
+            "helptext": "The sync event tracks from the inputs are combined here. This is the index of the event on the new synctrack from which to start playback."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendPassThrough",
+            "value": false,
+            "helptext": "When set, all events are copied straight to output."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendIgnoreEventOrder",
+            "value": false,
+            "helptext": "Ignoring the order of events when blending means that events in the source tracks will be combined even if they have duration events in different orders."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendSameUserData",
+            "value": false,
+            "helptext": "Duration events will only be blended together when they share the same user data."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendOnOverlap",
+            "value": false,
+            "helptext": "When set, if not overlapping simply copy into the result."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendWithinRange",
+            "value": false,
+            "helptext": "When set, blend or reject only events that are within a specified event range of each other, otherwise put straight into the result."
+        },
+        {
+            "type": "bool",
+            "name": "Loop",
+            "value": true,
+            "helptext": "Sets whether the result of this node loops when it reaches the end of it's sequence."
+        }
+    ],
+    "functionPins": {
+        "Source0": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source1": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "helptext": "Blends two animation streams together with per bone weighting",
+    "serialize": null,
+    "onAttributeInherited": null,
+    "id": 114,
+    "validate": null,
+    "displayName": "Feather Blend 2",
+    "pinOrder": [
+        "Source0",
+        "Source1",
+        "Result",
+        "Weight"
+    ],
+    "version": 5,
+    "getTransformChannels": null,
+    "updatePins": null,
+    "dataPins": {
+        "Weight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    }
+}

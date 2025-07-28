@@ -1,0 +1,162 @@
+{
+    "serialize": null,
+    "getTransformChannels": null,
+    "upgrade": null,
+    "group": "Blends",
+    "dataPins": {
+        "WeightY": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "WeightX": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "validate": null,
+    "displayName": "Blend 2x2",
+    "pinOrder": [
+        "Source0",
+        "Source1",
+        "Source2",
+        "Source3",
+        "WeightX",
+        "WeightY",
+        "Result"
+    ],
+    "image": "Blend2x2.png",
+    "version": 2,
+    "attributes": [
+        {
+            "min": 0,
+            "type": "int",
+            "name": "TimeStretchMode",
+            "value": 1,
+            "max": 1,
+            "helptext": "Changes the time stretching functionality of this node.",
+            "affectsPins": true
+        },
+        {
+            "type": "bool",
+            "name": "SphericallyInterpolateTrajectoryPosition",
+            "value": false,
+            "helptext": "Spherically interpolate between the two trajectory translation inputs. The trajectory orientation is always spherically interpolated.",
+            "displayName": "Slerp Trajectory"
+        },
+        {
+            "type": "bool",
+            "name": "Loop",
+            "value": true,
+            "helptext": "Sets whether the result of this node loops when it reaches the end of it's sequence."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendPassThrough",
+            "value": false,
+            "helptext": "When set, all events are copied straight to output."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendIgnoreEventOrder",
+            "value": false,
+            "helptext": "Ignoring the order of events when blending means that events in the source tracks will be combined even if they have duration events in different orders."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendSameUserData",
+            "value": false,
+            "helptext": "Duration events will only be blended together when they share the same user data."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendOnOverlap",
+            "value": false,
+            "helptext": "When set, if not overlapping simply copy into the result."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendWithinRange",
+            "value": false,
+            "helptext": "When set, blend or reject only events that are within a specified event range of each other, otherwise put straight into the result."
+        },
+        {
+            "min": 0,
+            "type": "int",
+            "name": "StartEventIndex",
+            "value": 0,
+            "helptext": "The sync event tracks from the inputs are combined here. This is the index of the event on the new synctrack from which to start playback."
+        }
+    ],
+    "functionPins": {
+        "Source1": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source3": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source2": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source0": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "updatePins": null,
+    "helptext": "Blends four animation streams together",
+    "id": 149
+}

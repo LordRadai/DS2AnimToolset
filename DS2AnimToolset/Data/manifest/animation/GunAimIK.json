@@ -1,0 +1,265 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "IK",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Gun Aim IK",
+    "pinOrder": [
+        "Source",
+        "Result",
+        "Target",
+        "BlendWeight"
+    ],
+    "image": "GunAimIK.png",
+    "version": 6,
+    "attributes": [
+        {
+            "type": "rigChannelName",
+            "name": "SpineRootJointName",
+            "value": "",
+            "helptext": "The root joint of the chain to be modified, where the IK aim begins to take effect",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "GunJointName",
+            "value": "",
+            "helptext": "The joint to which the gun mesh is attached.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "GunBindJointName",
+            "value": "",
+            "helptext": "The joint to which the stock of the gun is bound.  The transform of the stock of the gun will remain relative to the transform of the selected joint, moving the gun with it.  For example, bracing the stock of a rifle against the primary shoulder.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "SecondaryWristJointName",
+            "value": "",
+            "helptext": "The secondary wrist end joint in the chain to be modified.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "PrimaryWristJointName",
+            "value": "",
+            "helptext": "The primary wrist end joint of the chain to be modified.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "GunPivotOffsetX",
+            "value": 0,
+            "helptext": "The offset from the Gun Joint to the position of the gun stock in the coordinate system of the gun.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "GunPivotOffsetY",
+            "value": 0,
+            "helptext": "The offset from the Gun Joint to the position of the gun stock in the coordinate system of the gun.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "GunPivotOffsetZ",
+            "value": 0,
+            "helptext": "The offset from the Gun Joint to the position of the gun stock in the coordinate system of the gun.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "GunBarrelOffsetX",
+            "value": 0,
+            "helptext": "The offset from the Gun Joint to a point on the gun barrel in the coordinate system of the gun.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "GunBarrelOffsetY",
+            "value": 0,
+            "helptext": "The offset from the Gun Joint to a point on the gun barrel in the coordinate system of the gun.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "GunBarrelOffsetZ",
+            "value": 0,
+            "helptext": "The offset from the Gun Joint to a point on the gun barrel in the coordinate system of the gun.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "GunPointingVectorX",
+            "value": 1,
+            "helptext": "The vector defining which direction the gun barrel is pointing in the coordinate system of the gun.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "GunPointingVectorY",
+            "value": 0,
+            "helptext": "The vector defining which direction the gun barrel is pointing in the coordinate system of the gun.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "GunPointingVectorZ",
+            "value": 0,
+            "helptext": "The vector defining which direction the gun barrel is pointing in the coordinate system of the gun.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "SecondaryArmHingeAxisX",
+            "value": 0,
+            "helptext": "The vector defining the hinge axis for the secondary elbow, in the coordinate frame of the shoulder.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "SecondaryArmHingeAxisY",
+            "value": 0,
+            "helptext": "The vector defining the hinge axis for the secondary elbow, in the coordinate frame of the shoulder.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "SecondaryArmHingeAxisZ",
+            "value": 1,
+            "helptext": "The vector defining the hinge axis for the secondary elbow, in the coordinate frame of the shoulder.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "PrimaryArmHingeAxisX",
+            "value": 0,
+            "helptext": "The vector defining the hinge axis for the primary elbow, in the coordinate frame of the shoulder.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "PrimaryArmHingeAxisY",
+            "value": 0,
+            "helptext": "The vector defining the hinge axis for the primary elbow, in the coordinate frame of the shoulder.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "PrimaryArmHingeAxisZ",
+            "value": 1,
+            "helptext": "The vector defining the hinge axis for the primary elbow, in the coordinate frame of the shoulder.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "SpineBias",
+            "value": 0,
+            "helptext": "A float parameter between -1 and 1, defining the amount of weight given to each joint for achieving the goal. -1 is fully biased towards the root joint, 0 is an even spread, and 1 is fully biased towards the end joint.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "FlipSecondaryHinge",
+            "value": false,
+            "helptext": "If set, the sign of the mid joint axis of the secondary arm is changed, which will flip its bending direction.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "FlipPrimaryHinge",
+            "value": false,
+            "helptext": "If set, the sign of the mid joint axis of the primary arm is changed, which will flip its bending direction.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "UpdateTargetByDeltas",
+            "value": false,
+            "helptext": "If Previous is set, assume that the input target position was given relative to the character trajectory root at the previous update, and should be corrected for motion since then.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "UseSecondaryArm",
+            "value": true,
+            "helptext": "If set, the secondary arm is bound to the gun, otherwise it is free.  Use for two-handed guns.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "KeepUpright",
+            "value": false,
+            "helptext": "Minimise tilt of the gun around the barrel direction.  This relies on the input animation providing an upright orientation as reference.\n\nThere will be a discontinuity between aiming around to the left or the right when the target passes behind the character.",
+            "perAnimSet": false
+        },
+        {
+            "type": "bool",
+            "name": "ApplyJointLimits",
+            "value": false,
+            "helptext": "Enforce joint limits defined on your animation rig.\n\nOnly joint limits on the primary arm can prevent the character from successfully aiming at any target.",
+            "perAnimSet": false
+        },
+        {
+            "type": "bool",
+            "name": "DebugDraw",
+            "value": false,
+            "helptext": "If set, then debug lines will be drawn in the viewport.\n\nYellow = Barrel position & Orientation, Red = Arm hinge axes, Cyan = Stock position, Green = Brace Joint\n\nIn the Preview Script an update handler will need to call viewport.debugDraw.update() to see the debug information.",
+            "perAnimSet": false
+        },
+        {
+            "type": "bool",
+            "name": "WorldSpaceTarget",
+            "value": false,
+            "helptext": "If true, the target input control parameter is specified in world space; otherwise, it is expressed in character space (the coordinate frame of the trajectory joint).",
+            "perAnimSet": false
+        }
+    ],
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "Target": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "BlendWeight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "GunAimIK: points gun at target along a given pointing direction",
+    "id": 150
+}

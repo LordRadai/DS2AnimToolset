@@ -1,0 +1,57 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Single Frame",
+    "pinOrder": [
+        "Source",
+        "Result",
+        "Control"
+    ],
+    "image": "SingleFrame.png",
+    "version": 3,
+    "attributes": {
+
+    },
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "Control": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Plays a single frame of the input based on the value of the control parameter",
+    "id": 109
+}

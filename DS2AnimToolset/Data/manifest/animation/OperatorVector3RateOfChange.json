@@ -1,0 +1,30 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Vector3 Operators",
+    "validate": null,
+    "displayName": "Vec3 Rate of Change",
+    "pinOrder": [
+        "Input",
+        "Result"
+    ],
+    "image": "OperatorVector3RateOfChange.png",
+    "version": 1,
+    "attributes": {
+
+    },
+    "dataPins": {
+        "Input": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "vector3"
+        }
+    },
+    "helptext": "Outputs the rate of change of the input vector3",
+    "id": 173
+}

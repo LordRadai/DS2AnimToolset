@@ -1,0 +1,53 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Float Operators",
+    "validate": null,
+    "displayName": "Smooth Float",
+    "pinOrder": [
+        "Input",
+        "Result"
+    ],
+    "image": "OperatorSmoothFloat.png",
+    "version": 5,
+    "attributes": [
+        {
+            "type": "float",
+            "name": "SmoothTime",
+            "value": 0.1,
+            "helptext": "A time constant representing the smoothness. A value of 0.1 means the output will take about 1 second (or 10 times the SmoothTime) to change after a step change in the input."
+        },
+        {
+            "type": "bool",
+            "name": "SmoothVelocity",
+            "value": 1,
+            "helptext": "True has a smoothly changing velocity, it acts as a critically damped spring. False is only smooth in position, an exponential decay towards the input"
+        },
+        {
+            "type": "float",
+            "name": "InitValueX",
+            "value": 0,
+            "helptext": "Float initial value."
+        },
+        {
+            "type": "bool",
+            "name": "UseInitValueOnInit",
+            "value": 0,
+            "helptext": "Set True to use the InitValue to set the operator's value on initialisation.  False will make the operator use the input control parameter value on initialisation."
+        }
+    ],
+    "dataPins": {
+        "Input": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Smoothly approach a value over time",
+    "id": 142
+}

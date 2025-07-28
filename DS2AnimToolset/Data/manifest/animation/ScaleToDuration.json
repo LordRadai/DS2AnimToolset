@@ -1,0 +1,59 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Scale To Duration",
+    "pinOrder": [
+        "Source",
+        "Result",
+        "Duration"
+    ],
+    "image": "ScaleToDuration.png",
+    "version": 3,
+    "attributes": {
+
+    },
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time",
+                    "Events"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time",
+                    "Events"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "Duration": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Scales playback speed to conform to a specific interval.",
+    "id": 151
+}

@@ -1,0 +1,190 @@
+{
+    "serialize": null,
+    "onNodeCreated": null,
+    "upgrade": null,
+    "group": "Physics",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Soft Key Active Anim",
+    "pinOrder": [
+        "Source",
+        "Result",
+        "KWeight",
+        "AAWeight"
+    ],
+    "image": "SoftKeyFrameActiveAnimation.png",
+    "version": 5,
+    "attributes": [
+        {
+            "type": "bool",
+            "name": "EnableCollision",
+            "value": true,
+            "helptext": "Whether or not the hard keyframed physics parts will collide with/push other dynamic objects in the scene."
+        },
+        {
+            "type": "bool",
+            "name": "UseRootAsAnchor",
+            "value": false,
+            "helptext": "Whether the input animation should be converted into world space by using the character root directly, or if it should be anchored to the next body group that is closer to the root."
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "GravityCompensation",
+            "value": 0,
+            "perAnimSet": true,
+            "helptext": "The fraction that gravity should be compensated for. This will be scaled by the node's input weight. Note that using this allows much smaller (and therefore softer) max acceleration values to be used without the character sagging under gravity.",
+            "max": 1
+        },
+        {
+            "type": "bool",
+            "name": "UseMaxAcceleration",
+            "value": false,
+            "helptext": "Whether or not the following Max acceleration attribute should be used. If false, then there is no limit to the acceleration that soft keyframing can produce.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "UseMaxAngularAcceleration",
+            "value": false,
+            "helptext": "Whether or not the following Max angular acceleration attribute should be used. If false, then there is no limit to the angular acceleration that soft keyframing can produce.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "MaxAcceleration",
+            "value": 150,
+            "helptext": "This clamps the forces so that the body parts do not accelerate due to soft keyframing by more than this amount. This will be scaled by the node's input weight.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "MaxAngularAcceleration",
+            "value": 150,
+            "helptext": "This clamps the forces so that the body parts do not accelerate due to soft keyframing by more than this amount. This will be scaled by the node's input weight.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "PoseStrengthMultiplier",
+            "value": 1,
+            "perAnimSet": true,
+            "helptext": "The maximum strength of each joint is multiplied by this value and then used to drive towards the animation source.",
+            "displayName": "Strength"
+        },
+        {
+            "type": "float",
+            "name": "DampingMultiplier",
+            "value": 1,
+            "perAnimSet": true,
+            "helptext": "If the character has been set up correctly, then the joint damping will represent damping due to the skeletal joints and clothes and so on, so that the limbs are not completely floppy. This joint damping will be modulated by the damping multiplier, which would normally be set to 1 (its default value).",
+            "displayName": "Damping"
+        },
+        {
+            "type": "bool",
+            "name": "PreserveMomentum",
+            "value": false,
+            "helptext": "If true then the overal linear momentum of the character is preserved (so he can be pushed)."
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "InternalJointCompliance",
+            "value": 1,
+            "perAnimSet": true,
+            "helptext": "PhysX 3 only: When the AAWeight control parameter is 1, compliance for internally generated motion.\n\nCompliance affects how well the motion of a body part propagates through the joint, for instance whether pushing on the hand will move the whole arm or just bend the elbow.",
+            "max": 1
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "ExternalJointCompliance",
+            "value": 1,
+            "perAnimSet": true,
+            "helptext": "PhysX 3 only: When the AAWeight control parameter is 1, compliance for externally generated motion.\n\nCompliance affects how well the motion of a body part propagates through the joint, for instance whether pushing on the hand will move the whole arm or just bend the elbow.",
+            "max": 1
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "ControllerRadiusFraction",
+            "value": 1,
+            "helptext": "Scales the character controller radius.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "ControllerHeightFraction",
+            "value": 1,
+            "helptext": "Scales the character controller height.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "EnableJointLimits",
+            "value": true,
+            "helptext": "Enable joint limits.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "EnableCharacterControllerCollision",
+            "value": false,
+            "helptext": "Allow dynamic objects to collide with the character controller.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "DisableSleeping",
+            "value": true,
+            "helptext": "Enable sleeping when stationary.",
+            "perAnimSet": true
+        }
+    ],
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time",
+                    "Events"
+                ]
+            }
+        },
+        "Source": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "AAWeight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "KWeight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Drives physics rig to reach towards source animation global and local transforms.",
+    "id": 123
+}

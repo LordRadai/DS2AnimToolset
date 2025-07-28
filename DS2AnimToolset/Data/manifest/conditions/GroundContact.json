@@ -1,0 +1,19 @@
+{
+    "serialize": null,
+    "version": 1,
+    "id": 614,
+    "validate": null,
+    "helptext": "Condition depending on character contact with the ground (or not) greater than a certain time",
+    "attributes": {
+        "TriggerTime": {
+            "value": 0,
+            "type": "float",
+            "helptext": "The minimum ground contact time that needs to elapse before the condition becomes true."
+        },
+        "OnGround": {
+            "value": true,
+            "type": "bool",
+            "helptext": "Change whether the character must be in the air or on the ground to trigger this condition"
+        }
+    }
+}

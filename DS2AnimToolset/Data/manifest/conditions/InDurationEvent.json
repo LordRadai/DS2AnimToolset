@@ -1,0 +1,39 @@
+{
+    "serialize": null,
+    "version": 1,
+    "id": 618,
+    "validate": null,
+    "helptext": "Gets triggered when the source is, or is not, inside the requested event.",
+    "attributes": {
+        "EventTrackUserTypeID": {
+            "type": "int",
+            "value": 0,
+            "helptext": "The user ID of the duration event track to monitor.",
+            "displayName": "Track user ID"
+        },
+        "OnNotSet": {
+            "type": "bool",
+            "value": false,
+            "helptext": "This request condition resolves as true when it is not set.",
+            "displayName": "True when not set"
+        },
+        "UseEventUserTypeID": {
+            "type": "bool",
+            "value": true,
+            "helptext": "When set the condition will only monitor events with the specified ID.",
+            "displayName": "Use event user ID"
+        },
+        "UseEventTrackUserTypeID": {
+            "type": "bool",
+            "value": true,
+            "helptext": "When set the condition will only monitor events from tracks with the specified ID.",
+            "displayName": "Use track user ID"
+        },
+        "EventUserTypeID": {
+            "type": "int",
+            "value": 0,
+            "helptext": "The user ID of the duration event to monitor.",
+            "displayName": "Event user ID"
+        }
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Vector3 Operators",
+    "validate": null,
+    "displayName": "Normalise",
+    "pinOrder": [
+        "Input",
+        "Result"
+    ],
+    "image": "OperatorVector3Normalise.png",
+    "version": 1,
+    "dataPins": {
+        "Input": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "vector3"
+        }
+    },
+    "helptext": "Takes one vector and outputs the unit length, normalised vector.",
+    "id": 175
+}

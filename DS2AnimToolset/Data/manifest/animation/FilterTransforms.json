@@ -1,0 +1,55 @@
+{
+    "serialize": null,
+    "onAttributeInherited": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "id": 105,
+    "validate": null,
+    "displayName": "Filter Transforms",
+    "pinOrder": [
+        "Source",
+        "Result"
+    ],
+    "image": "FilterTransforms.png",
+    "version": 2,
+    "getTransformChannels": null,
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms"
+                ]
+            }
+        }
+    },
+    "attributes": [
+        {
+            "type": "boolArray",
+            "name": "ChannelIsOutput",
+            "syncWithRigChannels": true,
+            "helptext": "The channels that are output by the filter.",
+            "perAnimSet": true
+        }
+    ],
+    "helptext": "Filter out the specified channels from an input buffer. Pass through all other Node communication.",
+    "getEvents": null
+}

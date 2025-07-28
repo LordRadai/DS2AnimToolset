@@ -1,0 +1,102 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "validate": null,
+    "displayName": "Anim With Events",
+    "id": 104,
+    "image": "AnimWithEvents.png",
+    "version": 9,
+    "getTransformChannels": null,
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time",
+                    "Events"
+                ]
+            }
+        }
+    },
+    "attributes": [
+        {
+            "type": "animationTake",
+            "name": "AnimationTake",
+            "set": null,
+            "value": {
+                "takename": "",
+                "filename": ""
+            }
+        },
+        {
+            "type": "bool",
+            "name": "Loop",
+            "value": true,
+            "helptext": "Sets whether the result of this node loops when it reaches the end of it's sequence."
+        },
+        {
+            "type": "bool",
+            "name": "PlayBackwards",
+            "value": false,
+            "helptext": "If set then the animation will play backwards."
+        },
+        {
+            "type": "bool",
+            "name": "GenerateAnimationDeltas",
+            "value": false,
+            "helptext": "Make this animation suitable for additive blending. Subtracts the first frame from each subsequent frame.",
+            "displayName": "Additive"
+        },
+        {
+            "type": "bool",
+            "name": "DefaultClip",
+            "value": true,
+            "helptext": "Specify the start and end positions of the clip are different from those that are defined for this animation.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "max": 1,
+            "units": "fraction",
+            "min": 0,
+            "name": "ClipStartFraction",
+            "value": 0,
+            "displayName": "Start",
+            "helptext": "Specify the start position to begin playback sometime after the authored start of the clip.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "max": 1,
+            "units": "fraction",
+            "min": 0,
+            "name": "ClipEndFraction",
+            "value": 1,
+            "displayName": "End",
+            "helptext": "Specify the end position to finish playback sometime before the authored end of the clip.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "int",
+            "name": "StartEventIndex",
+            "value": 0,
+            "helptext": "The index of the event on the synctrack from which to start playback. If the majority of your animations start on the right foot, then the first event (index 0) will be when the left foot is planted. If you have an animation that starts on the left foot then the first event will be the right foot being planted, and this should have an index of 1 to match the events in the other animations.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "PreComputeSyncEventTracks",
+            "value": false,
+            "helptext": "If true sync event tracks are generated in the asset compiler - This is fast at runtime but takes more memory. If false sync event tracks are generated at runtime - This is slower but takes less memory."
+        }
+    ],
+    "helptext": "Supplies clip of animation data from an entry in the animation set",
+    "getEvents": null
+}

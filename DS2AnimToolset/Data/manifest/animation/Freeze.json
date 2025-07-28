@@ -1,0 +1,32 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "validate": null,
+    "displayName": "Freeze",
+    "id": 126,
+    "image": "Freeze.png",
+    "version": 1,
+    "getTransformChannels": null,
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time",
+                    "Events"
+                ]
+            }
+        }
+    },
+    "attributes": {
+
+    },
+    "helptext": "Freezes the last transformation state of the system",
+    "getEvents": null
+}

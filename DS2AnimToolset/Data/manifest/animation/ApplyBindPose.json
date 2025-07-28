@@ -1,0 +1,48 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "id": 115,
+    "validate": null,
+    "displayName": "Apply Bind Pose",
+    "pinOrder": [
+        "Source",
+        "Result"
+    ],
+    "image": "ApplyBindPose.png",
+    "version": 2,
+    "getTransformChannels": null,
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms"
+                ]
+            }
+        }
+    },
+    "attributes": {
+
+    },
+    "helptext": "Applies the active rigs bind pose transforms to any currently uninitialised bone transforms.",
+    "getEvents": null
+}

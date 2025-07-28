@@ -1,0 +1,30 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Float Operators",
+    "validate": null,
+    "displayName": "Rate of Change",
+    "pinOrder": [
+        "Input",
+        "Result"
+    ],
+    "image": "OperatorRateOfChange.png",
+    "version": 1,
+    "attributes": {
+
+    },
+    "dataPins": {
+        "Input": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Outputs the rate of change of the input float",
+    "id": 173
+}

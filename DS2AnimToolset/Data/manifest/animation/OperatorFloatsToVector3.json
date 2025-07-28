@@ -1,0 +1,41 @@
+{
+    "serialize": null,
+    "group": "Float Operators",
+    "validate": null,
+    "displayName": "Floats To Vec3",
+    "pinOrder": [
+        "FloatX",
+        "FloatY",
+        "FloatZ",
+        "Result"
+    ],
+    "image": "OperatorFloatsToVector3.png",
+    "version": 1,
+    "attributes": {
+
+    },
+    "dataPins": {
+        "FloatZ": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "FloatY": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "vector3"
+        },
+        "FloatX": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Simple Node that takes 3 floats and combines them into a Vec3",
+    "id": 144
+}

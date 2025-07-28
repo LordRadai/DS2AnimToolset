@@ -1,0 +1,53 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Float Operators",
+    "validate": null,
+    "displayName": "Noise Gen",
+    "pinOrder": [
+        "Input",
+        "Result"
+    ],
+    "image": "OperatorNoiseGen.png",
+    "version": 1,
+    "attributes": [
+        {
+            "type": "bool",
+            "name": "Noise",
+            "value": true,
+            "helptext": "Output a noise curve."
+        },
+        {
+            "type": "bool",
+            "name": "SawWave",
+            "value": false,
+            "helptext": "Output a saw tooth curve."
+        },
+        {
+            "type": "bool",
+            "name": "EaseInEaseOut",
+            "value": false,
+            "helptext": "Output a sin curve."
+        },
+        {
+            "type": "float",
+            "name": "NoiseSawFrequency",
+            "value": 1,
+            "helptext": "Sets the frequency of the noise and saw functions."
+        }
+    ],
+    "dataPins": {
+        "Input": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Signal generation. Noise, Saw Wave, Ease-in/Ease-out",
+    "id": 113
+}

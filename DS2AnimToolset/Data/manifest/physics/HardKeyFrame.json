@@ -1,0 +1,87 @@
+{
+    "serialize": null,
+    "group": "Physics",
+    "validate": null,
+    "displayName": "Hard Key Frame",
+    "pinOrder": [
+        "Source",
+        "Result"
+    ],
+    "image": "HardKeyFrame.png",
+    "version": 2,
+    "getTransformChannels": null,
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time",
+                    "Events"
+                ]
+            }
+        },
+        "Source": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "attributes": [
+        {
+            "type": "bool",
+            "name": "EnableCollision",
+            "value": true,
+            "helptext": "Whether or not the hard keyframed physics parts will collide with/push other dynamic objects in the scene."
+        },
+        {
+            "type": "bool",
+            "name": "UseRootAsAnchor",
+            "value": false,
+            "helptext": "Whether the input animation should be converted into world space by using the character root directly, or if it should be anchored to the next body group that is closer to the root."
+        },
+        {
+            "type": "bool",
+            "name": "OutputSourceAnimation",
+            "value": false,
+            "helptext": "If true then the output will be identical to the input, but physics will still run to provide collisions. This will provide a small performance benefit. Note that when using HardKeyFraming inside a physics compositor this can generate incorrect output."
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "ControllerRadiusFraction",
+            "value": 1,
+            "helptext": "Scales the character controller radius.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "ControllerHeightFraction",
+            "value": 1,
+            "helptext": "Scales the character controller height.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "EnableCharacterControllerCollision",
+            "value": false,
+            "helptext": "Allow dynamic objects to collide with the character controller.",
+            "perAnimSet": true
+        }
+    ],
+    "helptext": "Drives physics rig to exactly match source animation global transforms.",
+    "id": 123
+}

@@ -1,0 +1,257 @@
+{
+    "onPinDisconnected": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "image": "Switch.png",
+    "attributes": [
+        {
+            "type": "floatArray",
+            "name": "SourceWeights",
+            "set": null,
+            "value": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "helptext": "Describes the mapping between the weight and the animation sources"
+        },
+        {
+            "type": "floatArray",
+            "name": "SourceWeightDistributionRange",
+            "value": [
+                0,
+                1
+            ],
+            "helptext": "This is used to keep the same range for linear distribution of weights"
+        },
+        {
+            "type": "int",
+            "name": "SourceWeightDistribution",
+            "set": null,
+            "value": 1,
+            "helptext": "Defines how the input to the weight pin blends between the input nodes",
+            "displayName": "Source Weight Distribution"
+        },
+        {
+            "type": "bool",
+            "name": "WrapWeights",
+            "set": null,
+            "value": false,
+            "helptext": "Interpolate across the last animation back to the first one",
+            "displayName": "Wrap Weights"
+        },
+        {
+            "min": 0,
+            "type": "int",
+            "name": "InputSelectionMethod",
+            "value": 0,
+            "max": 2,
+            "helptext": "If true the blend weight is rounded to the closest source blend weight. By default the blend weight value is floored.",
+            "affectsPins": false
+        },
+        {
+            "min": 0,
+            "type": "int",
+            "name": "EvaluationMethod",
+            "value": 2,
+            "helptext": "If true the value of the weight pin is evaluated every frame potentially switching which input is used every frame. If false the value of the weight pin is only evaluated when the current input animation has finished so the animation only changes at the end of playback.",
+            "max": 2
+        }
+    ],
+    "functionPins": {
+        "Source6": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Source4": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Source5": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Source9": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Source8": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Source1": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Source7": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Source2": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Source0": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Source10": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Source3": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        }
+    },
+    "helptext": "Handles switching between n source nodes",
+    "onPinConnected": null,
+    "serialize": null,
+    "id": 131,
+    "validate": null,
+    "displayName": "Switch",
+    "pinOrder": [
+        "Source0",
+        "Source1",
+        "Source2",
+        "Source3",
+        "Source4",
+        "Source5",
+        "Source6",
+        "Source7",
+        "Source8",
+        "Source9",
+        "Source10",
+        "Result",
+        "Weight"
+    ],
+    "version": 5,
+    "getTransformChannels": null,
+    "dataPins": {
+        "Weight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    }
+}

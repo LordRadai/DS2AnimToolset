@@ -1,0 +1,169 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "IK",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Two Bone IK",
+    "pinOrder": [
+        "Source",
+        "Result",
+        "EffectorTarget",
+        "TargetOrientation",
+        "SwivelAngle",
+        "IkFkBlendWeight",
+        "SwivelContribution"
+    ],
+    "image": "TwoBoneIK.png",
+    "version": 6,
+    "attributes": [
+        {
+            "type": "float",
+            "name": "MidJointRotationAxisX",
+            "value": 1,
+            "helptext": "The axis to rotate the middle joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "MidJointRotationAxisY",
+            "value": 0,
+            "helptext": "The axis to rotate the middle joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "MidJointRotationAxisZ",
+            "value": 0,
+            "helptext": "The axis to rotate the middle joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "FlipMidJointRotationDirection",
+            "value": false,
+            "helptext": "Change the sign of the hinge axis to flip the bending direction.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "EndJointName",
+            "value": "",
+            "helptext": "Specifies the end joint and, by association through the rig, the root and middle joints.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "KeepEndEffOrientation",
+            "value": false,
+            "helptext": "If turned on, the target orientation of the end joint is defined by its character-space orientation in the source animation."
+        },
+        {
+            "type": "bool",
+            "name": "GlobalReferenceAxis",
+            "value": true,
+            "helptext": "If turned on, the Mid Joint Reference Axis is specified in character space. Otherwise, it is specified relative to the root joint (its parent).",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "MidJointReferenceAxisX",
+            "value": 0,
+            "helptext": "The normal of the plane used with the swivel angle value.  For instance, to keep the elbow of an arm chain in the XZ plane specify the plane as <0, 1, 0> and set the swivel angle to 0.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "MidJointReferenceAxisY",
+            "value": 0,
+            "helptext": "The normal of the plane used with the swivel angle value.  For instance, to keep the elbow of an arm chain in the XZ plane specify the plane as <0, 1, 0> and set the swivel angle to 0.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "MidJointReferenceAxisZ",
+            "value": 0,
+            "helptext": "The normal of the plane used with the swivel angle value.  For instance, to keep the elbow of an arm chain in the XZ plane specify the plane as <0, 1, 0> and set the swivel angle to 0.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "UpdateTargetByDeltas",
+            "value": false,
+            "helptext": "If turned on, assume that input target position and orientation were given relative to the character root at the previous update, and should be corrected for motion since then.\n\nThis attribute only applies when the target frame is set to Character Space."
+        },
+        {
+            "type": "bool",
+            "name": "UseReferenceAxis",
+            "value": false,
+            "helptext": "Choose if the swivel angle is relative to the source animation or a reference plane",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "WorldSpaceTarget",
+            "value": false,
+            "helptext": "If true, the target input control parameter is specified in world space; otherwise, it is expressed in character space (the coordinate frame of the trajectory joint).",
+            "perAnimSet": false
+        }
+    ],
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "SwivelContributionToOrientation": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "IkFkBlendWeight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "TargetOrientation": {
+            "input": true,
+            "array": false,
+            "type": "vector4"
+        },
+        "EffectorTarget": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "SwivelAngle": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Two-bone IK: make animation reach to a target position and orientation",
+    "id": 120
+}

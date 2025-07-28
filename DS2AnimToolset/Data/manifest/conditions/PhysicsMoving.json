@@ -1,0 +1,33 @@
+{
+    "serialize": null,
+    "version": 1,
+    "id": 619,
+    "validate": null,
+    "helptext": "Condition is true if a physical body's parts velocities are below the threshold for a given time",
+    "attributes": {
+        "OnNotSet": {
+            "type": "bool",
+            "value": true,
+            "helptext": "Invert the checking logic (which means that the condition is checking for 'not moving' instead of 'moving'.",
+            "displayName": "true when not moving"
+        },
+        "MinFramesBelow": {
+            "type": "int",
+            "value": 1,
+            "helptext": "Number of frames the velocities must be below thresholds to trigger the condition.",
+            "displayName": "min. frames below velocities"
+        },
+        "VelocityThreshold": {
+            "type": "float",
+            "value": 0.1,
+            "helptext": "Minimum average velocity per physics part to dip below to fulfil the condition.",
+            "displayName": "min. velocity"
+        },
+        "AngularVelocityThreshold": {
+            "type": "float",
+            "value": 1,
+            "helptext": "Minimum average angular velocity per physics part to dip below to fulfil the condition.",
+            "displayName": "min. angular velocity"
+        }
+    }
+}

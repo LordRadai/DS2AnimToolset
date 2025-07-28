@@ -1,0 +1,41 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Vector3 Operators",
+    "validate": null,
+    "displayName": "Vec3 Angle",
+    "pinOrder": [
+        "Input0",
+        "Input1",
+        "Degrees"
+    ],
+    "image": "OperatorVector3Angle.png",
+    "version": 2,
+    "attributes": [
+        {
+            "type": "int",
+            "name": "Axis",
+            "value": 0,
+            "helptext": "Select which axis to get angle around."
+        }
+    ],
+    "dataPins": {
+        "Input1": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "Input0": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "Degrees": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Output the angle between two vectors",
+    "id": 174
+}

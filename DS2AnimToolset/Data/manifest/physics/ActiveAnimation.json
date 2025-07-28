@@ -1,0 +1,109 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Physics",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Active Animation",
+    "pinOrder": [
+        "Source",
+        "Weight",
+        "Result"
+    ],
+    "image": "ActiveAnimation.png",
+    "version": 4,
+    "attributes": [
+        {
+            "type": "float",
+            "name": "PoseStrengthMultiplier",
+            "value": 1,
+            "perAnimSet": true,
+            "helptext": "The maximum strength of each joint is multiplied by this value and then used to drive towards the animation source.",
+            "displayName": "Strength"
+        },
+        {
+            "type": "float",
+            "name": "DampingMultiplier",
+            "value": 1,
+            "perAnimSet": true,
+            "helptext": "If the character has been set up correctly, then the joint damping will represent damping due to the skeletal joints and clothes and so on, so that the limbs are not completely floppy. This joint damping will be modulated by the damping multiplier, which would normally be set to 1 (its default value).",
+            "displayName": "Damping"
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "InternalJointCompliance",
+            "value": 1,
+            "perAnimSet": true,
+            "helptext": "PhysX 3 only: When Weight control parameter is 1, compliance for internally generated motion.\n\nCompliance affects how well the motion of a body part propagates through the joint, for instance whether pushing on the hand will move the whole arm or just bend the elbow.",
+            "max": 1
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "ExternalJointCompliance",
+            "value": 1,
+            "perAnimSet": true,
+            "helptext": "PhysX 3 only: When Weight control parameter is 1, compliance for externally generated motion.\n\nCompliance affects how well the motion of a body part propagates through the joint, for instance whether pushing on the hand will move the whole arm or just bend the elbow.",
+            "max": 1
+        },
+        {
+            "type": "bool",
+            "name": "UseAsKeyframeAnchor",
+            "value": false,
+            "helptext": "Whether the input animation or the bind pose should be used to 'anchor' any keyframe methods that are being applied to other body groups."
+        },
+        {
+            "type": "bool",
+            "name": "EnableJointLimits",
+            "value": true,
+            "helptext": "Enable joint limits.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "DisableSleeping",
+            "value": true,
+            "helptext": "Disable sleeping when stationary.",
+            "perAnimSet": true
+        }
+    ],
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time",
+                    "Events"
+                ]
+            }
+        },
+        "Source": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "Weight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Drives physics rig to reach towards source animation local transforms.",
+    "id": 123
+}

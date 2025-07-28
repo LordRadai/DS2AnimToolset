@@ -1,0 +1,49 @@
+{
+    "serialize": null,
+    "version": 3,
+    "upgrade": null,
+    "id": 615,
+    "validate": null,
+    "helptext": "Condition is true if a raytest returns a hit/miss",
+    "attributes": {
+        "RayDeltaX": {
+            "type": "float",
+            "helptext": "Represents the direction of the ray."
+        },
+        "RayStartY": {
+            "type": "float",
+            "helptext": "Represents the starting point of the ray."
+        },
+        "HitMode": {
+            "value": 1,
+            "type": "int",
+            "helptext": "If 'On Hit' the condition will evaluate to true on contact with any object. If 'On Hit Moving' it will be true if the hit object is moving. if 'On Hit Stationary' it will be true if the hit object is stationary. Otherwise the condition is true when nothing was hit."
+        },
+        "RayDeltaZ": {
+            "type": "float",
+            "helptext": "Represents the direction of the ray."
+        },
+        "RayDeltaY": {
+            "type": "float",
+            "helptext": "Represents the direction of the ray."
+        },
+        "DebugDraw": {
+            "value": false,
+            "type": "bool",
+            "helptext": "If set, then debug lines will be drawn in the viewport.\n\nYellow line indicates the ray.\n\nIn the Preview Script an update handler will need to call viewport.debugDraw.update() to see the debug information."
+        },
+        "UseLocalOrientation": {
+            "value": true,
+            "type": "bool",
+            "helptext": "If checked, the ray direction is rotated accordingly to the character root transform."
+        },
+        "RayStartX": {
+            "type": "float",
+            "helptext": "Represents the starting point of the ray."
+        },
+        "RayStartZ": {
+            "type": "float",
+            "helptext": "Represents the starting point of the ray."
+        }
+    }
+}

@@ -1,0 +1,64 @@
+{
+    "serialize": null,
+    "onAttributeInherited": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Smooth Transforms",
+    "pinOrder": [
+        "Source",
+        "Result",
+        "Multiplier"
+    ],
+    "image": "SmoothTransforms.png",
+    "version": 2,
+    "attributes": [
+        {
+            "min": 0,
+            "type": "floatArray",
+            "name": "ChannelSmoothingStrengths",
+            "max": 1,
+            "syncWithRigChannels": true,
+            "helptext": "Weighting factors that influence the smoothing of each channel.",
+            "perAnimSet": true
+        }
+    ],
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "Multiplier": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Smooth channels from an input buffer. Pass through all other Node communication.",
+    "id": 500
+}

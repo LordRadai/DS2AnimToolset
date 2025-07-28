@@ -1,0 +1,66 @@
+{
+    "serialize": null,
+    "onAttributeInherited": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "id": 135,
+    "validate": null,
+    "displayName": "Mirror Transforms",
+    "pinOrder": [
+        "Source",
+        "Result"
+    ],
+    "image": "Mirror.png",
+    "version": 3,
+    "getTransformChannels": null,
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms"
+                ]
+            }
+        }
+    },
+    "attributes": [
+        {
+            "value": true,
+            "type": "int",
+            "name": "EventOffset"
+        },
+        {
+            "type": "bool",
+            "name": "EventPassThrough",
+            "set": null,
+            "value": true
+        },
+        {
+            "type": "boolArray",
+            "name": "MirrorChannels",
+            "syncWithRigChannels": true,
+            "helptext": "Choose the channels that will be mirrored.",
+            "perAnimSet": true
+        }
+    ],
+    "helptext": "mirrors animation along a preferred axis",
+    "getEvents": null
+}

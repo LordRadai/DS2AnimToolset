@@ -1,0 +1,33 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Vector3 Operators",
+    "validate": null,
+    "displayName": "Dot Product",
+    "pinOrder": [
+        "Input0",
+        "Input1",
+        "Result"
+    ],
+    "image": "OperatorVector3Dot.png",
+    "version": 4,
+    "dataPins": {
+        "Input1": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "Input0": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Takes two vectors and computes their dot product.",
+    "id": 164
+}

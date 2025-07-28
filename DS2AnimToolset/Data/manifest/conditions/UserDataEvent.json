@@ -1,0 +1,15 @@
+{
+    "serialize": null,
+    "version": 1,
+    "id": 602,
+    "validate": null,
+    "helptext": "This condition is true on any frame where an event with the given user data value is played",
+    "attributes": {
+        "EventUserTypeID": {
+            "type": "int",
+            "value": 0,
+            "helptext": "The User Data ID of the event to monitor for.",
+            "displayName": "Event User Data"
+        }
+    }
+}

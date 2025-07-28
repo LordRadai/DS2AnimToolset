@@ -1,0 +1,108 @@
+{
+    "serialize": null,
+    "onNodeCreated": null,
+    "upgrade": null,
+    "group": "Physics",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Local Soft Key Frame",
+    "pinOrder": [
+        "Source",
+        "Weight",
+        "Result"
+    ],
+    "image": "LocalSoftKeyFrame.png",
+    "version": 3,
+    "attributes": [
+        {
+            "type": "bool",
+            "name": "UseRootAsAnchor",
+            "value": false,
+            "helptext": "Whether the input animation should be converted into world space by using the character root directly, or if it should be anchored to the next body group that is closer to the root."
+        },
+        {
+            "type": "bool",
+            "name": "UseMaxAcceleration",
+            "value": false,
+            "helptext": "Whether or not the following Max acceleration attribute should be used. If false, then there is no limit to the acceleration that soft keyframing can produce.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "UseMaxAngularAcceleration",
+            "value": false,
+            "helptext": "Whether or not the following Max angular acceleration attribute should be used. If false, then there is no limit to the angular acceleration that soft keyframing can produce.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "MaxAcceleration",
+            "value": 150,
+            "helptext": "This clamps the forces so that the body parts do not accelerate due to soft keyframing by more than this amount. This will be scaled by the node's input weight.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "MaxAngularAcceleration",
+            "value": 150,
+            "helptext": "This clamps the forces so that the body parts do not accelerate due to soft keyframing by more than this amount. This will be scaled by the node's input weight.",
+            "perAnimSet": true
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "ExternalJointCompliance",
+            "value": 1,
+            "perAnimSet": true,
+            "helptext": "PhysX 3 only: Compliance for externally generated motion.\n\nCompliance affects how well the motion of a body part propagates through the joint, for instance whether pushing on the hand will move the whole arm or just bend the elbow.",
+            "max": 1
+        },
+        {
+            "type": "bool",
+            "name": "EnableJointLimits",
+            "value": true,
+            "helptext": "Enable joint limits.",
+            "perAnimSet": true
+        }
+    ],
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time",
+                    "Events"
+                ]
+            }
+        },
+        "Source": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "Weight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Drives physics rig to reach towards source animation global transforms.",
+    "id": 123
+}

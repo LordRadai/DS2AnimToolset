@@ -1,0 +1,65 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Vector3 Operators",
+    "validate": null,
+    "displayName": "Vec3 Smooth",
+    "pinOrder": [
+        "Input",
+        "Result"
+    ],
+    "image": "OperatorSmoothVector3.png",
+    "version": 3,
+    "attributes": [
+        {
+            "type": "float",
+            "name": "SmoothTime",
+            "value": 0,
+            "helptext": "Time required to approach the input specified in game units (usually seconds). Because the system is implemented as a damped spring the SmoothTime is the expected lag of the result behind a constantly changing input."
+        },
+        {
+            "type": "bool",
+            "name": "SmoothVelocity",
+            "value": 1,
+            "helptext": "True has a smoothly changing velocity, it acts as a critically damped spring. False is only smooth in position, an exponential decay towards the input"
+        },
+        {
+            "type": "float",
+            "name": "InitValueX",
+            "value": 0,
+            "helptext": "Vector3 (x,y,z) initial value."
+        },
+        {
+            "type": "float",
+            "name": "InitValueY",
+            "value": 0,
+            "helptext": "Vector3 (x,y,z) initial value."
+        },
+        {
+            "type": "float",
+            "name": "InitValueZ",
+            "value": 0,
+            "helptext": "Vector3 (x,y,z) initial value."
+        },
+        {
+            "type": "bool",
+            "name": "UseInitValueOnInit",
+            "value": 0,
+            "helptext": "Set True to use the InitValue to set the operator's value on initialisation.  False will make the operator use the input control parameter value on initialisation."
+        }
+    ],
+    "dataPins": {
+        "Input": {
+            "input": true,
+            "array": false,
+            "type": "vector3"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "vector3"
+        }
+    },
+    "helptext": "Smoothly approach a value over time",
+    "id": 142
+}

@@ -1,0 +1,40 @@
+{
+    "serialize": null,
+    "group": "Float Operators",
+    "validate": null,
+    "displayName": "Arithmetic",
+    "pinOrder": [
+        "Input0",
+        "Input1",
+        "Result"
+    ],
+    "image": "OperatorArithmetic.png",
+    "version": 2,
+    "attributes": [
+        {
+            "type": "string",
+            "name": "Operation",
+            "value": "*",
+            "helptext": "Change the mathematical operation performed by the node.  For instance, if '/' is selected the node performs the operation Result = Input0  /  Input1. "
+        }
+    ],
+    "dataPins": {
+        "Input1": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "Input0": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Simple mathematical operation on two float inputs",
+    "id": 111
+}

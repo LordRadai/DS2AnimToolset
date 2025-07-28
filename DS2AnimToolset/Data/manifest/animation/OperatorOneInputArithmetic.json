@@ -1,0 +1,41 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Float Operators",
+    "validate": null,
+    "displayName": "One Input Arithmetic",
+    "pinOrder": [
+        "Input",
+        "Result"
+    ],
+    "image": "OperatorOneInputArithmetic.png",
+    "version": 3,
+    "attributes": [
+        {
+            "type": "string",
+            "name": "Operation",
+            "value": "*",
+            "helptext": "Change the mathematical operation performed by the node.  For instance, select '/' to perform the operation Result = Input / Constant."
+        },
+        {
+            "type": "float",
+            "name": "ConstantValue",
+            "value": 0,
+            "helptext": "Constant numerical value used in the operation Result = Input operation Constant.  For instance, select '/' to perform the operation Result = Input / Constant. "
+        }
+    ],
+    "dataPins": {
+        "Input": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Simple mathematical operation using a single float input and a constant",
+    "id": 112
+}

@@ -1,0 +1,312 @@
+{
+    "onPinDisconnected": null,
+    "upgrade": null,
+    "group": "Blends",
+    "image": "BlendN.png",
+    "attributes": [
+        {
+            "type": "floatArray",
+            "name": "SourceWeights",
+            "set": null,
+            "value": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "helptext": "Describes the mapping between the weight and the animation sources"
+        },
+        {
+            "type": "floatArray",
+            "name": "SourceWeightDistributionRange",
+            "value": [
+                0,
+                1
+            ],
+            "helptext": "This is used to keep the same range for linear distribution of weights"
+        },
+        {
+            "type": "int",
+            "name": "SourceWeightDistribution",
+            "set": null,
+            "value": 1,
+            "helptext": "Defines how the input to the weight pin blends between the input nodes",
+            "displayName": "Distribution"
+        },
+        {
+            "type": "bool",
+            "name": "WrapWeights",
+            "set": null,
+            "value": false,
+            "helptext": "Interpolate across the last animation back to the first one",
+            "displayName": "Wrap Weights"
+        },
+        {
+            "min": 0,
+            "type": "int",
+            "name": "TimeStretchMode",
+            "value": 1,
+            "max": 1,
+            "helptext": "Changes the time stretching functionality of this node.",
+            "affectsPins": true
+        },
+        {
+            "type": "bool",
+            "name": "SphericallyInterpolateTrajectoryPosition",
+            "value": false,
+            "helptext": "Spherically interpolate between the two trajectory translation inputs. The trajectory orientation is always spherically interpolated.",
+            "displayName": "Slerp Trajectory"
+        },
+        {
+            "type": "bool",
+            "name": "AlwaysBlendTrajectoryAndTransforms",
+            "value": false,
+            "helptext": "Always blend evaluates the trajectory delta and transform buffers for the two active sources even if it is completely weighted to one source. This option may improve performance if the weight usually falls somewhere between source weights but does not precisely fall on a source weight. When this option is disabled it may improve performance if the weight usually falls precisely on a source weight."
+        },
+        {
+            "type": "bool",
+            "name": "AlwaysCombineSampledEvents",
+            "value": false,
+            "helptext": "Always blend evaluate the events buffers for the two active sources even if it is completely weighted to one source. This option may improve performance if the weight usually falls somewhere between source weights but does not precisely fall on a source weight. When this option is disabled it may improve performance if the weight usually falls precisely on a source weight."
+        },
+        {
+            "type": "bool",
+            "name": "Loop",
+            "value": true,
+            "helptext": "Sets whether the result of this node loops when it reaches the end of it's sequence."
+        },
+        {
+            "min": 0,
+            "type": "int",
+            "name": "StartEventIndex",
+            "value": 0,
+            "helptext": "The sync event tracks from the inputs are combined here. This is the index of the event on the new synctrack from which to start playback."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendPassThrough",
+            "value": false,
+            "helptext": "When set, all events are copied straight to output."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendIgnoreEventOrder",
+            "value": false,
+            "helptext": "Ignoring the order of events when blending means that events in the source tracks will be combined even if they have duration events in different orders."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendSameUserData",
+            "value": false,
+            "helptext": "Duration events will only be blended together when they share the same user data."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendOnOverlap",
+            "value": false,
+            "helptext": "When set, if not overlapping simply copy into the result."
+        },
+        {
+            "type": "bool",
+            "name": "DurationEventBlendWithinRange",
+            "value": false,
+            "helptext": "When set, blend or reject only events that are within a specified event range of each other, otherwise put straight into the result."
+        }
+    ],
+    "functionPins": {
+        "Source6": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source4": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source5": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source9": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source8": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source1": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source7": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source2": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source0": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source10": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source3": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "helptext": "Blends N animation streams together",
+    "onPinConnected": null,
+    "serialize": null,
+    "id": 108,
+    "validate": null,
+    "displayName": "Blend N",
+    "pinOrder": [
+        "Source0",
+        "Source1",
+        "Source2",
+        "Source3",
+        "Source4",
+        "Source5",
+        "Source6",
+        "Source7",
+        "Source8",
+        "Source9",
+        "Source10",
+        "Result",
+        "Weight"
+    ],
+    "version": 10,
+    "getTransformChannels": null,
+    "updatePins": null,
+    "dataPins": {
+        "Weight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    }
+}

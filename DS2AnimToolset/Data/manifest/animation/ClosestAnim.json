@@ -1,0 +1,239 @@
+{
+    "serialize": null,
+    "onAttributeInherited": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "getTransformChannels": null,
+    "validate": null,
+    "displayName": "Closest Anim",
+    "pinOrder": [
+        "Source0",
+        "Source1",
+        "Source2",
+        "Source3",
+        "Source4",
+        "Source5",
+        "Source6",
+        "Source7",
+        "Source8",
+        "Source9",
+        "BlendWeight",
+        "Result"
+    ],
+    "image": "ClosestAnim.png",
+    "version": 5,
+    "attributes": [
+        {
+            "type": "bool",
+            "name": "PrecomputeSourcesOffline",
+            "value": true,
+            "helptext": "Determines how the connected sources are evaluated. Use Offline if the sources should be pre-computed offline and stored as definition data. Use the Offline method if fast matching is required. The Online method is more flexible but slower to compute."
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "InfluenceBetweenPositionAndOrientation",
+            "max": 1,
+            "helptext": "Used to weight the pose matching process between errors in position and orientation.",
+            "value": 0.5
+        },
+        {
+            "type": "bool",
+            "name": "UseVelocity",
+            "value": false,
+            "helptext": "Compare the first two frames of each input animation source to the last two frames of the network output instead of only the first frame of each input animation source with the last frame of the network output."
+        },
+        {
+            "type": "bool",
+            "name": "UseRootRotationBlending",
+            "value": true,
+            "helptext": "If set to 'Character Root' then an offset rotation is applied to the character root joint of the closest matching source to align the character with the network output pose. This offset rotation is blended into the trajectory channel over time so that the character remains aligned whilst driving to the target orientation. NOTE: Use a zero length transition into the state machine containing the node to avoid competing blend requirements."
+        },
+        {
+            "type": "float",
+            "name": "BlendDuration",
+            "value": 0.25,
+            "helptext": "The duration of the source animation to apply the root rotation blending over."
+        },
+        {
+            "type": "float",
+            "name": "MatchTolerance",
+            "value": 180,
+            "helptext": "The maximum root rotation angle allowed for a valid closest anim match."
+        },
+        {
+            "min": 0,
+            "type": "floatArray",
+            "name": "ChannelAlphas",
+            "max": 1,
+            "syncWithRigChannels": true,
+            "helptext": "Weighting factors that influence the importance of each channel during the pose matching process.",
+            "perAnimSet": true
+        }
+    ],
+    "functionPins": {
+        "Source6": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source4": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source5": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source9": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source1": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source7": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source2": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source0": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source8": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Source3": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    "Events"
+                ],
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "DeadBlendWeight": {
+            "input": true,
+            "array": false,
+            "type": "float"
+        }
+    },
+    "helptext": "Selects the animation source with the closest pose to the current network output",
+    "id": 130
+}

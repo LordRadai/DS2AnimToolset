@@ -1,0 +1,199 @@
+{
+    "serialize": null,
+    "getTransformChannels": null,
+    "upgrade": null,
+    "group": "IK",
+    "attributes": [
+        {
+            "type": "int",
+            "name": "InputRotationType",
+            "value": 1,
+            "helptext": "Define the input Rotation delta as either a Euler angle or as a Quaternion.",
+            "affectsPins": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "HipsName",
+            "value": "",
+            "perAnimSet": true,
+            "helptext": "The joint controlled by this node. Will default to the hips joint marked up in your rig.",
+            "displayName": "Hips"
+        },
+        {
+            "type": "rigChannelName",
+            "name": "LeftAnkleName",
+            "value": "",
+            "perAnimSet": true,
+            "helptext": "The name of the left ankle joint.",
+            "displayName": "LeftAnkle"
+        },
+        {
+            "type": "rigChannelName",
+            "name": "LeftBallName",
+            "value": "",
+            "perAnimSet": true,
+            "helptext": "The name of the left ball joint.",
+            "displayName": "LeftBall"
+        },
+        {
+            "type": "float",
+            "name": "LeftKneeRotationAxisX",
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "LeftKneeRotationAxisY",
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "LeftKneeRotationAxisZ",
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "rigChannelName",
+            "name": "RightAnkleName",
+            "value": "",
+            "perAnimSet": true,
+            "helptext": "The name of the right ankle joint.",
+            "displayName": "RightAnkle"
+        },
+        {
+            "type": "rigChannelName",
+            "name": "RightBallName",
+            "value": "",
+            "perAnimSet": true,
+            "helptext": "The name of the right ball joint.",
+            "displayName": "RightBall"
+        },
+        {
+            "type": "float",
+            "name": "RightKneeRotationAxisX",
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "RightKneeRotationAxisY",
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "name": "RightKneeRotationAxisZ",
+            "helptext": "The axis to rotate the knee joint around, in the coordinate frame of its parent.",
+            "perAnimSet": true
+        },
+        {
+            "type": "bool",
+            "name": "UseBallJoints",
+            "value": true,
+            "helptext": "If your character has an articulated toe it is usually the ball-of-foot joints that you will want to remain fixed as the hips move, rather than the ankle joints.  If this is the case set this to true and identify the ball joint for each foot, which must be a child of the ankle.",
+            "perAnimSet": true
+        },
+        {
+            "type": "float",
+            "max": 1,
+            "displayName": "Default Foot Turn Weight",
+            "min": 0,
+            "name": "FootTurnWeight",
+            "value": 1,
+            "helptext": "The amount the feet are allowed to turn to the left or right with the hips, as a weight between 0 and 1.  This is overridden by the value at the Foot turn weight control parameter input pin, if connected.",
+            "perAnimSet": false
+        },
+        {
+            "type": "bool",
+            "name": "KeepWorldFootOrientation",
+            "value": true,
+            "helptext": "If false the local orientation of the feet will not be modified, which means they will turn with the hips. If true, the feet will keep their original orientation in character space, except they will be allowed to turn around the vertical by an amount controlled by the FootTurnWeight.",
+            "perAnimSet": false
+        },
+        {
+            "min": 0,
+            "type": "float",
+            "name": "KneeSwivelWeight",
+            "value": 0.5,
+            "perAnimSet": false,
+            "helptext": "The amount the legs can swivel (knees swung in vs knees swung out) to achieve the desired orientation of the foot.",
+            "max": 1
+        },
+        {
+            "type": "bool",
+            "name": "LocalReferenceFrame",
+            "value": false,
+            "helptext": "Specifies whether the input transform is an offset from the current Hips transform in a local frame, or an offset to it in the Character frame.",
+            "perAnimSet": false
+        }
+    ],
+    "validate": null,
+    "displayName": "Hips IK",
+    "pinOrder": [
+        "Source",
+        "Result",
+        "PositionDelta",
+        "RotationDelta",
+        "FootTurnWeight",
+        "Weight"
+    ],
+    "image": "HipsIK.png",
+    "version": 2,
+    "dataPins": {
+        "RotationDelta": {
+            "input": true,
+            "array": false,
+            "type": {
+                "default": "vector3",
+                "allowed": [
+                    "vector3",
+                    "vector4"
+                ]
+            }
+        },
+        "PositionDelta": {
+            "input": true,
+            "type": "vector3"
+        },
+        "FootTurnWeight": {
+            "input": true,
+            "type": "float"
+        },
+        "Weight": {
+            "input": true,
+            "type": "float"
+        }
+    },
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            },
+            "passThrough": false
+        },
+        "Source": {
+            "input": true,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            },
+            "passThrough": false
+        }
+    },
+    "updatePins": null,
+    "helptext": "Move the hips procedurally while keeping the same foot placement",
+    "id": 129
+}

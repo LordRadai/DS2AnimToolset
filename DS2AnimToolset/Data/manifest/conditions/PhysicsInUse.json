@@ -1,0 +1,14 @@
+{
+    "serialize": null,
+    "version": 1,
+    "id": 613,
+    "validate": null,
+    "helptext": "Condition is true if a physical body is assigned to the network.",
+    "attributes": {
+        "OnPhysicsInUse": {
+            "value": true,
+            "type": "bool",
+            "helptext": "If not checked, the condition becomes true when a physical body is not assigned to the network."
+        }
+    }
+}

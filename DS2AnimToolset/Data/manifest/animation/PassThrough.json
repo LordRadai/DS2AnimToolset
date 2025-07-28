@@ -1,0 +1,44 @@
+{
+    "serialize": null,
+    "upgrade": null,
+    "group": "Utilities",
+    "validate": null,
+    "displayName": "Pass Through",
+    "pinOrder": [
+        "Source",
+        "Result"
+    ],
+    "image": "PassThrough.png",
+    "version": 4,
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": {
+
+                }
+            }
+        }
+    },
+    "getTransformChannels": null,
+    "helptext": "Passes any input data to its output. Performs no operations",
+    "id": 134
+}

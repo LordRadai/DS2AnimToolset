@@ -1,0 +1,23 @@
+{
+    "serialize": null,
+    "version": 1,
+    "id": 611,
+    "validate": null,
+    "helptext": "Requires that the source state is between two specified event numbers in the sync track before the transition is started. The event numbers can be floating point values. For instance, require that the source is between the events 2.0 and 4.2 on the sync track. ",
+    "attributes": {
+        "EventRangeStart": {
+            "min": 0,
+            "type": "float",
+            "value": 0,
+            "helptext": "The start point for the range, specified as an event value. A floating point value can be used to specify a point part way between events.",
+            "displayName": "Start event"
+        },
+        "EventRangeEnd": {
+            "min": 0,
+            "type": "float",
+            "value": 0,
+            "helptext": "The end point for the range, specified as an event value. A floating point value can be used to specify a point part way between events.",
+            "displayName": "End event"
+        }
+    }
+}

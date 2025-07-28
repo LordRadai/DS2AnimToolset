@@ -1,0 +1,60 @@
+{
+    "serialize": null,
+    "group": "Physics",
+    "validate": null,
+    "displayName": "Set Non Physics Transforms",
+    "pinOrder": [
+        "PhysicsSource",
+        "NonPhysicsSource",
+        "Result"
+    ],
+    "image": "SetNonPhysicsTransforms.png",
+    "version": 2,
+    "getTransformChannels": null,
+    "functionPins": {
+        "PhysicsSource": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        },
+        "NonPhysicsSource": {
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": {
+
+                },
+                "required": [
+                    "Transforms",
+                    "Time"
+                ]
+            }
+        }
+    },
+    "attributes": {
+
+    },
+    "helptext": "Sets the non-physical transforms using the second animation source",
+    "id": 127
+}
