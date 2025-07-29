@@ -170,6 +170,15 @@
     <ClInclude Include="mcd\Pin\FunctionalPin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="mcc\MorphemeManifest\MorphemeManifest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\MorphemeManifest\MMManifest\MMManifestItemBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\MorphemeManifest\MMManifest\MMAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
