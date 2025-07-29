@@ -1,23 +1,40 @@
 #pragma once
 #include "mcd/MorphemeDB/MorphemeDB.h"
 #include "mcd/ControlParameter/ControlParameter.h"
+#include "mcc/MorphemeManifest/MorphemeManifest.h"
 
 namespace mcc
 {
 	class MorphemeDocument
 	{
 		std::unique_ptr<mcd::MorphemeDB> m_morphemeDB;
+		std::unique_ptr<mcc::MorphemeManifest> m_manifest;
 		std::string m_filepath;
+
 	public:
-		MorphemeDocument() : m_morphemeDB(std::make_unique<mcd::MorphemeDB>()) {}
+		MorphemeDocument() : m_morphemeDB(std::make_unique<mcd::MorphemeDB>()), m_manifest(std::make_unique<mcc::MorphemeManifest>()) {}
 		~MorphemeDocument() {}
 		
+		/**
+		 * \brief Initializes the manifest by loading files from the manifest directory.
+		 * 
+		 * Call this function before using the manifest to ensure it is populated with nodes.
+		 */
+		bool initializeManifest();
+
 		/**
 		 * \brief Returns the MorphemeDB instance.
 		 *
 		 * \return A reference to the MorphemeDB instance.
 		 */
 		mcd::MorphemeDB* getMorphemeDB() { return m_morphemeDB.get(); }
+
+		/**
+		 * \brief Returns the MorphemeManifest instance.
+		 *
+		 * \return A pointer to the MorphemeManifest instance.
+		 */
+		mcc::MorphemeManifest* getManifest() { return m_manifest.get(); }
 
 		/**
 		 * \brief Creates a typed control parameter. This is unfinished, the parent is set to nullptr for now.

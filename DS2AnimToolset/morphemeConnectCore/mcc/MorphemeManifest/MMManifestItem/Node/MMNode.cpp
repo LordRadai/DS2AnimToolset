@@ -23,6 +23,15 @@ namespace mcc
 			for (const auto& pinJson : json["functionPins"])
 				m_functionalPins.push_back(MMFunctionalPin(pinJson));
 		}
+
+		if (json.contains("pinOrder"))
+		{
+			for (const auto& pinName : json["pinOrder"])
+			{
+				if (pinName.is_string())
+					m_pinOrder.push_back(pinName.get<std::string>());
+			}
+		}
 	}
 
 	MMAttribute* MMNode::getAttribute(uint32_t index)
@@ -80,5 +89,21 @@ namespace mcc
 		}
 
 		return nullptr;
+	}
+
+	void MMNode::sortPins()
+	{
+		std::vector<MMFunctionalPin> sortedFunctionalPins;
+
+		for (const auto& pinName : m_pinOrder)
+		{
+			MMFunctionalPin* pin = findFunctionalPin(pinName);
+
+			if (pin)
+				sortedFunctionalPins.push_back(*pin);
+		}
+
+		m_functionalPins.clear();
+		m_functionalPins = std::move(sortedFunctionalPins);
 	}
 }

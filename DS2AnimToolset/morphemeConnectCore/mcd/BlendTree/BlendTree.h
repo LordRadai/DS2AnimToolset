@@ -28,8 +28,10 @@ namespace mcd
 
 		virtual ~BlendTree() override {};
 
+		void addBlendTreeNode(mcd::BlendTreeNode* node) { m_blendTreeNodes->add(node); }
 		mcd::BlendTreeNode* getBlendTreeNode(const uint32_t index) const { return m_blendTreeNodes->getNode(index); }
 		mcd::BlendTreeNode* findBlendTreeNode(const std::string& name) const { return m_blendTreeNodes->find(name); }
+		uint32_t getNumBlendTreeNodes() const { return m_blendTreeNodes->size(); }
 
 		float getControlParamXPos() const { return m_controlParamXPos->getValue(); }
 		float getControlParamYPos() const { return m_controlParamYPos->getValue(); }

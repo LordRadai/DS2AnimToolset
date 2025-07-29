@@ -15,8 +15,6 @@ namespace mcc
 		virtual ~MMFunctionalPin() override = default;
 		virtual void fromJson(const nlohmann::json& json) override;
 
-		bool isPassThroughEnabled() const { return false; }
-
 		std::string getOptionalInterface(uint32_t index) const { return m_optionalInterfaces[index]; }
 		std::string getRequiredInterfaces(uint32_t index) const { return m_requiredInterfaces[index]; }
 		uint32_t getOptionalInterfaceCount() const { return static_cast<uint32_t>(m_optionalInterfaces.size()); }

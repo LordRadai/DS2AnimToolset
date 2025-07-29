@@ -20,5 +20,7 @@ namespace mcc
 		nlohmann::json getData() const { return m_jsonData; }
 
 		void setName(const std::string& name) { m_name = name; }
+
+		int getVersion() const { return m_jsonData["version"]; }
 	};
 }

@@ -99,10 +99,16 @@
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMDataPin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\MMNode.cpp">
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Node\MMNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mcc\MorphemeManifest\MorphemeManifest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Condition\MMCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Transition\MMTransition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -203,7 +209,7 @@
     <ClInclude Include="mcd\Attribute\AnimationSetAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\MMNode.h">
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Node\MMNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMFunctionalPin.h">
@@ -213,6 +219,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMDataPin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Condition\MMCondition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Transition\MMTransition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

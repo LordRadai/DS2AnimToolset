@@ -1,4 +1,6 @@
 #include "MMAttribute.h"
+#include "mcd/Attribute/SingleValue/FloatAttribute.h"
+
 
 namespace mcc
 {

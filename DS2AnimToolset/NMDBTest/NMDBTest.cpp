@@ -23,24 +23,10 @@ int main()
 
 	doc.saveAs("testMorphemeDoc.xml");
 
-	printf_s("--------Loading manifest test--------\n");
+	printf_s("--------Loading manifest--------\n");
 
-	mcc::MorphemeManifest manifest;
-
-	if (std::filesystem::exists("Data\\manifest"))
+	if (doc.initializeManifest())
 	{
-		if (std::filesystem::exists("Data\\manifest\\nodes"))
-		{
-			for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\nodes"))
-			{
-				if (entry.is_regular_file() && entry.path().extension() == ".json")
-				{
-					printf_s("Registering node: %s\n", entry.path().string().c_str());
-					manifest.registerNode(entry.path().string());
-				}
-			}
-		}
-
 		printf_s("--------Manifest loaded successfully.--------\n");
 	}
 	else

@@ -1,7 +1,7 @@
 #pragma once
-#include "Attribute/MMAttribute.h"
-#include "Pin/MMDataPin.h"
-#include "Pin/MMFunctionalPin.h"
+#include "../Attribute/MMAttribute.h"
+#include "../Pin/MMDataPin.h"
+#include "../Pin/MMFunctionalPin.h"
 
 namespace mcc
 {
@@ -10,6 +10,7 @@ namespace mcc
 		std::vector<MMAttribute> m_attributes;
 		std::vector<MMDataPin> m_dataPins;
 		std::vector<MMFunctionalPin> m_functionalPins;
+		std::vector<std::string> m_pinOrder;
 
 	public:
 		MMNode() {}
@@ -22,7 +23,6 @@ namespace mcc
 		std::string getGroup() const { return m_jsonData["group"]; }
 		std::string getDisplayName() const { return m_jsonData["displayName"]; }
 		std::string getImage() const { return m_jsonData["image"]; }
-		int getVersion() const { return m_jsonData["version"]; }
 
 		MMAttribute* getAttribute(uint32_t index);
 		MMAttribute* findAttribute(const std::string& name);
@@ -35,5 +35,7 @@ namespace mcc
 		MMFunctionalPin* getFunctionalPin(uint32_t index);
 		MMFunctionalPin* findFunctionalPin(const std::string& name);
 		uint32_t getNumFunctionalPins() const { return static_cast<uint32_t>(m_functionalPins.size()); }
+
+		void sortPins();
 	};
 }

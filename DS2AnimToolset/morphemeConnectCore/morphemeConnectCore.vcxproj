@@ -154,10 +154,12 @@
   <ItemGroup>
     <ClCompile Include="mcc\MorphemeDocument\MorphemeDocument.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Attribute\MMAttribute.cpp" />
-    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\MMNode.cpp" />
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Condition\MMCondition.cpp" />
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Node\MMNode.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMDataPin.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMFunctionalPin.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMPin.cpp" />
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Transition\MMTransition.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MorphemeManifest.cpp" />
     <ClCompile Include="mcd\Attribute\AnimationSetAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\Attribute.cpp" />
@@ -187,11 +189,13 @@
     <ClInclude Include="DataTypes.h" />
     <ClInclude Include="mcc\MorphemeDocument\MorphemeDocument.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Attribute\MMAttribute.h" />
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Condition\MMCondition.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMDataPin.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMFunctionalPin.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\MMManifestItemBase.h" />
-    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\MMNode.h" />
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Node\MMNode.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMPin.h" />
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Transition\MMTransition.h" />
     <ClInclude Include="mcc\MorphemeManifest\MorphemeManifest.h" />
     <ClInclude Include="mcd\Attribute\AnimationSetAttribute.h" />
     <ClInclude Include="mcd\BlendTree\BlendTree.h" />
