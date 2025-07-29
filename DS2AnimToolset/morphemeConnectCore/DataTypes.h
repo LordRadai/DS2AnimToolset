@@ -9,5 +9,6 @@ enum class DataTypes
 	kQuaternion,
 	kInt,
 	kUInt,
+	kString,
 	kNumDataTypes
 };

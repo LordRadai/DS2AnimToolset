@@ -75,11 +75,13 @@
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_debug</TargetName>
     <ExternalIncludePath>$(SolutionDir)include\;$(SolutionDir)include\zlib</ExternalIncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)lib\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
     <ExternalIncludePath>$(SolutionDir)include\;$(SolutionDir)include\zlib</ExternalIncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -151,6 +153,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="mcc\MorphemeDocument\MorphemeDocument.cpp" />
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Attribute\MMAttribute.cpp" />
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\MMNode.cpp" />
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMDataPin.cpp" />
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMFunctionalPin.cpp" />
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMPin.cpp" />
+    <ClCompile Include="mcc\MorphemeManifest\MorphemeManifest.cpp" />
+    <ClCompile Include="mcd\Attribute\AnimationSetAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\Attribute.cpp" />
     <ClCompile Include="mcd\Attribute\AttributePlaceholder.cpp" />
     <ClCompile Include="mcd\Attribute\SingleValue\BoolAttribute.cpp" />
@@ -177,9 +186,14 @@
   <ItemGroup>
     <ClInclude Include="DataTypes.h" />
     <ClInclude Include="mcc\MorphemeDocument\MorphemeDocument.h" />
-    <ClInclude Include="mcc\MorphemeManifest\MMManifest\MMAttribute.h" />
-    <ClInclude Include="mcc\MorphemeManifest\MMManifest\MMManifestItemBase.h" />
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Attribute\MMAttribute.h" />
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMDataPin.h" />
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMFunctionalPin.h" />
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\MMManifestItemBase.h" />
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\MMNode.h" />
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMPin.h" />
     <ClInclude Include="mcc\MorphemeManifest\MorphemeManifest.h" />
+    <ClInclude Include="mcd\Attribute\AnimationSetAttribute.h" />
     <ClInclude Include="mcd\BlendTree\BlendTree.h" />
     <ClInclude Include="mcd\BlendTree\BlendTreeNode.h" />
     <ClInclude Include="mcd\Condition\Condition.h" />

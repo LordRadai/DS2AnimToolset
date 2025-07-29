@@ -1,34 +1,18 @@
 #pragma once
-#include "MMManifestItem/MMManifestItemBase.h"
+#include "MMManifestItem/MMNode.h"
 
 namespace mcc
 {
 	class MorphemeManifest
 	{
-		static MorphemeManifest* s_instance;
-
-		MorphemeManifest() = default;
-		~MorphemeManifest() = default;
-		MorphemeManifest(const MorphemeManifest&) = delete;
-		MorphemeManifest& operator=(const MorphemeManifest&) = delete;
-		MorphemeManifest(MorphemeManifest&&) = delete;
-		MorphemeManifest& operator=(MorphemeManifest&&) = delete;
+		std::vector<MMNode> m_registeredNodes;
 
 	public:
-		static MorphemeManifest* getInstance()
-		{
-			if (!s_instance)
-				s_instance = new MorphemeManifest();
+		MorphemeManifest() = default;
 
-			return s_instance;
-		}
+		void registerNode(std::string manifestPath);
+		void unregisterNode(uint32_t index);
 
-		static void destroyInstance()
-		{
-			if (s_instance)
-				delete s_instance;
-
-			s_instance = nullptr;
-		}
+		void shutdown();
 	};
 }

@@ -6,3 +6,4 @@
 #include "mcd/Attribute/SingleValue/StringAttribute.h"
 
 #include "mcc/MorphemeDocument/MorphemeDocument.h"
+#include "mcc/MorphemeManifest/MorphemeManifest.h"

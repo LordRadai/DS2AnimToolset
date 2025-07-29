@@ -8,6 +8,7 @@ int main()
 	try
 	{
 		mcc::MorphemeDocument doc;
+
 		printf_s("--------Creating control parameters--------\n");
 
 		doc.getMorphemeDB()->createNetwork("Network");
@@ -20,9 +21,17 @@ int main()
 		network->addControlParameter(doc.createIntControlParameter("IntParam", -10, 10, 0));
 		network->addControlParameter(doc.createUIntControlParameter("UIntParam", 0, 100, 50));
 		network->addControlParameter(doc.createQuaternionControlParameter("QuaternionParam", 0.f, 1.f, NMP::Quat(0.707f, 0.0f, 0.707f, 0.0f)));
+
 		printf_s("--------Control parameters created successfully.--------\n");
 
 		doc.saveAs("testMorphemeDoc.xml");
+
+		printf_s("--------Loading manifest test--------\n");
+
+		mcc::MorphemeManifest manifest;
+		manifest.registerNode("Data\\manifest\\nodes\\animation\\AnimWithEvents.json");
+
+		printf_s("--------Manifest loaded successfully.--------\n");
 	}
 	catch (const std::exception& e)
 	{

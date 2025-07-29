@@ -84,6 +84,27 @@
     <ClCompile Include="mcd\Pin\FunctionalPin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\Attribute\AnimationSetAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Attribute\MMAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMPin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMFunctionalPin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMDataPin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\MMNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcc\MorphemeManifest\MorphemeManifest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -173,10 +194,25 @@
     <ClInclude Include="mcc\MorphemeManifest\MorphemeManifest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mcc\MorphemeManifest\MMManifest\MMManifestItemBase.h">
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\MMManifestItemBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mcc\MorphemeManifest\MMManifest\MMAttribute.h">
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Attribute\MMAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\Attribute\AnimationSetAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\MMNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMFunctionalPin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMPin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMDataPin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
