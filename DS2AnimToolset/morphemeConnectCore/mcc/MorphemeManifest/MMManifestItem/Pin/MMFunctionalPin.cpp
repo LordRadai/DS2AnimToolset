@@ -14,8 +14,5 @@ namespace mcc
 
 		for (const auto& interface : json["interfaces"]["required"])
 			m_requiredInterfaces.push_back(interface.get<std::string>());
-
-		if (json.contains("passThroughEnabled"))
-			m_passThroughEnabled = json["passThroughEnabled"].get<bool>();
 	}
 }

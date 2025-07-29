@@ -7,18 +7,15 @@ namespace mcc
 	{
 		std::vector<std::string> m_optionalInterfaces;
 		std::vector<std::string> m_requiredInterfaces;
-		bool m_passThroughEnabled;
 
 	public:
-		MMFunctionalPin() : m_passThroughEnabled(false) {}
+		MMFunctionalPin() {}
+		MMFunctionalPin(const nlohmann::json& json) { fromJson(json); }
 
 		virtual ~MMFunctionalPin() override = default;
 		virtual void fromJson(const nlohmann::json& json) override;
 
-		void addOptionalInterface(const std::string& interfaceName) { m_optionalInterfaces.push_back(interfaceName); }
-		void addRequiredInterface(const std::string& interfaceName) { m_requiredInterfaces.push_back(interfaceName); }
-		bool isPassThroughEnabled() const { return m_passThroughEnabled; }
-		void setPassThroughEnabled(bool enabled) { m_passThroughEnabled = enabled; }
+		bool isPassThroughEnabled() const { return false; }
 
 		std::string getOptionalInterface(uint32_t index) const { return m_optionalInterfaces[index]; }
 		std::string getRequiredInterfaces(uint32_t index) const { return m_requiredInterfaces[index]; }

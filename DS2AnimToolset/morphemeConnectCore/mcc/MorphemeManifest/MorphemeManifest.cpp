@@ -17,8 +17,8 @@ namespace mcc
 		if (!jsonData.is_object())
 			throw std::runtime_error("Invalid JSON format for MorphemeManifest node registration");
 
-		MMNode node;
-		node.fromJson(jsonData);
+		MMNode node(jsonData);
+		node.setName(std::filesystem::path(manifestPath).filename().replace_extension("").string());
 
 		m_registeredNodes.push_back(node);
 	}
@@ -35,5 +35,24 @@ namespace mcc
 	{
 		for (size_t i = 0; i < m_registeredNodes.size(); i++)
 			unregisterNode(i);
+	}
+
+	MMNode* MorphemeManifest::getManifest(uint32_t index)
+	{
+		if (index >= m_registeredNodes.size())
+			return nullptr;
+
+		return &m_registeredNodes[index];
+	}
+
+	MMNode* MorphemeManifest::findManifest(uint32_t id)
+	{
+		for (auto& node : m_registeredNodes)
+		{
+			if (node.getId() == id)
+				return &node;
+		}
+
+		return nullptr;
 	}
 }

@@ -6,55 +6,79 @@ namespace mcc
 	{
 		this->m_jsonData = json;
 
-		if (!json.contains("group"))
-			throw std::runtime_error("MMNode JSON does not contain 'group' field");
-
-		m_group = json["group"].get<std::string>();
-
-		if (json.contains("displayName"))
-			m_displayName = json["displayName"].get<std::string>();
-
-		if (!json.contains("id"))
-			throw std::runtime_error("MMNode JSON does not contain 'id' field");
-
-		m_id = json["id"].get<int>();
-
-		if (json.contains("image"))
-			m_image = json["image"].get<std::string>();
-
-		if (!json.contains("version"))
-			throw std::runtime_error("MMNode JSON does not contain 'version' field");
-
-		m_version = json["version"].get<int>();
-
 		if (json.contains("attributes"))
 		{
 			for (const auto& attrJson : json["attributes"])
-			{
-				MMAttribute attr;
-				attr.fromJson(attrJson);
-				m_attributes.push_back(attr);
-			}
+				m_attributes.push_back(MMAttribute(attrJson));
 		}
 
 		if (json.contains("dataPins"))
 		{
 			for (const auto& pinJson : json["dataPins"])
-			{
-				MMDataPin dataPin;
-				dataPin.fromJson(pinJson);
-				m_dataPins.push_back(dataPin);
-			}
+				m_dataPins.push_back(MMDataPin(json));
 		}
 
 		if (json.contains("functionPins"))
 		{
 			for (const auto& pinJson : json["functionPins"])
-			{
-				MMFunctionalPin functionalPin;
-				functionalPin.fromJson(pinJson);
-				m_functionalPins.push_back(functionalPin);
-			}
+				m_functionalPins.push_back(MMFunctionalPin(pinJson));
 		}
+	}
+
+	MMAttribute* MMNode::getAttribute(uint32_t index)
+	{
+		if (index >= m_attributes.size())
+			return nullptr;
+
+		return &m_attributes[index];
+	}
+
+	MMAttribute* MMNode::findAttribute(const std::string& name)
+	{
+		for (auto& attr : m_attributes)
+		{
+			if (attr.getName() == name)
+				return &attr;
+		}
+
+		return nullptr;
+	}
+
+	MMDataPin* MMNode::getDataPin(uint32_t index)
+	{
+		if (index >= m_dataPins.size())
+			return nullptr;
+
+		return &m_dataPins[index];
+	}
+
+	MMDataPin* MMNode::findDataPin(const std::string& name)
+	{
+		for (auto& pin : m_dataPins)
+		{
+			if (pin.getName() == name)
+				return &pin;
+		}
+
+		return nullptr;
+	}
+
+	MMFunctionalPin* MMNode::getFunctionalPin(uint32_t index)
+	{
+		if (index >= m_functionalPins.size())
+			return nullptr;
+
+		return &m_functionalPins[index];
+	}
+
+	MMFunctionalPin* MMNode::findFunctionalPin(const std::string& name)
+	{
+		for (auto& pin : m_functionalPins)
+		{
+			if (pin.getName() == name)
+				return &pin;
+		}
+
+		return nullptr;
 	}
 }

@@ -10,9 +10,12 @@ namespace mcc
 	public:
 		MorphemeManifest() = default;
 
+		void shutdown();
+
 		void registerNode(std::string manifestPath);
 		void unregisterNode(uint32_t index);
 
-		void shutdown();
+		MMNode* getManifest(uint32_t index);
+		MMNode* findManifest(uint32_t id);
 	};
 }
