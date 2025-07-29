@@ -4,13 +4,13 @@ namespace mcc
 {
 	bool MorphemeDocument::initializeManifest()
 	{
-		if (!std::filesystem::exists("Data\\manifest"))
-			throw std::runtime_error("Manifest directory does not exist: Data\\manifest"); return false;
+		if (!std::filesystem::exists("Data\\manifest\\"))
+			throw std::runtime_error("Manifest directory does not exist: Data\\manifest\\");
 
-		if (!std::filesystem::exists("Data\\manifest\\nodes"))
-			throw std::runtime_error("Manifest node directory does not exist: Data\\manifest\\nodes"); return false;
+		if (!std::filesystem::exists("Data\\manifest\\nodes\\"))
+			throw std::runtime_error("Manifest node directory does not exist: Data\\manifest\\nodes\\");
 
-		for (const auto& entry : std::filesystem::directory_iterator("Data\\manifest\\nodes"))
+		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\nodes\\"))
 		{
 			if (entry.is_regular_file() && entry.path().extension() == ".json")
 			{
@@ -19,10 +19,10 @@ namespace mcc
 			}
 		}
 
-		if (!std::filesystem::exists("Data\\manifest\\conditions"))
-			throw std::runtime_error("Manifest condition directory does not exist: Data\\manifest\\conditions"); return false;
+		if (!std::filesystem::exists("Data\\manifest\\conditions\\"))
+			throw std::runtime_error("Manifest condition directory does not exist: Data\\manifest\\conditions\\");
 
-		for (const auto& entry : std::filesystem::directory_iterator("Data\\manifest\\conditions"))
+		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\conditions\\"))
 		{
 			if (entry.is_regular_file() && entry.path().extension() == ".json")
 			{
@@ -32,9 +32,9 @@ namespace mcc
 		}
 
 		if (!std::filesystem::exists("Data\\manifest\\transitions"))
-			throw std::runtime_error("Manifest transition directory does not exist: Data\\manifest\\transitions"); return false;
+			throw std::runtime_error("Manifest transition directory does not exist: Data\\manifest\\transitions\\");
 
-		for (const auto& entry : std::filesystem::directory_iterator("Data\\manifest\\transitions"))
+		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\transitions\\"))
 		{
 			if (entry.is_regular_file() && entry.path().extension() == ".json")
 			{

@@ -15,7 +15,7 @@ namespace mcc
 		if (json.contains("dataPins"))
 		{
 			for (const auto& pinJson : json["dataPins"])
-				m_dataPins.push_back(MMDataPin(json));
+				m_dataPins.push_back(MMDataPin(pinJson));
 		}
 
 		if (json.contains("functionPins"))

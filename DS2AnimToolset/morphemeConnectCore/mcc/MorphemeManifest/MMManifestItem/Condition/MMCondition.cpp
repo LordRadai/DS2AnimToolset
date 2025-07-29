@@ -6,14 +6,11 @@ namespace mcc
 	{
 		m_jsonData = json;
 
-		if (json.contains("attributes") && json["attributes"].is_array())
+		if (json.contains("attributes"))
 		{
 			m_attributes.clear();
 			for (const auto& attr : json["attributes"])
-			{
-				if (attr.is_object())
-					m_attributes.push_back(MMAttribute(attr));
-			}
+				m_attributes.push_back(MMAttribute(attr));
 		}
 	}
 }
