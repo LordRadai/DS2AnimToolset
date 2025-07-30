@@ -5,14 +5,14 @@
 
 namespace mcc
 {
-	class MorphemeDocument; // Forward declaration to allow friend access in MorphemeDB
+	class MorphemeDocument;
 }
 
 namespace mcd
 {
 	class MorphemeDB : public db::Database
 	{
-		friend class mcc::MorphemeDocument; // Allow MorphemeDocument to access private members if needed
+		friend class mcc::MorphemeDocument;
 
 		std::unique_ptr<db::TypedNodeContainer<mcd::Network>> m_networks;
 	public:

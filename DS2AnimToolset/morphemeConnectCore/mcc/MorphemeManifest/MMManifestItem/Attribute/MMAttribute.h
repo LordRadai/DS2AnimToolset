@@ -16,6 +16,7 @@ namespace mcc
 		std::string getName() const { return m_jsonData["name"]; }
 		std::string getType() const { return m_jsonData["type"]; }
 		nlohmann::json getValue() const { return m_jsonData["value"]; }
+		bool isPerAnimSet() const { return m_jsonData.value("perAnimSet", false); }
 
 		bool getBoolValue() const { return getValue().get<bool>(); }
 		float getFloatValue() const { return getValue().get<float>(); }

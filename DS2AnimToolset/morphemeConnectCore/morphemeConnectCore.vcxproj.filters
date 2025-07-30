@@ -111,6 +111,18 @@
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Transition\MMTransition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcc\AttributeInfo\AttributeInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcd\Pin\Pin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcd\Pin\PassDownPin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -143,7 +155,7 @@
     <ClInclude Include="mcd\ControlParameter\ControlParameter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mcd\Pin\Pin.inl">
+    <ClInclude Include="mcd\Pin\Pin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcd\Pin\DataPin.h">
@@ -225,6 +237,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Transition\MMTransition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\AttributeInfo\AttributeInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\Attribute\AnimationTakeAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\Pin\PassDownPin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\StateMachine\MMStateMachine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

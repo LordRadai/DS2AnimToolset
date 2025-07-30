@@ -152,7 +152,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DataTypes.cpp" />
     <ClCompile Include="mcc\MorphemeDocument\MorphemeDocument.cpp" />
+    <ClCompile Include="mcc\AttributeInfo\AttributeInfo.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Attribute\MMAttribute.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Condition\MMCondition.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Node\MMNode.cpp" />
@@ -180,6 +182,8 @@
     <ClCompile Include="mcd\Network\Network.cpp" />
     <ClCompile Include="mcd\Pin\DataPin.cpp" />
     <ClCompile Include="mcd\Pin\FunctionalPin.cpp" />
+    <ClCompile Include="mcd\Pin\PassDownPin.cpp" />
+    <ClCompile Include="mcd\Pin\Pin.cpp" />
     <ClCompile Include="mcd\StateMachine\StateMachine.cpp" />
     <ClCompile Include="mcd\StateMachine\StateMachineNode.cpp" />
     <ClCompile Include="mcd\Transition\TransitionEdge.cpp" />
@@ -187,7 +191,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTypes.h" />
+    <ClInclude Include="extern.h" />
     <ClInclude Include="mcc\MorphemeDocument\MorphemeDocument.h" />
+    <ClInclude Include="mcc\AttributeInfo\AttributeInfo.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Attribute\MMAttribute.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Condition\MMCondition.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMDataPin.h" />
@@ -195,9 +201,11 @@
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\MMManifestItemBase.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Node\MMNode.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMPin.h" />
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\StateMachine\MMStateMachine.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Transition\MMTransition.h" />
     <ClInclude Include="mcc\MorphemeManifest\MorphemeManifest.h" />
     <ClInclude Include="mcd\Attribute\AnimationSetAttribute.h" />
+    <ClInclude Include="mcd\Attribute\AnimationTakeAttribute.h" />
     <ClInclude Include="mcd\BlendTree\BlendTree.h" />
     <ClInclude Include="mcd\BlendTree\BlendTreeNode.h" />
     <ClInclude Include="mcd\Condition\Condition.h" />
@@ -210,7 +218,8 @@
     <ClInclude Include="mcd\Network\Network.h" />
     <ClInclude Include="mcd\Pin\DataPin.h" />
     <ClInclude Include="mcd\Pin\FunctionalPin.h" />
-    <ClInclude Include="mcd\Pin\Pin.inl" />
+    <ClInclude Include="mcd\Pin\PassDownPin.h" />
+    <ClInclude Include="mcd\Pin\Pin.h" />
     <ClInclude Include="mcd\StateMachine\StateMachine.h" />
     <ClInclude Include="mcd\StateMachine\StateMachineNode.h" />
     <ClInclude Include="mcd\Transition\TransitionEdge.h" />

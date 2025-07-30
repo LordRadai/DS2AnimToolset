@@ -2,10 +2,10 @@
 
 namespace mcd
 {
-	StateMachineNode::StateMachineNode(db::Attribute* parent, const std::string& name, float xpos, float ypos, float width, float height)
-		: GraphNode(parent, "StateMachineNode", name, xpos, ypos, width, height),
-		m_manifestVersion(std::make_unique<db::IntAttribute>(this, "ManifestVersion", 1)),
-		m_nodeType(std::make_unique<db::StringAttribute>(this, "NodeType", ""))
+	StateMachineNode::StateMachineNode(db::Attribute* parent, std::string name, float xPos, float yPos, float width, float height, std::string nodeType, int manifestVersion)
+		: GraphNode(parent, "StateMachineNode", name, xPos, yPos, width, height),
+		m_manifestVersion(std::make_unique<db::IntAttribute>(this, "ManifestVersion", manifestVersion)),
+		m_nodeType(std::make_unique<db::StringAttribute>(this, "NodeType", nodeType))
 	{
 	}
 

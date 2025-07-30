@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	StringAttribute::StringAttribute(db::Node* parent, std::string name, const std::string& value)
+	StringAttribute::StringAttribute(db::Attribute* parent, std::string name, const std::string& value)
 		: Attribute(parent, "StringAttribute", name)
 	{
 		this->addStringAttribute("Value", value);

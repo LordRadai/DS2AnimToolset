@@ -1,5 +1,5 @@
 #pragma once
-#include "Pin.inl"
+#include "Pin.h"
 #include "DataTypes.h"
 
 namespace mcd

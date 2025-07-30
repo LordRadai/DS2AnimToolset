@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	FloatAttribute::FloatAttribute(db::Node* parent, std::string name, float value)
+	FloatAttribute::FloatAttribute(db::Attribute* parent, std::string name, float value)
 		: Attribute(parent, "FloatAttribute", name)
 	{
 		this->addFloatAttribute("Value", value);

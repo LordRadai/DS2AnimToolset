@@ -7,7 +7,7 @@ namespace mcd
 	{
 		std::unique_ptr<db::FloatAttribute> m_valueAttr = nullptr;
 	public:
-		FloatAttribute(db::Node* parent, std::string name, float value);
+		FloatAttribute(db::Attribute* parent, std::string name, float value);
 
 		virtual ~FloatAttribute() override {};
 		virtual bool assignValue(Attribute* other) override;

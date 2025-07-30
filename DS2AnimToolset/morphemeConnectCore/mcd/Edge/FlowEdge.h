@@ -1,7 +1,7 @@
 #pragma once
 #include "Edge.inl"
 #include "NMDBExtensions/Pointer.inl"
-#include "mcd/Pin/Pin.inl"
+#include "mcd/Pin/Pin.h"
 
 namespace mcd
 {

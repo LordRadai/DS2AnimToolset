@@ -28,6 +28,13 @@ namespace db
 		return true;
 	}
 
+	bool Node::reparent(db::Node* newParent)
+	{
+		setParentAttribute(newParent);
+
+		return true;
+	}
+
 	void Node::addBoolArrayAttribute(const std::string& name, const std::vector<bool>& values)
 	{
 		insertAttribute(getAttributeCount(), new BoolArrayAttribute(this, name));

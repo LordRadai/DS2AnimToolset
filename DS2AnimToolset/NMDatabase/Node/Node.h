@@ -40,6 +40,8 @@ namespace db
 		std::string getName() const { return m_nodeName; }
 		void setName(const std::string& name) { m_nodeName = name; }
 
+		bool reparent(db::Node* newParent);
+
 		void addAttribute(Attribute* attribute) { insertAttribute(getAttributeCount(), attribute); }
 
 		void addBoolAttribute(const std::string& name, bool value) { insertAttribute(getAttributeCount(), new BoolAttribute(this, name, value)); }

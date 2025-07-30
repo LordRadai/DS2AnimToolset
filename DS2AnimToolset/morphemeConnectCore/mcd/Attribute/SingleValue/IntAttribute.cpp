@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	IntAttribute::IntAttribute(db::Node* parent, std::string name, int value)
+	IntAttribute::IntAttribute(db::Attribute* parent, std::string name, int value)
 		: Attribute(parent, "IntAttribute", name)
 	{
 		this->addIntAttribute("Value", value);

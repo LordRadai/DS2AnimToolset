@@ -1,4 +1,5 @@
 #include "MorphemeDocument.h"
+#include "mcd/Pin/PassDownPin.h"
 
 namespace mcc
 {
@@ -10,9 +11,12 @@ namespace mcc
 		if (!std::filesystem::exists("Data\\manifest\\nodes\\"))
 			throw std::runtime_error("Manifest node directory does not exist: Data\\manifest\\nodes\\");
 
+		m_manifest->registerStateMachine("Data\\manifest\\nodes\\animation\\StateMachine.json");
+		//m_manifest->registerStateMachine("Data\\manifest\\nodes\\physics\\PhysicsStateMachine.json");
+
 		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\nodes\\"))
 		{
-			if (entry.is_regular_file() && entry.path().extension() == ".json")
+			if (entry.is_regular_file() && entry.path().extension() == ".json" && entry.path().filename().replace_extension("") != "StateMachine.json" && entry.path().filename().replace_extension("") != "PhysicsStateMachine.json")
 			{
 				std::string manifestPath = entry.path().string();
 				m_manifest->registerNode(manifestPath);
@@ -148,6 +152,79 @@ namespace mcc
 		param->addAttribute(param->m_defaultInt.get());
 
 		return param;
+	}
+
+	mcd::BlendTreeNode* MorphemeDocument::createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& name, float xPos, float yPos)
+	{
+		mcd::BlendTreeNode* btNode = manifestNode->createDatabaseNode(parent, m_morphemeDB.get());
+
+		btNode->setXPos(xPos);
+		btNode->setYPos(yPos);
+
+		return btNode;
+	}
+
+	mcd::BlendTreeNode* MorphemeDocument::createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& name)
+	{
+		float xPos = 0.0f;
+		float yPos = 0.0f;
+		parent->getFreePosition(xPos, yPos);
+
+		return createBlendTreeNode(manifestNode, parent, name, xPos, yPos);
+	}
+
+	mcd::BlendTree* MorphemeDocument::createNewBlendTree(const std::string& name, mcd::StateMachine* parent, float xPos, float yPos)
+	{
+		mcd::BlendTree* bt = new mcd::BlendTree(parent, name);
+
+		mcd::StateMachineNode* newNode = new mcd::StateMachineNode(parent, name, xPos, yPos, 100.f, 50.f);
+		newNode->setGraphEntry(bt);
+
+		parent->addStateMachineNode(newNode);
+
+		newNode->addPin(new mcd::PassDownPin(newNode, "Result"));
+
+		return bt;
+	}
+
+	mcd::BlendTree* MorphemeDocument::createNewBlendTree(const std::string& name, mcd::BlendTree* parent, float xPos, float yPos)
+	{
+		mcd::BlendTree* bt = new mcd::BlendTree(parent, name);
+
+		mcd::BlendTreeNode* newNode = new mcd::BlendTreeNode(parent, name, xPos, yPos, 100.f, 50.f, "BlendTree", -1);
+		newNode->setGraphEntry(bt);
+
+		parent->addBlendTreeNode(newNode);
+
+		newNode->addPin(new mcd::PassDownPin(newNode, "Result"));
+
+		return bt;
+	}
+
+	mcd::StateMachine* MorphemeDocument::createNewStateMachine(const std::string& name, mcc::MMStateMachine manifestSM, mcd::Graph* parent, float xPos, float yPos)
+	{
+		mcd::StateMachine* sm = new mcd::StateMachine(parent, name);
+
+		if (parent->isOfType<mcd::StateMachine>())
+		{
+			mcd::StateMachine* parentSM = dynamic_cast<mcd::StateMachine*>(parent);
+
+			mcd::StateMachineNode* newNode = new mcd::StateMachineNode(parent, name, xPos, yPos, 100.f, 50.f, manifestSM.getName(), manifestSM.getVersion());
+			newNode->setGraphEntry(sm);
+
+			parentSM->addStateMachineNode(newNode);
+		}
+		else
+		{
+			mcd::BlendTree* parentBT = dynamic_cast<mcd::BlendTree*>(parent);
+
+			mcd::BlendTreeNode* newNode = new mcd::BlendTreeNode(parent, name, xPos, yPos, 100.f, 50.f, manifestSM.getName(), manifestSM.getVersion());
+			newNode->setGraphEntry(sm);
+
+			parentBT->addBlendTreeNode(newNode);
+		}
+
+		return sm;
 	}
 
 	void MorphemeDocument::save()

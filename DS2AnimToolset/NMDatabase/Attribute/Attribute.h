@@ -168,5 +168,11 @@ namespace db
 		 * \return The database path as a string.
 		 */
 		std::string toDatabasePath() const;
+
+		template<typename T>
+		bool isOfType() const
+		{
+			return dynamic_cast<const T*>(this) != nullptr;
+		}
 	};
 }

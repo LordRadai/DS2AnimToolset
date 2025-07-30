@@ -3,21 +3,32 @@
 #include "../Pin/MMDataPin.h"
 #include "../Pin/MMFunctionalPin.h"
 
+namespace mcd
+{
+	class MorphemeDB;
+	class BlendTree;
+	class BlendTreeNode;
+}
+
 namespace mcc
 {
 	class MMNode : public MMManifestItemBase
 	{
-		std::vector<MMAttribute> m_attributes;
-		std::vector<MMDataPin> m_dataPins;
-		std::vector<MMFunctionalPin> m_functionalPins;
+		std::vector<MMAttribute*> m_attributes;
+		std::vector<MMDataPin*> m_dataPins;
+		std::vector<MMFunctionalPin*> m_functionalPins;
 		std::vector<std::string> m_pinOrder;
 
+		void setupNewBlendTreeNode(mcd::BlendTreeNode* node, mcd::BlendTree* parent);
+		std::string getNodeDefaultName(mcd::BlendTreeNode* node, mcd::BlendTree* parent) const;
 	public:
 		MMNode() {}
 		MMNode(const nlohmann::json& json) { fromJson(json); }
 
-		virtual ~MMNode() override = default;
+		virtual ~MMNode() override;
 		virtual void fromJson(const nlohmann::json& json) override;
+
+		virtual mcd::BlendTreeNode* createDatabaseNode(mcd::BlendTree* parent, mcd::MorphemeDB* morphemeDB);
 
 		int getId() const { return m_jsonData["id"]; }
 		std::string getGroup() const { return m_jsonData["group"]; }

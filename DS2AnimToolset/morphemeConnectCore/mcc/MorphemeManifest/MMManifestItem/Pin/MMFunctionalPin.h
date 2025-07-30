@@ -1,5 +1,6 @@
 #pragma once
 #include "MMPin.h"
+#include "mcd/Graph/GraphNode.h"
 
 namespace mcc
 {
@@ -10,14 +11,23 @@ namespace mcc
 
 	public:
 		MMFunctionalPin() {}
-		MMFunctionalPin(const nlohmann::json& json) { fromJson(json); }
+		MMFunctionalPin(const std::string& name, const nlohmann::json& json) : MMPin(name, json) { fromJson(json); };
 
 		virtual ~MMFunctionalPin() override = default;
 		virtual void fromJson(const nlohmann::json& json) override;
 
+		bool hasOptionalInterface(const std::string& interfaceName) const { return getOptionalInterface(interfaceName) != ""; }
+		bool hasRequiredInterface(const std::string& interfaceName) const { return getRequiredInterface(interfaceName) != ""; }
+
 		std::string getOptionalInterface(uint32_t index) const { return m_optionalInterfaces[index]; }
+		std::string getOptionalInterface(const std::string& interfaceName) const;
+
 		std::string getRequiredInterfaces(uint32_t index) const { return m_requiredInterfaces[index]; }
+		std::string getRequiredInterface(const std::string& interfaceName) const;
+
 		uint32_t getOptionalInterfaceCount() const { return static_cast<uint32_t>(m_optionalInterfaces.size()); }
 		uint32_t getRequiredInterfaceCount() const { return static_cast<uint32_t>(m_requiredInterfaces.size()); }
+
+		bool addToGraphNode(mcd::GraphNode* node);
 	};
 }

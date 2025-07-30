@@ -66,5 +66,13 @@ namespace mcd
 		 * \param y Output buffer for the y position.
 		 */
 		void getFreePosition(float& x, float& y);
+
+		/**
+		 * \brief Returns the number of nodes with the specified type.
+		 * 
+		 * \param type The node type name.
+		 * \return The number of nodes of the specified type.
+		 */
+		uint32_t getNumNodesOfType(const std::string& type) const;
 	};
 }

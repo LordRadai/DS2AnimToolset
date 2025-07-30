@@ -1,7 +1,9 @@
 #pragma once
 #include "NMDatabase/NMDatabase.h"
-#include "mcd/Graph/Graph.h"
+#include "mcd/StateMachine/StateMachine.h"
+#include "mcd/BlendTree/BlendTree.h"
 #include "mcd/ControlParametersNode/ControlParametersNode.h"
+#include "mcc/MorphemeManifest/MMManifestItem/StateMachine/MMStateMachine.h"
 
 namespace mcd
 {
@@ -15,12 +17,12 @@ namespace mcd
 
 		virtual ~Network() override {};
 
+		db::TypedNodeContainer<mcd::Graph>* getGraphs() const { return m_graphs.get(); }
 		mcd::ControlParametersNode* getControlParametersNode() const { return m_controlParametersNode.get(); }
 
-		void createStateMachineAsParent() {};
-		void createBlendTreeAsParent() {};
-
-		void reparentGraph(mcd::Graph* newParent) {};
+		mcd::StateMachine* createStateMachineAsParent(mcc::MMStateMachine* manifestSM);
+		mcd::BlendTree* createBlendTreeAsParent();
+		bool reparentGraph(mcd::Graph* newParent);
 
 		void addControlParameter(mcd::ControlParameter* controlParameter) { m_controlParametersNode->addControlParameter(controlParameter); }
 		mcd::ControlParameter* getControlParameter(const uint32_t index) const { return m_controlParametersNode->getControlParameter(index); }

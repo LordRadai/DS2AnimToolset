@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 enum class DataTypes
 {
@@ -12,3 +13,8 @@ enum class DataTypes
 	kString,
 	kNumDataTypes
 };
+
+namespace utils
+{
+	DataTypes getDataTypeFromString(const std::string& typeName);
+}

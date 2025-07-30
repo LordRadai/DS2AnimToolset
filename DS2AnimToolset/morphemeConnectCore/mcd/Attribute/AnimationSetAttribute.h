@@ -10,7 +10,7 @@ namespace mcd
 		std::unique_ptr<db::TypedNodeContainer<mcd::AttributePlaceholder>> m_attributePlaceholders;
 
 	public:
-		AnimationSetAttribute(db::Node* parent, const std::string& name, const std::string& animSetName, mcd::Attribute* attribute);
+		AnimationSetAttribute(db::Attribute* parent, const std::string& attribName, const std::string& animSetName, mcd::Attribute* attribute);
 
 		virtual ~AnimationSetAttribute() override {};
 

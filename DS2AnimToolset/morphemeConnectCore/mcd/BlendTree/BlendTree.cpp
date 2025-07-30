@@ -65,4 +65,19 @@ namespace mcd
 		x = 10.0f;
 		y = maxY + 100.0f;
 	}
+
+	uint32_t BlendTree::getNumNodesOfType(const std::string& type) const
+	{
+		uint32_t count = 0;
+
+		for (size_t i = 0; i < m_blendTreeNodes->size(); i++)
+		{
+			mcd::BlendTreeNode* node = m_blendTreeNodes->getNode(i);
+
+			if (node->getNodeType() == type)
+				count++;
+		}
+
+		return count;
+	}
 }
