@@ -631,8 +631,8 @@ std::vector<FlverModel::SkinnedVertex> FlverModel::getBindPoseSkinnedVertices(in
 
 void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex, int currentIteration)
 {
-	// Stop looking after 10 iterations, this is to prevent infinite loops.
-	if (currentIteration > 10)
+	// Stop looking after 100 iterations, this is to prevent infinite loops.
+	if (currentIteration > 100)
 	{
 		for (size_t wt = 0; wt < 4; wt++)
 			skinnedVertex.boneWeights[wt] = 0.f;
