@@ -18,9 +18,17 @@ namespace mcc
 		nlohmann::json getValue() const { return m_jsonData["value"]; }
 		bool isPerAnimSet() const { return m_jsonData.value("perAnimSet", false); }
 
+		bool isArray() const { return m_jsonData["value"].is_array(); }
+		uint32_t size() const { return m_jsonData["value"].size(); }
+
 		bool getBoolValue() const { return getValue().get<bool>(); }
 		float getFloatValue() const { return getValue().get<float>(); }
 		int getIntValue() const { return getValue().get<int>(); }
 		std::string getStringValue() const { return getValue().get<std::string>(); }
+
+		bool getBoolValue(const uint32_t index) const { return m_jsonData["value"][index].get<bool>(); }
+		float getFloatValue(const uint32_t index) const { return m_jsonData["value"][index].get<float>(); }
+		int getIntValue(const uint32_t index) const { return m_jsonData["value"][index].get<int>(); }
+		std::string getStringValue(const uint32_t index) const { return m_jsonData["value"][index].get<std::string>(); }
 	};
 }

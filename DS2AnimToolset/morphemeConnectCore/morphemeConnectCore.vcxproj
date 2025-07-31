@@ -241,6 +241,7 @@
     <ClInclude Include="mcd\MorphemeDB\MorphemeDB.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NMDBExtensions\TypedAttributeArray.inl" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

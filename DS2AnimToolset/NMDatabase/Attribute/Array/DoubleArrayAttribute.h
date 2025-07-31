@@ -9,7 +9,7 @@ namespace db
 
 	public:
 		DoubleArrayAttribute(Attribute* parent, std::string name) :
-			ArrayAttribute(parent, name, "attributeArray") {
+			ArrayAttribute(parent, name, "doubleArray") {
 		};
 
 		virtual ~DoubleArrayAttribute() override {};

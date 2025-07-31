@@ -1,11 +1,12 @@
 #pragma once
 #include "../Attribute.h"
+#include "NMDBExtensions/TypedAttributeArray.inl"
 
 namespace mcd
 {
 	class BoolArrayAttribute : public Attribute
 	{
-		std::unique_ptr<db::BoolArrayAttribute> m_valueAttr = nullptr;
+		std::unique_ptr<db::TypedAttributeArray<db::BoolAttribute>> m_valueAttr = nullptr;
 	public:
 		BoolArrayAttribute(db::Attribute* parent, std::string name);
 
@@ -13,9 +14,9 @@ namespace mcd
 		virtual bool assignValue(Attribute* other) override;
 		virtual bool isValueEqualTo(Attribute* attr) override;
 
-		void addElement(bool value) { m_valueAttr->add(value); }
-		void setElement(int index, bool value) { m_valueAttr->setElement(index, value); }
-		bool getElement(int index) const { return m_valueAttr->getElement(index); }
+		void addElement(bool value) { m_valueAttr->add(new db::BoolAttribute(m_valueAttr.get(), "elem", value)); }
+		void setElement(int index, bool value) { m_valueAttr->getAttribute(index)->asBool()->setValue(value); }
+		bool getElement(int index) const { return m_valueAttr->getAttribute(index)->asBool()->getValue(); }
 
 		uint32_t size() const { return m_valueAttr->size(); }
 		bool empty() const { return m_valueAttr->empty(); }

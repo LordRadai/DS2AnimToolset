@@ -67,12 +67,21 @@ namespace mcc
 			break;
 		case mcc::AttributeInfo::AttributeType::kBoolArray:
 			attribute = new mcd::BoolArrayAttribute(parent, m_manifestAttribute->getName());
+
+			for (int i = 0; i < m_manifestAttribute->size(); i++)
+				dynamic_cast<mcd::BoolArrayAttribute*>(attribute)->addElement(m_manifestAttribute->getBoolValue(i));
 			break;
 		case mcc::AttributeInfo::AttributeType::kFloatArray:
 			attribute = new mcd::FloatArrayAttribute(parent, m_manifestAttribute->getName());
+
+			for (int i = 0; i < m_manifestAttribute->size(); i++)
+				dynamic_cast<mcd::FloatArrayAttribute*>(attribute)->addElement(m_manifestAttribute->getFloatValue(i));
 			break;
 		case mcc::AttributeInfo::AttributeType::kIntArray:
 			attribute = new mcd::IntArrayAttribute(parent, m_manifestAttribute->getName());
+
+			for (int i = 0; i < m_manifestAttribute->size(); i++)
+				dynamic_cast<mcd::IntArrayAttribute*>(attribute)->addElement(m_manifestAttribute->getIntValue(i));
 			break;
 		}
 

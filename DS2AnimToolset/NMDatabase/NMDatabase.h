@@ -18,6 +18,8 @@
 #include "Attribute/Array/QuaternionArrayAttribute.h"
 #include "Attribute/Array/Matrix34ArrayAttribute.h"
 
+#include "Attribute/AttributeArray.h"
+
 #include "Node/Node.h"
 #include "NodeContainer/NodeContainer.h"
 #include "Database/Database.h"

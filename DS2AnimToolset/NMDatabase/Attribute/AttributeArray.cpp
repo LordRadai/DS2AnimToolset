@@ -6,7 +6,7 @@ namespace db
 	{
 		if (writeStartArrayXML(format))
 		{
-			m_xmlElement->SetAttribute("elemType", m_type.c_str());
+			m_xmlElement->SetAttribute("elemType", getElemType().c_str());
 
 			for (size_t i = 0; i < m_attributes.size(); ++i)
 			{

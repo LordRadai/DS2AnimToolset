@@ -275,5 +275,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="NMDBExtensions\TypedAttributeArray.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

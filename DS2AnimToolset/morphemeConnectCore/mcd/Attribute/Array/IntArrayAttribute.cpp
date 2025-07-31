@@ -4,7 +4,7 @@ namespace mcd
 {
 	IntArrayAttribute::IntArrayAttribute(db::Attribute* parent, std::string name)
 		: Attribute(parent, "IntArrayAttribute", name),
-		m_valueAttr(new db::IntArrayAttribute(this, "Value"))
+		m_valueAttr(new db::TypedAttributeArray<db::IntAttribute>(this, "Value"))
 	{
 		this->addAttribute(m_valueAttr.get());
 	}
@@ -17,9 +17,10 @@ namespace mcd
 			return false;
 
 		this->m_valueAttr->assign(otherAttr->m_valueAttr.get());
+
 		return true;
 	}
-	
+
 	bool IntArrayAttribute::isValueEqualTo(Attribute* attr)
 	{
 		IntArrayAttribute* otherAttr = dynamic_cast<IntArrayAttribute*>(attr);
@@ -29,7 +30,7 @@ namespace mcd
 
 		for (size_t i = 0; i < this->m_valueAttr->size(); i++)
 		{
-			if (this->m_valueAttr->getElement(i) != otherAttr->m_valueAttr->getElement(i))
+			if (this->getElement(i) != otherAttr->getElement(i))
 				return false;
 		}
 

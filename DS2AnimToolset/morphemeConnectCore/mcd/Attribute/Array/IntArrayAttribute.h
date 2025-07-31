@@ -1,27 +1,22 @@
 #pragma once
 #include "../Attribute.h"
+#include "NMDBExtensions/TypedAttributeArray.inl"
 
 namespace mcd
 {
 	class IntArrayAttribute : public Attribute
 	{
-		std::unique_ptr<db::IntArrayAttribute> m_valueAttr = nullptr;
-
+		std::unique_ptr<db::TypedAttributeArray<db::IntAttribute>> m_valueAttr = nullptr;
 	public:
-		IntArrayAttribute(db::Attribute* parent, std::string name)
-			: Attribute(parent, "IntArrayAttribute", name),
-			  m_valueAttr(new db::IntArrayAttribute(this, "Value"))
-		{
-			this->addAttribute(m_valueAttr.get());
-		}
+		IntArrayAttribute(db::Attribute* parent, std::string name);
 
 		virtual ~IntArrayAttribute() override {};
 		virtual bool assignValue(Attribute* other) override;
 		virtual bool isValueEqualTo(Attribute* attr) override;
 
-		void addElement(int value) { m_valueAttr->add(value); }
-		void setElement(int index, int value) { m_valueAttr->setElement(index, value); }
-		int getElement(int index) const { return m_valueAttr->getElement(index); }
+		void addElement(int value) { m_valueAttr->add(new db::IntAttribute(m_valueAttr.get(), "elem", value)); }
+		void setElement(int index, int value) { m_valueAttr->getAttribute(index)->asInt()->setValue(value); }
+		int getElement(int index) const { return m_valueAttr->getAttribute(index)->asInt()->getValue(); }
 		uint32_t size() const { return m_valueAttr->size(); }
 		bool empty() const { return m_valueAttr->empty(); }
 	};

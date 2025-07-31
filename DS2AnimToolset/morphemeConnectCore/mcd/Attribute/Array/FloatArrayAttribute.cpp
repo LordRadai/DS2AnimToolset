@@ -4,7 +4,7 @@ namespace mcd
 {
 	FloatArrayAttribute::FloatArrayAttribute(db::Attribute* parent, std::string name)
 		: Attribute(parent, "FloatArrayAttribute", name),
-		m_valueAttr(new db::FloatArrayAttribute(this, "Value"))
+		m_valueAttr(new db::TypedAttributeArray<db::FloatAttribute>(this, "Value"))
 	{
 		this->addAttribute(m_valueAttr.get());
 	}
@@ -29,7 +29,7 @@ namespace mcd
 
 		for (size_t i = 0; i < this->m_valueAttr->size(); i++)
 		{
-			if (this->m_valueAttr->getElement(i) != otherAttr->m_valueAttr->getElement(i))
+			if (this->getElement(i) != otherAttr->getElement(i))
 				return false;
 		}
 		
