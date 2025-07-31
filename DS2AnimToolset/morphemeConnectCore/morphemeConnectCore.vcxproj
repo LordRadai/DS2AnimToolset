@@ -226,6 +226,7 @@
     <ClInclude Include="mcd\Pin\FunctionalPin.h" />
     <ClInclude Include="mcd\Pin\PassDownPin.h" />
     <ClInclude Include="mcd\Pin\Pin.h" />
+    <ClInclude Include="mcd\Request\Request.h" />
     <ClInclude Include="mcd\StateMachine\StateMachine.h" />
     <ClInclude Include="mcd\StateMachine\StateMachineNode.h" />
     <ClInclude Include="mcd\Transition\TransitionEdge.h" />

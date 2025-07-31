@@ -629,8 +629,17 @@ std::vector<FlverModel::SkinnedVertex> FlverModel::getBindPoseSkinnedVertices(in
 	return this->m_meshVerticesBindPoseTransforms[idx];
 }
 
-void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex)
+void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex, int currentIteration)
 {
+	// Stop looking after 10 iterations, this is to prevent infinite loops.
+	if (currentIteration > 10)
+	{
+		for (size_t wt = 0; wt < 4; wt++)
+			skinnedVertex.boneWeights[wt] = 0.f;
+
+		return;
+	}
+
 	float totalWeight = 0.f;
 	for (size_t wt = 0; wt < 4; wt++)
 	{
@@ -671,7 +680,7 @@ void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVer
 			}
 		}
 
-		validateSkinnedVertexData(skinnedVertex);
+		validateSkinnedVertexData(skinnedVertex, ++currentIteration);
 	}
 }
 
@@ -788,7 +797,7 @@ bool FlverModel::initialise()
 				normal.Normalize();
 
 				meshSkinnedVertices.push_back(SkinnedVertex(pos, normal, weights, indices));
-				validateSkinnedVertexData(meshSkinnedVertices.back());
+				validateSkinnedVertexData(meshSkinnedVertices.back(), 0);
 			}
 		}
 
@@ -1227,7 +1236,7 @@ void FlverModel::transformVertex(int meshIdx, int vertexIndex, const std::vector
 		g_appLog->debugMessage(MsgLevel_Debug, "Vertex %d of mesh %d has an invalid influence:\n", vertexIndex, meshIdx);
 		g_appLog->debugMessage(MsgLevel_Debug, "\tIndices: (%d, %d, %d, %d)\n", indices[0], indices[1], indices[2], indices[3]);
 		g_appLog->debugMessage(MsgLevel_Debug, "\tWeights: (%.3f, %.3f, %.3f, %.3f)\n", weights[0], weights[1], weights[2], weights[3]);
-		g_appLog->panicMessage("Invalid bone influence data for %s (meshIdx=%d, vertexIdx=%d)\n", this->m_name.c_str(), meshIdx, vertexIndex);
+		//g_appLog->panicMessage("Invalid bone influence data for %s (meshIdx=%d, vertexIdx=%d)\n", this->m_name.c_str(), meshIdx, vertexIndex);
 	}
 
 	this->m_meshVerticesTransforms[meshIdx][vertexIndex].vertexData.position = newPos;

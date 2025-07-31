@@ -107,7 +107,7 @@ public:
 	int getFlverBoneIndexByName(const char* name);
 
 	std::vector<SkinnedVertex> getBindPoseSkinnedVertices(int idx);
-	void validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex);
+	void validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex, int currentIteration);
 
 	// Morpheme functions
 
