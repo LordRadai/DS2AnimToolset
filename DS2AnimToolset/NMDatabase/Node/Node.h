@@ -1,6 +1,6 @@
 #pragma once
 #include "RCore.h"
-#include "Attribute/CompoundAttribute.h"
+#include "Attribute/CompoundAttribute/CompoundAttribute.h"
 #include "Attribute/SingleValue/BoolAttribute.h"
 #include "Attribute/SingleValue/FloatAttribute.h"
 #include "Attribute/SingleValue/DoubleAttribute.h"

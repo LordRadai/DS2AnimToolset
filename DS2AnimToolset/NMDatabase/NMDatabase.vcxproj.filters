@@ -30,16 +30,16 @@
     <ClCompile Include="Attribute\Attribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Attribute\CompositeAttribute.cpp">
+    <ClCompile Include="Attribute\CompositeAttribute\CompositeAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Attribute\CompoundAttribute.cpp">
+    <ClCompile Include="Attribute\CompoundAttribute\CompoundAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Attribute\SingleValue\BoolAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Attribute\AttributeContainer.cpp">
+    <ClCompile Include="Attribute\AttributeContainer\AttributeContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Attribute\SingleValue\IntAttribute.cpp">
@@ -96,7 +96,7 @@
     <ClCompile Include="Attribute\Array\Vector3ArrayAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Attribute\AttributeArray.cpp">
+    <ClCompile Include="Attribute\Array\AttributeArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Database\Database.cpp">
@@ -116,13 +116,13 @@
     <ClInclude Include="Attribute\Array\ArrayAttribute.inl">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Attribute\CompositeAttribute.h">
+    <ClInclude Include="Attribute\CompositeAttribute\CompositeAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Attribute\CompoundAttribute.h">
+    <ClInclude Include="Attribute\CompoundAttribute\CompoundAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Attribute\AttributeContainer.h">
+    <ClInclude Include="Attribute\AttributeContainer\AttributeContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Attribute\SingleValue\SingleValueAttribute.inl">
@@ -185,7 +185,7 @@
     <ClInclude Include="Attribute\Array\Vector3ArrayAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Attribute\AttributeArray.h">
+    <ClInclude Include="Attribute\Array\AttributeArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Database\Database.h">

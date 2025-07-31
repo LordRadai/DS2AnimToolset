@@ -1,5 +1,5 @@
 #pragma once
-#include "Array/ArrayAttribute.inl"
+#include "../Array/ArrayAttribute.inl"
 
 namespace db
 {

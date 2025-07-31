@@ -17,8 +17,10 @@
 #include "Attribute/Array/Vector3ArrayAttribute.h"
 #include "Attribute/Array/QuaternionArrayAttribute.h"
 #include "Attribute/Array/Matrix34ArrayAttribute.h"
+#include "Attribute/Array/AttributeArray.h"
 
-#include "Attribute/AttributeArray.h"
+#include "Attribute/CompositeAttribute/CompositeAttribute.h"
+#include "Attribute/CompoundAttribute/CompoundAttribute.h"
 
 #include "Node/Node.h"
 #include "NodeContainer/NodeContainer.h"

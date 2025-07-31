@@ -1,5 +1,5 @@
 #pragma once
-#include "CompositeAttribute.h"
+#include "../CompositeAttribute/CompositeAttribute.h"
 
 namespace db
 {
