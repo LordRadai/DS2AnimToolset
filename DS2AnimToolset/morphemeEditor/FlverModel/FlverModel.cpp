@@ -5,6 +5,8 @@
 #include "RenderManager/RenderManager.h"
 #include "RCore.h"
 
+#define MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS 100
+
 namespace
 {
 	int getMorphemeRigBoneIndexByFlverBoneIndex(MR::AnimRigDef* pRig, FlverModel* pFlverModel, int boneId)
@@ -631,14 +633,9 @@ std::vector<FlverModel::SkinnedVertex> FlverModel::getBindPoseSkinnedVertices(in
 
 void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex, int currentIteration)
 {
-	// Stop looking after 100 iterations, this is to prevent infinite loops.
-	if (currentIteration > 100)
-	{
-		for (size_t wt = 0; wt < 4; wt++)
-			skinnedVertex.boneWeights[wt] = 0.f;
-
+	// Stop looking after X iterations, this is to prevent infinite loops.
+	if (currentIteration > MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS)
 		return;
-	}
 
 	float totalWeight = 0.f;
 	for (size_t wt = 0; wt < 4; wt++)
