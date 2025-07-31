@@ -1,5 +1,7 @@
 #pragma once
 #include "../MMManifestItemBase.h"
+#include "mcd/Transition/TransitionEdge.h"
+#include "mcd/StateMachine/StateMachine.h"
 
 namespace mcc
 {
@@ -22,5 +24,7 @@ namespace mcc
 		std::string getInterface(uint32_t index) const;
 		std::string findInterface(const std::string& name) const;
 		uint32_t getNumInterfaces() const { return static_cast<uint32_t>(m_interfaces.size()); }
+
+		mcd::TransitionEdge* createDatabaseTransitionEdge(mcd::StateMachine* parent);
 	};
 }

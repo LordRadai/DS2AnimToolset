@@ -16,4 +16,30 @@ namespace mcd
 		addAttribute(m_transitionEdges.get());
 		addAttribute(m_defaultState.get());
 	}
+
+	uint32_t StateMachine::getNumNodesOfType(const std::string& type) const
+	{
+		uint32_t count = 0;
+
+		for (size_t i = 0; i < m_stateMachineNodes->size(); i++)
+		{
+			if (m_stateMachineNodes->getNode(i)->getNodeType() == type)
+				count++;
+		}
+
+		return count;
+	}
+
+	uint32_t StateMachine::getNumTransitionOfType(const std::string& type) const
+	{
+		uint32_t count = 0;
+
+		for (size_t i = 0; i < m_transitionEdges->size(); i++)
+		{
+			if (m_transitionEdges->getNode(i)->getEdgeType() == type)
+				count++;
+		}
+
+		return count;
+	}
 }

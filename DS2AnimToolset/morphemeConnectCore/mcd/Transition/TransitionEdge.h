@@ -27,6 +27,9 @@ namespace mcd
 		const std::string& getEdgeType() const { return m_edgeType->getValue(); }
 		int getManifestVersion() const { return m_manifestVersion->getValue(); }
 
+		void setSourceNode(mcd::StateMachineNode* node) { m_sourceNode->setValue(node); }
+		void setTargetNode(mcd::StateMachineNode* node) { m_targetNode->setValue(node); }
+
 		void setEdgeType(const std::string& type) { m_edgeType->setValue(type); }
 		void setManifestVersion(int version) { m_manifestVersion->setValue(version); }
 
@@ -39,5 +42,7 @@ namespace mcd
 		mcd::Attribute* getAttribute(uint32_t index) const { return m_attributes->getNode(index); }
 		mcd::Attribute* findAttribute(const std::string& name) const { return m_attributes->find(name); }
 		uint32_t getAttributeCount() const { return m_attributes->size(); }
+
+		uint32_t getNumConditionsOfType(std::string type) const;
 	};
 }

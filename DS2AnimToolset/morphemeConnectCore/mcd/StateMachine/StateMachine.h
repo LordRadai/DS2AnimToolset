@@ -35,5 +35,8 @@ namespace mcd
 
 		StateMachineNode* getDefaultState() const { return m_defaultState->getValue(); }
 		void setDefaultState(StateMachineNode* state) { m_defaultState->setValue(state); }
+
+		uint32_t getNumNodesOfType(const std::string& type) const;
+		uint32_t getNumTransitionOfType(const std::string& type) const;
 	};
 }

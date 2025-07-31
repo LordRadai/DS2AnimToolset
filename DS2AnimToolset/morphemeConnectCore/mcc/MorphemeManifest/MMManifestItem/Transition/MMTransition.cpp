@@ -9,10 +9,10 @@ namespace mcc
 		if (json.contains("interfaces") && json["interfaces"].is_array())
 		{
 			m_interfaces.clear();
-			for (const auto& interface : json["interfaces"])
+			for (const auto& intr : json["interfaces"])
 			{
-				if (interface.is_string())
-					m_interfaces.push_back(interface.get<std::string>());
+				if (intr.is_string())
+					m_interfaces.push_back(intr.get<std::string>());
 			}
 		}
 	}
@@ -27,12 +27,24 @@ namespace mcc
 
 	std::string MMTransition::findInterface(const std::string& name) const
 	{
-		for (const auto& interface : m_interfaces)
+		for (const auto& intr : m_interfaces)
 		{
-			if (interface == name)
-				return interface;
+			if (intr == name)
+				return intr;
 		}
 
 		return "";
+	}
+
+	mcd::TransitionEdge* MMTransition::createDatabaseTransitionEdge(mcd::StateMachine* parent)
+	{
+		char transitionName[256];
+		snprintf(transitionName, sizeof(transitionName), "%s%d", getName().c_str(), parent->getNumTransitionOfType(getName()) + 1);
+
+		mcd::TransitionEdge* transition = new mcd::TransitionEdge(nullptr, transitionName, nullptr, nullptr, getName(), getVersion());
+
+		parent->addTransitionEdge(transition);
+
+		return transition;
 	}
 }

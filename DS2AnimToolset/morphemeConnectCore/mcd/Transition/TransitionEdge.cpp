@@ -18,4 +18,18 @@ namespace mcd
 		db::Node::addAttribute(m_edgeType.get());
 		db::Node::addAttribute(m_manifestVersion.get());
 	}
+
+	uint32_t TransitionEdge::getNumConditionsOfType(std::string type) const
+	{
+		uint32_t count = 0;
+
+		for (uint32_t i = 0; i < m_conditions->size(); ++i)
+		{
+			mcd::Condition* condition = m_conditions->getNode(i);
+			if (condition && condition->getType() == type)
+				count++;
+		}
+
+		return count;
+	}
 }

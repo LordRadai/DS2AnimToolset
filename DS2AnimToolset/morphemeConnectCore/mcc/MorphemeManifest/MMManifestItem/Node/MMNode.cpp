@@ -165,7 +165,7 @@ namespace mcc
 	std::string MMNode::getNodeDefaultName(mcd::BlendTreeNode* node, mcd::BlendTree* parent) const
 	{
 		char nodeName[256];
-		snprintf(nodeName, sizeof(nodeName), "%s%d", this->getName().c_str(), parent->getNumNodesOfType(this->getName()));
+		snprintf(nodeName, sizeof(nodeName), "%s%d", this->getName().c_str(), parent->getNumNodesOfType(this->getName()) + 1);
 
 		return std::string(nodeName);
 	}
