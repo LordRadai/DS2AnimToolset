@@ -17,6 +17,9 @@ namespace mcc
 			kInt,
 			kString,
 			kAnimationTake,
+			kBoolArray,
+			kFloatArray,
+			kIntArray,
 			kNumAttributeTypes
 		};
 

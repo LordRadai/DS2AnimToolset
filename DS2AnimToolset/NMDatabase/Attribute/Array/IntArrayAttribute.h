@@ -9,7 +9,7 @@ namespace db
 
 	public:
 		IntArrayAttribute(Attribute* parent, std::string name) :
-			ArrayAttribute(parent, name, "intArray") {
+			ArrayAttribute(parent, name, "attributeArray") {
 		};
 
 		virtual ~IntArrayAttribute() override {};

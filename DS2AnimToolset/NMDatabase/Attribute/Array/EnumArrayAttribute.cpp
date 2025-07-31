@@ -40,7 +40,7 @@ namespace db
 		if (writeStartArrayXML(format))
 		{
 			for (size_t i = 0; i < m_values.size(); ++i)
-				m_xmlElement->InsertNewChildElement("fill")->SetText(m_values[i].c_str());
+				m_xmlElement->InsertNewChildElement("elem")->SetText(m_values[i].c_str());
 
 			return true;
 		}
@@ -59,6 +59,7 @@ namespace db
 	bool EnumArrayAttribute::writeStartArrayXML(int format) const
 	{
 		m_xmlElement->SetAttribute("size", size());
+		m_xmlElement->SetAttribute("elemType", "enum");
 		return true;
 	}
 

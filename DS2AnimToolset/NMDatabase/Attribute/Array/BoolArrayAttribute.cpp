@@ -40,7 +40,7 @@ namespace db
 		if (writeStartArrayXML(format))
 		{
 			for (size_t i = 0; i < m_values.size(); ++i)
-				m_xmlElement->InsertNewChildElement("fill")->SetText(m_values[i] ? "true" : "false");
+				m_xmlElement->InsertNewChildElement("elem")->SetText(m_values[i] ? "true" : "false");
 
 			return true;
 		}
@@ -59,6 +59,7 @@ namespace db
 	bool BoolArrayAttribute::writeStartArrayXML(int format) const
 	{
 		m_xmlElement->SetAttribute("size", size());
+		m_xmlElement->SetAttribute("elemType", "bool");
 		return true;
 	}
 

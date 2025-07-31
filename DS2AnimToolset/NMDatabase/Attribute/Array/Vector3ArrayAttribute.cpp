@@ -40,7 +40,7 @@ namespace db
 		if (writeStartArrayXML(format))
 		{
 			//for (size_t i = 0; i < m_values.size(); ++i)
-				//m_xmlElement->InsertNewChildElement("e")->SetText(m_values[i] ? "true" : "false");
+				//m_xmlElement->InsertNewChildElement("elem")->SetText(m_values[i] ? "true" : "false");
 
 			return true;
 		}

@@ -9,7 +9,7 @@ namespace db
 
 	public:
 		EnumArrayAttribute(Attribute* parent, std::string name) :
-			ArrayAttribute(parent, name, "enumArray") {
+			ArrayAttribute(parent, name, "attributeArray") {
 		};
 
 		virtual ~EnumArrayAttribute() override {};

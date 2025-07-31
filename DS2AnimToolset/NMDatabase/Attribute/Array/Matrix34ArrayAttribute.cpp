@@ -46,7 +46,7 @@ namespace db
 					for (uint32_t col = 0; col < 3; col++)
 					{
 						char name[256];
-						sprintf(name, "fill_%d%d", row, col);
+						sprintf(name, "elem_%d%d", row, col);
 
 						//m_xmlElement->InsertNewChildElement(name)->SetText(m_values[i].r[row][col]);
 					}

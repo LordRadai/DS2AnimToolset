@@ -164,6 +164,9 @@
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Transition\MMTransition.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MorphemeManifest.cpp" />
     <ClCompile Include="mcd\Attribute\AnimationSetAttribute.cpp" />
+    <ClCompile Include="mcd\Attribute\Array\BoolArrayAttribute.cpp" />
+    <ClCompile Include="mcd\Attribute\Array\FloatArrayAttribute.cpp" />
+    <ClCompile Include="mcd\Attribute\Array\IntArrayAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\Attribute.cpp" />
     <ClCompile Include="mcd\Attribute\AttributePlaceholder.cpp" />
     <ClCompile Include="mcd\Attribute\SingleValue\BoolAttribute.cpp" />
@@ -206,6 +209,9 @@
     <ClInclude Include="mcc\MorphemeManifest\MorphemeManifest.h" />
     <ClInclude Include="mcd\Attribute\AnimationSetAttribute.h" />
     <ClInclude Include="mcd\Attribute\AnimationTakeAttribute.h" />
+    <ClInclude Include="mcd\Attribute\Array\BoolArrayAttribute.h" />
+    <ClInclude Include="mcd\Attribute\Array\FloatArrayAttribute.h" />
+    <ClInclude Include="mcd\Attribute\Array\IntArrayAttribute.h" />
     <ClInclude Include="mcd\BlendTree\BlendTree.h" />
     <ClInclude Include="mcd\BlendTree\BlendTreeNode.h" />
     <ClInclude Include="mcd\Condition\Condition.h" />

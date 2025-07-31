@@ -40,7 +40,7 @@ namespace db
 		if (writeStartArrayXML(format))
 		{
 			for (size_t i = 0; i < m_values.size(); ++i)
-				m_xmlElement->InsertNewChildElement("fill")->SetText(m_values[i]);
+				m_xmlElement->InsertNewChildElement("elem")->SetText(m_values[i]);
 
 			return true;
 		}
@@ -59,6 +59,7 @@ namespace db
 	bool DoubleArrayAttribute::writeStartArrayXML(int format) const
 	{
 		m_xmlElement->SetAttribute("size", size());
+		m_xmlElement->SetAttribute("elemType", "double");
 		return true;
 	}
 

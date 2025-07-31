@@ -9,7 +9,7 @@ namespace db
 
 	public:
 		FloatArrayAttribute(Attribute* parent, std::string name) :
-			ArrayAttribute(parent, name, "floatArray") {
+			ArrayAttribute(parent, name, "attributeArray") {
 		};
 
 		virtual ~FloatArrayAttribute() override {};

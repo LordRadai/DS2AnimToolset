@@ -41,7 +41,7 @@ namespace db
 		{
 			for (size_t i = 0; i < m_values.size(); ++i)
 			{
-				//m_xmlElement->InsertNewChildElement("e")->SetText(m_values[i]);
+				//m_xmlElement->InsertNewChildElement("elem")->SetText(m_values[i]);
 			}
 
 			return true;

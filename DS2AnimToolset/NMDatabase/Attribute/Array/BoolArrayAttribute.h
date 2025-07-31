@@ -9,7 +9,7 @@ namespace db
 
 	public:
 		BoolArrayAttribute(Attribute* parent, std::string name) :
-			ArrayAttribute(parent, name, "boolArray") {
+			ArrayAttribute(parent, name, "attributeArray") {
 		};
 
 		virtual ~BoolArrayAttribute() override {};

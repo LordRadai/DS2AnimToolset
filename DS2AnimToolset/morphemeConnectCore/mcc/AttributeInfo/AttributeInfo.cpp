@@ -5,6 +5,9 @@
 #include "mcd/Attribute/SingleValue/StringAttribute.h"
 #include "mcd/Attribute/AnimationSetAttribute.h"
 #include "mcd/Attribute/AnimationTakeAttribute.h"
+#include "mcd/Attribute/Array/BoolArrayAttribute.h"
+#include "mcd/Attribute/Array/FloatArrayAttribute.h"
+#include "mcd/Attribute/Array/IntArrayAttribute.h"
 #include "mcc/MorphemeDocument/MorphemeDocument.h"
 #include "extern.h"
 
@@ -31,6 +34,12 @@ namespace mcc
 			return AttributeType::kString;
 		else if (typeName == "animationTake")
 			return AttributeType::kAnimationTake;
+		else if (typeName == "boolArray")
+			return AttributeType::kBoolArray;
+		else if (typeName == "floatArray")
+			return AttributeType::kFloatArray;
+		else if (typeName == "intArray")
+			return AttributeType::kIntArray;
 
 		throw std::runtime_error("AttributeInfo::getManifestDataType() - Unhandled attribute type: " + typeName);
 	}
@@ -55,6 +64,15 @@ namespace mcc
 			break;
 		case mcc::AttributeInfo::AttributeType::kAnimationTake:
 			attribute = new mcd::AnimationTakeAttribute(parent, m_manifestAttribute->getName());
+			break;
+		case mcc::AttributeInfo::AttributeType::kBoolArray:
+			attribute = new mcd::BoolArrayAttribute(parent, m_manifestAttribute->getName());
+			break;
+		case mcc::AttributeInfo::AttributeType::kFloatArray:
+			attribute = new mcd::FloatArrayAttribute(parent, m_manifestAttribute->getName());
+			break;
+		case mcc::AttributeInfo::AttributeType::kIntArray:
+			attribute = new mcd::IntArrayAttribute(parent, m_manifestAttribute->getName());
 			break;
 		}
 
