@@ -5,7 +5,8 @@ namespace mcd
 	FunctionalPin::FunctionalPin(db::Node* parent, const std::string& name)
 		: Pin(parent, "FunctionalPin", name),
 		  m_interfaces(std::make_unique<db::StringArrayAttribute>(this, "Interfaces")),
-		  m_passThroughEnabled(std::make_unique<db::BoolAttribute>(this, "PassThroughEnabled", false))
+		  m_passThroughEnabled(std::make_unique<db::BoolAttribute>(this, "PassThroughEnabled", false)),
+	      m_input(std::make_unique<db::BoolAttribute>(this, "Input", false))
 	{
 		addAttribute(m_interfaces.get());
 	}
@@ -23,13 +24,13 @@ namespace mcd
 
 	void FunctionalPin::setInput(bool input)
 	{
-		removeAttribute(m_passThroughEnabled.get());
+		removeAttribute(m_input.get());
 
 		// Only add to the list if it is an input.
 		if (input)
-			addAttribute(m_passThroughEnabled.get());
+			addAttribute(m_input.get());
 
-		m_passThroughEnabled->setValue(input);
+		m_input->setValue(input);
 	}
 
 	std::string FunctionalPin::findInterface(const std::string& name) const

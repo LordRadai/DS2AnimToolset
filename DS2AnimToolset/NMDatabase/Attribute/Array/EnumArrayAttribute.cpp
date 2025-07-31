@@ -58,9 +58,6 @@ namespace db
 
 	bool EnumArrayAttribute::writeStartArrayXML(int format) const
 	{
-		if (size() == 0)
-			return false;
-
 		m_xmlElement->SetAttribute("size", size());
 		return true;
 	}

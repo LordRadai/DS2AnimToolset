@@ -7,6 +7,7 @@ namespace mcd
 	{
 		std::unique_ptr<db::StringArrayAttribute> m_interfaces;
 		std::unique_ptr<db::BoolAttribute> m_passThroughEnabled;
+		std::unique_ptr<db::BoolAttribute> m_input;
 
 	public:
 		FunctionalPin(db::Node* parent, const std::string& name);
@@ -22,5 +23,6 @@ namespace mcd
 		void setPassThroughEnabled(bool enabled);
 		void setInput(bool input);
 		bool isPassThroughEnabled() const { return m_passThroughEnabled->getValue(); }
+		bool isInput() const { return m_input->getValue(); }
 	};
 }

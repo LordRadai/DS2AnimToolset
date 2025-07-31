@@ -4,7 +4,9 @@ namespace mcd
 {
 	DataPin::DataPin(db::Node* parent, const std::string pinName, DataTypes dataType)
 		: Pin(parent, "DataPin", pinName),
-		m_dataType(std::make_unique<db::EnumAttribute>(this, "DataType", ""))
+		m_dataType(std::make_unique<db::EnumAttribute>(this, "DataType", "")),
+		m_passThroughEnabled(std::make_unique<db::BoolAttribute>(this, "PassThroughEnabled", false)),
+		m_input(std::make_unique<db::BoolAttribute>(this, "Input", false))
 	{
 		this->addAttribute(m_dataType.get());
 		setDataType(dataType);
@@ -60,5 +62,27 @@ namespace mcd
 		default:
 			throw std::invalid_argument("Unsupported data type for DataPin.");
 		}
+	}
+
+	void DataPin::setPassThroughEnabled(bool enabled)
+	{
+		removeAttribute(m_passThroughEnabled.get());
+
+		// Only add to the list if it is enabled.
+		if (enabled)
+			addAttribute(m_passThroughEnabled.get());
+
+		m_passThroughEnabled->setValue(enabled);
+	}
+
+	void DataPin::setInput(bool input)
+	{
+		removeAttribute(m_input.get());
+
+		// Only add to the list if it is an input.
+		if (input)
+			addAttribute(m_input.get());
+
+		m_input->setValue(input);
 	}
 }

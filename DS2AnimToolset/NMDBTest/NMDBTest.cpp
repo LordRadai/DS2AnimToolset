@@ -23,7 +23,6 @@ int main()
 	mcd::Network* network = g_doc->getMorphemeDB()->getNetwork();
 
 	mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
-	g_doc->createBlendTreeNode(manifest->findNodeManifest(NODE_TYPE_ANIM_EVENTS), rootBt, "AnimWithEvents");
 	g_doc->createBlendTreeNode(manifest->findNodeManifest(NODE_TYPE_SWITCH), rootBt, "Switch");
 
 	network->addControlParameter(g_doc->createFloatControlParameter("FloatParam", 0.0f, 1.0f, 0.5f));

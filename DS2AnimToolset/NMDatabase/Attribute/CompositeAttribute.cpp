@@ -84,7 +84,7 @@ namespace db
 	void CompositeAttribute::removeAttribute(Attribute* attribute)
 	{
 		if (attribute == nullptr)
-			throw std::invalid_argument("CompositeAttribute::removeAttribute() failed - Attribute cannot be null");
+			return;
 
 		removeAttributeUnmanaged(attribute);
 	}

@@ -32,8 +32,7 @@ namespace db
 		m_xmlElement = doc.NewElement(m_name.c_str());
 		doc.InsertFirstChild(m_xmlElement);
 
-		if (!writeXML())
-			throw std::runtime_error("Failed to write XML for Database.");
+		writeXML();
 
 		doc.SaveFile(filepath);
 	}
