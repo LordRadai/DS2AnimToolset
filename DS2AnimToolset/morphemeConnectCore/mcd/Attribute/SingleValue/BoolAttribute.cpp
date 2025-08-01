@@ -2,11 +2,10 @@
 
 namespace mcd
 {
-	BoolAttribute::BoolAttribute(db::Attribute* parent, std::string name, bool value) : Attribute(parent, "BoolAttribute", name)
+	BoolAttribute::BoolAttribute(db::Attribute* parent, std::string name, bool value) : 
+		Attribute(parent, "BoolAttribute", name),
+		m_valueAttr(new db::BoolAttribute(this, "Value", value))
 	{
-		this->addBoolAttribute("Value", value);
-
-		this->m_valueAttr.reset(this->getAttribute(0)->asBool());
 		setValue(value);
 	}
 
@@ -28,5 +27,15 @@ namespace mcd
 			return false;
 
 		this->m_valueAttr->assign(otherBoolAttr->m_valueAttr.get());
+	}
+
+	void BoolAttribute::setValue(bool value)
+	{
+		this->removeAttribute(m_valueAttr.get());
+
+		if (value)
+			this->addAttribute(m_valueAttr.get());
+
+		m_valueAttr->setValue(value);
 	}
 }

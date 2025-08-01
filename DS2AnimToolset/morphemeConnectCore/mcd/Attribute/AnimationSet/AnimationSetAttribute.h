@@ -1,6 +1,6 @@
 #pragma once
-#include "Attribute.h"
-#include "AttributePlaceholder.h"
+#include "../Attribute.h"
+#include "../AttributePlaceholder/AttributePlaceholder.h"
 #include "NMDBExtensions/TypedNodeContainer.inl"
 
 namespace mcd

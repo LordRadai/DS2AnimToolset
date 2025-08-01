@@ -1,7 +1,7 @@
 #pragma once
 #include "NMDatabase/Node/Node.h"
 #include "NMDBExtensions/TypedNodeContainer.inl"
-#include "Attribute.h"
+#include "../Attribute.h"
 
 namespace mcd
 {

@@ -24,7 +24,7 @@
     <ClCompile Include="mcd\Attribute\SingleValue\BoolAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mcd\Attribute\AttributePlaceholder.cpp">
+    <ClCompile Include="mcd\Attribute\AttributePlaceholder\AttributePlaceholder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mcd\Attribute\SingleValue\FloatAttribute.cpp">
@@ -84,7 +84,7 @@
     <ClCompile Include="mcd\Pin\FunctionalPin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mcd\Attribute\AnimationSetAttribute.cpp">
+    <ClCompile Include="mcd\Attribute\AnimationSet\AnimationSetAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Attribute\MMAttribute.cpp">
@@ -132,6 +132,9 @@
     <ClCompile Include="mcd\Attribute\Array\IntArrayAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\Attribute\SingleValue\ControlParameterAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -146,7 +149,7 @@
     <ClInclude Include="mcd\MorphemeDB\MorphemeDB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mcd\Attribute\AttributePlaceholder.h">
+    <ClInclude Include="mcd\Attribute\AttributePlaceholder\AttributePlaceholder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NMDBExtensions\TypedNodeContainer.inl">
@@ -227,7 +230,7 @@
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Attribute\MMAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mcd\Attribute\AnimationSetAttribute.h">
+    <ClInclude Include="mcd\Attribute\AnimationSet\AnimationSetAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Node\MMNode.h">
@@ -254,7 +257,7 @@
     <ClInclude Include="extern.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mcd\Attribute\AnimationTakeAttribute.h">
+    <ClInclude Include="mcd\Attribute\AnimationTake\AnimationTakeAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcd\Pin\PassDownPin.h">
@@ -273,6 +276,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcd\Request\Request.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\Attribute\SingleValue\RefAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\Attribute\SingleValue\ControlParameterAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

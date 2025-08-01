@@ -3,10 +3,9 @@
 namespace mcd
 {
 	StringAttribute::StringAttribute(db::Attribute* parent, std::string name, const std::string& value)
-		: Attribute(parent, "StringAttribute", name)
+		: Attribute(parent, "StringAttribute", name),
+		m_valueAttr(new db::StringAttribute(this, "Value", value))
 	{
-		this->addStringAttribute("Value", value);
-		this->m_valueAttr.reset(this->getAttribute(0)->asString());
 		setValue(value);
 	}
 
@@ -29,5 +28,15 @@ namespace mcd
 			return false;
 
 		return this->m_valueAttr->getValue() == otherAttr->m_valueAttr->getValue();
+	}
+
+	void StringAttribute::setValue(const std::string& value)
+	{
+		this->removeAttribute(m_valueAttr.get());
+
+		if (!value.empty())
+			this->addAttribute(m_valueAttr.get());
+
+		m_valueAttr->setValue(value);
 	}
 }

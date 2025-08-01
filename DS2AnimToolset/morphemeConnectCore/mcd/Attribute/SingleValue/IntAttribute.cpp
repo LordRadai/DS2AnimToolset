@@ -3,10 +3,9 @@
 namespace mcd
 {
 	IntAttribute::IntAttribute(db::Attribute* parent, std::string name, int value)
-		: Attribute(parent, "IntAttribute", name)
+		: Attribute(parent, "IntAttribute", name),
+		m_valueAttr(new db::IntAttribute(this, "Value", value))
 	{
-		this->addIntAttribute("Value", value);
-		this->m_valueAttr.reset(this->getAttribute(0)->asInt());
 		setValue(value);
 	}
 
@@ -29,5 +28,15 @@ namespace mcd
 			return false;
 
 		return this->m_valueAttr->getValue() == otherAttr->m_valueAttr->getValue();
+	}
+
+	void IntAttribute::setValue(int value)
+	{
+		this->removeAttribute(m_valueAttr.get());
+
+		if (value != 0)
+			this->addAttribute(m_valueAttr.get());
+
+		m_valueAttr->setValue(value);
 	}
 }
