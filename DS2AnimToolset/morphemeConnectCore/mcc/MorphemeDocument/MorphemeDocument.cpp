@@ -232,7 +232,6 @@ namespace mcc
 		mcd::Network* network = m_morphemeDB->getNetwork();
 
 		mcd::Request* request = new mcd::Request(network, name, network->getNumRequests());
-		network->addRequest(request);
 
 		return request;
 	}

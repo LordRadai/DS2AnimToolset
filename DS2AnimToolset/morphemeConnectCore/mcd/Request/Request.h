@@ -8,7 +8,7 @@ namespace mcd
 		int m_requestID;
 	public:
 		Request(db::Node* parent, const std::string& name, const int requestID) :
-			db::Node(parent, name, "Request"),
+			db::Node(parent, "Request", name),
 			m_requestID(requestID)
 		{};
 
