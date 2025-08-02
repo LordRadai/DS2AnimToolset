@@ -9,6 +9,26 @@ namespace mcd
 		this->addAttribute(m_valueAttr.get());
 	}
 
+	void IntArrayAttribute::removeElement(int index)
+	{
+		if (index < 0 || index >= static_cast<int>(m_valueAttr->size()))
+			throw std::out_of_range("IntArrayAttribute::removeElement() - Index out of range");
+
+		m_valueAttr->removeAt(index);
+
+		if (m_valueAttr->empty())
+			removeAttribute(m_valueAttr.get());
+	}
+
+	void IntArrayAttribute::addElement(int value)
+	{
+		removeAttribute(m_valueAttr.get());
+
+		m_valueAttr->add(new db::IntAttribute(this, "elem", value));
+
+		addAttribute(m_valueAttr.get());
+	}
+
 	bool IntArrayAttribute::assignValue(Attribute* other)
 	{
 		IntArrayAttribute* otherAttr = dynamic_cast<IntArrayAttribute*>(other);

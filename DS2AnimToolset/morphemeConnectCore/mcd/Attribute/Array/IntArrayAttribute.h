@@ -14,9 +14,11 @@ namespace mcd
 		virtual bool assignValue(Attribute* other) override;
 		virtual bool isValueEqualTo(Attribute* attr) override;
 
-		void addElement(int value) { m_valueAttr->add(new db::IntAttribute(m_valueAttr.get(), "elem", value)); }
+		void removeElement(int index);
+		void addElement(int value);
 		void setElement(int index, int value) { m_valueAttr->getAttribute(index)->asInt()->setValue(value); }
 		int getElement(int index) const { return m_valueAttr->getAttribute(index)->asInt()->getValue(); }
+
 		uint32_t size() const { return m_valueAttr->size(); }
 		bool empty() const { return m_valueAttr->empty(); }
 	};

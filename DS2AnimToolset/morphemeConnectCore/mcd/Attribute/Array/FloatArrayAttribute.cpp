@@ -6,7 +6,26 @@ namespace mcd
 		: Attribute(parent, "FloatArrayAttribute", name),
 		m_valueAttr(new db::TypedAttributeArray<db::FloatAttribute>(this, "Value"))
 	{
-		this->addAttribute(m_valueAttr.get());
+	}
+
+	void FloatArrayAttribute::removeElement(int index)
+	{
+		if (index < 0 || index >= static_cast<int>(m_valueAttr->size()))
+			throw std::out_of_range("FloatArrayAttribute::removeElement() - Index out of range");
+
+		m_valueAttr->removeAt(index);
+
+		if (m_valueAttr->empty())
+			removeAttribute(m_valueAttr.get());
+	}
+
+	void FloatArrayAttribute::addElement(float value)
+	{
+		removeAttribute(m_valueAttr.get());
+
+		m_valueAttr->add(new db::FloatAttribute(this, "elem", value));
+
+		addAttribute(m_valueAttr.get());
 	}
 
 	bool FloatArrayAttribute::assignValue(Attribute* other)
