@@ -189,6 +189,7 @@
     <ClCompile Include="mcd\Pin\PassDownPin.cpp" />
     <ClCompile Include="mcd\Pin\Pin.cpp" />
     <ClCompile Include="mcd\RequestsNode\RequestsNode.cpp" />
+    <ClCompile Include="mcd\Request\Request.cpp" />
     <ClCompile Include="mcd\StateMachine\StateMachine.cpp" />
     <ClCompile Include="mcd\StateMachine\StateMachineNode.cpp" />
     <ClCompile Include="mcd\Transition\TransitionEdge.cpp" />

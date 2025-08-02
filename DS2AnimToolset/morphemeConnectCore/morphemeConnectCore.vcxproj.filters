@@ -138,6 +138,9 @@
     <ClCompile Include="mcd\RequestsNode\RequestsNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\Request\Request.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
