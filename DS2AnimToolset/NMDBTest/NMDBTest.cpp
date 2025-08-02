@@ -33,6 +33,9 @@ int main()
 	network->addControlParameter(g_doc->createUIntControlParameter("UIntParam", 0, 100, 50));
 	network->addControlParameter(g_doc->createQuaternionControlParameter("QuaternionParam", 0.f, 1.f, NMP::Quat(0.707f, 0.0f, 0.707f, 0.0f)));
 
+	network->addRequest(g_doc->createRequest("Request0"));
+	network->addRequest(g_doc->createRequest("Request1"));
+
 	printf_s("--------Control parameters created successfully.--------\n");
 
 	g_doc->saveAs("testMorphemeDoc.xml");

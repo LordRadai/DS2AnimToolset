@@ -21,5 +21,6 @@ namespace mcd
 		mcd::BlendTree* getBlendTree() { return m_cpBlendTree.get(); }
 
 		void addControlParameter(mcd::ControlParameter* controlParameter) { m_controlParameters->add(controlParameter); }
+		uint32_t getNumControlParameters() const { return m_controlParameters->size(); }
 	};
 }

@@ -227,6 +227,16 @@ namespace mcc
 		return sm;
 	}
 
+	mcd::Request* MorphemeDocument::createRequest(const std::string& name)
+	{
+		mcd::Network* network = m_morphemeDB->getNetwork();
+
+		mcd::Request* request = new mcd::Request(network, name, network->getNumRequests());
+		network->addRequest(request);
+
+		return request;
+	}
+
 	void MorphemeDocument::save()
 	{
 		if (m_filepath.empty())

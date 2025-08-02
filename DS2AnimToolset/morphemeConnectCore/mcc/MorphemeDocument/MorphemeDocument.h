@@ -1,6 +1,7 @@
 #pragma once
 #include "mcd/MorphemeDB/MorphemeDB.h"
 #include "mcd/ControlParameter/ControlParameter.h"
+#include "mcd/Request/Request.h"
 #include "mcc/MorphemeManifest/MorphemeManifest.h"
 #include "mcd/BlendTree/BlendTree.h"
 #include "mcd/StateMachine/StateMachine.h"
@@ -184,6 +185,8 @@ namespace mcc
 		 * \return A pointer to the created state machine.
 		 */
 		mcd::StateMachine* createNewStateMachine(const std::string& name, mcc::MMStateMachine manifestSM, mcd::Graph* parent, float xpos, float ypos);
+
+		mcd::Request* createRequest(const std::string& name);
 
 		void save();
 

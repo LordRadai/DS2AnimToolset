@@ -18,6 +18,7 @@ namespace mcd
 		mcd::Request* findRequest(const uint32_t id) const;
 		mcd::Request* findRequest(const std::string& name) const { return m_requests->find(name); }
 
-		void addControlParameter(mcd::Request* request) { m_requests->add(request); }
+		void addRequest(mcd::Request* request) { m_requests->add(request); }
+		uint32_t getNumRequests() const { return m_requests->size(); }
 	};
 }

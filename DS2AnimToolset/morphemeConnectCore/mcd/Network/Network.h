@@ -30,10 +30,12 @@ namespace mcd
 		void addControlParameter(mcd::ControlParameter* controlParameter) { m_controlParameters->addControlParameter(controlParameter); }
 		mcd::ControlParameter* getControlParameter(const uint32_t index) const { return m_controlParameters->getControlParameter(index); }
 		mcd::ControlParameter* findControlParameter(const std::string& name) const { return m_controlParameters->findControlParameter(name); }
+		uint32_t getNumControlParameters() const { return m_controlParameters->size(); }
 
-		void addRequest(mcd::Request* request) { m_requests->addControlParameter(request); }
+		void addRequest(mcd::Request* request) { m_requests->addRequest(request); }
 		mcd::Request* getRequest(const uint32_t index) const { return m_requests->getRequest(index); }
 		mcd::Request* findRequest(const uint32_t id) const { return m_requests->findRequest(id); }
 		mcd::Request* findRequest(const std::string& name) const { return m_requests->findRequest(name); }
+		uint32_t getNumRequests() const { return m_requests->size(); }
 	};
 }
