@@ -107,7 +107,6 @@ public:
 	int getFlverBoneIndexByName(const char* name);
 
 	std::vector<SkinnedVertex> getBindPoseSkinnedVertices(int idx);
-	void validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex, int currentIteration);
 
 	// Morpheme functions
 
@@ -126,6 +125,22 @@ private:
 	FlverModel() {}
 	FlverModel(UMEM* umem, MR::AnimRigDef* rig);
 	~FlverModel() {}
+
+	/**
+	 * \brief Validates the bone influence IDs. This function modifies the skinned vertex data to ensure that all inlfuences are valid for the morpheme rig.
+	 * 
+	 * \param skinnedVertex The input skinned vertex data to validate. This will get modified.
+	 */
+	void validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex);
+
+	/**
+	 * \brief Finds the first bone with valid influence for the given bone ID.
+	 * Needs to be revised, if I can figure out how the fucking game handles this.
+	 * 
+	 * \param boneID The bone ID to validate.
+	 * \return The valid bone index, or -1 if no valid index is found.
+	 */
+	int findValidBoneIndex(int boneID);
 
 	std::wstring m_fileOrigin = L"";
 	Settings m_settings;

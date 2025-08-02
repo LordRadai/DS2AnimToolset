@@ -631,16 +631,43 @@ std::vector<FlverModel::SkinnedVertex> FlverModel::getBindPoseSkinnedVertices(in
 	return this->m_meshVerticesBindPoseTransforms[idx];
 }
 
-void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex, int currentIteration)
+int FlverModel::findValidBoneIndex(int boneID)
 {
-	// Stop looking after X iterations, this is to prevent infinite loops.
-	if (currentIteration > MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS)
-		return;
+	// I've found out that the best strategy is to first check all the siblings of the bone, then check the parents. However, this does not always produce the correct result.
+	if (this->getMorphemeBoneIdByFlverBoneId(boneID) != -1)
+		return boneID;
 
+	int parentID = this->m_flver->bones[boneID].parentIndex;
+
+	while (parentID != -1)
+	{
+		int childID = this->m_flver->bones[parentID].childIndex;
+
+		while (childID != -1)
+		{
+			if (this->getMorphemeBoneIdByFlverBoneId(childID) != -1)
+				return childID;
+
+			childID = this->m_flver->bones[childID].nextSiblingIndex;
+		}
+
+		if (this->getMorphemeBoneIdByFlverBoneId(parentID) != -1)
+			return parentID;
+
+		parentID = this->m_flver->bones[parentID].parentIndex;
+	}
+	
+	// If we reach here, it means that the bone has no valid morpheme influence in both the parents and it's siblings. This should not happen.
+	return -1;
+}
+
+void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex)
+{
+	// Count the total weight of all the bone influences
 	float totalWeight = 0.f;
 	for (size_t wt = 0; wt < 4; wt++)
 	{
-		const uint32_t morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(skinnedVertex.boneIndices[wt]);
+		const int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(skinnedVertex.boneIndices[wt]);
 
 		// Only factor in the bones that are present in the morpheme rig
 		if (morphemeBoneID != -1)
@@ -660,24 +687,15 @@ void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVer
 		for (size_t wt = 0; wt < 4; wt++)
 		{
 			const int boneID = skinnedVertex.boneIndices[wt];
-			int prevSibling = this->m_flver->bones[boneID].previousSiblingIndex;
+			int influenceBoneID = findValidBoneIndex(boneID);
 
-			while (prevSibling != -1)
-			{
-				int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(prevSibling);
+			if (influenceBoneID == -1)
+				throw std::runtime_error("Failed to find a valid bone index for skinned vertex influence." + std::string("boneID=") + std::to_string(boneID));
 
-				if (morphemeBoneID != -1)
-				{
-					skinnedVertex.boneIndices[wt] = prevSibling;
-
-					break;
-				}
-
-				prevSibling = this->m_flver->bones[prevSibling].previousSiblingIndex;
-			}
+			skinnedVertex.boneIndices[wt] = influenceBoneID;
 		}
 
-		validateSkinnedVertexData(skinnedVertex, ++currentIteration);
+		validateSkinnedVertexData(skinnedVertex);
 	}
 }
 
@@ -794,7 +812,7 @@ bool FlverModel::initialise()
 				normal.Normalize();
 
 				meshSkinnedVertices.push_back(SkinnedVertex(pos, normal, weights, indices));
-				validateSkinnedVertexData(meshSkinnedVertices.back(), 0);
+				validateSkinnedVertexData(meshSkinnedVertices.back());
 			}
 		}
 
