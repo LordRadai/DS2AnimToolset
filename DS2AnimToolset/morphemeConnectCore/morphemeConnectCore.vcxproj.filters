@@ -135,6 +135,9 @@
     <ClCompile Include="mcd\Attribute\SingleValue\ControlParameterAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\RequestsNode\RequestsNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -282,6 +285,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcd\Attribute\SingleValue\ControlParameterAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\RequestsNode\RequestsNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

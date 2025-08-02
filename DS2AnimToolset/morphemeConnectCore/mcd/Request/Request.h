@@ -5,10 +5,15 @@ namespace mcd
 {
 	class Request : public db::Node
 	{
+		int m_requestID;
 	public:
-		Request(db::Node* parent, const std::string& name) :
-			db::Node(parent, name, "Request") {};
+		Request(db::Node* parent, const std::string& name, const int requestID) :
+			db::Node(parent, name, "Request"),
+			m_requestID(requestID)
+		{};
 
 		virtual ~Request() override {};
+
+		int getRequestID() const { return m_requestID; }
 	};
 }
