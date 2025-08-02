@@ -14,8 +14,8 @@ namespace mcd
 
 		virtual ~FunctionalPin() override {};
 
-		void addInterface(const std::string& interfaceName) { m_interfaces->add(interfaceName); }
-		void removeInterface(const uint32_t index) { m_interfaces->removeAt(index); }
+		void addInterface(const std::string& interfaceName);
+		void removeInterface(const uint32_t index);
 		std::string getInterface(const uint32_t index) const { return m_interfaces->getElement(index); }
 		std::string findInterface(const std::string& name) const;
 		uint32_t getInterfaceCount() const { return m_interfaces->size(); }

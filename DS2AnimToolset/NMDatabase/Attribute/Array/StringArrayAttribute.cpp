@@ -35,9 +35,9 @@ namespace db
 			m_values.push_back(otherComposite->getElement(i));
 	}
 
-	bool StringArrayAttribute::writeValueXML(int format)
+	bool StringArrayAttribute::writeValueXML(int format, SaverXML* saver)
 	{
-		if (writeStartArrayXML(format))
+		if (writeStartArrayXML(format, saver))
 		{
 			for (size_t i = 0; i < m_values.size(); ++i)
 				m_xmlElement->InsertNewChildElement("e")->SetText(m_values[i].c_str());
@@ -56,7 +56,7 @@ namespace db
 		m_values.erase(m_values.begin() + idx);
 	}
 
-	bool StringArrayAttribute::writeStartArrayXML(int format) const
+	bool StringArrayAttribute::writeStartArrayXML(int format, SaverXML* saver) const
 	{
 		m_xmlElement->SetAttribute("size", size());
 		return true;

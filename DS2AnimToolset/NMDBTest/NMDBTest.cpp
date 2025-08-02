@@ -24,6 +24,7 @@ int main()
 
 	mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
 	g_doc->createBlendTreeNode(manifest->findNodeManifest(NODE_TYPE_SWITCH), rootBt, "Switch");
+	g_doc->createBlendTreeNode(manifest->findNodeManifest(NODE_TYPE_ANIM_EVENTS), rootBt, "AnimWithEvents");
 
 	network->addControlParameter(g_doc->createFloatControlParameter("FloatParam", 0.0f, 1.0f, 0.5f));
 	network->addControlParameter(g_doc->createVector3ControlParameter("Vector3Param", 0.0f, 10.0f, NMP::Vector3(1.0f, 2.0f, 3.0f)));

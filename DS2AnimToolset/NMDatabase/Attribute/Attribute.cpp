@@ -16,7 +16,7 @@ namespace db
 		}
 	}
 
-	bool Attribute::writeStartElementXML(int format)
+	bool Attribute::writeStartElementXML(int format, SaverXML* saver)
 	{
 		if (!m_parent)
 			return false;
@@ -27,14 +27,14 @@ namespace db
 		return true;
 	}
 
-	bool Attribute::writeXML(int format)
+	bool Attribute::writeXML(int format, SaverXML* saver)
 	{
-		bool bWroteStartElem = writeStartElementXML(format);
+		bool bWroteStartElem = writeStartElementXML(format, saver);
 
 		if (!bWroteStartElem)
 			return false;
 
-		return writeValueXML(format);
+		return writeValueXML(format, saver);
 	}
 
 	std::string Attribute::toDatabasePath() const

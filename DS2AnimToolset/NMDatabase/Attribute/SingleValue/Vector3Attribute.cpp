@@ -10,7 +10,7 @@ namespace db
 		return std::string(buffer);
 	}
 
-	bool Vector3Attribute::writeValueXML(int format)
+	bool Vector3Attribute::writeValueXML(int format, SaverXML* saver)
 	{
 		m_xmlElement->InsertNewChildElement("X")->SetText(m_value.x);
 		m_xmlElement->InsertNewChildElement("Y")->SetText(m_value.y);

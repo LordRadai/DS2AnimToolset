@@ -18,13 +18,13 @@ namespace db
 		virtual void assign(Attribute* other) override;
 		virtual Matrix34ArrayAttribute* asMatrix34Array() const override { return const_cast<Matrix34ArrayAttribute*>(this); }
 		virtual bool isMatrix34Array() const override { return true; }
-		virtual bool writeValueXML(int format) override;
+		virtual bool writeValueXML(int format, SaverXML* saver) override;
 		virtual uint32_t size() const override { return m_values.size(); };
 		virtual bool empty() const override { return m_values.empty(); };
 		virtual void removeAt(int idx) override;
 		virtual void clearArray() override { m_values.clear(); }
 		virtual void resize(uint32_t newSize) override { m_values.resize(newSize); }
-		virtual bool writeStartArrayXML(int format) const override;
+		virtual bool writeStartArrayXML(int format, SaverXML* saver) const override;
 
 		void add(NMP::Matrix34 value) { m_values.push_back(value); }
 		void insert(int idx, NMP::Matrix34 value);

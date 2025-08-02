@@ -8,7 +8,25 @@ namespace mcd
 		  m_passThroughEnabled(std::make_unique<db::BoolAttribute>(this, "PassThroughEnabled", false)),
 	      m_input(std::make_unique<db::BoolAttribute>(this, "Input", false))
 	{
-		addAttribute(m_interfaces.get());
+	}
+
+	void FunctionalPin::addInterface(const std::string& interfaceName)
+	{
+		if (m_interfaces->empty())
+			addAttribute(m_interfaces.get());
+
+		m_interfaces->add(interfaceName);
+	}
+
+	void FunctionalPin::removeInterface(const uint32_t index)
+	{
+		if (index < 0 || index >= m_interfaces->size())
+			throw std::out_of_range("FunctionalPin::removeInterface() - Index out of range");
+
+		m_interfaces->removeAt(index);
+
+		if (m_interfaces->empty())
+			removeAttribute(m_interfaces.get());
 	}
 
 	void FunctionalPin::setPassThroughEnabled(bool enabled)

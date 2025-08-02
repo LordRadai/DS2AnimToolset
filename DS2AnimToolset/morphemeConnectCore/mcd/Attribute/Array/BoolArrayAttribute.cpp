@@ -20,11 +20,10 @@ namespace mcd
 
 	void BoolArrayAttribute::addElement(bool value)
 	{
-		removeAttribute(m_valueAttr.get());
+		if (m_valueAttr->empty())
+			addAttribute(m_valueAttr.get());
 
 		m_valueAttr->add(new db::BoolAttribute(this, "elem", value));
-
-		addAttribute(m_valueAttr.get());
 	}
 
 	bool BoolArrayAttribute::assignValue(Attribute* other)

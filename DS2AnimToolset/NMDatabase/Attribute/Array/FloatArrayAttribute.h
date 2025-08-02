@@ -17,13 +17,13 @@ namespace db
 		virtual void assign(Attribute* other) override;
 		virtual FloatArrayAttribute* asFloatArray() const override { return const_cast<FloatArrayAttribute*>(this); }
 		virtual bool isFloatArray() const override { return true; }
-		virtual bool writeValueXML(int format) override;
+		virtual bool writeValueXML(int format, SaverXML* saver) override;
 		virtual uint32_t size() const override { return m_values.size(); };
 		virtual bool empty() const override { return m_values.empty(); };
 		virtual void removeAt(int idx) override;
 		virtual void clearArray() override { m_values.clear(); }
 		virtual void resize(uint32_t newSize) override { m_values.resize(newSize); }
-		virtual bool writeStartArrayXML(int format) const override;
+		virtual bool writeStartArrayXML(int format, SaverXML* saver) const override;
 
 		void add(float value) { m_values.push_back(value); }
 		void insert(int idx, float value);

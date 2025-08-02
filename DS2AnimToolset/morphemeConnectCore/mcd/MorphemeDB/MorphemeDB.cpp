@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	MorphemeDB::MorphemeDB() : db::Database("MorphemeDB", "MorphemeDB"), 
+	MorphemeDB::MorphemeDB() : db::Database("mcd", "MorphemeDB", "MorphemeDB"), 
 		m_networks(std::make_unique<db::TypedNodeContainer<mcd::Network>>(this, "Networks"))
 	{
 		addAttribute(m_networks.get());

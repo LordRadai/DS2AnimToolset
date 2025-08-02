@@ -2,15 +2,15 @@
 
 namespace db
 {
-	bool AttributeArray::writeValueXML(int format)
+	bool AttributeArray::writeValueXML(int format, SaverXML* saver)
 	{
-		if (writeStartArrayXML(format))
+		if (writeStartArrayXML(format, saver))
 		{
 			m_xmlElement->SetAttribute("elemType", getElemType().c_str());
 
 			for (size_t i = 0; i < m_attributes.size(); ++i)
 			{
-				if (!m_attributes[i]->writeXML(format))
+				if (!m_attributes[i]->writeXML(format, saver))
 					return false;
 			}
 
@@ -20,7 +20,7 @@ namespace db
 		return false;
 	}
 
-	bool AttributeArray::writeStartArrayXML(int format) const
+	bool AttributeArray::writeStartArrayXML(int format, SaverXML* saver) const
 	{
 		m_xmlElement->SetAttribute("size", size());
 		return true;

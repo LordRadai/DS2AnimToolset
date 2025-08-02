@@ -12,7 +12,7 @@ namespace db
 			AttributeContainer(parent, identifier, "nodeContainer") {};
 
 		virtual ~NodeContainer() override {};
-		virtual bool writeValueXML(int format) override;
+		virtual bool writeValueXML(int format, SaverXML* saver) override;
 		virtual void resize(uint32_t newSize) override {}
 
 		void add(Node* node) { insertAttribute(getNumNodes(), node); }

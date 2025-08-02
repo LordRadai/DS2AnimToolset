@@ -2,18 +2,18 @@
 
 namespace db
 {
-	bool Node::writeValueXML(int format)
+	bool Node::writeValueXML(int format, SaverXML* saver)
 	{
 		for (size_t i = 0; i < m_attributes.size(); i++)
 		{
-			if (!m_attributes[i]->writeXML(format))
+			if (!m_attributes[i]->writeXML(format, saver))
 				return false;
 		}
 
 		return true;
 	}
 
-	bool Node::writeStartElementXML(int format)
+	bool Node::writeStartElementXML(int format, SaverXML* saver)
 	{
 		if (!m_parent)
 			return false;

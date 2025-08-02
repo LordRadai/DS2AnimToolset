@@ -12,6 +12,6 @@ namespace db
 		virtual ~CompoundAttribute() override {};
 		virtual CompoundAttribute* asCompound() const override { return const_cast<CompoundAttribute*>(this); }
 		virtual bool isCompound() const override { return true; }
-		virtual bool writeValueXML(int format) override;
+		virtual bool writeValueXML(int format, SaverXML* saver) override;
 	};
 }

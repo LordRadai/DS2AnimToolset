@@ -35,9 +35,9 @@ namespace db
 			m_values.push_back(otherComposite->getElement(i));
 	}
 
-	bool Vector3ArrayAttribute::writeValueXML(int format)
+	bool Vector3ArrayAttribute::writeValueXML(int format, SaverXML* saver)
 	{
-		if (writeStartArrayXML(format))
+		if (writeStartArrayXML(format, saver))
 		{
 			//for (size_t i = 0; i < m_values.size(); ++i)
 				//m_xmlElement->InsertNewChildElement("elem")->SetText(m_values[i] ? "true" : "false");
@@ -56,7 +56,7 @@ namespace db
 		m_values.erase(m_values.begin() + idx);
 	}
 
-	bool Vector3ArrayAttribute::writeStartArrayXML(int format) const
+	bool Vector3ArrayAttribute::writeStartArrayXML(int format, SaverXML* saver) const
 	{
 		if (size() == 0)
 			return false;

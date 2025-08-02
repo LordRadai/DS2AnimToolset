@@ -17,7 +17,7 @@ namespace db
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<PointerAttribute*>(other)->getValue(); }
 		virtual PointerAttribute* asPointer() const override { return const_cast<PointerAttribute*>(this); }
 		virtual bool isPointer() const override { return true; }
-		virtual bool writeValueXML(int format) override;
+		virtual bool writeValueXML(int format, SaverXML* saver) override;
 
 		virtual bool getValueAsBool() const override { return m_value != nullptr; }
 		virtual int getValueAsEnum() const override { return 0; }

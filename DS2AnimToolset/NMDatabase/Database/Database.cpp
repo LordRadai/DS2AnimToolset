@@ -1,4 +1,5 @@
 #include "Database.h"
+#include "Saver/SaverXML.h"
 
 namespace db
 {
@@ -15,25 +16,16 @@ namespace db
 		return nullptr;
 	}
 
-	bool Database::writeStartElementXML(int format)
+	bool Database::writeStartElementXML(int format, SaverXML* saver)
 	{
-		if (m_xmlElement == nullptr)
-			return false;
+		m_xmlElement = saver->getXMLDocument()->NewElement(m_name.c_str());
 
-		m_xmlElement->SetAttribute("name", m_nodeName.c_str());
+		if (m_nodeName != "")
+			m_xmlElement->SetAttribute("name", m_nodeName.c_str());
+
 		m_xmlElement->SetAttribute("type", "node");
+		m_xmlElement->SetAttribute("namespace", m_namespace.c_str());
+
 		return true;
-	}
-
-	void Database::exportXML(const char* filepath)
-	{
-		tinyxml2::XMLDocument doc;
-
-		m_xmlElement = doc.NewElement(m_name.c_str());
-		doc.InsertFirstChild(m_xmlElement);
-
-		writeXML();
-
-		doc.SaveFile(filepath);
 	}
 }

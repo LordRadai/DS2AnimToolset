@@ -5,13 +5,14 @@ namespace db
 {
 	class Database : public Node
 	{
+		std::string m_namespace;
 	public:
-		Database(std::string identifier, std::string name) : Node(nullptr, identifier, name) {};
+		Database(std::string nmspace, std::string identifier, std::string name) : Node(nullptr, identifier, name), m_namespace(nmspace) {};
 
 		virtual ~Database() override {};
 		virtual Database* asDatabase() const override { return const_cast<Database*>(this); }
 		virtual bool isDatabase() const override { return true; }
-		virtual bool writeStartElementXML(int format = 3) override;
+		virtual bool writeStartElementXML(int format, SaverXML* saver) override;
 
 		void makeNode(Node* node) { insertAttribute(getNumNodes(), node); }
 		void removeNode(Attribute* attribute) { removeAttribute(attribute); }
@@ -29,7 +30,5 @@ namespace db
 		Node* front() const { return dynamic_cast<Node*>(Node::front()); }
 		Node* back() const { return dynamic_cast<Node*>(Node::back()); }
 		size_t getNumNodes() const { return Node::size(); }
-
-		void exportXML(const char* filepath);
 	};
 }

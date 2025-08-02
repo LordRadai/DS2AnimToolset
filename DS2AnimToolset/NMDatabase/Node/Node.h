@@ -34,8 +34,8 @@ namespace db
 		virtual ~Node() override {};
 		virtual Node* asNode() const override { return const_cast<Node*>(this); }
 		virtual bool isNode() const override { return true; }
-		virtual bool writeValueXML(int format) override;
-		virtual bool writeStartElementXML(int format) override;
+		virtual bool writeValueXML(int format, SaverXML* saver) override;
+		virtual bool writeStartElementXML(int format, SaverXML* saver) override;
 
 		std::string getName() const { return m_nodeName; }
 		void setName(const std::string& name) { m_nodeName = name; }

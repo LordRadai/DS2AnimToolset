@@ -2,7 +2,7 @@
 
 namespace db
 {
-	bool Matrix34Attribute::writeValueXML(int format)
+	bool Matrix34Attribute::writeValueXML(int format, SaverXML* saver)
 	{
 		for (uint32_t row = 0; row < 4; row++)
 		{

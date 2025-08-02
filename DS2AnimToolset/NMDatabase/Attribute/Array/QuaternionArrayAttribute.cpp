@@ -35,9 +35,9 @@ namespace db
 			m_values.push_back(otherComposite->getElement(i));
 	}
 
-	bool QuaternionArrayAttribute::writeValueXML(int format)
+	bool QuaternionArrayAttribute::writeValueXML(int format, SaverXML* saver)
 	{
-		if (writeStartArrayXML(format))
+		if (writeStartArrayXML(format, saver))
 		{
 			for (size_t i = 0; i < m_values.size(); ++i)
 			{
@@ -58,7 +58,7 @@ namespace db
 		m_values.erase(m_values.begin() + idx);
 	}
 
-	bool QuaternionArrayAttribute::writeStartArrayXML(int format) const
+	bool QuaternionArrayAttribute::writeStartArrayXML(int format, SaverXML* saver) const
 	{
 		if (size() == 0)
 			return false;

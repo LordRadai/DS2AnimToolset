@@ -2,11 +2,11 @@
 
 namespace db
 {
-	bool CompoundAttribute::writeValueXML(int format)
+	bool CompoundAttribute::writeValueXML(int format, SaverXML* saver)
 	{
 		for (size_t i = 0; i < m_attributes.size(); i++)
 		{
-			if (!m_attributes[i]->writeXML(format))
+			if (!m_attributes[i]->writeXML(format, saver))
 				return false;
 		}
 

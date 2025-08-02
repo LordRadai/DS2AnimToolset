@@ -18,7 +18,7 @@ namespace db
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<FloatAttribute*>(other)->getValue(); }
 		virtual FloatAttribute* asFloat() const override { return const_cast<FloatAttribute*>(this); }
 		virtual bool isFloat() const override { return true; }
-		virtual bool writeValueXML(int format) override;
+		virtual bool writeValueXML(int format, SaverXML* saver) override;
 
 		virtual bool getValueAsBool() const override { return getValue() != 0.0f; }
 		virtual int getValueAsInt() const override { return static_cast<int>(getValue()); }

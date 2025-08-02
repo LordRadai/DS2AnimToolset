@@ -6,7 +6,6 @@ namespace mcd
 		: Attribute(parent, "FloatAttribute", name),
 		m_valueAttr(new db::FloatAttribute(this, "Value", value))
 	{
-		this->m_valueAttr.reset(this->getAttribute(0)->asFloat());
 		setValue(value);
 	}
 

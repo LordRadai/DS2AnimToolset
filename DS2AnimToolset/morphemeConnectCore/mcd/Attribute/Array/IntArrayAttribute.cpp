@@ -22,11 +22,10 @@ namespace mcd
 
 	void IntArrayAttribute::addElement(int value)
 	{
-		removeAttribute(m_valueAttr.get());
+		if (m_valueAttr->empty())
+			addAttribute(m_valueAttr.get());
 
 		m_valueAttr->add(new db::IntAttribute(this, "elem", value));
-
-		addAttribute(m_valueAttr.get());
 	}
 
 	bool IntArrayAttribute::assignValue(Attribute* other)

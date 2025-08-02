@@ -240,10 +240,13 @@ namespace mcc
 	{
 		if (m_filepath.empty())
 			throw std::runtime_error("Filepath is not set. Please set the filepath before saving.");
+
 		if (!m_morphemeDB)
 			throw std::runtime_error("MorphemeDB is not initialized.");
 
-		m_morphemeDB->exportXML(m_filepath.c_str());
+		db::SaverXML saver(fopen(m_filepath.c_str(), "w"), "ConnectNetwork");
+
+		saver.save(m_morphemeDB.get());
 	}
 
 	void MorphemeDocument::saveAs(const std::string& filename)

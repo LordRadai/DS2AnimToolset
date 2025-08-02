@@ -24,7 +24,7 @@ namespace db
 		virtual void clearArray() override {};
 		virtual void removeAt(int idx) override;
 		virtual void resize(uint32_t newSize) override {};
-		virtual bool writeStartArrayXML(int format) const override { return false; }
+		virtual bool writeStartArrayXML(int format, SaverXML* saver) const override { return false; }
 
 		void deleteChildren();
 		void insertAttribute(int idx, Attribute* attribute);

@@ -2,7 +2,7 @@
 
 namespace db
 {
-	bool QuaternionAttribute::writeValueXML(int format)
+	bool QuaternionAttribute::writeValueXML(int format, SaverXML* saver)
 	{
 		m_xmlElement->InsertNewChildElement("X")->SetText(m_value.x);
 		m_xmlElement->InsertNewChildElement("Y")->SetText(m_value.y);

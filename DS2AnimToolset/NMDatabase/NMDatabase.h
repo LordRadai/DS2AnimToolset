@@ -25,3 +25,5 @@
 #include "Node/Node.h"
 #include "NodeContainer/NodeContainer.h"
 #include "Database/Database.h"
+
+#include "Saver/SaverXML.h"

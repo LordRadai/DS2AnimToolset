@@ -35,9 +35,9 @@ namespace db
 			m_values.push_back(otherComposite->getElement(i));
 	}
 
-	bool Matrix34ArrayAttribute::writeValueXML(int format)
+	bool Matrix34ArrayAttribute::writeValueXML(int format, SaverXML* saver)
 	{
-		if (writeStartArrayXML(format))
+		if (writeStartArrayXML(format, saver))
 		{
 			for (size_t i = 0; i < m_values.size(); ++i)
 			{
@@ -67,7 +67,7 @@ namespace db
 		m_values.erase(m_values.begin() + idx);
 	}
 
-	bool Matrix34ArrayAttribute::writeStartArrayXML(int format) const
+	bool Matrix34ArrayAttribute::writeStartArrayXML(int format, SaverXML* saver) const
 	{
 		if (size() == 0)
 			return false;

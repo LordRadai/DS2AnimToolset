@@ -17,7 +17,7 @@ namespace db
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<Vector3Attribute*>(other)->getValue(); }
 		virtual Vector3Attribute* asVector3() const override { return const_cast<Vector3Attribute*>(this); }
 		virtual bool isVector3() const override { return true; }
-		virtual bool writeValueXML(int format) override;
+		virtual bool writeValueXML(int format, SaverXML* saver) override;
 
 		virtual bool getValueAsBool() const override { return false; }
 		virtual int getValueAsEnum() const override { return 0; }

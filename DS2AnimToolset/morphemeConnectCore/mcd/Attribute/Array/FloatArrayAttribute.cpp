@@ -21,11 +21,10 @@ namespace mcd
 
 	void FloatArrayAttribute::addElement(float value)
 	{
-		removeAttribute(m_valueAttr.get());
+		if (m_valueAttr->empty())
+			addAttribute(m_valueAttr.get());
 
 		m_valueAttr->add(new db::FloatAttribute(this, "elem", value));
-
-		addAttribute(m_valueAttr.get());
 	}
 
 	bool FloatArrayAttribute::assignValue(Attribute* other)

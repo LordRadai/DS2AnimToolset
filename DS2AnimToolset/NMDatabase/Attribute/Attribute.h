@@ -31,6 +31,7 @@ namespace db
 	class Database;
 	class SingleValueAttribute;
 	class ArrayAttribute;
+	class SaverXML;
 
 	class Attribute
 	{
@@ -146,21 +147,21 @@ namespace db
 		 * 
 		 * \return true if succeeded, false otherwise.
 		 */
-		virtual bool writeStartElementXML(int format);
+		virtual bool writeStartElementXML(int format, SaverXML* saver);
 
 		/**
 		 * Writes the value to the previously created XMLElement. This method needs to be overridden by derived classes.
 		 * 
 		 * \return true if succeeded, false otherwise.
 		 */
-		virtual bool writeValueXML(int format) = 0;
+		virtual bool writeValueXML(int format, SaverXML* saver) = 0;
 
 		/**
 		 * \brief Writes the XML representation of the attribute.
 		 *
 		 * \return true if succeeded, false otherwise.
 		 */
-		bool writeXML(int format = 3);
+		bool writeXML(int format, SaverXML* saver);
 
 		/**
 		 * \brief Converts the attribute to a database path.
