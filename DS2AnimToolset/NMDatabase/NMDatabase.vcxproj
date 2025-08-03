@@ -181,6 +181,7 @@
     <ClCompile Include="Node\Node.cpp" />
     <ClCompile Include="Saver\Saver.cpp" />
     <ClCompile Include="Saver\SaverXML.cpp" />
+    <ClCompile Include="XMLElement\XMLElement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Attribute\Array\ArrayAttribute.inl" />
@@ -211,10 +212,12 @@
     <ClInclude Include="Attribute\SingleValue\Vector3Attribute.h" />
     <ClInclude Include="Database\Database.h" />
     <ClInclude Include="extern.h" />
+    <ClInclude Include="Loader\Loader.h" />
     <ClInclude Include="NodeContainer\NodeContainer.h" />
     <ClInclude Include="Node\Node.h" />
     <ClInclude Include="Saver\Saver.h" />
     <ClInclude Include="Saver\SaverXML.h" />
+    <ClInclude Include="XMLElement\XMLElement.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

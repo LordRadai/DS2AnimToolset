@@ -18,6 +18,7 @@ namespace db
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<IntAttribute*>(other)->getValue(); }
 		virtual IntAttribute* asInt() const override { return const_cast<IntAttribute*>(this); }
 		virtual bool isInt() const override { return true; }
+		virtual bool readValueXML(int format, db::XMLElement* element) override;
 		virtual bool writeValueXML(int format, SaverXML* saver) override;
 
 		virtual bool getValueAsBool() const override { return getValue() != 0; }

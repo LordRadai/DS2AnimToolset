@@ -35,6 +35,33 @@ namespace db
 			m_values.push_back(otherComposite->getElement(i));
 	}
 
+	bool QuaternionArrayAttribute::readValueXML(int format, db::XMLElement* element)
+	{
+		if (!element)
+			return false;
+
+		m_xmlElement = element->getXmlElement();
+		m_name = element->getName();
+
+		if (!element->hasAttribute("type"))
+			throw std::runtime_error("QuaternionArrayAttribute::readValueXML: Missing 'type' attribute in XML element.");
+
+		m_type = element->getAttribute("type");
+		if (!m_type.empty() && m_type != "quaternionArray")
+		{
+			throw std::runtime_error("QuaternionArrayAttribute::readValueXML: Expected type 'quaternionArray'.");
+			return false;
+		}
+		
+		if (!element->getDataAsQuatArray(m_values))
+		{
+			throw std::runtime_error("QuaternionArrayAttribute::readValueXML: Failed to read quaternion array from XML element.");
+			return false;
+		}
+
+		return true;
+	}
+
 	bool QuaternionArrayAttribute::writeValueXML(int format, SaverXML* saver)
 	{
 		if (writeStartArrayXML(format, saver))

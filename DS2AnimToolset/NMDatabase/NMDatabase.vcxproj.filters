@@ -108,6 +108,9 @@
     <ClCompile Include="Saver\SaverXML.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="XMLElement\XMLElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Node\Node.h">
@@ -204,6 +207,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="extern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Loader\Loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLElement\XMLElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

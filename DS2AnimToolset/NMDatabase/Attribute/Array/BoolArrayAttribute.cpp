@@ -35,6 +35,33 @@ namespace db
 			m_values.push_back(otherComposite->getElement(i));
 	}
 
+	bool BoolArrayAttribute::readValueXML(int format, db::XMLElement* element)
+	{
+		if (!element)
+			return false;
+
+		m_xmlElement = element->getXmlElement();
+		m_name = element->getName();
+
+		if (!element->hasAttribute("type"))
+			throw std::runtime_error("BoolArrayAttribute::readValueXML: Missing 'type' attribute in XML element.");
+
+		m_type = element->getAttribute("type");
+		if (!m_type.empty() && m_type != "boolArray")
+		{
+			throw std::runtime_error("BoolArrayAttribute::readValueXML: Expected type 'boolArray'.");
+			return false;
+		}
+
+		if (!element->getDataAsBoolArray(m_values))
+		{
+			throw std::runtime_error("BoolArrayAttribute::readValueXML: Failed to read bool array value from XML element.");
+			return false;
+		}
+
+		return true;
+	}
+
 	bool BoolArrayAttribute::writeValueXML(int format, SaverXML* saver)
 	{
 		if (writeStartArrayXML(format, saver))

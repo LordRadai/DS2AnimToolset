@@ -17,6 +17,7 @@ namespace db
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<StringAttribute*>(other)->getValue(); }
 		virtual StringAttribute* asString() const override { return const_cast<StringAttribute*>(this); }
 		virtual bool isString() const override { return true; }
+		virtual bool readValueXML(int format, db::XMLElement* element) override;
 		virtual bool writeValueXML(int format, SaverXML* saver) override;
 
 		virtual bool getValueAsBool() const override { return !m_value.empty(); }

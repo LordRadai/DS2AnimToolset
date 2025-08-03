@@ -18,6 +18,7 @@ namespace db
 		virtual void assign(Attribute* other) override;
 		virtual Vector3ArrayAttribute* asVector3Array() const override { return const_cast<Vector3ArrayAttribute*>(this); }
 		virtual bool isVector3Array() const override { return true; }
+		virtual bool readValueXML(int format, db::XMLElement* element) override;
 		virtual bool writeValueXML(int format, SaverXML* saver) override;
 		virtual uint32_t size() const override { return m_values.size(); };
 		virtual bool empty() const override { return m_values.empty(); };

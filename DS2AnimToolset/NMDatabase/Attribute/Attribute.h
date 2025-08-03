@@ -1,5 +1,6 @@
 #pragma once
 #include "RCore.h"
+#include "XMLElement/XMLElement.h"
 
 namespace db
 {
@@ -141,6 +142,13 @@ namespace db
 		virtual bool isDatabase() const { return false; }
 		virtual std::string getName() const { return m_name; }
 		virtual void setName(const std::string& name) { m_name = name; }
+
+		/**
+		 * \brief Reads the XML element with a type attribute.
+		 * 
+		 * \return true if succeeded, false otherwise.
+		 */
+		virtual bool readValueXML(int format, db::XMLElement* xmlElement) = 0;
 
 		/**
 		 * \brief Writes the XMLElement with a type attribute.

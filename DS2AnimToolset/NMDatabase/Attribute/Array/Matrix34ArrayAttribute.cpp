@@ -67,6 +67,33 @@ namespace db
 		m_values.erase(m_values.begin() + idx);
 	}
 
+	bool Matrix34ArrayAttribute::readValueXML(int format, db::XMLElement* element)
+	{
+		if (!element)
+			return false;
+
+		m_xmlElement = element->getXmlElement();
+		m_name = element->getName();
+
+		if (!element->hasAttribute("type"))
+			throw std::runtime_error("Matrix34ArrayAttribute::readValueXML: Missing 'type' attribute in XML element.");
+
+		m_type = element->getAttribute("type");
+		if (!m_type.empty() && m_type != "matrix34Array")
+		{
+			throw std::runtime_error("Matrix34ArrayAttribute::readValueXML: Expected type 'matrix34Array'.");
+			return false;
+		}
+		
+		if (!element->getDataAsMatrix34Array(m_values))
+		{
+			throw std::runtime_error("Matrix34ArrayAttribute::readValueXML: Failed to read matrix34 array value from XML element.");
+			return false;
+		}
+
+		return true;
+	}
+
 	bool Matrix34ArrayAttribute::writeStartArrayXML(int format, SaverXML* saver) const
 	{
 		if (size() == 0)

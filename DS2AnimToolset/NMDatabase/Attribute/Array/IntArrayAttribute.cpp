@@ -35,6 +35,33 @@ namespace db
 			m_values.push_back(otherComposite->getElement(i));
 	}
 
+	bool IntArrayAttribute::readValueXML(int format, db::XMLElement* element)
+	{
+		if (!element)
+			return false;
+
+		m_xmlElement = element->getXmlElement();
+		m_name = element->getName();
+
+		if (!element->hasAttribute("type"))
+			throw std::runtime_error("IntArrayAttribute::readValueXML: Missing 'type' attribute in XML element.");
+
+		m_type = element->getAttribute("type");
+		if (!m_type.empty() && m_type != "intArray")
+		{
+			throw std::runtime_error("IntArrayAttribute::readValueXML: Expected type 'intArray'.");
+			return false;
+		}
+		
+		if (!element->getDataAsIntArray(m_values))
+		{
+			throw std::runtime_error("IntArrayAttribute::readValueXML: Failed to read int array value from XML element.");
+			return false;
+		}
+
+		return true;
+	}
+
 	bool IntArrayAttribute::writeValueXML(int format, SaverXML* saver)
 	{
 		if (writeStartArrayXML(format, saver))

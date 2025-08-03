@@ -17,6 +17,7 @@ namespace db
 		virtual void assign(Attribute* other) override;
 		virtual FloatArrayAttribute* asFloatArray() const override { return const_cast<FloatArrayAttribute*>(this); }
 		virtual bool isFloatArray() const override { return true; }
+		virtual bool readValueXML(int format, db::XMLElement* element) override;
 		virtual bool writeValueXML(int format, SaverXML* saver) override;
 		virtual uint32_t size() const override { return m_values.size(); };
 		virtual bool empty() const override { return m_values.empty(); };

@@ -141,6 +141,9 @@
     <ClCompile Include="mcd\Request\Request.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcc\MorphemeDBLoader\MorphemeDBLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -291,6 +294,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcd\RequestsNode\RequestsNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\MorphemeDBLoader\MorphemeDBLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

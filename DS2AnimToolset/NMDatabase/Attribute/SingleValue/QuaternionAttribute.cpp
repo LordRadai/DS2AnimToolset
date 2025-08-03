@@ -2,6 +2,33 @@
 
 namespace db
 {
+	bool QuaternionAttribute::readValueXML(int format, db::XMLElement* element)
+	{
+		if (!element)
+			return false;
+
+		m_xmlElement = element->getXmlElement();
+		m_name = element->getName();
+
+		if (!element->hasAttribute("type"))
+			throw std::runtime_error("QuaternionAttribute::readValueXML: Missing 'type' attribute in XML element.");
+
+		m_type = element->getAttribute("type");
+		if (!m_type.empty() && m_type != "quaternion")
+		{
+			throw std::runtime_error("QuaternionAttribute::readValueXML: Expected type 'quaternion'.");
+			return false;
+		}
+
+		if (!element->getDataAsQuat(m_value))
+		{
+			throw std::runtime_error("QuaternionAttribute::readValueXML: Failed to read quaternion value from XML element.");
+			return false;
+		}
+
+		return true;
+	}
+
 	bool QuaternionAttribute::writeValueXML(int format, SaverXML* saver)
 	{
 		m_xmlElement->InsertNewChildElement("X")->SetText(m_value.x);

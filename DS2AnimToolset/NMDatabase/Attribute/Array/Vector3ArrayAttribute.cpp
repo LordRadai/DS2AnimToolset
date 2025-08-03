@@ -35,6 +35,33 @@ namespace db
 			m_values.push_back(otherComposite->getElement(i));
 	}
 
+	bool Vector3ArrayAttribute::readValueXML(int format, db::XMLElement* element)
+	{
+		if (!element)
+			return false;
+
+		m_xmlElement = element->getXmlElement();
+		m_name = element->getName();
+
+		if (!element->hasAttribute("type"))
+			throw std::runtime_error("Vector3ArrayAttribute::readValueXML: Missing 'type' attribute in XML element.");
+
+		m_type = element->getAttribute("type");
+		if (!m_type.empty() && m_type != "vector3Array")
+		{
+			throw std::runtime_error("Vector3ArrayAttribute::readValueXML: Expected type 'vector3Array'.");
+			return false;
+		}
+		
+		if (!element->getDataAsVector3Array(m_values))
+		{
+			throw std::runtime_error("Vector3ArrayAttribute::readValueXML: Failed to read vector3 array value from XML element.");
+			return false;
+		}
+
+		return true;
+	}
+
 	bool Vector3ArrayAttribute::writeValueXML(int format, SaverXML* saver)
 	{
 		if (writeStartArrayXML(format, saver))
