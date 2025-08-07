@@ -87,8 +87,11 @@ namespace db
 
 		bool bStatus = attribute->readValueXML(3, firstDbElement, this);
 
-		m_referenceResolver->resolvePathReferences(attribute);
-		m_referenceResolver->resolveRuntimeIDReferences(attribute);
+		if (!m_referenceResolver->resolvePathReferences(attribute))
+			throw std::runtime_error("LoaderXML::onParseSuccess: Failed to resolve path references.");
+
+		if (!m_referenceResolver->resolveRuntimeIDReferences(attribute))
+			throw std::runtime_error("LoaderXML::onParseSuccess: Failed to resolve runtime ID references.");
 
 		return bStatus;
 	}
