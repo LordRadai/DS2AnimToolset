@@ -65,5 +65,7 @@ namespace db
 		Matrix34ArrayAttribute* addMatrix34ArrayAttribute(const std::string& name, const std::vector<NMP::Matrix34>& values);
 		QuaternionArrayAttribute* addQuaternionArrayAttribute(const std::string& name, const std::vector<NMP::Quat>& values);
 		Vector3ArrayAttribute* addVector3ArrayAttribute(const std::string& name, const std::vector<NMP::Vector3>& values);
+
+		Node* nodeFromDatabasePath(const std::string& path, bool fromLast) const;
 	};
 }

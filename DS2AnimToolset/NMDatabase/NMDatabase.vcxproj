@@ -177,10 +177,12 @@
     <ClCompile Include="Attribute\SingleValue\StringAttribute.cpp" />
     <ClCompile Include="Attribute\SingleValue\Vector3Attribute.cpp" />
     <ClCompile Include="Database\Database.cpp" />
+    <ClCompile Include="Loader\Loader.cpp" />
     <ClCompile Include="Loader\LoaderXML.cpp" />
     <ClCompile Include="NMDatabase.h" />
     <ClCompile Include="NodeContainer\NodeContainer.cpp" />
     <ClCompile Include="Node\Node.cpp" />
+    <ClCompile Include="ReferenceResolver\ReferenceResolver.cpp" />
     <ClCompile Include="Saver\Saver.cpp" />
     <ClCompile Include="Saver\SaverXML.cpp" />
     <ClCompile Include="XMLElement\XMLElement.cpp" />
@@ -219,6 +221,7 @@
     <ClInclude Include="Loader\LoaderXML.h" />
     <ClInclude Include="NodeContainer\NodeContainer.h" />
     <ClInclude Include="Node\Node.h" />
+    <ClInclude Include="ReferenceResolver\ReferenceResolver.h" />
     <ClInclude Include="Saver\Saver.h" />
     <ClInclude Include="Saver\SaverXML.h" />
     <ClInclude Include="XMLElement\XMLElement.h" />

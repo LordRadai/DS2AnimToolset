@@ -5,14 +5,11 @@ namespace db
 {
 	class PointerAttribute : public SingleValueAttribute
 	{
-		std::string m_value;
+		Attribute* m_value;
 	public:
 		PointerAttribute(Attribute* parent, std::string name, Attribute* to) :
-			SingleValueAttribute(parent, name, "pointer")
-		{
-			if (to)
-				m_value = to->toDatabasePath();
-		};
+			SingleValueAttribute(parent, name, "pointer"), m_value(to)
+		{};
 
 		virtual ~PointerAttribute() override {};
 		virtual bool compare(Attribute* other) override { return m_value == dynamic_cast<PointerAttribute*>(other)->getValue(); }
@@ -22,7 +19,7 @@ namespace db
 		virtual bool readValueXML(int format, db::XMLElement* element, LoaderXML* loader) override;
 		virtual bool writeValueXML(int format, SaverXML* saver) override;
 
-		virtual bool getValueAsBool() const override { return m_value.empty(); }
+		virtual bool getValueAsBool() const override { return m_value != nullptr; }
 		virtual int getValueAsEnum() const override { return 0; }
 		virtual int getValueAsInt() const override { return 0; }
 		virtual float getValueAsFloat() const override { return 0.f; }
@@ -30,9 +27,9 @@ namespace db
 		virtual NMP::Vector3 getValueAsVector3() const override { return NMP::Vector3Zero(); }
 		virtual NMP::Matrix34 getValueAsMatrix34() const override { return NMP::Matrix34Zero(); }
 		virtual NMP::Quat getValueAsQuaternion() const override { return NMP::QuatIdentity(); }
-		virtual std::string getValueAsString() const override { return m_value; }
+		virtual std::string getValueAsString() const override { return m_value->toDatabasePath(); }
 
-		std::string getValue() const { return getValueAsString(); }
-		void setValue(db::Attribute* value) { m_value = value->toDatabasePath(); }
+		Attribute* getValue() const { return m_value; }
+		void setValue(db::Attribute* value) { m_value = value; }
 	};
 }

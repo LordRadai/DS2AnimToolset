@@ -1,5 +1,7 @@
 #include "Attribute.h"
 #include "Node/Node.h"
+#include "Attribute/Array/AttributeArray.h"
+#include "CompoundAttribute/CompoundAttribute.h"
 #include "Database/Database.h"
 
 namespace db
@@ -44,4 +46,82 @@ namespace db
 
 		return m_parent->toDatabasePath() + "." + m_name;
 	}
+
+    Attribute* Attribute::attributeFromDatabasePath(const std::string& path, bool resolveLast) const 
+    {
+        if (path.empty())
+            return nullptr;
+
+        // Tokenize the path
+        std::vector<std::string> tokens;
+        std::string current;
+        bool escape = false;
+
+        for (wchar_t ch : path) 
+        {
+            if (escape) 
+            {
+                current += ch;
+                escape = false;
+            }
+            else if (ch == L'\\') 
+            {
+                escape = true;
+            }
+            else if (ch == L'.' || ch == L'[' || ch == L']') 
+            {
+                if (!current.empty()) 
+                {
+                    tokens.push_back(current);
+                    current.clear();
+                }
+            }
+            else 
+            {
+                current += ch;
+            }
+        }
+
+        if (!current.empty())
+            tokens.push_back(current);
+
+        if (tokens.empty())
+            return nullptr;
+
+        Attribute* currentAttr = const_cast<Attribute*>(this);
+        size_t end = resolveLast ? tokens.size() : tokens.size() - 1;
+
+        for (size_t i = 0; i < end; ++i) 
+        {
+            const std::string& token = tokens[i];
+
+            if (token.empty())
+                return nullptr;
+
+            if (std::all_of(token.begin(), token.end(), iswdigit)) 
+            {
+                // Token is a numeric index
+                int index = std::stoi(token);
+                if (!currentAttr->isAttributeArray()) return nullptr;
+
+                auto* attributeArray = currentAttr->asAttributeArray();
+                if (!attributeArray || index < 0 || index >= attributeArray->size()) return nullptr;
+
+                currentAttr = attributeArray->operator[](index);
+            }
+            else 
+            {
+                // Token is an attribute name
+                if (!currentAttr->isComposite()) return nullptr;
+
+                auto* composite = currentAttr->asComposite();
+                if (!composite) return nullptr;
+
+                currentAttr = composite->findAttribute(token);
+                if (!currentAttr) return nullptr;
+            }
+        }
+
+        return currentAttr;
+    }
 }

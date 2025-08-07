@@ -255,4 +255,14 @@ namespace db
 		
 		return attr;
 	}
+
+	Node* Node::nodeFromDatabasePath(const std::string& path, bool fromLast) const
+	{
+		Attribute* attr = attributeFromDatabasePath(path, fromLast);
+
+		if (attr == nullptr)
+			return nullptr;
+
+		return attr->asNode();
+	}
 }

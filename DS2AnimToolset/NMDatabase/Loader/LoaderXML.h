@@ -14,7 +14,7 @@ namespace db
 		bool onParseFailed();
 	public:
 		LoaderXML(FILE* inputStream);
-		virtual ~LoaderXML() override { delete m_xmlDocument; }
+		virtual ~LoaderXML() override;
 
 		bool load(db::Attribute* attribute);
 	};

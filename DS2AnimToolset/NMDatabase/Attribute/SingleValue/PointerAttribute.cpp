@@ -1,4 +1,5 @@
 #include "PointerAttribute.h"
+#include "Loader/LoaderXML.h"
 
 namespace db
 {
@@ -20,18 +21,18 @@ namespace db
 			return false;
 		}
 
-		if (!element->getDataAsString(m_value))
-		{
+		std::string reference;
+		if (!element->getDataAsString(reference))
 			throw std::runtime_error("PointerAttribute::readValueXML: Failed to read pointer value from XML element.");
-			return false;
-		}
+
+		loader->getReferenceResolver()->addUnresolvedReference(this, reference);
 
 		return true;
 	}
 
 	bool PointerAttribute::writeValueXML(int format, SaverXML* saver)
 	{
-		m_xmlElement->SetText(m_value.c_str());
+		m_xmlElement->SetText(m_value->toDatabasePath().c_str());
 		return true;
 	}
 }

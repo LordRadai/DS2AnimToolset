@@ -8,6 +8,17 @@ namespace db
 		m_xmlDocument = new tinyxml2::XMLDocument();
 	}
 
+	LoaderXML::~LoaderXML()
+	{
+		if (m_xmlDocument)
+		{
+			delete m_xmlDocument;
+			m_xmlDocument = nullptr;
+		}
+
+		Loader::~Loader();
+	}
+
 	bool LoaderXML::load(db::Attribute* attribute)
 	{
 		if (!attribute)

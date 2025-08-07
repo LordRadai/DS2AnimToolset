@@ -184,5 +184,7 @@ namespace db
 		{
 			return dynamic_cast<const T*>(this) != nullptr;
 		}
+
+		Attribute* attributeFromDatabasePath(const std::string& path, bool resolveLast) const;
 	};
 }
