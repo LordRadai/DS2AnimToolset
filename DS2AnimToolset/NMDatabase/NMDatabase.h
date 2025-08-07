@@ -28,5 +28,3 @@
 
 #include "Saver/SaverXML.h"
 #include "Loader/LoaderXML.h"
-
-#include "Factory/AttributeFactory.h"

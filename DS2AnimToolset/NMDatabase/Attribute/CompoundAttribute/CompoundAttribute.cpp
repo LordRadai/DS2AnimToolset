@@ -4,7 +4,7 @@ namespace db
 {
 	bool CompoundAttribute::readValueXML(int format, XMLElement* element, LoaderXML* loader)
 	{
-		if (element->getChildCount() != m_attributes.size())
+		if (element->getNumChildren() != m_attributes.size())
 		{
 			throw std::runtime_error("CompoundAttribute::readValueXML: XML element child count does not match attribute count.");
 			return false;

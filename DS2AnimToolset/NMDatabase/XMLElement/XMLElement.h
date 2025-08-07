@@ -27,7 +27,7 @@ namespace db
 
 		XMLElement* getChild(const int index) const;
 		XMLElement* findChild(const std::string& name) const;
-		uint32_t getChildCount() const { return static_cast<uint32_t>(m_children.size()); }
+		uint32_t getNumChildren() const { return static_cast<uint32_t>(m_children.size()); }
 
 		bool hasAttribute(const std::string& name) const { return m_xmlElement->Attribute(name.c_str()) != nullptr; }
 		uint32_t getAttributeCount() const;

@@ -163,7 +163,7 @@
     <ClCompile Include="Attribute\Attribute.cpp" />
     <ClCompile Include="Attribute\Array\AttributeArray.cpp" />
     <ClCompile Include="Attribute\AttributeContainer\AttributeContainer.cpp" />
-    <ClCompile Include="Factory\AttributeFactory.cpp" />
+    <ClCompile Include="Attribute\Factory\AttributeFactory.cpp" />
     <ClCompile Include="Attribute\SingleValue\BoolAttribute.cpp" />
     <ClCompile Include="Attribute\CompositeAttribute\CompositeAttribute.cpp" />
     <ClCompile Include="Attribute\CompoundAttribute\CompoundAttribute.cpp" />
@@ -199,7 +199,7 @@
     <ClInclude Include="Attribute\Attribute.h" />
     <ClInclude Include="Attribute\Array\AttributeArray.h" />
     <ClInclude Include="Attribute\AttributeContainer\AttributeContainer.h" />
-    <ClInclude Include="Factory\AttributeFactory.h" />
+    <ClInclude Include="Attribute\Factory\AttributeFactory.h" />
     <ClInclude Include="Attribute\SingleValue\BoolAttribute.h" />
     <ClInclude Include="Attribute\CompositeAttribute\CompositeAttribute.h" />
     <ClInclude Include="Attribute\CompoundAttribute\CompoundAttribute.h" />

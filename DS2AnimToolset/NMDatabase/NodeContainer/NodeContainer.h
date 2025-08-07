@@ -19,7 +19,7 @@ namespace db
 		void add(Node* node) { insertAttribute(getNumNodes(), node); }
 		void remove(Attribute* attribute) { removeAttribute(attribute); }
 		Node* getNode(int idx) const { return getAttribute(idx)->asNode(); }
-		Node* find(std::string name) const { return findAttribute(name)->asNode(); }
+		Node* find(std::string name) const;
 		bool hasNode(Node* node) const { return find(node->getName()) != nullptr; }
 		Node* front() const { return AttributeContainer::front()->asNode(); }
 		Node* back() const { return AttributeContainer::back()->asNode(); }

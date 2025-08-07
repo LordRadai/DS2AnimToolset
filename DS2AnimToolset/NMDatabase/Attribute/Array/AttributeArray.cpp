@@ -1,5 +1,5 @@
 #include "AttributeArray.h"
-#include "Factory/AttributeFactory.h"
+#include "../Factory/AttributeFactory.h"
 
 namespace db
 {
@@ -21,7 +21,7 @@ namespace db
 			return false;
 		}
 
-		for (size_t i = 0; i < element->getChildCount(); i++)
+		for (size_t i = 0; i < element->getNumChildren(); i++)
 		{
 			XMLElement* child = element->getChild(i);
 			Attribute* attr = AttributeFactory::makeAttributeFromTypeString(child->getAttribute("type"));

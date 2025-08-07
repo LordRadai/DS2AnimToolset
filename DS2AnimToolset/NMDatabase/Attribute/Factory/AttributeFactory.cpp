@@ -25,8 +25,6 @@ namespace db
 		if (typeName == "matrix34Array") return new Matrix34ArrayAttribute(nullptr, "");
 		//if (typeName == "pointerArray") return new PointerArrayAttribute(nullptr, "");
 		if (typeName == "quaternionArray") return new QuaternionArrayAttribute(nullptr, "");
-		if (typeName == "node") return new Node(nullptr, "", "");
-		if (typeName == "nodeContainer") return new NodeContainer(nullptr, "");
 
 		return nullptr; // Unknown type
 	}

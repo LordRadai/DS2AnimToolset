@@ -114,7 +114,7 @@
     <ClCompile Include="Loader\LoaderXML.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Factory\AttributeFactory.cpp">
+    <ClCompile Include="Attribute\Factory\AttributeFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -224,7 +224,7 @@
     <ClInclude Include="Loader\LoaderXML.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Factory\AttributeFactory.h">
+    <ClInclude Include="Attribute\Factory\AttributeFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

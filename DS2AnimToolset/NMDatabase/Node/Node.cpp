@@ -2,6 +2,48 @@
 
 namespace db
 {
+	bool Node::readValueXML(int format, XMLElement* element, LoaderXML* loader)
+	{
+		for (size_t i = 0; i < element->getNumChildren(); i++)
+		{
+			XMLElement* child = element->getChild(i);
+			Attribute* attr = this->findAttribute(child->getName());
+
+			if (attr == nullptr)
+			{
+				std::string type = child->getAttribute("type");
+
+				if (type == "int") attr = addIntAttribute(child->getName(), 0);
+				else if (type == "bool") attr = addBoolAttribute(child->getName(), false);
+				else if (type == "float") attr = addFloatAttribute(child->getName(), 0.0f);
+				else if (type == "double") attr = addDoubleAttribute(child->getName(), 0.0);
+				else if (type == "string") attr = addStringAttribute(child->getName(), "");
+				else if (type == "enum") attr = addEnumAttribute(child->getName(), "");
+				else if (type == "matrix34") attr = addMatrix34Attribute(child->getName(), NMP::Matrix34Identity());
+				else if (type == "quaternion") attr = addQuaternionAttribute(child->getName(), NMP::QuatIdentity());
+				else if (type == "vector3") attr = addVector3Attribute(child->getName(), NMP::Vector3Zero());
+				else if (type == "boolArray") attr = addBoolArrayAttribute(child->getName(), {});
+				else if (type == "floatArray") attr = addFloatArrayAttribute(child->getName(), {});
+				else if (type == "doubleArray") attr = addDoubleArrayAttribute(child->getName(), {});
+				else if (type == "intArray") attr = addIntArrayAttribute(child->getName(), {});
+				else if (type == "stringArray") attr = addStringArrayAttribute(child->getName(), {});
+				else if (type == "enumArray") attr = addEnumArrayAttribute(child->getName(), {});
+				else if (type == "matrix34Array") attr = addMatrix34ArrayAttribute(child->getName(), {});
+				else if (type == "quaternionArray") attr = addQuaternionArrayAttribute(child->getName(), {});
+				else if (type == "vector3Array") attr = addVector3ArrayAttribute(child->getName(), {});
+				else throw std::runtime_error("Node::readValueXML: Unknown attribute type '" + type + "' in XML element '" + child->getName() + "'.");
+			}
+
+			if (attr == nullptr)
+				throw std::runtime_error("Node::readValueXML: Failed to find or create attribute for XML element '" + child->getName() + "' in Node '." + this->getName() + "'.");
+
+			if (!attr->readValueXML(format, child, loader))
+				return false;
+		}
+
+		return true;
+	}
+
 	bool Node::writeValueXML(int format, SaverXML* saver)
 	{
 		for (size_t i = 0; i < m_attributes.size(); i++)
@@ -35,93 +77,180 @@ namespace db
 		return true;
 	}
 
-	void Node::addBoolArrayAttribute(const std::string& name, const std::vector<bool>& values)
+	BoolAttribute* Node::addBoolAttribute(const std::string& name, bool value)
 	{
-		insertAttribute(getAttributeCount(), new BoolArrayAttribute(this, name));
-		BoolArrayAttribute* attr = dynamic_cast<BoolArrayAttribute*>(back());
+		BoolAttribute* attr = new BoolAttribute(this, name, value);
+		insertAttribute(getAttributeCount(), attr);
+
+		return attr;
+	}
+
+	FloatAttribute* Node::addFloatAttribute(const std::string& name, float value)
+	{
+		FloatAttribute* attr = new FloatAttribute(this, name, value);
+		insertAttribute(getAttributeCount(), attr);
+		return attr;
+	}
+
+	DoubleAttribute* Node::addDoubleAttribute(const std::string& name, double value)
+	{
+		DoubleAttribute* attr = new DoubleAttribute(this, name, value);
+		insertAttribute(getAttributeCount(), attr);
+		return attr;
+	}
+
+	IntAttribute* Node::addIntAttribute(const std::string& name, int value)
+	{
+		IntAttribute* attr = new IntAttribute(this, name, value);
+		insertAttribute(getAttributeCount(), attr);
+		return attr;
+	}
+
+	StringAttribute* Node::addStringAttribute(const std::string& name, const std::string& value)
+	{
+		StringAttribute* attr = new StringAttribute(this, name, value);
+		insertAttribute(getAttributeCount(), attr);
+		return attr;
+	}
+
+	EnumAttribute* Node::addEnumAttribute(const std::string& name, std::string value)
+	{
+		EnumAttribute* attr = new EnumAttribute(this, name, value);
+		insertAttribute(getAttributeCount(), attr);
+		return attr;
+	}
+
+	Matrix34Attribute* Node::addMatrix34Attribute(const std::string& name, const NMP::Matrix34& value)
+	{
+		Matrix34Attribute* attr = new Matrix34Attribute(this, name, value);
+		insertAttribute(getAttributeCount(), attr);
+		return attr;
+	}
+
+	QuaternionAttribute* Node::addQuaternionAttribute(const std::string& name, const NMP::Quat& value)
+	{
+		QuaternionAttribute* attr = new QuaternionAttribute(this, name, value);
+		insertAttribute(getAttributeCount(), attr);
+		return attr;
+	}
+
+	Vector3Attribute* Node::addVector3Attribute(const std::string& name, const NMP::Vector3& value)
+	{
+		Vector3Attribute* attr = new Vector3Attribute(this, name, value);
+		insertAttribute(getAttributeCount(), attr);
+		return attr;
+	}
+
+	PointerAttribute* Node::addPointerAttribute(const std::string& name, Attribute* to)
+	{
+		PointerAttribute* attr = new PointerAttribute(this, name, to);
+		insertAttribute(getAttributeCount(), attr);
+		return attr;
+	}
+
+	BoolArrayAttribute* Node::addBoolArrayAttribute(const std::string& name, const std::vector<bool>& values)
+	{
+		BoolArrayAttribute* attr = new BoolArrayAttribute(this, name);
+		insertAttribute(getAttributeCount(), attr);
 		
 		attr->resize(static_cast<uint32_t>(values.size()));
 		for (size_t i = 0; i < values.size(); i++)
 			attr->add(values[i]);
 	}
 
-	void Node::addFloatArrayAttribute(const std::string& name, const std::vector<float>& values)
+	FloatArrayAttribute* Node::addFloatArrayAttribute(const std::string& name, const std::vector<float>& values)
 	{
-		insertAttribute(getAttributeCount(), new FloatArrayAttribute(this, name));
-		FloatArrayAttribute* attr = dynamic_cast<FloatArrayAttribute*>(back());
-
+		FloatArrayAttribute* attr = new FloatArrayAttribute(this, name);
+		insertAttribute(getAttributeCount(), attr);
+		
 		attr->resize(static_cast<uint32_t>(values.size()));
 		for (size_t i = 0; i < values.size(); i++)
 			attr->add(values[i]);
+		
+		return attr;
 	}
 
-	void Node::addDoubleArrayAttribute(const std::string& name, const std::vector<double>& values)
+	DoubleArrayAttribute* Node::addDoubleArrayAttribute(const std::string& name, const std::vector<double>& values)
 	{
-		insertAttribute(getAttributeCount(), new DoubleArrayAttribute(this, name));
-		DoubleArrayAttribute* attr = dynamic_cast<DoubleArrayAttribute*>(back());
-
+		DoubleArrayAttribute* attr = new DoubleArrayAttribute(this, name);
+		insertAttribute(getAttributeCount(), attr);
+		
 		attr->resize(static_cast<uint32_t>(values.size()));
 		for (size_t i = 0; i < values.size(); i++)
 			attr->add(values[i]);
+		
+		return attr;
 	}
 
-	void Node::addIntArrayAttribute(const std::string& name, const std::vector<int>& values)
+	IntArrayAttribute* Node::addIntArrayAttribute(const std::string& name, const std::vector<int>& values)
 	{
-		insertAttribute(getAttributeCount(), new IntArrayAttribute(this, name));
-		IntArrayAttribute* attr = dynamic_cast<IntArrayAttribute*>(back());
-
+		IntArrayAttribute* attr = new IntArrayAttribute(this, name);
+		insertAttribute(getAttributeCount(), attr);
+		
 		attr->resize(static_cast<uint32_t>(values.size()));
 		for (size_t i = 0; i < values.size(); i++)
 			attr->add(values[i]);
+		
+		return attr;
 	}
 
-	void Node::addStringArrayAttribute(const std::string& name, const std::vector<std::string>& values)
+	StringArrayAttribute* Node::addStringArrayAttribute(const std::string& name, const std::vector<std::string>& values)
 	{
-		insertAttribute(getAttributeCount(), new StringArrayAttribute(this, name));
-		StringArrayAttribute* attr = dynamic_cast<StringArrayAttribute*>(back());
-
+		StringArrayAttribute* attr = new StringArrayAttribute(this, name);
+		insertAttribute(getAttributeCount(), attr);
+		
 		attr->resize(static_cast<uint32_t>(values.size()));
 		for (size_t i = 0; i < values.size(); i++)
 			attr->add(values[i]);
+		
+		return attr;
 	}
 
-	void Node::addEnumArrayAttribute(const std::string& name, const std::vector<std::string>& values)
+	EnumArrayAttribute* Node::addEnumArrayAttribute(const std::string& name, const std::vector<std::string>& values)
 	{
-		insertAttribute(getAttributeCount(), new EnumArrayAttribute(this, name));
-		EnumArrayAttribute* attr = dynamic_cast<EnumArrayAttribute*>(back());
-
+		EnumArrayAttribute* attr = new EnumArrayAttribute(this, name);
+		insertAttribute(getAttributeCount(), attr);
+		
 		attr->resize(static_cast<uint32_t>(values.size()));
 		for (size_t i = 0; i < values.size(); i++)
 			attr->add(values[i]);
+		
+		return attr;
 	}
 
-	void Node::addMatrix34ArrayAttribute(const std::string& name, const std::vector<NMP::Matrix34>& values)
+	Matrix34ArrayAttribute* Node::addMatrix34ArrayAttribute(const std::string& name, const std::vector<NMP::Matrix34>& values)
 	{
-		insertAttribute(getAttributeCount(), new Matrix34ArrayAttribute(this, name));
-		Matrix34ArrayAttribute* attr = dynamic_cast<Matrix34ArrayAttribute*>(back());
-
+		Matrix34ArrayAttribute* attr = new Matrix34ArrayAttribute(this, name);
+		insertAttribute(getAttributeCount(), attr);
+		
 		attr->resize(static_cast<uint32_t>(values.size()));
 		for (size_t i = 0; i < values.size(); i++)
 			attr->add(values[i]);
+		
+		return attr;
 	}
 
-	void Node::addQuaternionArrayAttribute(const std::string& name, const std::vector<NMP::Quat>& values)
+	QuaternionArrayAttribute* Node::addQuaternionArrayAttribute(const std::string& name, const std::vector<NMP::Quat>& values)
 	{
-		insertAttribute(getAttributeCount(), new QuaternionArrayAttribute(this, name));
-		QuaternionArrayAttribute* attr = dynamic_cast<QuaternionArrayAttribute*>(back());
-
+		QuaternionArrayAttribute* attr = new QuaternionArrayAttribute(this, name);
+		insertAttribute(getAttributeCount(), attr);
+		
 		attr->resize(static_cast<uint32_t>(values.size()));
 		for (size_t i = 0; i < values.size(); i++)
 			attr->add(values[i]);
+		
+		return attr;
 	}
 
-	void Node::addVector3ArrayAttribute(const std::string& name, const std::vector<NMP::Vector3>& values)
+	Vector3ArrayAttribute* Node::addVector3ArrayAttribute(const std::string& name, const std::vector<NMP::Vector3>& values)
 	{
-		insertAttribute(getAttributeCount(), new Vector3ArrayAttribute(this, name));
-		Vector3ArrayAttribute* attr = dynamic_cast<Vector3ArrayAttribute*>(back());
-
+		Vector3ArrayAttribute* attr = new Vector3ArrayAttribute(this, name);
+		insertAttribute(getAttributeCount(), attr);
+		
 		attr->resize(static_cast<uint32_t>(values.size()));
 		for (size_t i = 0; i < values.size(); i++)
 			attr->add(values[i]);
+		
+		return attr;
 	}
 }
