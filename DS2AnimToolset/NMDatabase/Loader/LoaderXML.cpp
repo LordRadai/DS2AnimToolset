@@ -86,7 +86,12 @@ namespace db
 		XMLElement* firstDbElement = new XMLElement(element, element->Name(), attribute, nullptr);
 
 		// Before this, we need to create the database.
-		return attribute->readValueXML(3, firstDbElement, this);
+		bool bStatus = attribute->readValueXML(3, firstDbElement, this);
+
+		m_referenceResolver->resolvePathReferences(attribute);
+		m_referenceResolver->resolveRuntimeIDReferences(attribute);
+
+		return bStatus;
 	}
 
 	bool LoaderXML::onParseFailed()
