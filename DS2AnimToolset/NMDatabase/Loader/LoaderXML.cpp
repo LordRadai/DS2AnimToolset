@@ -85,7 +85,6 @@ namespace db
 	{
 		XMLElement* firstDbElement = new XMLElement(element, element->Name(), attribute, nullptr);
 
-		// Before this, we need to create the database.
 		bool bStatus = attribute->readValueXML(3, firstDbElement, this);
 
 		m_referenceResolver->resolvePathReferences(attribute);
