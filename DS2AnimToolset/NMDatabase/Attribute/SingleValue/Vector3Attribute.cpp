@@ -10,7 +10,7 @@ namespace db
 		return std::string(buffer);
 	}
 
-	bool Vector3Attribute::readValueXML(int format, db::XMLElement* element)
+	bool Vector3Attribute::readValueXML(int format, db::XMLElement* element, LoaderXML* loader)
 	{
 		if (!element)
 			return false;

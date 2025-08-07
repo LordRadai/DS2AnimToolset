@@ -2,7 +2,7 @@
 
 namespace db
 {
-	bool EnumAttribute::readValueXML(int format, db::XMLElement* element)
+	bool EnumAttribute::readValueXML(int format, db::XMLElement* element, LoaderXML* loader)
 	{
 		if (!element)
 			return false;

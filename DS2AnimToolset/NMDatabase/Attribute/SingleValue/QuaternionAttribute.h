@@ -17,7 +17,7 @@ namespace db
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<QuaternionAttribute*>(other)->getValue(); }
 		virtual QuaternionAttribute* asQuaternion() const override { return const_cast<QuaternionAttribute*>(this); }
 		virtual bool isQuaternion() const override { return true; }
-		virtual bool readValueXML(int format, db::XMLElement* element) override;
+		virtual bool readValueXML(int format, db::XMLElement* element, LoaderXML* loader) override;
 		virtual bool writeValueXML(int format, SaverXML* saver) override;
 
 		virtual bool getValueAsBool() const override { return false; }

@@ -2,7 +2,7 @@
 
 namespace db
 {
-	bool FloatAttribute::readValueXML(int format, db::XMLElement* element)
+	bool FloatAttribute::readValueXML(int format, db::XMLElement* element, LoaderXML* loader)
 	{
 		if (!element)
 			return false;

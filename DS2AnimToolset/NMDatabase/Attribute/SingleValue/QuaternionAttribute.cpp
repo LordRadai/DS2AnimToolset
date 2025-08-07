@@ -2,7 +2,7 @@
 
 namespace db
 {
-	bool QuaternionAttribute::readValueXML(int format, db::XMLElement* element)
+	bool QuaternionAttribute::readValueXML(int format, db::XMLElement* element, LoaderXML* loader)
 	{
 		if (!element)
 			return false;

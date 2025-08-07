@@ -2,7 +2,7 @@
 
 namespace db
 {
-	bool PointerAttribute::readValueXML(int format, db::XMLElement* element)
+	bool PointerAttribute::readValueXML(int format, db::XMLElement* element, LoaderXML* loader)
 	{
 		if (!element)
 			return false;

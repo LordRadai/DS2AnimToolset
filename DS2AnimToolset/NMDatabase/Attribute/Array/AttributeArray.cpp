@@ -1,7 +1,39 @@
 #include "AttributeArray.h"
+#include "Factory/AttributeFactory.h"
 
 namespace db
 {
+	bool AttributeArray::readValueXML(int format, db::XMLElement* element, LoaderXML* loader)
+	{
+		if (!element)
+			return false;
+
+		m_xmlElement = element->getXmlElement();
+		m_name = element->getName();
+
+		if (!element->hasAttribute("type"))
+			throw std::runtime_error("AttributeArray::readValueXML: Missing 'type' attribute in XML element.");
+
+		m_type = element->getAttribute("type");
+		if (!m_type.empty() && m_type != "attributeArray")
+		{
+			throw std::runtime_error("AttributeArray::readValueXML: Expected type 'attributeArray'.");
+			return false;
+		}
+
+		for (size_t i = 0; i < element->getChildCount(); i++)
+		{
+			XMLElement* child = element->getChild(i);
+			Attribute* attr = AttributeFactory::makeAttributeFromTypeString(child->getAttribute("type"));
+
+			if (!attr)
+				throw std::runtime_error("AttributeArray::readValueXML: Unknown attribute type '" + std::string(child->getAttribute("type")) + "'.");
+
+			attr->readValueXML(format, child, loader);
+			this->add(attr);
+		}
+	}
+
 	bool AttributeArray::writeValueXML(int format, SaverXML* saver)
 	{
 		if (writeStartArrayXML(format, saver))

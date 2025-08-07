@@ -12,6 +12,7 @@ namespace db
 			AttributeContainer(parent, identifier, "nodeContainer") {};
 
 		virtual ~NodeContainer() override {};
+		virtual bool readValueXML(int format, db::XMLElement* element, LoaderXML* loader) override;
 		virtual bool writeValueXML(int format, SaverXML* saver) override;
 		virtual void resize(uint32_t newSize) override {}
 

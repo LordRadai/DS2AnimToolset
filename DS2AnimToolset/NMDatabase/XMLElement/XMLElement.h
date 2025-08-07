@@ -16,7 +16,7 @@ namespace db
 		std::vector<XMLElement*> m_children;
 
 	public:
-		XMLElement(const std::string& name, db::Attribute* owner, XMLElement* parent);
+		XMLElement(tinyxml2::XMLElement* element, const std::string& name, db::Attribute* owner, XMLElement* parent);
 
 		tinyxml2::XMLElement* getXmlElement() const { return m_xmlElement; }
 		XMLElement* getParent() const { return m_parent; }

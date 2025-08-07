@@ -33,6 +33,7 @@ namespace db
 	class SingleValueAttribute;
 	class ArrayAttribute;
 	class SaverXML;
+	class LoaderXML;
 
 	class Attribute
 	{
@@ -148,7 +149,7 @@ namespace db
 		 * 
 		 * \return true if succeeded, false otherwise.
 		 */
-		virtual bool readValueXML(int format, db::XMLElement* xmlElement) = 0;
+		virtual bool readValueXML(int format, db::XMLElement* xmlElement, LoaderXML* loader) = 0;
 
 		/**
 		 * \brief Writes the XMLElement with a type attribute.

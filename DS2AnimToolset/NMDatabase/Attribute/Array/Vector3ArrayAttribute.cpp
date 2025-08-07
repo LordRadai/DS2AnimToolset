@@ -35,7 +35,7 @@ namespace db
 			m_values.push_back(otherComposite->getElement(i));
 	}
 
-	bool Vector3ArrayAttribute::readValueXML(int format, db::XMLElement* element)
+	bool Vector3ArrayAttribute::readValueXML(int format, db::XMLElement* element, LoaderXML* loader)
 	{
 		if (!element)
 			return false;

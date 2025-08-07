@@ -8,16 +8,18 @@ namespace db
 		std::string m_value;
 	public:
 		PointerAttribute(Attribute* parent, std::string name, Attribute* to) :
-			SingleValueAttribute(parent, name, "pointer"),
-			m_value(to->toDatabasePath())
-		{};
+			SingleValueAttribute(parent, name, "pointer")
+		{
+			if (to)
+				m_value = to->toDatabasePath();
+		};
 
 		virtual ~PointerAttribute() override {};
 		virtual bool compare(Attribute* other) override { return m_value == dynamic_cast<PointerAttribute*>(other)->getValue(); }
 		virtual void assign(Attribute* other) override { m_value = dynamic_cast<PointerAttribute*>(other)->getValue(); }
 		virtual PointerAttribute* asPointer() const override { return const_cast<PointerAttribute*>(this); }
 		virtual bool isPointer() const override { return true; }
-		virtual bool readValueXML(int format, db::XMLElement* element) override;
+		virtual bool readValueXML(int format, db::XMLElement* element, LoaderXML* loader) override;
 		virtual bool writeValueXML(int format, SaverXML* saver) override;
 
 		virtual bool getValueAsBool() const override { return m_value.empty(); }

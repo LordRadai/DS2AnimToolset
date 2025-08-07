@@ -27,3 +27,6 @@
 #include "Database/Database.h"
 
 #include "Saver/SaverXML.h"
+#include "Loader/LoaderXML.h"
+
+#include "Factory/AttributeFactory.h"

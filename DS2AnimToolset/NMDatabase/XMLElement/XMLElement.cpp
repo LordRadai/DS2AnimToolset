@@ -2,15 +2,15 @@
 
 namespace db
 {
-	XMLElement::XMLElement(const std::string& name, db::Attribute* owner, XMLElement* parent)
-		: m_dbAttribute(owner), m_parent(parent)
+	XMLElement::XMLElement(tinyxml2::XMLElement* xmlElement, const std::string& name, db::Attribute* owner, XMLElement* parent)
+		: m_xmlElement(xmlElement), m_dbAttribute(owner), m_parent(parent)
 	{
 		m_xmlElement = parent->m_xmlElement->InsertNewChildElement(name.c_str());
 
 		m_children.reserve(m_xmlElement->ChildElementCount());
 
 		for (tinyxml2::XMLElement* child = m_xmlElement->FirstChildElement(); child != nullptr; child = child->NextSiblingElement()) 
-			m_children.push_back(new XMLElement(child->Name(), owner, this));
+			m_children.push_back(new XMLElement(child, child->Name(), owner, this));
 	}
 
 	XMLElement* XMLElement::getChild(const int index) const

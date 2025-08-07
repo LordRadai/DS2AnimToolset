@@ -163,6 +163,7 @@
     <ClCompile Include="Attribute\Attribute.cpp" />
     <ClCompile Include="Attribute\Array\AttributeArray.cpp" />
     <ClCompile Include="Attribute\AttributeContainer\AttributeContainer.cpp" />
+    <ClCompile Include="Factory\AttributeFactory.cpp" />
     <ClCompile Include="Attribute\SingleValue\BoolAttribute.cpp" />
     <ClCompile Include="Attribute\CompositeAttribute\CompositeAttribute.cpp" />
     <ClCompile Include="Attribute\CompoundAttribute\CompoundAttribute.cpp" />
@@ -176,6 +177,7 @@
     <ClCompile Include="Attribute\SingleValue\StringAttribute.cpp" />
     <ClCompile Include="Attribute\SingleValue\Vector3Attribute.cpp" />
     <ClCompile Include="Database\Database.cpp" />
+    <ClCompile Include="Loader\LoaderXML.cpp" />
     <ClCompile Include="NMDatabase.h" />
     <ClCompile Include="NodeContainer\NodeContainer.cpp" />
     <ClCompile Include="Node\Node.cpp" />
@@ -197,6 +199,7 @@
     <ClInclude Include="Attribute\Attribute.h" />
     <ClInclude Include="Attribute\Array\AttributeArray.h" />
     <ClInclude Include="Attribute\AttributeContainer\AttributeContainer.h" />
+    <ClInclude Include="Factory\AttributeFactory.h" />
     <ClInclude Include="Attribute\SingleValue\BoolAttribute.h" />
     <ClInclude Include="Attribute\CompositeAttribute\CompositeAttribute.h" />
     <ClInclude Include="Attribute\CompoundAttribute\CompoundAttribute.h" />
@@ -213,6 +216,7 @@
     <ClInclude Include="Database\Database.h" />
     <ClInclude Include="extern.h" />
     <ClInclude Include="Loader\Loader.h" />
+    <ClInclude Include="Loader\LoaderXML.h" />
     <ClInclude Include="NodeContainer\NodeContainer.h" />
     <ClInclude Include="Node\Node.h" />
     <ClInclude Include="Saver\Saver.h" />
