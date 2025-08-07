@@ -156,6 +156,8 @@ namespace db
 		attr->resize(static_cast<uint32_t>(values.size()));
 		for (size_t i = 0; i < values.size(); i++)
 			attr->add(values[i]);
+
+		return attr;
 	}
 
 	FloatArrayAttribute* Node::addFloatArrayAttribute(const std::string& name, const std::vector<float>& values)

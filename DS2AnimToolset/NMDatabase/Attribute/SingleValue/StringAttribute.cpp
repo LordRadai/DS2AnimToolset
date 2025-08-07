@@ -2,13 +2,13 @@
 
 namespace db
 {
-	bool StringAttribute::readValueXML(int format, tinyxml2::XMLElement* element)
+	bool StringAttribute::readValueXML(int format, XMLElement* element, LoaderXML* loader)
 	{
 		if (!element)
 			return false;
-		m_xmlElement = element;
-		m_name = element->Name();
-		m_type = element->Attribute("type");
+		m_xmlElement = element->getXmlElement();
+		m_name = element->getName();
+		m_type = element->getAttribute("type");
 
 		if (!m_type.empty() && m_type != "string")
 		{
