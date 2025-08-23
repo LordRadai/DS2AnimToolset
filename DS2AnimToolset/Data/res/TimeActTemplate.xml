@@ -289,10 +289,10 @@
             <ArgTemplate name="Unk10" type="float" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="300200" name="CreateKeyGuide">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
+            <ArgTemplate name="KeyGuideParamID" type="int" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="300300" name="ChrEventCtrl_300300">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
+        <EventTemplate id="300300" name="SetChrEventState">
+            <ArgTemplate name="State" type="int" hidden="false"/>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="310000" name="SpEffectCtrl">
