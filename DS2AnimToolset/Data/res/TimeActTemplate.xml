@@ -288,7 +288,7 @@
             <ArgTemplate name="Unk0C" type="float" hidden="false"/>
             <ArgTemplate name="Unk10" type="float" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="300200" name="ChrEventCtrl_300200">
+        <EventTemplate id="300200" name="CreateKeyGuide">
             <ArgTemplate name="Unk00" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="300300" name="ChrEventCtrl_300300">
