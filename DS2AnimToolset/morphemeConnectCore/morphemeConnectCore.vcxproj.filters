@@ -144,6 +144,12 @@
     <ClCompile Include="mcc\MorphemeDBLoader\MorphemeDBLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\Attribute\SingleValue\RefAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcc\GraphObjectPath\GraphObjectPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -297,6 +303,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcc\MorphemeDBLoader\MorphemeDBLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\GraphObjectPath\GraphObjectPath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
