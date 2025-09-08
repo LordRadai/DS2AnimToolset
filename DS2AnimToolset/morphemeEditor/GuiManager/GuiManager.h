@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <d3d11.h>
+#include <vector>
 
 class GuiManager
 {
@@ -20,6 +21,8 @@ public:
 	void render(ID3D11DeviceContext* pContext, ID3D11RenderTargetView* pRenderTargetView);
 
 	bool isApplicationFocused();
+
+	void clearSearchQueryWindow();
 private:
 	HWND m_window = nullptr;
 	bool m_initialised = false;
@@ -44,7 +47,6 @@ private:
 	void sceneExplorerWindow();
 	void partsManagerWindow();
 	void searchQueryWindow();
-	void clearSearchQueryWindow();
 
 	void progressIndicatorPopup();
 };

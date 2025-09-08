@@ -21,15 +21,19 @@ TimeAct::TaeTemplate* g_taeTemplate = nullptr;
 fbxsdk::FbxManager* g_pFbxManager = nullptr;
 RLog* g_appLog;
 
+MorphemeEditorApp* g_morphemeEditorApp;
+GuiManager* g_guiManager;
+RenderManager* g_renderManager;
+
 // Main code
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
     _In_ LPWSTR    lpCmdLine,
     _In_ int       nCmdShow)
 {
-    MorphemeEditorApp* morphemeEditorApp = MorphemeEditorApp::getInstance();
-    GuiManager* guiManager = GuiManager::getInstance();
-    RenderManager* renderManager = RenderManager::getInstance();
+    g_morphemeEditorApp = MorphemeEditorApp::getInstance();
+    g_guiManager = GuiManager::getInstance();
+    g_renderManager = RenderManager::getInstance();
     g_workerThread.store(WorkerThread::getInstance());
 
     DX::StepTimer timer;
@@ -79,11 +83,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     try
     {
         g_appLog->debugMessage(MsgLevel_Info, "Initialising application core module\n");
-        morphemeEditorApp->initialise();
+        g_morphemeEditorApp->initialise();
     }
     catch (const std::exception& e)
     {
-        morphemeEditorApp->shutdown();
+        g_morphemeEditorApp->shutdown();
         ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
         g_appLog->panicMessage(e.what());
@@ -95,11 +99,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         g_appLog->debugMessage(MsgLevel_Info, "Initialising rendering module\n");
 
-        renderManager->initialise(hwnd);
+        g_renderManager->initialise(hwnd);
     }
     catch (const std::exception& e)
     {
-        renderManager->shutdown();
+        g_renderManager->shutdown();
         ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
         g_appLog->panicMessage(e.what());
@@ -110,7 +114,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     try
     {
         g_appLog->debugMessage(MsgLevel_Info, "Initialising GUI module\n");
-        guiManager->initialise(hwnd, renderManager->getDeviceContext(), renderManager->getDevice());
+        g_guiManager->initialise(hwnd, g_renderManager->getDeviceContext(), g_renderManager->getDevice());
     }
     catch (const std::exception& e)
     {
@@ -133,7 +137,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             // Handle window resize (we don't resize directly in the WM_SIZE handler)
             if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
             {
-                renderManager->resize(g_ResizeWidth, g_ResizeHeight);
+                g_renderManager->resize(g_ResizeWidth, g_ResizeHeight);
                 g_ResizeWidth = g_ResizeHeight = 0;
             }
 
@@ -143,16 +147,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 {
                     const float dt = float(timer.GetElapsedSeconds());
 
-                    renderManager->update(dt);
-                    guiManager->update(dt);
-                    morphemeEditorApp->update(dt);
+                    g_renderManager->update(dt);
+                    g_guiManager->update(dt);
+                    g_morphemeEditorApp->update(dt);
                 });
 
             // Rendering
             if (timer.GetFrameCount() > 0)
-                renderManager->render();
+                g_renderManager->render();
 
-            renderManager->present();
+            g_renderManager->present();
 
             // Poll and handle messages (inputs, window resize, etc.)
             // See the WndProc() function below for our to dispatch events to the Win32 backend.
@@ -178,13 +182,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
         // Cleanup
         g_appLog->debugMessage(MsgLevel_Info, "Main app module shutdown\n");
-        morphemeEditorApp->shutdown();
+        g_morphemeEditorApp->shutdown();
 
         g_appLog->debugMessage(MsgLevel_Info, "Gui module shutdown\n");
-        guiManager->shutdown();
+        g_guiManager->shutdown();
 
         g_appLog->debugMessage(MsgLevel_Info, "Rendering module shutdown\n");
-        renderManager->shutdown();
+        g_renderManager->shutdown();
 
         ::DestroyWindow(hwnd);
         ::UnregisterClassW(wc.lpszClassName, wc.hInstance);

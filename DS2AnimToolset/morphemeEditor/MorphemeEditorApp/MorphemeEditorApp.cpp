@@ -6,6 +6,7 @@
 #include "FromSoftware/TimeAct/TaeTemplate/TaeTemplateXML/TaeTemplateXML.h"
 #include "MorphemeSystem/MorphemeDecompiler/Node/NodeUtils.h"
 #include "utils/utils.h"
+#include "GuiManager/GuiManager.h"
 #include <thread>
 
 #ifndef _DEBUG
@@ -1326,6 +1327,8 @@ void MorphemeEditorApp::loadFile()
 					if (SUCCEEDED(hr))
 					{
 						std::filesystem::path filepath = std::wstring(pszFilePath);
+
+						g_guiManager->clearSearchQueryWindow();
 
 						if (this->m_character)
 							this->m_character->destroy();
