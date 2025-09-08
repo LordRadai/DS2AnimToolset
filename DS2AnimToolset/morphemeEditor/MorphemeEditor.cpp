@@ -37,6 +37,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     //timer.SetTargetElapsedSeconds(1.f / 60.f);
 
     g_appLog = new RLog(MsgLevel_Debug, "morphemeEditor.log", APPNAME_A);
+	g_appLog->setConsoleVisibility(true);
 
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();

@@ -2051,12 +2051,8 @@ void GuiManager::searchQueryWindow()
 			{
 				ImGui::TableNextRow(ImGuiTableRowFlags_None, 20.f);
 
-				TimeAct::TaeExport::TimeActEventExportXML* result = queryResult[row];
-
 				for (size_t column = 0; column < columnCount; column++)
-				{
 					ImGui::TableSetColumnIndex(column);
-				}
 			}
 		}
 

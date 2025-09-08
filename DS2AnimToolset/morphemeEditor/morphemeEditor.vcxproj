@@ -126,7 +126,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);xinput9_1_0.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics_debug.lib;morphemeComms2_debug.lib;morphemeCore_debug.lib;morphemeSimpleBundle_debug.lib;NMPlatform_debug.lib;NMRuntimeUtils_debug.lib;d3d11.lib;morphemeExport_debug.lib;NMTinyXML_debug.lib;NMTL_debug.lib;XMD_debug.lib;RCore_debug.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);Comctl32.lib;xinput9_1_0.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics_debug.lib;morphemeComms2_debug.lib;morphemeCore_debug.lib;morphemeSimpleBundle_debug.lib;NMPlatform_debug.lib;NMRuntimeUtils_debug.lib;d3d11.lib;morphemeExport_debug.lib;NMTinyXML_debug.lib;NMTL_debug.lib;XMD_debug.lib;RCore_debug.lib</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -149,7 +149,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);xinput9_1_0.lib;d3d11.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics.lib;morphemeComms2.lib;morphemeCore.lib;morphemeSimpleBundle.lib;NMPlatform.lib;NMRuntimeUtils.lib;morphemeExport.lib;NMTinyXML.lib;NMTL.lib;XMD.lib;RCore.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);Comctl32.lib;xinput9_1_0.lib;d3d11.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics.lib;morphemeComms2.lib;morphemeCore.lib;morphemeSimpleBundle.lib;NMPlatform.lib;NMRuntimeUtils.lib;morphemeExport.lib;NMTinyXML.lib;NMTL.lib;XMD.lib;RCore.lib</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
