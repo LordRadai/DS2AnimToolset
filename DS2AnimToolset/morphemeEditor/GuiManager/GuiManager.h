@@ -23,6 +23,7 @@ public:
 private:
 	HWND m_window = nullptr;
 	bool m_initialised = false;
+	std::vector<TimeAct::TaeExport::TimeActEventExportXML*> m_queryResult;
 
 	GuiManager();
 
@@ -43,6 +44,7 @@ private:
 	void sceneExplorerWindow();
 	void partsManagerWindow();
 	void searchQueryWindow();
+	void clearSearchQueryWindow();
 
 	void progressIndicatorPopup();
 };

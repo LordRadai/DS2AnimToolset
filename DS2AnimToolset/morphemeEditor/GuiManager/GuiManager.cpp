@@ -1940,13 +1940,12 @@ void GuiManager::searchQueryWindow()
 
 	static int selectedRow = -1;
 	static int targetValue = 0;
-	static std::vector<TimeAct::TaeExport::TimeActEventExportXML*> queryResult;
 
 	if (ImGui::IsWindowAppearing())
 	{
 		selectedRow = -1;
 		targetValue = 0;
-		queryResult.clear();
+		this->m_queryResult.clear();
 	}
 
 	constexpr int rowCount = 50;
@@ -1956,10 +1955,10 @@ void GuiManager::searchQueryWindow()
 
 	if (ImGui::Button("Search"))
 	{
-		timeAct->findEventsWithId(queryResult, targetValue);
+		timeAct->findEventsWithId(this->m_queryResult, targetValue);
 		selectedRow = -1;
 
-		if (queryResult.size() == 0)
+		if (this->m_queryResult.size() == 0)
 			g_appLog->alertMessage(MsgLevel_Info, "Could not find any event with the specified ID\n");
 	}
 
@@ -1974,13 +1973,13 @@ void GuiManager::searchQueryWindow()
 		ImGui::TableSetupColumn("Event Name", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableHeadersRow();
 
-		if (queryResult.size())
+		if (this->m_queryResult.size())
 		{
-			for (size_t row = 0; row < queryResult.size(); row++)
+			for (size_t row = 0; row < this->m_queryResult.size(); row++)
 			{
 				ImGui::TableNextRow(ImGuiTableRowFlags_None, 20.f);
 
-				TimeAct::TaeExport::TimeActEventExportXML* result = queryResult[row];
+				TimeAct::TaeExport::TimeActEventExportXML* result = this->m_queryResult[row];
 
 				int groupId = result->getOwner()->getGroupId();
 				int eventId = result->getEventId();
@@ -2060,6 +2059,11 @@ void GuiManager::searchQueryWindow()
 	}
 
 	ImGui::End();
+}
+
+void GuiManager::clearSearchQueryWindow()
+{
+	m_queryResult.clear();
 }
 
 void GuiManager::progressIndicatorPopup()
