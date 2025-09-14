@@ -134,6 +134,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         try
         {
+            g_appLog->setConsoleVisibility(true);
+
             // Handle window resize (we don't resize directly in the WM_SIZE handler)
             if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
             {
