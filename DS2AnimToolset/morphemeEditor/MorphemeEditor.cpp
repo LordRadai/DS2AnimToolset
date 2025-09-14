@@ -10,8 +10,6 @@
 #include "WorkerThread/WorkerThread.h"
 #include "RCore.h"
 
-static UINT g_ResizeWidth = 0, g_ResizeHeight = 0;
-
 // Forward declarations of helper functions
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -127,13 +125,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 #ifdef _CONSOLE
             g_appLog->setConsoleVisibility(true);
 #endif
-        
-            // Handle window resize (we don't resize directly in the WM_SIZE handler)
-            if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
-            {
-                g_renderManager->resize(g_ResizeWidth, g_ResizeHeight);
-                g_ResizeWidth = g_ResizeHeight = 0;
-            }
 
             WorkerThread::getInstance()->update();
 
@@ -221,8 +212,11 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
         if (wParam == SIZE_MINIMIZED)
             return 0;
-        g_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
-        g_ResizeHeight = (UINT)HIWORD(lParam);
+
+		UINT resizeWidth = (UINT)LOWORD(lParam);
+		UINT resizeHeight = (UINT)HIWORD(lParam);
+
+        g_renderManager->resize(resizeWidth, resizeHeight);
         return 0;
     case WM_SYSCOMMAND:
         if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
