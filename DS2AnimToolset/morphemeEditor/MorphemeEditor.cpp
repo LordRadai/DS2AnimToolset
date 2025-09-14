@@ -41,7 +41,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     //timer.SetTargetElapsedSeconds(1.f / 60.f);
 
     g_appLog = new RLog(MsgLevel_Debug, "morphemeEditor.log", APPNAME_A);
+
+#ifdef _CONSOLE
 	g_appLog->setConsoleVisibility(true);
+#endif
 
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
@@ -49,19 +52,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     ::RegisterClassExW(&wc);
 
     HWND hwnd = ::CreateWindowW(wc.lpszClassName, APPNAME, WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
-
-#ifdef _CONSOLE
-    AllocConsole();
-
-    FILE* fDummy;
-    freopen_s(&fDummy, "CONOUT$", "w", stdout);
-    freopen_s(&fDummy, "CONOUT$", "w", stderr);
-    freopen_s(&fDummy, "CONIN$", "r", stdin);
-    std::cout.clear();
-    std::clog.clear();
-    std::cerr.clear();
-    std::cin.clear();
-#endif
 
     // Show the window
     ::ShowWindow(hwnd, SW_SHOWDEFAULT);
@@ -134,8 +124,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         try
         {
+#ifdef _CONSOLE
             g_appLog->setConsoleVisibility(true);
-
+#endif
+        
             // Handle window resize (we don't resize directly in the WM_SIZE handler)
             if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
             {
