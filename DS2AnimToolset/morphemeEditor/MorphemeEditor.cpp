@@ -210,14 +210,16 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     switch (msg)
     {
     case WM_SIZE:
+    {
         if (wParam == SIZE_MINIMIZED)
             return 0;
 
-		UINT resizeWidth = (UINT)LOWORD(lParam);
-		UINT resizeHeight = (UINT)HIWORD(lParam);
+        UINT resizeWidth = (UINT)LOWORD(lParam);
+        UINT resizeHeight = (UINT)HIWORD(lParam);
 
         g_renderManager->resize(resizeWidth, resizeHeight);
         return 0;
+    }
     case WM_SYSCOMMAND:
         if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
             return 0;
