@@ -764,8 +764,6 @@ void GuiManager::shutdown()
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
-
-	delete this;
 }
 
 void GuiManager::rootWindow()

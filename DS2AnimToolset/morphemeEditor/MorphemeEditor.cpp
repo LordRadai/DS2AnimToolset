@@ -179,7 +179,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
         g_appLog->debugMessage(MsgLevel_Info, "Exit\n");
-
         g_appLog->shutdown();
 
         delete g_appLog;
