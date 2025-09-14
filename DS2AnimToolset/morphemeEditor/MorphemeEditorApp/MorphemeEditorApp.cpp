@@ -1214,6 +1214,8 @@ void MorphemeEditorApp::shutdown()
 		delete this->_instance;
 
 	MorphemeSystem::termMorpheme();
+
+	delete this;
 }
 
 void MorphemeEditorApp::loadSettings()

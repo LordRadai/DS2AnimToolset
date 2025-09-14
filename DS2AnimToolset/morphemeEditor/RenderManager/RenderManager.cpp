@@ -128,6 +128,8 @@ void RenderManager::shutdown()
     this->m_fontItalic.reset();
 
     this->clearD3DDevice();
+
+    delete this;
 }
 
 void RenderManager::createResources()
