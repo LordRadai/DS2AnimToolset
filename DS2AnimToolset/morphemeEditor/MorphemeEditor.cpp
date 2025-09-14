@@ -217,7 +217,9 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         UINT resizeWidth = (UINT)LOWORD(lParam);
         UINT resizeHeight = (UINT)HIWORD(lParam);
 
-        g_renderManager->resize(resizeWidth, resizeHeight);
+        if (g_renderManager->isInitialised())
+            g_renderManager->resize(resizeWidth, resizeHeight);
+
         return 0;
     }
     case WM_SYSCOMMAND:
