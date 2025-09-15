@@ -10,7 +10,48 @@ namespace mcd
         m_isWeakRef(new BoolAttribute(this, "IsWeakRef", isWeakRef))
     {
         this->addAttribute(&m_value);
+        setWeak(isWeakRef);
+
 	}
+
+    bool RefAttribute::isValueEqualTo(Attribute* attrib)
+    {
+        if (!attrib->isOfType<RefAttribute>())
+            return false;
+
+        RefAttribute* otherPtrAttrib = dynamic_cast<RefAttribute*>(attrib);
+
+        if (otherPtrAttrib->m_value.getValue() == this->m_value.getValue())
+            return true;
+
+        return false;
+    }
+
+    void RefAttribute::setRef(db::Node* node)
+    {
+        m_value.setValue(node);
+    }
+
+    void RefAttribute::setRefByPath(const std::string& path)
+    {
+
+    }
+
+    void RefAttribute::setWeak(bool weak)
+    {
+        removeAttribute(m_isWeakRef);
+
+        m_isWeakRef->setValue(weak);
+
+        if (weak)
+            addAttribute(m_isWeakRef);
+    }
+
+    void RefAttribute::setRefKind(int refKind)
+    {
+        m_refKind->setValue(refKind);
+        m_refStr->setValue(refKindAsString(refKind));
+    }
 
 	const char* RefAttribute::refKindAsString(int refKind)
 	{
