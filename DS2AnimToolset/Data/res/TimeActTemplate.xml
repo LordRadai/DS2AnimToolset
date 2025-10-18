@@ -238,15 +238,17 @@
     </EventGroupTemplate>
     <EventGroupTemplate id="260000" name="ModelCtrl">
         <EventTemplate id="260000" name="ApplyChrNetworkPhantomParameters"/>
-        <EventTemplate id="260001" name="ChrModelCtrl_260001">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
+        <EventTemplate id="260001" name="SetModelUnkInterpolation">
+            <ArgTemplate name="Mode" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="260002" name="SetModelProperty">
             <ArgTemplate name="Index" type="int" hidden="false"/>
             <ArgTemplate name="Unk04" type="float" hidden="false"/>
             <ArgTemplate name="Unk08" type="float" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="260003" name="ChrModelCtrl_260003"/>
+        <EventTemplate id="260003" name="SetMaterial">
+            <ArgTemplate name="Type" type="int" hidden="false"/>
+        </EventTemplate>
         <EventTemplate id="260004" name="AdjustModelOpacity">
             <ArgTemplate name="FadeOut Speed" type="float" hidden="false"/>
             <ArgTemplate name="FadeIn Speed" type="float" hidden="false"/>
@@ -257,7 +259,7 @@
             <ArgTemplate name="Index" type="byte" hidden="false"/>
             <ArgTemplate name="State" type="byte" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="260006" name="ChrModelCtrl_260006"/>
+        <EventTemplate id="260006" name="SetUnkCollision"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="270000" name="ChrPartsCtrl">
         <EventTemplate id="270000" name="DisablePartsCollision">
