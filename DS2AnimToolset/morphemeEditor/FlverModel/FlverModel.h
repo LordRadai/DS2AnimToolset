@@ -13,6 +13,7 @@
 #include "fromloader/fromloader.h"
 #include "MorphemeSystem/MorphemeSystem.h"
 #include "AnimObject/AnimObject.h"
+#include <PrimitiveBatch.h>
 
 class RenderManager;
 
@@ -182,4 +183,7 @@ private:
 	std::vector<Matrix> computeBoneRelativeTransforms();
 	void transformMesh(int meshIdx, const std::vector<Matrix>& boneRelativeTransforms);
 	void transformVertex(int meshIdx, int vertexIndex, const std::vector<Matrix>& boneRelativeTransforms);
+
+	void drawFlverBones(RenderManager* renderManager, DirectX::PrimitiveBatch<DirectX::VertexPositionColor>& prim);
+	void drawMorphemeBones(RenderManager* renderManager, DirectX::PrimitiveBatch<DirectX::VertexPositionColor>& prim);
 };

@@ -89,6 +89,9 @@ namespace
 
 	Matrix getFlverBoneTransform(cfr::FLVER2* flver, int bone_id)
 	{
+		if (bone_id > flver->header.boneCount)
+			return Matrix::Identity;
+
 		Matrix transform = Matrix::CreateScale(flver->bones[bone_id].scale.x, flver->bones[bone_id].scale.y, flver->bones[bone_id].scale.z);
 		transform *= Matrix::CreateRotationX(flver->bones[bone_id].rot.x);
 		transform *= Matrix::CreateRotationZ(flver->bones[bone_id].rot.z);
@@ -190,24 +193,18 @@ namespace
 		return transform;
 	}
 
-	void applyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix> bindPose, Matrix transform, int boneID)
+	void applyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix>& bindPose, const Matrix& transform, int boneID)
 	{
-		// Transform the bone
-		buffer[boneID] = bindPose[boneID] * transform;
+		// Compute this bone’s world transform
+		Matrix worldTransform = bindPose[boneID] * transform;
+		buffer[boneID] = worldTransform;
 
-		// Transforms all the children of the current bone
+		// Traverse the bone hierarchy
 		int childIndex = flv->bones[boneID].childIndex;
-
-		if (childIndex != -1)
+		while (childIndex != -1)
 		{
-			buffer[childIndex] = bindPose[childIndex] * transform;
-			int siblingIndex = flv->bones[childIndex].nextSiblingIndex;
-
-			while (siblingIndex != -1)
-			{
-				buffer[siblingIndex] = bindPose[siblingIndex] * transform;
-				siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
-			}
+			applyTransform(buffer, flv, bindPose, worldTransform, childIndex);
+			childIndex = flv->bones[childIndex].nextSiblingIndex;
 		}
 	}
 }
@@ -663,40 +660,46 @@ int FlverModel::findValidBoneIndex(int boneID)
 
 void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex)
 {
-	// Count the total weight of all the bone influences
-	float totalWeight = 0.f;
-	for (size_t wt = 0; wt < 4; wt++)
-	{
-		const int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(skinnedVertex.boneIndices[wt]);
+	constexpr float EPS = 1e-6f;
 
-		// Only factor in the bones that are present in the morpheme rig
-		if (morphemeBoneID != -1)
-			totalWeight += skinnedVertex.boneWeights[wt];
-	}
-
-	if (totalWeight != 0.f)
+	for (int iter = 0; iter < MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS; ++iter)
 	{
-		if (totalWeight != 1.f)
+		float totalWeight = 0.f;
+		for (size_t wt = 0; wt < 4; ++wt)
 		{
-			for (size_t wt = 0; wt < 4; wt++)
-				skinnedVertex.boneWeights[wt] /= totalWeight;
+			const int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(skinnedVertex.boneIndices[wt]);
+			if (morphemeBoneID != -1)
+				totalWeight += skinnedVertex.boneWeights[wt];
 		}
-	}
-	else
-	{
-		for (size_t wt = 0; wt < 4; wt++)
+
+		if (std::fabs(totalWeight) > EPS)
+		{
+			if (std::fabs(totalWeight - 1.f) > EPS)
+			{
+				for (size_t wt = 0; wt < 4; ++wt)
+					skinnedVertex.boneWeights[wt] /= totalWeight;
+			}
+			return; // normalized successfully
+		}
+
+		// totalWeight == 0 -> try to replace invalid indices with valid nearby bones
+		bool replacedAny = false;
+		for (size_t wt = 0; wt < 4; ++wt)
 		{
 			const int boneID = skinnedVertex.boneIndices[wt];
 			int influenceBoneID = findValidBoneIndex(boneID);
-
-			if (influenceBoneID == -1)
-				throw std::runtime_error("Failed to find a valid bone index for skinned vertex influence." + std::string("boneID=") + std::to_string(boneID));
-
-			skinnedVertex.boneIndices[wt] = influenceBoneID;
+			if (influenceBoneID != -1 && influenceBoneID != boneID)
+			{
+				skinnedVertex.boneIndices[wt] = influenceBoneID;
+				replacedAny = true;
+			}
 		}
 
-		validateSkinnedVertexData(skinnedVertex);
+		if (!replacedAny)
+			break; // cannot fix further
 	}
+
+	throw std::runtime_error("Failed to find a valid bone index for skinned vertex influence.");
 }
 
 // Gets all the model vertices for all the meshes and stores them into m_verts
@@ -761,12 +764,12 @@ bool FlverModel::initialise()
 			}
 		}
 
-		facesetp->triangulate();
-
 		std::vector<SkinnedVertex> meshSkinnedVertices;
 
 		if (facesetp)
 		{
+			facesetp->triangulate();
+
 			meshSkinnedVertices.reserve(facesetp->triCount);
 
 			for (int j = 0; j < facesetp->triCount; j++)
@@ -815,6 +818,10 @@ bool FlverModel::initialise()
 				validateSkinnedVertexData(meshSkinnedVertices.back());
 			}
 		}
+		else
+		{
+			g_appLog->debugMessage(MsgLevel_Warn, "Could not find a valid faceset for mesh %d\n", i);
+		}
 
 		this->m_meshVerticesBindPoseTransforms.push_back(meshSkinnedVertices);
 	}
@@ -856,8 +863,6 @@ void FlverModel::update(float dt)
 //Draws the character
 void FlverModel::draw(RenderManager* renderManager)
 {
-	const Vector4 boneMarkerColor = RMath::getFloatColor(IM_COL32(51, 102, 255, 255));
-
 	Matrix world = this->getWorldMatrix();
 
 	renderManager->applyDebugEffect(world);
@@ -897,29 +902,8 @@ void FlverModel::draw(RenderManager* renderManager)
 
 	if (this->m_settings.drawBones && this->m_flver)
 	{
-		for (size_t i = 0; i < boneCount; i++)
-		{
-			int morphemeBoneIdx = this->getMorphemeBoneIdByFlverBoneId(i);
-
-			if ((morphemeBoneIdx == -1) || (i == trajectoryBoneIndex) || (i == characterRootBoneIdx))
-				continue;
-
-			int parentIndex = this->m_flver->bones[i].parentIndex;
-
-			if (parentIndex != -1)
-			{
-				Vector3 boneA = Vector3::Transform(Vector3::Zero, this->m_boneTransforms[i]);
-				Vector3 boneB = Vector3::Transform(Vector3::Zero, this->m_boneTransforms[parentIndex]);
-
-				DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, boneMarkerColor);
-
-				if (this->m_flver->bones[i].childIndex == -1)
-					DX::Draw(&prim, DirectX::BoundingSphere(boneA, 0.03f), boneMarkerColor);
-			}
-		}
-
-		DX::DrawSphere(&prim, *this->getFlverRootBoneGlobalTransform(), 0.03f, DirectX::Colors::MediumBlue);
-		DX::DrawReferenceFrame(&prim, *this->getFlverTrajectoryBoneGlobalTransform());
+		drawFlverBones(renderManager, prim);
+		drawMorphemeBones(renderManager, prim);
 	}
 
 	if (this->m_settings.drawBoundingBox)
@@ -1052,8 +1036,10 @@ Matrix FlverModel::getDummyPolygonTransform(int id)
 
 FlverModel::SkinnedVertex* FlverModel::getVertex(int meshIdx, int idx)
 {
-	if (meshIdx > this->m_meshVerticesTransforms.size() || idx > this->m_meshVerticesTransforms[meshIdx].size())
-		return nullptr;
+	if (meshIdx < 0) return nullptr;
+	if (static_cast<size_t>(meshIdx) >= this->m_meshVerticesTransforms.size()) return nullptr;
+	if (idx < 0) return nullptr;
+	if (static_cast<size_t>(idx) >= this->m_meshVerticesTransforms[meshIdx].size()) return nullptr;
 
 	return &this->m_meshVerticesTransforms[meshIdx][idx];
 }
@@ -1221,39 +1207,95 @@ void FlverModel::transformMesh(int meshIdx, const std::vector<Matrix>& boneRelat
 
 void FlverModel::transformVertex(int meshIdx, int vertexIndex, const std::vector<Matrix>& boneRelativeTransforms)
 {
-	int* indices = this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].boneIndices;
-	float* weights = this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].boneWeights;
+    const auto& bindVertex = this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex];
+    int constIndices[4];
+    float constWeights[4];
+    std::copy(std::begin(bindVertex.boneIndices), std::end(bindVertex.boneIndices), std::begin(constIndices));
+    std::copy(std::begin(bindVertex.boneWeights), std::end(bindVertex.boneWeights), std::begin(constWeights));
 
-	Vector3 newPos = Vector3::Zero;
-	Vector3 newNorm = Vector3::Zero;
-	bool hasInfluence = false;
+    Vector3 newPos = Vector3::Zero;
+    Vector3 newNorm = Vector3::Zero;
+    bool hasInfluence = false;
 
-	for (int wt = 0; wt < 4; wt++)
+    for (int wt = 0; wt < 4; ++wt)
+    {
+        const int boneID = constIndices[wt];
+        if (boneID == -1) continue;
+
+        const float weight = constWeights[wt];
+        if (weight == 0.f) continue;
+
+        // one map lookup per weight
+        const int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(boneID);
+        if (morphemeBoneID == -1) continue;
+
+        hasInfluence = true;
+        newPos += Vector3::Transform(bindVertex.vertexData.position, boneRelativeTransforms[boneID]) * weight;
+        newNorm += Vector3::Transform(bindVertex.vertexData.normal, boneRelativeTransforms[boneID]) * weight;
+    }
+
+    if (!hasInfluence)
+        g_appLog->debugMessage(MsgLevel_Debug, "Vertex %d of mesh %d has an invalid influence\n", vertexIndex, meshIdx);
+
+    this->m_meshVerticesTransforms[meshIdx][vertexIndex].vertexData.position = newPos;
+    this->m_meshVerticesTransforms[meshIdx][vertexIndex].vertexData.normal = newNorm;
+}
+
+void FlverModel::drawFlverBones(RenderManager* renderManager, DirectX::PrimitiveBatch<DirectX::VertexPositionColor>& prim)
+{
+	const Vector4 boneMarkerColor = RMath::getFloatColor(IM_COL32(51, 102, 255, 255));
+
+	const int trajectoryBoneIndex = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getTrajectoryBoneIndex());
+	const int characterRootBoneIdx = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getCharacterRootBoneIndex());
+
+	for (int boneIdx = 0; boneIdx < this->m_flver->header.boneCount; boneIdx++)
 	{
-		const int boneID = indices[wt];
+		int morphemeBoneIdx = this->getMorphemeBoneIdByFlverBoneId(boneIdx);
 
-		if (boneID != -1)
+		if ((morphemeBoneIdx == -1) || (boneIdx == trajectoryBoneIndex) || (boneIdx == characterRootBoneIdx))
+			continue;
+
+		int parentIndex = this->m_flver->bones[boneIdx].parentIndex;
+
+		if (parentIndex != -1)
 		{
-			const int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(boneID);
-			const float weight = weights[wt];
+			Vector3 boneA = Vector3::Transform(Vector3::Zero, this->m_boneTransforms[boneIdx]);
+			Vector3 boneB = Vector3::Transform(Vector3::Zero, this->m_boneTransforms[parentIndex]);
 
-			if ((morphemeBoneID != -1) && (weight != 0.f))
-			{
-				hasInfluence = true;
-				newPos += Vector3::Transform(this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].vertexData.position, boneRelativeTransforms[boneID]) * weight;
-				newNorm += Vector3::Transform(this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].vertexData.normal, boneRelativeTransforms[boneID]) * weight;
-			}
+			DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, boneMarkerColor);
+
+			if (this->m_flver->bones[boneIdx].childIndex == -1)
+				DX::Draw(&prim, DirectX::BoundingSphere(boneA, 0.03f), boneMarkerColor);
 		}
 	}
 
-	if (!hasInfluence)
+	DX::DrawSphere(&prim, *this->getFlverRootBoneGlobalTransform(), 0.03f, DirectX::Colors::MediumBlue);
+	DX::DrawReferenceFrame(&prim, *this->getFlverTrajectoryBoneGlobalTransform());
+}
+
+void FlverModel::drawMorphemeBones(RenderManager* renderManager, DirectX::PrimitiveBatch<DirectX::VertexPositionColor>& prim)
+{
+	const Vector4 boneMarkerColor = RMath::getFloatColor(IM_COL32(251, 84, 43, 255));
+
+	const int trajectoryBoneIndex = this->m_nmRig->getTrajectoryBoneIndex();
+	const int characterRootBoneIdx = this->m_nmRig->getCharacterRootBoneIndex();
+
+	for (int boneIdx = 0; boneIdx < this->m_nmRig->getNumBones(); boneIdx++)
 	{
-		g_appLog->debugMessage(MsgLevel_Debug, "Vertex %d of mesh %d has an invalid influence:\n", vertexIndex, meshIdx);
-		g_appLog->debugMessage(MsgLevel_Debug, "\tIndices: (%d, %d, %d, %d)\n", indices[0], indices[1], indices[2], indices[3]);
-		g_appLog->debugMessage(MsgLevel_Debug, "\tWeights: (%.3f, %.3f, %.3f, %.3f)\n", weights[0], weights[1], weights[2], weights[3]);
-		//g_appLog->panicMessage("Invalid bone influence data for %s (meshIdx=%d, vertexIdx=%d)\n", this->m_name.c_str(), meshIdx, vertexIndex);
+		if ((boneIdx == trajectoryBoneIndex) || (boneIdx == characterRootBoneIdx))
+			continue;
+
+		int parentIndex = this->m_nmRig->getParentBoneIndex(boneIdx);
+
+		if (parentIndex != -1)
+		{
+			Vector3 boneA = Vector3::Transform(Vector3::Zero, this->m_morphemeBoneTransforms[boneIdx]);
+			Vector3 boneB = Vector3::Transform(Vector3::Zero, this->m_morphemeBoneTransforms[parentIndex]);
+
+			DX::DrawLine(&prim, boneB, boneA, boneMarkerColor);
+		}
 	}
 
-	this->m_meshVerticesTransforms[meshIdx][vertexIndex].vertexData.position = newPos;
-	this->m_meshVerticesTransforms[meshIdx][vertexIndex].vertexData.normal = newNorm;
+	DX::DrawSphere(&prim, *this->getMorphemeRootBoneGlobalTransform(), 0.03f, DirectX::Colors::MediumSeaGreen);
+	DX::DrawReferenceFrame(&prim, *this->getMorphemeTrajectoryBoneGlobalTransform());
 }
