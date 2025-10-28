@@ -118,7 +118,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         try
         {
+#ifdef _CONSOLE
             g_appLog->setConsoleVisibility(true);
+#endif
 
             WorkerThread::getInstance()->update();
 
