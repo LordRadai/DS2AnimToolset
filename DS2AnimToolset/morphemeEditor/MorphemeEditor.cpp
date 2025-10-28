@@ -39,13 +39,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     //timer.SetTargetElapsedSeconds(1.f / 60.f);
 
     g_appLog = new RLog(MsgLevel_Debug, "morphemeEditor.log", "MorphemeEditor Console");
-
-#ifdef _CONSOLE
-	g_appLog->setConsoleVisibility(true);
-#endif
+    g_appLog->setConsoleVisibility(true);
 
     // Create application window
-    //ImGui_ImplWin32_EnableDpiAwareness();
+    ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, hInstance, LoadIcon(hInstance, MAKEINTRESOURCE(IDC_ICON)), LoadCursor(nullptr, IDC_ARROW), nullptr, nullptr, MAKEINTRESOURCEW(IDC_ICON),  LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SMALL)) };
     ::RegisterClassExW(&wc);
 
