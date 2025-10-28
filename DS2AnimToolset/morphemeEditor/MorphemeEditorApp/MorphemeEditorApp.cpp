@@ -1002,6 +1002,7 @@ void MorphemeEditorApp::update(float dt)
 			modelCtrl->setDrawDummies(this->m_previewFlags.drawDummies);
 			modelCtrl->setDrawMeshes(this->m_previewFlags.drawMeshes);
 			modelCtrl->setDrawBones(this->m_previewFlags.drawBones);
+			modelCtrl->setDrawMorphemeBones(this->m_previewFlags.drawMorphemeBones);
 			modelCtrl->setDrawBoundingBox(this->m_previewFlags.drawBoundingBoxes);
 		}
 	}

@@ -56,6 +56,7 @@ public:
 	void setDisplayMode(DisplayMode mode);
 	void setDrawDummies(bool show);
 	void setDrawBones(bool show);
+	void setDrawMorphemeBones(bool show);
 	void setDrawMeshes(bool show);
 	void setDrawBoundingBox(bool show);
 	void setScale(float scale);

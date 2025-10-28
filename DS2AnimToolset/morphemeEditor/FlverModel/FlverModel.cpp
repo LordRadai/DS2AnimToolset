@@ -901,10 +901,10 @@ void FlverModel::draw(RenderManager* renderManager)
 	}
 
 	if (this->m_settings.drawBones && this->m_flver)
-	{
 		drawFlverBones(renderManager, prim);
+
+	if (this->m_settings.drawMorphemeBones && this->m_nmRig)
 		drawMorphemeBones(renderManager, prim);
-	}
 
 	if (this->m_settings.drawBoundingBox)
 	{

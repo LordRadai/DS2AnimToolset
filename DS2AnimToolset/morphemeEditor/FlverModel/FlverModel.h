@@ -47,6 +47,7 @@ public:
 		bool drawDummyPolygons = false;
 		bool drawMeshes = true;
 		bool drawBones = false;
+		bool drawMorphemeBones = false;
 		bool drawBoundingBox = false;
 		bool highlight = false;
 		int selectedBone = -1;

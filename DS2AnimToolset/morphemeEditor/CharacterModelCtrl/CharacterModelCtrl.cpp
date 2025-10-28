@@ -374,6 +374,38 @@ void CharacterModelCtrl::setDrawBones(bool show)
 		this->m_faceGen.m_fgHair->getSettings()->drawBones = false;
 }
 
+void CharacterModelCtrl::setDrawMorphemeBones(bool show)
+{
+	if (this->m_model)
+		this->m_model->getSettings()->drawMorphemeBones = show;
+	if (this->m_head)
+		this->m_head->getSettings()->drawMorphemeBones = false;
+	if (this->m_face)
+		this->m_face->getSettings()->drawMorphemeBones = false;
+	if (this->m_body)
+		this->m_body->getSettings()->drawMorphemeBones = false;
+	if (this->m_arm)
+		this->m_arm->getSettings()->drawMorphemeBones = false;
+	if (this->m_leg)
+		this->m_leg->getSettings()->drawMorphemeBones = false;
+	if (this->m_weaponRight)
+		this->m_weaponRight->getSettings()->drawMorphemeBones = false;
+	if (this->m_weaponLeft)
+		this->m_weaponLeft->getSettings()->drawMorphemeBones = false;
+	if (this->m_faceGen.m_fgFace)
+		this->m_faceGen.m_fgFace->getSettings()->drawMorphemeBones = false;
+	if (this->m_faceGen.m_fgHead)
+		this->m_faceGen.m_fgHead->getSettings()->drawMorphemeBones = false;
+	if (this->m_faceGen.m_fgEyes)
+		this->m_faceGen.m_fgEyes->getSettings()->drawMorphemeBones = false;
+	if (this->m_faceGen.m_fgEyeBrows)
+		this->m_faceGen.m_fgEyeBrows->getSettings()->drawMorphemeBones = false;
+	if (this->m_faceGen.m_fgBeard)
+		this->m_faceGen.m_fgBeard->getSettings()->drawMorphemeBones = false;
+	if (this->m_faceGen.m_fgHair)
+		this->m_faceGen.m_fgHair->getSettings()->drawMorphemeBones = false;
+}
+
 void CharacterModelCtrl::setDrawMeshes(bool show)
 {
 	if (this->m_model)

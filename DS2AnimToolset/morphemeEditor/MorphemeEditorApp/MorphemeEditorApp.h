@@ -61,6 +61,7 @@ public:
 	{
 		bool drawMeshes = true;
 		bool drawBones = true;
+		bool drawMorphemeBones = false;
 		bool drawDummies = false;
 		bool drawBoundingBoxes = false;
 		DisplayMode displayMode = kDispNormal;
