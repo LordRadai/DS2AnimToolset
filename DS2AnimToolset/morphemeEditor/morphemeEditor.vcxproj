@@ -143,6 +143,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)Morpheme4\common\NMRuntimeUtils\include;$(SolutionDir)RCore\RCore\src;$(SolutionDir)Morpheme4\common\XMD\include;$(SolutionDir)Morpheme4\common\NMTL\include;$(SolutionDir)Morpheme4\common\tinyxml;$(SolutionDir)Morpheme4\morpheme\SDK\export\include;$(ProjectDir)\include\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <Optimization>MaxSpeed</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
