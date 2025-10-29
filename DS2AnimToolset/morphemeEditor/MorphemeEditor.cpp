@@ -13,6 +13,9 @@
 // Forward declarations of helper functions
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+// Forward declare message handler from imgui_impl_win32.cpp
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 std::atomic<WorkerThread*> g_workerThread;
 MsgLevel g_logLevel = MsgLevel_Debug;
 TimeAct::TaeTemplate* g_taeTemplate = nullptr;
@@ -109,14 +112,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return 1;
     }
 
-    g_appLog->debugMessage(MsgLevel_Info, "Creating FBX Manager\n");
-    g_pFbxManager = FbxManager::Create();
-
-    // Main loop
-    bool done = false;
-    while (!done)
+    try
     {
-        try
+        g_appLog->debugMessage(MsgLevel_Info, "Creating FBX Manager\n");
+        g_pFbxManager = FbxManager::Create();
+
+        if (!g_pFbxManager)
+			throw std::runtime_error("Error: Unable to create FBX Manager!");
+
+        // Main loop
+        bool done = false;
+        while (!done)
         {
 #ifdef _CONSOLE
             g_appLog->setConsoleVisibility(true);
@@ -151,14 +157,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                     done = true;
             }
         }
-        catch (const std::exception& e)
-        {
-            g_appLog->panicMessage(e.what());
-        }
-    }
 
-    try
-    {
         WorkerThread::getInstance()->join();
 
         // Cleanup
@@ -182,15 +181,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     catch (const std::exception& e)
     {
         g_appLog->panicMessage(e.what());
-
         return 1;
     }
     
     return 0;
 }
-
-// Forward declare message handler from imgui_impl_win32.cpp
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // Win32 message handler
 // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
