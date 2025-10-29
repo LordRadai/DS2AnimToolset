@@ -8,8 +8,8 @@
 #define MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS 100
 
 bool g_bAdjustBoneTransforms = true;
-Matrix g_nmToFlverCorrectionMatrix = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateReflection(Plane(Vector3::Right));
 Matrix g_nmTrajectoryCorrectionMatrix = Matrix::CreateRotationY(DirectX::XM_PI);
+Matrix g_nmToFlverCorrectionMatrix = Matrix::CreateReflection(Plane(Vector3::Right));
 Matrix g_flverCorrectionMatrix = Matrix::CreateRotationY(DirectX::XM_PI);
 
 namespace
@@ -31,7 +31,7 @@ namespace
 		return pFlverModel->getFlverBoneIndexByName(boneName.c_str());
 	}
 
-	Matrix getNmTrajectoryTransform(MR::AnimationSourceHandle* animHandle)
+	Matrix getNmTrajectoryTransform(const MR::AnimationSourceHandle* animHandle)
 	{
 		NMP::Vector3 pos;
 		NMP::Quat rot;
@@ -67,6 +67,11 @@ namespace
 		else
 		{
 			boneLocalTransform = getAnimBoneTranform(animHandle, channelId);
+			Matrix trajTransform = getAnimBoneTranform(animHandle, rig->getTrajectoryBoneIndex());
+
+			Quaternion alignRotUp = Quaternion::FromToRotation(Vector3::UnitZ, trajTransform.Up());
+			Quaternion alignRotForward = Quaternion::FromToRotation(Vector3::UnitZ, trajTransform.Forward());
+			Quaternion alignRot = alignRotUp * alignRotForward;
 
 			int parentID = rig->getParentBoneIndex(channelId);
 
@@ -77,11 +82,7 @@ namespace
 				parentID = rig->getParentBoneIndex(parentID);
 			}
 
-			if (g_bAdjustBoneTransforms)
-			{
-				boneLocalTransform *= g_nmToFlverCorrectionMatrix;
-				boneLocalTransform *= g_nmTrajectoryCorrectionMatrix;
-			}
+			boneLocalTransform *= Matrix::CreateFromQuaternion(alignRot);
 		}
 
 		return boneLocalTransform;
@@ -100,6 +101,15 @@ namespace
 		}
 		else
 		{
+			Matrix trajTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(rig->getTrajectoryBoneIndex()), *rig->getBindPoseBonePos(rig->getTrajectoryBoneIndex()));
+
+			if (g_bAdjustBoneTransforms)
+				trajTransform *= g_nmTrajectoryCorrectionMatrix;
+
+			Quaternion alignRotUp = Quaternion::FromToRotation(Vector3::UnitZ, trajTransform.Up());
+			Quaternion alignRotForward = Quaternion::FromToRotation(Vector3::UnitZ, trajTransform.Forward());
+			Quaternion alignRot = alignRotUp * alignRotForward;
+
 			boneLocalTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(channelId), *rig->getBindPoseBonePos(channelId));
 
 			int parentIdx = rig->getParentBoneIndex(channelId);
@@ -111,11 +121,12 @@ namespace
 				parentIdx = rig->getParentBoneIndex(parentIdx);
 			}
 
+			boneLocalTransform *= Matrix::CreateFromQuaternion(alignRot);
+
 			if (g_bAdjustBoneTransforms)
 				boneLocalTransform *= g_nmToFlverCorrectionMatrix;
 		}
 		
-
 		return boneLocalTransform;
 	}
 
@@ -149,9 +160,7 @@ namespace
 		}
 
 		if (g_bAdjustBoneTransforms)
-		{
 			localTransform *= g_flverCorrectionMatrix;
-		}
 
 		return localTransform;
 	}
@@ -172,9 +181,7 @@ namespace
 		}
 
 		if (g_bAdjustBoneTransforms)
-		{
 			localTransform *= g_flverCorrectionMatrix;
-		}
 
 		return localTransform;
 	}
