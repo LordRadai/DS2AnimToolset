@@ -1185,13 +1185,20 @@ void FlverModel::animate(AnimObject* anim)
 	{
 		computeAnimationTransformBuffers(animHandle);
 
-		Matrix trajTransform = getNmTrajectoryTransform(animHandle);
+		if (this->m_settings.enableRootMotion)
+		{
+			Matrix trajTransform = getNmTrajectoryTransform(animHandle);
 
-		if (g_bAdjustBoneTransforms)
-			trajTransform *= g_nmTrajectoryCorrectionMatrix;
+			if (g_bAdjustBoneTransforms)
+				trajTransform *= g_nmTrajectoryCorrectionMatrix;
 
-		// Apply root motion
-		this->m_position = trajTransform;
+			// Apply root motion
+			this->m_position = trajTransform;
+		}
+		else
+		{
+			this->m_position = Matrix::CreateTranslation(Vector3::Zero);
+		}
 	}
 
 	// Compute the bones transform relative to their bind pose transform

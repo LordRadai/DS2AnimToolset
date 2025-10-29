@@ -1002,6 +1002,10 @@ void GuiManager::modelViewerWindow()
 
 			ImGui::Separator();
 
+			if (ImGui::MenuItem("Enable Root Motion", nullptr, previewFlags->enableRootMotion)) { previewFlags->enableRootMotion = !previewFlags->enableRootMotion; }
+
+			ImGui::Separator();
+
 			bool disabled_explorer = true;
 
 			Character* character = editorApp->getCharacter();

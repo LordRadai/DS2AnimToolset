@@ -1004,6 +1004,7 @@ void MorphemeEditorApp::update(float dt)
 			modelCtrl->setDrawBones(this->m_previewFlags.drawBones);
 			modelCtrl->setDrawMorphemeBones(this->m_previewFlags.drawMorphemeBones);
 			modelCtrl->setDrawBoundingBox(this->m_previewFlags.drawBoundingBoxes);
+			modelCtrl->setEnableRootMotion(this->m_previewFlags.enableRootMotion);
 		}
 	}
 
@@ -1237,6 +1238,7 @@ void MorphemeEditorApp::loadSettings()
 	this->m_previewFlags.drawBones = settings->getBool("ModelViewer", "draw_bones", true);
 	this->m_previewFlags.drawMorphemeBones = settings->getBool("ModelViewer", "draw_morpheme_bones", false);
 	this->m_previewFlags.drawBoundingBoxes = settings->getBool("ModelViewer", "draw_bounding_boxes", false);
+	this->m_previewFlags.enableRootMotion = settings->getBool("ModelViewer", "enable_root_motion", true);
 	this->m_previewFlags.displayMode = (DisplayMode)settings->getInt("ModelViewer", "model_disp_mode", 0);
 
 	this->m_timeActEditor->setTimeCodeFormat((TrackEditor::TimeCodeFormat)settings->getInt("TimeActEditor", "time_code_format", 0));
@@ -1262,6 +1264,7 @@ void MorphemeEditorApp::saveSettings()
 	settings->setBool("ModelViewer", "draw_bones", this->m_previewFlags.drawBones);
 	settings->setBool("ModelViewer", "draw_morpheme_bones", this->m_previewFlags.drawMorphemeBones);
 	settings->setBool("ModelViewer", "draw_bounding_boxes", this->m_previewFlags.drawBoundingBoxes);
+	settings->setBool("ModelViewer", "enable_root_motion", this->m_previewFlags.enableRootMotion);
 	settings->setInt("ModelViewer", "model_disp_mode", this->m_previewFlags.displayMode);
 
 	settings->setInt("TimeActEditor", "time_code_format", this->m_timeActEditor->getTimeCodeFormat());
