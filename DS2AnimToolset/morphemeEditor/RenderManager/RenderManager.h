@@ -50,7 +50,7 @@ public:
 	struct Settings
 	{
 		DirectX::SimpleMath::Vector4 clearColor = DirectX::SimpleMath::Vector4(0.06f, 0.06f, 0.06f, 1.f);
-		float gridScale = 400.f;
+		float gridScale = 1000.f;
 		int msaaCount = 4;
 		int msaaQuality = 0;
 	};
