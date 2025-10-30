@@ -768,7 +768,8 @@ void FlverModel::draw(RenderManager* renderManager)
 	if (this->m_settings.drawMorphemeBones && this->m_nmRig)
 		drawMorphemeBones(renderManager, prim);
 
-	//DX::DrawReferenceFrame(&prim, world);
+	if (this->m_settings.drawBones || this->m_settings.drawMorphemeBones)
+		DX::DrawReferenceFrame(&prim, world);
 
 	if (this->m_settings.drawBoundingBox)
 	{
