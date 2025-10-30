@@ -295,7 +295,9 @@ void RenderManager::render()
         DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(this->m_deviceContext);
         prim.Begin();
 
-        DX::DrawGrid(&prim, this->m_settings.gridScale * Vector3::UnitX, this->m_settings.gridScale * Vector3::UnitZ, Vector3::Zero, 100, 100, Colors::Gray);
+		Vector3 gridPosition = Vector3::Zero;
+
+        DX::DrawGrid(&prim, this->m_settings.gridScale * Vector3::UnitX, this->m_settings.gridScale * Vector3::UnitZ, Vector3::Zero, this->m_settings.gridScale, this->m_settings.gridScale, Colors::Gray);
         DX::DrawOriginMarker(&prim, Matrix::Identity, 0.5f, Colors::DarkCyan);
 
         prim.End();
@@ -307,8 +309,10 @@ void RenderManager::render()
 
         this->m_sprite->Begin();
 
+        std::string fps = RString::floatToString(1.f / this->m_dt) + " FPS";
         std::string frametime = RString::floatToString(this->m_dt) + " ms";
-        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), frametime.c_str(), Vector2(10, 40), 0, 0.5f, Colors::White, TextFlags_Shadow);
+        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), fps.c_str(), Vector2(10, 40), 0, 0.5f, Colors::White, TextFlags_Shadow);
+        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), frametime.c_str(), Vector2(10, 55), 0, 0.5f, Colors::White, TextFlags_Shadow);
 
         Camera* camera = MorphemeEditorApp::getInstance()->getCamera();
 

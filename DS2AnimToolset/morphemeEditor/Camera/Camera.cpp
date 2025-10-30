@@ -52,17 +52,21 @@ void Camera::update(float width, float height, float delta_time)
 	{
 	case kCamViewFront:
 		this->m_angles = Vector3(XM_PIDIV2, 0.f, 0.f);
+		this->m_offset = Vector3::Zero;
 		break;
 	case kCamViewTop:
 		this->m_angles = Vector3(0.f, XM_PIDIV2, 0.f);
+		this->m_offset = Vector3::Zero;
 		break;
 	case kCamViewSide:
 		this->m_angles = Vector3(0.f, 0.f, 0.f);
+		this->m_offset = Vector3::Zero;
 		break;
 	default:
-		this->handleInput(delta_time);
 		break;
 	}
+
+	this->handleInput(delta_time);
 
 	this->m_focus = this->m_targetPos + this->m_offset;
 	this->m_position = this->m_focus + Vector3(m_radius * cosf(m_angles.y) * cosf(m_angles.x), m_radius * sinf(m_angles.y), m_radius * cosf(m_angles.y) * sinf(m_angles.x));
@@ -84,23 +88,26 @@ void Camera::handleInput(float delta_time)
 
 	ImGuiIO& io = ImGui::GetIO();
 
-	if (io.MouseDown[0])
+	if (this->m_cameraView == kCamViewPerspective)
 	{
-		Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
+		if (io.MouseDown[0])
+		{
+			Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
 
-		this->updateVerticalAngle(this->m_settings->dragSpeed * drag_delta.y, delta_time);
-		this->updatePlaneAngle(this->m_settings->dragSpeed * drag_delta.x, delta_time);
+			this->updateVerticalAngle(this->m_settings->dragSpeed * drag_delta.y, delta_time);
+			this->updatePlaneAngle(this->m_settings->dragSpeed * drag_delta.x, delta_time);
 
-		register_input = true;
-	}
+			register_input = true;
+		}
 
-	if (io.MouseDown[1])
-	{
-		Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
+		if (io.MouseDown[1])
+		{
+			Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
 
-		this->updateTargetPosition(Vector3(this->m_settings->dragSpeed * drag_delta.x, this->m_settings->dragSpeed * drag_delta.y, this->m_settings->dragSpeed * drag_delta.x), delta_time);
+			this->updateTargetPosition(Vector3(this->m_settings->dragSpeed * drag_delta.x, this->m_settings->dragSpeed * drag_delta.y, this->m_settings->dragSpeed * drag_delta.x), delta_time);
 
-		register_input = true;
+			register_input = true;
+		}
 	}
 
 	if ((io.MouseWheel > FLT_EPSILON) || (io.MouseWheel < -FLT_EPSILON))
