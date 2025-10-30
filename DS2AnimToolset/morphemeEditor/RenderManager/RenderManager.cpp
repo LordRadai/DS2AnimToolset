@@ -311,10 +311,24 @@ void RenderManager::render()
 
         this->m_sprite->Begin();
 
-        std::string fps = RString::floatToString(1.f / this->m_dt) + " FPS";
-        std::string frametime = RString::floatToString(this->m_dt) + " ms";
-        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), fps.c_str(), Vector2(10, 40), 0, 0.5f, Colors::White, TextFlags_Shadow);
-        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), frametime.c_str(), Vector2(10, 55), 0, 0.5f, Colors::White, TextFlags_Shadow);
+        std::string fps = "FPS: " + RString::floatToString(1.f / this->m_dt);
+        std::string frametime = "Frametime: " + RString::floatToString(this->m_dt) + " ms";
+		std::string viewportSize = "Resolution: " + std::to_string(this->m_width) + "x" + std::to_string(this->m_height);
+
+		const Vector2 textOffset = Vector2(0, 15);
+		const Vector2 basePosition(10, 40);
+		Vector2 textPosition = basePosition;
+
+#ifdef _DEBUG
+        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), viewportSize.c_str(), textPosition, 0, 0.5f, Colors::White, TextFlags_Shadow);
+        textPosition += textOffset;
+
+        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), fps.c_str(), textPosition, 0, 0.5f, Colors::White, TextFlags_Shadow);
+		textPosition += textOffset;
+
+        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), frametime.c_str(), textPosition, 0, 0.5f, Colors::White, TextFlags_Shadow);
+		textPosition += textOffset;
+#endif
 
         Camera* camera = MorphemeEditorApp::getInstance()->getCamera();
 

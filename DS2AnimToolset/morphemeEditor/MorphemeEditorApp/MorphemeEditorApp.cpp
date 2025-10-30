@@ -1035,6 +1035,7 @@ void MorphemeEditorApp::update(float dt)
 			this->m_cameraFlags.resetCamera = false;
 
 			this->m_camera->setCameraView(Camera::kCamViewPerspective);
+			this->m_camera->setAngles(Vector3(DirectX::XM_PI / 3, 0.4f, 0));
 			this->m_camera->setOffset(Vector3::Zero);
 			this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
 		}
