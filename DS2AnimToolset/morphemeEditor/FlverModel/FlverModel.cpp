@@ -8,10 +8,10 @@
 
 #define MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS 100
 
-Matrix g_globalAdjustMatrix = Matrix::CreateRotationY(DirectX::XM_PI);
-Matrix g_nmToFlverAdjustMatrix = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateReflection(Plane(Vector3::Right));
-Matrix g_flverBoneAdjustMatrix = g_globalAdjustMatrix;
-Matrix g_flverMeshAdjustMatrix = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateReflection(Plane(Vector3::Right)) * g_flverBoneAdjustMatrix;
+Matrix g_nmToYUpAdjustMatrix = Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
+Matrix g_flverToYUpAdjustMatrix = Matrix::CreateRotationY(DirectX::XM_PI);
+Matrix g_flverBoneAdjustMatrix = g_flverToYUpAdjustMatrix * Matrix::CreateReflection(Plane(Vector3::Right));
+Matrix g_flverMeshAdjustMatrix = g_flverToYUpAdjustMatrix * Matrix::CreateRotationX(DirectX::XM_PIDIV2);
 
 namespace
 {
@@ -65,10 +65,10 @@ namespace
 		const MR::AnimRigDef* rig = animHandle->getRig();
 		dstChannel.resize(rig->getNumBones());
 
-		dstChannel[0] = g_nmToFlverAdjustMatrix;
+		dstChannel[0] = g_nmToYUpAdjustMatrix;
 
 		if (applyRootMotion)
-			dstChannel[0] = getAnimTrajectoryTransform(animHandle) * g_nmToFlverAdjustMatrix;
+			dstChannel[0] = getAnimTrajectoryTransform(animHandle) * g_nmToYUpAdjustMatrix;
 
 		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
@@ -83,7 +83,7 @@ namespace
 	void computeNmRigGlobalTransforms(std::vector<Matrix>& dstChannel, const MR::AnimRigDef* rig)
 	{
 		dstChannel.resize(rig->getNumBones());
-		dstChannel[0] = getNmRigTransform(rig, 0) * g_nmToFlverAdjustMatrix;
+		dstChannel[0] = getNmRigTransform(rig, 0) * g_nmToYUpAdjustMatrix;
 
 		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
@@ -647,8 +647,15 @@ void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVer
 // Gets all the model vertices for all the meshes and stores them into m_verts
 bool FlverModel::initialise()
 {
-	if (this->m_flver == nullptr)
+	if (this->m_flver == nullptr || this->m_nmRig == nullptr)
 		return false;
+
+	computeNmRigGlobalTransforms(this->m_nmBindPoseTransforms, this->m_nmRig);
+	this->m_nmBoneTransforms = this->m_nmBindPoseTransforms;
+
+	this->m_nmInverseBoneBindPoseTransforms.reserve(this->m_nmBindPoseTransforms.size());
+	for (size_t i = 0; i < this->m_nmBindPoseTransforms.size(); i++)
+		this->m_nmInverseBoneBindPoseTransforms.push_back(this->m_nmBindPoseTransforms[i].Invert());
 
 	computeFlvBonesGlobalTransform(this->m_flverBindPoseTransforms, this->m_flver);
 	this->m_flverBoneTransforms = this->m_flverBindPoseTransforms;
@@ -656,16 +663,6 @@ bool FlverModel::initialise()
 	this->m_flverInverseBindPoseTransforms.reserve(this->m_flverBindPoseTransforms.size());
 	for (size_t i = 0; i < this->m_flverBindPoseTransforms.size(); i++)
 		this->m_flverInverseBindPoseTransforms.push_back(this->m_flverBindPoseTransforms[i].Invert());
-
-	if (this->m_nmRig)
-	{
-		computeNmRigGlobalTransforms(this->m_nmBindPoseTransforms, this->m_nmRig);
-		this->m_nmBoneTransforms = this->m_nmBindPoseTransforms;
-
-		this->m_nmInverseBoneBindPoseTransforms.reserve(this->m_nmBindPoseTransforms.size());
-		for (size_t i = 0; i < this->m_nmBindPoseTransforms.size(); i++)
-			this->m_nmInverseBoneBindPoseTransforms.push_back(this->m_nmBindPoseTransforms[i].Invert());
-	}
 
 	this->m_meshVerticesTransforms.reserve(this->m_flver->header.meshCount);
 	this->m_meshVerticesBindPoseTransforms.reserve(this->m_flver->header.meshCount);
