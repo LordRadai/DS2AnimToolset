@@ -98,11 +98,18 @@ public:
 	cfr::FLVER2::Dummy getFlverDummy(int idx) const { return this->m_flver->dummies[idx]; }
 	cfr::FLVER2::Bone getFlverBone(int idx) const { return this->m_flver->bones[idx]; }
 	std::string getFlverBoneName(int idx);
+
 	Matrix* getFlverBoneGlobalTransform(int idx);
 	Matrix* getFlverBoneBindPoseGlobalTransform(int idx);
 
 	Matrix* getFlverRootBoneGlobalTransform();
 	Matrix* getFlverTrajectoryBoneGlobalTransform();
+
+	int getFlverTrajectoryBoneIndex();
+	int getFlverRootBoneIndex();
+
+	int getMorphemeTrajectoryBoneIndex();
+	int getMorphemeRootBoneIndex();
 
 	Vector3 getBoundingBoxMin();
 	Vector3 getBoundingBoxMax();
@@ -121,6 +128,9 @@ public:
 
 	Matrix* getMorphemeRootBoneGlobalTransform();
 	Matrix* getMorphemeTrajectoryBoneGlobalTransform();
+
+	Matrix getNmBoneRelativeTransform(int idx);
+	Matrix getFlverBoneRelativeTransform(int idx);
 
 	int getMorphemeBoneIndexByName(const char* name);
 
@@ -152,6 +162,10 @@ private:
 	std::string m_name;
 
 	Matrix m_position = Matrix::Identity;
+
+	Matrix m_trajectoryPos = Matrix::Identity;
+	Matrix m_trajectoryLastPos = Matrix::Identity;
+
 	Vector3 m_focusPoint = Vector3::Zero;
 
 	cfr::FLVER2* m_flver = nullptr;
@@ -160,12 +174,12 @@ private:
 	std::vector<int> m_morphemeToFlverBoneMap;
 	std::vector<std::vector<SkinnedVertex>> m_meshVerticesTransforms;
 	std::vector<std::vector<SkinnedVertex>> m_meshVerticesBindPoseTransforms;
-	std::vector<Matrix> m_boneTransforms;
-	std::vector<Matrix> m_boneBindPoseTransforms;
-	std::vector<Matrix> m_boneInverseBindPoseTransforms;
-	std::vector<Matrix> m_morphemeBoneTransforms;
-	std::vector<Matrix> m_morphemeBoneBindPoseTransforms;
-	std::vector<Matrix> m_morphemeInverseBoneBindPoseTransforms;
+	std::vector<Matrix> m_flverBoneTransforms;
+	std::vector<Matrix> m_flverBindPoseTransforms;
+	std::vector<Matrix> m_flverInverseBindPoseTransforms;
+	std::vector<Matrix> m_nmBoneTransforms;
+	std::vector<Matrix> m_nmBindPoseTransforms;
+	std::vector<Matrix> m_nmInverseBoneBindPoseTransforms;
 	std::vector<Matrix> m_dummyPolygons;
 	float m_scale = 1.5f;
 
@@ -174,15 +188,15 @@ private:
 	void createFlverToMorphemeBoneMap();
 	void createMorphemeToFlverBoneMap();
 
-	std::vector<Vector3> getFlverMeshVertices(int idx, bool flip);
-	std::vector<Vector3> getFlverMeshNormals(int idx, bool flip);
-	std::vector<Vector3> getFlverMeshTangents(int idx, bool flip);
-	std::vector<Vector3> getFlverMeshBiTangents(int idx, bool flip);
+	std::vector<Vector3> getFlverMeshVertices(int idx);
+	std::vector<Vector3> getFlverMeshNormals(int idx);
+	std::vector<Vector3> getFlverMeshTangents(int idx);
+	std::vector<Vector3> getFlverMeshBiTangents(int idx);
 	std::vector<Vector4> getFlverMeshBoneWeights(int idx);
 	std::vector<std::vector<int>> getFlverMeshBoneIndices(int idx);
-	void resetBoneTransformsToBindPose();
-	void computeAnimationTransformBuffers(MR::AnimationSourceHandle* animHandle);
-	std::vector<Matrix> computeBoneRelativeTransforms();
+	void resetBoneTransforms();
+	void computeAnimationTransforms(MR::AnimationSourceHandle* animHandle);
+	void computeBoneRelativeTransforms(std::vector<Matrix>& out);
 	void transformMesh(int meshIdx, const std::vector<Matrix>& boneRelativeTransforms);
 	void transformVertex(int meshIdx, int vertexIndex, const std::vector<Matrix>& boneRelativeTransforms);
 

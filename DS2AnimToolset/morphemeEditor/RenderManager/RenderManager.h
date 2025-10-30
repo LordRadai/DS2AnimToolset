@@ -97,6 +97,8 @@ public:
 	int getHeight() const { return this->m_height; }
 	Settings* getSettings() { return &this->m_settings; }
 
+	Vector3 getUpAxis() const { return this->m_upAxis; }
+
 	void applyDebugEffect(DirectX::SimpleMath::Matrix world);
 	void applyPhysicalEffect(DirectX::SimpleMath::Matrix world, float alpha);
 	void setInputLayout(InputLayoutType type);
@@ -140,6 +142,8 @@ private:
 	DirectX::SimpleMath::Matrix m_proj;
 
 	std::vector<TextItem> m_texts;
+
+	Vector3 m_upAxis = Vector3::UnitY;
 
 	RenderManager();
 

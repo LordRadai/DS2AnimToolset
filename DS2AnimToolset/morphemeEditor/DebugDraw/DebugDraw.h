@@ -149,7 +149,7 @@ namespace DX
         DirectX::XMMATRIX world, FlverModel* model, Vector4 color);
 
     void XM_CALLCONV DrawReferenceFrame(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
-        DirectX::XMMATRIX world);
+        DirectX::XMMATRIX world, float axisLenght = 1.f);
 
     void XM_CALLCONV AddOverlayText(DirectX::SpriteBatch* sprite, DirectX::SpriteFont* font, std::string text, DirectX::SimpleMath::Vector2 position, float depth, float scale, DirectX::XMVECTORF32 color, TextFlags flags);
     

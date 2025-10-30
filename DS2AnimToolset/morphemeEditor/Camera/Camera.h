@@ -22,8 +22,8 @@ public:
 	void update(float width, float height, float delta_time);
 
 	void updateRadius(float speed, float delta_time);
-	void updateTargetAngleXZ(float omega, float delta_time);
-	void updateTargetAngleY(float omega, float delta_time);
+	void updateVerticalAngle(float omega, float delta_time);
+	void updatePlaneAngle(float omega, float delta_time);
 	void updatePosition(DirectX::SimpleMath::Vector3 speed, float delta_time);
 	void updateTargetPosition(DirectX::SimpleMath::Vector3 speed, float delta_time);
 
@@ -55,7 +55,7 @@ private:
 	DirectX::SimpleMath::Matrix m_view;
 	DirectX::SimpleMath::Vector3 m_position;
 	DirectX::SimpleMath::Vector3 m_angles;
-	DirectX::SimpleMath::Vector3 m_lookAt;
+	DirectX::SimpleMath::Vector3 m_upAxis;
 	DirectX::SimpleMath::Vector3 m_targetPos;
 	DirectX::SimpleMath::Vector3 m_focus;
 	DirectX::SimpleMath::Vector3 m_offset;

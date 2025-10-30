@@ -1021,7 +1021,7 @@ void MorphemeEditorApp::update(float dt)
 
 			if (model != nullptr)
 			{
-				Matrix characterRoot = (*model->getFlverRootBoneGlobalTransform()) * model->getWorldMatrix();
+				Matrix characterRoot = (*model->getMorphemeRootBoneGlobalTransform()) * model->getWorldMatrix();
 
 				this->m_camera->setTarget(Vector3::Transform(Vector3::Zero, characterRoot));
 			} 

@@ -15,6 +15,7 @@ RenderManager::RenderManager()
     this->m_device = nullptr;
     this->m_deviceContext = nullptr;
     this->m_renderTargetView = nullptr;
+	this->m_upAxis = Vector3::UnitY;
 
     this->m_height = 1920;
     this->m_width = 1080;
@@ -89,7 +90,7 @@ void RenderManager::initialise(HWND hwnd)
     );
 
     m_view = Matrix::CreateLookAt(Vector3(2.f, 2.f, 2.f),
-        Vector3::Zero, Vector3::UnitY);
+        Vector3::Zero, m_upAxis);
     m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,
         float(this->m_width) / float(this->m_height), 0.1f, 10.f);
     m_origin = Matrix::Identity;

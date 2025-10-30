@@ -1638,20 +1638,20 @@ void XM_CALLCONV DX::DrawModelWireframe(DirectX::PrimitiveBatch<DirectX::VertexP
 }
 
 void XM_CALLCONV DX::DrawReferenceFrame(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
-    DirectX::XMMATRIX world)
+    DirectX::XMMATRIX world, float axisLenght)
 {
     Vector3 up_start, up_end;
     Vector3 forward_start, forward_end;
     Vector3 right_start, right_end;
 
     up_start = Vector3::Zero;
-    up_end = Vector3::Up / 10.f;
+    up_end = up_start + Vector3(0, axisLenght, 0);
 
     forward_start = Vector3::Zero;
-    forward_end = Vector3::Forward / 10.f;
+    forward_end = forward_start + Vector3(axisLenght, 0, 0);
 
     right_start = Vector3::Zero;
-    right_end = Vector3::Right / 10.f;
+    right_end = right_start + Vector3(0, 0, axisLenght);
 
     DX::DrawLine(batch, Vector3::Transform(up_start, world), Vector3::Transform(up_end, world), Colors::Green);
     DX::DrawLine(batch, Vector3::Transform(forward_start, world), Vector3::Transform(forward_end, world), Colors::Blue);
