@@ -740,7 +740,7 @@ void FlverModel::draw(RenderManager* renderManager)
 
 	if (this->m_settings.selectedBone != -1)
 	{
-		DX::DrawReferenceFrame(&prim, this->m_flverBoneTransforms[this->m_settings.selectedBone]);
+		DX::DrawReferenceFrame(&prim, this->m_flverBoneTransforms[this->m_settings.selectedBone], 0.1f);
 		renderManager->addText(RString::toNarrow(this->m_flver->bones[this->m_settings.selectedBone].name).c_str(), this->m_flverBoneTransforms[this->m_settings.selectedBone] * world);
 	}
 
@@ -758,7 +758,7 @@ void FlverModel::draw(RenderManager* renderManager)
 	{
 		std::string dummy_name = "Dmy_" + std::to_string(this->m_flver->dummies[this->m_settings.selectedDummy].referenceID);
 
-		DX::DrawReferenceFrame(&prim, this->m_dummyPolygons[this->m_settings.selectedDummy]);
+		DX::DrawReferenceFrame(&prim, this->m_dummyPolygons[this->m_settings.selectedDummy], 0.1f);
 		renderManager->addText(dummy_name.c_str(), this->m_dummyPolygons[this->m_settings.selectedDummy] * world);
 	}
 
@@ -768,7 +768,7 @@ void FlverModel::draw(RenderManager* renderManager)
 	if (this->m_settings.drawMorphemeBones && this->m_nmRig)
 		drawMorphemeBones(renderManager, prim);
 
-	DX::DrawReferenceFrame(&prim, world);
+	//DX::DrawReferenceFrame(&prim, world);
 
 	if (this->m_settings.drawBoundingBox)
 	{
