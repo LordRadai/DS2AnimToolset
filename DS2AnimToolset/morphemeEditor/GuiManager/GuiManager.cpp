@@ -1777,9 +1777,6 @@ void GuiManager::sceneExplorerWindow()
 	model = editorApp->getCharacter()->getCharacterModelCtrl()->getModelFg(kFgEyeBrows);
 	modelTreeNode(editorApp, model);
 
-	model = editorApp->getCharacter()->getCharacterModelCtrl()->getModelFg(kFgEyeBrows);
-	modelTreeNode(editorApp, model);
-
 	model = editorApp->getCharacter()->getCharacterModelCtrl()->getModelFg(kFgBeard);
 	modelTreeNode(editorApp, model);
 
