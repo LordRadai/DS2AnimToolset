@@ -285,7 +285,7 @@ namespace
                 return i;
         }
 
-        ibm.push_back(model->getMorphemeBoneBindPoseGlobalTransform(boneID)->Invert());
+        ibm.push_back(model->getMorphemeBoneBindPoseGlobalTransform(boneID).Invert());
 
         jointArray.push_back(boneID);
         return jointArray.size() - 1;

@@ -724,7 +724,6 @@ void FlverModel::draw(RenderManager* renderManager)
 {
 	Matrix world = this->getWorldMatrix();
 
-	//renderManager->applyDebugEffect(Matrix::Identity);
 	renderManager->setInputLayout(kDebugLayout);
 
 	DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(renderManager->getDeviceContext(), UINT16_MAX * 3, UINT16_MAX);
@@ -732,8 +731,8 @@ void FlverModel::draw(RenderManager* renderManager)
 
 	int boneCount = this->m_flverBoneTransforms.size();
 
-	int trajectoryBoneIndex = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getTrajectoryBoneIndex());
-	int characterRootBoneIdx = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getCharacterRootBoneIndex());
+	int trajectoryBoneIndex = getFlverTrajectoryBoneIndex();
+	int characterRootBoneIdx = getFlverRootBoneIndex();
 
 	if (this->m_settings.selectedBone != -1)
 	{
@@ -747,16 +746,16 @@ void FlverModel::draw(RenderManager* renderManager)
 		{
 			std::string dummy_name = "Dmy_" + std::to_string(this->m_flver->dummies[i].referenceID);
 
-			DX::DrawReferenceFrame(&prim, this->m_dummyPolygons[i], 0.1f);
-			renderManager->addText(dummy_name.c_str(), this->m_dummyPolygons[i] * world);
+			DX::DrawReferenceFrame(&prim, getDummyPolygonTransform(i), 0.1f);
+			renderManager->addText(dummy_name.c_str(), getDummyPolygonTransform(i));
 		}
 	}
 	else if (this->m_settings.selectedDummy != -1)
 	{
 		std::string dummy_name = "Dmy_" + std::to_string(this->m_flver->dummies[this->m_settings.selectedDummy].referenceID);
 
-		DX::DrawReferenceFrame(&prim, this->m_dummyPolygons[this->m_settings.selectedDummy], 0.1f);
-		renderManager->addText(dummy_name.c_str(), this->m_dummyPolygons[this->m_settings.selectedDummy] * world);
+		DX::DrawReferenceFrame(&prim, getDummyPolygonTransform(this->m_settings.selectedDummy), 0.1f);
+		renderManager->addText(dummy_name.c_str(), getDummyPolygonTransform(this->m_settings.selectedDummy));
 	}
 
 	if (this->m_settings.drawBones && this->m_flver)
@@ -766,7 +765,7 @@ void FlverModel::draw(RenderManager* renderManager)
 		drawMorphemeBones(renderManager, prim);
 
 	if (this->m_settings.drawBones || this->m_settings.drawMorphemeBones)
-		DX::DrawReferenceFrame(&prim, world);
+		DX::DrawReferenceFrame(&prim, world, 0.3f);
 
 	if (this->m_settings.drawBoundingBox)
 	{
@@ -796,17 +795,17 @@ void FlverModel::draw(RenderManager* renderManager)
 			if (this->m_settings.displayMode == kDispXRay)
 				alpha = 0.5f;
 
-			renderManager->applyPhysicalEffect(world, alpha);
+			renderManager->applyPhysicalEffect(Matrix::Identity, alpha);
 			renderManager->setInputLayout(kPhysicalLayout);
 
 			primShaded.Begin();
-			DX::DrawModel(&primShaded, Matrix::Identity, this);
+			DX::DrawModel(&primShaded, world, this);
 			primShaded.End();
 		}
 		else
 		{
 			prim.Begin();
-			DX::DrawModelWireframe(&prim, Matrix::Identity, this, Vector4(DirectX::Colors::White));
+			DX::DrawModelWireframe(&prim, world, this, Vector4(DirectX::Colors::White));
 			prim.End();
 		}
 	}
@@ -888,12 +887,12 @@ Matrix FlverModel::getDummyPolygonTransform(int id)
 	for (size_t i = 0; i < this->m_flver->header.dummyCount; i++)
 	{
 		if (this->m_flver->dummies[i].referenceID == id)
-			return this->m_dummyPolygons[i] * this->m_position;
+			return this->m_dummyPolygons[i] * this->getWorldMatrix();
 	}
 
 	g_appLog->debugMessage(MsgLevel_Error, "Could not find dummy polygon %d (%s)\n", id, this->m_name);
 
-	return Matrix::Identity;
+	return this->getWorldMatrix();
 }
 
 FlverModel::SkinnedVertex* FlverModel::getVertex(int meshIdx, int idx)
@@ -914,20 +913,20 @@ FlverModel::SkinnedVertex* FlverModel::getVertexBindPose(int meshIdx, int idx)
 	return &this->m_meshVerticesBindPoseTransforms[meshIdx][idx];
 }
 
-Matrix* FlverModel::getFlverBoneGlobalTransform(int idx)
+Matrix FlverModel::getFlverBoneGlobalTransform(int idx)
 {
 	if (idx > this->m_flverBoneTransforms.size())
-		return nullptr;
+		throw std::out_of_range("FlverModel::getFlverBoneGlobalTransform: index out of range");
 
-	return &this->m_flverBoneTransforms[idx];
+	return this->m_flverBoneTransforms[idx] * this->getWorldMatrix();
 }
 
-Matrix* FlverModel::getFlverBoneBindPoseGlobalTransform(int idx)
+Matrix FlverModel::getFlverBoneBindPoseGlobalTransform(int idx)
 {
 	if (idx > this->m_flverBindPoseTransforms.size())
-		return nullptr;
+		throw std::out_of_range("FlverModel::getFlverBoneBindPoseGlobalTransform: index out of range");
 
-	return &this->m_flverBindPoseTransforms[idx];
+	return this->m_flverBindPoseTransforms[idx] * this->getWorldMatrix();
 }
 
 int FlverModel::getMorphemeTrajectoryBoneIndex()
@@ -950,16 +949,16 @@ int FlverModel::getFlverRootBoneIndex()
 	return this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getCharacterRootBoneIndex());
 }
 
-Matrix* FlverModel::getFlverRootBoneGlobalTransform()
+Matrix FlverModel::getFlverRootBoneGlobalTransform()
 {
-	const int flverBoneIdx = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getCharacterRootBoneIndex());
+	const int flverBoneIdx = getFlverRootBoneIndex();
 
 	return this->getFlverBoneGlobalTransform(flverBoneIdx);
 }
 
-Matrix* FlverModel::getFlverTrajectoryBoneGlobalTransform()
+Matrix FlverModel::getFlverTrajectoryBoneGlobalTransform()
 {
-	const int flverBoneIdx = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getTrajectoryBoneIndex());
+	const int flverBoneIdx = getFlverTrajectoryBoneIndex();
 
 	return this->getFlverBoneGlobalTransform(flverBoneIdx);
 }
@@ -974,28 +973,28 @@ Vector3 FlverModel::getBoundingBoxMax()
 	return Vector3(this->m_flver->header.boundingBoxMax.x, this->m_flver->header.boundingBoxMax.y, this->m_flver->header.boundingBoxMax.z);
 }
 
-Matrix* FlverModel::getMorphemeBoneGlobalTransform(int idx)
+Matrix FlverModel::getMorphemeBoneGlobalTransform(int idx)
 {
 	if (idx > this->m_nmBoneTransforms.size())
-		return nullptr;
+		throw std::out_of_range("FlverModel::getMorphemeBoneGlobalTransform: index out of range");
 
-	return &this->m_nmBoneTransforms[idx];
+	return this->m_nmBoneTransforms[idx] * this->getWorldMatrix();
 }
 
-Matrix* FlverModel::getMorphemeBoneBindPoseGlobalTransform(int idx)
+Matrix FlverModel::getMorphemeBoneBindPoseGlobalTransform(int idx)
 {
 	if (idx > this->m_nmBindPoseTransforms.size())
-		return nullptr;
+		throw std::out_of_range("FlverModel::getMorphemeBoneBindPoseGlobalTransform: index out of range");
 
-	return &this->m_nmBindPoseTransforms[idx];
+	return this->m_nmBindPoseTransforms[idx] * this->getWorldMatrix();
 }
 
-Matrix* FlverModel::getMorphemeRootBoneGlobalTransform()
+Matrix FlverModel::getMorphemeRootBoneGlobalTransform()
 {
 	return this->getMorphemeBoneGlobalTransform(this->m_nmRig->getCharacterRootBoneIndex());
 }
 
-Matrix* FlverModel::getMorphemeTrajectoryBoneGlobalTransform()
+Matrix FlverModel::getMorphemeTrajectoryBoneGlobalTransform()
 {
 	return this->getMorphemeBoneGlobalTransform(this->m_nmRig->getTrajectoryBoneIndex());
 }
@@ -1140,6 +1139,8 @@ void FlverModel::drawFlverBones(RenderManager* renderManager, DirectX::Primitive
 	Matrix world = this->getWorldMatrix();
 
 	const Vector4 boneMarkerColor = RMath::getFloatColor(IM_COL32(51, 102, 255, 255));
+	const Vector4 rootBoneMarkerColor = Vector4(DirectX::Colors::Orange);
+	const Vector4 trajectoryBoneMarkerColor = Vector4(DirectX::Colors::Red);
 
 	const int trajectoryBoneIndex = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getTrajectoryBoneIndex());
 	const int characterRootBoneIdx = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getCharacterRootBoneIndex());
@@ -1155,18 +1156,23 @@ void FlverModel::drawFlverBones(RenderManager* renderManager, DirectX::Primitive
 
 		if (parentIndex != -1)
 		{
-			Vector3 boneA = Vector3::Transform(Vector3::Zero, this->m_flverBoneTransforms[boneIdx] * world);
-			Vector3 boneB = Vector3::Transform(Vector3::Zero, this->m_flverBoneTransforms[parentIndex] * world);
+			Vector3 boneA = Vector3::Transform(Vector3::Zero, getFlverBoneGlobalTransform(boneIdx));
+			Vector3 boneB = Vector3::Transform(Vector3::Zero, getFlverBoneGlobalTransform(parentIndex));
 
-			DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, boneMarkerColor);
+			Vector4 jointColor = boneMarkerColor;
+
+			if (parentIndex == getFlverRootBoneIndex())
+				jointColor = rootBoneMarkerColor;
+
+			DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, jointColor);
 
 			if (this->m_flver->bones[boneIdx].childIndex == -1)
-				DX::Draw(&prim, DirectX::BoundingSphere(boneA, 0.03f), boneMarkerColor);
+				DX::Draw(&prim, DirectX::BoundingSphere(boneA, 0.03f), jointColor);
 		}
 	}
 
-	DX::DrawSphere(&prim, *this->getFlverRootBoneGlobalTransform() * world, 0.03f, DirectX::Colors::MediumBlue);
-	DX::DrawSphere(&prim, *this->getFlverTrajectoryBoneGlobalTransform() * world, 0.03f, DirectX::Colors::Red);
+	DX::Draw(&prim, DirectX::BoundingSphere(Vector3::Transform(Vector3::Zero, getFlverRootBoneGlobalTransform()), 0.03f), rootBoneMarkerColor);
+	DX::Draw(&prim, DirectX::BoundingSphere(Vector3::Transform(Vector3::Zero, getFlverTrajectoryBoneGlobalTransform()), 0.03f), trajectoryBoneMarkerColor);
 }
 
 void FlverModel::drawMorphemeBones(RenderManager* renderManager, DirectX::PrimitiveBatch<DirectX::VertexPositionColor>& prim)
@@ -1187,13 +1193,13 @@ void FlverModel::drawMorphemeBones(RenderManager* renderManager, DirectX::Primit
 
 		if (parentIndex != -1)
 		{
-			Vector3 boneA = Vector3::Transform(Vector3::Zero, this->m_nmBoneTransforms[boneIdx] * world);
-			Vector3 boneB = Vector3::Transform(Vector3::Zero, this->m_nmBoneTransforms[parentIndex] * world);
+			Vector3 boneA = Vector3::Transform(Vector3::Zero, this->m_nmBoneTransforms[boneIdx]);
+			Vector3 boneB = Vector3::Transform(Vector3::Zero, this->m_nmBoneTransforms[parentIndex]);
 
 			DX::DrawLine(&prim, boneB, boneA, boneMarkerColor);
 		}
 	}
 
-	DX::DrawSphere(&prim, *this->getMorphemeRootBoneGlobalTransform() * world, 0.03f, DirectX::Colors::MediumSeaGreen);
-	DX::DrawSphere(&prim, *this->getMorphemeTrajectoryBoneGlobalTransform() * world, 0.03f, DirectX::Colors::Orange);
+	DX::Draw(&prim, DirectX::BoundingSphere(Vector3::Transform(Vector3::Zero, getMorphemeRootBoneGlobalTransform()), 0.03f), DirectX::Colors::Orange);
+	DX::Draw(&prim, DirectX::BoundingSphere(Vector3::Transform(Vector3::Zero, getMorphemeTrajectoryBoneGlobalTransform()), 0.03f), DirectX::Colors::Red);
 }

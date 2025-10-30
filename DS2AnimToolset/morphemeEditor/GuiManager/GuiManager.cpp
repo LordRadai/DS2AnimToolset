@@ -979,7 +979,7 @@ void GuiManager::modelViewerWindow()
 
 	if (ImGui::BeginMenuBar())
 	{
-		if (ImGui::BeginMenu("View"))
+		if (ImGui::BeginMenu("Display"))
 		{
 			if (ImGui::MenuItem("Reset Camera")) { taskFlags->resetCamera = true; }
 
@@ -992,7 +992,7 @@ void GuiManager::modelViewerWindow()
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("Model"))
+		if (ImGui::BeginMenu("Show"))
 		{
 			if (ImGui::MenuItem("Draw Meshes", nullptr, previewFlags->drawMeshes)) { previewFlags->drawMeshes = !previewFlags->drawMeshes; }
 			if (ImGui::MenuItem("Draw Bones", nullptr, previewFlags->drawBones)) { previewFlags->drawBones = !previewFlags->drawBones; }

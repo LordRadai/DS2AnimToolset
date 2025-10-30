@@ -1021,7 +1021,7 @@ void MorphemeEditorApp::update(float dt)
 
 			if (model != nullptr)
 			{
-				Matrix followJoint = (*model->getMorphemeRootBoneGlobalTransform()) * model->getWorldMatrix();
+				Matrix followJoint = model->getMorphemeRootBoneGlobalTransform();
 
 				this->m_camera->setTarget(Vector3::Transform(Vector3::Zero, followJoint));
 			} 

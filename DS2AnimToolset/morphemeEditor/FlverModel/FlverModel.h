@@ -99,11 +99,11 @@ public:
 	cfr::FLVER2::Bone getFlverBone(int idx) const { return this->m_flver->bones[idx]; }
 	std::string getFlverBoneName(int idx);
 
-	Matrix* getFlverBoneGlobalTransform(int idx);
-	Matrix* getFlverBoneBindPoseGlobalTransform(int idx);
+	Matrix getFlverBoneGlobalTransform(int idx);
+	Matrix getFlverBoneBindPoseGlobalTransform(int idx);
 
-	Matrix* getFlverRootBoneGlobalTransform();
-	Matrix* getFlverTrajectoryBoneGlobalTransform();
+	Matrix getFlverRootBoneGlobalTransform();
+	Matrix getFlverTrajectoryBoneGlobalTransform();
 
 	int getFlverTrajectoryBoneIndex();
 	int getFlverRootBoneIndex();
@@ -123,11 +123,11 @@ public:
 	MR::AnimRigDef* getRig() const { return this->m_nmRig; }
 	int getNumMorphemeBones() const { return this->m_nmRig->getNumBones(); }
 	std::string getMorphemeBoneName(int idx);
-	Matrix* getMorphemeBoneGlobalTransform(int idx);
-	Matrix* getMorphemeBoneBindPoseGlobalTransform(int idx);
+	Matrix getMorphemeBoneGlobalTransform(int idx);
+	Matrix getMorphemeBoneBindPoseGlobalTransform(int idx);
 
-	Matrix* getMorphemeRootBoneGlobalTransform();
-	Matrix* getMorphemeTrajectoryBoneGlobalTransform();
+	Matrix getMorphemeRootBoneGlobalTransform();
+	Matrix getMorphemeTrajectoryBoneGlobalTransform();
 
 	Matrix getNmBoneRelativeTransform(int idx);
 	Matrix getFlverBoneRelativeTransform(int idx);
