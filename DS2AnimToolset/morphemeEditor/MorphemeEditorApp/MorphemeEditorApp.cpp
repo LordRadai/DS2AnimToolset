@@ -67,6 +67,9 @@ namespace
 
 	float calculateOptimalCameraDistance(Camera* camera, Character* character)
 	{
+		if (character == nullptr)
+			return 5.f;
+
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
 
 		if (model == nullptr)

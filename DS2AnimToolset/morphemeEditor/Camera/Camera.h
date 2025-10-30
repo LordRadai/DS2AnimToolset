@@ -8,8 +8,9 @@ class Camera
 public:
 	struct Settings
 	{
-		float zoomSpeed = 10.f;
-		float dragSpeed = 0.3f;
+		float zoomSpeed = 50.f;
+		float moveSpeed = 1.f;
+		float rotSpeed = 0.3f;
 		bool dragInvertX = true;
 		bool dragInvertY = false;
 		bool rotInvertX = false;

@@ -94,8 +94,8 @@ void Camera::handleInput(float delta_time)
 		{
 			Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
 
-			this->updateVerticalAngle(this->m_settings->dragSpeed * drag_delta.y, delta_time);
-			this->updatePlaneAngle(this->m_settings->dragSpeed * drag_delta.x, delta_time);
+			this->updateVerticalAngle(this->m_settings->rotSpeed * drag_delta.y, delta_time);
+			this->updatePlaneAngle(this->m_settings->rotSpeed * drag_delta.x, delta_time);
 
 			register_input = true;
 		}
@@ -104,7 +104,7 @@ void Camera::handleInput(float delta_time)
 		{
 			Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
 
-			this->updateTargetPosition(Vector3(this->m_settings->dragSpeed * drag_delta.x, this->m_settings->dragSpeed * drag_delta.y, this->m_settings->dragSpeed * drag_delta.x), delta_time);
+			this->updateTargetPosition(Vector3(this->m_settings->moveSpeed * drag_delta.x, this->m_settings->moveSpeed * drag_delta.y, this->m_settings->moveSpeed * drag_delta.x), delta_time);
 
 			register_input = true;
 		}
@@ -112,7 +112,13 @@ void Camera::handleInput(float delta_time)
 
 	if ((io.MouseWheel > FLT_EPSILON) || (io.MouseWheel < -FLT_EPSILON))
 	{
-		this->updateRadius(-io.MouseWheel * this->m_settings->zoomSpeed, delta_time);
+		float zoomSpeed = this->m_settings->zoomSpeed;
+		float fastZoomSpeed = this->m_settings->zoomSpeed * 5.f;
+
+		if (io.KeyShift)
+			zoomSpeed = fastZoomSpeed;
+
+		this->updateRadius(-io.MouseWheel * zoomSpeed, delta_time);
 
 		register_input = true;
 	}
