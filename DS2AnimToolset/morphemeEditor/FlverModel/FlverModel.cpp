@@ -736,8 +736,8 @@ void FlverModel::draw(RenderManager* renderManager)
 
 	if (this->m_settings.selectedBone != -1)
 	{
-		DX::DrawReferenceFrame(&prim, this->m_flverBoneTransforms[this->m_settings.selectedBone], 0.1f);
-		renderManager->addText(RString::toNarrow(this->m_flver->bones[this->m_settings.selectedBone].name).c_str(), this->m_flverBoneTransforms[this->m_settings.selectedBone] * world);
+		DX::DrawReferenceFrame(&prim, getFlverBoneGlobalTransform(this->m_settings.selectedBone), 0.1f);
+		renderManager->addText(RString::toNarrow(this->m_flver->bones[this->m_settings.selectedBone].name).c_str(), getFlverBoneGlobalTransform(this->m_settings.selectedBone));
 	}
 
 	if (this->m_settings.drawDummyPolygons && this->m_flver)

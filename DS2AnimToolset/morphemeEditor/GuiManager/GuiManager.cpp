@@ -976,15 +976,26 @@ void GuiManager::modelViewerWindow()
 	MorphemeEditorApp::WindowFlags* windowStates = editorApp->getWindowFlags();
 	MorphemeEditorApp::PreviewFlags* previewFlags = editorApp->getPreviewFlags();
 	MorphemeEditorApp::TaskFlags* taskFlags = editorApp->getTaskFlags();
+	MorphemeEditorApp::CameraFlags* cameraFlags = editorApp->getCameraFlags();
 
 	if (ImGui::BeginMenuBar())
 	{
+		if (ImGui::BeginMenu("View"))
+		{
+			if (ImGui::MenuItem("Perspective", nullptr, camera->getCameraView() == Camera::kCamViewPerspective)) { camera->setCameraView(Camera::kCamViewPerspective); }
+			if (ImGui::MenuItem("Front", nullptr, camera->getCameraView() == Camera::kCamViewFront)) { camera->setCameraView(Camera::kCamViewFront); }
+			if (ImGui::MenuItem("Side", nullptr, camera->getCameraView() == Camera::kCamViewSide)) { camera->setCameraView(Camera::kCamViewSide); }
+			if (ImGui::MenuItem("Top", nullptr, camera->getCameraView() == Camera::kCamViewTop)) { camera->setCameraView(Camera::kCamViewTop); }
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Reset Camera")) { cameraFlags->resetCamera = true; }
+
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("Display"))
 		{
-			if (ImGui::MenuItem("Reset Camera")) { taskFlags->resetCamera = true; }
-
-			ImGui::SeparatorText("Display Mode");
-
 			if (ImGui::MenuItem("Normal", nullptr, previewFlags->displayMode == kDispNormal)) { previewFlags->displayMode = kDispNormal; }
 			if (ImGui::MenuItem("X-Ray", nullptr, previewFlags->displayMode == kDispXRay)) { previewFlags->displayMode = kDispXRay; }
 			if (ImGui::MenuItem("Wireframe", nullptr, previewFlags->displayMode == kDispWireframe)) { previewFlags->displayMode = kDispWireframe; }
@@ -1000,8 +1011,11 @@ void GuiManager::modelViewerWindow()
 			if (ImGui::MenuItem("Draw Dummies", nullptr, previewFlags->drawDummies)) { previewFlags->drawDummies = !previewFlags->drawDummies; }
 			if (ImGui::MenuItem("Draw Bounding Boxes", nullptr, previewFlags->drawBoundingBoxes)) { previewFlags->drawBoundingBoxes = !previewFlags->drawBoundingBoxes; }
 
-			ImGui::Separator();
+			ImGui::EndMenu();
+		}
 
+		if (ImGui::BeginMenu("Settings"))
+		{
 			if (ImGui::MenuItem("Enable Root Motion", nullptr, previewFlags->enableRootMotion)) { previewFlags->enableRootMotion = !previewFlags->enableRootMotion; }
 
 			ImGui::Separator();

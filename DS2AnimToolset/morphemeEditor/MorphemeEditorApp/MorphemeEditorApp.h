@@ -40,8 +40,6 @@ class MorphemeEditorApp : public Application
 public:
 	struct TaskFlags
 	{
-		bool resetCamera = false;
-
 		bool loadFile = false;
 		bool saveFile = false;
 
@@ -55,6 +53,11 @@ public:
 
 		bool compileNetwork = false;
 		bool compileTaes = false;
+	};
+
+	struct CameraFlags
+	{ 
+		bool resetCamera = false;
 	};
 
 	struct PreviewFlags
@@ -121,6 +124,7 @@ public:
 	TaskFlags* getTaskFlags() { return &this->m_taskFlags; }
 	PreviewFlags* getPreviewFlags() { return &this->m_previewFlags; }
 	ExportSettings* getExportSettings() { return &this->m_exportSettings; }
+	CameraFlags* getCameraFlags() { return &this->m_cameraFlags; }
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
 	std::wstring getGamePath() const { return this->m_gamePath; }
 
@@ -168,6 +172,7 @@ private:
 	TaskFlags m_taskFlags;
 	PreviewFlags m_previewFlags;
 	ExportSettings m_exportSettings;
+	CameraFlags m_cameraFlags;
 
 	FlverResources* m_flverResources = nullptr;
 	PlayerModelPreset* m_playerModelPreset = nullptr;

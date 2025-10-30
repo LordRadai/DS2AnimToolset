@@ -1027,10 +1027,11 @@ void MorphemeEditorApp::update(float dt)
 			} 
 		}
 
-		if (this->m_taskFlags.resetCamera)
+		if (this->m_cameraFlags.resetCamera)
 		{
-			this->m_taskFlags.resetCamera = false;
+			this->m_cameraFlags.resetCamera = false;
 
+			this->m_camera->setCameraView(Camera::kCamViewPerspective);
 			this->m_camera->setOffset(Vector3::Zero);
 			this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
 		}

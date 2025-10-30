@@ -22,6 +22,8 @@ Camera::Camera()
 	this->m_position = m_targetPos + Vector3(m_radius * cosf(m_angles.y) * cosf(m_angles.x), m_radius * sinf(m_angles.y), m_radius * cosf(m_angles.y) * sinf(m_angles.x));
 	this->m_upAxis = RenderManager::getInstance()->getUpAxis();
 
+	this->m_cameraView = kCamViewPerspective;
+
 	this->m_nearZ = 0.1f;
 	this->m_farZ = 5000.f;
 
@@ -46,7 +48,21 @@ void Camera::update(float width, float height, float delta_time)
 	this->m_height = height;
 	this->m_aspectRatio = this->m_width / this->m_height;
 
-	this->handleInput(delta_time);
+	switch (this->m_cameraView)
+	{
+	case kCamViewFront:
+		this->m_angles = Vector3(XM_PIDIV2, 0.f, 0.f);
+		break;
+	case kCamViewTop:
+		this->m_angles = Vector3(0.f, XM_PIDIV2, 0.f);
+		break;
+	case kCamViewSide:
+		this->m_angles = Vector3(0.f, 0.f, 0.f);
+		break;
+	default:
+		this->handleInput(delta_time);
+		break;
+	}
 
 	this->m_focus = this->m_targetPos + this->m_offset;
 	this->m_position = this->m_focus + Vector3(m_radius * cosf(m_angles.y) * cosf(m_angles.x), m_radius * sinf(m_angles.y), m_radius * cosf(m_angles.y) * sinf(m_angles.x));
