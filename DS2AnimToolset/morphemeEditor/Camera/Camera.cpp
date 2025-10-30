@@ -117,8 +117,6 @@ void Camera::updateVerticalAngle(float omega, float delta_time)
 	if (this->m_settings->rotInvertY)
 		deltaPitch = -deltaPitch;
 
-	g_appLog->debugMessage(MsgLevel_Debug, "Delta Pitch: %f\n", deltaPitch);
-
 	Vector3 offset = m_position - m_targetPos;
 	Quaternion pitchRot = Quaternion::CreateFromAxisAngle(m_upAxis, deltaPitch);
 
@@ -139,8 +137,6 @@ void Camera::updateVerticalAngle(float omega, float delta_time)
 void Camera::updatePlaneAngle(float omega, float delta_time)
 {
 	float deltaYaw = omega * delta_time;
-
-	g_appLog->debugMessage(MsgLevel_Debug, "Delta Yaw: %f\n", deltaYaw);
 
 	if (m_settings->rotInvertX)
 		deltaYaw = -deltaYaw;
