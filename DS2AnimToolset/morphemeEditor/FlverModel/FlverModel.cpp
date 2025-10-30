@@ -779,7 +779,7 @@ void FlverModel::draw(RenderManager* renderManager)
 		renderManager->addText(this->getModelName(), world);
 
 		if (this->m_settings.displayMode != kDispWireframe)
-			DX::DrawModelWireframe(&prim, Matrix::Identity, this, Vector4(DirectX::Colors::White));
+			DX::DrawModelWireframe(&prim, world, this, Vector4(DirectX::Colors::White));
 	}
 
 	prim.End();
