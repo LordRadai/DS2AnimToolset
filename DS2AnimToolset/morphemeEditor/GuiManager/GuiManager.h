@@ -36,7 +36,7 @@ private:
 	inline static GuiManager* _instance = nullptr;
 
 	void rootWindow();
-	void modelViewerWindow();
+	void sceneWindow();
 	void assetsWindow();
 	void eventTrackEditorWindow();
 	void timeActEditorWindow();

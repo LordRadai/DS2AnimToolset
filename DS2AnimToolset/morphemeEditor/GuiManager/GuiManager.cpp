@@ -8,7 +8,7 @@
 #include "WorkerThread/WorkerThread.h"
 #include "Camera/Camera.h"
 
-#define MSAA_SETTING_COUNT 4
+#define MSAA_SETTING_COUNT 3
 
 namespace
 {
@@ -698,7 +698,7 @@ void GuiManager::update(float dt)
 
 	this->rootWindow();
 	this->assetsWindow();
-	this->modelViewerWindow();
+	this->sceneWindow();
 	this->eventTrackEditorWindow();
 	this->timeActEditorWindow();
 	this->eventTrackInfoWindow();
@@ -882,6 +882,9 @@ void GuiManager::rootWindow()
 		{
 			RenderManager* renderMan = RenderManager::getInstance();
 
+			if (MSAA_SETTING_COUNT > 5)
+				g_appLog->panicMessage("MSAA_SETTING_COUNT is larger than supported settings (5)\n");
+
 			const char* msaaQualitySettings[5] = { "Off", "2x", "4x", "8x", "16x" };
 			int selectedSetting = 0;
 
@@ -961,7 +964,7 @@ void GuiManager::rootWindow()
 	ImGui::End();
 }
 
-void GuiManager::modelViewerWindow()
+void GuiManager::sceneWindow()
 {
 	const bool isWindowFocused = this->isApplicationFocused();
 
@@ -971,7 +974,7 @@ void GuiManager::modelViewerWindow()
 
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
-	ImGui::Begin("Model Viewer", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar);
+	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar);
 
 	MorphemeEditorApp::WindowFlags* windowStates = editorApp->getWindowFlags();
 	MorphemeEditorApp::PreviewFlags* previewFlags = editorApp->getPreviewFlags();

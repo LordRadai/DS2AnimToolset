@@ -20,7 +20,7 @@ RenderManager::RenderManager()
     this->m_height = 1920;
     this->m_width = 1080;
 
-	this->m_settings.gridScale = 1000.f;
+	this->m_settings.gridScale = 100.f;
 }
 
 RenderManager::~RenderManager()
