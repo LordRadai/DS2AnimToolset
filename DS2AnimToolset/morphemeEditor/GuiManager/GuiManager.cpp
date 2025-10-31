@@ -1008,11 +1008,12 @@ void GuiManager::sceneWindow()
 
 		if (ImGui::BeginMenu("Show"))
 		{
-			if (ImGui::MenuItem("Draw Meshes", nullptr, previewFlags->drawMeshes)) { previewFlags->drawMeshes = !previewFlags->drawMeshes; }
-			if (ImGui::MenuItem("Draw Bones", nullptr, previewFlags->drawBones)) { previewFlags->drawBones = !previewFlags->drawBones; }
-			if (ImGui::MenuItem("Draw Morpheme Bones", nullptr, previewFlags->drawMorphemeBones)) { previewFlags->drawMorphemeBones = !previewFlags->drawMorphemeBones; }
-			if (ImGui::MenuItem("Draw Dummies", nullptr, previewFlags->drawDummies)) { previewFlags->drawDummies = !previewFlags->drawDummies; }
-			if (ImGui::MenuItem("Draw Bounding Boxes", nullptr, previewFlags->drawBoundingBoxes)) { previewFlags->drawBoundingBoxes = !previewFlags->drawBoundingBoxes; }
+			if (ImGui::MenuItem("Meshes", nullptr, previewFlags->drawMeshes)) { previewFlags->drawMeshes = !previewFlags->drawMeshes; }
+			if (ImGui::MenuItem("Flver Joints", nullptr, previewFlags->drawBones)) { previewFlags->drawBones = !previewFlags->drawBones; }
+			if (ImGui::MenuItem("Morpheme Joints", nullptr, previewFlags->drawMorphemeBones)) { previewFlags->drawMorphemeBones = !previewFlags->drawMorphemeBones; }
+			if (ImGui::MenuItem("Dummies", nullptr, previewFlags->drawDummies)) { previewFlags->drawDummies = !previewFlags->drawDummies; }
+			if (ImGui::MenuItem("Bounding Boxes", nullptr, previewFlags->drawBoundingBoxes)) { previewFlags->drawBoundingBoxes = !previewFlags->drawBoundingBoxes; }
+			if (ImGui::MenuItem("Model Position", nullptr, previewFlags->drawModelPosition)) { previewFlags->drawModelPosition = !previewFlags->drawModelPosition	; }
 
 			ImGui::EndMenu();
 		}

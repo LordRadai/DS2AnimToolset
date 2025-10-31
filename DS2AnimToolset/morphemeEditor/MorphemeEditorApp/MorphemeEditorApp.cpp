@@ -1007,6 +1007,7 @@ void MorphemeEditorApp::update(float dt)
 			modelCtrl->setDrawBones(this->m_previewFlags.drawBones);
 			modelCtrl->setDrawMorphemeBones(this->m_previewFlags.drawMorphemeBones);
 			modelCtrl->setDrawBoundingBox(this->m_previewFlags.drawBoundingBoxes);
+			modelCtrl->setDrawModelPosition(this->m_previewFlags.drawModelPosition);
 			modelCtrl->setEnableRootMotion(this->m_previewFlags.enableRootMotion);
 		}
 	}
@@ -1238,13 +1239,14 @@ void MorphemeEditorApp::loadSettings()
 	this->m_exportSettings.useSourceSampleFrequency = settings->getBool("Export", "compression_use_source_sample_frequency", true);
 	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "compression_sample_frequency", 30);
 
-	this->m_previewFlags.drawDummies = settings->getBool("ModelViewer", "draw_dummies", false);
-	this->m_previewFlags.drawMeshes = settings->getBool("ModelViewer", "draw_meshes", true);
-	this->m_previewFlags.drawBones = settings->getBool("ModelViewer", "draw_bones", true);
-	this->m_previewFlags.drawMorphemeBones = settings->getBool("ModelViewer", "draw_morpheme_bones", false);
-	this->m_previewFlags.drawBoundingBoxes = settings->getBool("ModelViewer", "draw_bounding_boxes", false);
-	this->m_previewFlags.enableRootMotion = settings->getBool("ModelViewer", "enable_root_motion", true);
-	this->m_previewFlags.displayMode = (DisplayMode)settings->getInt("ModelViewer", "model_disp_mode", 0);
+	this->m_previewFlags.drawDummies = settings->getBool("Scene", "draw_dummies", false);
+	this->m_previewFlags.drawMeshes = settings->getBool("Scene", "draw_meshes", true);
+	this->m_previewFlags.drawBones = settings->getBool("Scene", "draw_bones", true);
+	this->m_previewFlags.drawMorphemeBones = settings->getBool("Scene", "draw_morpheme_bones", false);
+	this->m_previewFlags.drawBoundingBoxes = settings->getBool("Scene", "draw_bounding_boxes", false);
+	this->m_previewFlags.drawModelPosition = settings->getBool("Scene", "draw_model_position", false);
+	this->m_previewFlags.enableRootMotion = settings->getBool("Scene", "enable_root_motion", true);
+	this->m_previewFlags.displayMode = (DisplayMode)settings->getInt("Scene", "model_disp_mode", 0);
 
 	this->m_timeActEditor->setTimeCodeFormat((TrackEditor::TimeCodeFormat)settings->getInt("TimeActEditor", "time_code_format", 0));
 	this->m_eventTrackEditor->setTimeCodeFormat((TrackEditor::TimeCodeFormat)settings->getInt("EventTrackEditor", "time_code_format", 0));
@@ -1264,13 +1266,14 @@ void MorphemeEditorApp::saveSettings()
 	settings->setBool("Export", "compression_use_source_sample_frequency", this->m_exportSettings.useSourceSampleFrequency);
 	settings->setInt("Export", "compression_sample_frequency", this->m_exportSettings.sampleFrequency);
 
-	settings->setBool("ModelViewer", "draw_dummies", this->m_previewFlags.drawDummies);
-	settings->setBool("ModelViewer", "draw_meshes", this->m_previewFlags.drawMeshes);
-	settings->setBool("ModelViewer", "draw_bones", this->m_previewFlags.drawBones);
-	settings->setBool("ModelViewer", "draw_morpheme_bones", this->m_previewFlags.drawMorphemeBones);
-	settings->setBool("ModelViewer", "draw_bounding_boxes", this->m_previewFlags.drawBoundingBoxes);
-	settings->setBool("ModelViewer", "enable_root_motion", this->m_previewFlags.enableRootMotion);
-	settings->setInt("ModelViewer", "model_disp_mode", this->m_previewFlags.displayMode);
+	settings->setBool("Scene", "draw_dummies", this->m_previewFlags.drawDummies);
+	settings->setBool("Scene", "draw_meshes", this->m_previewFlags.drawMeshes);
+	settings->setBool("Scene", "draw_bones", this->m_previewFlags.drawBones);
+	settings->setBool("Scene", "draw_morpheme_bones", this->m_previewFlags.drawMorphemeBones);
+	settings->setBool("Scene", "draw_bounding_boxes", this->m_previewFlags.drawBoundingBoxes);
+	settings->setBool("Scene", "draw_model_position", this->m_previewFlags.drawModelPosition);
+	settings->setBool("Scene", "enable_root_motion", this->m_previewFlags.enableRootMotion);
+	settings->setInt("Scene", "model_disp_mode", this->m_previewFlags.displayMode);
 
 	settings->setInt("TimeActEditor", "time_code_format", this->m_timeActEditor->getTimeCodeFormat());
 	settings->setInt("EventTrackEditor", "time_code_format", this->m_eventTrackEditor->getTimeCodeFormat());

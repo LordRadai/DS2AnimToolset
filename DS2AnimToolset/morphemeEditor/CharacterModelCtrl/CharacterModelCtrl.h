@@ -59,6 +59,7 @@ public:
 	void setDrawMorphemeBones(bool show);
 	void setDrawMeshes(bool show);
 	void setDrawBoundingBox(bool show);
+	void setDrawModelPosition(bool show);
 	void setEnableRootMotion(bool enable);
 	void setScale(float scale);
 

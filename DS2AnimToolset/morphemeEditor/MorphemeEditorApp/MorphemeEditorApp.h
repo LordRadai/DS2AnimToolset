@@ -67,6 +67,7 @@ public:
 		bool drawMorphemeBones = false;
 		bool drawDummies = false;
 		bool drawBoundingBoxes = false;
+		bool drawModelPosition = false;
 		bool enableRootMotion = true;
 		DisplayMode displayMode = kDispNormal;
 

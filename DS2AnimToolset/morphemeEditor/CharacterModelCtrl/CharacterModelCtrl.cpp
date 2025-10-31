@@ -422,46 +422,46 @@ void CharacterModelCtrl::setDrawMorphemeBones(bool show)
 void CharacterModelCtrl::setDrawMeshes(bool show)
 {
 	if (this->m_model)
-		this->m_model->getSettings()->drawMeshes = show;
+		this->m_model->getSettings()->drawModelPosition = show;
 
 	if (this->m_head)
-		this->m_head->getSettings()->drawMeshes = show;
+		this->m_head->getSettings()->drawModelPosition = show;
 
 	if (this->m_face)
-		this->m_face->getSettings()->drawMeshes = show;
+		this->m_face->getSettings()->drawModelPosition = show;
 
 	if (this->m_body)
-		this->m_body->getSettings()->drawMeshes = show;
+		this->m_body->getSettings()->drawModelPosition = show;
 
 	if (this->m_arm)
-		this->m_arm->getSettings()->drawMeshes = show;
+		this->m_arm->getSettings()->drawModelPosition = show;
 
 	if (this->m_leg)
-		this->m_leg->getSettings()->drawMeshes = show;
+		this->m_leg->getSettings()->drawModelPosition = show;
 
 	if (this->m_weaponRight)
-		this->m_weaponRight->getSettings()->drawMeshes = show;
+		this->m_weaponRight->getSettings()->drawModelPosition = show;
 
 	if (this->m_weaponLeft)
-		this->m_weaponLeft->getSettings()->drawMeshes = show;
+		this->m_weaponLeft->getSettings()->drawModelPosition = show;
 
 	if (this->m_faceGen.m_fgFace)
-		this->m_faceGen.m_fgFace->getSettings()->drawMeshes = show;
+		this->m_faceGen.m_fgFace->getSettings()->drawModelPosition = show;
 
 	if (this->m_faceGen.m_fgHead)
-		this->m_faceGen.m_fgHead->getSettings()->drawMeshes = show;
+		this->m_faceGen.m_fgHead->getSettings()->drawModelPosition = show;
 
 	if (this->m_faceGen.m_fgEyes)
-		this->m_faceGen.m_fgEyes->getSettings()->drawMeshes = show;
+		this->m_faceGen.m_fgEyes->getSettings()->drawModelPosition = show;
 
 	if (this->m_faceGen.m_fgEyeBrows)
-		this->m_faceGen.m_fgEyeBrows->getSettings()->drawMeshes = show;
+		this->m_faceGen.m_fgEyeBrows->getSettings()->drawModelPosition = show;
 
 	if (this->m_faceGen.m_fgBeard)
-		this->m_faceGen.m_fgBeard->getSettings()->drawMeshes = show;
+		this->m_faceGen.m_fgBeard->getSettings()->drawModelPosition = show;
 
 	if (this->m_faceGen.m_fgHair)
-		this->m_faceGen.m_fgHair->getSettings()->drawMeshes = show;
+		this->m_faceGen.m_fgHair->getSettings()->drawModelPosition = show;
 }
 
 void CharacterModelCtrl::setDrawBoundingBox(bool show)
@@ -507,6 +507,51 @@ void CharacterModelCtrl::setDrawBoundingBox(bool show)
 
 	if (this->m_faceGen.m_fgHair)
 		this->m_faceGen.m_fgHair->getSettings()->drawBoundingBox = false;
+}
+
+void CharacterModelCtrl::setDrawModelPosition(bool show)
+{
+	if (this->m_model)
+		this->m_model->getSettings()->drawModelPosition = show;
+
+	if (this->m_head)
+		this->m_head->getSettings()->drawModelPosition = show;
+
+	if (this->m_face)
+		this->m_face->getSettings()->drawModelPosition = show;
+
+	if (this->m_body)
+		this->m_body->getSettings()->drawModelPosition = show;
+
+	if (this->m_arm)
+		this->m_arm->getSettings()->drawModelPosition = show;
+
+	if (this->m_leg)
+		this->m_leg->getSettings()->drawModelPosition = show;
+
+	if (this->m_weaponRight)
+		this->m_weaponRight->getSettings()->drawModelPosition = show;
+
+	if (this->m_weaponLeft)
+		this->m_weaponLeft->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgFace)
+		this->m_faceGen.m_fgFace->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgHead)
+		this->m_faceGen.m_fgHead->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgEyes)
+		this->m_faceGen.m_fgEyes->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgEyeBrows)
+		this->m_faceGen.m_fgEyeBrows->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgBeard)
+		this->m_faceGen.m_fgBeard->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgHair)
+		this->m_faceGen.m_fgHair->getSettings()->drawModelPosition = show;
 }
 
 void CharacterModelCtrl::setEnableRootMotion(bool enable)
