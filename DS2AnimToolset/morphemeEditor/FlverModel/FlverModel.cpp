@@ -152,15 +152,22 @@ namespace
 
 	void applyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix>& bindPose, const Matrix& transform, int boneID)
 	{
-		// Compute this bone’s world transform
-		Matrix worldTransform = bindPose[boneID] * transform;
-		buffer[boneID] = worldTransform;
+		// Compute this bone’s world transform relative to parent
+		Matrix local = bindPose[boneID];
+		Matrix world = local * transform;
 
-		// Traverse the bone hierarchy
+		buffer[boneID] = world;
+
+		int siblingIndex = flv->bones[boneID].nextSiblingIndex;
+
+		if (siblingIndex != -1)
+			applyTransform(buffer, flv, bindPose, transform, siblingIndex);
+
+		// Traverse children recursively
 		int childIndex = flv->bones[boneID].childIndex;
 		while (childIndex != -1)
 		{
-			applyTransform(buffer, flv, bindPose, worldTransform, childIndex);
+			applyTransform(buffer, flv, bindPose, transform, childIndex);
 			childIndex = flv->bones[childIndex].nextSiblingIndex;
 		}
 	}
@@ -578,70 +585,42 @@ int FlverModel::findValidBoneIndex(int boneID)
 
 	int parentID = this->m_flver->bones[boneID].parentIndex;
 
-	while (parentID != -1)
+	const bool bParentFirst = true;
+
+	if (bParentFirst)
 	{
-		int childID = this->m_flver->bones[parentID].childIndex;
-
-		while (childID != -1)
+		while (parentID != -1)
 		{
-			if (this->getMorphemeBoneIdByFlverBoneId(childID) != -1)
-				return childID;
+			int childID = this->m_flver->bones[parentID].childIndex;
 
-			childID = this->m_flver->bones[childID].nextSiblingIndex;
+			while (childID != -1)
+			{
+				if (this->getMorphemeBoneIdByFlverBoneId(childID) != -1)
+					return childID;
+
+				childID = this->m_flver->bones[childID].nextSiblingIndex;
+			}
+
+			if (this->getMorphemeBoneIdByFlverBoneId(parentID) != -1)
+				return parentID;
+
+			parentID = this->m_flver->bones[parentID].parentIndex;
 		}
-
-		if (this->getMorphemeBoneIdByFlverBoneId(parentID) != -1)
-			return parentID;
-
-		parentID = this->m_flver->bones[parentID].parentIndex;
 	}
 	
 	// If we reach here, it means that the bone has no valid morpheme influence in both the parents and it's siblings. This should not happen.
+	g_appLog->debugMessage(MsgLevel_Error, "Could not find a valid morpheme bone influence for FLVER bone ID %d\n", boneID);
 	return -1;
 }
 
 void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex)
 {
-	constexpr float EPS = 1e-6f;
+	float totalWeight = 0.f;
+	for (size_t wt = 0; wt < 4; ++wt)
+		totalWeight += skinnedVertex.boneWeights[wt];
 
-	for (int iter = 0; iter < MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS; ++iter)
-	{
-		float totalWeight = 0.f;
-		for (size_t wt = 0; wt < 4; ++wt)
-		{
-			const int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(skinnedVertex.boneIndices[wt]);
-			if (morphemeBoneID != -1)
-				totalWeight += skinnedVertex.boneWeights[wt];
-		}
-
-		if (std::fabs(totalWeight) > EPS)
-		{
-			if (std::fabs(totalWeight - 1.f) > EPS)
-			{
-				for (size_t wt = 0; wt < 4; ++wt)
-					skinnedVertex.boneWeights[wt] /= totalWeight;
-			}
-			return; // normalized successfully
-		}
-
-		// totalWeight == 0 -> try to replace invalid indices with valid nearby bones
-		bool replacedAny = false;
-		for (size_t wt = 0; wt < 4; ++wt)
-		{
-			const int boneID = skinnedVertex.boneIndices[wt];
-			int influenceBoneID = findValidBoneIndex(boneID);
-			if (influenceBoneID != -1 && influenceBoneID != boneID)
-			{
-				skinnedVertex.boneIndices[wt] = influenceBoneID;
-				replacedAny = true;
-			}
-		}
-
-		if (!replacedAny)
-			break; // cannot fix further
-	}
-
-	throw std::runtime_error("Failed to find a valid bone index for skinned vertex influence.");
+	for (size_t wt = 0; wt < 4; ++wt)
+		skinnedVertex.boneWeights[wt] /= totalWeight;
 }
 
 // Gets all the model vertices for all the meshes and stores them into m_verts
@@ -703,7 +682,28 @@ void FlverModel::update(float dt)
 	if (this->m_flver == nullptr)
 		return;
 
-	this->m_focusPoint = Vector3::Transform(Vector3::Zero, this->m_position * Matrix::CreateScale(this->m_scale));
+	this->m_focusPoint = Vector3::Transform(Vector3::Zero, this->getWorldMatrix());
+
+	// Apply the morpheme rig transforms to the flver skeleton
+	for (uint32_t i = 0; i < this->m_flver->header.boneCount; i++)
+	{
+		const int morphemeBoneID = this->m_flverToMorphemeBoneMap[i];
+
+		if (morphemeBoneID != -1)
+		{
+			// Take the morpheme animation transform relative to the morpheme bind pose, align it to the flver bind pose, and then apply it to the flver bind pose.
+			Matrix morphemeRelativeTransform = getNmBoneRelativeTransform(morphemeBoneID);
+
+			applyTransform(this->m_flverBoneTransforms, this->m_flver, this->m_flverBindPoseTransforms, morphemeRelativeTransform, i);
+		}
+	}
+
+	// Compute the bones transform relative to their bind pose transform
+	std::vector<Matrix> boneRelativeTransforms;
+	computeBoneRelativeTransforms(boneRelativeTransforms);
+
+	for (int meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
+		transformMesh(meshIdx, boneRelativeTransforms);
 
 	this->m_dummyPolygons.clear();
 	this->m_dummyPolygons.reserve(this->m_flver->header.dummyCount);
@@ -773,6 +773,38 @@ void FlverModel::draw(RenderManager* renderManager)
 		Vector3 halfExtents = (this->getBoundingBoxMax() - this->getBoundingBoxMin()) / 2;
 
 		DX::DrawBoundingBox(&prim, world, Vector3::Zero, halfExtents, DirectX::Colors::DarkRed);
+	}
+
+	if (this->m_settings.drawBoneInfluences && this->m_settings.drawMeshes)
+	{
+		for (int meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
+		{
+			for (size_t vtxIdx = 0; vtxIdx < this->m_meshVerticesTransforms[meshIdx].size(); vtxIdx++)
+			{
+				FlverModel::SkinnedVertex* skinnedVtx = this->getVertex(meshIdx, vtxIdx);
+				Vector3 vertexPos = Vector3::Transform(skinnedVtx->vertexData.position, world);
+				for (size_t bi = 0; bi < 4; bi++)
+				{
+					int flverBoneIdx = skinnedVtx->boneIndices[bi];
+					float weight = skinnedVtx->boneWeights[bi];
+
+					if (weight > 0.f && flverBoneIdx >= 0 && flverBoneIdx < boneCount)
+					{
+						Vector3 bonePos = Vector3::Transform(Vector3::Zero, getFlverBoneGlobalTransform(flverBoneIdx));
+						Vector4 color = Vector4(DirectX::Colors::LimeGreen);
+
+						if (flverBoneIdx == trajectoryBoneIndex)
+							color = DirectX::Colors::Yellow;
+						else if (flverBoneIdx == characterRootBoneIdx)
+							color = DirectX::Colors::Cyan;
+
+						color.w *= weight;
+
+						DX::DrawLine(&prim, vertexPos, bonePos, color);
+					}
+				}
+			}
+		}
 	}
 
 	if (this->m_settings.highlight)
@@ -1034,8 +1066,6 @@ std::string FlverModel::getFlverBoneName(int idx)
 
 void FlverModel::animate(AnimObject* anim)
 {
-	resetBoneTransforms();
-
 	if (anim == nullptr)
 		return;
 
@@ -1045,18 +1075,11 @@ void FlverModel::animate(AnimObject* anim)
 	{
 		computeAnimationTransforms(animHandle);
 
-		this->m_position = Matrix::Identity;
-
 		if (this->m_settings.enableRootMotion)
 			this->m_position = getAnimTrajectoryAdjustedTransform(animHandle);
+		else
+			this->m_position = Matrix::Identity;
 	}
-
-	// Compute the bones transform relative to their bind pose transform
-	std::vector<Matrix> boneRelativeTransforms;
-	computeBoneRelativeTransforms(boneRelativeTransforms);
-
-	for (int meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
-		transformMesh(meshIdx, boneRelativeTransforms);
 }
 
 void FlverModel::resetBoneTransforms()
@@ -1069,20 +1092,6 @@ void FlverModel::resetBoneTransforms()
 void FlverModel::computeAnimationTransforms(MR::AnimationSourceHandle* animHandle)
 {
 	accumulateNmTransforms(this->m_nmBoneTransforms, animHandle, false);
-
-	// Apply the morpheme rig transforms to the flver skeleton
-	for (uint32_t i = 0; i < this->m_flver->header.boneCount; i++)
-	{
-		const int morphemeBoneID = this->m_flverToMorphemeBoneMap[i];
-
-		if (morphemeBoneID != -1)
-		{
-			// Take the morpheme animation transform relative to the morpheme bind pose, align it to the flver bind pose, and then apply it to the flver bind pose.
-			Matrix morphemeRelativeTransform = getNmBoneRelativeTransform(morphemeBoneID);
-
-			applyTransform(this->m_flverBoneTransforms, this->m_flver, this->m_flverBindPoseTransforms, morphemeRelativeTransform, i);
-		}
-	}
 }
 
 void FlverModel::computeBoneRelativeTransforms(std::vector<Matrix>& out)
@@ -1120,9 +1129,6 @@ void FlverModel::transformVertex(int meshIdx, int vertexIndex, const std::vector
         const float weight = constWeights[wt];
         if (weight == 0.f) continue;
 
-        const int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(boneID);
-        if (morphemeBoneID == -1) continue;
-
         hasInfluence = true;
         newPos += Vector3::Transform(bindVertex.vertexData.position, boneRelativeTransforms[boneID]) * weight;
         newNorm += Vector3::Transform(bindVertex.vertexData.normal, boneRelativeTransforms[boneID]) * weight;
@@ -1148,9 +1154,7 @@ void FlverModel::drawFlverBones(RenderManager* renderManager, DirectX::Primitive
 
 	for (int boneIdx = 0; boneIdx < this->m_flver->header.boneCount; boneIdx++)
 	{
-		int morphemeBoneIdx = this->getMorphemeBoneIdByFlverBoneId(boneIdx);
-
-		if ((morphemeBoneIdx == -1) || (boneIdx == trajectoryBoneIndex) || (boneIdx == characterRootBoneIdx))
+		if ((boneIdx == trajectoryBoneIndex) || (boneIdx == characterRootBoneIdx))
 			continue;
 
 		int parentIndex = this->m_flver->bones[boneIdx].parentIndex;

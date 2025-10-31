@@ -50,6 +50,7 @@ public:
 		bool drawMorphemeBones = false;
 		bool drawBoundingBox = false;
 		bool highlight = false;
+		bool drawBoneInfluences = false;
 		bool enableRootMotion = true;
 		int selectedBone = -1;
 		int selectedDummy = -1;
