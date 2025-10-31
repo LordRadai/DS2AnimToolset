@@ -1016,7 +1016,15 @@ void MorphemeEditorApp::update(float dt)
 		const int width = RenderManager::getInstance()->getWidth();
 		const int height = RenderManager::getInstance()->getHeight();
 
-		this->m_camera->update(float(width), float(height), dt);
+		if (this->m_cameraFlags.resetCamera)
+		{
+			this->m_cameraFlags.resetCamera = false;
+
+			this->m_camera->setCameraView(Camera::kCamViewPerspective);
+			this->m_camera->setAngles(Vector3(DirectX::XM_PI / 3, 0.4f, 0));
+			this->m_camera->setOffset(Vector3::Zero);
+			this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
+		}
 
 		if (this->m_character)
 		{
@@ -1027,18 +1035,10 @@ void MorphemeEditorApp::update(float dt)
 				Matrix followJoint = model->getMorphemeRootBoneGlobalTransform();
 
 				this->m_camera->setTarget(Vector3::Transform(Vector3::Zero, followJoint));
-			} 
+			}
 		}
 
-		if (this->m_cameraFlags.resetCamera)
-		{
-			this->m_cameraFlags.resetCamera = false;
-
-			this->m_camera->setCameraView(Camera::kCamViewPerspective);
-			this->m_camera->setAngles(Vector3(DirectX::XM_PI / 3, 0.4f, 0));
-			this->m_camera->setOffset(Vector3::Zero);
-			this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
-		}
+		this->m_camera->update(float(width), float(height), dt);
 	}
 
 	if (this->m_timeActEditor)

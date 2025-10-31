@@ -247,14 +247,9 @@ void RenderManager::createResources()
 void RenderManager::update(float dt)
 {
     if (!this->m_initialised)
-        throw("Called update() without calling initialise() first\n");
+        throw("Called RenderManager::update() without calling RenderManager::initialise() first\n");
 
     this->m_dt = dt;
-
-    Camera* camera = MorphemeEditorApp::getInstance()->getCamera();
-
-    this->m_view = camera->getViewMatrix();
-    this->m_proj = camera->getProjectionMatrix();
 
     this->m_texts.clear();
 
@@ -278,6 +273,11 @@ void RenderManager::clear()
 
 void RenderManager::render()
 {
+    Camera* camera = MorphemeEditorApp::getInstance()->getCamera();
+
+    this->m_view = camera->getViewMatrix();
+    this->m_proj = camera->getProjectionMatrix();
+
     this->clear();
 
     if (this->m_renderTargetView)
