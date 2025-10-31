@@ -161,12 +161,12 @@
         <EventTemplate id="2500" name="SetActiveWeapon">
             <ArgTemplate name="Index" type="short" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="2501" name="SetWeapon">
+        <EventTemplate id="2501" name="SetWeaponVisibility">
             <ArgTemplate name="Index" type="byte" hidden="false"/>
             <ArgTemplate name="RightHand" type="bool" hidden="false"/>
             <ArgTemplate name="LeftHand" type="bool" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="2502" name="SetWeaponEnableCollision">
+        <EventTemplate id="2502" name="SetWeaponVisibilityAndCollision">
             <ArgTemplate name="Index" type="byte" hidden="false"/>
             <ArgTemplate name="RightHand" type="bool" hidden="false"/>
             <ArgTemplate name="LeftHand" type="bool" hidden="false"/>
