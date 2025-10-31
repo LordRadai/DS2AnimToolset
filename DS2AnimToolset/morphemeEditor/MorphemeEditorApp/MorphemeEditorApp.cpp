@@ -1237,7 +1237,7 @@ void MorphemeEditorApp::loadSettings()
 	this->m_exportSettings.exportFormat = static_cast<FT::ExportFormat>(settings->getInt("Export", "export_format", 0));
 	this->m_exportSettings.compressionFormat = settings->getInt("Export", "compression_format", 2);
 	this->m_exportSettings.useSourceSampleFrequency = settings->getBool("Export", "compression_use_source_sample_frequency", true);
-	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "compression_sample_frequency", 30);
+	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "compression_sample_frequency", 20);
 
 	this->m_previewFlags.drawDummies = settings->getBool("Scene", "draw_dummies", false);
 	this->m_previewFlags.drawMeshes = settings->getBool("Scene", "draw_meshes", true);
