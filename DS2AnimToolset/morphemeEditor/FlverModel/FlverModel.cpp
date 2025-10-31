@@ -132,24 +132,6 @@ namespace
 		}
 	}
 
-	Matrix applyTransformToFlverBone(const MR::AnimRigDef* rig, std::vector<Matrix> transforms, FLVER2* flv, int channelId)
-	{
-		Matrix localTransform = transforms[channelId] * getFlverBoneTransform(flv, channelId);
-
-		int parentIdx = flv->bones[channelId].parentIndex;
-
-		while (parentIdx != -1)
-		{
-			Matrix parentBoneTransform = transforms[parentIdx] * getFlverBoneTransform(flv, parentIdx);
-
-			localTransform *= parentBoneTransform;
-
-			parentIdx = flv->bones[parentIdx].parentIndex;
-		}
-
-		return localTransform;
-	}
-
 	void applyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix>& bindPose, const Matrix& transform, int boneID)
 	{
 		// Compute this bone’s world transform relative to parent
@@ -577,43 +559,7 @@ std::vector<FlverModel::SkinnedVertex> FlverModel::getBindPoseSkinnedVertices(in
 	return this->m_meshVerticesBindPoseTransforms[idx];
 }
 
-int FlverModel::findValidBoneIndex(int boneID)
-{
-	// I've found out that the best strategy is to first check all the siblings of the bone, then check the parents. However, this does not always produce the correct result.
-	if (this->getMorphemeBoneIdByFlverBoneId(boneID) != -1)
-		return boneID;
-
-	int parentID = this->m_flver->bones[boneID].parentIndex;
-
-	const bool bParentFirst = true;
-
-	if (bParentFirst)
-	{
-		while (parentID != -1)
-		{
-			int childID = this->m_flver->bones[parentID].childIndex;
-
-			while (childID != -1)
-			{
-				if (this->getMorphemeBoneIdByFlverBoneId(childID) != -1)
-					return childID;
-
-				childID = this->m_flver->bones[childID].nextSiblingIndex;
-			}
-
-			if (this->getMorphemeBoneIdByFlverBoneId(parentID) != -1)
-				return parentID;
-
-			parentID = this->m_flver->bones[parentID].parentIndex;
-		}
-	}
-	
-	// If we reach here, it means that the bone has no valid morpheme influence in both the parents and it's siblings. This should not happen.
-	g_appLog->debugMessage(MsgLevel_Error, "Could not find a valid morpheme bone influence for FLVER bone ID %d\n", boneID);
-	return -1;
-}
-
-void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex)
+void FlverModel::normalizeSkinVertexData(FlverModel::SkinnedVertex& skinnedVertex)
 {
 	float totalWeight = 0.f;
 	for (size_t wt = 0; wt < 4; ++wt)
@@ -658,7 +604,7 @@ bool FlverModel::initialise()
 		for (size_t i = 0; i < vertices.size(); i++)
 		{
 			meshSkinnedVertices.push_back(SkinnedVertex(vertices[i], normals[i], (float*)&boneWeights[i], boneIndices[i].data()));
-			validateSkinnedVertexData(meshSkinnedVertices.back());
+			normalizeSkinVertexData(meshSkinnedVertices.back());
 		}
 
 		this->m_meshVerticesBindPoseTransforms.push_back(meshSkinnedVertices);

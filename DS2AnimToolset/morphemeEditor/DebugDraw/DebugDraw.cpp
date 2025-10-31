@@ -1694,17 +1694,12 @@ void XM_CALLCONV DX::AddOverlayText(DirectX::SpriteBatch* sprite, DirectX::Sprit
 
 void XM_CALLCONV DX::AddWorldSpaceText(DirectX::SpriteBatch* sprite, DirectX::SpriteFont* font, std::string text, DirectX::SimpleMath::Vector3 position, DirectX::XMMATRIX world, Camera* cam, DirectX::XMVECTORF32 color)
 {
-    DirectX::SimpleMath::Vector3 text_world(position);
+	Vector3 textWorld = Vector3::Transform(position, world);
 
-    DirectX::XMVECTOR transformed_pos = DirectX::XMVector3Transform(text_world, world);
-    DirectX::XMStoreFloat3(&text_world, transformed_pos);
-
-    auto clip = DirectX::XMVector3Project(text_world, 0, 0, cam->getWidth(), cam->getHeight(), cam->getNearZ(), cam->getFarZ(), cam->getProjectionMatrix(), cam->getViewMatrix(), Matrix::Identity);
+    auto clip = DirectX::XMVector3Project(textWorld, 0, 0, cam->getWidth(), cam->getHeight(), cam->getNearZ(), cam->getFarZ(), cam->getProjectionMatrix(), cam->getViewMatrix(), Matrix::Identity);
 
     float baseDistance = 5.f;
-
-    float distance = Vector3::Distance(cam->getPosition(), Vector3::Transform(position, world));
-
+    float distance = Vector3::Distance(cam->getPosition(), textWorld);
     float scale = std::fmax(std::fmin(baseDistance / distance, 1.f), 0.5f);
 
     AddOverlayText(sprite, font, text, clip, 0.01f, scale, color, TextFlags_Shadow);
