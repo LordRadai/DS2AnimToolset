@@ -199,6 +199,29 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
     switch (msg)
     {
+    case WM_DPICHANGED:
+    {
+        const RECT* const newWindowRect = reinterpret_cast<RECT*>(lParam);
+        SetWindowPos(hWnd, NULL,
+            newWindowRect->left,
+            newWindowRect->top,
+            newWindowRect->right - newWindowRect->left,
+            newWindowRect->bottom - newWindowRect->top,
+            SWP_NOZORDER | SWP_NOACTIVATE);
+
+        UINT dpi = HIWORD(wParam);
+        float dpiScale = dpi / 96.0f;
+
+        RECT rc;
+        GetClientRect(hWnd, &rc);
+        UINT logicalWidth = rc.right - rc.left;
+        UINT logicalHeight = rc.bottom - rc.top;
+
+        if (g_renderManager->isInitialised())
+            g_renderManager->resize(logicalWidth, logicalHeight);
+
+        return 0;
+    }
     case WM_SIZE:
     {
         if (wParam == SIZE_MINIMIZED)
@@ -206,6 +229,10 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
         UINT resizeWidth = (UINT)LOWORD(lParam);
         UINT resizeHeight = (UINT)HIWORD(lParam);
+
+		UINT physicalWidth;
+		UINT physicalHeight;
+		g_renderManager->getPhysicalResolution(physicalWidth, physicalHeight);
 
         if (g_renderManager->isInitialised())
             g_renderManager->resize(resizeWidth, resizeHeight);

@@ -591,7 +591,9 @@ void GuiManager::initialise(HWND hwnd, ID3D11DeviceContext* pContext, ID3D11Devi
 	g_appLog->debugMessage(MsgLevel_Info, "Add ImGui fonts\n");
 	io.Fonts->AddFontDefault();
 
-	float baseFontSize = 13.0f; // 13.0f is the size of the default font. Change to the font size you use.
+	float dpiScale = g_renderManager->getDpiScale();
+
+	float baseFontSize = 13.0f * dpiScale; // 13.0f is the size of the default font. Change to the font size you use.
 	float iconFontSize = baseFontSize * 2.0f / 3.0f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
 
 	// merge in icons from Font Awesome
@@ -602,6 +604,8 @@ void GuiManager::initialise(HWND hwnd, ID3D11DeviceContext* pContext, ID3D11Devi
 	icons_config.GlyphMinAdvanceX = iconFontSize;
 	io.Fonts->AddFontFromFileTTF("Data//font//" FONT_ICON_FILE_NAME_FAS, iconFontSize, &icons_config, icons_ranges);
 	// use FONT_ICON_FILE_NAME_FAR if you want regular instead of solid
+
+	ImGui::GetStyle().ScaleAllSizes(dpiScale);
 
 	this->initGuiStyle();
 

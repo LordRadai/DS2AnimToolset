@@ -103,6 +103,9 @@ public:
 	void applyPhysicalEffect(DirectX::SimpleMath::Matrix world, float alpha);
 	void setInputLayout(InputLayoutType type);
 
+	float getDpiScale() const;
+
+	void getPhysicalResolution(UINT& width, UINT& height) const;
 private:
 	void loadSettings();
 	void saveSettings();

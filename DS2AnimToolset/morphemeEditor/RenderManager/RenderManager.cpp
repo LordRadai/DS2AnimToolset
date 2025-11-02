@@ -182,8 +182,8 @@ void RenderManager::createResources()
     const DXGI_FORMAT textureFmt = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
     D3D11_TEXTURE2D_DESC textureDescOffscren;
-    textureDescOffscren.Width = m_width;
-    textureDescOffscren.Height = m_height;
+    textureDescOffscren.Width = this->m_width;
+    textureDescOffscren.Height = this->m_height;
     textureDescOffscren.MipLevels = 1;
     textureDescOffscren.ArraySize = 1;
     textureDescOffscren.Format = textureFmt;
@@ -197,12 +197,13 @@ void RenderManager::createResources()
     m_device->CreateTexture2D(&textureDescOffscren, nullptr, &this->m_offScreenRenderTarget);
 
     D3D11_TEXTURE2D_DESC textureDesc;
-    textureDesc.Width = m_width;
-    textureDesc.Height = m_height;
+    textureDesc.Width = this->m_width;
+    textureDesc.Height = this->m_height;
     textureDesc.MipLevels = 1;
     textureDesc.ArraySize = 1;
     textureDesc.Format = textureFmt;
-    textureDesc.SampleDesc.Count = 1;
+    textureDesc.SampleDesc.Count = msaaCount;
+    textureDesc.SampleDesc.Quality = msaaQuality;
     textureDesc.Usage = D3D11_USAGE_DEFAULT;
     textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
     textureDesc.CPUAccessFlags = 0;
@@ -396,6 +397,7 @@ bool RenderManager::createD3DDevice()
     sd.BufferDesc.Width = 0;
     sd.BufferDesc.Height = 0;
     sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
     sd.BufferDesc.RefreshRate.Numerator = 60;
     sd.BufferDesc.RefreshRate.Denominator = 1;
     sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
@@ -441,7 +443,10 @@ void RenderManager::createGuiRenderTarget()
 void RenderManager::clearGuiRenderTarget()
 {
     if (this->m_guiRenderTargetView)
-        this->m_guiRenderTargetView->Release(); this->m_guiRenderTargetView = nullptr;
+    {
+        this->m_guiRenderTargetView->Release(); 
+        this->m_guiRenderTargetView = nullptr;
+    }
 }
 
 void RenderManager::applyDebugEffect(DirectX::SimpleMath::Matrix world)
@@ -473,6 +478,19 @@ void RenderManager::setInputLayout(InputLayoutType type)
     default:
         break;
     }
+}
+
+float RenderManager::getDpiScale() const
+{
+	UINT dpi = GetDpiForWindow(this->m_window);
+	return static_cast<float>(dpi) / 96.f;
+}
+
+void RenderManager::getPhysicalResolution(UINT& width, UINT& height) const
+{
+	const float dpiScale = this->getDpiScale();
+	width = static_cast<UINT>(this->m_width * dpiScale);
+	height = static_cast<UINT>(this->m_height * dpiScale);
 }
 
 void RenderManager::loadSettings()
