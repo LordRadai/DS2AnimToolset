@@ -1055,73 +1055,16 @@ void GuiManager::sceneWindow()
 			ImGui::EndMenu();
 		}
 
-		ImGui::Separator();
-
-		AnimPlayer* animPlayer = editorApp->getAnimPlayer();
-
-		TrackEditor::EventTrackEditor* eventTrackEditor = editorApp->getEventTrackEditor();
-		TrackEditor::TimeActEditor* timeActEditor = editorApp->getTimeActEditor();
-
-		if (ImGui::Button(ICON_FA_BACKWARD_FAST))
-		{
-			animPlayer->setTime(RMath::frameToTime(eventTrackEditor->getClipStart()));
-			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_BACKWARD_STEP) || ((GetAsyncKeyState(0x51) & 1) && isWindowFocused))
-		{
-			animPlayer->stepPlay(-1.f / 30.f);
-			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
-		}
-
-		ImGui::SameLine();
-
-		if (!animPlayer->isPaused())
-		{
-			if (ImGui::Button(ICON_FA_PAUSE) || ((GetAsyncKeyState(VK_SPACE) & 1) && isWindowFocused))
-				animPlayer->setPause(true);
-		}
-		else
-		{
-			if (ImGui::Button(ICON_FA_PLAY) || ((GetAsyncKeyState(VK_SPACE) & 1) && isWindowFocused))
-				animPlayer->setPause(false);
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_FORWARD_STEP) || ((GetAsyncKeyState(0x45) & 1) && isWindowFocused))
-		{
-			animPlayer->stepPlay(1.f / 30.f);
-			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_FORWARD_FAST))
-		{
-			animPlayer->setTime(RMath::timeToFrame(eventTrackEditor->getClipEnd()));
-			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
-		}
-
-		ImGui::Separator();
-
-		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 10);
-
-		static float playSpeed = 1.f;
-		ImGui::SliderFloat(ICON_FA_CLOCK, &playSpeed, 0.1f, 1.f);
-
-		animPlayer->setPlaySpeed(playSpeed);
-
 		ImGui::EndMenuBar();
 	}
 
-	ImVec2 pos = ImGui::GetWindowPos();
+	const int controlHeight = ImGui::CalcTextSize(ICON_FA_CLOCK).y + ImGui::GetStyle().FramePadding.y * 2.f;
 
-	int	width = ImGui::GetWindowSize().x;
-	int	height = ImGui::GetWindowSize().y;
+	ImGui::BeginChild("viewport_container", ImVec2(0, ImGui::GetContentRegionAvail().y - controlHeight), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+	ImVec2 pos = ImGui::GetWindowPos();
+	int	width = ImGui::GetContentRegionAvail().x;
+	int	height = ImGui::GetContentRegionAvail().y;
 
 	ImGui::InvisibleButton("viewport_preview", ImVec2(width, height));
 
@@ -1140,6 +1083,66 @@ void GuiManager::sceneWindow()
 	RenderManager::getInstance()->setResolution(width, height);
 
 	ImGui::GetWindowDrawList()->AddImage(RenderManager::getInstance()->getShaderResourceViewport(), pos, ImVec2(pos.x + width, pos.y + height));
+
+	ImGui::EndChild();
+
+	AnimPlayer* animPlayer = editorApp->getAnimPlayer();
+
+	TrackEditor::EventTrackEditor* eventTrackEditor = editorApp->getEventTrackEditor();
+	TrackEditor::TimeActEditor* timeActEditor = editorApp->getTimeActEditor();
+
+	if (ImGui::Button(ICON_FA_BACKWARD_FAST))
+	{
+		animPlayer->setTime(RMath::frameToTime(eventTrackEditor->getClipStart()));
+		eventTrackEditor->setCurrentTime(animPlayer->getTime());
+		timeActEditor->setCurrentTime(animPlayer->getTime());
+	}
+
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_BACKWARD_STEP) || ((GetAsyncKeyState(0x51) & 1) && isWindowFocused))
+	{
+		animPlayer->stepPlay(-1.f / 30.f);
+		eventTrackEditor->setCurrentTime(animPlayer->getTime());
+		timeActEditor->setCurrentTime(animPlayer->getTime());
+	}
+
+	ImGui::SameLine();
+
+	if (!animPlayer->isPaused())
+	{
+		if (ImGui::Button(ICON_FA_PAUSE) || ((GetAsyncKeyState(VK_SPACE) & 1) && isWindowFocused))
+			animPlayer->setPause(true);
+	}
+	else
+	{
+		if (ImGui::Button(ICON_FA_PLAY) || ((GetAsyncKeyState(VK_SPACE) & 1) && isWindowFocused))
+			animPlayer->setPause(false);
+	}
+
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_FORWARD_STEP) || ((GetAsyncKeyState(0x45) & 1) && isWindowFocused))
+	{
+		animPlayer->stepPlay(1.f / 30.f);
+		eventTrackEditor->setCurrentTime(animPlayer->getTime());
+		timeActEditor->setCurrentTime(animPlayer->getTime());
+	}
+
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_FORWARD_FAST))
+	{
+		animPlayer->setTime(RMath::timeToFrame(eventTrackEditor->getClipEnd()));
+		eventTrackEditor->setCurrentTime(animPlayer->getTime());
+		timeActEditor->setCurrentTime(animPlayer->getTime());
+	}
+
+	ImGui::SameLine();
+
+	ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 10);
+
+	static float playSpeed = 1.f;
+	ImGui::SliderFloat(ICON_FA_CLOCK, &playSpeed, 0.1f, 1.f);
+
+	animPlayer->setPlaySpeed(playSpeed);
 
 	ImGui::End();
 }

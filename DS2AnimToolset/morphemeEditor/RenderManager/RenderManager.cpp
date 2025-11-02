@@ -317,7 +317,7 @@ void RenderManager::render()
 		std::string viewportSize = "Resolution: " + std::to_string(this->m_width) + "x" + std::to_string(this->m_height);
 
 		const Vector2 textOffset = Vector2(0, 15);
-		const Vector2 basePosition(10, 40);
+		const Vector2 basePosition(0, 0);
 		Vector2 textPosition = basePosition;
 
 #ifdef _DEBUG
