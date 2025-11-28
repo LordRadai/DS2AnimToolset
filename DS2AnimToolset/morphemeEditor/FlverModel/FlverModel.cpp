@@ -60,6 +60,11 @@ namespace
 		return utils::NMDX::getTransformMatrix(animHandle->getChannelData()[idx].m_quat, animHandle->getChannelData()[idx].m_pos);
 	}
 
+	Vector3 getCfrVector3(cfr::cfr_vec3& vec3)
+	{
+		return Vector3(vec3.x, vec3.y, vec3.z);
+	}
+
 	void accumulateNmTransforms(std::vector<Matrix>& dstChannel, const MR::AnimationSourceHandle* animHandle, bool applyRootMotion)
 	{
 		const MR::AnimRigDef* rig = animHandle->getRig();
@@ -142,14 +147,45 @@ namespace
 
 		int siblingIndex = flv->bones[boneID].nextSiblingIndex;
 
-		if (siblingIndex != -1)
+		while (siblingIndex != -1)
+		{
 			applyTransform(buffer, flv, bindPose, transform, siblingIndex);
 
-		// Traverse children recursively
+			siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
+		}
+
 		int childIndex = flv->bones[boneID].childIndex;
+
 		while (childIndex != -1)
 		{
 			applyTransform(buffer, flv, bindPose, transform, childIndex);
+			childIndex = flv->bones[childIndex].nextSiblingIndex;
+		}
+	}
+
+	void applyTwistTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix>& bindPose, const Matrix& transform, int boneID)
+	{
+		// Compute this bone’s world transform relative to parent
+		Matrix local = bindPose[boneID];
+		Matrix world = local * transform;
+
+		buffer[boneID] = world;
+
+		int childIndex = flv->bones[boneID].childIndex;
+
+		while (childIndex != -1)
+		{
+			applyTwistTransform(buffer, flv, bindPose, transform, childIndex);
+
+			int siblingIndex = flv->bones[childIndex].nextSiblingIndex;
+
+			while (siblingIndex != -1)
+			{
+				applyTwistTransform(buffer, flv, bindPose, transform, siblingIndex);
+
+				siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
+			}
+
 			childIndex = flv->bones[childIndex].nextSiblingIndex;
 		}
 	}
@@ -184,6 +220,8 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 	this->m_loaded = true;
 
 	this->m_nmRig = rig;
+
+	this->m_settings.drawBoneInfluences = false;
 
 	g_appLog->debugMessage(MsgLevel_Info, "Creating bone maps:\n");
 
@@ -565,8 +603,18 @@ void FlverModel::normalizeSkinVertexData(FlverModel::SkinnedVertex& skinnedVerte
 	for (size_t wt = 0; wt < 4; ++wt)
 		totalWeight += skinnedVertex.boneWeights[wt];
 
+	bool bValid = false;
+
 	for (size_t wt = 0; wt < 4; ++wt)
+	{
 		skinnedVertex.boneWeights[wt] /= totalWeight;
+
+		if (skinnedVertex.boneIndices[wt] && skinnedVertex.boneWeights[wt] > 0.f)
+			bValid = true;
+	}
+
+	if (!bValid)
+		g_appLog->alertMessage(MsgLevel_Error, "Warning: Vertex with no valid bone influences detected!\n");
 }
 
 // Gets all the model vertices for all the meshes and stores them into m_verts
@@ -637,10 +685,11 @@ void FlverModel::update(float dt)
 
 		if (morphemeBoneID != -1)
 		{
+			const int parentMorphemeBoneID = this->m_nmRig->getParentBoneIndex(morphemeBoneID);
 			// Take the morpheme animation transform relative to the morpheme bind pose, align it to the flver bind pose, and then apply it to the flver bind pose.
-			Matrix morphemeRelativeTransform = getNmBoneRelativeTransform(morphemeBoneID);
+			//Matrix morphemeRelativeTransform = getNmBoneRelativeTransform(morphemeBoneID);
 
-			applyTransform(this->m_flverBoneTransforms, this->m_flver, this->m_flverBindPoseTransforms, morphemeRelativeTransform, i);
+			applyTransform(this->m_flverBoneTransforms, this->m_flver, this->m_flverBindPoseTransforms, getNmBoneRelativeTransform(morphemeBoneID), i);
 		}
 	}
 
