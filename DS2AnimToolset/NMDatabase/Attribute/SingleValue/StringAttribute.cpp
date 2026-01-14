@@ -29,7 +29,7 @@ namespace db
 	{
 		const std::string value = getValue();
 
-		m_xmlElement->SetText(value.c_str());
+		m_xmlElement->SetText(getValue().c_str());
 		return true;
 	}
 }
