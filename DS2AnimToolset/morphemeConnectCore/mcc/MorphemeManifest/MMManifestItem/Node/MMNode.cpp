@@ -170,24 +170,6 @@ namespace mcc
 				}
 			}
 		}
-
-		/*
-		for (size_t i = 0; i < this->m_dataPins.size(); i++)
-		{
-			mcc::MMDataPin* pin = this->m_dataPins[i];
-
-			if (!pin->addToGraphNode(node))
-				throw std::runtime_error("Failed to add data pin to graph node: " + pin->getPinName());
-		}
-
-		for (size_t i = 0; i < this->m_functionalPins.size(); i++)
-		{
-			mcc::MMFunctionalPin* pin = this->m_functionalPins[i];
-
-			if (!pin->addToGraphNode(node))
-				throw std::runtime_error("Failed to add functional pin to graph node: " + pin->getPinName());
-		}
-		*/
 	}
 
 	std::string MMNode::getNodeDefaultName(mcd::BlendTreeNode* node, mcd::BlendTree* parent) const
