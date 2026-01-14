@@ -4,7 +4,7 @@ namespace mcd
 {
 	ControlParameter::ControlParameter(db::Node* parent, const std::string& name, DataTypes dataType)
 		: db::Node(parent, "ControlParameter", name),
-		m_dataPins(std::make_unique<db::TypedNodeContainer<mcd::DataPin>>(this, "DataPins")),
+		m_dataPins(std::make_unique<db::TypedNodeContainer<mcd::DataPin>>(this, "DataPinEntry")),
 		m_min(std::make_unique<db::FloatAttribute>(this, "Min", 0.0f)),
 		m_max(std::make_unique<db::FloatAttribute>(this, "Max", 1.0f)),
 		m_defaultFloat(std::make_unique<db::FloatAttribute>(this, "DefaultFloat", 0.f)),

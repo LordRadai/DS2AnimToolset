@@ -4,7 +4,7 @@ namespace mcd
 {
 	DataPin::DataPin(db::Node* parent, const std::string pinName, DataTypes dataType)
 		: Pin(parent, "DataPin", pinName),
-		m_dataType(std::make_unique<db::EnumAttribute>(this, "DataType", "")),
+		m_dataType(std::make_unique<db::EnumAttribute>(this, "Type", "")),
 		m_passThroughEnabled(std::make_unique<db::BoolAttribute>(this, "PassThroughEnabled", false)),
 		m_input(std::make_unique<db::BoolAttribute>(this, "Input", false))
 	{

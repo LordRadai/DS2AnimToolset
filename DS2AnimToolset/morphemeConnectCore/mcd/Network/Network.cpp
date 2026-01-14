@@ -5,8 +5,8 @@ namespace mcd
 	Network::Network(db::Node* parent, const std::string& name)
 		: db::Node(parent, "Network", name),
 		m_graphs(std::make_unique<db::TypedNodeContainer<mcd::Graph>>(this, "GraphEntry")),
-		m_controlParameters(std::make_unique<mcd::ControlParametersNode>(this, "ControlParametersNode")),
-		m_requests(std::make_unique<mcd::RequestsNode>(this, "RequestsNode"))
+		m_controlParameters(std::make_unique<mcd::ControlParametersNode>(this, "ControlParameters")),
+		m_requests(std::make_unique<mcd::RequestsNode>(this, "Requests"))
 	{
 		addAttribute(m_graphs.get());
 		addAttribute(m_controlParameters.get());
