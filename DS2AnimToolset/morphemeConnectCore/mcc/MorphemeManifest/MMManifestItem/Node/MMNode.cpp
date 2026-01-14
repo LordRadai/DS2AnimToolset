@@ -118,7 +118,7 @@ namespace mcc
 		return nullptr;
 	}
 
-	void MMNode::sortPins()
+	std::vector<MMPin*> MMNode::getSortedPins()
 	{
 		std::vector<MMPin*> sortedPins;
 		sortedPins.reserve(m_functionalPins.size() + m_dataPins.size());
@@ -134,22 +134,11 @@ namespace mcc
 				sortedPins.push_back(pin);
 		}
 
-		m_functionalPins.clear();
-		m_dataPins.clear();
-
-		for (const auto& pin : sortedPins)
-		{
-			if (MMFunctionalPin* funcPin = dynamic_cast<MMFunctionalPin*>(pin))
-				m_functionalPins.push_back(funcPin);
-			else if (MMDataPin* dataPin = dynamic_cast<MMDataPin*>(pin))
-				m_dataPins.push_back(dataPin);
-		}
+		return sortedPins;
 	}
 
 	void MMNode::setupNewBlendTreeNode(mcd::BlendTreeNode* node, mcd::BlendTree* parent)
 	{
-		sortPins();
-
 		// We need to set the default name, but to do this we need a way to count all nodes of the same type in the parent blend tree.
 
 		for (size_t i = 0; i < this->m_attributes.size(); i++)
@@ -159,6 +148,30 @@ namespace mcc
 			attrInfo.createDatabaseAttribute(node->getAttributes());
 		}
 
+		std::vector<MMPin*> sortedPins = getSortedPins();
+
+		for (size_t i = 0; i < sortedPins.size(); i++)
+		{
+			mcc::MMDataPin* dataPin = dynamic_cast<mcc::MMDataPin*>(sortedPins[i]);
+
+			if (dataPin)
+			{
+				if (!dataPin->addToGraphNode(node))
+					throw std::runtime_error("Failed to add data pin to graph node: " + dataPin->getPinName());
+			}
+			else
+			{
+				mcc::MMFunctionalPin* funcPin = dynamic_cast<mcc::MMFunctionalPin*>(sortedPins[i]);
+
+				if (funcPin)
+				{
+					if (!funcPin->addToGraphNode(node))
+						throw std::runtime_error("Failed to add functional pin to graph node: " + funcPin->getPinName());
+				}
+			}
+		}
+
+		/*
 		for (size_t i = 0; i < this->m_dataPins.size(); i++)
 		{
 			mcc::MMDataPin* pin = this->m_dataPins[i];
@@ -174,6 +187,7 @@ namespace mcc
 			if (!pin->addToGraphNode(node))
 				throw std::runtime_error("Failed to add functional pin to graph node: " + pin->getPinName());
 		}
+		*/
 	}
 
 	std::string MMNode::getNodeDefaultName(mcd::BlendTreeNode* node, mcd::BlendTree* parent) const

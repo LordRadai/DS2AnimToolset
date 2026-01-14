@@ -47,6 +47,6 @@ namespace mcc
 		MMFunctionalPin* findFunctionalPin(const std::string& name);
 		uint32_t getNumFunctionalPins() const { return static_cast<uint32_t>(m_functionalPins.size()); }
 
-		void sortPins();
+		std::vector<MMPin*> getSortedPins();
 	};
 }
