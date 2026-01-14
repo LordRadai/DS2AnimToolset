@@ -150,6 +150,12 @@
     <ClCompile Include="mcc\GraphObjectPath\GraphObjectPath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\Attribute\RigChannelName\RigChannelNameAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcd\Attribute\AnimationTake\AnimationTakeAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -306,6 +312,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcc\GraphObjectPath\GraphObjectPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SupportedManifest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\Attribute\RigChannelName\RigChannelNameAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,7 +12,6 @@ namespace mcc
 			throw std::runtime_error("Manifest node directory does not exist: Data\\manifest\\nodes\\");
 
 		m_manifest->registerStateMachine("Data\\manifest\\nodes\\animation\\StateMachine.json");
-		//m_manifest->registerStateMachine("Data\\manifest\\nodes\\physics\\PhysicsStateMachine.json");
 
 		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\nodes\\"))
 		{
@@ -169,6 +168,9 @@ namespace mcc
 
 	mcd::BlendTreeNode* MorphemeDocument::createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& name)
 	{
+		if (manifestNode == nullptr)
+			throw std::runtime_error("Cannot create BlendTreeNode. Manifest node is nullptr.");
+
 		float xPos = 0.0f;
 		float yPos = 0.0f;
 		parent->getFreePosition(xPos, yPos);

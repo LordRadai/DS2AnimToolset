@@ -15,5 +15,6 @@ namespace mcd
 		virtual ~AnimationSetAttribute() override {};
 
 		void setAttribute(const std::string& animSetName, mcd::Attribute* attribute);
+		mcd::Attribute* getMcdAttribute(const std::string& animSetName) const;
 	};
 }

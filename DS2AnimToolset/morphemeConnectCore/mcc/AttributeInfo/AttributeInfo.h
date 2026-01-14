@@ -24,6 +24,7 @@ namespace mcc
 			kRefArray,
 			kControlParameter,
 			kRequest,
+			kRigChannelNames,
 			kNumAttributeTypes
 		};
 

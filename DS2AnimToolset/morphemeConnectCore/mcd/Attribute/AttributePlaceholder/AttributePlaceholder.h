@@ -7,7 +7,7 @@ namespace mcd
 {
 	class AttributePlaceholder : public db::Node
 	{
-		db::TypedNodeContainer<mcd::Attribute> m_attributes;
+		std::unique_ptr<db::TypedNodeContainer<mcd::Attribute>> m_attributes;
 
 	public:
 		AttributePlaceholder(db::Attribute* parent, std::string name);

@@ -30,7 +30,7 @@ namespace mcc
 
 		virtual mcd::BlendTreeNode* createDatabaseNode(mcd::BlendTree* parent, mcd::MorphemeDB* morphemeDB);
 
-		int getId() const { return m_jsonData["id"]; }
+		int getID() const { return m_jsonData["id"]; }
 		std::string getGroup() const { return m_jsonData["group"]; }
 		std::string getDisplayName() const { return m_jsonData["displayName"]; }
 		std::string getImage() const { return m_jsonData["image"]; }

@@ -8,6 +8,8 @@
 #include "mcd/Attribute/Array/BoolArrayAttribute.h"
 #include "mcd/Attribute/Array/FloatArrayAttribute.h"
 #include "mcd/Attribute/Array/IntArrayAttribute.h"
+#include "mcd/Attribute/RigChannelName/RigChannelNameAttribute.h"
+
 #include "mcc/MorphemeDocument/MorphemeDocument.h"
 #include "extern.h"
 
@@ -40,6 +42,8 @@ namespace mcc
 			return AttributeType::kFloatArray;
 		else if (typeName == "intArray")
 			return AttributeType::kIntArray;
+		else if (typeName == "rigChannelNames")
+			return AttributeType::kRigChannelNames;
 
 		throw std::runtime_error("AttributeInfo::getManifestDataType() - Unhandled attribute type: " + typeName);
 	}
@@ -82,6 +86,9 @@ namespace mcc
 
 			for (int i = 0; i < m_manifestAttribute->size(); i++)
 				dynamic_cast<mcd::IntArrayAttribute*>(attribute)->addElement(m_manifestAttribute->getIntValue(i));
+			break;
+		case mcc::AttributeInfo::AttributeType::kRigChannelNames:
+			attribute = new mcd::RigChannelNameAttribute(parent, m_manifestAttribute->getName());
 			break;
 		}
 

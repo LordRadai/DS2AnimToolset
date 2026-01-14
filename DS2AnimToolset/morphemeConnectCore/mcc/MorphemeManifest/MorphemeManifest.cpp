@@ -145,7 +145,7 @@ namespace mcc
 	{
 		for (auto& stateMachine : m_registeredStateMachines)
 		{
-			if (stateMachine->getId() == id)
+			if (stateMachine->getID() == id)
 				return stateMachine;
 		}
 
@@ -164,7 +164,7 @@ namespace mcc
 	{
 		for (auto& node : m_registeredNodes)
 		{
-			if (node->getId() == id)
+			if (node->getID() == id)
 				return node;
 		}
 

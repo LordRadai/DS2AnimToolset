@@ -20,4 +20,14 @@ namespace mcd
 
 		m_attributePlaceholders->add(placeholder);
 	}
+
+	mcd::Attribute* AnimationSetAttribute::getMcdAttribute(const std::string& animSetName) const
+	{
+		mcd::AttributePlaceholder* placeholder = m_attributePlaceholders->find(animSetName);
+
+		if (placeholder)
+			return placeholder->getMcdAttribute();
+
+		return nullptr;
+	}
 }

@@ -41,5 +41,10 @@ namespace mcc
 
 		MMTransition* getTransitionManifest(uint32_t index);
 		MMTransition* findTransitionManifest(uint32_t id);
+
+		uint32_t getNumRegisteredStateMachines() const { return static_cast<uint32_t>(m_registeredStateMachines.size()); }
+		uint32_t getNumRegisteredNodes() const { return static_cast<uint32_t>(m_registeredNodes.size()); }
+		uint32_t getNumRegisteredConditions() const { return static_cast<uint32_t>(m_conditions.size()); }
+		uint32_t getNumRegisteredTransitions() const { return static_cast<uint32_t>(m_transitions.size()); }
 	};
 }
