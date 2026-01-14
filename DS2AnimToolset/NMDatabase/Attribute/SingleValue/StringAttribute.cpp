@@ -27,7 +27,9 @@ namespace db
 
 	bool StringAttribute::writeValueXML(int format, SaverXML* saver)
 	{
-		m_xmlElement->SetText(getValue().c_str());
+		const std::string value = getValue();
+
+		m_xmlElement->SetText(value.c_str());
 		return true;
 	}
 }

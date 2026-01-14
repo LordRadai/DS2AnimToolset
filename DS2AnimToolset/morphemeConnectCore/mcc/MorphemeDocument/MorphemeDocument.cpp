@@ -154,24 +154,26 @@ namespace mcc
 		return param;
 	}
 
-	mcd::BlendTreeNode* MorphemeDocument::createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& type, float xPos, float yPos)
+	mcd::BlendTreeNode* MorphemeDocument::createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& name, float xPos, float yPos)
 	{
 		mcd::BlendTreeNode* btNode = manifestNode->createDatabaseNode(parent, m_morphemeDB.get());
 
+		if (!name.empty())
+			btNode->setName(name);
+
 		btNode->setXPos(xPos);
 		btNode->setYPos(yPos);
-		btNode->setNodeType(type);
 
 		return btNode;
 	}
 
-	mcd::BlendTreeNode* MorphemeDocument::createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& type)
+	mcd::BlendTreeNode* MorphemeDocument::createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& name)
 	{
 		float xPos = 0.0f;
 		float yPos = 0.0f;
 		parent->getFreePosition(xPos, yPos);
 
-		return createBlendTreeNode(manifestNode, parent, type, xPos, yPos);
+		return createBlendTreeNode(manifestNode, parent, name, xPos, yPos);
 	}
 
 	mcd::BlendTree* MorphemeDocument::createNewBlendTree(const std::string& name, mcd::StateMachine* parent, float xPos, float yPos)

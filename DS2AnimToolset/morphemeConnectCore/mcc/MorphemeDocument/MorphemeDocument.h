@@ -135,22 +135,22 @@ namespace mcc
 		 * 
 		 * \param manifestNode The manifest node to create the blend tree node from.
 		 * \param parent The parent blend tree for the new node.
-		 * \param type The type name of the new blend tree node.
+		 * \param name The name of the new blend tree node. If left empty, it will use the default name from the manifest.
 		 * \param xPos The x position of the new blend tree node.
 		 * \param yPos The y position of the new blend tree node.
 		 * \return A pointer to the created blend tree node.
 		 */
-		mcd::BlendTreeNode* createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& type, float xPos, float yPos);
+		mcd::BlendTreeNode* createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& name, float xPos, float yPos);
 
 		/**
 		 * \brief Creates a blend tree node at the first free position under the parent blend tree.
 		 * 
 		 * \param manifestNode The manifest node to create the blend tree node from.
 		 * \param parent The parent blend tree for the new node.
-		 * \param type The type name of the new blend tree node.
+		 * \param name The name of the new blend tree node.
 		 * \return A pointer to the created blend tree node.
 		 */
-		mcd::BlendTreeNode* createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& type);
+		mcd::BlendTreeNode* createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& name);
 
 		/**
 		 * \brief Creates a new blend tree with the specified name and parent state machine.

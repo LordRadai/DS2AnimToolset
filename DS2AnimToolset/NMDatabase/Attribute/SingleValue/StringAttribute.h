@@ -30,7 +30,7 @@ namespace db
 		virtual NMP::Matrix34 getValueAsMatrix34() const override { return NMP::Matrix34Zero(); }
 		virtual NMP::Quat getValueAsQuaternion() const override { return NMP::QuatIdentity(); }
 
-		const std::string& getValue() const { return getValueAsString(); }
+		const std::string getValue() const { return getValueAsString(); }
 		void setValue(const std::string& value) { m_value = value; }
 	};
 }
