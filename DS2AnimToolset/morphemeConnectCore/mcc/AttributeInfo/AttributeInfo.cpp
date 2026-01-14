@@ -22,9 +22,36 @@ namespace mcc
 
 		if (m_attribType == AttributeType::kAnimationTake)
 			m_perAnimSet = true;
+
+		m_syncWithRigChannels = manifestAttribute->isSyncWithRigChannels();
 	}
 
-	AttributeInfo::AttributeType AttributeInfo::getManifestDataType(std::string typeName) const
+	std::string AttributeInfo::getManifestDataTypeName(AttributeType type)
+	{
+		switch (type)
+		{
+		case AttributeType::kFloat:				return "float";
+		case AttributeType::kBool:				return "bool";
+		case AttributeType::kInt:				return "int";
+		case AttributeType::kString:			return "string";
+		case AttributeType::kAnimationTake:		return "animationTake";
+		case AttributeType::kRef:				return "ref";
+		case AttributeType::kBoolArray:			return "boolArray";
+		case AttributeType::kFloatArray:		return "floatArray";
+		case AttributeType::kIntArray:			return "intArray";
+		case AttributeType::kRefArray:			return "refArray";
+		case AttributeType::kControlParameter:	return "controlParameter";
+		case AttributeType::kRequest:			return "request";
+		case AttributeType::kRigChannelNames:	return "rigChannelName";
+		default:
+			throw std::runtime_error(
+				"AttributeInfo::getManifestDataTypeName() - Unhandled attribute type " +
+				std::to_string(static_cast<uint32_t>(type))
+			);
+		}
+	}
+
+	AttributeInfo::AttributeType AttributeInfo::getManifestDataType(std::string typeName)
 	{
 		if (typeName == "float")
 			return AttributeType::kFloat;
@@ -44,6 +71,8 @@ namespace mcc
 			return AttributeType::kIntArray;
 		else if (typeName == "rigChannelName")
 			return AttributeType::kRigChannelNames;
+		else if (typeName == "request")
+			return AttributeType::kRequest;
 
 		throw std::runtime_error("AttributeInfo::getManifestDataType() - Unhandled attribute type: " + typeName);
 	}
@@ -90,6 +119,17 @@ namespace mcc
 		case mcc::AttributeInfo::AttributeType::kRigChannelNames:
 			attribute = new mcd::RigChannelNameAttribute(parent, m_manifestAttribute->getName());
 			break;
+		case mcc::AttributeInfo::AttributeType::kRequest:
+			throw std::runtime_error("Request attributes are not yet implemented");
+			break;
+		default:
+			throw std::runtime_error("Unhandled attribute type: " + getManifestDataTypeName(m_attribType));
+			break;
+		}
+
+		if (m_syncWithRigChannels)
+		{
+			attribute->addAttribute(new db::BoolAttribute(attribute, "SyncWithRigChannels", true));
 		}
 
 		if (m_perAnimSet)

@@ -23,6 +23,5 @@ namespace mcd
 			m_attributes->removeAt(0);
 
 		m_attributes->add(attribute);
-		attribute->setParentAttribute(this);
 	}
 }

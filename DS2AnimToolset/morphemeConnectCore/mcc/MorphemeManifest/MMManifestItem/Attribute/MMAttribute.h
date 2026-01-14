@@ -15,20 +15,27 @@ namespace mcc
 
 		std::string getName() const { return m_jsonData["name"]; }
 		std::string getType() const { return m_jsonData["type"]; }
-		nlohmann::json getValue() const { return m_jsonData["value"]; }
+		std::string getHelpText() const { return m_jsonData.value("helptext", ""); }
+		nlohmann::json getValue() const { return m_jsonData.value("value", nlohmann::json(nullptr)); }
 		bool isPerAnimSet() const { return m_jsonData.value("perAnimSet", false); }
+		bool isSyncWithRigChannels() const { return m_jsonData.value("syncWithRigChannels", false); }
 
-		bool isArray() const { return m_jsonData["value"].is_array(); }
-		uint32_t size() const { return m_jsonData["value"].size(); }
+		bool isArray() const;
+		uint32_t size() const;
 
-		bool getBoolValue() const { return getValue().get<bool>(); }
-		float getFloatValue() const { return getValue().get<float>(); }
-		int getIntValue() const { return getValue().get<int>(); }
-		std::string getStringValue() const { return getValue().get<std::string>(); }
+		bool getBoolValue() const;
+		float getFloatValue() const;
+		int getIntValue() const;
+		std::string getStringValue() const;
 
-		bool getBoolValue(const uint32_t index) const { return m_jsonData["value"][index].get<bool>(); }
-		float getFloatValue(const uint32_t index) const { return m_jsonData["value"][index].get<float>(); }
-		int getIntValue(const uint32_t index) const { return m_jsonData["value"][index].get<int>(); }
-		std::string getStringValue(const uint32_t index) const { return m_jsonData["value"][index].get<std::string>(); }
+		bool getBoolValue(const uint32_t index) const;
+		float getFloatValue(const uint32_t index) const;
+		int getIntValue(const uint32_t index) const;
+		std::string getStringValue(const uint32_t index) const;
+
+		float getFloatMin() const { return m_jsonData.value("min", 0.0f); }
+		float getFloatMax() const { return m_jsonData.value("max", 1.0f); }
+		int getIntMin() const { return m_jsonData.value("min", -1); }
+		int getIntMax() const { return m_jsonData.value("max", 1); }
 	};
 }

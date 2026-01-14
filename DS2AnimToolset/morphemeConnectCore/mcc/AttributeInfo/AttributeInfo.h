@@ -25,6 +25,7 @@ namespace mcc
 			kControlParameter,
 			kRequest,
 			kRigChannelNames,
+
 			kNumAttributeTypes
 		};
 
@@ -32,12 +33,14 @@ namespace mcc
 		AttributeType m_attribType;
 		std::unique_ptr<mcc::MMAttribute> m_manifestAttribute;
 		bool m_perAnimSet;
+		bool m_syncWithRigChannels;
 	public:
 		AttributeInfo(MMAttribute* manifestAttribute);
 
 		AttributeType getDataType() const { return m_attribType; }
 
-		AttributeType getManifestDataType(std::string typeName) const;
+		static std::string getManifestDataTypeName(AttributeType type);
+		static AttributeType getManifestDataType(std::string typeName);
 
 		mcd::Attribute* createNormalDatabaseAttribute(db::TypedNodeContainer<mcd::Attribute>* parent);
 		mcd::Attribute* createAnimationSetAttribute(db::TypedNodeContainer<mcd::Attribute>* parent);
