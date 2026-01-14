@@ -17,14 +17,17 @@ int main()
 
 	mcc::MorphemeManifest* manifest = g_doc->getManifest();
 
-	printf_s("--------Creating control parameters--------\n");
-
 	g_doc->getMorphemeDB()->createNetwork("Network");
 	mcd::Network* network = g_doc->getMorphemeDB()->getNetwork();
 
+	printf_s("--------Creating nodes--------\n");
+
 	mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
-	mcd::BlendTreeNode* pSwitch = g_doc->createBlendTreeNode(manifest->findNodeManifest(NODE_TYPE_SWITCH), rootBt, "");
-	//mcd::BlendTreeNode* pAnim = g_doc->createBlendTreeNode(manifest->findNodeManifest(NODE_TYPE_ANIM_EVENTS), rootBt, "");
+	g_doc->createBlendTreeNode(manifest->findNodeManifest(NODE_TYPE_SWITCH), rootBt, "");
+
+	printf_s("--------Nodes created successfully.--------\n");
+
+	printf_s("--------Creating control parameters--------\n");
 
 	network->addControlParameter(g_doc->createFloatControlParameter("FloatParam", 0.0f, 1.0f, 0.5f));
 	network->addControlParameter(g_doc->createVector3ControlParameter("Vector3Param", 0.0f, 10.0f, NMP::Vector3(1.0f, 2.0f, 3.0f)));
@@ -34,10 +37,14 @@ int main()
 	network->addControlParameter(g_doc->createUIntControlParameter("UIntParam", 0, 100, 50));
 	network->addControlParameter(g_doc->createQuaternionControlParameter("QuaternionParam", 0.f, 1.f, NMP::Quat(0.707f, 0.0f, 0.707f, 0.0f)));
 
+	printf_s("--------Control parameters created successfully.--------\n");
+
+	printf_s("--------Creating requests--------\n");
+
 	network->addRequest(g_doc->createRequest("Request0"));
 	network->addRequest(g_doc->createRequest("Request1"));
 
-	printf_s("--------Control parameters created successfully.--------\n");
+	printf_s("--------Requests created successfully.--------\n");
 
 	g_doc->saveAs("testMorphemeDoc.xml");
 

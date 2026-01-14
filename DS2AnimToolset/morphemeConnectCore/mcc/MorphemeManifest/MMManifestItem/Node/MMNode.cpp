@@ -92,7 +92,7 @@ namespace mcc
 	{
 		for (auto& pin : m_dataPins)
 		{
-			if (pin->getName() == name)
+			if (pin->getPinName() == name)
 				return pin;
 		}
 
@@ -111,7 +111,7 @@ namespace mcc
 	{
 		for (auto& pin : m_functionalPins)
 		{
-			if (pin->getName() == name)
+			if (pin->getPinName() == name)
 				return pin;
 		}
 
@@ -120,22 +120,36 @@ namespace mcc
 
 	void MMNode::sortPins()
 	{
-		std::vector<MMFunctionalPin*> sortedFunctionalPins;
+		std::vector<MMPin*> sortedPins;
+		sortedPins.reserve(m_functionalPins.size() + m_dataPins.size());
 
 		for (const auto& pinName : m_pinOrder)
 		{
-			MMFunctionalPin* pin = findFunctionalPin(pinName);
+			MMPin* pin = findFunctionalPin(pinName);
+
+			if (pin == nullptr)
+				pin = findDataPin(pinName);
 
 			if (pin)
-				sortedFunctionalPins.push_back(pin);
+				sortedPins.push_back(pin);
 		}
 
 		m_functionalPins.clear();
-		m_functionalPins = std::move(sortedFunctionalPins);
+		m_dataPins.clear();
+
+		for (const auto& pin : sortedPins)
+		{
+			if (MMFunctionalPin* funcPin = dynamic_cast<MMFunctionalPin*>(pin))
+				m_functionalPins.push_back(funcPin);
+			else if (MMDataPin* dataPin = dynamic_cast<MMDataPin*>(pin))
+				m_dataPins.push_back(dataPin);
+		}
 	}
 
 	void MMNode::setupNewBlendTreeNode(mcd::BlendTreeNode* node, mcd::BlendTree* parent)
 	{
+		sortPins();
+
 		// We need to set the default name, but to do this we need a way to count all nodes of the same type in the parent blend tree.
 
 		for (size_t i = 0; i < this->m_attributes.size(); i++)
