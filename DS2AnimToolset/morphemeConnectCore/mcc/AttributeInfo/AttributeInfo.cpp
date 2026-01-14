@@ -42,7 +42,7 @@ namespace mcc
 			return AttributeType::kFloatArray;
 		else if (typeName == "intArray")
 			return AttributeType::kIntArray;
-		else if (typeName == "rigChannelNames")
+		else if (typeName == "rigChannelName")
 			return AttributeType::kRigChannelNames;
 
 		throw std::runtime_error("AttributeInfo::getManifestDataType() - Unhandled attribute type: " + typeName);
