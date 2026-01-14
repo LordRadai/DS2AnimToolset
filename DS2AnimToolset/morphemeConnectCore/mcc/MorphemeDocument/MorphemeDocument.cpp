@@ -160,7 +160,7 @@ namespace mcc
 
 		btNode->setXPos(xPos);
 		btNode->setYPos(yPos);
-		btNode->setType(type);
+		btNode->setNodeType(type);
 
 		return btNode;
 	}

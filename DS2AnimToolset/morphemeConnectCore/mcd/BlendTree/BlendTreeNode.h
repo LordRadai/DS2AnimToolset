@@ -15,6 +15,8 @@ namespace mcd
 		virtual ~BlendTreeNode() override {}
 
 		const std::string& getNodeType() const { return m_nodeType->getValue(); }
+		void setNodeType(const std::string& type) { m_nodeType->setValue(type); }
+
 		int getManifestVersion() const { return m_manifestVersion->getValue(); }
 		void setManifestVersion(int version) { m_manifestVersion->setValue(version); }
 	};
