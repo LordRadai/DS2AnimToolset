@@ -5,9 +5,9 @@ namespace mcd
     RefAttribute::RefAttribute(db::Attribute* parent, const std::string& name, int refKind, bool isWeakRef) :
         Attribute(parent, name, "RefAttribute"),
         m_ref(std::make_unique<db::Pointer<db::Node>>(this, "Ref", nullptr)),
-        m_refStr(std::make_unique<db::StringAttribute>(this, "RefStr", "")),
+        m_refStr(std::make_unique<db::StringAttribute>(this, "RefPath", "")),
         m_refKind(std::make_unique<db::IntAttribute>(this, "RefKind", refKind)),
-        m_isWeakRef(std::make_unique<db::BoolAttribute>(this, "IsWeakRef", isWeakRef))
+        m_isWeakRef(std::make_unique<db::BoolAttribute>(this, "Weak", isWeakRef))
     {
         addAttribute(m_refKind.get());
 		setWeak(isWeakRef);

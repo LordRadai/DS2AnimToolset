@@ -54,14 +54,6 @@ int main()
 		g_doc->getMorphemeDB()->createNetwork("Network");
 		mcd::Network* network = g_doc->getMorphemeDB()->getNetwork();
 
-		printf_s("--------Creating nodes--------\n");
-
-		mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
-
-		g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_CLOSESTANIM), rootBt, "");
-
-		printf_s("--------Nodes created successfully.--------\n");
-
 		printf_s("--------Creating control parameters--------\n");
 
 		network->addControlParameter(g_doc->createFloatControlParameter("FloatParam", 0.0f, 1.0f, 0.5f));
@@ -80,6 +72,17 @@ int main()
 		network->addRequest(g_doc->createRequest("Request1"));
 
 		printf_s("--------Requests created successfully.--------\n");
+
+		printf_s("--------Creating nodes--------\n");
+
+		mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
+
+		mcd::BlendTreeNode* pEmitRequest = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_EMITREQUESTONDISCRETEEVENT), rootBt, "");
+
+		dynamic_cast<mcd::RequestAttribute*>(pEmitRequest->findAttribute("EmittedRequest0"))->setValue(network->findRequest("Request0"));
+		dynamic_cast<mcd::RequestAttribute*>(pEmitRequest->findAttribute("EmittedRequest1"))->setValue(network->findRequest("Request1"));
+
+		printf_s("--------Nodes created successfully.--------\n");
 
 		g_doc->saveAs("testMorphemeDoc.xml");
 

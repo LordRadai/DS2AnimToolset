@@ -14,7 +14,9 @@ namespace mcd
 
 		virtual ~RequestAttribute() override;
 
+		bool isValueEqualTo(Attribute* attr) override;
+
 		mcd::Request* getValue() const { return m_value->getValue(); }
-		void setValue(mcd::Request* request) { m_value->setValue(request); }
+		void setValue(mcd::Request* request);
 	};
 }
