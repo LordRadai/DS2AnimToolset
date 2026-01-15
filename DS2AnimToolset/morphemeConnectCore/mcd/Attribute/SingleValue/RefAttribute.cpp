@@ -3,7 +3,7 @@
 namespace mcd
 {
     RefAttribute::RefAttribute(db::Attribute* parent, const std::string& name, int refKind, bool isWeakRef) :
-        Attribute(parent, name, "RefAttribute"),
+        Attribute(parent, "RefAttribute", name),
         m_ref(std::make_unique<db::Pointer<db::Node>>(this, "Ref", nullptr)),
         m_refStr(std::make_unique<db::StringAttribute>(this, "RefPath", "")),
         m_refKind(std::make_unique<db::IntAttribute>(this, "RefKind", refKind)),

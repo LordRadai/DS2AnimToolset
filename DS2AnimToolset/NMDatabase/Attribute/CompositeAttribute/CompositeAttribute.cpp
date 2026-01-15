@@ -68,9 +68,6 @@ namespace db
 		if (attribute == nullptr)
 			throw std::invalid_argument("CompositeAttribute::insertAttribute() failed - Attribute cannot be null");
 
-		if (findAttribute(attribute->getName()))
-			throw std::runtime_error("CompositeAttribute::insertAttribute() failed - Attribute with the same name already exists");
-
 		m_attributes.insert(m_attributes.begin() + idx, attribute);
 		attribute->setParentAttribute(this);
 	}
