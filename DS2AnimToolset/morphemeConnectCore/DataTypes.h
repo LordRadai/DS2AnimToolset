@@ -11,6 +11,7 @@ enum class DataTypes
 	kInt,
 	kUInt,
 	kString,
+
 	kNumDataTypes
 };
 

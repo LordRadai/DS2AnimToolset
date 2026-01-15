@@ -2,16 +2,15 @@
 
 namespace mcd
 {
-    RefAttribute::RefAttribute(db::Attribute* parent, const std::string& name, db::Node* value, int refKind, bool isWeakRef) :
-        Attribute(parent, name, "ref"),
-        m_value(this, "value", value),
-        m_refStr(new StringAttribute(this, "RefKindStr", refKindAsString(refKind))),
-        m_refKind(new IntAttribute(this, "RefKind", refKind)),
-        m_isWeakRef(new BoolAttribute(this, "IsWeakRef", isWeakRef))
+    RefAttribute::RefAttribute(db::Attribute* parent, const std::string& name, int refKind, bool isWeakRef) :
+        Attribute(parent, name, "RefAttribute"),
+        m_ref(std::make_unique<db::Pointer<db::Node>>(this, "Ref", nullptr)),
+        m_refStr(std::make_unique<db::StringAttribute>(this, "RefStr", "")),
+        m_refKind(std::make_unique<db::IntAttribute>(this, "RefKind", refKind)),
+        m_isWeakRef(std::make_unique<db::BoolAttribute>(this, "IsWeakRef", isWeakRef))
     {
-        this->addAttribute(&m_value);
-        setWeak(isWeakRef);
-
+        addAttribute(m_refKind.get());
+		setWeak(isWeakRef);
 	}
 
     bool RefAttribute::isValueEqualTo(Attribute* attrib)
@@ -21,7 +20,7 @@ namespace mcd
 
         RefAttribute* otherPtrAttrib = dynamic_cast<RefAttribute*>(attrib);
 
-        if (otherPtrAttrib->m_value.getValue() == this->m_value.getValue())
+        if (otherPtrAttrib->m_ref->getValue() == this->m_ref->getValue())
             return true;
 
         return false;
@@ -29,22 +28,22 @@ namespace mcd
 
     void RefAttribute::setRef(db::Node* node)
     {
-        m_value.setValue(node);
+        m_ref->setValue(node);
     }
 
     void RefAttribute::setRefByPath(const std::string& path)
     {
-
+		throw std::runtime_error("RefAttribute::setRefByPath() - Not implemented");
     }
 
     void RefAttribute::setWeak(bool weak)
     {
-        removeAttribute(m_isWeakRef);
+        removeAttribute(m_isWeakRef.get());
 
         m_isWeakRef->setValue(weak);
 
         if (weak)
-            addAttribute(m_isWeakRef);
+            addAttribute(m_isWeakRef.get());
     }
 
     void RefAttribute::setRefKind(int refKind)
@@ -57,16 +56,11 @@ namespace mcd
 	{
         switch (refKind)
         {
-        case kRefKindTransitionSubState:
-            return "transitionSubState";
-        case kRefKindConditionSubState:
-            return "conditionSubState";
-        case kRefKindAllStateMachines:
-            return "allStateMachines";
-        case kRefKindAnimationSet:
-            return "AnimationSet";
-        case kRefKindMessagePreset:
-            return "messagePreset";
+        case kRefKindTransitionSubState:    return "transitionSubState";
+        case kRefKindConditionSubState:     return "conditionSubState";
+        case kRefKindAllStateMachines:      return "allStateMachines";
+        case kRefKindAnimationSet:          return "AnimationSet";
+        case kRefKindMessagePreset:         return "messagePreset";
         default:
             return "";
         }

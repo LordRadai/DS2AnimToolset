@@ -172,6 +172,7 @@
     <ClCompile Include="mcd\Attribute\Array\IntArrayAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\Attribute.cpp" />
     <ClCompile Include="mcd\Attribute\AttributePlaceholder\AttributePlaceholder.cpp" />
+    <ClCompile Include="mcd\Attribute\SingleValue\RequestAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\RigChannelName\RigChannelNameAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\SingleValue\BoolAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\SingleValue\ControlParameterAttribute.cpp" />
@@ -207,6 +208,7 @@
     <ClInclude Include="mcc\MorphemeDBLoader\MorphemeDBLoader.h" />
     <ClInclude Include="mcc\MorphemeDocument\MorphemeDocument.h" />
     <ClInclude Include="mcc\AttributeInfo\AttributeInfo.h" />
+    <ClInclude Include="mcd\Attribute\SingleValue\RequestAttribute.h" />
     <ClInclude Include="mcd\Attribute\RigChannelName\RigChannelNameAttribute.h" />
     <ClInclude Include="SupportedManifest.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\Attribute\MMAttribute.h" />

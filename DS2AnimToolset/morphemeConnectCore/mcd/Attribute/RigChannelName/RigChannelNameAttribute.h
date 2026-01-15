@@ -1,8 +1,6 @@
 #pragma once
-#include "NMDatabase/Node/Node.h"
-#include "NMDBExtensions/TypedNodeContainer.inl"
 #include "../Attribute.h"
-#include "../SingleValue/StringAttribute.h"
+#include "NMDatabase/Attribute/SingleValue/StringAttribute.h"
 
 namespace mcd
 {

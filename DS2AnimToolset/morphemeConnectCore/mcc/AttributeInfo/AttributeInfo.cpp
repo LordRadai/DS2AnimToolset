@@ -3,12 +3,14 @@
 #include "mcd/Attribute/SingleValue/BoolAttribute.h"
 #include "mcd/Attribute/SingleValue/IntAttribute.h"
 #include "mcd/Attribute/SingleValue/StringAttribute.h"
+#include "mcd/Attribute/SingleValue/RefAttribute.h"
+#include "mcd/Attribute/SingleValue/RequestAttribute.h"
+#include "mcd/Attribute/RigChannelName/RigChannelNameAttribute.h"
 #include "mcd/Attribute/AnimationSet/AnimationSetAttribute.h"
 #include "mcd/Attribute/AnimationTake/AnimationTakeAttribute.h"
 #include "mcd/Attribute/Array/BoolArrayAttribute.h"
 #include "mcd/Attribute/Array/FloatArrayAttribute.h"
 #include "mcd/Attribute/Array/IntArrayAttribute.h"
-#include "mcd/Attribute/RigChannelName/RigChannelNameAttribute.h"
 
 #include "mcc/MorphemeDocument/MorphemeDocument.h"
 #include "extern.h"
@@ -53,26 +55,19 @@ namespace mcc
 
 	AttributeInfo::AttributeType AttributeInfo::getManifestDataType(std::string typeName)
 	{
-		if (typeName == "float")
-			return AttributeType::kFloat;
-		else if (typeName == "bool")
-			return AttributeType::kBool;
-		else if (typeName == "int")
-			return AttributeType::kInt;
-		else if (typeName == "string")
-			return AttributeType::kString;
-		else if (typeName == "animationTake")
-			return AttributeType::kAnimationTake;
-		else if (typeName == "boolArray")
-			return AttributeType::kBoolArray;
-		else if (typeName == "floatArray")
-			return AttributeType::kFloatArray;
-		else if (typeName == "intArray")
-			return AttributeType::kIntArray;
-		else if (typeName == "rigChannelName")
-			return AttributeType::kRigChannelNames;
-		else if (typeName == "request")
-			return AttributeType::kRequest;
+		if (typeName == "float")					return AttributeType::kFloat;
+		else if (typeName == "bool")				return AttributeType::kBool;
+		else if (typeName == "int")					return AttributeType::kInt;
+		else if (typeName == "string")				return AttributeType::kString;
+		else if (typeName == "animationTake")		return AttributeType::kAnimationTake;
+		else if (typeName == "boolArray")			return AttributeType::kBoolArray;
+		else if (typeName == "floatArray")			return AttributeType::kFloatArray;
+		else if (typeName == "intArray")			return AttributeType::kIntArray;
+		else if (typeName == "rigChannelName")		return AttributeType::kRigChannelNames;
+		else if (typeName == "request")				return AttributeType::kRequest;
+		else if (typeName == "ref")					return AttributeType::kRef;
+		else if (typeName == "refArray")			return AttributeType::kRefArray;
+		else if (typeName == "controlParameter")	return AttributeType::kControlParameter;
 
 		throw std::runtime_error("AttributeInfo::getManifestDataType() - Unhandled attribute type: " + typeName);
 	}
@@ -120,7 +115,10 @@ namespace mcc
 			attribute = new mcd::RigChannelNameAttribute(parent, m_manifestAttribute->getName());
 			break;
 		case mcc::AttributeInfo::AttributeType::kRequest:
-			throw std::runtime_error("Request attributes are not yet implemented");
+			attribute = new mcd::RequestAttribute(parent, m_manifestAttribute->getName());
+			break;
+		case mcc::AttributeInfo::AttributeType::kRef:
+			attribute = new mcd::RefAttribute(parent, m_manifestAttribute->getName(), mcd::RefAttribute::stringAsRefKind(m_manifestAttribute->getRefKind().c_str()), m_manifestAttribute->isWeakRef());
 			break;
 		default:
 			throw std::runtime_error("Unhandled attribute type: " + getManifestDataTypeName(m_attribType));
@@ -135,7 +133,7 @@ namespace mcc
 		if (m_perAnimSet)
 		{
 			parent->remove(attribute);
-			return new mcd::AnimationSetAttribute(parent, m_manifestAttribute->getName(), g_doc->getActiveAnimationSetName(), attribute);
+			attribute = new mcd::AnimationSetAttribute(parent, m_manifestAttribute->getName(), g_doc->getActiveAnimationSetName(), attribute);
 		}
 
 		return attribute;

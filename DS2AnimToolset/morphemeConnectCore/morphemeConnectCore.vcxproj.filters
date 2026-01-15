@@ -156,6 +156,9 @@
     <ClCompile Include="mcd\Attribute\AnimationTake\AnimationTakeAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\Attribute\SingleValue\RequestAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -318,6 +321,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcd\Attribute\RigChannelName\RigChannelNameAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\Attribute\SingleValue\RequestAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

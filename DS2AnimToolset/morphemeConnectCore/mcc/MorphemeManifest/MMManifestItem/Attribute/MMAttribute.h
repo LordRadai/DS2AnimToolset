@@ -19,6 +19,8 @@ namespace mcc
 		nlohmann::json getValue() const { return m_jsonData.value("value", nlohmann::json(nullptr)); }
 		bool isPerAnimSet() const { return m_jsonData.value("perAnimSet", false); }
 		bool isSyncWithRigChannels() const { return m_jsonData.value("syncWithRigChannels", false); }
+		bool isWeakRef() const { return m_jsonData.value("weak", false); }
+		std::string getRefKind() const { return m_jsonData.value("kind", ""); }
 
 		bool isArray() const;
 		uint32_t size() const;

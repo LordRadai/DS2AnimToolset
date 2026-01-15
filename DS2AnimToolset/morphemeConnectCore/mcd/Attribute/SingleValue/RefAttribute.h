@@ -8,10 +8,10 @@ namespace mcd
 {
 	class RefAttribute : public Attribute
 	{
-		db::Pointer<db::Node> m_value;
-		StringAttribute* m_refStr;
-		IntAttribute* m_refKind;
-		BoolAttribute* m_isWeakRef;
+		std::unique_ptr<db::Pointer<db::Node>> m_ref;
+		std::unique_ptr<db::StringAttribute> m_refStr;
+		std::unique_ptr<db::IntAttribute> m_refKind;
+		std::unique_ptr<db::BoolAttribute> m_isWeakRef;
 	public:
 		enum RefKind
 		{
@@ -24,13 +24,13 @@ namespace mcd
 			kNumRefKinds
 		};
 
-		RefAttribute(db::Attribute* parent, const std::string& name, db::Node* value, int refKind, bool isWeakRef);
+		RefAttribute(db::Attribute* parent, const std::string& name, int refKind, bool isWeakRef);
 		virtual ~RefAttribute() override {}
 		virtual bool isValueEqualTo(Attribute* attr) override;
 
 		void setRef(db::Node* value);
 		void setRefByPath(const std::string& path);
-		db::Node* getRef() const { return m_value.getValue(); }
+		db::Node* getRef() const { return m_ref->getValue(); }
 
 		void setWeak(bool isWeakRef);
 		bool isWeak() const { return m_isWeakRef->getValue(); }
