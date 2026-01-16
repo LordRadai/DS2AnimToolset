@@ -39,20 +39,15 @@ namespace db
 	class Attribute
 	{
 	protected:
-		Attribute* m_parent;
+		CompositeAttribute* m_parent;
 		std::string m_name;
 		std::string m_type;
+		int m_id;
 		int m_index;
 		tinyxml2::XMLElement* m_xmlElement = nullptr;
 
 	public:
-		Attribute(Attribute* parent, std::string name, std::string type) :
-			m_parent(parent),
-			m_name(name),
-			m_type(type),
-			m_index(-1),
-			m_xmlElement(nullptr)
-		{};
+		Attribute(CompositeAttribute* parent, std::string name, std::string type);
 
 		/**
 		 * \brief Get the root node.
@@ -66,7 +61,7 @@ namespace db
 		 * 
 		 * \return The parent attribute of this attribute.
 		 */
-		Attribute* getParentAttribute() const { return m_parent; }
+		CompositeAttribute* getParentAttribute() const { return m_parent; }
 
 		/**
 		 * \brief Get the index of the attribute in its parent.
@@ -74,6 +69,13 @@ namespace db
 		 * \return The index of the attribute.
 		 */
 		int getIndex();
+
+		/**
+		 * \brief Get the ID of the attribute.
+		 * 
+		 * \return The ID of the attribute.
+		 */
+		int getID() const { return m_id; }
 
 		/**
 		 * \brief Get the type of the attribute.
@@ -90,7 +92,7 @@ namespace db
 		tinyxml2::XMLElement* getXMLElement() const { return m_xmlElement; }
 
 		void setType(const std::string& type) { m_type = type; }
-		void setParentAttribute(Attribute* parent) { m_parent = parent; }
+		void setParentAttribute(CompositeAttribute* parent) { m_parent = parent; }
 
 		virtual ~Attribute() {};
 		virtual bool compare(Attribute* other) = 0;

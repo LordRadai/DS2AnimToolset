@@ -4,9 +4,22 @@
 #include "Attribute/CompositeAttribute/CompositeAttribute.h"
 #include "CompoundAttribute/CompoundAttribute.h"
 #include "Database/Database.h"
+#include "Registry/Registry.h"
 
 namespace db
 {
+    Attribute::Attribute(CompositeAttribute* parent, std::string name, std::string type) :
+        m_parent(parent),
+        m_name(name),
+        m_type(type),
+        m_index(-1),
+        m_xmlElement(nullptr)
+    {
+        Registry* registry = Registry::getInstance();
+
+		m_id = registry->getNewRuntimeID();
+    };
+
     std::string Attribute::getEscapedName()
     {
         static std::string escapedName;
@@ -23,7 +36,7 @@ namespace db
         }
         else
         {
-			int index = getIndex();
+			int index = m_parent->getAttributeCount();
 
 			escapedName = "[" + std::to_string(index) + "]";
         }

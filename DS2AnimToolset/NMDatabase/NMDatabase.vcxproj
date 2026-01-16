@@ -183,6 +183,7 @@
     <ClCompile Include="NodeContainer\NodeContainer.cpp" />
     <ClCompile Include="Node\Node.cpp" />
     <ClCompile Include="ReferenceResolver\ReferenceResolver.cpp" />
+    <ClCompile Include="Registry\Registry.cpp" />
     <ClCompile Include="Saver\Saver.cpp" />
     <ClCompile Include="Saver\SaverXML.cpp" />
     <ClCompile Include="XMLElement\XMLElement.cpp" />
@@ -222,6 +223,7 @@
     <ClInclude Include="NodeContainer\NodeContainer.h" />
     <ClInclude Include="Node\Node.h" />
     <ClInclude Include="ReferenceResolver\ReferenceResolver.h" />
+    <ClInclude Include="Registry\Registry.h" />
     <ClInclude Include="Saver\Saver.h" />
     <ClInclude Include="Saver\SaverXML.h" />
     <ClInclude Include="XMLElement\XMLElement.h" />

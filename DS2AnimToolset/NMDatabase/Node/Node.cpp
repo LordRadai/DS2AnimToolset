@@ -1,15 +1,23 @@
 #include "Node.h"
+#include "Attribute/CompositeAttribute/CompositeAttribute.h"
+#include "Registry/Registry.h"
 
 namespace db
 {
-	std::string Node::getEscapedName() const
+	Node::Node(Attribute* parent, std::string name, std::string nodeName) : CompoundAttribute(parent, name, "node"), 
+		m_nodeName(std::make_unique<StringAttribute>(nodeName))
+	{
+		m_nodeID = Registry::getInstance()->getNewNodeID();
+	}
+
+	std::string Node::getEscapedName()
 	{
 		static std::string escapedName;
 		std::string name = m_nodeName->getValue();
 
 		for (char ch : name)
 		{
-			if (ch == '.' || ch == '[' || ch == ']')
+			if (ch == '.' || ch - '[' < 3)
 				escapedName += '\\';
 
 			escapedName += ch;
@@ -282,5 +290,35 @@ namespace db
 			return nullptr;
 
 		return attr->asNode();
+	}
+
+	bool Node::isNameUnique(const std::string& name)
+	{
+		if (!m_parent)
+			return true;
+
+		for (size_t i = 0; i < m_parent->getAttributeCount(); i++)
+		{
+			Attribute* sibling = m_parent->getAttribute(i);
+
+			if (sibling == this)
+				continue;
+
+			if (sibling->getName() == name)
+				return false;
+		}
+	}
+
+	void Node::makeNameValid(std::string& name)
+	{
+		if (isNameUnique(name))
+			return;
+
+		while (!isNameUnique(name))
+		{
+			char suffix[32];
+			sprintf_s(suffix, 32, "%d", m_nodeID);
+			name.append(suffix);
+		}
 	}
 }

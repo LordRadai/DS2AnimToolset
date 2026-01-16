@@ -28,8 +28,9 @@ namespace db
 	{
 	protected:
 		std::unique_ptr<StringAttribute> m_nodeName;
+		int m_nodeID;
 	public:
-		Node(Attribute* parent, std::string name, std::string nodeName) : CompoundAttribute(parent, name, "node"), m_nodeName(std::make_unique<StringAttribute>(nodeName)) {}
+		Node(Attribute* parent, std::string name, std::string nodeName);
 		
 		virtual ~Node() override {};
 		virtual Node* asNode() const override { return const_cast<Node*>(this); }
@@ -37,7 +38,7 @@ namespace db
 		virtual bool readValueXML(int format, XMLElement* element, LoaderXML* loader) override;
 		virtual bool writeValueXML(int format, SaverXML* saver) override;
 		virtual bool writeStartElementXML(int format, SaverXML* saver) override;
-		virtual std::string getEscapedName() const override;
+		virtual std::string getEscapedName() override;
 		virtual std::string getName() const override { return m_nodeName->getValue(); }
 		virtual void setName(const std::string& name) override { m_nodeName->setValue(name); }
 
@@ -67,5 +68,8 @@ namespace db
 		Vector3ArrayAttribute* addVector3ArrayAttribute(const std::string& name, const std::vector<NMP::Vector3>& values);
 
 		Node* nodeFromDatabasePath(const std::string& path, bool fromLast) const;
+
+		bool isNameUnique(const std::string& name);
+		void makeNameValid(std::string& name);
 	};
 }
