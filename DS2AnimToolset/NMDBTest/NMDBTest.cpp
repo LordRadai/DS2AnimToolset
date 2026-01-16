@@ -16,42 +16,12 @@ int main()
 
 		printf_s("--------Loading manifest--------\n");
 
-		if (!g_doc->initializeManifest())
-			throw std::runtime_error("Failed to initialize Morpheme manifest.");
-
 		mcc::MorphemeManifest* manifest = g_doc->getManifest();
 
-		for (size_t i = 0; i < manifest->getNumRegisteredStateMachines(); i++)
-		{
-			const int id = manifest->getStateMachineManifest(static_cast<uint32_t>(i))->getID();
-			const std::string name = manifest->getStateMachineManifest(static_cast<uint32_t>(i))->getName();
+		if (!manifest->init())
+			throw std::runtime_error("Failed to initialize Morpheme manifest.");
 
-			printf_s("Registered State Machine: ID=%d, Name=%s\n", id, name.c_str());
-		}
-
-		for (size_t i = 0; i < manifest->getNumRegisteredNodes(); i++)
-		{
-			const int id = manifest->getNodeManifest(static_cast<uint32_t>(i))->getID();
-			const std::string name = manifest->getNodeManifest(static_cast<uint32_t>(i))->getName();
-
-			printf_s("Registered Node: ID=%d, Name=%s\n", id, name.c_str());
-		}
-
-		for (size_t i = 0; i < manifest->getNumRegisteredConditions(); i++)
-		{
-			const int id = manifest->getConditionManifest(static_cast<uint32_t>(i))->getID();
-			const std::string name = manifest->getConditionManifest(static_cast<uint32_t>(i))->getName();
-
-			printf_s("Registered Condition: ID=%d, Name=%s\n", id, name.c_str());
-		}
-
-		for (size_t i = 0; i < manifest->getNumRegisteredTransitions(); i++)
-		{
-			const int id = manifest->getTransitionManifest(static_cast<uint32_t>(i))->getAnimID();
-			const std::string name = manifest->getTransitionManifest(static_cast<uint32_t>(i))->getName();
-
-			printf_s("Registered Transition: ID=%d, Name=%s\n", id, name.c_str());
-		}
+		manifest->printRegisteredManifests();
 
 		printf_s("--------Manifest loaded successfully.--------\n");
 

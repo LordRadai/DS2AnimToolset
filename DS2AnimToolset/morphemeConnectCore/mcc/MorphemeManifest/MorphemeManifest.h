@@ -16,7 +16,7 @@ namespace mcc
 	public:
 		MorphemeManifest() = default;
 
-		void init();
+		bool init();
 		void shutdown();
 
 		void registerStateMachine(std::string manifestPath);
@@ -47,5 +47,7 @@ namespace mcc
 		uint32_t getNumRegisteredNodes() const { return static_cast<uint32_t>(m_registeredNodes.size()); }
 		uint32_t getNumRegisteredConditions() const { return static_cast<uint32_t>(m_registeredConditions.size()); }
 		uint32_t getNumRegisteredTransitions() const { return static_cast<uint32_t>(m_regosteredTransitions.size()); }
+
+		void printRegisteredManifests();
 	};
 }

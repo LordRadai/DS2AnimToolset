@@ -114,12 +114,62 @@ namespace mcc
 		m_regosteredTransitions.erase(m_regosteredTransitions.begin() + index);
 	}
 
-	void MorphemeManifest::init()
+	bool MorphemeManifest::init()
 	{
-		MMStateMachineNode* stateMachine = new MMStateMachineNode();
-		stateMachine->setName("BlendTree");
+		if (!std::filesystem::exists("Data\\manifest\\"))
+		{
+			throw std::runtime_error("Manifest directory does not exist: Data\\manifest\\");
+			return false;
+		}
 
-		m_registeredStateMachineNodes.push_back(stateMachine);
+		if (!std::filesystem::exists("Data\\manifest\\nodes\\"))
+		{
+			throw std::runtime_error("Manifest node directory does not exist: Data\\manifest\\nodes\\");
+			return false;
+		}
+
+		registerStateMachine("Data\\manifest\\nodes\\animation\\StateMachine.json");
+
+		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\nodes\\"))
+		{
+			if (entry.is_regular_file() && entry.path().extension() == ".json" && entry.path().filename().replace_extension("") != "StateMachine.json" && entry.path().filename().replace_extension("") != "PhysicsStateMachine.json")
+			{
+				std::string manifestPath = entry.path().string();
+				registerNode(manifestPath);
+			}
+		}
+
+		if (!std::filesystem::exists("Data\\manifest\\conditions\\"))
+		{
+			throw std::runtime_error("Manifest condition directory does not exist: Data\\manifest\\conditions\\");
+			return false;
+		}
+
+		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\conditions\\"))
+		{
+			if (entry.is_regular_file() && entry.path().extension() == ".json")
+			{
+				std::string manifestPath = entry.path().string();
+				registerCondition(manifestPath);
+			}
+		}
+
+		if (!std::filesystem::exists("Data\\manifest\\transitions"))
+		{
+			throw std::runtime_error("Manifest transition directory does not exist: Data\\manifest\\transitions\\");
+			return false;
+		}
+
+		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\transitions\\"))
+		{
+			if (entry.is_regular_file() && entry.path().extension() == ".json")
+			{
+				std::string manifestPath = entry.path().string();
+				registerTransition(manifestPath);
+			}
+		}
+
+		return true;
 	}
 
 	void MorphemeManifest::shutdown()
@@ -127,10 +177,6 @@ namespace mcc
 		// Unregister all state machines
 		for (size_t i = 0; i < m_registeredStateMachines.size(); i++)
 			unregisterStateMachine(i);
-
-		// Unregister all state machine nodes
-		for (size_t i = 0; i < m_registeredStateMachineNodes.size(); i++)
-			unregisterStateMachineNode(i);
 
 		// Unregister all nodes
 		for (size_t i = 0; i < m_registeredNodes.size(); i++)
@@ -219,5 +265,48 @@ namespace mcc
 		}
 
 		return nullptr;
+	}
+
+	void MorphemeManifest::printRegisteredManifests()
+	{
+		for (size_t i = 0; i < getNumRegisteredStateMachines(); i++)
+		{
+			MMStateMachine* stateMachine = getStateMachineManifest(static_cast<uint32_t>(i));
+
+			const int id = stateMachine->getID();
+			const std::string name = stateMachine->getName();
+
+			printf_s("Registered State Machine: ID=%d, Name=%s\n", id, name.c_str());
+		}
+
+		for (size_t i = 0; i < getNumRegisteredNodes(); i++)
+		{
+			MMNode* node = getNodeManifest(static_cast<uint32_t>(i));
+
+			const int id = node->getID();
+			const std::string name = node->getName();
+
+			printf_s("Registered Node: ID=%d, Name=%s\n", id, name.c_str());
+		}
+
+		for (size_t i = 0; i < getNumRegisteredConditions(); i++)
+		{
+			MMCondition* condition = getConditionManifest(static_cast<uint32_t>(i));
+
+			const int id = condition->getID();
+			const std::string name = condition->getName();
+
+			printf_s("Registered Condition: ID=%d, Name=%s\n", id, name.c_str());
+		}
+
+		for (size_t i = 0; i < getNumRegisteredTransitions(); i++)
+		{
+			MMTransition* transition = getTransitionManifest(static_cast<uint32_t>(i));
+
+			const int id = transition->getAnimID();
+			const std::string name = transition->getName();
+
+			printf_s("Registered Transition: ID=%d, Name=%s\n", id, name.c_str());
+		}
 	}
 }

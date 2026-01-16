@@ -19,13 +19,6 @@ namespace mcc
 	public:
 		MorphemeDocument() : m_morphemeDB(std::make_unique<mcd::MorphemeDB>()), m_manifest(std::make_unique<mcc::MorphemeManifest>()) {}
 		~MorphemeDocument() {}
-		
-		/**
-		 * \brief Initializes the manifest by loading files from the manifest directory.
-		 * 
-		 * Call this function before using the manifest to ensure it is populated with nodes.
-		 */
-		bool initializeManifest();
 
 		/**
 		 * \brief Returns the MorphemeDB instance.

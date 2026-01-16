@@ -3,52 +3,6 @@
 
 namespace mcc
 {
-	bool MorphemeDocument::initializeManifest()
-	{
-		if (!std::filesystem::exists("Data\\manifest\\"))
-			throw std::runtime_error("Manifest directory does not exist: Data\\manifest\\");
-
-		if (!std::filesystem::exists("Data\\manifest\\nodes\\"))
-			throw std::runtime_error("Manifest node directory does not exist: Data\\manifest\\nodes\\");
-
-		m_manifest->registerStateMachine("Data\\manifest\\nodes\\animation\\StateMachine.json");
-
-		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\nodes\\"))
-		{
-			if (entry.is_regular_file() && entry.path().extension() == ".json" && entry.path().filename().replace_extension("") != "StateMachine.json" && entry.path().filename().replace_extension("") != "PhysicsStateMachine.json")
-			{
-				std::string manifestPath = entry.path().string();
-				m_manifest->registerNode(manifestPath);
-			}
-		}
-
-		if (!std::filesystem::exists("Data\\manifest\\conditions\\"))
-			throw std::runtime_error("Manifest condition directory does not exist: Data\\manifest\\conditions\\");
-
-		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\conditions\\"))
-		{
-			if (entry.is_regular_file() && entry.path().extension() == ".json")
-			{
-				std::string manifestPath = entry.path().string();
-				m_manifest->registerCondition(manifestPath);
-			}
-		}
-
-		if (!std::filesystem::exists("Data\\manifest\\transitions"))
-			throw std::runtime_error("Manifest transition directory does not exist: Data\\manifest\\transitions\\");
-
-		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\transitions\\"))
-		{
-			if (entry.is_regular_file() && entry.path().extension() == ".json")
-			{
-				std::string manifestPath = entry.path().string();
-				m_manifest->registerTransition(manifestPath);
-			}
-		}
-
-		return true;
-	}
-
 	mcd::ControlParameter* MorphemeDocument::createControlParmeter(const std::string& name, DataTypes dataType)
 	{
 		mcd::ControlParametersNode* cpNode = m_morphemeDB->getNetwork()->getControlParametersNode();
