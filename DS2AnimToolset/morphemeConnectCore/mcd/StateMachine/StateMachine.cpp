@@ -2,9 +2,9 @@
 
 namespace mcd
 {
-	StateMachine::StateMachine(db::CompositeAttribute* parent, const std::string& name, const std::string& nodeType, int manifestVersion)
+	StateMachine::StateMachine(db::CompositeAttribute* parent, const std::string& name, int manifestVersion)
 		: Graph(parent, "StateMachine", name),
-		m_nodeType(std::make_unique<db::StringAttribute>(this, "NodeType", nodeType)),
+		m_nodeType(std::make_unique<db::StringAttribute>(this, "NodeType", "StateMachine")),
 		m_manifestVersion(std::make_unique<db::IntAttribute>(this, "ManifestVersion", manifestVersion)),
 		m_stateMachineNodes(std::make_unique<db::TypedNodeContainer<StateMachineNode>>(this, "StateMachineNodes")),
 		m_transitionEdges(std::make_unique<db::TypedNodeContainer<TransitionEdge>>(this, "TransitionEdges")),
@@ -41,5 +41,31 @@ namespace mcd
 		}
 
 		return count;
+	}
+
+	void StateMachine::getFreePosition(float& outX, float& outY)
+	{
+		outX = 10.0f;
+		outY = 0.0f;
+
+		float maxX = 0.0f;
+		float maxY = 0.0f;
+
+		for (size_t i = 0; i < m_stateMachineNodes->size(); i++)
+		{
+			StateMachineNode* node = m_stateMachineNodes->getNode(i);
+
+			const float nodeX = node->getXPos();
+			const float nodeY = node->getYPos();
+
+			if (nodeX > maxX)
+				maxX = nodeX;
+
+			if (nodeY > maxY)
+				maxY = nodeY;
+		}
+
+		outX = 10.0f;
+		outY = maxY + 100.0f;
 	}
 }

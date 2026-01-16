@@ -16,7 +16,7 @@ namespace mcd
 		std::unique_ptr<db::Pointer<StateMachineNode>> m_defaultState;
 
 	public:
-		StateMachine(db::CompositeAttribute* parent, const std::string& name, const std::string& nodeType = "StateMachine", int manifestVersion = 1);
+		StateMachine(db::CompositeAttribute* parent, const std::string& name, int manifestVersion);
 
 		virtual ~StateMachine() override {};
 
@@ -36,7 +36,28 @@ namespace mcd
 		StateMachineNode* getDefaultState() const { return m_defaultState->getValue(); }
 		void setDefaultState(StateMachineNode* state) { m_defaultState->setValue(state); }
 
+		/**
+		 * \brief Returns the number of nodes with the specified type.
+		 *
+		 * \param type The node type name.
+		 * \return The number of nodes of the specified type.
+		 */
 		uint32_t getNumNodesOfType(const std::string& type) const;
+
+		/**
+		 * \brief Returns the number of transitions with the specified type.
+		 *
+		 * \param type The transition type name.
+		 * \return The number of transitions of the specified type.
+		 */
 		uint32_t getNumTransitionOfType(const std::string& type) const;
+
+		/**
+		 * \brief Returns the first free position in the graph.
+		 *
+		 * \param x Output buffer for the x position.
+		 * \param y Output buffer for the y position.
+		 */
+		void getFreePosition(float& x, float& y);
 	};
 }

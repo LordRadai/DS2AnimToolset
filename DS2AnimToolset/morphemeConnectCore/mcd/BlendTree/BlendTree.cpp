@@ -34,32 +34,24 @@ namespace mcd
 
 	void BlendTree::getFreePosition(float& x, float& y)
 	{
-		x = 10.f;
-		y = 0.f;
-		
-		float maxX = 0.f;
-		float maxY = 0.f;
+		x = 10.0f;
+		y = 0.0f;
 
-		if (m_blendTreeNodes->empty())
-			return;
+		float maxX = 0.0f;
+		float maxY = 0.0f;
 
 		for (size_t i = 0; i < m_blendTreeNodes->size(); i++)
 		{
-			mcd::BlendTreeNode* node = m_blendTreeNodes->getNode(i);
+			BlendTreeNode* node = m_blendTreeNodes->getNode(i);
 
-			if (node == nullptr) continue;
+			const float nodeX = node->getXPos();
+			const float nodeY = node->getYPos();
 
-			float nodexPos = node->getXPos();
-			float nodeyPos = node->getYPos();
+			if (nodeX > maxX)
+				maxX = nodeX;
 
-			float x = nodexPos ? nodexPos : 0.0f;
-			float y = nodeyPos ? nodeyPos : 0.0f;
-
-			if (!std::isnan(x) && x > maxX)
-				maxX = x;
-
-			if (!std::isnan(y) && y > maxY)
-				maxY = y;
+			if (nodeY > maxY)
+				maxY = nodeY;
 		}
 
 		x = 10.0f;
