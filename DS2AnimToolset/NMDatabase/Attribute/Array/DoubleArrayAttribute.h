@@ -8,7 +8,7 @@ namespace db
 		std::vector<double> m_values;
 
 	public:
-		DoubleArrayAttribute(Attribute* parent, std::string name) :
+		DoubleArrayAttribute(CompositeAttribute* parent, std::string name) :
 			ArrayAttribute(parent, name, "doubleArray") {
 		};
 

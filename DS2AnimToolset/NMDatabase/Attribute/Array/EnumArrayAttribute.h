@@ -8,7 +8,7 @@ namespace db
 		std::vector<std::string> m_values;
 
 	public:
-		EnumArrayAttribute(Attribute* parent, std::string name) :
+		EnumArrayAttribute(CompositeAttribute* parent, std::string name) :
 			ArrayAttribute(parent, name, "enumArray") {
 		};
 

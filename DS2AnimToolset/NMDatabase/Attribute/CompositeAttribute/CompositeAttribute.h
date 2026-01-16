@@ -9,7 +9,7 @@ namespace db
 		std::vector<Attribute*> m_attributes;
 
 	public:
-		CompositeAttribute(Attribute* parent, std::string name, std::string type) : 
+		CompositeAttribute(CompositeAttribute* parent, std::string name, std::string type) :
 			ArrayAttribute(parent, name, type) {};
 
 		virtual ~CompositeAttribute() override {};

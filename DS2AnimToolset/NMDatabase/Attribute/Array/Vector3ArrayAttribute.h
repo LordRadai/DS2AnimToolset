@@ -9,7 +9,7 @@ namespace db
 		std::vector<NMP::Vector3> m_values;
 
 	public:
-		Vector3ArrayAttribute(Attribute* parent, std::string name) :
+		Vector3ArrayAttribute(CompositeAttribute* parent, std::string name) :
 			ArrayAttribute(parent, name, "boolArray") {
 		};
 

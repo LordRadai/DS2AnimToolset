@@ -8,7 +8,7 @@ namespace db
 		std::vector<int> m_values;
 
 	public:
-		IntArrayAttribute(Attribute* parent, std::string name) :
+		IntArrayAttribute(CompositeAttribute* parent, std::string name) :
 			ArrayAttribute(parent, name, "intArray") {
 		};
 

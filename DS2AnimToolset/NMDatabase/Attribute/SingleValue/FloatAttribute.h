@@ -7,7 +7,7 @@ namespace db
 	{
 		float m_value;
 	public:
-		FloatAttribute(Attribute* parent, std::string name, float value) :
+		FloatAttribute(CompositeAttribute* parent, std::string name, float value) :
 			SingleValueAttribute(parent, name, "float"),
 			m_value(value)
 		{

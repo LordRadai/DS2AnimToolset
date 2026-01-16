@@ -9,7 +9,7 @@ namespace db
 		std::vector<NMP::Quat> m_values;
 
 	public:
-		QuaternionArrayAttribute(Attribute* parent, std::string name) :
+		QuaternionArrayAttribute(CompositeAttribute* parent, std::string name) :
 			ArrayAttribute(parent, name, "quaternionArray") {
 		};
 

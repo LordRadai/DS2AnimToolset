@@ -7,7 +7,7 @@ namespace db
 	{
 		Attribute* m_value;
 	public:
-		PointerAttribute(Attribute* parent, std::string name, Attribute* to) :
+		PointerAttribute(CompositeAttribute* parent, std::string name, Attribute* to) :
 			SingleValueAttribute(parent, name, "pointer"), m_value(to)
 		{};
 

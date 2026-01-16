@@ -6,7 +6,7 @@ namespace db
 	class AttributeArray : public AttributeContainer
 	{
 	public:
-		AttributeArray(Attribute* parent, std::string name) :
+		AttributeArray(CompositeAttribute* parent, std::string name) :
 			AttributeContainer(parent, name, "attributeArray") { };
 
 		virtual ~AttributeArray() override {};

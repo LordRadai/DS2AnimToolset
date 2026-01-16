@@ -8,7 +8,7 @@ namespace db
 		std::vector<bool> m_values;
 
 	public:
-		BoolArrayAttribute(Attribute* parent, std::string name) :
+		BoolArrayAttribute(CompositeAttribute* parent, std::string name) :
 			ArrayAttribute(parent, name, "boolArray") {
 		};
 

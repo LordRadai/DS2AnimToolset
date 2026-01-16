@@ -9,7 +9,7 @@ namespace db
 		std::vector<NMP::Matrix34> m_values;
 
 	public:
-		Matrix34ArrayAttribute(Attribute* parent, std::string name) :
+		Matrix34ArrayAttribute(CompositeAttribute* parent, std::string name) :
 			ArrayAttribute(parent, name, "matrix34Array") {
 		};
 

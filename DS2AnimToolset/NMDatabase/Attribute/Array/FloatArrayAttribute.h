@@ -8,7 +8,7 @@ namespace db
 		std::vector<float> m_values;
 
 	public:
-		FloatArrayAttribute(Attribute* parent, std::string name) :
+		FloatArrayAttribute(CompositeAttribute* parent, std::string name) :
 			ArrayAttribute(parent, name, "floatArray") {
 		};
 
