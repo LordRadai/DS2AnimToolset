@@ -24,11 +24,11 @@ namespace mcd
 		db::TypedNodeContainer<mcd::Attribute>* getAttributes() const { return m_attributes.get(); }
 		db::TypedNodeContainer<mcd::Pin>* getPins() const { return m_pins.get(); }
 
-		void addMcdAttribute(mcd::Attribute* attribute) { m_attributes->add(attribute); }
+		void addMcdAttribute(mcd::Attribute* attribute);
 		mcd::Attribute* getAttribute(uint32_t index) const { return m_attributes->getNode(index); }
 		mcd::Attribute* findAttribute(const std::string& name) const { return m_attributes->find(name); }
 
-		void addPin(mcd::Pin* pin) { m_pins->add(pin); }
+		void addPin(mcd::Pin* pin);
 		mcd::Pin* getPin(uint32_t index) const { return m_pins->getNode(index); }
 		mcd::Pin* findPin(const std::string& name) const { return m_pins->find(name); }
 

@@ -12,12 +12,26 @@ namespace mcd
 		m_width(std::make_unique<db::FloatAttribute>(this, "Width", width)),
 		m_height(std::make_unique<db::FloatAttribute>(this, "Height", height))
 	{
-		addAttribute(m_attributes.get());
-		addAttribute(m_pins.get());
 		addAttribute(m_xPos.get());
 		addAttribute(m_yPos.get());
 		addAttribute(m_width.get());
 		addAttribute(m_height.get());
+	}
+
+	void GraphNode::addMcdAttribute(mcd::Attribute* attribute)
+	{
+		m_attributes->add(attribute);
+
+		if (findAttribute("Attributes") == nullptr)
+			addAttribute(m_attributes.get());
+	}
+
+	void GraphNode::addPin(mcd::Pin* pin)
+	{
+		m_pins->add(pin);
+
+		if (findAttribute("Pins") == nullptr)
+			addAttribute(m_pins.get());
 	}
 
 	void GraphNode::setGraphEntry(db::Node* node)
