@@ -32,8 +32,8 @@ namespace db
 
 	bool PointerAttribute::writeValueXML(int format, SaverXML* saver)
 	{
-		// TODO: This is wrong
 		m_xmlElement->SetText(m_value->toDatabasePath().c_str());
+
 		return true;
 	}
 }

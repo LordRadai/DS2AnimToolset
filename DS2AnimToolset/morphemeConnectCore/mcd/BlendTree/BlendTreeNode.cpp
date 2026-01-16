@@ -8,6 +8,5 @@ namespace mcd
 		m_manifestVersion(std::make_unique<db::IntAttribute>(this, "ManifestVersion", manifestVersion))
 	{
 		addAttribute(m_nodeType.get());
-		addAttribute(m_manifestVersion.get());
 	}
 }

@@ -51,9 +51,8 @@ int main()
 
 		mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
 
-		mcd::BlendTreeNode* pEmitRequest = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_EMITREQUESTONDISCRETEEVENT), rootBt, "");
-		mcd::BlendTreeNode* pStateMachine = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_STATE_MACHINE), rootBt, "");
-
+		g_doc->createNewStateMachine("StateMachine1", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), rootBt);
+		//g_doc->createNewBlendTree("BlendTree1", rootBt);
 		// TODO: StateMachine creation doesn't work yet.
 		
 		//mcd::StateMachine* pSM = dynamic_cast<mcd::StateMachine*>(pStateMachine->getGraphEntryNode());
@@ -62,8 +61,6 @@ int main()
 
 		//pSM->setDefaultState(pSM->findStateMachineNode("BlendTree1"));
 
-		dynamic_cast<mcd::RequestAttribute*>(pEmitRequest->findAttribute("EmittedRequest0"))->setValue(network->findRequest("Request0"));
-		dynamic_cast<mcd::RequestAttribute*>(pEmitRequest->findAttribute("EmittedRequest1"))->setValue(network->findRequest("Request1"));
 
 		printf_s("--------Nodes created successfully.--------\n");
 

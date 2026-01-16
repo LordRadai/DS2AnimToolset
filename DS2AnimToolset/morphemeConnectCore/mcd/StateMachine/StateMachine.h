@@ -25,7 +25,7 @@ namespace mcd
 		void setNodeType(const std::string& type) { m_nodeType->setValue(type); }
 		void setManifestVersion(int version) { m_manifestVersion->setValue(version); }
 
-		void addStateMachineNode(StateMachineNode* node) { m_stateMachineNodes->add(node); }
+		void addStateMachineNode(StateMachineNode* node);
 		StateMachineNode* getStateMachineNode(const uint32_t index) const { return m_stateMachineNodes->getNode(index); }
 		StateMachineNode* findStateMachineNode(const std::string& name) const { return m_stateMachineNodes->find(name); }
 
@@ -34,7 +34,7 @@ namespace mcd
 		TransitionEdge* findTransitionEdge(const std::string& name) const { return m_transitionEdges->find(name); }
 
 		StateMachineNode* getDefaultState() const { return m_defaultState->getValue(); }
-		void setDefaultState(StateMachineNode* state) { m_defaultState->setValue(state); }
+		void setDefaultState(StateMachineNode* state);
 
 		/**
 		 * \brief Returns the number of nodes with the specified type.

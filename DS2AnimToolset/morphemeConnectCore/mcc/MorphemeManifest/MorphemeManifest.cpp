@@ -132,7 +132,9 @@ namespace mcc
 
 		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\nodes\\"))
 		{
-			if (entry.is_regular_file() && entry.path().extension() == ".json" && entry.path().filename().replace_extension("") != "StateMachine.json" && entry.path().filename().replace_extension("") != "PhysicsStateMachine.json")
+			if (entry.is_regular_file() && entry.path().extension() == ".json" &&
+				entry.path().filename().replace_extension("") != "StateMachine.json" &&
+				entry.path().filename().replace_extension("") != "PhysicsStateMachine.json")
 			{
 				std::string manifestPath = entry.path().string();
 				registerNode(manifestPath);

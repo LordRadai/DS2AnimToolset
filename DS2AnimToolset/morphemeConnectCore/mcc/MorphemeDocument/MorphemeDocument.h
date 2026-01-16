@@ -154,7 +154,7 @@ namespace mcc
 		 * \param ypos The y position of the new blend tree.
 		 * \return A pointer to the created blend tree.
 		 */
-		mcd::BlendTree* createNewBlendTree(const std::string& name, mcd::StateMachine* parent, float xpos, float ypos);
+		mcd::StateMachineNode* createNewBlendTree(const std::string& name, mcd::StateMachine* parent, float xpos, float ypos);
 
 		/**
 		 * \brief Creates a new blend tree with the specified name and parent blend tree.
@@ -165,7 +165,25 @@ namespace mcc
 		 * \param ypos The y position of the new blend tree.
 		 * \return A pointer to the created blend tree.
 		 */
-		mcd::BlendTree* createNewBlendTree(const std::string& name, mcd::BlendTree* parent, float xpos, float ypos);
+		mcd::BlendTreeNode* createNewBlendTree(const std::string& name, mcd::BlendTree* parent, float xpos, float ypos);
+
+		/**
+		 * \brief Creates a new blend tree with the specified name and parent state machine at the first free position.
+		 * 
+		 * \param name The name of the new blend tree.
+		 * \param parent The parent state machine for the new blend tree.
+		 * \return A pointer to the created blend tree.
+		 */
+		mcd::StateMachineNode* createNewBlendTree(const std::string& name, mcd::StateMachine* parent);
+
+		/**
+		 * \brief Creates a new blend tree with the specified name and parent blend tree at the first free position.
+		 * 
+		 * \param name The name of the new blend tree.
+		 * \param parent The parent blend tree for the new blend tree.
+		 * \return A pointer to the created blend tree.
+		 */
+		mcd::BlendTreeNode* createNewBlendTree(const std::string& name, mcd::BlendTree* parent);
 
 		/**
 		 * \brief Creates a new state machine with the specified name and parent graph.
@@ -177,29 +195,17 @@ namespace mcc
 		 * \param ypos The y position of the new state machine.
 		 * \return A pointer to the created state machine.
 		 */
-		mcd::StateMachine* createNewStateMachine(const std::string& name, mcc::MMStateMachine manifestSM, mcd::Graph* parent, float xpos, float ypos);
+		mcd::GraphNode* createNewStateMachine(const std::string& name, mcc::MMStateMachine* manifestSM, mcd::Graph* parent, float xpos, float ypos);
 
 		/**
-		 * \brief Creates a state machine node at the specified x and y coordinates.
+		 * \brief Creates a new state machine with the specified name and parent graph at the first free position.
 		 * 
-		 * \param typeName The typename of the node to create, either BlendTree or StateMachine.
-		 * \param parent The parent state machine for the new node.
-		 * \param name The name of the new state machine node. If left empty, it will use the default name from the manifest.
-		 * \param xPos The x position of the new state machine node.
-		 * \param yPos The y position of the new state machine node.
-		 * \return A pointer to the created state machine node.
+		 * \param name The name of the new state machine.
+		 * \param manifestSM The manifest state machine to create the state machine from.
+		 * \param parent The parent graph for the new state machine.
+		 * \return A pointer to the created state machine.
 		 */
-		mcd::StateMachineNode* createNewStateMachineNode(std::string typeName, mcd::StateMachine* parent, const std::string& name, float xPos, float yPos);
-
-		/**
-		 * \brief Creates a state machine node at the first free position under the parent state machine.
-		 * 
-		 * \param typeName The typename of the node to create, either BlendTree or StateMachine.
-		 * \param parent The parent state machine for the new node.
-		 * \param name The name of the new state machine node.
-		 * \return A pointer to the created state machine node.
-		 */
-		mcd::StateMachineNode* createNewStateMachineNode(std::string typeName, mcd::StateMachine* parent, const std::string& name);
+		mcd::GraphNode* createNewStateMachine(const std::string& name, mcc::MMStateMachine* manifestSM, mcd::Graph* parent);
 
 		mcd::Request* createRequest(const std::string& name);
 

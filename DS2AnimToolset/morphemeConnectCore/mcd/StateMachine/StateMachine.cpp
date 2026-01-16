@@ -14,7 +14,24 @@ namespace mcd
 		addAttribute(m_manifestVersion.get());
 		addAttribute(m_stateMachineNodes.get());
 		addAttribute(m_transitionEdges.get());
-		addAttribute(m_defaultState.get());
+	}
+
+	void StateMachine::addStateMachineNode(StateMachineNode* node)
+	{
+		m_stateMachineNodes->add(node);
+
+		if (getDefaultState() == nullptr)
+			setDefaultState(node);
+	}
+
+	void StateMachine::setDefaultState(StateMachineNode* state)
+	{
+		removeAttribute(m_defaultState.get());
+
+		m_defaultState->setValue(state);
+
+		if (state)
+			addAttribute(m_defaultState.get());
 	}
 
 	uint32_t StateMachine::getNumNodesOfType(const std::string& type) const
