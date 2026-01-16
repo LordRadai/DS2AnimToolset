@@ -28,3 +28,5 @@
 
 #include "Saver/SaverXML.h"
 #include "Loader/LoaderXML.h"
+
+#include "Registry/Registry.h"

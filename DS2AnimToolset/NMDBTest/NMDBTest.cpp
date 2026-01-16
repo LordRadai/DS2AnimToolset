@@ -2,12 +2,16 @@
 #include "morphemeConnectCore/morphemeConnectCore.h"
 #include "Morpheme4/morpheme/SDK/sharedDefines/mSharedDefines.h"
 
-mcc::MorphemeDocument* g_doc;
+mcc::MorphemeDocument* g_doc = nullptr;
+db::Registry* g_registry = nullptr;
 
 int main()
 {
-	//try
-	//{
+	try
+	{
+		g_registry = db::Registry::getInstance();
+		g_registry->enableRuntimeIDGeneration(true);
+
 		g_doc = new mcc::MorphemeDocument();
 
 		printf_s("--------Loading manifest--------\n");
@@ -87,9 +91,9 @@ int main()
 		g_doc->saveAs("testMorphemeDoc.xml");
 
 		delete g_doc;
-	//}
-	//catch (const std::exception& e)
-	//{
-		//MessageBoxA(NULL, e.what(), "Exception Caught", MB_OK | MB_ICONERROR);
-	//}
+	}
+	catch (const std::exception& e)
+	{
+		MessageBoxA(NULL, e.what(), "Exception Caught", MB_OK | MB_ICONERROR);
+	}
 }
