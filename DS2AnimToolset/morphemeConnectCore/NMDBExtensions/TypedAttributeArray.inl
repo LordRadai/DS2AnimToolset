@@ -8,8 +8,8 @@ namespace db
 	{
 		static_assert(std::is_base_of<db::Attribute, T>::value, "T must be derived from db::Node");
 	public:
-		TypedAttributeArray(db::Attribute* parent, std::string name)
-			: db::AttributeArray(parent, name)
+		TypedAttributeArray(CompositeAttribute* parent, std::string name)
+			: AttributeArray(parent, name)
 		{}
 
 		void add(T* value) { return AttributeArray::add(value); }

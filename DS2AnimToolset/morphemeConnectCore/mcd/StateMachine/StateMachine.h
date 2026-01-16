@@ -16,7 +16,7 @@ namespace mcd
 		std::unique_ptr<db::Pointer<StateMachineNode>> m_defaultState;
 
 	public:
-		StateMachine(db::Attribute* parent, const std::string& name, const std::string& nodeType = "StateMachine", int manifestVersion = 1);
+		StateMachine(db::CompositeAttribute* parent, const std::string& name, const std::string& nodeType = "StateMachine", int manifestVersion = 1);
 
 		virtual ~StateMachine() override {};
 

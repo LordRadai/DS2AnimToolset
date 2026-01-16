@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	BlendTree::BlendTree(db::Attribute* parent, std::string name) : Graph(parent, "BlendTree", name),
+	BlendTree::BlendTree(db::CompositeAttribute* parent, std::string name) : Graph(parent, "BlendTree", name),
 		m_blendTreeNodes(std::make_unique<db::TypedNodeContainer<mcd::BlendTreeNode>>(this, "BlendTreeNodes")),
 		m_controlParamXPos(std::make_unique<db::FloatAttribute>(this, "ControlParamXPosition", -100.0f)),
 		m_controlParamYPos(std::make_unique<db::FloatAttribute>(this, "ControlParamYPosition", -100.0f)),

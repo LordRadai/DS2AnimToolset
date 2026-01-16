@@ -2,8 +2,8 @@
 
 namespace mcd
 {
-	BoolArrayAttribute::BoolArrayAttribute(db::Attribute* parent, std::string name)
-		: CompositeAttribute(parent, "BoolArrayAttribute", name),
+	BoolArrayAttribute::BoolArrayAttribute(db::CompositeAttribute* parent, std::string name)
+		: Attribute(parent, "BoolArrayAttribute", name),
 		m_valueAttr(new db::TypedAttributeArray<db::BoolAttribute>(this, "Value"))
 	{}
 

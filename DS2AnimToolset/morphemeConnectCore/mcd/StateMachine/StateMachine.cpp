@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	StateMachine::StateMachine(db::Attribute* parent, const std::string& name, const std::string& nodeType, int manifestVersion)
+	StateMachine::StateMachine(db::CompositeAttribute* parent, const std::string& name, const std::string& nodeType, int manifestVersion)
 		: Graph(parent, "StateMachine", name),
 		m_nodeType(std::make_unique<db::StringAttribute>(this, "NodeType", nodeType)),
 		m_manifestVersion(std::make_unique<db::IntAttribute>(this, "ManifestVersion", manifestVersion)),

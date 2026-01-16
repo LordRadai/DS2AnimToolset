@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	AttributePlaceholder::AttributePlaceholder(db::Attribute* parent, std::string name) :
+	AttributePlaceholder::AttributePlaceholder(db::CompositeAttribute* parent, std::string name) :
 		Node(parent, "AttributePlaceholder", name),
 		m_attributes(std::make_unique< db::TypedNodeContainer<mcd::Attribute>>(this, "AttributeEntry"))
 	{

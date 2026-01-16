@@ -9,7 +9,7 @@ namespace mcd
 		std::unique_ptr<db::StringAttribute> m_nodeType;
 
 	public:
-		StateMachineNode(db::Attribute* parent, std::string name, float xPos, float yPos, float width, float height, std::string nodeType = "", int manifestVersion = -1);
+		StateMachineNode(db::CompositeAttribute* parent, std::string name, float xPos, float yPos, float width, float height, std::string nodeType = "", int manifestVersion = -1);
 
 		virtual ~StateMachineNode() override {}
 

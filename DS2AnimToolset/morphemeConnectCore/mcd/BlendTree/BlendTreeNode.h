@@ -10,7 +10,7 @@ namespace mcd
 		std::unique_ptr<db::StringAttribute> m_nodeType;
 		std::unique_ptr<db::IntAttribute> m_manifestVersion;
 	public:
-		BlendTreeNode(db::Attribute* parent, std::string name, float xPos, float yPos, float width, float height, std::string nodeType, int manifestVersion);
+		BlendTreeNode(db::CompositeAttribute* parent, std::string name, float xPos, float yPos, float width, float height, std::string nodeType, int manifestVersion);
 
 		virtual ~BlendTreeNode() override {}
 

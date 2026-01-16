@@ -24,7 +24,7 @@ namespace mcd
 		std::unique_ptr<db::FloatAttribute> m_outputPinHeight;
 
 	public:
-		BlendTree(db::Attribute* parent, std::string name);
+		BlendTree(db::CompositeAttribute* parent, std::string name);
 
 		virtual ~BlendTree() override {};
 

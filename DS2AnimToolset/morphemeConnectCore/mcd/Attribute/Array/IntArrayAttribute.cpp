@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	IntArrayAttribute::IntArrayAttribute(db::Attribute* parent, std::string name)
+	IntArrayAttribute::IntArrayAttribute(db::CompositeAttribute* parent, std::string name)
 		: Attribute(parent, "IntArrayAttribute", name),
 		m_valueAttr(new db::TypedAttributeArray<db::IntAttribute>(this, "Value"))
 	{
