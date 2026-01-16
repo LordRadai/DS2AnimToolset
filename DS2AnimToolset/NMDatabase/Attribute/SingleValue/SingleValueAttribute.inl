@@ -9,7 +9,7 @@ namespace db
 	class SingleValueAttribute : public Attribute
 	{
 	public:
-		SingleValueAttribute(Attribute* parent, std::string name, std::string type)
+		SingleValueAttribute(CompositeAttribute* parent, std::string name, std::string type)
 			: Attribute(parent, name, type) {};
 
 		virtual ~SingleValueAttribute() override {};

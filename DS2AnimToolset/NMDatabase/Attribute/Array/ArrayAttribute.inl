@@ -6,7 +6,7 @@ namespace db
 	class ArrayAttribute : public Attribute
 	{
 	public:
-		ArrayAttribute(Attribute* parent, std::string name, std::string type) :
+		ArrayAttribute(CompositeAttribute* parent, std::string name, std::string type) :
 			Attribute(parent, name, type) {};
 
 		virtual ~ArrayAttribute() override {};
