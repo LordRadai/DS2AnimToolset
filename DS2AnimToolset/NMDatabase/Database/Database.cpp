@@ -20,8 +20,8 @@ namespace db
 	{
 		m_xmlElement = saver->getXMLDocument()->NewElement(m_name.c_str());
 
-		if (m_nodeName->getValue() != "")
-			m_xmlElement->SetAttribute("name", m_nodeName->getValue().c_str());
+		if (m_nodeName != "")
+			m_xmlElement->SetAttribute("name", m_nodeName.c_str());
 
 		m_xmlElement->SetAttribute("type", "node");
 		m_xmlElement->SetAttribute("namespace", m_namespace.c_str());

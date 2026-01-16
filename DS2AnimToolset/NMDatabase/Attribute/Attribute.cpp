@@ -92,9 +92,9 @@ namespace db
 	std::string Attribute::toDatabasePath() const
 	{
 		if (m_parent == nullptr)
-			return m_name;
+			return getName();
 
-		return m_parent->toDatabasePath() + "." + m_name;
+		return m_parent->toDatabasePath() + "." + getName();
 	}
 
     Attribute* Attribute::attributeFromDatabasePath(const std::string& path, bool resolveLast) const 
