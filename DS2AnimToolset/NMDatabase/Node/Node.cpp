@@ -4,7 +4,7 @@
 
 namespace db
 {
-	Node::Node(Attribute* parent, std::string name, std::string nodeName) : CompoundAttribute(parent, name, "node"), 
+	Node::Node(CompositeAttribute* parent, std::string name, std::string nodeName) : CompoundAttribute(parent, name, "node"),
 		m_nodeName(std::make_unique<StringAttribute>(nodeName))
 	{
 		m_nodeID = Registry::getInstance()->getNewNodeID();

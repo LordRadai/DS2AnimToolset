@@ -30,7 +30,7 @@ namespace db
 		std::unique_ptr<StringAttribute> m_nodeName;
 		int m_nodeID;
 	public:
-		Node(Attribute* parent, std::string name, std::string nodeName);
+		Node(CompositeAttribute* parent, std::string name, std::string nodeName);
 		
 		virtual ~Node() override {};
 		virtual Node* asNode() const override { return const_cast<Node*>(this); }
