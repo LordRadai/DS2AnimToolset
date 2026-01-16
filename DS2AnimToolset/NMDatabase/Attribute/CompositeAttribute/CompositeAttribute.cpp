@@ -46,7 +46,7 @@ namespace db
 		}
 	}
 
-	int CompositeAttribute::getAttributeIndex(Attribute* attribute)
+	int CompositeAttribute::getAttributeIndex(Attribute* attribute) const
 	{
 		for (size_t i = 0; i < m_attributes.size(); i++)
 		{

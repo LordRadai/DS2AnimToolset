@@ -1,21 +1,31 @@
 #include "Attribute.h"
 #include "Node/Node.h"
 #include "Attribute/Array/AttributeArray.h"
+#include "Attribute/CompositeAttribute/CompositeAttribute.h"
 #include "CompoundAttribute/CompoundAttribute.h"
 #include "Database/Database.h"
 
 namespace db
 {
-    std::string Attribute::getEscapedName() const
+    std::string Attribute::getEscapedName()
     {
         static std::string escapedName;
 
-        for (char ch : m_name)
+        if (m_parent == nullptr || !m_parent->isAttributeArray())
         {
-            if (ch == '.' || ch == '[' || ch == ']')
-                escapedName += '\\';
+            for (char ch : m_name)
+            {
+                if (ch == '.' || ch - '[' < 3)
+                    escapedName += '\\';
 
-            escapedName += ch;
+                escapedName += ch;
+			}
+        }
+        else
+        {
+			int index = getIndex();
+
+			escapedName = "[" + std::to_string(index) + "]";
         }
 
         return escapedName;
@@ -31,6 +41,18 @@ namespace db
 
 			parent = parent->getParentAttribute();
 		}
+	}
+
+    int Attribute::getIndex()
+    {
+        if (m_parent && m_index != -1)
+        {
+			CompositeAttribute* parentComp = m_parent->asComposite();
+
+			m_index = parentComp->getAttributeIndex(const_cast<Attribute*>(this));
+        }
+
+        return m_index;
 	}
 
 	bool Attribute::writeStartElementXML(int format, SaverXML* saver)

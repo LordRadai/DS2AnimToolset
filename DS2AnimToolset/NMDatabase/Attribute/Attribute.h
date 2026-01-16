@@ -28,6 +28,7 @@ namespace db
 	class NodeContainer;
 	class AttributeArray;
 	class CompoundAttribute;
+	class CompositeAttribute;
 	class Node;
 	class Database;
 	class SingleValueAttribute;
@@ -41,6 +42,7 @@ namespace db
 		Attribute* m_parent;
 		std::string m_name;
 		std::string m_type;
+		int m_index;
 		tinyxml2::XMLElement* m_xmlElement = nullptr;
 
 	public:
@@ -48,6 +50,7 @@ namespace db
 			m_parent(parent),
 			m_name(name),
 			m_type(type),
+			m_index(-1),
 			m_xmlElement(nullptr)
 		{};
 
@@ -64,6 +67,13 @@ namespace db
 		 * \return The parent attribute of this attribute.
 		 */
 		Attribute* getParentAttribute() const { return m_parent; }
+
+		/**
+		 * \brief Get the index of the attribute in its parent.
+		 * 
+		 * \return The index of the attribute.
+		 */
+		int getIndex();
 
 		/**
 		 * \brief Get the type of the attribute.
@@ -141,7 +151,7 @@ namespace db
 		virtual bool isCompound() const { return false; }
 		virtual bool isNode() const { return false; }
 		virtual bool isDatabase() const { return false; }
-		virtual std::string getEscapedName() const;
+		virtual std::string getEscapedName();
 		virtual std::string getName() const { return m_name; }
 		virtual void setName(const std::string& name) { m_name = name; }
 

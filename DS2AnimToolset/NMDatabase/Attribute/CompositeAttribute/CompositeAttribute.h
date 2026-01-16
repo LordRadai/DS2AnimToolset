@@ -5,8 +5,6 @@ namespace db
 {
 	class CompositeAttribute : public ArrayAttribute
 	{
-		int getAttributeIndex(Attribute* attribute);
-
 	protected:
 		std::vector<Attribute*> m_attributes;
 
@@ -36,6 +34,8 @@ namespace db
 		Attribute* getAttribute(int idx) const;
 		Attribute* findAttribute(std::string name) const;
 		uint32_t getAttributeCount() const { return static_cast<uint32_t>(m_attributes.size()); }
+
+		int getAttributeIndex(Attribute* attribute) const;
 
 		Attribute* operator[] (uint32_t idx) const
 		{
