@@ -85,8 +85,8 @@ int main()
 		mcd::BlendTreeNode* pStateMachine = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_STATE_MACHINE), rootBt, "");
 
 		mcd::StateMachine* pSM = dynamic_cast<mcd::StateMachine*>(pStateMachine->getGraphEntryNode());
-		g_doc->createNewStateMachineNode("BlendTree", pSM, "BlendTree1");
-		g_doc->createNewStateMachineNode("StateMachine", pSM, "StateMachine1");
+		g_doc->createNewStateMachineNode(SM_NODE_BLEND_TREE, pSM, "BlendTree1");
+		g_doc->createNewStateMachineNode(SM_NODE_STATE_MACHINE, pSM, "StateMachine1");
 
 		pSM->setDefaultState(pSM->findStateMachineNode("BlendTree1"));
 

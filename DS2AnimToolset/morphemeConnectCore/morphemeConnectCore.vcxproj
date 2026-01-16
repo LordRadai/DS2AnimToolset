@@ -258,6 +258,7 @@
     <ClInclude Include="mcd\Attribute\SingleValue\StringAttribute.h" />
     <ClInclude Include="mcd\mcd.h" />
     <ClInclude Include="mcd\MorphemeDB\MorphemeDB.h" />
+    <ClInclude Include="SupportedStateMachineNodes.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NMDBExtensions\TypedAttributeArray.inl" />

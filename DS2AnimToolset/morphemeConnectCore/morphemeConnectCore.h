@@ -21,3 +21,4 @@
 #include "mcc/MorphemeManifest/MorphemeManifest.h"
 
 #include "SupportedManifest.h"
+#include "SupportedStateMachineNodes.h"
