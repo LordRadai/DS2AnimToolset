@@ -6,7 +6,7 @@ namespace mcd
 	class Attribute : public db::Node
 	{
 	protected:
-		Attribute(db::Attribute* parent, const std::string& name, const std::string& identifier) : db::Node(parent, name, identifier) {}
+		Attribute(db::CompositeAttribute* parent, const std::string& name, const std::string& identifier) : db::Node(parent, name, identifier) {}
 	public:
 		virtual ~Attribute() {}
 		virtual bool assignValue(Attribute* attr);
