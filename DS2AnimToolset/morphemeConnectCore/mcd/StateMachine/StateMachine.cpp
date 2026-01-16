@@ -12,16 +12,31 @@ namespace mcd
 	{
 		addAttribute(m_nodeType.get());
 		addAttribute(m_manifestVersion.get());
-		addAttribute(m_stateMachineNodes.get());
-		addAttribute(m_transitionEdges.get());
 	}
 
 	void StateMachine::addStateMachineNode(StateMachineNode* node)
 	{
+		if (node == nullptr)
+			return;
+
+		if (findAttribute("StateMachineNodes") == nullptr)
+			addAttribute(m_stateMachineNodes.get());
+
 		m_stateMachineNodes->add(node);
 
 		if (getDefaultState() == nullptr)
 			setDefaultState(node);
+	}
+
+	void StateMachine::addTransitionEdge(TransitionEdge* edge)
+	{
+		if (edge == nullptr)
+			return;
+
+		if (findAttribute("TransitionEdges") == nullptr)
+			addAttribute(m_transitionEdges.get());
+
+		m_transitionEdges->add(edge);
 	}
 
 	void StateMachine::setDefaultState(StateMachineNode* state)

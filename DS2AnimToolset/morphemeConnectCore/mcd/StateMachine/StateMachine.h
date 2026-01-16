@@ -29,7 +29,7 @@ namespace mcd
 		StateMachineNode* getStateMachineNode(const uint32_t index) const { return m_stateMachineNodes->getNode(index); }
 		StateMachineNode* findStateMachineNode(const std::string& name) const { return m_stateMachineNodes->find(name); }
 
-		void addTransitionEdge(TransitionEdge* edge) { m_transitionEdges->add(edge); }
+		void addTransitionEdge(TransitionEdge* edge);
 		TransitionEdge* getTransitionEdge(const uint32_t index) const { return m_transitionEdges->getNode(index); }
 		TransitionEdge* findTransitionEdge(const std::string& name) const { return m_transitionEdges->find(name); }
 

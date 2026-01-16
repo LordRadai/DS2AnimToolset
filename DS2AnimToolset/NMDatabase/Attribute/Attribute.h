@@ -40,6 +40,7 @@ namespace db
 	{
 	protected:
 		CompositeAttribute* m_parent;
+		Node* m_parentNode;
 		std::string m_name;
 		std::string m_type;
 		int m_id;
@@ -62,6 +63,13 @@ namespace db
 		 * \return The parent attribute of this attribute.
 		 */
 		CompositeAttribute* getParentAttribute() const { return m_parent; }
+
+		/**
+		 * \brief Get the parent node.
+		 * 
+		 * \return The parent node of this attribute.
+		 */
+		Node* getParentNode();
 
 		/**
 		 * \brief Get the index of the attribute in its parent.

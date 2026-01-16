@@ -10,6 +10,7 @@ namespace db
 {
     Attribute::Attribute(CompositeAttribute* parent, std::string name, std::string type) :
         m_parent(parent),
+        m_parentNode(nullptr),
         m_name(name),
         m_type(type),
         m_index(-1),
@@ -55,6 +56,27 @@ namespace db
 			parent = parent->getParentAttribute();
 		}
 	}
+
+    Node* Attribute::getParentNode()
+    {
+        if (m_parentNode == nullptr && m_parent != nullptr)
+        {
+            Attribute* node = m_parent;
+
+            while (node != nullptr)
+            {
+                if (node->isNode())
+                {
+                    m_parentNode = node->asNode();
+                    break;
+                }
+
+                node = node->getParentAttribute();
+            }
+        }
+
+		return m_parentNode;
+    }
 
     int Attribute::getIndex()
     {
