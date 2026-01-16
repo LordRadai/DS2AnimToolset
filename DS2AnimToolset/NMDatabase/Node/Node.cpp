@@ -2,6 +2,21 @@
 
 namespace db
 {
+	std::string Node::getEscapedName() const
+	{
+		static std::string escapedName;
+
+		for (char ch : m_nodeName)
+		{
+			if (ch == '.' || ch == '[' || ch == ']')
+				escapedName += '\\';
+
+			escapedName += ch;
+		}
+
+		return escapedName;
+	}
+
 	bool Node::readValueXML(int format, XMLElement* element, LoaderXML* loader)
 	{
 		for (size_t i = 0; i < element->getNumChildren(); i++)

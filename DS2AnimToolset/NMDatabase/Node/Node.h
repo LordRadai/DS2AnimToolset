@@ -37,9 +37,9 @@ namespace db
 		virtual bool readValueXML(int format, XMLElement* element, LoaderXML* loader) override;
 		virtual bool writeValueXML(int format, SaverXML* saver) override;
 		virtual bool writeStartElementXML(int format, SaverXML* saver) override;
-
-		std::string getNodeName() const { return m_nodeName; }
-		void setNodeName(const std::string& name) { m_nodeName = name; }
+		virtual std::string getEscapedName() const override;
+		virtual std::string getName() const override { return m_nodeName; }
+		virtual void setName(const std::string& name) override { m_nodeName = name; }
 
 		bool reparent(db::Node* newParent);
 

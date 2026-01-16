@@ -6,6 +6,21 @@
 
 namespace db
 {
+    std::string Attribute::getEscapedName() const
+    {
+        static std::string escapedName;
+
+        for (char ch : m_name)
+        {
+            if (ch == '.' || ch == '[' || ch == ']')
+                escapedName += '\\';
+
+            escapedName += ch;
+        }
+
+        return escapedName;
+	}
+
 	Database* Attribute::getDatabase() const
 	{
 		Attribute* parent = m_parent;

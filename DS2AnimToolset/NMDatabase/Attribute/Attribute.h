@@ -141,6 +141,7 @@ namespace db
 		virtual bool isCompound() const { return false; }
 		virtual bool isNode() const { return false; }
 		virtual bool isDatabase() const { return false; }
+		virtual std::string getEscapedName() const;
 		virtual std::string getName() const { return m_name; }
 		virtual void setName(const std::string& name) { m_name = name; }
 

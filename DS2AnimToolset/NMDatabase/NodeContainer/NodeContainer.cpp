@@ -8,7 +8,7 @@ namespace db
 		{
 			Node* node = getNode(i);
 
-			if (node->getNodeName() == name)
+			if (node->getName() == name)
 				return node;
 		}
 
