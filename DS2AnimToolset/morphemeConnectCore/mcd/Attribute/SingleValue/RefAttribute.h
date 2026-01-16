@@ -24,7 +24,7 @@ namespace mcd
 			kNumRefKinds
 		};
 
-		RefAttribute(db::Attribute* parent, const std::string& name, int refKind, bool isWeakRef);
+		RefAttribute(db::CompositeAttribute* parent, const std::string& name, int refKind, bool isWeakRef);
 		virtual ~RefAttribute() override {}
 		virtual bool isValueEqualTo(Attribute* attr) override;
 

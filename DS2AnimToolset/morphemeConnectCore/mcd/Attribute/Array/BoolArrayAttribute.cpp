@@ -3,7 +3,7 @@
 namespace mcd
 {
 	BoolArrayAttribute::BoolArrayAttribute(db::Attribute* parent, std::string name)
-		: Attribute(parent, "BoolArrayAttribute", name),
+		: CompositeAttribute(parent, "BoolArrayAttribute", name),
 		m_valueAttr(new db::TypedAttributeArray<db::BoolAttribute>(this, "Value"))
 	{}
 

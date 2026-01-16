@@ -3,7 +3,7 @@
 namespace mcd
 {
 	FloatArrayAttribute::FloatArrayAttribute(db::Attribute* parent, std::string name)
-		: Attribute(parent, "FloatArrayAttribute", name),
+		: CompositeAttribute(parent, "FloatArrayAttribute", name),
 		m_valueAttr(new db::TypedAttributeArray<db::FloatAttribute>(this, "Value"))
 	{
 	}

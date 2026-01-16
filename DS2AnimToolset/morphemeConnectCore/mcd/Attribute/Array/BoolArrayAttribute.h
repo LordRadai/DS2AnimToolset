@@ -8,7 +8,7 @@ namespace mcd
 	{
 		std::unique_ptr<db::TypedAttributeArray<db::BoolAttribute>> m_valueAttr = nullptr;
 	public:
-		BoolArrayAttribute(db::Attribute* parent, std::string name);
+		BoolArrayAttribute(db::CompositeAttribute* parent, std::string name);
 
 		virtual ~BoolArrayAttribute() override {};
 		virtual bool assignValue(Attribute* other) override;

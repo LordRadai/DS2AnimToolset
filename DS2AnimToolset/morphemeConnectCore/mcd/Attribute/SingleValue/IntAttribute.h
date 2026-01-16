@@ -8,7 +8,7 @@ namespace mcd
 		std::unique_ptr<db::IntAttribute> m_valueAttr = nullptr;
 
 	public:
-		IntAttribute(db::Attribute* parent, std::string name, int value);
+		IntAttribute(db::CompositeAttribute* parent, std::string name, int value);
 
 		virtual ~IntAttribute() override {};
 		virtual bool assignValue(Attribute* other) override;

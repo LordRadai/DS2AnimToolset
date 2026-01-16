@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	StringAttribute::StringAttribute(db::Attribute* parent, std::string name, const std::string& value)
+	StringAttribute::StringAttribute(db::CompositeAttribute* parent, std::string name, const std::string& value)
 		: Attribute(parent, "StringAttribute", name),
 		m_valueAttr(new db::StringAttribute(this, "Value", value))
 	{

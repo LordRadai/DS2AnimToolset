@@ -7,7 +7,7 @@ namespace mcd
 	{
 		std::unique_ptr<db::BoolAttribute> m_valueAttr = nullptr;
 	public:
-		BoolAttribute(db::Attribute* parent, std::string name, bool value);
+		BoolAttribute(db::CompositeAttribute* parent, std::string name, bool value);
 
 		virtual ~BoolAttribute() override {};
 		virtual bool assignValue(Attribute* other) override;

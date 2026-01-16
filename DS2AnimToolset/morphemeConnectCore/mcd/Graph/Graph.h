@@ -12,7 +12,7 @@ namespace mcd
 		std::unique_ptr<db::FloatAttribute> m_panX;
 		std::unique_ptr<db::FloatAttribute> m_panY;
 
-		Graph(Attribute* parent, std::string name, std::string graphName);
+		Graph(CompositeAttribute* parent, std::string name, std::string graphName);
 	public:
 		virtual ~Graph() override {};
 

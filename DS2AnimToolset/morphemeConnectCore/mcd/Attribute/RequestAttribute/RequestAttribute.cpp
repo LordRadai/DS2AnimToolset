@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	RequestAttribute::RequestAttribute(db::Attribute* parent, const std::string& name) :
+	RequestAttribute::RequestAttribute(db::CompositeAttribute* parent, const std::string& name) :
 		mcd::Attribute(parent, "RequestAttribute", name),
 		m_value(std::make_unique<db::Pointer<mcd::Request>>(this, "RequestEntry", nullptr))
 	{

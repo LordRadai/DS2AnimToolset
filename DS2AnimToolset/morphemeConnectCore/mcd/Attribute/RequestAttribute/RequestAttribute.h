@@ -10,7 +10,7 @@ namespace mcd
 		std::unique_ptr<db::Pointer<mcd::Request>> m_value;
 
 	public:
-		RequestAttribute(db::Attribute* parent, const std::string& name);
+		RequestAttribute(db::CompositeAttribute* parent, const std::string& name);
 
 		virtual ~RequestAttribute() override;
 

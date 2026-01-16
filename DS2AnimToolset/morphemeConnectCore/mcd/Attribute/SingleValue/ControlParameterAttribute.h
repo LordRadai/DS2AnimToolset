@@ -10,7 +10,7 @@ namespace mcd
 		std::unique_ptr<db::Pointer<mcd::Pin>> m_targetCpPin;
 
 	public:
-		ControlParameterAttribute(db::Attribute* parent, std::string name, mcd::ControlParameter* controlParameter);
+		ControlParameterAttribute(db::CompositeAttribute* parent, std::string name, mcd::ControlParameter* controlParameter);
 
 		virtual ~ControlParameterAttribute() override {};
 

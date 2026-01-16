@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	ControlParameterAttribute::ControlParameterAttribute(db::Attribute* parent, std::string name, mcd::ControlParameter* controlParameter)
+	ControlParameterAttribute::ControlParameterAttribute(db::CompositeAttribute* parent, std::string name, mcd::ControlParameter* controlParameter)
 		: Attribute(parent, name, "ControlParameterAttribute"),
 		  m_targetCpPin(std::make_unique<db::Pointer<mcd::Pin>>(this, "ControlParameterDataPin", controlParameter->getResultDataPin()))
 	{

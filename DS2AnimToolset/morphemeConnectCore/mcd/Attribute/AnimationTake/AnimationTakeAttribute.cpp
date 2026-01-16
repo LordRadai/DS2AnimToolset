@@ -3,7 +3,7 @@
 
 namespace mcd
 {
-	AnimationTakeAttribute::AnimationTakeAttribute(db::Attribute* parent, const std::string& name) : Attribute(parent, "AnimationTakeAttribute", name),
+	AnimationTakeAttribute::AnimationTakeAttribute(db::CompositeAttribute* parent, const std::string& name) : Attribute(parent, "AnimationTakeAttribute", name),
 		m_file(std::make_unique<db::StringAttribute>(this, "File", "")),
 		m_take(std::make_unique<db::StringAttribute>(this, "Take", "")),
 		m_format(std::make_unique<db::StringAttribute>(this, "Format", "nsa")),

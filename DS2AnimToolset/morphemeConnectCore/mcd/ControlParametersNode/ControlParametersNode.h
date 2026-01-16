@@ -12,7 +12,7 @@ namespace mcd
 		std::unique_ptr<mcd::BlendTree> m_cpBlendTree;
 
 	public:
-		ControlParametersNode(db::Attribute* parent, std::string name);
+		ControlParametersNode(db::CompositeAttribute* parent, std::string name);
 
 		virtual ~ControlParametersNode() override {}
 

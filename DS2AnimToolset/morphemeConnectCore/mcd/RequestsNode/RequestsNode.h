@@ -10,7 +10,7 @@ namespace mcd
 		std::unique_ptr<db::TypedNodeContainer<mcd::Request>> m_requests;
 
 	public:
-		RequestsNode(db::Attribute* parent, std::string name);
+		RequestsNode(db::CompositeAttribute* parent, std::string name);
 
 		virtual ~RequestsNode() override {}
 

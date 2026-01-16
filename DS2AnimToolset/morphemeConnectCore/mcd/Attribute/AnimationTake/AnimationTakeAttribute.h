@@ -11,7 +11,7 @@ namespace mcd
 		std::unique_ptr<db::StringAttribute> m_syncTrack;
 
 	public:
-		AnimationTakeAttribute(db::Attribute* parent, const std::string& name);
+		AnimationTakeAttribute(db::CompositeAttribute* parent, const std::string& name);
 
 		std::string getFile() const { return m_file->getValue(); }
 		void setFile(const std::string& file) { m_file->setValue(file); }

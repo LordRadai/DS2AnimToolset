@@ -17,7 +17,7 @@ namespace mcd
 		std::unique_ptr<db::FloatAttribute> m_width;
 		std::unique_ptr<db::FloatAttribute> m_height;
 
-		GraphNode(Attribute* parent, std::string name, std::string nodeName, float xPos, float yPos, float width, float height);
+		GraphNode(CompositeAttribute* parent, std::string name, std::string nodeName, float xPos, float yPos, float width, float height);
 	public:		
 		virtual ~GraphNode() override {}
 		

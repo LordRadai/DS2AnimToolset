@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	RigChannelNameAttribute::RigChannelNameAttribute(db::Attribute* parent, const std::string& name)
+	RigChannelNameAttribute::RigChannelNameAttribute(db::CompositeAttribute* parent, const std::string& name)
 		: Attribute(parent, "RigChannelNameAttribute", name),
 		m_rigChannelName(std::make_unique<db::StringAttribute>(this, "Value", ""))
 	{

@@ -10,7 +10,7 @@ namespace mcd
 		std::unique_ptr<db::TypedNodeContainer<mcd::Attribute>> m_attributes;
 
 	public:
-		AttributePlaceholder(db::Attribute* parent, std::string name);
+		AttributePlaceholder(db::CompositeAttribute* parent, std::string name);
 
 		virtual ~AttributePlaceholder() override {}
 

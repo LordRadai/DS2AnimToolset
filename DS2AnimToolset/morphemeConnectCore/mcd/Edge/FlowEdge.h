@@ -11,7 +11,7 @@ namespace mcd
 		std::unique_ptr<db::Pointer<mcd::Pin>> m_to;
 
 	public:
-		FlowEdge(Attribute* parent, std::string name, mcd::Pin* to, mcd::Pin* from);
+		FlowEdge(db::CompositeAttribute* parent, std::string name, mcd::Pin* to, mcd::Pin* from);
 
 		virtual ~FlowEdge() override {};
 	};

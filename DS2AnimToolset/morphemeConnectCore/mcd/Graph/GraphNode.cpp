@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	GraphNode::GraphNode(Attribute* parent, std::string name, std::string nodeName, float xPos, float yPos, float width, float height)
+	GraphNode::GraphNode(CompositeAttribute* parent, std::string name, std::string nodeName, float xPos, float yPos, float width, float height)
 		: db::Node(parent, name, nodeName),
 		m_graphEntry(std::make_unique<db::NodeContainer>(this, "GraphEntry")),
 		m_attributes(std::make_unique<db::TypedNodeContainer<mcd::Attribute>>(this, "Attributes")),

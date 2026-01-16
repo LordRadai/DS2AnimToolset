@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	BoolAttribute::BoolAttribute(db::Attribute* parent, std::string name, bool value) : 
+	BoolAttribute::BoolAttribute(db::CompositeAttribute* parent, std::string name, bool value) :
 		Attribute(parent, "BoolAttribute", name),
 		m_valueAttr(new db::BoolAttribute(this, "Value", value))
 	{
