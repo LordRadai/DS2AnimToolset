@@ -27,9 +27,9 @@ namespace db
 	class Node : public CompoundAttribute
 	{
 	protected:
-		std::string m_nodeName;
+		std::unique_ptr<StringAttribute> m_nodeName;
 	public:
-		Node(Attribute* parent, std::string name, std::string nodeName) : CompoundAttribute(parent, name, "node"), m_nodeName(nodeName) {}
+		Node(Attribute* parent, std::string name, std::string nodeName) : CompoundAttribute(parent, name, "node"), m_nodeName(std::make_unique<StringAttribute>(nodeName)) {}
 		
 		virtual ~Node() override {};
 		virtual Node* asNode() const override { return const_cast<Node*>(this); }
@@ -38,8 +38,8 @@ namespace db
 		virtual bool writeValueXML(int format, SaverXML* saver) override;
 		virtual bool writeStartElementXML(int format, SaverXML* saver) override;
 		virtual std::string getEscapedName() const override;
-		virtual std::string getName() const override { return m_nodeName; }
-		virtual void setName(const std::string& name) override { m_nodeName = name; }
+		virtual std::string getName() const override { return m_nodeName->getValue(); }
+		virtual void setName(const std::string& name) override { m_nodeName->setValue(name); }
 
 		bool reparent(db::Node* newParent);
 

@@ -5,8 +5,9 @@ namespace db
 	std::string Node::getEscapedName() const
 	{
 		static std::string escapedName;
+		std::string name = m_nodeName->getValue();
 
-		for (char ch : m_nodeName)
+		for (char ch : name)
 		{
 			if (ch == '.' || ch == '[' || ch == ']')
 				escapedName += '\\';
@@ -77,8 +78,10 @@ namespace db
 
 		m_xmlElement = m_parent->getXMLElement()->InsertNewChildElement(m_name.c_str());
 
-		if (m_nodeName != "")
-			m_xmlElement->SetAttribute("name", m_nodeName.c_str());
+		std::string nodeName = m_nodeName->getValue();
+
+		if (nodeName != "")
+			m_xmlElement->SetAttribute("name", nodeName.c_str());
 
 		m_xmlElement->SetAttribute("type", "node");
 
