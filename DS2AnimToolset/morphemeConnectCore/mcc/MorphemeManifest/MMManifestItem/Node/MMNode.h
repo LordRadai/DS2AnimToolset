@@ -21,6 +21,8 @@ namespace mcc
 
 		void setupNewBlendTreeNode(mcd::BlendTreeNode* node, mcd::BlendTree* parent);
 		std::string getNodeDefaultName(mcd::BlendTreeNode* node, mcd::BlendTree* parent) const;
+
+		std::vector<MMPin*> getSortedPins();
 	public:
 		MMNode() {}
 		MMNode(const nlohmann::json& json) { fromJson(json); }
@@ -46,7 +48,5 @@ namespace mcc
 		MMFunctionalPin* getFunctionalPin(uint32_t index);
 		MMFunctionalPin* findFunctionalPin(const std::string& name);
 		uint32_t getNumFunctionalPins() const { return static_cast<uint32_t>(m_functionalPins.size()); }
-
-		std::vector<MMPin*> getSortedPins();
 	};
 }

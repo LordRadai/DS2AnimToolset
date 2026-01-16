@@ -42,6 +42,9 @@ namespace mcd
 		void setWidth(float width) { m_width->setValue(width); }
 		void setHeight(float height) { m_height->setValue(height); }
 
+		db::NodeContainer* getGraphEntry() const { return m_graphEntry.get(); }
 		void setGraphEntry(db::Node* node);
+
+		db::Node* getGraphEntryNode() const;
 	};
 }

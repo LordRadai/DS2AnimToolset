@@ -75,16 +75,16 @@ namespace mcc
 		MMCondition* condition = new MMCondition(jsonData);
 		condition->setName(std::filesystem::path(manifestPath).filename().replace_extension("").string());
 
-		m_conditions.push_back(condition);
+		m_registeredConditions.push_back(condition);
 	}
 
 	void MorphemeManifest::unregisterCondition(uint32_t index)
 	{
-		if (index >= m_conditions.size())
+		if (index >= m_registeredConditions.size())
 			throw std::out_of_range("Index out of range for registered conditions");
 
-		delete m_conditions[index];
-		m_conditions.erase(m_conditions.begin() + index);
+		delete m_registeredConditions[index];
+		m_registeredConditions.erase(m_registeredConditions.begin() + index);
 	}
 
 	void MorphemeManifest::registerTransition(std::string manifestPath)
@@ -102,16 +102,24 @@ namespace mcc
 		MMTransition* transition = new MMTransition(jsonData);
 		transition->setName(std::filesystem::path(manifestPath).filename().replace_extension("").string());
 
-		m_transitions.push_back(transition);
+		m_regosteredTransitions.push_back(transition);
 	}
 
 	void MorphemeManifest::unregisterTransition(uint32_t index)
 	{
-		if (index >= m_transitions.size())
+		if (index >= m_regosteredTransitions.size())
 			throw std::out_of_range("Index out of range for registered transitions");
 
-		delete m_transitions[index];
-		m_transitions.erase(m_transitions.begin() + index);
+		delete m_regosteredTransitions[index];
+		m_regosteredTransitions.erase(m_regosteredTransitions.begin() + index);
+	}
+
+	void MorphemeManifest::init()
+	{
+		MMStateMachineNode* stateMachine = new MMStateMachineNode();
+		stateMachine->setName("BlendTree");
+
+		m_registeredStateMachineNodes.push_back(stateMachine);
 	}
 
 	void MorphemeManifest::shutdown()
@@ -120,16 +128,20 @@ namespace mcc
 		for (size_t i = 0; i < m_registeredStateMachines.size(); i++)
 			unregisterStateMachine(i);
 
+		// Unregister all state machine nodes
+		for (size_t i = 0; i < m_registeredStateMachineNodes.size(); i++)
+			unregisterStateMachineNode(i);
+
 		// Unregister all nodes
 		for (size_t i = 0; i < m_registeredNodes.size(); i++)
 			unregisterNode(i);
 
 		// Unregister all conditions
-		for (size_t i = 0; i < m_conditions.size(); i++)
+		for (size_t i = 0; i < m_registeredConditions.size(); i++)
 			unregisterCondition(i);
 
 		// Unregister all transitions
-		for (size_t i = 0; i < m_transitions.size(); i++)
+		for (size_t i = 0; i < m_regosteredTransitions.size(); i++)
 			unregisterTransition(i);
 	}
 
@@ -173,15 +185,15 @@ namespace mcc
 
 	MMCondition* MorphemeManifest::getConditionManifest(uint32_t index)
 	{
-		if (index >= m_conditions.size())
+		if (index >= m_registeredConditions.size())
 			return nullptr;
 
-		return m_conditions[index];
+		return m_registeredConditions[index];
 	}
 
 	MMCondition* MorphemeManifest::findConditionManifest(uint32_t id)
 	{
-		for (auto& condition : m_conditions)
+		for (auto& condition : m_registeredConditions)
 		{
 			if (condition->getID() == id)
 				return condition;
@@ -192,15 +204,15 @@ namespace mcc
 
 	MMTransition* MorphemeManifest::getTransitionManifest(uint32_t index)
 	{
-		if (index >= m_transitions.size())
+		if (index >= m_regosteredTransitions.size())
 			return nullptr;
 
-		return m_transitions[index];
+		return m_regosteredTransitions[index];
 	}
 
 	MMTransition* MorphemeManifest::findTransitionManifest(uint32_t id)
 	{
-		for (auto& transition : m_transitions)
+		for (auto& transition : m_regosteredTransitions)
 		{
 			if (transition->getAnimID() == id)
 				return transition;

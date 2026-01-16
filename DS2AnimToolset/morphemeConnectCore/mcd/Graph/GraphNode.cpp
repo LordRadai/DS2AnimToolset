@@ -31,4 +31,12 @@ namespace mcd
 
 		addAttribute(m_graphEntry.get());
 	}
+
+	db::Node* GraphNode::getGraphEntryNode() const
+	{
+		if (m_graphEntry->size() == 0)
+			return nullptr;
+
+		return m_graphEntry->getNode(0);
+	}
 }

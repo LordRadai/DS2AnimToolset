@@ -186,6 +186,28 @@ namespace mcc
 		 */
 		mcd::StateMachine* createNewStateMachine(const std::string& name, mcc::MMStateMachine manifestSM, mcd::Graph* parent, float xpos, float ypos);
 
+		/**
+		 * \brief Creates a state machine node at the specified x and y coordinates.
+		 * 
+		 * \param typeName The typename of the node to create, either BlendTree or StateMachine.
+		 * \param parent The parent state machine for the new node.
+		 * \param name The name of the new state machine node. If left empty, it will use the default name from the manifest.
+		 * \param xPos The x position of the new state machine node.
+		 * \param yPos The y position of the new state machine node.
+		 * \return A pointer to the created state machine node.
+		 */
+		mcd::StateMachineNode* createNewStateMachineNode(std::string typeName, mcd::StateMachine* parent, const std::string& name, float xPos, float yPos);
+
+		/**
+		 * \brief Creates a state machine node at the first free position under the parent state machine.
+		 * 
+		 * \param typeName The typename of the node to create, either BlendTree or StateMachine.
+		 * \param parent The parent state machine for the new node.
+		 * \param name The name of the new state machine node.
+		 * \return A pointer to the created state machine node.
+		 */
+		mcd::StateMachineNode* createNewStateMachineNode(std::string typeName, mcd::StateMachine* parent, const std::string& name);
+
 		mcd::Request* createRequest(const std::string& name);
 
 		void save();

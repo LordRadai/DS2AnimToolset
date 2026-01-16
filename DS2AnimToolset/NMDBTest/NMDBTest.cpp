@@ -82,6 +82,13 @@ int main()
 		mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
 
 		mcd::BlendTreeNode* pEmitRequest = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_EMITREQUESTONDISCRETEEVENT), rootBt, "");
+		mcd::BlendTreeNode* pStateMachine = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_STATE_MACHINE), rootBt, "");
+
+		mcd::StateMachine* pSM = dynamic_cast<mcd::StateMachine*>(pStateMachine->getGraphEntryNode());
+		g_doc->createNewStateMachineNode("BlendTree", pSM, "BlendTree1");
+		g_doc->createNewStateMachineNode("StateMachine", pSM, "StateMachine1");
+
+		pSM->setDefaultState(pSM->findStateMachineNode("BlendTree1"));
 
 		dynamic_cast<mcd::RequestAttribute*>(pEmitRequest->findAttribute("EmittedRequest0"))->setValue(network->findRequest("Request0"));
 		dynamic_cast<mcd::RequestAttribute*>(pEmitRequest->findAttribute("EmittedRequest1"))->setValue(network->findRequest("Request1"));

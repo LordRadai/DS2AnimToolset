@@ -171,8 +171,8 @@ namespace mcc
 		if (manifestNode == nullptr)
 			throw std::runtime_error("Cannot create BlendTreeNode. Manifest node is nullptr.");
 
-		float xPos = 0.0f;
-		float yPos = 0.0f;
+		float xPos = 0.f;
+		float yPos = 0.f;
 		parent->getFreePosition(xPos, yPos);
 
 		return createBlendTreeNode(manifestNode, parent, name, xPos, yPos);
@@ -208,7 +208,7 @@ namespace mcc
 
 	mcd::StateMachine* MorphemeDocument::createNewStateMachine(const std::string& name, mcc::MMStateMachine manifestSM, mcd::Graph* parent, float xPos, float yPos)
 	{
-		mcd::StateMachine* sm = new mcd::StateMachine(parent, name);
+		mcd::StateMachine* sm = new mcd::StateMachine(parent, name, manifestSM.getName(), manifestSM.getVersion());
 
 		if (parent->isOfType<mcd::StateMachine>())
 		{
@@ -230,6 +230,42 @@ namespace mcc
 		}
 
 		return sm;
+	}
+
+	mcd::StateMachineNode* MorphemeDocument::createNewStateMachineNode(std::string typeName, mcd::StateMachine* parent, const std::string& name, float xPos, float yPos)
+	{
+		if (typeName == "BlendTree")
+		{
+			mcd::BlendTree* bt = createNewBlendTree(name, parent, xPos, yPos);
+
+			mcd::StateMachineNode* smNode = new mcd::StateMachineNode(parent, name, xPos, yPos, 100.f, 70.f, "BlendTree");
+			smNode->setGraphEntry(bt);
+			smNode->addPin(new mcd::PassDownPin(smNode, "Result"));
+			parent->addStateMachineNode(smNode);
+
+			return smNode;
+		}
+		else if (typeName == "StateMachine")
+		{
+			mcd::StateMachine* sm = createNewStateMachine(name, mcc::MMStateMachine(), parent, xPos, yPos);
+
+			mcd::StateMachineNode* smNode = new mcd::StateMachineNode(parent, name, xPos, yPos, 100.f, 70.f, "StateMachine");
+			smNode->setGraphEntry(sm);
+			parent->addStateMachineNode(smNode);
+
+			return smNode;
+		}
+
+		throw std::runtime_error("Cannot create StateMachineNode. Unknown type name: " + typeName);
+	}
+
+	mcd::StateMachineNode* MorphemeDocument::createNewStateMachineNode(std::string typeName, mcd::StateMachine* parent, const std::string& name)
+	{
+		float xPos = 0.f;
+		float yPos = 0.f;
+		parent->getFreePosition(xPos, yPos);
+
+		return createNewStateMachineNode(typeName, parent, name, xPos, yPos);
 	}
 
 	mcd::Request* MorphemeDocument::createRequest(const std::string& name)
