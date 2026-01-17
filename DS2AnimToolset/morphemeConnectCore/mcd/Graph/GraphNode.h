@@ -1,12 +1,12 @@
 #pragma once
-#include "NMDatabase/NMDatabase.h"
+#include "mcd/AttributePinNodeBase/AttributePinNodeBase.h"
 #include "NMDBExtensions/TypedNodeContainer.inl"
 #include "mcd/Attribute/Attribute.h"
 #include "mcd/Pin/Pin.h"
 
 namespace mcd
 {
-	class GraphNode : public db::Node
+	class GraphNode : public mcd::AttributePinNodeBase
 	{
 	protected:
 		std::unique_ptr<db::NodeContainer> m_graphEntry;

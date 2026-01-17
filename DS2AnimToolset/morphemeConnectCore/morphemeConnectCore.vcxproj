@@ -165,6 +165,7 @@
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMPin.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Transition\MMTransition.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MorphemeManifest.cpp" />
+    <ClCompile Include="mcd\AttributePinNodeBase\AttributePinNodeBase.cpp" />
     <ClCompile Include="mcd\Attribute\AnimationSet\AnimationSetAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\AnimationTake\AnimationTakeAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\Array\BoolArrayAttribute.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="mcc\MorphemeDBLoader\MorphemeDBLoader.h" />
     <ClInclude Include="mcc\MorphemeDocument\MorphemeDocument.h" />
     <ClInclude Include="mcc\AttributeInfo\AttributeInfo.h" />
+    <ClInclude Include="mcd\AttributePinNodeBase\AttributePinNodeBase.h" />
     <ClInclude Include="mcd\Attribute\RequestAttribute\RequestAttribute.h" />
     <ClInclude Include="mcd\Attribute\RigChannelName\RigChannelNameAttribute.h" />
     <ClInclude Include="NMDBExtensions\PointerArray.inl" />

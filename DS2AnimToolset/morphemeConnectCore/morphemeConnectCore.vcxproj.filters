@@ -159,6 +159,9 @@
     <ClCompile Include="mcd\Attribute\RequestAttribute\RequestAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\AttributePinNodeBase\AttributePinNodeBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -330,6 +333,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SupportedStateMachineNodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\AttributePinNodeBase\AttributePinNodeBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

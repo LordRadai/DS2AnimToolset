@@ -78,6 +78,16 @@ namespace db
 		return m_parentNode;
     }
 
+    Node* Attribute::getGrandParentNode()
+    {
+        Node* parentNode = getParentNode();
+
+        if (parentNode != nullptr)
+            return parentNode->getParentNode();
+
+        return nullptr;
+    }
+
     int Attribute::getIndex()
     {
         if (m_parent && m_index != -1)

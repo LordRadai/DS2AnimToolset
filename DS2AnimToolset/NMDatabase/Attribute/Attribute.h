@@ -72,6 +72,45 @@ namespace db
 		Node* getParentNode();
 
 		/**
+		 * \brief Get the grandparent node.
+		 * 
+		 * \return The grandparent node of this attribute.
+		 */
+		Node* getGrandParentNode();
+
+		/**
+		 * \brief Check if the attribute has a parent node.
+		 * 
+		 * \return true if it has a parent node, false otherwise.
+		 */
+		template<typename T = Node>
+		bool hasParentNode()
+		{
+			Node* node = getParentNode();
+
+			if (node != nullptr)
+				return node->isOfType<T>();
+
+			return false;
+		}
+
+		/**
+		 * \brief Check if the attribute has a grandparent node.
+		 * 
+		 * \return true if it has a grandparent node, false otherwise.
+		 */
+		template<typename T = Node>
+		bool hasGrandParentNode()
+		{
+			Node* grandParentNode = getGrandParentNode();
+
+			if (grandParentNode != nullptr)
+				return grandParentNode->isOfType<T>();
+
+			return false;
+		}
+
+		/**
 		 * \brief Get the index of the attribute in its parent.
 		 * 
 		 * \return The index of the attribute.
