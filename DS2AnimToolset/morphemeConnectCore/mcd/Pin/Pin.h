@@ -1,9 +1,12 @@
 #pragma once
 #include "NMDatabase/NMDatabase.h"
-#include "mcd/Graph/Graph.h"
 
 namespace mcd
 {
+	class Graph;
+	class GraphNode;
+	class FlowEdge;
+
 	class Pin : public db::Node
 	{
 		static class CycleDetector
@@ -16,6 +19,9 @@ namespace mcd
 			static bool depthFirstSearchRemoveFromList(mcd::GraphNode* currentNode, mcd::GraphNode* targetNode, std::vector<mcd::GraphNode*>& visitedNodes);
 		};
 
+		std::unique_ptr<db::BoolAttribute> m_isInput;
+		std::unique_ptr<db::BoolAttribute> m_isArray;
+		std::unique_ptr<db::StringAttribute> m_referenceTarget;
 		std::unique_ptr<db::BoolAttribute> m_reference;
 
 	public:
@@ -31,9 +37,19 @@ namespace mcd
 		virtual bool canConnectTo(Pin* to);
 		virtual bool breakConnectionTo(Pin* to);
 
+		void setIsInput(bool isInput);
+		void setIsArray(bool isArray);
+		void setReferenceTarget(const std::string& referenceTarget);
 		void setReference(bool isReference);
+
+		bool getIsInput() const { return m_isInput->getValue(); }
+		bool getIsArray() const { return m_isArray->getValue(); }
+		std::string getReferenceTarget() const { return m_referenceTarget->getValue(); }
+		bool getIsReference() const { return m_reference->getValue(); }
+
 		mcd::FlowEdge* connectTo(Pin* to);
 
 		mcd::Graph* getParentOrGrandParentGraph();
+		mcd::Graph* getOwnerGraphForConnection(Pin* to);
 	};
 }

@@ -2,6 +2,7 @@
 #include "NMDatabase/NMDatabase.h"
 #include "NMDBExtensions/TypedNodeContainer.inl"
 #include "mcd/Pin/DataPin.h"
+#include "mcd/AttributePinNodeBase/AttributePinNodeBase.h"
 
 namespace mcc
 {
@@ -10,7 +11,7 @@ namespace mcc
 
 namespace mcd
 {
-	class ControlParameter : public db::Node
+	class ControlParameter : public mcd::AttributePinNodeBase
 	{
 		friend class mcc::MorphemeDocument;
 

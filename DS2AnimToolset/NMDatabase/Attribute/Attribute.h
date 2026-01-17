@@ -86,10 +86,10 @@ namespace db
 		template<typename T = Node>
 		bool hasParentNode()
 		{
-			Node* node = getParentNode();
+			Attribute* node = getParentNode();
 
 			if (node != nullptr)
-				return node->isOfType<T>();
+				return node->template isOfType<T>();
 
 			return false;
 		}
@@ -102,10 +102,10 @@ namespace db
 		template<typename T = Node>
 		bool hasGrandParentNode()
 		{
-			Node* grandParentNode = getGrandParentNode();
+			Attribute* grandParentNode = getGrandParentNode();
 
 			if (grandParentNode != nullptr)
-				return grandParentNode->isOfType<T>();
+				return grandParentNode->template isOfType<T>();
 
 			return false;
 		}
