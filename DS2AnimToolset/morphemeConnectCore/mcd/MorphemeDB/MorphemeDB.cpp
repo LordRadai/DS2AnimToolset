@@ -23,4 +23,9 @@ namespace mcd
 
 		return m_networks->getNode(0);
 	}
+
+	int MorphemeDB::getConnectedFlowEdgeCount(const mcd::Pin* pin)
+	{
+		throw std::runtime_error("MorphemeDB::getConnectedFlowEdgeCount() not implemented");
+	}
 }

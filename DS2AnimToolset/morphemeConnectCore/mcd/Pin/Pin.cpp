@@ -1,4 +1,5 @@
 #include "Pin.h"
+#include "mcd/MorphemeDB/MorphemeDB.h"
 
 namespace mcd
 {
@@ -40,14 +41,23 @@ namespace mcd
 
 	bool Pin::canReceiveConnection(Pin* from)
 	{
-		// Can receive only if it hasn't one already
-		throw std::runtime_error("Pin::canReceiveConnection() not implemented");
+		MorphemeDB* db = dynamic_cast<MorphemeDB*>(getDatabase());
+
+		if (db)
+			return db->getConnectedFlowEdgeCount(this) == 0;
+
+		// There should be an invalid incident edge check too here, but I am not sure what it means
+		return false;
 	}
 
 	bool Pin::canStartConnection()
 	{
-		// Can start only if it hasn't one already
-		throw std::runtime_error("Pin::canStartConnection() not implemented");
+		MorphemeDB* db = dynamic_cast<MorphemeDB*>(getDatabase());
+
+		if (db)
+			return db->getConnectedFlowEdgeCount(this) == 0;
+
+		return false;
 	}
 
 	bool Pin::canStartConnectionInGraph(mcd::Graph* graph)

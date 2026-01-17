@@ -22,5 +22,7 @@ namespace mcd
 
 		void createNetwork(const std::string& name);
 		Network* getNetwork() const;
+
+		int getConnectedFlowEdgeCount(const mcd::Pin* pin);
 	};
 }
