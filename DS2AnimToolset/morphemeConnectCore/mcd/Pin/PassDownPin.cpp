@@ -1,5 +1,6 @@
 #include "PassDownPin.h"
 #include "mcd/Graph/Graph.h"
+#include "mcu/Log/Log.h"
 
 namespace mcd
 {
@@ -11,7 +12,8 @@ namespace mcd
 
 	mcd::Graph* PassDownPin::getChildGraph()
 	{
-		
+		LOG_NOT_IMPLEMENTED();
+
 		return nullptr;
 	}
 }

@@ -1,4 +1,5 @@
 #include "MorphemeDB.h"
+#include "mcu/Log/Log.h"
 
 namespace mcd
 {
@@ -11,7 +12,10 @@ namespace mcd
 	void MorphemeDB::createNetwork(const std::string& name)
 	{
 		if (m_networks->size() > 0)
-			return; // Only one network is allowed.
+		{
+			mcu::logErrorf("Cannot create Network %s. A network is already present in the database\n", name.c_str());
+			return;
+		}
 
 		m_networks->add(new mcd::Network(this, name));
 	}
@@ -26,6 +30,8 @@ namespace mcd
 
 	int MorphemeDB::getConnectedFlowEdgeCount(const mcd::Pin* pin)
 	{
-		throw std::runtime_error("MorphemeDB::getConnectedFlowEdgeCount() not implemented");
+		LOG_NOT_IMPLEMENTED();
+
+		return 0;
 	}
 }

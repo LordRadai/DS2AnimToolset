@@ -4,32 +4,43 @@
 #include "mcd/ControlParameter/ControlParameter.h"
 #include "mcd/Graph/Graph.h"
 #include "mcd/Edge/FlowEdge.h"
+#include "mcu/Log/Log.h"
 
 namespace mcd
 {
 	bool Pin::CycleDetector::wouldCreateCycle(mcd::Pin* from, mcd::Pin* to)
 	{
+		LOG_NOT_IMPLEMENTED();
+
 		return false;
 	}
 
 	mcd::GraphNode* Pin::CycleDetector::findTreeRoot(mcd::GraphNode* node)
 	{
+		LOG_NOT_IMPLEMENTED();
+
 		return nullptr;
 	}
 
 	bool Pin::CycleDetector::depthFirstSearchCycleDetect(mcd::GraphNode* currentNode, mcd::GraphNode* targetNode, std::set<mcd::GraphNode*>& visitedNodes)
 	{
+		LOG_NOT_IMPLEMENTED();
+
 		return false;
 	}
 
 	bool Pin::CycleDetector::depthFirstSearchRemoveFromList(mcd::GraphNode* currentNode, mcd::GraphNode* targetNode, std::vector<mcd::GraphNode*>& visitedNodes)
 	{
+		LOG_NOT_IMPLEMENTED();
+
 		return false;
 	}
 
 	bool Pin::breakConnectionTo(Pin* to)
 	{
-		throw std::runtime_error("Pin::breakConnectionTo() not implemented");
+		LOG_NOT_IMPLEMENTED();
+
+		return false;
 	}
 
 	bool Pin::canConnectTo(Pin* to)
@@ -51,6 +62,8 @@ namespace mcd
 			return db->getConnectedFlowEdgeCount(this) == 0;
 
 		// There should be an invalid incident edge check too here, but I am not sure what it means
+		LOG_TODO("Implement invalid incident edge check");
+
 		return false;
 	}
 
@@ -127,8 +140,11 @@ namespace mcd
 
 		Graph* ownerGraph = getOwnerGraphForConnection(to);
 
-		if (!ownerGraph)
-			throw std::runtime_error("Unable to find owner graph when trying to create edge");
+		if (ownerGraph == nullptr)
+		{
+			mcu::logError("Pin::connectTo() - Unable to determine owner graph for connection.");
+			return nullptr;
+		}
 
 		FlowEdge* newEdge = new FlowEdge(ownerGraph, "FlowEdge", to, this);
 
@@ -141,6 +157,7 @@ namespace mcd
 		ownerGraph->m_flowEdges->add(edge);
 
 		// TODO: Handle emitted control parameters
+		LOG_TODO("Handle emitted control parameters");
 
 		return edge;
 	}
@@ -193,6 +210,6 @@ namespace mcd
 
 	bool Pin::isDirectlyConnectedTo(Pin* other)
 	{
-		throw std::runtime_error("Pin::isDirectlyConnectedTo() not implemented");
+		LOG_NOT_IMPLEMENTED();
 	}
 }

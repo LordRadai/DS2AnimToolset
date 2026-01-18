@@ -1,5 +1,6 @@
 #include "StateMachine.h"
 #include "mcd/BlendTree/BlendTree.h"
+#include "mcu/Log/Log.h"
 
 namespace mcd
 {
@@ -114,6 +115,7 @@ namespace mcd
 		else if (parentNode->isOfType<mcd::BlendTreeNode>())
 		{
 			// If the state machine is inside a blend tree, update the blend tree's common pin. To be implemented.
+			LOG_TODO("Implement common pin update for StateMachine inside BlendTree");
 		}
 
 		return;
