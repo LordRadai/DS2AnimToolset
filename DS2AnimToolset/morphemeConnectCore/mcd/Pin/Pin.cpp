@@ -211,5 +211,7 @@ namespace mcd
 	bool Pin::isDirectlyConnectedTo(Pin* other)
 	{
 		LOG_NOT_IMPLEMENTED();
+
+		return false;
 	}
 }
