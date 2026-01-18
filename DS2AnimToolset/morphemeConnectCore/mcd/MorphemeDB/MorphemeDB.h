@@ -23,6 +23,11 @@ namespace mcd
 		void createNetwork(const std::string& name);
 		Network* getNetwork() const;
 
+		/*
+		* \brief Get the number of flow edges connected to a given pin.
+		* \param pin The pin to check.
+		* \return The number of connected flow edges.
+		*/
 		int getConnectedFlowEdgeCount(const mcd::Pin* pin);
 	};
 }
