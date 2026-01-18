@@ -27,7 +27,7 @@ namespace mcd
 
 			// If this pin is NOT pass-through OR it already has known interfaces,
 			// then functional interfaces must match
-			LOG_TODO("FunctionalPin::isCompatibleConnectionTarget() - Implement interface matching logic");
+			LOG_TODO("Implement interface matching logic");
 
 			return true;
 		}
@@ -52,7 +52,7 @@ namespace mcd
 		{
 			if (thisGrandParent->getParentNode() == to->getParentNode())
 			{
-				LOG_TODO("FunctionalPin::isCompatibleConnectionTarget() - Implement interface matching logic for PassDownPin");
+				LOG_TODO("Implement interface matching logic for PassDownPin");
 				return true;
 			}
 
