@@ -59,5 +59,10 @@ namespace mcd
 		 * \param y Output buffer for the y position.
 		 */
 		void getFreePosition(float& x, float& y);
+
+		/**
+		 * \brief Updates the common pin for this state machine.
+		 */
+		void updateCommonPin();
 	};
 }

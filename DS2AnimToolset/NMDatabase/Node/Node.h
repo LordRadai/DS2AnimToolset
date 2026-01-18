@@ -42,7 +42,7 @@ namespace db
 		virtual std::string getName() const override { return m_nodeName; }
 		virtual void setName(const std::string& name) override { m_nodeName; }
 
-		bool reparent(db::Node* newParent);
+		bool reparent(db::CompositeAttribute* newParent);
 
 		Attribute* addAttribute(Attribute* attribute) { insertAttribute(getAttributeCount(), attribute); return m_attributes.back(); }
 

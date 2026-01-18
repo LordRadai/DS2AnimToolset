@@ -1,4 +1,5 @@
 #include "PassDownPin.h"
+#include "mcd/Graph/Graph.h"
 
 namespace mcd
 {
@@ -6,5 +7,11 @@ namespace mcd
 		: Pin(parent, "PassDownPin", name)
 	{
 		setReference(true);
+	}
+
+	mcd::Graph* PassDownPin::getChildGraph()
+	{
+		
+		return nullptr;
 	}
 }

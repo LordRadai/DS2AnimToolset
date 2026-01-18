@@ -14,5 +14,8 @@ namespace mcd
 		FlowEdge(db::CompositeAttribute* parent, std::string name, mcd::Pin* to, mcd::Pin* from);
 
 		virtual ~FlowEdge() override {};
+
+		mcd::Pin* getSrcPin() const { return m_from->getValue(); }
+		mcd::Pin* getDstPin() const { return m_to->getValue(); }
 	};
 }

@@ -20,6 +20,7 @@ namespace mcd
 		virtual ~Graph() override {};
 		virtual bool hasEdge(mcd::Edge* edge) const { return edge->getParentNode() == this; }
 		virtual bool hasNode(mcd::GraphNode* node) const { return false; };
+		virtual void updateCommonPinForAncestorStateMachine();
 
 		mcd::FlowEdge* getFlowEdge(const uint32_t index) const { m_flowEdges->getNode(index); };
 
@@ -27,7 +28,12 @@ namespace mcd
 		float getPanY() const { return m_panY->getValue(); }
 		void setPan(float x, float y);
 
+		void removeFlowEdge(mcd::FlowEdge* edge);
+		void addFlowEdge(mcd::FlowEdge* edge);
+
 		bool removeConnection(mcd::Edge* edge);
-		bool removeConnection(mcd::Pin* pin);
+		bool removeConnection(mcd::Pin* scr, mcd::Pin* dst);
+
+		bool isAncestorOf(mcd::AttributePinNodeBase* node);
 	};
 }

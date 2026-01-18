@@ -190,4 +190,9 @@ namespace mcd
 
 		return getParentOrGrandParentGraph();
 	}
+
+	bool Pin::isDirectlyConnectedTo(Pin* other)
+	{
+		throw std::runtime_error("Pin::isDirectlyConnectedTo() not implemented");
+	}
 }

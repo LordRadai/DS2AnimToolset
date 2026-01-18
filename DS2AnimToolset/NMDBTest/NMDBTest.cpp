@@ -51,9 +51,11 @@ int main()
 
 		mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
 
-		g_doc->createNewStateMachine("StateMachine1", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), rootBt);
+		mcd::BlendTreeNode* pSm = dynamic_cast<mcd::BlendTreeNode*>(g_doc->createNewStateMachine("StateMachine1", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), rootBt));
+
 		//g_doc->createNewBlendTree("BlendTree1", rootBt);
-		// TODO: StateMachine creation doesn't work yet.
+		
+		// TODO: StateMachine node creation doesn't work yet.
 		
 		//mcd::StateMachine* pSM = dynamic_cast<mcd::StateMachine*>(pStateMachine->getGraphEntryNode());
 		//g_doc->createNewStateMachineNode(SM_NODE_BLEND_TREE, pSM, "BlendTree1");

@@ -1,4 +1,5 @@
 #include "StateMachine.h"
+#include "mcd/BlendTree/BlendTree.h"
 
 namespace mcd
 {
@@ -99,5 +100,22 @@ namespace mcd
 
 		outX = 10.0f;
 		outY = maxY + 100.0f;
+	}
+
+	void StateMachine::updateCommonPin()
+	{
+		db::Node* parentNode = getParentNode();
+
+		if (parentNode->isOfType<mcd::StateMachineNode>() && parentNode->hasParentNode<mcd::StateMachine>())
+		{
+			mcd::StateMachine* parentSM = static_cast<mcd::StateMachine*>(parentNode->getParentNode());
+			parentSM->updateCommonPin();
+		}
+		else if (parentNode->isOfType<mcd::BlendTreeNode>())
+		{
+			// If the state machine is inside a blend tree, update the blend tree's common pin. To be implemented.
+		}
+
+		return;
 	}
 }

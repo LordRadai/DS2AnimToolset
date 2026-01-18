@@ -16,6 +16,7 @@ namespace mcd
 		std::unique_ptr<db::FloatAttribute> m_yPos;
 		std::unique_ptr<db::FloatAttribute> m_width;
 		std::unique_ptr<db::FloatAttribute> m_height;
+		std::unique_ptr<db::TypedNodeContainer<mcd::Graph>> m_ownerGraphs;
 
 		GraphNode(db::CompositeAttribute* parent, std::string name, std::string nodeName, float xPos, float yPos, float width, float height);
 	public:		
@@ -46,5 +47,8 @@ namespace mcd
 		void setGraphEntry(db::Node* node);
 
 		db::Node* getGraphEntryNode() const;
+
+		mcd::Graph* getGraph();
+		void setOwnerGraph(mcd::Graph* graph);
 	};
 }

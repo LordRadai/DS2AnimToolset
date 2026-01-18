@@ -93,7 +93,7 @@ namespace db
 		return true;
 	}
 
-	bool Node::reparent(db::Node* newParent)
+	bool Node::reparent(db::CompositeAttribute* newParent)
 	{
 		setParentAttribute(newParent);
 
