@@ -9,8 +9,6 @@ namespace mcd
 {
 	class Graph : public mcd::AttributePinNodeBase
 	{
-		friend class mcd::Pin;
-
 	protected:
 		std::unique_ptr<db::TypedNodeContainer<mcd::FlowEdge>> m_flowEdges;
 		std::unique_ptr<db::FloatAttribute> m_panX;

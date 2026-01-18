@@ -23,7 +23,9 @@ namespace mcd
 		GraphNode(db::CompositeAttribute* parent, std::string name, std::string nodeName, float xPos, float yPos, float width, float height);
 	public:		
 		virtual ~GraphNode() override {}
-		
+		virtual mcd::Pin* getPin(int index) override { return m_pins->getNode(index); }
+		virtual mcd::Pin* getPin(const std::string& name) override { return m_pins->find(name); }
+
 		db::TypedNodeContainer<mcd::Attribute>* getAttributes() const { return m_attributes.get(); }
 		db::TypedNodeContainer<mcd::Pin>* getPins() const { return m_pins.get(); }
 
@@ -32,8 +34,6 @@ namespace mcd
 		mcd::Attribute* findAttribute(const std::string& name) const { return m_attributes->find(name); }
 
 		void addPin(mcd::Pin* pin);
-		mcd::Pin* getPin(uint32_t index) const { return m_pins->getNode(index); }
-		mcd::Pin* findPin(const std::string& name) const { return m_pins->find(name); }
 
 		float getXPos() const { return m_xPos->getValue(); }
 		float getYPos() const { return m_yPos->getValue(); }

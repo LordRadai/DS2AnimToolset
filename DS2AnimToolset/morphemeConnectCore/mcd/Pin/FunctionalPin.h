@@ -13,6 +13,7 @@ namespace mcd
 		FunctionalPin(db::Node* parent, const std::string& name);
 
 		virtual ~FunctionalPin() override {};
+		virtual bool isCompatibleConnectionTarget(Pin* to) override;
 
 		void addInterface(const std::string& interfaceName);
 		void removeInterface(const uint32_t index);

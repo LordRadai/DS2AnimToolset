@@ -51,18 +51,13 @@ int main()
 
 		mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
 
+		mcd::PassDownPin* result = rootBt->getResultPin();
+
 		mcd::BlendTreeNode* pSm = dynamic_cast<mcd::BlendTreeNode*>(g_doc->createNewStateMachine("StateMachine1", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), rootBt));
+		mcd::Pin* pin = pSm->getPin("Result");
 
-		//g_doc->createNewBlendTree("BlendTree1", rootBt);
-		
-		// TODO: StateMachine node creation doesn't work yet.
-		
-		//mcd::StateMachine* pSM = dynamic_cast<mcd::StateMachine*>(pStateMachine->getGraphEntryNode());
-		//g_doc->createNewStateMachineNode(SM_NODE_BLEND_TREE, pSM, "BlendTree1");
-		//g_doc->createNewStateMachineNode(SM_NODE_STATE_MACHINE, pSM, "StateMachine1");
-
-		//pSM->setDefaultState(pSM->findStateMachineNode("BlendTree1"));
-
+		pin->canConnectTo(result);
+		pin->connectTo(result);
 
 		printf_s("--------Nodes created successfully.--------\n");
 

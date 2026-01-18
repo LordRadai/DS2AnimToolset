@@ -25,9 +25,7 @@ namespace mcd
 		std::unique_ptr<db::BoolAttribute> m_reference;
 
 	public:
-		Pin(db::Node* parent, const std::string& name, const std::string pinName)
-			: db::Node(parent, name, pinName), 
-			m_reference(std::make_unique<db::BoolAttribute>(this, "Reference", false)) {};
+		Pin(db::Node* parent, const std::string& name, const std::string pinName);
 
 		virtual ~Pin() override {};
 		virtual bool isCompatibleConnectionTarget(Pin* to) { return false; };

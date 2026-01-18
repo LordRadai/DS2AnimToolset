@@ -1,4 +1,5 @@
 #include "BlendTreeNode.h"
+#include "mcd/Pin/FunctionalPin.h"
 
 namespace mcd
 {
@@ -8,5 +9,7 @@ namespace mcd
 		m_manifestVersion(std::make_unique<db::IntAttribute>(this, "ManifestVersion", manifestVersion))
 	{
 		addAttribute(m_nodeType.get());
+
+		addPin(new mcd::FunctionalPin(this, "Result"));
 	}
 }

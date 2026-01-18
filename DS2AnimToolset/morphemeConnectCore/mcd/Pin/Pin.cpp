@@ -36,6 +36,15 @@ namespace mcd
 		return false;
 	}
 
+	Pin::Pin(db::Node* parent, const std::string& name, const std::string pinName)
+		: db::Node(parent, name, pinName),
+		m_isInput(std::make_unique<db::BoolAttribute>(this, "Input", false)),
+		m_isArray(std::make_unique<db::BoolAttribute>(this, "Array", false)),
+		m_referenceTarget(std::make_unique<db::StringAttribute>(this, "ReferenceTarget", "")),
+		m_reference(std::make_unique<db::BoolAttribute>(this, "Reference", false)) 
+	{
+	};
+
 	bool Pin::breakConnectionTo(Pin* to)
 	{
 		LOG_NOT_IMPLEMENTED();
@@ -49,9 +58,11 @@ namespace mcd
 		{
 			if (canStartConnection() && to->canReceiveConnection(this))
 			{
-				return CycleDetector::wouldCreateCycle(this, to);
+				return !CycleDetector::wouldCreateCycle(this, to);
 			}
 		}
+
+		return false;
 	}
 
 	bool Pin::canReceiveConnection(Pin* from)
@@ -124,6 +135,12 @@ namespace mcd
 
 	mcd::FlowEdge* Pin::connectTo(Pin* to)
 	{
+		if (to == nullptr)
+		{
+			mcu::logErrorf("Invalid parameters passed to Pin::connectTo\n");
+			return nullptr;
+		}
+
 		MorphemeDB* db = dynamic_cast<MorphemeDB*>(getDatabase());
 
 		if (!canConnectTo(to))
@@ -142,19 +159,17 @@ namespace mcd
 
 		if (ownerGraph == nullptr)
 		{
-			mcu::logError("Pin::connectTo() - Unable to determine owner graph for connection.");
+			mcu::logWarning("Unable to find valid owning graph when trying to create edge\n");
 			return nullptr;
 		}
-
-		FlowEdge* newEdge = new FlowEdge(ownerGraph, "FlowEdge", to, this);
 
 		Node* targetNode = to->getParentNode();
 
 		char edgeName[256];
-		snprintf(edgeName, 256, "%s_%s_To_%s_%s", prefix.c_str(), sourceNode->getName().c_str(), targetNode->getName().c_str(), to->getName().c_str());
+		snprintf(edgeName, 256, "%s_%s_To_%s_%s", prefix.c_str(), getName().c_str(), targetNode->getName().c_str(), to->getName().c_str());
 
 		mcd::FlowEdge* edge = new mcd::FlowEdge(ownerGraph, edgeName, to, this);
-		ownerGraph->m_flowEdges->add(edge);
+		ownerGraph->addFlowEdge(edge);
 
 		// TODO: Handle emitted control parameters
 		LOG_TODO("Handle emitted control parameters");
@@ -170,14 +185,14 @@ namespace mcd
 
 			if (graph)
 				return graph;
+		}
 
-			if (hasGrandParentNode<mcd::Graph>())
-			{
-				Graph* grandParentGraph = dynamic_cast<mcd::Graph*>(getGrandParentNode());
+		if (hasGrandParentNode<mcd::Graph>())
+		{
+			Graph* grandParentGraph = dynamic_cast<mcd::Graph*>(getGrandParentNode());
 
-				if (grandParentGraph)
-					return grandParentGraph;
-			}
+			if (grandParentGraph)
+				return grandParentGraph;
 		}
 
 		return nullptr;
@@ -191,7 +206,7 @@ namespace mcd
 		if (otherParentNode)
 		{
 			if (to->hasParentNode<mcd::Graph>())
-				graph = dynamic_cast<mcd::Graph*>(otherParentNode);
+				graph = dynamic_cast<mcd::Graph*>(to->getParentNode());
 			else if (to->hasGrandParentNode<mcd::Graph>())
 				graph = dynamic_cast<mcd::Graph*>(to->getGrandParentNode());
 		}

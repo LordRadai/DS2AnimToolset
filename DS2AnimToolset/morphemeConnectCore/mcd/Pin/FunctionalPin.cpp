@@ -1,4 +1,6 @@
 #include "FunctionalPin.h"
+#include "PassDownPin.h"
+#include "mcu/Log/Log.h"
 
 namespace mcd
 {
@@ -8,6 +10,57 @@ namespace mcd
 		  m_passThroughEnabled(std::make_unique<db::BoolAttribute>(this, "PassThroughEnabled", false)),
 	      m_input(std::make_unique<db::BoolAttribute>(this, "Input", false))
 	{
+	}
+
+	bool FunctionalPin::isCompatibleConnectionTarget(Pin* to)
+	{
+		if (isInput())
+			return false;
+
+		if (!to->isOfType<PassDownPin>())
+		{
+			if (!to->isOfType<FunctionalPin>())
+				return false;
+
+			if (!to->getIsInput())
+				return false;
+
+			// If this pin is NOT pass-through OR it already has known interfaces,
+			// then functional interfaces must match
+			LOG_TODO("FunctionalPin::isCompatibleConnectionTarget() - Implement interface matching logic");
+
+			return true;
+		}
+
+		PassDownPin* passDownPin = dynamic_cast<PassDownPin*>(to);
+
+		Node* targetGrandParent = to->getGrandParentNode();
+		Node* thisGrandParent = getGrandParentNode();
+
+		if (thisGrandParent == targetGrandParent)
+		{
+			if (!passDownPin->getIsInput())
+				return false;
+		}
+		else
+		{
+			if (passDownPin->getIsInput())
+				return false;
+		}
+
+		if (thisGrandParent)
+		{
+			if (thisGrandParent->getParentNode() == to->getParentNode())
+			{
+				LOG_TODO("FunctionalPin::isCompatibleConnectionTarget() - Implement interface matching logic for PassDownPin");
+				return true;
+			}
+
+			if (thisGrandParent != passDownPin->getGrandParentNode())
+				return false;
+		}
+
+		return false;
 	}
 
 	void FunctionalPin::addInterface(const std::string& interfaceName)

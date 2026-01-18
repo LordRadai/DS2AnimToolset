@@ -51,7 +51,7 @@ namespace db
 
 		while (parent)
 		{
-			if (parent == nullptr) return dynamic_cast<Database*>(parent);
+			if (parent->isOfType<Database>()) return dynamic_cast<Database*>(parent);
 
 			parent = parent->getParentAttribute();
 		}
