@@ -31,9 +31,10 @@ namespace mcd
 		ControlParameter(db::Node* parent, const std::string& name, DataTypes dataType);
 
 		virtual ~ControlParameter() override {};
+		virtual int getPinCount() const override { return m_dataPins->size(); }
+		virtual mcd::Pin* getPin(int idx) override { return m_dataPins->getNode(idx); }
+		virtual mcd::Pin* getPin(const std::string& name) override { return m_dataPins->find(name); }
 
-		uint32_t getPinCount() const { return m_dataPins->size(); }
-		mcd::DataPin* getDataPin(uint32_t index) const { return m_dataPins->getNode(index); }
 		mcd::DataPin* getResultDataPin() const;
 	};
 }

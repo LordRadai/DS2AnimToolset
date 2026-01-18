@@ -1,12 +1,13 @@
 #pragma once
 #include "NMDatabase/NMDatabase.h"
+#include "mcd/AttributePinNodeBase/AttributePinNodeBase.h"
 #include "NMDBExtensions/TypedNodeContainer.inl"
 #include "mcd/Edge/FlowEdge.h"
 #include "GraphNode.h"
 
 namespace mcd
 {
-	class Graph : public db::Node
+	class Graph : public mcd::AttributePinNodeBase
 	{
 		friend class mcd::Pin;
 

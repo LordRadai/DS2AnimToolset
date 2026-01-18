@@ -4,6 +4,7 @@
 #include "NMDBExtensions/TypedNodeContainer.inl"
 #include "BlendTreeNode.h"
 #include "mcd/Attribute/SingleValue/FloatAttribute.h"
+#include "mcd/Pin/PassDownPin.h"
 
 namespace mcd
 {
@@ -27,6 +28,8 @@ namespace mcd
 		BlendTree(db::CompositeAttribute* parent, std::string name);
 
 		virtual ~BlendTree() override {};
+		virtual int getPinCount() const override { return 1; }
+		virtual mcd::Pin* getPin(int idx) override;
 
 		void addBlendTreeNode(mcd::BlendTreeNode* node) { m_blendTreeNodes->add(node); }
 		mcd::BlendTreeNode* getBlendTreeNode(const uint32_t index) const { return m_blendTreeNodes->getNode(index); }
@@ -74,5 +77,7 @@ namespace mcd
 		 * \return The number of nodes of the specified type.
 		 */
 		uint32_t getNumNodesOfType(const std::string& type) const;
+		
+		mcd::PassDownPin* getResultPin();
 	};
 }

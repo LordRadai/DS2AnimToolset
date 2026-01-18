@@ -13,13 +13,14 @@ namespace mcd
 		std::unique_ptr<db::TypedNodeContainer<mcd::Graph>> m_graphs;
 		std::unique_ptr<mcd::ControlParametersNode> m_controlParameters;
 		std::unique_ptr<mcd::RequestsNode> m_requests;
+		std::unique_ptr<mcd::PassDownPin> m_resultPin;
 
 	public:
 		Network(db::Node* parent, const std::string& name);
 
 		virtual ~Network() override {};
 
-		db::TypedNodeContainer<mcd::Graph>* getGraphs() const { return m_graphs.get(); }
+		mcd::Graph* getGraph() const { return m_graphs->getNode(0); }
 		mcd::ControlParametersNode* getControlParametersNode() const { return m_controlParameters.get(); }
 		mcd::RequestsNode* getRequestsNode() const { return m_requests.get(); }
 
@@ -37,5 +38,7 @@ namespace mcd
 		mcd::Request* findRequest(const uint32_t id) const { return m_requests->findRequest(id); }
 		mcd::Request* findRequest(const std::string& name) const { return m_requests->findRequest(name); }
 		uint32_t getNumRequests() const { return m_requests->size(); }
+
+		mcd::PassDownPin* getResultPin() const { return m_resultPin.get(); }
 	};
 }

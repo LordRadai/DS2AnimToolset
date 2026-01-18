@@ -52,6 +52,7 @@ namespace mcd
 		mcd::Graph* getParentOrGrandParentGraph();
 		mcd::Graph* getOwnerGraphForConnection(Pin* to);
 
+		bool isConnectedTo(Pin* other);
 		bool isDirectlyConnectedTo(Pin* other);
 	};
 }

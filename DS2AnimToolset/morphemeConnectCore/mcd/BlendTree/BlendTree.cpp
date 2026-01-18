@@ -1,4 +1,5 @@
 #include "BlendTree.h"
+#include "mcd/Network/Network.h"
 
 namespace mcd
 {
@@ -30,6 +31,14 @@ namespace mcd
 		addAttribute(m_outputPinYPos.get());
 		addAttribute(m_outputPinWidth.get());
 		addAttribute(m_outputPinHeight.get());
+	}
+
+	mcd::Pin* BlendTree::getPin(int idx)
+	{
+		if (idx == 0)
+			return getResultPin();
+
+		return nullptr;
 	}
 
 	void BlendTree::getFreePosition(float& x, float& y)
@@ -71,5 +80,27 @@ namespace mcd
 		}
 
 		return count;
+	}
+
+	mcd::PassDownPin* BlendTree::getResultPin()
+	{
+		if (hasParentNode<mcd::Network>())
+		{
+			mcd::Network* network = dynamic_cast<mcd::Network*>(getParentNode());
+
+			return network->getResultPin();
+		}
+		
+		if (hasParentNode<mcd::BlendTreeNode>())
+		{
+			mcd::BlendTreeNode* btNode = dynamic_cast<mcd::BlendTreeNode*>(getParentNode());
+
+			mcd::Pin* pin = btNode->getPins()->find("Result");
+
+			if (pin->isOfType<mcd::PassDownPin>())
+				return dynamic_cast<mcd::PassDownPin*>(pin);
+		}
+
+		return nullptr;
 	}
 }

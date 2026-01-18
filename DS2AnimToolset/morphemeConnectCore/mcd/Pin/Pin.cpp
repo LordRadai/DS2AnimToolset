@@ -208,6 +208,13 @@ namespace mcd
 		return getParentOrGrandParentGraph();
 	}
 
+	bool Pin::isConnectedTo(Pin* other)
+	{
+		LOG_NOT_IMPLEMENTED();
+
+		return false;
+	}
+
 	bool Pin::isDirectlyConnectedTo(Pin* other)
 	{
 		LOG_NOT_IMPLEMENTED();
