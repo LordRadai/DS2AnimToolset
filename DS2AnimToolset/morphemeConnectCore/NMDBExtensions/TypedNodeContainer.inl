@@ -6,7 +6,6 @@ namespace db
 	template<typename T>
 	class TypedNodeContainer : public db::NodeContainer
 	{
-		static_assert(std::is_base_of<db::Node, T>::value, "T must be derived from db::Node");
 	public:
 		TypedNodeContainer(db::Node* parent, const std::string& identifier) :
 			db::NodeContainer(parent, identifier) {}

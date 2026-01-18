@@ -6,6 +6,8 @@
 
 namespace mcd
 {
+	class Graph;
+
 	class GraphNode : public mcd::AttributePinNodeBase
 	{
 	protected:
