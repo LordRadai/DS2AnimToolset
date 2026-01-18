@@ -200,7 +200,7 @@
     <ClCompile Include="mcd\StateMachine\StateMachine.cpp" />
     <ClCompile Include="mcd\StateMachine\StateMachineNode.cpp" />
     <ClCompile Include="mcd\Transition\TransitionEdge.cpp" />
-    <ClCompile Include="mcu\Log\Log.cpp" />
+    <ClCompile Include="mcu\Log.cpp" />
     <ClCompile Include="morphemeConnectCore.h" />
   </ItemGroup>
   <ItemGroup>
@@ -213,7 +213,7 @@
     <ClInclude Include="mcd\AttributePinNodeBase\AttributePinNodeBase.h" />
     <ClInclude Include="mcd\Attribute\RequestAttribute\RequestAttribute.h" />
     <ClInclude Include="mcd\Attribute\RigChannelName\RigChannelNameAttribute.h" />
-    <ClInclude Include="mcu\Log\Log.h" />
+    <ClInclude Include="mcu\Log.h" />
     <ClInclude Include="mcu\OutputMessage.h" />
     <ClInclude Include="NMDBExtensions\PointerArray.inl" />
     <ClInclude Include="SupportedManifest.h" />

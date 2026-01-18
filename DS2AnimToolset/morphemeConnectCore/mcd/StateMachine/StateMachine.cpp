@@ -1,6 +1,6 @@
 #include "StateMachine.h"
 #include "mcd/BlendTree/BlendTree.h"
-#include "mcu/Log/Log.h"
+#include "mcu/Log.h"
 
 namespace mcd
 {

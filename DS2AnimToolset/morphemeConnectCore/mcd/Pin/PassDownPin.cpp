@@ -1,6 +1,6 @@
 #include "PassDownPin.h"
 #include "mcd/Graph/Graph.h"
-#include "mcu/Log/Log.h"
+#include "mcu/Log.h"
 
 namespace mcd
 {

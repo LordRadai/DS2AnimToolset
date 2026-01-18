@@ -162,7 +162,7 @@
     <ClCompile Include="mcd\AttributePinNodeBase\AttributePinNodeBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mcu\Log\Log.cpp">
+    <ClCompile Include="mcu\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -341,7 +341,7 @@
     <ClInclude Include="mcd\AttributePinNodeBase\AttributePinNodeBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mcu\Log\Log.h">
+    <ClInclude Include="mcu\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcu\OutputMessage.h">

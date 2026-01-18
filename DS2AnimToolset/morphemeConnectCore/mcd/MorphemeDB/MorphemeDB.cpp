@@ -1,5 +1,5 @@
 #include "MorphemeDB.h"
-#include "mcu/Log/Log.h"
+#include "mcu/Log.h"
 
 namespace mcd
 {

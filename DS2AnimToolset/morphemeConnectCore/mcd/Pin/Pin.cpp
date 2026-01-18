@@ -4,7 +4,7 @@
 #include "mcd/ControlParameter/ControlParameter.h"
 #include "mcd/Graph/Graph.h"
 #include "mcd/Edge/FlowEdge.h"
-#include "mcu/Log/Log.h"
+#include "mcu/Log.h"
 
 namespace mcd
 {
