@@ -68,7 +68,7 @@ namespace mcd
 
 			if (currentEdge == edge)
 			{
-				mcd::Pin* toPin = currentEdge->getDstPin();
+				mcd::Pin* toPin = currentEdge->getDestinationPin();
 
 				removeFlowEdge(currentEdge);
 
@@ -90,7 +90,7 @@ namespace mcd
 		{
 			FlowEdge* currentEdge = m_flowEdges->getNode(i);
 
-			if (currentEdge->getSrcPin() == scr && currentEdge->getDstPin() == dst)
+			if (currentEdge->getSourcePin() == scr && currentEdge->getDestinationPin() == dst)
 			{
 				removeFlowEdge(currentEdge);
 
@@ -131,8 +131,8 @@ namespace mcd
 		{
 			FlowEdge* edge = m_flowEdges->getNode(i);
 
-			if ((edge->getSrcPin() == from && edge->getDstPin() == to) ||
-				(edge->getSrcPin() == to && edge->getDstPin() == from))
+			if ((edge->getSourcePin() == from && edge->getDestinationPin() == to) ||
+				(edge->getSourcePin() == to && edge->getDestinationPin() == from))
 				return true;
 		}
 

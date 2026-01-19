@@ -34,4 +34,11 @@ namespace mcd
 
 		return 0;
 	}
+
+	mcd::FlowEdge* MorphemeDB::getConnectedFlowEdge(const mcd::Pin* pin, int index)
+	{
+		LOG_NOT_IMPLEMENTED();
+
+		return nullptr;
+	}
 }

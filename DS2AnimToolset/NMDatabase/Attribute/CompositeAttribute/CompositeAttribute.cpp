@@ -84,8 +84,6 @@ namespace db
 			return;
 
 		removeAttributeUnmanaged(attribute);
-
-		delete attribute;
 	}
 
 	void CompositeAttribute::removeAttributeUnmanaged(Attribute* attribute)

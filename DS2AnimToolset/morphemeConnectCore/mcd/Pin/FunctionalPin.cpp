@@ -22,7 +22,7 @@ namespace mcd
 			if (!to->isOfType<FunctionalPin>())
 				return false;
 
-			if (!to->getIsInput())
+			if (!to->isInput())
 				return false;
 
 			// If this pin is NOT pass-through OR it already has known interfaces,
@@ -39,12 +39,12 @@ namespace mcd
 
 		if (thisGrandParent == targetGrandParent)
 		{
-			if (!passDownPin->getIsInput())
+			if (!passDownPin->isInput())
 				return false;
 		}
 		else
 		{
-			if (passDownPin->getIsInput())
+			if (passDownPin->isInput())
 				return false;
 		}
 

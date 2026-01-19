@@ -8,12 +8,16 @@ namespace mcd
 	class FlowEdge;
 	class BlendTree;
 
+	class DataPin;
+	class FunctionalPin;
+	class PassDownPin;
+
 	class Pin : public db::Node
 	{
+	protected:
 		static class CycleDetector
 		{
-			friend class mcd::Pin;
-
+		public:
 			static bool wouldCreateCycle(mcd::Pin* from, mcd::Pin* to);
 			static mcd::GraphNode* findTreeRoot(mcd::GraphNode* node);
 			static bool depthFirstSearchCycleDetect(mcd::GraphNode* currentNode, mcd::GraphNode* targetNode, std::set<mcd::GraphNode*>& visitedNodes);
@@ -41,10 +45,10 @@ namespace mcd
 		void setReferenceTarget(const std::string& referenceTarget);
 		void setReference(bool isReference);
 
-		bool getIsInput() const { return m_isInput->getValue(); }
-		bool getIsArray() const { return m_isArray->getValue(); }
+		bool isInput() const { return m_isInput->getValue(); }
+		bool isArray() const { return m_isArray->getValue(); }
 		std::string getReferenceTarget() const { return m_referenceTarget->getValue(); }
-		bool getIsReference() const { return m_reference->getValue(); }
+		bool isReference() const { return m_reference->getValue(); }
 
 		mcd::FlowEdge* connectTo(Pin* to);
 
@@ -53,7 +57,19 @@ namespace mcd
 
 		mcd::Graph* getOwnerGraphForConnection(Pin* to);
 
+		mcd::Graph* getGrandParentGraph();
+
 		bool isConnectedTo(Pin* other);
 		bool isDirectlyConnectedTo(Pin* other);
+
+		void getEdgesConnectedInGraph(std::vector<mcd::FlowEdge*>& outEdges, mcd::Graph* graph);
+
+		void getConnectedFlowEdges(std::vector<mcd::FlowEdge*>& outEdges);
+
+		mcd::FunctionalPin* asFunctionalPin();
+		mcd::DataPin* asDataPin();
+		mcd::PassDownPin* asPassDownPin();
+
+		bool containsFunctionalInterfacesFor(Pin* other);
 	};
 }

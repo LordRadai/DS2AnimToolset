@@ -26,8 +26,16 @@ namespace mcd
 		/*
 		* \brief Get the number of flow edges connected to a given pin.
 		* \param pin The pin to check.
-		* \return The number of connected flow edges.
+		* \return The number of flow edges referencing this pin.
 		*/
 		int getConnectedFlowEdgeCount(const mcd::Pin* pin);
+
+		/*
+		* \brief Get the connected flow edge at a given index for a pin.
+		* \param pin The pin to check.
+		* \param index The index of the connected flow edge.
+		* \return The flow edge connecting the pin.
+		*/
+		mcd::FlowEdge* getConnectedFlowEdge(const mcd::Pin* pin, int index);
 	};
 }

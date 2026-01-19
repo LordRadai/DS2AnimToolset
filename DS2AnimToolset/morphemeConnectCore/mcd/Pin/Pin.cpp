@@ -5,6 +5,9 @@
 #include "mcd/Graph/Graph.h"
 #include "mcd/Edge/FlowEdge.h"
 #include "mcu/Log.h"
+#include "DataPin.h"
+#include "FunctionalPin.h"
+#include "PassDownPin.h"
 
 namespace mcd
 {
@@ -87,15 +90,16 @@ namespace mcd
 
 	bool Pin::canConnectTo(Pin* to)
 	{
-		if (isCompatibleConnectionTarget(to))
-		{
-			if (canStartConnection() && to->canReceiveConnection(this))
-			{
-				return !CycleDetector::wouldCreateCycle(this, to);
-			}
-		}
+		if (!isCompatibleConnectionTarget(to))
+			return false;
 
-		return false;
+		if (!canStartConnection())
+			return false;
+
+		if (!to->canReceiveConnection(this))
+			return false;
+
+		return !CycleDetector::wouldCreateCycle(this, to);
 	}
 
 	bool Pin::canReceiveConnection(Pin* from)
@@ -261,7 +265,7 @@ namespace mcd
 		if (!hasParentNode<mcd::BlendTreeNode>() && !hasParentNode<mcd::StateMachineNode>())
 			return nullptr;
 
-		if (isOfType<mcd::PassDownPin>() && getIsInput())
+		if (isOfType<mcd::PassDownPin>() && isInput())
 			return graph;
 
 		return getParentOrGrandParentGraph();
@@ -307,5 +311,74 @@ namespace mcd
 			return true;
 
 		return false;
+	}
+
+	void Pin::getEdgesConnectedInGraph(std::vector<mcd::FlowEdge*>& outEdges, mcd::Graph* graph)
+	{
+		if (graph)
+		{
+			for (size_t i = 0; i < graph->getFlowEdgeCount(); i++)
+			{
+				mcd::FlowEdge* currentEdge = graph->getFlowEdge(i);
+
+				if (currentEdge->getSourcePin() == this || currentEdge->getDestinationPin() == this)
+					outEdges.push_back(currentEdge);
+			}
+		}
+	}
+
+	void Pin::getConnectedFlowEdges(std::vector<mcd::FlowEdge*>& outEdges)
+	{
+		if (!getDatabase()->isOfType<MorphemeDB>())
+			return;
+
+		MorphemeDB* db = dynamic_cast<MorphemeDB*>(getDatabase());
+
+		int edgeCount = db->getConnectedFlowEdgeCount(this);
+		outEdges.reserve(edgeCount);
+
+		for (int i = 0; i < edgeCount; i++)
+		{
+			mcd::FlowEdge* edge = db->getConnectedFlowEdge(this, i);
+			outEdges.push_back(edge);
+		}
+	}
+
+	mcd::Graph* Pin::getGrandParentGraph()
+	{
+		if (hasGrandParentNode<mcd::Graph>())
+			return dynamic_cast<mcd::Graph*>(getGrandParentNode());
+
+		return nullptr;
+	}
+
+	mcd::FunctionalPin* Pin::asFunctionalPin()
+	{
+		if (isOfType<mcd::FunctionalPin>())
+			return dynamic_cast<mcd::FunctionalPin*>(this);
+
+		return nullptr;
+	}
+
+	mcd::DataPin* Pin::asDataPin()
+	{
+		if (isOfType<mcd::DataPin>())
+			return dynamic_cast<mcd::DataPin*>(this);
+
+		return nullptr;
+	}
+
+	mcd::PassDownPin* Pin::asPassDownPin()
+	{
+		if (isOfType<mcd::PassDownPin>())
+			return dynamic_cast<mcd::PassDownPin*>(this);
+
+		return nullptr;
+	}
+
+	bool Pin::containsFunctionalInterfacesFor(Pin* other)
+	{
+		LOG_NOT_IMPLEMENTED();
+		return true;
 	}
 }

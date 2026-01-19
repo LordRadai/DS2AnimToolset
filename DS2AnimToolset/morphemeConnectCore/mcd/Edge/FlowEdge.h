@@ -15,7 +15,7 @@ namespace mcd
 
 		virtual ~FlowEdge() override {};
 
-		mcd::Pin* getSrcPin() const { return m_from->getValue(); }
-		mcd::Pin* getDstPin() const { return m_to->getValue(); }
+		mcd::Pin* getSourcePin() const { return m_from->getValue(); }
+		mcd::Pin* getDestinationPin() const { return m_to->getValue(); }
 	};
 }

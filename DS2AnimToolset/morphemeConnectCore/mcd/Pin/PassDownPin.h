@@ -4,11 +4,22 @@
 namespace mcd
 {
 	class Graph;
+	class FunctionalPin;
+	class DataPin;
 
 	class PassDownPin : public Pin
 	{
+		enum class Multiplicity
+		{
+			kOneToOne,
+			kOneToMany,
+
+			kNumValues
+		};
+
+		std::unique_ptr<db::EnumAttribute> m_multiplicity;
 	public:
-		PassDownPin(db::Node* parent, const std::string& name);
+		PassDownPin(db::Node* parent, const std::string& name, bool param_3);
 
 		virtual bool isCompatibleConnectionTarget(Pin* to) override;
 		virtual bool canReceiveConnection(Pin* from) override;
@@ -18,5 +29,17 @@ namespace mcd
 		virtual bool canStartConnectionInGraph(mcd::Graph* graph) override;
 
 		mcd::Graph* getChildGraph();
+		mcd::Graph* getParentGraph();
+
+		Multiplicity getMultiplicity() const;
+
+		mcd::Pin* getUpstreamPin();
+		mcd::Pin* recurseUpstreamToNonPassDownPin();
+		mcd::FunctionalPin* recurseUpstreamToFunctionalPin();
+		mcd::DataPin* recurseUpstreamToDataPin();
+
+		void getDownstreamPins(std::vector<mcd::Pin*>& outPins);
+		mcd::FunctionalPin* getFirstDownstreamFunctionalPin();
+		mcd::DataPin* getFirstDownstreamDataPin();
 	};
 }
