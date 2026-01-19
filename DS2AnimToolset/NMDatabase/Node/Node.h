@@ -40,7 +40,7 @@ namespace db
 		virtual bool writeStartElementXML(int format, SaverXML* saver) override;
 		virtual std::string getEscapedName() override;
 		virtual std::string getName() const override { return m_nodeName; }
-		virtual void setName(const std::string& name) override { m_nodeName; }
+		virtual void setName(const std::string& name) override { m_nodeName = name; }
 
 		bool reparent(db::CompositeAttribute* newParent);
 

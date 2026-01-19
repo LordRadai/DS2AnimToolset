@@ -52,7 +52,7 @@ int main()
 
 		mcd::PassDownPin* networkResult = rootBt->getResultPin();
 
-		mcd::BlendTreeNode* pBlend2 = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_BLEND2), rootBt, "");
+		mcd::BlendTreeNode* pBlend2 = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_BLEND2), rootBt, "Blend2_1");
 		mcd::FunctionalPin* source0 = pBlend2->getPin("Source0")->asFunctionalPin();
 		mcd::FunctionalPin* source1 = pBlend2->getPin("Source1")->asFunctionalPin();
 		mcd::FunctionalPin* result = pBlend2->getPin("Result")->asFunctionalPin();
