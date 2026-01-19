@@ -80,6 +80,8 @@ namespace mcd
 				return true;
 			}
 		}
+
+		return false;
 	}
 
 	bool Graph::removeConnection(mcd::Pin* scr, mcd::Pin* dst)
