@@ -40,7 +40,7 @@ namespace mcc
 	bool MMFunctionalPin::addToGraphNode(mcd::GraphNode* node)
 	{
 		mcd::FunctionalPin* pin = new mcd::FunctionalPin(node, getPinName());
-		pin->setInput(isInput());
+		pin->setIsInput(isInput());
 		pin->setPassThroughEnabled(isPassThrough());
 
 		for (size_t i = 0; i < this->m_requiredInterfaces.size(); i++)
