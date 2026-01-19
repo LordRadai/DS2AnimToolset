@@ -17,7 +17,6 @@ namespace mcc
 		std::string getPinName() const { return m_pinName; }
 		std::string getPinType() const { return m_jsonData.value("type", ""); }
 		std::string getDisplayName() const { return m_jsonData.value("displayName", ""); }
-		bool isPassThrough() const { return m_jsonData.value("passThrough", false); }
 		bool isInput() const { return m_jsonData.value("input", false); }
 		bool isArray() const { return m_jsonData.value("array", false); }
 	};
