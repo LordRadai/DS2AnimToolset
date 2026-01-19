@@ -96,13 +96,13 @@ namespace mcd
 			case mcd::GraphNode::InputPinQueryType::kPassThroughEnabled:
 				matchesCriteria = funcPin->isPassThroughEnabled();
 				break;
-			case mcd::GraphNode::InputPinQueryType::kIncidentEdgeAndPassThroughEnabled:
+			case mcd::GraphNode::InputPinQueryType::kConnectedAndPassThroughEnabled:
 				matchesCriteria = funcPin->isPassThroughEnabled() && funcPin->hasIncidentEdge();
 				break;
 			case mcd::GraphNode::InputPinQueryType::kAll:
 				matchesCriteria = true;
 				break;
-			case mcd::GraphNode::InputPinQueryType::kIncidentEdgeOnly:
+			case mcd::GraphNode::InputPinQueryType::kConnected:
 				matchesCriteria = funcPin->hasIncidentEdge();
 				break;
 			default:

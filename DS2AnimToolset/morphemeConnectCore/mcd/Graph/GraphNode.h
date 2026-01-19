@@ -14,9 +14,9 @@ namespace mcd
 		enum class InputPinQueryType
 		{
 			kPassThroughEnabled,
-			kIncidentEdgeAndPassThroughEnabled,
+			kConnectedAndPassThroughEnabled,
 			kAll,
-			kIncidentEdgeOnly,
+			kConnected,
 
 			kNumValues
 		};
