@@ -6,6 +6,7 @@ namespace mcd
 	class Graph;
 	class GraphNode;
 	class FlowEdge;
+	class BlendTree;
 
 	class Pin : public db::Node
 	{
@@ -47,7 +48,9 @@ namespace mcd
 
 		mcd::FlowEdge* connectTo(Pin* to);
 
+		mcd::BlendTree* getParentOrGrandParentBlendTree();
 		mcd::Graph* getParentOrGrandParentGraph();
+
 		mcd::Graph* getOwnerGraphForConnection(Pin* to);
 
 		bool isConnectedTo(Pin* other);

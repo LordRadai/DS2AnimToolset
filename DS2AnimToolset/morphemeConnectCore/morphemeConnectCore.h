@@ -20,5 +20,8 @@
 #include "mcc/MorphemeDocument/MorphemeDocument.h"
 #include "mcc/MorphemeManifest/MorphemeManifest.h"
 
+#include "mcu/Log.h"
+#include "mcu/OutputMessage.h"
+
 #include "SupportedManifest.h"
 #include "SupportedStateMachineNodes.h"

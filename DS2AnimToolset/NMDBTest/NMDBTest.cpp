@@ -1,6 +1,5 @@
 #include <iostream>
 #include "morphemeConnectCore/morphemeConnectCore.h"
-#include "Morpheme4/morpheme/SDK/sharedDefines/mSharedDefines.h"
 
 mcc::MorphemeDocument* g_doc = nullptr;
 db::Registry* g_registry = nullptr;
@@ -56,8 +55,10 @@ int main()
 		mcd::BlendTreeNode* pSm = dynamic_cast<mcd::BlendTreeNode*>(g_doc->createNewStateMachine("StateMachine1", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), rootBt));
 		mcd::Pin* pin = pSm->getPin("Result");
 
-		pin->canConnectTo(result);
 		pin->connectTo(result);
+		
+		if (!pin->breakConnectionTo(result))
+			mcu::logError("Failed to break connection between StateMachine1 Result pin and BlendTree Result pin\n");
 
 		printf_s("--------Nodes created successfully.--------\n");
 

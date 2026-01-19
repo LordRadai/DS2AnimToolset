@@ -1,6 +1,7 @@
 #include "PassDownPin.h"
 #include "mcd/Graph/Graph.h"
 #include "mcu/Log.h"
+#include "mcd/Network/Network.h"
 
 namespace mcd
 {
@@ -48,7 +49,19 @@ namespace mcd
 
 	mcd::Graph* PassDownPin::getChildGraph()
 	{
-		LOG_NOT_IMPLEMENTED();
+		if (hasParentNode<mcd::GraphNode>())
+		{
+			GraphNode* parentGraphNode = dynamic_cast<mcd::GraphNode*>(getParentNode());
+
+			return parentGraphNode->getGraph();
+		}
+
+		if (hasParentNode<mcd::Network>())
+		{
+			Network* parentNetwork = dynamic_cast<mcd::Network*>(getParentNode());
+
+			return parentNetwork->getGraph();
+		}
 
 		return nullptr;
 	}

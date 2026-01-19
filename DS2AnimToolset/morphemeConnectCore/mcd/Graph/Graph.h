@@ -21,6 +21,7 @@ namespace mcd
 		virtual bool hasNode(mcd::GraphNode* node) const { return false; };
 		virtual void updateCommonPinForAncestorStateMachine();
 
+		uint32_t getFlowEdgeCount() const { return m_flowEdges->size(); }
 		mcd::FlowEdge* getFlowEdge(const uint32_t index) const { m_flowEdges->getNode(index); };
 
 		float getPanX() const { return m_panX->getValue(); }
@@ -34,5 +35,7 @@ namespace mcd
 		bool removeConnection(mcd::Pin* scr, mcd::Pin* dst);
 
 		bool isAncestorOf(mcd::AttributePinNodeBase* node);
+
+		bool hasEdgeBetweenPins(mcd::Pin* from, mcd::Pin* to);
 	};
 }

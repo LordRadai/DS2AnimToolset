@@ -47,7 +47,37 @@ namespace mcd
 
 	bool Pin::breakConnectionTo(Pin* to)
 	{
-		LOG_NOT_IMPLEMENTED();
+		if (to == nullptr)
+		{
+			mcu::logError("Invalid parameters passed to mcd::Pin::breakConnectionTo\n");
+			return false;
+		}
+
+		if (isDirectlyConnectedTo(to))
+		{
+			mcd::Graph* graph = getParentOrGrandParentGraph();
+
+			if (graph)
+			{
+				graph->removeConnection(this, to);
+				return true;
+			}
+
+			if (hasParentNode<mcd::ControlParameter>())
+			{
+				mcd::Graph* otherGraph = to->getParentOrGrandParentGraph();
+
+				if (otherGraph)
+				{
+					otherGraph->removeConnection(this, to);
+					return true;
+				}
+			}
+			else
+			{
+				mcu::logErrorf("Invalid parameters passed to mcd::Pin::breakConnectionTo");
+			}
+		}
 
 		return false;
 	}
@@ -137,7 +167,7 @@ namespace mcd
 	{
 		if (to == nullptr)
 		{
-			mcu::logErrorf("Invalid parameters passed to Pin::connectTo\n");
+			mcu::logErrorf("Invalid parameters passed to mcd::Pin::connectTo\n");
 			return nullptr;
 		}
 
@@ -175,6 +205,17 @@ namespace mcd
 		LOG_TODO("Handle emitted control parameters");
 
 		return edge;
+	}
+
+	mcd::BlendTree* Pin::getParentOrGrandParentBlendTree()
+	{
+		if (hasParentNode<mcd::BlendTree>())
+			return dynamic_cast<mcd::BlendTree*>(getParentNode());
+
+		if (hasGrandParentNode<mcd::BlendTree>())
+			return dynamic_cast<mcd::BlendTree*>(getGrandParentNode());
+
+		return nullptr;
 	}
 
 	mcd::Graph* Pin::getParentOrGrandParentGraph()
@@ -232,7 +273,35 @@ namespace mcd
 
 	bool Pin::isDirectlyConnectedTo(Pin* other)
 	{
-		LOG_NOT_IMPLEMENTED();
+		if (other->isOfType<mcd::PassDownPin>())
+		{
+			PassDownPin* passDownPin = dynamic_cast<mcd::PassDownPin*>(other);
+
+			Graph* childGraph = passDownPin->getChildGraph();
+
+			if (childGraph && childGraph->hasEdgeBetweenPins(this, other))
+				return true;
+
+			if (passDownPin->hasParentNode<mcd::GraphNode>())
+			{
+				GraphNode* parentGraphNode = dynamic_cast<mcd::GraphNode*>(passDownPin->getParentNode());
+
+				if (parentGraphNode->hasParentNode<mcd::Graph>())
+				{
+					Graph* parentGraph = dynamic_cast<mcd::Graph*>(parentGraphNode->getParentNode());
+
+					if (parentGraph->hasEdgeBetweenPins(this, other))
+						return true;
+				}
+			}
+
+			return false;
+		}
+
+		mcd::BlendTree* blendTree = getParentOrGrandParentBlendTree();
+
+		if (blendTree && blendTree->hasEdgeBetweenPins(this, other))
+			return true;
 
 		return false;
 	}

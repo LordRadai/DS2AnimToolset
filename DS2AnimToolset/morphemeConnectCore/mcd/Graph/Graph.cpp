@@ -122,4 +122,18 @@ namespace mcd
 
 		return true;
 	}
+
+	bool Graph::hasEdgeBetweenPins(mcd::Pin* from, mcd::Pin* to)
+	{
+		for (size_t i = 0; i < m_flowEdges->size(); i++)
+		{
+			FlowEdge* edge = m_flowEdges->getNode(i);
+
+			if ((edge->getSrcPin() == from && edge->getDstPin() == to) ||
+				(edge->getSrcPin() == to && edge->getDstPin() == from))
+				return true;
+		}
+
+		return false;
+	}
 }
