@@ -1,5 +1,7 @@
 #include "GraphNode.h"
 #include "Graph.h"
+#include "mcd/Pin/FunctionalPin.h"
+#include "mcu/Log.h"
 
 namespace mcd
 {
@@ -71,5 +73,45 @@ namespace mcd
 
 		if (graph)
 			m_ownerGraphs->add(graph);
+	}
+
+	bool GraphNode::getInputFunctionalPins(InputPinQueryType queryType, std::vector<mcd::FunctionalPin*>* outPins)
+	{
+		if (outPins == nullptr)
+			return false;
+
+		for (uint32_t i = 0; i < getPinCount(); ++i)
+		{
+			mcd::Pin* pin = getPin(i);
+
+			if (!pin->isInput() || !pin->isOfType<FunctionalPin>())
+				continue;
+
+			FunctionalPin* funcPin = pin->asFunctionalPin();
+
+			bool matchesCriteria = false;
+
+			switch (queryType)
+			{
+			case mcd::GraphNode::InputPinQueryType::kPassThroughEnabled:
+				matchesCriteria = funcPin->isPassThroughEnabled();
+				break;
+			case mcd::GraphNode::InputPinQueryType::kIncidentEdgeAndPassThroughEnabled:
+				matchesCriteria = funcPin->isPassThroughEnabled() && funcPin->hasIncidentEdge();
+				break;
+			case mcd::GraphNode::InputPinQueryType::kAll:
+				matchesCriteria = true;
+				break;
+			case mcd::GraphNode::InputPinQueryType::kIncidentEdgeOnly:
+				matchesCriteria = funcPin->hasIncidentEdge();
+				break;
+			default:
+				mcu::logError("Unknown InputPinQueryType in GraphNode::getInputFunctionalPins\n");
+				return false;
+			}
+
+			if (matchesCriteria)
+				outPins->push_back(funcPin);
+		}
 	}
 }

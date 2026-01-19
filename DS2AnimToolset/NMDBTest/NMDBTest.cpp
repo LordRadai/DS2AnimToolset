@@ -57,6 +57,12 @@ int main()
 
 		pin->connectTo(result);
 
+		if (!pin->isDirectlyConnectedTo(result))
+			mcu::logError("Pins are not directly connected after connectTo call!\n");
+
+		if (!pin->isConnectedTo(result))
+			mcu::logError("Pins are not connected after connectTo call!\n");
+
 		printf_s("--------Nodes created successfully.--------\n");
 
 		g_doc->saveAs("testMorphemeDoc.xml");

@@ -271,9 +271,42 @@ namespace mcd
 
 	bool Pin::isConnectedTo(Pin* other)
 	{
-		LOG_NOT_IMPLEMENTED();
+		if (other == nullptr)
+			return false;
+
+		std::vector<mcd::FlowEdge*> connectedEdges;
+		other->getConnectedFlowEdges(connectedEdges);
+
+		for (size_t i = 0; i < connectedEdges.size(); i++)
+		{
+			mcd::FlowEdge* edge = connectedEdges[i];
+
+			if (edge == nullptr)
+				continue;
+
+			std::vector<Pin*> otherEnds;
+			edge->getOtherEnd(otherEnds, other);
+
+			for (size_t j = 0; j < otherEnds.size(); j++)
+			{
+				Pin* endPin = otherEnds[j];
+
+				if (endPin == this)
+					return true;
+			}
+		}
 
 		return false;
+	}
+
+	bool Pin::hasIncidentEdge()
+	{
+		if (!getDatabase()->isOfType<MorphemeDB>())
+			return false;
+
+		MorphemeDB* db = dynamic_cast<MorphemeDB*>(getDatabase());
+
+		return db->getConnectedFlowEdgeCount(this) != 0;
 	}
 
 	bool Pin::isDirectlyConnectedTo(Pin* other)

@@ -63,6 +63,8 @@ namespace mcd
 		bool isConnectedTo(Pin* other);
 		bool isDirectlyConnectedTo(Pin* other);
 
+		bool hasIncidentEdge();
+
 		void getEdgesConnectedInGraph(std::vector<mcd::FlowEdge*>& outEdges, mcd::Graph* graph);
 
 		void getConnectedFlowEdges(std::vector<mcd::FlowEdge*>& outEdges);

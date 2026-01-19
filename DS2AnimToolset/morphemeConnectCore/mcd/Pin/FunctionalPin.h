@@ -22,5 +22,7 @@ namespace mcd
 
 		void setPassThroughEnabled(bool enabled);
 		bool isPassThroughEnabled() const { return m_passThroughEnabled->getValue(); }
+
+		bool dfsHasUpstreamKnownInterfaces();
 	};
 }

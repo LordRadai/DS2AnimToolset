@@ -10,6 +10,16 @@ namespace mcd
 
 	class GraphNode : public mcd::AttributePinNodeBase
 	{
+	public:
+		enum class InputPinQueryType
+		{
+			kPassThroughEnabled,
+			kIncidentEdgeAndPassThroughEnabled,
+			kAll,
+			kIncidentEdgeOnly,
+
+			kNumValues
+		};
 	protected:
 		std::unique_ptr<db::NodeContainer> m_graphEntry;
 		std::unique_ptr<db::TypedNodeContainer<mcd::Attribute>> m_attributes;
@@ -23,11 +33,9 @@ namespace mcd
 		GraphNode(db::CompositeAttribute* parent, std::string name, std::string nodeName, float xPos, float yPos, float width, float height);
 	public:		
 		virtual ~GraphNode() override {}
+		virtual int getPinCount() const override { return static_cast<int>(m_pins->size()); }
 		virtual mcd::Pin* getPin(int index) override { return m_pins->getNode(index); }
 		virtual mcd::Pin* getPin(const std::string& name) override { return m_pins->find(name); }
-
-		db::TypedNodeContainer<mcd::Attribute>* getAttributes() const { return m_attributes.get(); }
-		db::TypedNodeContainer<mcd::Pin>* getPins() const { return m_pins.get(); }
 
 		void addMcdAttribute(mcd::Attribute* attribute);
 		mcd::Attribute* getAttribute(uint32_t index) const { return m_attributes->getNode(index); }
@@ -52,5 +60,7 @@ namespace mcd
 
 		mcd::Graph* getGraph();
 		void setOwnerGraph(mcd::Graph* graph);
+
+		bool getInputFunctionalPins(InputPinQueryType queryType, std::vector<mcd::FunctionalPin*>* outPins);
 	};
 }

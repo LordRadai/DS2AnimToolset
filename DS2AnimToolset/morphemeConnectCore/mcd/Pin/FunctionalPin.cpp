@@ -1,6 +1,7 @@
 #include "FunctionalPin.h"
 #include "PassDownPin.h"
 #include "mcu/Log.h"
+#include "mcd/Graph/GraphNode.h"
 
 namespace mcd
 {
@@ -27,6 +28,20 @@ namespace mcd
 			// If this pin is NOT pass-through OR it already has known interfaces,
 			// then functional interfaces must match
 			LOG_TODO("Implement interface matching logic");
+
+			if ((!isPassThroughEnabled() || dfsHasUpstreamKnownInterfaces()) && !containsFunctionalInterfacesFor(to))
+			{
+				if (!isPassThroughEnabled())
+					return false;
+
+				if (!hasParentNode<GraphNode>())
+					return false;
+
+				GraphNode* parentGraphNode = dynamic_cast<GraphNode*>(getParentNode());
+
+				std::vector<FunctionalPin*> inputs;
+				parentGraphNode->getFunctionalInputPins(inputs);
+			}
 
 			return true;
 		}
@@ -103,5 +118,10 @@ namespace mcd
 		}
 
 		return "";
+	}
+
+	bool FunctionalPin::dfsHasUpstreamKnownInterfaces()
+	{
+
 	}
 }

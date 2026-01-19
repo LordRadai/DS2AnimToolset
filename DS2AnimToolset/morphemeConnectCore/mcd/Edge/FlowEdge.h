@@ -17,5 +17,7 @@ namespace mcd
 
 		mcd::Pin* getSourcePin() const { return m_from->getValue(); }
 		mcd::Pin* getDestinationPin() const { return m_to->getValue(); }
+
+		void getOtherEnd(std::vector<mcd::Pin*>& outPins, mcd::Pin* pin);
 	};
 }
