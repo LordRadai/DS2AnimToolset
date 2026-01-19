@@ -178,8 +178,6 @@ namespace mcd
 			return nullptr;
 		}
 
-		MorphemeDB* db = dynamic_cast<MorphemeDB*>(getDatabase());
-
 		if (!canConnectTo(to))
 			return nullptr;
 
