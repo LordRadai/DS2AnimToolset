@@ -141,7 +141,10 @@ namespace mcc
 
 		parent->addStateMachineNode(newNode);
 
-		newNode->addPin(new mcd::PassDownPin(newNode, "Result", false));
+		mcd::PassDownPin* resultPin = new mcd::PassDownPin(newNode, "Result", false);
+		resultPin->setReference(true);
+
+		newNode->addPin(resultPin);
 
 		return newNode;
 	}
@@ -155,7 +158,10 @@ namespace mcc
 
 		parent->addBlendTreeNode(newNode);
 
-		newNode->addPin(new mcd::PassDownPin(newNode, "Result", false));
+		mcd::PassDownPin* resultPin = new mcd::PassDownPin(newNode, "Result", false);
+		resultPin->setReference(true);
+
+		newNode->addPin(resultPin);
 
 		return newNode;
 	}
