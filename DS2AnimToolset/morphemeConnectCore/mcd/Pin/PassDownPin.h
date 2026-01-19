@@ -19,7 +19,7 @@ namespace mcd
 
 		std::unique_ptr<db::EnumAttribute> m_multiplicity;
 	public:
-		PassDownPin(db::Node* parent, const std::string& name, bool param_3);
+		PassDownPin(db::Node* parent, const std::string& name, bool networkOut);
 
 		virtual bool isCompatibleConnectionTarget(Pin* to) override;
 		virtual bool canReceiveConnection(Pin* from) override;

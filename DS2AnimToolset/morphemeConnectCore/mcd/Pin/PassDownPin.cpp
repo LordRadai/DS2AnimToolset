@@ -7,11 +7,11 @@
 
 namespace mcd
 {
-	PassDownPin::PassDownPin(db::Node* parent, const std::string& name, bool param_3)
+	PassDownPin::PassDownPin(db::Node* parent, const std::string& name, bool networkOut)
 		: Pin(parent, "PassDownPin", name),
 		m_multiplicity(std::make_unique<db::EnumAttribute>(this, "Multiplicity", "OneToOne"))
 	{
-		if (!param_3)
+		if (!networkOut)
 		{
 			setIsInput(true);
 			setReference(true);
