@@ -162,7 +162,6 @@ namespace mcd
         return true;
     }
 
-
     mcd::FunctionalPin* FunctionalPin::getUpstreamFunctionalPin()
     {
         if (!isInput())
@@ -183,4 +182,25 @@ namespace mcd
 
 		return nullptr;
 	}
+
+    mcd::FunctionalPin* FunctionalPin::getDownstreamFunctionalPin()
+    {
+        if (isInput())
+			return nullptr;
+
+		std::vector<mcd::Pin*> connectedPins;
+		getConnectedPins(connectedPins);
+
+        if (connectedPins.empty())
+			return nullptr;
+
+		Pin* firstPin = connectedPins.front();
+
+        if (firstPin->isOfType<FunctionalPin>())
+            return firstPin->asFunctionalPin();
+        else if (firstPin->isOfType<PassDownPin>())
+			return firstPin->asPassDownPin()->getFirstDownstreamFunctionalPin();
+
+		return nullptr;
+    }
 }
