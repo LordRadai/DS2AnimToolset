@@ -17,6 +17,10 @@
 #include "mcd/Attribute/RigChannelName/RigChannelNameAttribute.h"
 #include "mcd/Attribute/RequestAttribute/RequestAttribute.h"
 
+#include "mcd/Pin/DataPin.h"
+#include "mcd/Pin/FunctionalPin.h"
+#include "mcd/Pin/PassDownPin.h"
+
 #include "mcc/MorphemeDocument/MorphemeDocument.h"
 #include "mcc/MorphemeManifest/MorphemeManifest.h"
 

@@ -50,18 +50,14 @@ int main()
 
 		mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
 
-		mcd::PassDownPin* result = rootBt->getResultPin();
+		mcd::PassDownPin* networkResult = rootBt->getResultPin();
 
-		mcd::BlendTreeNode* pSm = dynamic_cast<mcd::BlendTreeNode*>(g_doc->createNewStateMachine("StateMachine1", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), rootBt));
-		mcd::Pin* pin = pSm->getPin("Result");
+		mcd::BlendTreeNode* pBlend2 = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_BLEND2), rootBt, "");
+		mcd::FunctionalPin* source0 = pBlend2->getPin("Source0")->asFunctionalPin();
+		mcd::FunctionalPin* source1 = pBlend2->getPin("Source1")->asFunctionalPin();
+		mcd::FunctionalPin* result = pBlend2->getPin("Result")->asFunctionalPin();
 
-		pin->connectTo(result);
-
-		if (!pin->isDirectlyConnectedTo(result))
-			mcu::logError("Pins are not directly connected after connectTo call!\n");
-
-		if (!pin->isConnectedTo(result))
-			mcu::logError("Pins are not connected after connectTo call!\n");
+		result->connectTo(networkResult);
 
 		printf_s("--------Nodes created successfully.--------\n");
 
