@@ -92,17 +92,6 @@ namespace mcd
 		m_passThroughEnabled->setValue(enabled);
 	}
 
-	void FunctionalPin::setInput(bool input)
-	{
-		removeAttribute(m_input.get());
-
-		// Only add to the list if it is an input.
-		if (input)
-			addAttribute(m_input.get());
-
-		m_input->setValue(input);
-	}
-
 	std::string FunctionalPin::findInterface(const std::string& name) const
 	{
 		for (size_t i = 0; i < m_interfaces->size(); i++)

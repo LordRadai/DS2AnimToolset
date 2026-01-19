@@ -21,7 +21,6 @@ namespace mcd
 		uint32_t getInterfaceCount() const { return m_interfaces->size(); }
 
 		void setPassThroughEnabled(bool enabled);
-		void setInput(bool input);
 		bool isPassThroughEnabled() const { return m_passThroughEnabled->getValue(); }
 	};
 }
