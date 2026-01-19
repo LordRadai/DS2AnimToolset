@@ -12,75 +12,80 @@ namespace mcd
 	{
 	}
 
-	bool FunctionalPin::isCompatibleConnectionTarget(Pin* to)
-	{
-		if (isInput())
-			return false;
+    bool FunctionalPin::isCompatibleConnectionTarget(Pin* to)
+    {
+        if (isInput())
+            return false;
 
-		if (!to->isOfType<PassDownPin>())
-		{
-			if (!to->isOfType<FunctionalPin>())
-				return false;
+        if (!to->isOfType<PassDownPin>())
+        {
+            if (!to->isOfType<FunctionalPin>())
+                return false;
 
-			if (!to->isInput())
-				return false;
+            if (!to->isInput())
+                return false;
 
-			if ((!isPassThroughEnabled() || dfsHasUpstreamKnownInterfaces()) && !containsFunctionalInterfacesFor(to))
-			{
-				if (!isPassThroughEnabled())
-					return false;
+            if ((!isPassThroughEnabled() || dfsHasUpstreamKnownInterfaces()) && !containsFunctionalInterfacesFor(to))
+            {
+                if (!isPassThroughEnabled())
+                    return false;
 
-				if (!hasParentNode<GraphNode>())
-					return false;
+                if (!hasParentNode<GraphNode>())
+                    return false;
 
-				GraphNode* parentGraphNode = dynamic_cast<GraphNode*>(getParentNode());
+                GraphNode* parentGraphNode = dynamic_cast<GraphNode*>(getParentNode());
 
-				std::vector<FunctionalPin*> inputs;
-				parentGraphNode->getInputFunctionalPins(GraphNode::InputPinQueryType::kConnectedAndPassThroughEnabled, &inputs);
+                std::vector<FunctionalPin*> inputs;
+                parentGraphNode->getInputFunctionalPins(GraphNode::InputPinQueryType::kConnectedAndPassThroughEnabled, &inputs);
 
-				for (FunctionalPin* inputPin : inputs)
-				{
-					if (!inputPin->dfsHasUpstreamKnownInterfaces())
-					{
-						if (!inputPin->containsFunctionalInterfacesFor(to))
-							return false;
-					}
-				}
-			}
+                for (FunctionalPin* inputPin : inputs)
+                {
+                    if (inputPin->dfsHasUpstreamKnownInterfaces() && !inputPin->containsFunctionalInterfacesFor(to))
+                        return false;
+                }
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		PassDownPin* passDownPin = dynamic_cast<PassDownPin*>(to);
+        PassDownPin* passDownPin = dynamic_cast<PassDownPin*>(to);
 
-		Node* targetGrandParent = to->getGrandParentNode();
-		Node* thisGrandParent = getGrandParentNode();
+        Node* targetGrandParent = to->getGrandParentNode();
+        Node* thisGrandParent = getGrandParentNode();
 
-		if (thisGrandParent == targetGrandParent)
-		{
-			if (!passDownPin->isInput())
-				return false;
-		}
-		else
-		{
-			if (passDownPin->isInput())
-				return false;
-		}
+        if (thisGrandParent == targetGrandParent)
+        {
+            if (!passDownPin->isInput())
+                return false;
+        }
+        else
+        {
+            if (passDownPin->isInput())
+                return false;
+        }
 
-		if (thisGrandParent)
-		{
-			if (thisGrandParent->getParentNode() == to->getParentNode())
-			{
-				LOG_TODO("Implement interface matching logic for PassDownPin");
-				return true;
-			}
+        if (thisGrandParent)
+        {
+            Node* thisParent = thisGrandParent->getParentNode();
+            Node* otherParent = passDownPin->getParentNode();
 
-			if (thisGrandParent != passDownPin->getGrandParentNode())
-				return false;
-		}
+            if (thisParent == otherParent)
+            {
+                DataPin* downstream = passDownPin->getFirstDownstreamDataPin();
 
-		return false;
-	}
+                if (downstream == nullptr && containsFunctionalInterfacesFor(passDownPin))
+                    return true;
+
+                return false;
+            }
+
+            if (thisGrandParent != passDownPin->getGrandParentNode())
+                return false;
+        }
+
+        return false;
+    }
+
 
 	void FunctionalPin::addInterface(const std::string& interfaceName)
 	{
