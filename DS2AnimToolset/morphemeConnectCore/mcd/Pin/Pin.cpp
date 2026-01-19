@@ -10,7 +10,10 @@ namespace mcd
 {
 	bool Pin::CycleDetector::wouldCreateCycle(mcd::Pin* from, mcd::Pin* to)
 	{
-		LOG_NOT_IMPLEMENTED();
+		if (to == from)
+			return true;
+
+		LOG_TODO("Handle other cycle cases.");
 
 		return false;
 	}

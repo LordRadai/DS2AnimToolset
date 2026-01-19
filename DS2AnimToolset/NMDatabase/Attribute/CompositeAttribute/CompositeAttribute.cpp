@@ -84,6 +84,8 @@ namespace db
 			return;
 
 		removeAttributeUnmanaged(attribute);
+
+		delete attribute;
 	}
 
 	void CompositeAttribute::removeAttributeUnmanaged(Attribute* attribute)
@@ -99,7 +101,7 @@ namespace db
 	void CompositeAttribute::removeAt(int idx)
 	{
 		if (idx >= m_attributes.size())
-			removeAttribute(nullptr);
+			return;
 
 		removeAttribute(getAttribute(idx));
 	}
