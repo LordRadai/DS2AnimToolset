@@ -22,7 +22,7 @@ namespace mcd
 		virtual void updateCommonPinForAncestorStateMachine();
 
 		uint32_t getFlowEdgeCount() const { return m_flowEdges->size(); }
-		mcd::FlowEdge* getFlowEdge(const uint32_t index) const { m_flowEdges->getNode(index); };
+		mcd::FlowEdge* getFlowEdge(const uint32_t index) const { return m_flowEdges->getNode(index); };
 
 		float getPanX() const { return m_panX->getValue(); }
 		float getPanY() const { return m_panY->getValue(); }

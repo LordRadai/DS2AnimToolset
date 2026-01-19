@@ -1,5 +1,6 @@
 #include "MorphemeDocument.h"
 #include "mcd/Pin/PassDownPin.h"
+#include "mcd/Pin/FunctionalPin.h"
 
 namespace mcc
 {
@@ -141,10 +142,7 @@ namespace mcc
 
 		parent->addStateMachineNode(newNode);
 
-		mcd::PassDownPin* resultPin = new mcd::PassDownPin(newNode, "Result", false);
-		resultPin->setReference(true);
-
-		newNode->addPin(resultPin);
+		newNode->addPin(new mcd::FunctionalPin(newNode, "Result"));
 
 		return newNode;
 	}
@@ -158,10 +156,7 @@ namespace mcc
 
 		parent->addBlendTreeNode(newNode);
 
-		mcd::PassDownPin* resultPin = new mcd::PassDownPin(newNode, "Result", false);
-		resultPin->setReference(true);
-
-		newNode->addPin(resultPin);
+		newNode->addPin(new mcd::FunctionalPin(newNode, "Result"));
 
 		return newNode;
 	}
