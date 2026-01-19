@@ -7,8 +7,7 @@ namespace mcd
 	FunctionalPin::FunctionalPin(db::Node* parent, const std::string& name)
 		: Pin(parent, "FunctionalPin", name),
 		  m_interfaces(std::make_unique<db::StringArrayAttribute>(this, "Interfaces")),
-		  m_passThroughEnabled(std::make_unique<db::BoolAttribute>(this, "PassThroughEnabled", false)),
-	      m_input(std::make_unique<db::BoolAttribute>(this, "Input", false))
+		m_passThroughEnabled(std::make_unique<db::BoolAttribute>(this, "PassThroughEnabled", false))
 	{
 	}
 

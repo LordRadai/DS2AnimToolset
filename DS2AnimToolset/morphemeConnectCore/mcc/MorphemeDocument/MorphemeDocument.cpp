@@ -142,8 +142,6 @@ namespace mcc
 
 		parent->addStateMachineNode(newNode);
 
-		newNode->addPin(new mcd::FunctionalPin(newNode, "Result"));
-
 		return newNode;
 	}
 
@@ -155,8 +153,6 @@ namespace mcc
 		newNode->setGraphEntry(bt);
 
 		parent->addBlendTreeNode(newNode);
-
-		newNode->addPin(new mcd::FunctionalPin(newNode, "Result"));
 
 		return newNode;
 	}

@@ -33,7 +33,7 @@ namespace mcd
 		m_pins->add(pin);
 
 		if (findAttribute("Pins") == nullptr)
-			addAttribute(m_pins.get());
+			insertAttribute(0, m_pins.get());
 	}
 
 	void GraphNode::setGraphEntry(db::Node* node)
