@@ -47,8 +47,7 @@ namespace mcd
             {
                 if (!edge) continue;
 
-                Pin* nextPin =
-                    (fromPin != sourcePin) ? edge->getDestinationPin() : edge->getSourcePin();
+                Pin* nextPin = (fromPin != sourcePin) ? edge->getDestinationPin() : edge->getSourcePin();
 
                 if (nextPin == otherPin)
                     edge->getOtherEnd(outPins, otherPin);
@@ -66,8 +65,7 @@ namespace mcd
             {
                 if (!edge) continue;
 
-                Pin* nextPin =
-                    (fromPin != sourcePin) ? edge->getDestinationPin() : edge->getSourcePin();
+                Pin* nextPin = (fromPin != sourcePin) ? edge->getDestinationPin() : edge->getSourcePin();
 
                 if (nextPin == otherPin)
                     edge->getOtherEnd(outPins, otherPin);

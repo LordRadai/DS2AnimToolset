@@ -24,5 +24,7 @@ namespace mcd
 		bool isPassThroughEnabled() const { return m_passThroughEnabled->getValue(); }
 
 		bool dfsHasUpstreamKnownInterfaces();
+
+		mcd::FunctionalPin* getUpstreamFunctionalPin();
 	};
 }

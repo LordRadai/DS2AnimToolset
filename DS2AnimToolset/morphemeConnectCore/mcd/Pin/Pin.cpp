@@ -445,4 +445,17 @@ namespace mcd
 
 		outInterfaces.insert(outInterfaces.end(), passedThroughInterfaces.begin(), passedThroughInterfaces.end());
 	}
+
+	void Pin::getConnectedPins(std::vector<mcd::Pin*>& outPins)
+	{
+		std::vector<mcd::FlowEdge*> edges;
+		getConnectedFlowEdges(edges);
+
+		for (size_t i = 0; i < edges.size(); i++)
+		{
+			mcd::FlowEdge* edge = edges[i];
+
+			edge->getOtherEnd(outPins, this);
+		}
+	}
 }

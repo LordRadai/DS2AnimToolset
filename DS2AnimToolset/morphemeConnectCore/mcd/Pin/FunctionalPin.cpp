@@ -130,8 +130,57 @@ namespace mcd
 		return "";
 	}
 
-	bool FunctionalPin::dfsHasUpstreamKnownInterfaces()
-	{
+    bool FunctionalPin::dfsHasUpstreamKnownInterfaces()
+    {
+        if (!isPassThroughEnabled())
+            return true;
 
+        if (isInput())
+        {
+            FunctionalPin* upstream = getUpstreamFunctionalPin();
+            if (!upstream)
+                return false;
+
+            return upstream->isPassThroughEnabled() ? upstream->dfsHasUpstreamKnownInterfaces() : true;
+        }
+
+        if (hasParentNode<GraphNode>())
+        {
+            GraphNode* parentGraph = dynamic_cast<GraphNode*>(getParentNode());
+            std::vector<FunctionalPin*> inputPins;
+            parentGraph->getInputFunctionalPins(GraphNode::InputPinQueryType::kConnectedAndPassThroughEnabled, &inputPins);
+
+            for (FunctionalPin* inputPin : inputPins)
+            {
+                if (inputPin->dfsHasUpstreamKnownInterfaces())
+                    return true;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+    mcd::FunctionalPin* FunctionalPin::getUpstreamFunctionalPin()
+    {
+        if (!isInput())
+            return nullptr;
+
+		std::vector<mcd::Pin*> connectedPins;
+		getConnectedPins(connectedPins);
+
+		if (connectedPins.empty())
+            return nullptr;
+
+		Pin* firstPin = connectedPins.front();
+
+        if (firstPin->isOfType<FunctionalPin>())
+            return firstPin->asFunctionalPin();
+        else if (firstPin->isOfType<PassDownPin>())          
+            return firstPin->asPassDownPin()->recurseUpstreamToFunctionalPin();
+
+		return nullptr;
 	}
 }

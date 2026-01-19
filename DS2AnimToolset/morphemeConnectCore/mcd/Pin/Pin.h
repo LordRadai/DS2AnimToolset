@@ -75,5 +75,7 @@ namespace mcd
 
 		bool containsFunctionalInterfacesFor(Pin* other);
 		void getAllFunctionalInterfaces(std::vector<std::string>& outInterfaces);
+
+		void getConnectedPins(std::vector<mcd::Pin*>& outPins);
 	};
 }
