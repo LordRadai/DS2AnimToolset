@@ -9,7 +9,6 @@ namespace mcd
 		m_manifestVersion(std::make_unique<db::IntAttribute>(this, "ManifestVersion", manifestVersion))
 	{
 		addAttribute(m_nodeType.get());
-
-		addPin(new mcd::FunctionalPin(this, "Result"));
+		addAttribute(m_manifestVersion.get());
 	}
 }

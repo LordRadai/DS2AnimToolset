@@ -16,6 +16,8 @@ namespace mcd
 		m_height(std::make_unique<db::FloatAttribute>(this, "Height", height)),
 		m_ownerGraphs(std::make_unique<db::TypedNodeContainer<mcd::Graph>>(this, "OwnerGraphs"))
 	{
+		addAttribute(m_attributes.get());
+		addAttribute(m_pins.get());
 		addAttribute(m_xPos.get());
 		addAttribute(m_yPos.get());
 		addAttribute(m_width.get());
@@ -25,17 +27,11 @@ namespace mcd
 	void GraphNode::addMcdAttribute(mcd::Attribute* attribute)
 	{
 		m_attributes->add(attribute);
-
-		if (findAttribute("Attributes") == nullptr)
-			addAttribute(m_attributes.get());
 	}
 
 	void GraphNode::addPin(mcd::Pin* pin)
 	{
 		m_pins->add(pin);
-
-		if (findAttribute("Pins") == nullptr)
-			insertAttribute(0, m_pins.get());
 	}
 
 	void GraphNode::setGraphEntry(db::Node* node)
