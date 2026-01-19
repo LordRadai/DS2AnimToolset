@@ -378,7 +378,40 @@ namespace mcd
 
 	bool Pin::containsFunctionalInterfacesFor(Pin* other)
 	{
-		LOG_NOT_IMPLEMENTED();
+		std::vector<std::string> myInterfaces;
+		getAllFunctionalInterfaces(myInterfaces);
+
+		std::vector<std::string> otherInterfaces;
+		other->getAllFunctionalInterfaces(otherInterfaces);
+
+		for (size_t i = 0; i < otherInterfaces.size(); i++)
+		{
+			const std::string& interfaceName = otherInterfaces[i];
+			bool found = false;
+
+			for (size_t j = 0; j < myInterfaces.size(); j++)
+			{
+				if (myInterfaces[j] == interfaceName)
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if (!found)
+				return false;
+		}
+
 		return true;
+	}
+
+	void Pin::getAllFunctionalInterfaces(std::vector<std::string>& outInterfaces)
+	{
+		std::vector<std::string> passedThroughInterfaces;
+
+		getPassedThroughFunctionalInterfaces(outInterfaces);
+		getPassedThroughFunctionalInterfaces(passedThroughInterfaces);
+
+		outInterfaces.insert(outInterfaces.end(), passedThroughInterfaces.begin(), passedThroughInterfaces.end());
 	}
 }

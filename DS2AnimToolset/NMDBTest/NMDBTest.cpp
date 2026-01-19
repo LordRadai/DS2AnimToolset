@@ -57,7 +57,7 @@ int main()
 
 		pin->connectTo(result);
 		
-		if (!pin->breakConnectionTo(result))
+		if (!result->breakConnectionTo(pin))
 			mcu::logError("Failed to break connection between StateMachine1 Result pin and BlendTree Result pin\n");
 
 		printf_s("--------Nodes created successfully.--------\n");

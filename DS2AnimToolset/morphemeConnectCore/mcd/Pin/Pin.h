@@ -39,6 +39,7 @@ namespace mcd
 		virtual bool canReceiveConnection(Pin* from);
 		virtual bool canConnectTo(Pin* to);
 		virtual bool breakConnectionTo(Pin* to);
+		virtual void getPassedThroughFunctionalInterfaces(std::vector<std::string>& outInterfaces) {}
 
 		void setIsInput(bool isInput);
 		void setIsArray(bool isArray);
@@ -71,5 +72,6 @@ namespace mcd
 		mcd::PassDownPin* asPassDownPin();
 
 		bool containsFunctionalInterfacesFor(Pin* other);
+		void getAllFunctionalInterfaces(std::vector<std::string>& outInterfaces);
 	};
 }
