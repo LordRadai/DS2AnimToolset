@@ -37,6 +37,9 @@ namespace mcd
 		virtual mcd::Pin* getPin(int index) override { return m_pins->getNode(index); }
 		virtual mcd::Pin* getPin(const std::string& name) override { return m_pins->find(name); }
 
+		db::TypedNodeContainer<mcd::Attribute>* getAttributes() const { return m_attributes.get(); }
+		db::TypedNodeContainer<mcd::Pin>* getPins() const { return m_pins.get(); }
+
 		void addMcdAttribute(mcd::Attribute* attribute);
 		mcd::Attribute* getAttribute(uint32_t index) const { return m_attributes->getNode(index); }
 		mcd::Attribute* findAttribute(const std::string& name) const { return m_attributes->find(name); }
