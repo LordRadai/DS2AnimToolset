@@ -1,25 +1,40 @@
 #pragma once
 #include "Pin.h"
-#include "DataTypes.h"
 
 namespace mcd
 {
 	class DataPin : public Pin
 	{
-		std::unique_ptr<db::EnumAttribute> m_dataType;
-		std::unique_ptr<db::BoolAttribute> m_passThroughEnabled;
-		std::unique_ptr<db::BoolAttribute> m_input;
 	public:
-		DataPin(db::Node* parent, const std::string pinName, DataTypes dataType);
+		enum class DataType
+		{
+			kFloat,
+			kVector3,
+			kVector4,
+			kBool,
+			kQuaternion,
+			kInt,
+			kUInt,
+			kString,
+
+			kNumDataType
+		};
+
+	private:
+		std::unique_ptr<db::EnumAttribute> m_dataType;
+	public:
+		DataPin(db::Node* parent, const std::string pinName, DataType dataType);
 
 		virtual ~DataPin() override {};
+		virtual bool isCompatibleConnectionTarget(Pin* to) override;
+		virtual bool canStartConnection() override;
+		virtual bool canReceiveConnection(Pin* from) override;
 
-		const DataTypes getDataType() const;
-		void setDataType(DataTypes dataType);
+		const DataType getDataType() const;
 
-		void setPassThroughEnabled(bool enabled);
-		void setInput(bool input);
-		bool isPassThroughEnabled() const { return m_passThroughEnabled->getValue(); }
-		bool isInput() const { return m_input->getValue(); }
+		static DataPin::DataType getDataTypeFromString(const std::string& typeName);
+		static std::string getStringFromDataType(DataType type);
+	protected:
+		void setDataType(DataType dataType);
 	};
 }

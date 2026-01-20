@@ -120,9 +120,6 @@
     <ClCompile Include="mcd\Pin\PassDownPin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DataTypes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mcd\Attribute\Array\BoolArrayAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -204,9 +201,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcc\MorphemeDocument\MorphemeDocument.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DataTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcd\Network\Network.h">

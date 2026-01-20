@@ -1,5 +1,7 @@
 #include "BlendTree.h"
 #include "mcd/Network/Network.h"
+#include "mcd/Pin/FunctionalPin.h"
+#include "mcu/Log.h"
 
 namespace mcd
 {
@@ -102,5 +104,80 @@ namespace mcd
 		}
 
 		return nullptr;
+	}
+
+	mcd::FunctionalPin* BlendTree::getFunctionalPinConnectedToOutput()
+	{
+		PassDownPin* resultPin = getResultPin();
+		Pin* connectedPin = getConnectedPin(resultPin);
+
+		if (connectedPin)
+			return dynamic_cast<mcd::FunctionalPin*>(connectedPin);
+
+		return nullptr;
+	}
+
+	mcd::GraphNode* BlendTree::getNodeConnectedToOutput()
+	{
+		PassDownPin* resultPin = getResultPin();
+		Pin* connectedPin = getConnectedPin(resultPin);
+
+		if (!connectedPin)
+			return nullptr;
+
+		if (connectedPin->hasParentNode<GraphNode>())
+			return dynamic_cast<GraphNode*>(connectedPin->getParentNode());
+	}
+
+	mcd::GraphNode* BlendTree::getNodeDirectlyConnectedToOutput()
+	{
+		PassDownPin* resultPin = getResultPin();
+		Pin* connectedPin = getDirectlyConnectedPin(resultPin);
+
+		if (!connectedPin)
+			return nullptr;
+
+		if (connectedPin->hasParentNode<GraphNode>())
+			return dynamic_cast<GraphNode*>(connectedPin->getParentNode());
+	}
+
+	mcd::Pin* BlendTree::getDirectlyConnectedPin(mcd::Pin* pin)
+	{
+		for (size_t i = 0; i < m_flowEdges->size(); i++)
+		{
+			FlowEdge* edge = m_flowEdges->getNode(i);
+
+			if (edge->getSourcePin() == pin)
+				return edge->getDestinationPin();
+			if (edge->getDestinationPin() == pin)
+				return edge->getSourcePin();
+		}
+
+		return nullptr;
+	}
+
+	mcd::Pin* BlendTree::getConnectedPin(mcd::Pin* pin)
+	{
+		for (size_t i = 0; i < m_flowEdges->size(); i++)
+		{
+			FlowEdge* edge = m_flowEdges->getNode(i);
+
+			if (edge->getSourcePin() == pin || edge->getDestinationPin() == pin)
+			{
+				std::vector<mcd::Pin*> connectedPins;
+				edge->getOtherEnd(connectedPins, pin);
+
+				if (connectedPins.size() == 1)
+					return connectedPins[0];
+
+				if (connectedPins.size() > 1)
+				{
+					mcu::logWarning("BlendTree::getConnectedPin called on a pin with multiple connections");
+					return nullptr;
+				}
+
+				return nullptr;
+			}
+		}
 	}
 }

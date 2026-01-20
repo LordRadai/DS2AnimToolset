@@ -13,6 +13,7 @@ namespace mcd
 		BlendTreeNode(db::CompositeAttribute* parent, std::string name, float xPos, float yPos, float width, float height, std::string nodeType, int manifestVersion);
 
 		virtual ~BlendTreeNode() override {}
+		virtual bool isOperatorNode() override;
 
 		const std::string& getNodeType() const { return m_nodeType->getValue(); }
 		void setNodeType(const std::string& type) { m_nodeType->setValue(type); }

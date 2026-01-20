@@ -56,8 +56,13 @@ int main()
 		mcd::FunctionalPin* source0 = pBlend2->getPin("Source0")->asFunctionalPin();
 		mcd::FunctionalPin* source1 = pBlend2->getPin("Source1")->asFunctionalPin();
 		mcd::FunctionalPin* result = pBlend2->getPin("Result")->asFunctionalPin();
+		mcd::DataPin* weight = pBlend2->getPin("Weight")->asDataPin();
 
+		network->findControlParameter("FloatParam")->getResultDataPin()->connectTo(weight);
 		result->connectTo(networkResult);
+
+		g_doc->createNewBlendTree("BlendTree1", rootBt);
+		g_doc->createNewStateMachine("StateMachine1", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), rootBt);
 
 		printf_s("--------Nodes created successfully.--------\n");
 

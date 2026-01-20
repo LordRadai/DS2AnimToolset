@@ -13,8 +13,27 @@
 
 namespace mcu
 {
+#ifdef NDEBUG
+	uint32_t s_logLevel = static_cast<uint32_t>(LogLevel::kError);
+#else
+	uint32_t s_logLevel = static_cast<uint32_t>(LogLevel::kDebug);
+#endif
+
+	void setLogLevel(uint32_t level)
+	{
+		s_logLevel = level;
+	}
+
+	LogLevel getLogLevel()
+	{
+		return static_cast<LogLevel>(s_logLevel);
+	}
+
 	void logMessage(LogLevel level, const char* message)
 	{
+		if (static_cast<uint32_t>(level) > s_logLevel)
+			return;
+
 		const char* levelStr = nullptr;
 		const char* color = nullptr;
 

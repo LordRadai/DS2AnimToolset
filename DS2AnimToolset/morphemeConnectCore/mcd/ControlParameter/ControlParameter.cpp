@@ -2,7 +2,7 @@
 
 namespace mcd
 {
-	ControlParameter::ControlParameter(db::Node* parent, const std::string& name, DataTypes dataType)
+	ControlParameter::ControlParameter(db::Node* parent, const std::string& name, DataPin::DataType dataType)
 		: mcd::AttributePinNodeBase(parent, "ControlParameter", name),
 		m_dataPins(std::make_unique<db::TypedNodeContainer<mcd::DataPin>>(this, "DataPinEntry")),
 		m_min(std::make_unique<db::FloatAttribute>(this, "Min", 0.0f)),

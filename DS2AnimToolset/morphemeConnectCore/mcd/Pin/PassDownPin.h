@@ -41,5 +41,6 @@ namespace mcd
 		void getDownstreamPins(std::vector<mcd::Pin*>& outPins);
 		mcd::FunctionalPin* getFirstDownstreamFunctionalPin();
 		mcd::DataPin* getFirstDownstreamDataPin();
+		mcd::DataPin* recurseDownstreamToFirstDataPin();
 	};
 }

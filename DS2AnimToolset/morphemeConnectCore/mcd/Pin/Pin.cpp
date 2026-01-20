@@ -458,4 +458,9 @@ namespace mcd
 			edge->getOtherEnd(outPins, this);
 		}
 	}
+
+	bool Pin::hasDownstreamConnection()
+	{
+
+	}
 }

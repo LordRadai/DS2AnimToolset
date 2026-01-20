@@ -28,7 +28,7 @@ namespace mcd
 		std::unique_ptr<db::QuaternionAttribute> m_defaultQuaternion;
 
 	public:
-		ControlParameter(db::Node* parent, const std::string& name, DataTypes dataType);
+		ControlParameter(db::Node* parent, const std::string& name, DataPin::DataType dataType);
 
 		virtual ~ControlParameter() override {};
 		virtual int getPinCount() const override { return m_dataPins->size(); }

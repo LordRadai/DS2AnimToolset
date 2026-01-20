@@ -1,6 +1,5 @@
 #pragma once
 #include "MMPin.h"
-#include "DataTypes.h"
 #include "mcd/Graph/GraphNode.h"
 
 namespace mcc

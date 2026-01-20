@@ -77,5 +77,7 @@ namespace mcd
 		void getAllFunctionalInterfaces(std::vector<std::string>& outInterfaces);
 
 		void getConnectedPins(std::vector<mcd::Pin*>& outPins);
+
+		bool hasDownstreamConnection();
 	};
 }

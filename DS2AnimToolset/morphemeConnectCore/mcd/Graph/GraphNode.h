@@ -33,18 +33,20 @@ namespace mcd
 		GraphNode(db::CompositeAttribute* parent, std::string name, std::string nodeName, float xPos, float yPos, float width, float height);
 	public:		
 		virtual ~GraphNode() override {}
+		virtual int getMorphemeAttributeCount() const override { return static_cast<int>(m_attributes->size()); }
+		virtual mcd::Attribute* getMorphemeAttribute(int index) override { return m_attributes->getNode(index); }
+		virtual mcd::Attribute* getMorphemeAttribute(const std::string& name) override { return m_attributes->find(name); }
 		virtual int getPinCount() const override { return static_cast<int>(m_pins->size()); }
 		virtual mcd::Pin* getPin(int index) override { return m_pins->getNode(index); }
 		virtual mcd::Pin* getPin(const std::string& name) override { return m_pins->find(name); }
 
+		virtual bool isOperatorNode() { return false; }
+
 		db::TypedNodeContainer<mcd::Attribute>* getAttributes() const { return m_attributes.get(); }
 		db::TypedNodeContainer<mcd::Pin>* getPins() const { return m_pins.get(); }
 
-		void addMcdAttribute(mcd::Attribute* attribute);
-		mcd::Attribute* getAttribute(uint32_t index) const { return m_attributes->getNode(index); }
-		mcd::Attribute* findAttribute(const std::string& name) const { return m_attributes->find(name); }
-
-		void addPin(mcd::Pin* pin);
+		void addMorphemeAttribute(mcd::Attribute* attribute) { m_attributes->add(attribute); }
+		void addPin(mcd::Pin* pin) { m_pins->add(pin); }
 
 		float getXPos() const { return m_xPos->getValue(); }
 		float getYPos() const { return m_yPos->getValue(); }

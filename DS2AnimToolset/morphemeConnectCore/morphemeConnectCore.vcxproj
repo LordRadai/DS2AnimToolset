@@ -152,7 +152,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DataTypes.cpp" />
     <ClCompile Include="mcc\GraphObjectPath\GraphObjectPath.cpp" />
     <ClCompile Include="mcc\MorphemeDBLoader\MorphemeDBLoader.cpp" />
     <ClCompile Include="mcc\MorphemeDocument\MorphemeDocument.cpp" />
@@ -204,7 +203,6 @@
     <ClCompile Include="morphemeConnectCore.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataTypes.h" />
     <ClInclude Include="extern.h" />
     <ClInclude Include="mcc\GraphObjectPath\GraphObjectPath.h" />
     <ClInclude Include="mcc\MorphemeDBLoader\MorphemeDBLoader.h" />

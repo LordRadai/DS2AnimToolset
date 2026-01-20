@@ -6,6 +6,7 @@
 #include "mcd/BlendTree/BlendTree.h"
 #include "mcd/StateMachine/StateMachine.h"
 #include "mcc/MorphemeManifest/MMManifestItem/StateMachine/MMStateMachine.h"
+#include "mcd/Pin/DataPin.h"
 
 namespace mcc
 {
@@ -46,7 +47,7 @@ namespace mcc
 		 * \param dataType The type of the control parameter.
 		 * \return A pointer to the created control parameter.
 		 */
-		mcd::ControlParameter* createControlParmeter(const std::string& name, DataTypes dataType);
+		mcd::ControlParameter* createControlParmeter(const std::string& name, mcd::DataPin::DataType dataType);
 
 		/**
 		 * \brief Creates a float control parameter with specified min, max, and default value.

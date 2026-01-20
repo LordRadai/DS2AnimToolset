@@ -9,6 +9,9 @@ namespace mcd
 		m_panX(std::make_unique<db::FloatAttribute>(this, "PanX", 0.0f)),
 		m_panY(std::make_unique<db::FloatAttribute>(this, "PanY", 0.0f))
 	{
+		addAttribute(m_flowEdges.get());
+		addAttribute(m_panX.get());
+		addAttribute(m_panY.get());
 	}
 
 	void Graph::updateCommonPinForAncestorStateMachine()
@@ -31,33 +34,18 @@ namespace mcd
 
 	void Graph::setPan(float x, float y)
 	{
-		removeAttribute(m_panX.get());
-		removeAttribute(m_panY.get());
-
 		m_panX->setValue(x);
 		m_panY->setValue(y);
-
-		if (x != 0.f)
-			addAttribute(m_panX.get());
-
-		if (y != 0.f)
-			addAttribute(m_panY.get());
 	}
 
 	void Graph::removeFlowEdge(mcd::FlowEdge* edge)
 	{
 		m_flowEdges->remove(edge);
-
-		if (m_flowEdges->size() == 0)
-			removeAttribute(m_flowEdges.get());
 	}
 
 	void Graph::addFlowEdge(mcd::FlowEdge* edge)
 	{
 		m_flowEdges->add(edge);
-
-		if (findAttribute("FlowEdges") == nullptr)
-			insertAttribute(0, m_flowEdges.get());
 	}
 
 	bool Graph::removeConnection(mcd::Edge* edge)

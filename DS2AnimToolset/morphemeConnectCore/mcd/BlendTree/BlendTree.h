@@ -78,6 +78,41 @@ namespace mcd
 		 */
 		uint32_t getNumNodesOfType(const std::string& type) const;
 		
+		/*
+		* \brief Get the result pin of the blend tree.
+		* \return The result pass down pin.
+		*/
 		mcd::PassDownPin* getResultPin();
+
+		/*
+		* \brief Get the functional pin connected to the output pin.
+		* \return The functional pin connected to the output pin.
+		*/
+		mcd::FunctionalPin* getFunctionalPinConnectedToOutput();
+
+		/*
+		* \brief Get the graph node connected to the output pin.
+		* \return The graph node connected to the output pin.
+		*/
+		mcd::GraphNode* getNodeConnectedToOutput();
+
+		/*
+		* \brief Get the functional pin directly connected to the output pin.
+		* \return The functional pin directly connected to the output pin.
+		*/
+		mcd::GraphNode* getNodeDirectlyConnectedToOutput();
+
+		/*
+		* \brief Get the pin directly connected to the specified pin.
+		* \return The pin directly connected to the specified pin.
+		*/
+		mcd::Pin* getDirectlyConnectedPin(mcd::Pin* pin);
+	protected:
+
+		/*
+		* \brief Get the pin connected to the specified pin.
+		* \return The pin connected to the specified pin.
+		*/
+		mcd::Pin* getConnectedPin(mcd::Pin* pin);
 	};
 }

@@ -5,13 +5,16 @@ namespace mcu
 {
 	enum class LogLevel
 	{
-		kDebug,
 		kInfo,
 		kWarn,
 		kError,
+		kDebug,
 
 		kNumLogLevels
 	};
+
+	void setLogLevel(uint32_t level);
+	LogLevel getLogLevel();
 
 	void logDebug(const char* message);
 	void logDebug(std::string);
@@ -30,5 +33,5 @@ namespace mcu
 	void logErrorf(const char* format, ...);
 }
 
-#define LOG_NOT_IMPLEMENTED() mcu::logErrorf("Function %s is not implemented.", __FUNCTION__)
-#define LOG_TODO(msg) mcu::logWarningf("TODO in %s: %s.", __FUNCTION__, msg)
+#define LOG_NOT_IMPLEMENTED() mcu::logDebugf("Function %s is not implemented.", __FUNCTION__)
+#define LOG_TODO(msg) mcu::logDebugf("TODO in %s: %s.", __FUNCTION__, msg)

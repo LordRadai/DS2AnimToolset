@@ -13,7 +13,7 @@ namespace mcd
 	{
 		if (!networkOut)
 		{
-			setIsInput(true);
+			//setIsInput(true);
 			setReference(true);
 		}
 	}
@@ -487,6 +487,27 @@ namespace mcd
 			{
 				return dynamic_cast<DataPin*>(pin);
 			}
+		}
+
+		return nullptr;
+	}
+
+	mcd::DataPin* PassDownPin::recurseDownstreamToFirstDataPin()
+	{
+		std::vector<mcd::Pin*> downstreamPins;
+		getDownstreamPins(downstreamPins);
+
+		for (size_t i = 0; i < downstreamPins.size(); i++)
+		{
+			mcd::Pin* pin = downstreamPins[i];
+
+			if (!pin)
+				continue;
+
+			if (pin->isOfType<PassDownPin>())
+				return dynamic_cast<PassDownPin*>(pin)->recurseDownstreamToFirstDataPin();
+			else if (pin->isOfType<DataPin>())
+				return dynamic_cast<DataPin*>(pin);
 		}
 
 		return nullptr;

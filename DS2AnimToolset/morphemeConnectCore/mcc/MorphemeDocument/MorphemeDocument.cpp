@@ -4,7 +4,7 @@
 
 namespace mcc
 {
-	mcd::ControlParameter* MorphemeDocument::createControlParmeter(const std::string& name, DataTypes dataType)
+	mcd::ControlParameter* MorphemeDocument::createControlParmeter(const std::string& name, mcd::DataPin::DataType dataType)
 	{
 		mcd::ControlParametersNode* cpNode = m_morphemeDB->getNetwork()->getControlParametersNode();
 
@@ -16,7 +16,7 @@ namespace mcc
 
 	mcd::ControlParameter* MorphemeDocument::createFloatControlParameter(const std::string& name, float min, float max, float defaultValue)
 	{
-		mcd::ControlParameter* param = createControlParmeter(name, DataTypes::kFloat);
+		mcd::ControlParameter* param = createControlParmeter(name, mcd::DataPin::DataType::kFloat);
 		param->m_min->setValue(min);
 		param->m_max->setValue(max);
 		param->m_defaultFloat->setValue(defaultValue);
@@ -30,7 +30,7 @@ namespace mcc
 
 	mcd::ControlParameter* MorphemeDocument::createVector3ControlParameter(const std::string& name, float min, float max, const NMP::Vector3& defaultValue)
 	{
-		mcd::ControlParameter* param = createControlParmeter(name, DataTypes::kVector3);
+		mcd::ControlParameter* param = createControlParmeter(name, mcd::DataPin::DataType::kVector3);
 		param->m_min->setValue(min);
 		param->m_max->setValue(max);
 		param->m_defaultVector3->setValue(defaultValue);
@@ -44,7 +44,7 @@ namespace mcc
 
 	mcd::ControlParameter* MorphemeDocument::createVector4ControlParameter(const std::string& name, float min, float max, const NMP::Quat& defaultValue)
 	{
-		mcd::ControlParameter* param = createControlParmeter(name, DataTypes::kVector4);
+		mcd::ControlParameter* param = createControlParmeter(name, mcd::DataPin::DataType::kVector4);
 		param->m_min->setValue(min);
 		param->m_max->setValue(max);
 		param->m_defaultQuaternion->setValue(defaultValue);
@@ -58,7 +58,7 @@ namespace mcc
 
 	mcd::ControlParameter* MorphemeDocument::createBoolControlParameter(const std::string& name, bool defaultValue)
 	{
-		mcd::ControlParameter* param = createControlParmeter(name, DataTypes::kBool);
+		mcd::ControlParameter* param = createControlParmeter(name, mcd::DataPin::DataType::kBool);
 		param->m_defaultBool->setValue(defaultValue);
 
 		param->addAttribute(param->m_defaultBool.get());
@@ -68,7 +68,7 @@ namespace mcc
 
 	mcd::ControlParameter* MorphemeDocument::createQuaternionControlParameter(const std::string& name, float min, float max, const NMP::Quat& defaultValue)
 	{
-		mcd::ControlParameter* param = createControlParmeter(name, DataTypes::kQuaternion);
+		mcd::ControlParameter* param = createControlParmeter(name, mcd::DataPin::DataType::kQuaternion);
 		param->m_defaultQuaternion->setValue(defaultValue);
 		param->m_min->setValue(min);
 		param->m_max->setValue(max);
@@ -82,7 +82,7 @@ namespace mcc
 
 	mcd::ControlParameter* MorphemeDocument::createIntControlParameter(const std::string& name, int min, int max, int defaultValue)
 	{
-		mcd::ControlParameter* param = createControlParmeter(name, DataTypes::kInt);
+		mcd::ControlParameter* param = createControlParmeter(name, mcd::DataPin::DataType::kInt);
 		param->m_minInt->setValue(min);
 		param->m_maxInt->setValue(max);
 		param->m_defaultInt->setValue(defaultValue);
@@ -96,7 +96,7 @@ namespace mcc
 
 	mcd::ControlParameter* MorphemeDocument::createUIntControlParameter(const std::string& name, uint32_t min, uint32_t max, uint32_t defaultValue)
 	{
-		mcd::ControlParameter* param = createControlParmeter(name, DataTypes::kUInt);
+		mcd::ControlParameter* param = createControlParmeter(name, mcd::DataPin::DataType::kUInt);
 		param->m_minInt->setValue(min);
 		param->m_maxInt->setValue(max);
 		param->m_defaultInt->setValue(defaultValue);
@@ -139,6 +139,7 @@ namespace mcc
 
 		mcd::StateMachineNode* newNode = new mcd::StateMachineNode(parent, name, xPos, yPos, 100.f, 50.f);
 		newNode->setGraphEntry(bt);
+		newNode->addPin(new mcd::PassDownPin(newNode, "Result", false));
 
 		parent->addStateMachineNode(newNode);
 
@@ -151,6 +152,7 @@ namespace mcc
 
 		mcd::BlendTreeNode* newNode = new mcd::BlendTreeNode(parent, name, xPos, yPos, 100.f, 50.f, "BlendTree", -1);
 		newNode->setGraphEntry(bt);
+		newNode->addPin(new mcd::PassDownPin(newNode, "Result", false));
 
 		parent->addBlendTreeNode(newNode);
 

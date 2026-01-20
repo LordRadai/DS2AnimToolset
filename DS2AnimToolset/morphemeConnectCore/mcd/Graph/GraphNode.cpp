@@ -24,16 +24,6 @@ namespace mcd
 		addAttribute(m_height.get());
 	}
 
-	void GraphNode::addMcdAttribute(mcd::Attribute* attribute)
-	{
-		m_attributes->add(attribute);
-	}
-
-	void GraphNode::addPin(mcd::Pin* pin)
-	{
-		m_pins->add(pin);
-	}
-
 	void GraphNode::setGraphEntry(db::Node* node)
 	{
 		removeAttribute(m_graphEntry.get());
