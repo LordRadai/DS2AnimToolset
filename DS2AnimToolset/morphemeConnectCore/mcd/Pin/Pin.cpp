@@ -49,6 +49,10 @@ namespace mcd
 		m_referenceTarget(std::make_unique<db::StringAttribute>(this, "ReferenceTarget", "")),
 		m_reference(std::make_unique<db::BoolAttribute>(this, "Reference", false)) 
 	{
+		addAttribute(m_isInput.get());
+		addAttribute(m_isArray.get());
+		addAttribute(m_referenceTarget.get());
+		addAttribute(m_reference.get());
 	};
 
 	bool Pin::breakConnectionTo(Pin* to)
