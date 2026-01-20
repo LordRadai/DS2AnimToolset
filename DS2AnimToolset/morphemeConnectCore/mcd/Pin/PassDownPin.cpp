@@ -45,7 +45,7 @@ namespace mcd
 				}
 			}
 
-			if (isInput() == targetPassDownPin->isInput())
+			if (isInput() != targetPassDownPin->isInput())
 				return false;
 
 			Pin* upstream = recurseUpstreamToNonPassDownPin();
