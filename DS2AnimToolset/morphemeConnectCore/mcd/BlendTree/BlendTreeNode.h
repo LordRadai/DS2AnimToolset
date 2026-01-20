@@ -20,5 +20,7 @@ namespace mcd
 
 		int getManifestVersion() const { return m_manifestVersion->getValue(); }
 		void setManifestVersion(int version) { m_manifestVersion->setValue(version); }
+
+		mcd::PassDownPin* getResultPin() { return getPin("Result")->asPassDownPin(); }
 	};
 }
