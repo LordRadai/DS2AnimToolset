@@ -1,6 +1,5 @@
 #pragma once
 #include "mcc/MorphemeManifest/MMManifestItem/Attribute/MMAttribute.h"
-#include "DataTypes.h"
 #include "mcd/Attribute/Attribute.h"
 #include "NMDBExtensions/TypedNodeContainer.inl"
 #include <string>

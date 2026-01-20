@@ -461,6 +461,7 @@ namespace mcd
 
 	bool Pin::hasDownstreamConnection()
 	{
-
+		LOG_NOT_IMPLEMENTED();
+		return false;
 	}
 }
