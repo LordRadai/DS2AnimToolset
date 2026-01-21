@@ -159,7 +159,7 @@ namespace mcc
 		}
 
 		registerStateMachine("Data\\manifest\\nodes\\animation\\StateMachine.json");
-		registerStateMachineNode("Data\\manifest\\nodes\\animation\\StateMachine.json");
+		//registerStateMachineNode("Data\\manifest\\nodes\\animation\\ActiveState.json");
 
 		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\nodes\\"))
 		{
