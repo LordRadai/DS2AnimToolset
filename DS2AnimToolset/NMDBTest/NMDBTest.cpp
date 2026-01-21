@@ -4,6 +4,46 @@
 mcc::MorphemeDocument* g_doc = nullptr;
 db::Registry* g_registry = nullptr;
 
+void btRootWithBlend2NodeExample(mcc::MorphemeManifest* manifest, mcd::Network* network)
+{
+	network->addControlParameter(g_doc->createFloatControlParameter("FloatParam", 0.0f, 1.0f, 0.5f));
+
+	mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
+
+	mcd::PassDownPin* networkResult = rootBt->getResultPin();
+
+	mcd::BlendTreeNode* pBlend2 = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_BLEND2), rootBt, "Blend2_1");
+	mcd::FunctionalPin* source0 = pBlend2->getPin("Source0")->asFunctionalPin();
+	mcd::FunctionalPin* source1 = pBlend2->getPin("Source1")->asFunctionalPin();
+	mcd::FunctionalPin* result = pBlend2->getPin("Result")->asFunctionalPin();
+	mcd::DataPin* weight = pBlend2->getPin("Weight")->asDataPin();
+
+	network->findControlParameter("FloatParam")->getResultDataPin()->connectTo(weight);
+	result->connectTo(networkResult);
+
+	mcd::BlendTreeNode* bt1 = g_doc->createNewBlendTree("BlendTree1", rootBt);
+	mcd::BlendTreeNode* bt2 = g_doc->createNewBlendTree("BlendTree2", rootBt);
+
+	bt1->getResultPin()->connectTo(source0);
+	bt2->getResultPin()->connectTo(source1);
+
+	g_doc->saveAs("btRootWithBlend2Node.xml");
+}
+
+void btRootWithNestedSMExample(mcc::MorphemeManifest* manifest, mcd::Network* network)
+{
+	mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
+
+	mcd::BlendTreeNode* sm = dynamic_cast<mcd::BlendTreeNode*>(g_doc->createNewStateMachine("StateMachine1", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), rootBt));
+
+	mcd::StateMachine* smGraph = dynamic_cast<mcd::StateMachine*>(sm->getGraphEntry());
+
+	g_doc->createStateMachineNode(manifest->findStateMachineNodeManifest(MANIFEST_NODE_STATE_MACHINE), smGraph, "SM_Main");
+	g_doc->createNewBlendTree("SM_BlendTree1", smGraph);
+
+	g_doc->saveAs("btRootWithNestedSM.xml");
+}
+
 int main()
 {
 	try
@@ -27,56 +67,8 @@ int main()
 		g_doc->getMorphemeDB()->createNetwork("Network");
 		mcd::Network* network = g_doc->getMorphemeDB()->getNetwork();
 
-		printf_s("--------Creating control parameters--------\n");
-
-		network->addControlParameter(g_doc->createFloatControlParameter("FloatParam", 0.0f, 1.0f, 0.5f));
-		network->addControlParameter(g_doc->createVector3ControlParameter("Vector3Param", 0.0f, 10.0f, NMP::Vector3(1.0f, 2.0f, 3.0f)));
-		network->addControlParameter(g_doc->createVector4ControlParameter("Vector4Param", 0.0f, 10.0f, NMP::Quat(0.707f, 0.0f, 0.707f, 0.0f)));
-		network->addControlParameter(g_doc->createBoolControlParameter("BoolParam", true));
-		network->addControlParameter(g_doc->createIntControlParameter("IntParam", -10, 10, 0));
-		network->addControlParameter(g_doc->createUIntControlParameter("UIntParam", 0, 100, 50));
-		network->addControlParameter(g_doc->createQuaternionControlParameter("QuaternionParam", 0.f, 1.f, NMP::Quat(0.707f, 0.0f, 0.707f, 0.0f)));
-
-		printf_s("--------Control parameters created successfully.--------\n");
-
-		printf_s("--------Creating requests--------\n");
-
-		network->addRequest(g_doc->createRequest("Request0"));
-		network->addRequest(g_doc->createRequest("Request1"));
-
-		printf_s("--------Requests created successfully.--------\n");
-
-		printf_s("--------Creating nodes--------\n");
-
-		mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
-
-		mcd::PassDownPin* networkResult = rootBt->getResultPin();
-
-		mcd::BlendTreeNode* pBlend2 = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_BLEND2), rootBt, "Blend2_1");
-		mcd::FunctionalPin* source0 = pBlend2->getPin("Source0")->asFunctionalPin();
-		mcd::FunctionalPin* source1 = pBlend2->getPin("Source1")->asFunctionalPin();
-		mcd::FunctionalPin* result = pBlend2->getPin("Result")->asFunctionalPin();
-		mcd::DataPin* weight = pBlend2->getPin("Weight")->asDataPin();
-
-		network->findControlParameter("FloatParam")->getResultDataPin()->connectTo(weight);
-		result->connectTo(networkResult);
-
-		mcd::BlendTreeNode* bt1 = g_doc->createNewBlendTree("BlendTree1", rootBt);
-		mcd::BlendTreeNode* bt2 = g_doc->createNewBlendTree("BlendTree2", rootBt);
-
-		bt1->getResultPin()->connectTo(source0);
-		bt2->getResultPin()->connectTo(source1);
-
-		mcd::BlendTreeNode* sm = dynamic_cast<mcd::BlendTreeNode*>(g_doc->createNewStateMachine("StateMachine1", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), rootBt));
-
-		mcd::StateMachine* smGraph = dynamic_cast<mcd::StateMachine*>(sm->getGraphEntry());
-
-		g_doc->createStateMachineNode(manifest->findStateMachineNodeManifest(MANIFEST_NODE_STATE_MACHINE), smGraph, "SM_Main");
-		g_doc->createNewBlendTree("SM_BlendTree1", smGraph);
-
-		printf_s("--------Nodes created successfully.--------\n");
-
-		g_doc->saveAs("testMorphemeDoc.xml");
+		btRootWithBlend2NodeExample(manifest, network);
+		btRootWithNestedSMExample(manifest, network);
 
 		//manifest->shutdown();
 
