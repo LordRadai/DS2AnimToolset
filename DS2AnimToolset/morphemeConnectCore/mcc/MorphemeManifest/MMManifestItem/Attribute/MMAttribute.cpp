@@ -13,7 +13,7 @@ namespace mcc
 	{
 		std::string type = getType();
 
-		return type == "boolArray" || type == "floatArray" || type == "intArray" || type == "rigChannelName";
+		return type == "boolArray" || type == "floatArray" || type == "intArray" || type == "refArray" || type == "rigChannelName";
 	}
 
 	uint32_t MMAttribute::size() const
