@@ -52,6 +52,7 @@ void btRootWithNestedSMExample(mcc::MorphemeManifest* manifest)
 
 	g_doc->createNewStateMachine("SM_Main", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), smGraph);
 	g_doc->createNewBlendTree("SM_BlendTree1", smGraph);
+	g_doc->createStateMachineNode(manifest->getStateMachineNodeManifest(MANIFEST_STATE_MACHINE_NODE_ACTIVESTATE), smGraph, "ActiveState1");
 
 	g_doc->saveAs("btRootWithNestedSM.xml");
 }

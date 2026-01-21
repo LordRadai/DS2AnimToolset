@@ -2,6 +2,9 @@
 // StateMachine
 #define MANIFEST_NODE_STATE_MACHINE							10
 
+// State Machine Nodes
+#define MANIFEST_STATE_MACHINE_NODE_ACTIVESTATE				137
+
 // Nodes
 #define MANIFEST_NODE_ANIMWITHEVENTS						104
 #define MANIFEST_NODE_APPLYBINDPOSE							115
