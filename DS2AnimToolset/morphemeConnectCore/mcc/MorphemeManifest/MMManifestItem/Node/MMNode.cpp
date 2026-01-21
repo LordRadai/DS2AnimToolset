@@ -7,14 +7,19 @@ namespace mcc
 {
 	MMNode::~MMNode()
 	{
-		for (auto& attr : m_attributes)
-			delete attr;
+		for (size_t i = 0; i < m_attributes.size(); i++)
+			delete m_attributes[i];
 
-		for (auto& pin : m_dataPins)
-			delete pin;
+		for (size_t i = 0; i < m_dataPins.size(); i++)
+			delete m_dataPins[i];
 
-		for (auto& pin : m_functionalPins)
-			delete pin;
+		for (size_t i = 0; i < m_functionalPins.size(); i++)
+			delete m_functionalPins[i];
+
+		m_attributes.clear();
+		m_dataPins.clear();
+		m_functionalPins.clear();
+		m_pinOrder.clear();
 	}
 
 	void MMNode::fromJson(const nlohmann::json& json)

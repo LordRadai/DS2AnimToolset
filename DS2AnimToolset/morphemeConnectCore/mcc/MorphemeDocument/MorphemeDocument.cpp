@@ -237,6 +237,7 @@ namespace mcc
 
 			mcd::BlendTreeNode* newNode = new mcd::BlendTreeNode(parent, name, xPos, yPos, 100.f, 50.f, manifestSM->getName(), manifestSM->getVersion());
 			newNode->setGraphEntry(sm);
+			newNode->addPin(new mcd::FunctionalPin(newNode, "Result"));
 
 			parentBT->addBlendTreeNode(newNode);
 
