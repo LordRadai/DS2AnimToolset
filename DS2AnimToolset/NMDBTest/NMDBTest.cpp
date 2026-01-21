@@ -4,8 +4,14 @@
 mcc::MorphemeDocument* g_doc = nullptr;
 db::Registry* g_registry = nullptr;
 
-void btRootWithBlend2NodeExample(mcc::MorphemeManifest* manifest, mcd::Network* network)
+void btRootWithBlend2NodeExample(mcc::MorphemeManifest* manifest)
 {
+	mcd::MorphemeDB* morphemeDB = g_doc->getMorphemeDB();
+	morphemeDB->removeNetwork();
+
+	morphemeDB->createNetwork("Network");
+	mcd::Network* network = morphemeDB->getNetwork();
+
 	network->addControlParameter(g_doc->createFloatControlParameter("FloatParam", 0.0f, 1.0f, 0.5f));
 
 	mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
@@ -30,8 +36,14 @@ void btRootWithBlend2NodeExample(mcc::MorphemeManifest* manifest, mcd::Network* 
 	g_doc->saveAs("btRootWithBlend2Node.xml");
 }
 
-void btRootWithNestedSMExample(mcc::MorphemeManifest* manifest, mcd::Network* network)
+void btRootWithNestedSMExample(mcc::MorphemeManifest* manifest)
 {
+	mcd::MorphemeDB* morphemeDB = g_doc->getMorphemeDB();
+	morphemeDB->removeNetwork();
+
+	morphemeDB->createNetwork("Network");
+	mcd::Network* network = morphemeDB->getNetwork();
+
 	mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
 
 	mcd::BlendTreeNode* sm = dynamic_cast<mcd::BlendTreeNode*>(g_doc->createNewStateMachine("StateMachine1", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), rootBt));
@@ -64,11 +76,8 @@ int main()
 
 		printf_s("--------Manifest loaded successfully.--------\n");
 
-		g_doc->getMorphemeDB()->createNetwork("Network");
-		mcd::Network* network = g_doc->getMorphemeDB()->getNetwork();
-
-		btRootWithBlend2NodeExample(manifest, network);
-		btRootWithNestedSMExample(manifest, network);
+		btRootWithBlend2NodeExample(manifest);
+		btRootWithNestedSMExample(manifest);
 
 		manifest->shutdown();
 

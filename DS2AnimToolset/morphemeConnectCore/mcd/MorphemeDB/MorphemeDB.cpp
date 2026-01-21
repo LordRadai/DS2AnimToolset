@@ -20,6 +20,14 @@ namespace mcd
 		m_networks->add(new mcd::Network(this, name));
 	}
 
+	void MorphemeDB::removeNetwork()
+	{
+		if (m_networks->size() == 0)
+			return;
+
+		m_networks->remove(m_networks->getNode(0));
+	}
+
 	Network* MorphemeDB::getNetwork() const
 	{
 		if (m_networks->size() == 0)

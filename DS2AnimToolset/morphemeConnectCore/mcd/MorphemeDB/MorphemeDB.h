@@ -21,6 +21,7 @@ namespace mcd
 		~MorphemeDB() override {};
 
 		void createNetwork(const std::string& name);
+		void removeNetwork();
 		Network* getNetwork() const;
 
 		/*
