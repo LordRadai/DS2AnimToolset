@@ -72,7 +72,7 @@ namespace db
 	{
 		if (writeStartArrayXML(format, saver))
 		{
-			m_xmlElement->SetAttribute("elemType", getElemType().c_str());
+			m_xmlElement->SetAttribute("elemType", m_elemType.c_str());
 
 			for (size_t i = 0; i < m_attributes.size(); ++i)
 			{
@@ -90,13 +90,5 @@ namespace db
 	{
 		m_xmlElement->SetAttribute("size", size());
 		return true;
-	}
-
-	std::string AttributeArray::getElemType() const
-	{
-		if (m_attributes.empty())
-			return "unknown";
-
-		return m_attributes.front()->getType();
 	}
 }

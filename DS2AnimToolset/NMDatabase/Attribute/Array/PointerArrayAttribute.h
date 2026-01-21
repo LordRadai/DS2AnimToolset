@@ -8,7 +8,7 @@ namespace db
 	{
 	public:
 		PointerArrayAttribute(CompositeAttribute* parent, const std::string& name) :
-			AttributeArray(parent, name)
+			AttributeArray(parent, name, "pointer")
 		{};
 
 		virtual ~PointerArrayAttribute() override {}

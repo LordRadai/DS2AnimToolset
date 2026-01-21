@@ -4,7 +4,7 @@ namespace mcd
 {
 	BoolArrayAttribute::BoolArrayAttribute(db::CompositeAttribute* parent, std::string name)
 		: Attribute(parent, "BoolArrayAttribute", name),
-		m_valueAttr(new db::TypedAttributeArray<db::BoolAttribute>(this, "Value"))
+		m_valueAttr(new db::TypedAttributeArray<db::BoolAttribute>(this, "Value", "bool"))
 	{}
 
 	void BoolArrayAttribute::removeElement(int index)

@@ -5,9 +5,12 @@ namespace db
 {
 	class AttributeArray : public AttributeContainer
 	{
+		std::string m_elemType;
 	public:
-		AttributeArray(CompositeAttribute* parent, std::string name) :
-			AttributeContainer(parent, name, "attributeArray") { };
+		AttributeArray(CompositeAttribute* parent, std::string name, std::string elemType) :
+			AttributeContainer(parent, name, "attributeArray"),
+			m_elemType(elemType)
+		{ };
 
 		virtual ~AttributeArray() override {};
 		virtual void assign(db::Attribute* other) override;
@@ -20,7 +23,5 @@ namespace db
 
 		Attribute* add();
 		Attribute* insert(int idx);
-
-		std::string getElemType() const;
 	};
 }

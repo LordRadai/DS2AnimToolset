@@ -6,10 +6,10 @@ namespace db
 	template<typename T>
 	class TypedAttributeArray : public db::AttributeArray
 	{
-		static_assert(std::is_base_of<db::Attribute, T>::value, "T must be derived from db::Node");
+		static_assert(std::is_base_of<db::Attribute, T>::value, "T must be derived from db::Attribute");
 	public:
-		TypedAttributeArray(CompositeAttribute* parent, std::string name)
-			: AttributeArray(parent, name)
+		TypedAttributeArray(CompositeAttribute* parent, std::string name, std::string typeName)
+			: AttributeArray(parent, name, typeName)
 		{}
 
 		T* add()
