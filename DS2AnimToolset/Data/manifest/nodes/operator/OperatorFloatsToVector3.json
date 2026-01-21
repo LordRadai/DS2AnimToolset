@@ -11,9 +11,9 @@
     ],
     "image": "OperatorFloatsToVector3.png",
     "version": 1,
-    "attributes": {
-
-    },
+    "attributes": [
+        
+    ],
     "dataPins": {
         "FloatZ": {
             "input": true,

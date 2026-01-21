@@ -14,9 +14,9 @@
         "Result": {
             "input": false,
             "interfaces": {
-                "optional": {
-
-                },
+                "optional": [
+                    
+                ],
                 "required": [
                     "Time"
                 ]
@@ -26,9 +26,9 @@
         "Source": {
             "input": true,
             "interfaces": {
-                "optional": {
-
-                },
+                "optional": [
+                    
+                ],
                 "required": [
                     "Time"
                 ]

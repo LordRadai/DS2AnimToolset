@@ -169,9 +169,9 @@
         "Result": {
             "input": false,
             "interfaces": {
-                "optional": {
-
-                },
+                "optional": [
+                    
+                ],
                 "required": [
                     "Transforms",
                     "Time"
@@ -182,9 +182,9 @@
         "Source": {
             "input": true,
             "interfaces": {
-                "optional": {
-
-                },
+                "optional": [
+                    
+                ],
                 "required": [
                     "Transforms",
                     "Time"

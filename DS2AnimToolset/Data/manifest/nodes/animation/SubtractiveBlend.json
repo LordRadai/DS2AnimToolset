@@ -3,9 +3,9 @@
     "getTransformChannels": null,
     "upgrade": null,
     "group": "Blends",
-    "dataPins": {
-
-    },
+    "dataPins": [
+        
+    ],
     "validate": null,
     "displayName": "Subtractive Blend",
     "pinOrder": [

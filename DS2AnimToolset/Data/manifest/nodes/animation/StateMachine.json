@@ -8,15 +8,15 @@
     ],
     "image": "StateMachine.png",
     "version": 1,
-    "attributes": {
-
-    },
-    "functionPins": {
-
-    },
-    "interfaces": {
-
-    },
+    "attributes": [
+        
+    ],
+    "functionPins": [
+        
+    ],
+    "interfaces": [
+        
+    ],
     "helptext": "Create a State Machine",
     "id": 10
 }

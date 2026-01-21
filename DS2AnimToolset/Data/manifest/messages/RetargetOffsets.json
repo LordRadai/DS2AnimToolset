@@ -1,16 +1,16 @@
 {
     "serialize": null,
-    "presets": {
-
-    },
+    "presets": [
+        
+    ],
     "upgrade": null,
     "id": 102,
     "displayFunction": null,
     "version": 1,
     "supportsPresets": false,
-    "attributes": {
-
-    },
+    "attributes": [
+        
+    ],
     "helptext": "Internal message to update the retargeting system",
     "compareToPreset": null
 }

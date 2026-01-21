@@ -18,9 +18,9 @@
             "input": false,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
+                "optional": [
+                    
+                ],
                 "required": [
                     "Time"
                 ]
@@ -31,18 +31,18 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
+                "optional": [
+                    
+                ],
                 "required": [
                     "Time"
                 ]
             }
         }
     },
-    "attributes": {
-
-    },
+    "attributes": [
+        
+    ],
     "helptext": "Overrides source time with the global network time",
     "getEvents": null
 }

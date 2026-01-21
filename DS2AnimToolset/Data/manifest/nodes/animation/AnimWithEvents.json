@@ -13,9 +13,9 @@
             "input": false,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
+                "optional": [
+                    
+                ],
                 "required": [
                     "Transforms",
                     "Time",

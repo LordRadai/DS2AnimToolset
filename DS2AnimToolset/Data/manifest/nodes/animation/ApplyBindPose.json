@@ -18,9 +18,9 @@
             "input": false,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
+                "optional": [
+                    
+                ],
                 "required": [
                     "Transforms"
                 ]
@@ -31,18 +31,18 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
+                "optional": [
+                    
+                ],
                 "required": [
                     "Transforms"
                 ]
             }
         }
     },
-    "attributes": {
-
-    },
+    "attributes": [
+        
+    ],
     "helptext": "Applies the active rigs bind pose transforms to any currently uninitialised bone transforms.",
     "getEvents": null
 }

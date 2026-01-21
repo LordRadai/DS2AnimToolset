@@ -12,9 +12,9 @@
             "input": false,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
+                "optional": [
+                    
+                ],
                 "required": [
                     "Transforms",
                     "Time",
@@ -23,9 +23,9 @@
             }
         }
     },
-    "attributes": {
-
-    },
+    "attributes": [
+        
+    ],
     "helptext": "Outputs the last transformation state of the system",
     "getEvents": null
 }

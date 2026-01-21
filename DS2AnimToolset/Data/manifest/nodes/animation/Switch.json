@@ -72,12 +72,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Source4": {
@@ -85,12 +85,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Source5": {
@@ -98,12 +98,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Source9": {
@@ -111,12 +111,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Source8": {
@@ -124,12 +124,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Source1": {
@@ -137,12 +137,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Source7": {
@@ -150,12 +150,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Source2": {
@@ -163,12 +163,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Source0": {
@@ -176,12 +176,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Source10": {
@@ -189,12 +189,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Result": {
@@ -202,12 +202,12 @@
             "input": false,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Source3": {
@@ -215,12 +215,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         }
     },

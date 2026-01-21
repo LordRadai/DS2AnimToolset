@@ -10,9 +10,9 @@
     ],
     "image": "OperatorVector3RateOfChange.png",
     "version": 1,
-    "attributes": {
-
-    },
+    "attributes": [
+        
+    ],
     "dataPins": {
         "Input": {
             "input": true,

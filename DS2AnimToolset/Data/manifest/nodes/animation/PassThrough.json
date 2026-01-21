@@ -16,12 +16,12 @@
             "input": false,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         },
         "Source": {
@@ -29,12 +29,12 @@
             "input": true,
             "array": false,
             "interfaces": {
-                "optional": {
-
-                },
-                "required": {
-
-                }
+                "optional": [
+                    
+                ],
+                "required": [
+                    
+                ]
             }
         }
     },
