@@ -23,7 +23,7 @@ namespace mcd
 		if (m_valueAttr->empty())
 			addAttribute(m_valueAttr.get());
 
-		db::BoolAttribute* attr = dynamic_cast<db::BoolAttribute*>(m_valueAttr->add());
+		db::BoolAttribute* attr = m_valueAttr->add();
 		attr->setValue(value);
 	}
 

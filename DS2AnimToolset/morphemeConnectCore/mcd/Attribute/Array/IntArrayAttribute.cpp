@@ -25,7 +25,7 @@ namespace mcd
 		if (m_valueAttr->empty())
 			addAttribute(m_valueAttr.get());
 
-		db::IntAttribute* attr = dynamic_cast<db::IntAttribute*>(m_valueAttr->add());
+		db::IntAttribute* attr = m_valueAttr->add();
 		attr->setValue(value);
 	}
 
