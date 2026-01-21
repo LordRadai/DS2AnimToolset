@@ -207,24 +207,20 @@ namespace mcc
 
 	void MorphemeManifest::shutdown()
 	{
-		// Unregister all state machines
-		for (size_t i = 0; i < m_registeredStateMachines.size(); i++)
-			unregisterStateMachine(i);
+		while (!m_registeredStateMachines.empty())
+			unregisterStateMachine(0);
 
-		for (size_t i = 0; i < m_registeredStateMachineNodes.size(); i++)
-			unregisterStateMachineNode(i);
+		while (!m_registeredStateMachineNodes.empty())
+			unregisterStateMachineNode(0);
 
-		// Unregister all nodes
-		for (size_t i = 0; i < m_registeredNodes.size(); i++)
-			unregisterNode(i);
+		while (!m_registeredNodes.empty())
+			unregisterNode(0);
 
-		// Unregister all conditions
-		for (size_t i = 0; i < m_registeredConditions.size(); i++)
-			unregisterCondition(i);
+		while (!m_registeredConditions.empty())
+			unregisterCondition(0);
 
-		// Unregister all transitions
-		for (size_t i = 0; i < m_regosteredTransitions.size(); i++)
-			unregisterTransition(i);
+		while (!m_regosteredTransitions.empty())
+			unregisterTransition(0);
 	}
 
 	MMStateMachine* MorphemeManifest::getStateMachineManifest(uint32_t index)
