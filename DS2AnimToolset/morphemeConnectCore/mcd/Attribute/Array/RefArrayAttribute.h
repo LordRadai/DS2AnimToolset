@@ -1,13 +1,13 @@
 #pragma once
 #include "../Attribute.h"
-#include "NMDBExtensions/TypedAttributeArray.inl"
+#include "NMDBExtensions/PointerArray.inl"
 #include "mcd/AttributePinNodeBase/AttributePinNodeBase.h"
 
 namespace mcd
 {
 	class RefArrayAttribute : public Attribute
 	{
-		std::unique_ptr<db::TypedAttributeArray<AttributePinNodeBase>> m_valueAttr = nullptr;
+		std::unique_ptr<db::PointerArray<AttributePinNodeBase>> m_valueAttr = nullptr;
 	public:
 		RefArrayAttribute(db::CompositeAttribute* parent, std::string name);
 
@@ -21,6 +21,6 @@ namespace mcd
 		AttributePinNodeBase* getElement(int index);
 
 		uint32_t size() const { return m_valueAttr->size(); }
-		bool empty() const { return m_valueAttr->empty(); }
+		bool empty() const { return m_valueAttr->size() == 0; }
 	};
 }

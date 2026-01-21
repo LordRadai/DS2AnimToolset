@@ -3,6 +3,40 @@
 
 namespace db
 {
+	void AttributeArray::assign(db::Attribute* other)
+	{
+		AttributeArray* otherArray = other->asAttributeArray();
+
+		if (otherArray == nullptr)
+			throw std::runtime_error("AttributeArray::assign() failed - Other attribute is not an AttributeArray");
+
+		m_attributes.clear();
+		m_attributes.reserve(otherArray->size());
+		for (size_t i = 0; i < otherArray->size(); ++i)
+		{
+			Attribute* attr = otherArray->getAttribute(i);
+			if (attr != nullptr)
+				m_attributes.push_back(attr);
+		}
+	}
+
+	Attribute* AttributeArray::add()
+	{
+		Attribute* attr = new IntAttribute(this, "elem", 0);
+
+		insertAttribute(static_cast<int>(m_attributes.size()), attr);
+
+		return attr;
+	}
+
+	Attribute* AttributeArray::insert(int idx)
+	{
+		Attribute* attr = new IntAttribute(this, "elem", 0);
+		insertAttribute(idx, attr);
+
+		return attr;
+	}
+
 	bool AttributeArray::readValueXML(int format, db::XMLElement* element, LoaderXML* loader)
 	{
 		if (!element)
@@ -30,7 +64,7 @@ namespace db
 				throw std::runtime_error("AttributeArray::readValueXML: Unknown attribute type '" + std::string(child->getAttribute("type")) + "'.");
 
 			attr->readValueXML(format, child, loader);
-			this->add(attr);
+			insertAttribute(static_cast<int>(m_attributes.size()), attr);
 		}
 	}
 
@@ -56,5 +90,13 @@ namespace db
 	{
 		m_xmlElement->SetAttribute("size", size());
 		return true;
+	}
+
+	std::string AttributeArray::getElemType() const
+	{
+		if (m_attributes.empty())
+			return "unknown";
+
+		return m_attributes.front()->getType();
 	}
 }

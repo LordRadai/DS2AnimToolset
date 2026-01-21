@@ -18,6 +18,7 @@
 #include "Attribute/Array/QuaternionArrayAttribute.h"
 #include "Attribute/Array/Matrix34ArrayAttribute.h"
 #include "Attribute/Array/AttributeArray.h"
+#include "Attribute/Array/PointerArrayAttribute.h"
 
 #include "Attribute/CompositeAttribute/CompositeAttribute.h"
 #include "Attribute/CompoundAttribute/CompoundAttribute.h"

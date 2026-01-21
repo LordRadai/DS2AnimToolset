@@ -157,6 +157,7 @@
     <ClCompile Include="Attribute\Array\FloatArrayAttribute.cpp" />
     <ClCompile Include="Attribute\Array\IntArrayAttribute.cpp" />
     <ClCompile Include="Attribute\Array\Matrix34ArrayAttribute.cpp" />
+    <ClCompile Include="Attribute\Array\PointerArrayAttribute.cpp" />
     <ClCompile Include="Attribute\Array\QuaternionArrayAttribute.cpp" />
     <ClCompile Include="Attribute\Array\StringArrayAttribute.cpp" />
     <ClCompile Include="Attribute\Array\Vector3ArrayAttribute.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Attribute\Array\FloatArrayAttribute.h" />
     <ClInclude Include="Attribute\Array\IntArrayAttribute.h" />
     <ClInclude Include="Attribute\Array\Matrix34ArrayAttribute.h" />
+    <ClInclude Include="Attribute\Array\PointerArrayAttribute.h" />
     <ClInclude Include="Attribute\Array\QuaternionArrayAttribute.h" />
     <ClInclude Include="Attribute\Array\StringArrayAttribute.h" />
     <ClInclude Include="Attribute\Array\Vector3ArrayAttribute.h" />

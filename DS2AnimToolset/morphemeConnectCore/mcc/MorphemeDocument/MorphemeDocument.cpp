@@ -148,6 +148,9 @@ namespace mcc
 
 			smNode->setXPos(xPos);
 			smNode->setYPos(yPos);
+			smNode->setNodeType(manifestNode->getName());
+			smNode->setManifestVersion(manifestNode->getVersion());
+
 			smParent->addStateMachineNode(smNode);
 
 			return smNode;
