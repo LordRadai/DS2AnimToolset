@@ -25,7 +25,8 @@ namespace mcd
 		if (m_valueAttr->empty())
 			addAttribute(m_valueAttr.get());
 
-		m_valueAttr->add(new db::IntAttribute(this, "elem", value));
+		db::IntAttribute* attr = dynamic_cast<db::IntAttribute*>(m_valueAttr->add());
+		attr->setValue(value);
 	}
 
 	bool IntArrayAttribute::assignValue(Attribute* other)

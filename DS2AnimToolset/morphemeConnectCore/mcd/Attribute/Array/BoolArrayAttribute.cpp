@@ -23,7 +23,8 @@ namespace mcd
 		if (m_valueAttr->empty())
 			addAttribute(m_valueAttr.get());
 
-		m_valueAttr->add(new db::BoolAttribute(this, "elem", value));
+		db::BoolAttribute* attr = dynamic_cast<db::BoolAttribute*>(m_valueAttr->add());
+		attr->setValue(value);
 	}
 
 	bool BoolArrayAttribute::assignValue(Attribute* other)

@@ -7,7 +7,7 @@ namespace db
 	class PointerArray : public db::PointerArrayAttribute
 	{
 	public:
-		PointerArray(db::Attribute* parent, const std::string& name)
+		PointerArray(db::CompositeAttribute* parent, const std::string& name)
 			: db::PointerArrayAttribute(parent, name)
 		{}
 	};

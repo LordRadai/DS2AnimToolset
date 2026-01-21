@@ -11,8 +11,5 @@ namespace db
 		TypedAttributeArray(CompositeAttribute* parent, std::string name)
 			: AttributeArray(parent, name)
 		{}
-
-		void add(T* value) { return AttributeArray::add(value); }
-		void insert(T* value, int idx) { return AttributeArray::insert(value, idx); }
 	};
 }

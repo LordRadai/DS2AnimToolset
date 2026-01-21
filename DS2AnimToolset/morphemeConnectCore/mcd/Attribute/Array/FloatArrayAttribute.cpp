@@ -24,7 +24,8 @@ namespace mcd
 		if (m_valueAttr->empty())
 			addAttribute(m_valueAttr.get());
 
-		m_valueAttr->add(new db::FloatAttribute(this, "elem", value));
+		db::FloatAttribute* attr = dynamic_cast<db::FloatAttribute*>(m_valueAttr->add());
+		attr->setValue(value);
 	}
 
 	bool FloatArrayAttribute::assignValue(Attribute* other)
