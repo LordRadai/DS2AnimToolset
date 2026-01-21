@@ -70,7 +70,7 @@ int main()
 		btRootWithBlend2NodeExample(manifest, network);
 		btRootWithNestedSMExample(manifest, network);
 
-		//manifest->shutdown();
+		manifest->shutdown();
 
 		delete g_doc;
 	}
