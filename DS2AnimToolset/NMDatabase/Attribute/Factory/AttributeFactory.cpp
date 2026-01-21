@@ -20,10 +20,9 @@ namespace db
 		if (typeName == "doubleArray") return new DoubleArrayAttribute(nullptr, "");
 		if (typeName == "stringArray") return new StringArrayAttribute(nullptr, "");
 		if (typeName == "enumArray") return new EnumArrayAttribute(nullptr, "");
-		if (typeName == "attributeArray") return new AttributeArray(nullptr, "");
 		if (typeName == "vector3Array") return new Vector3ArrayAttribute(nullptr, "");
 		if (typeName == "matrix34Array") return new Matrix34ArrayAttribute(nullptr, "");
-		//if (typeName == "pointerArray") return new PointerArrayAttribute(nullptr, "");
+		if (typeName == "pointerArray") return new PointerArrayAttribute(nullptr, "");
 		if (typeName == "quaternionArray") return new QuaternionArrayAttribute(nullptr, "");
 
 		return nullptr; // Unknown type

@@ -9,6 +9,7 @@
 #include "Attribute/SingleValue/Matrix34Attribute.h"
 #include "Attribute/SingleValue/PointerAttribute.h"
 #include "Attribute/SingleValue/QuaternionAttribute.h"
+
 #include "Attribute/Array/BoolArrayAttribute.h"
 #include "Attribute/Array/IntArrayAttribute.h"
 #include "Attribute/Array/FloatArrayAttribute.h"
@@ -19,6 +20,8 @@
 #include "Attribute/Array/Vector3ArrayAttribute.h"
 #include "Attribute/Array/Matrix34ArrayAttribute.h"
 #include "Attribute/Array/QuaternionArrayAttribute.h"
+#include "Attribute/Array/PointerArrayAttribute.h"
+
 #include "Node/Node.h"
 #include "NodeContainer/NodeContainer.h"
 
