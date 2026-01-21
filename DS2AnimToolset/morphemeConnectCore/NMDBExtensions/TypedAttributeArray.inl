@@ -14,7 +14,7 @@ namespace db
 
 		T* add()
 		{
-			insert(size());
+			T* attr = insert(size());
 
 			return attr;
 		}
