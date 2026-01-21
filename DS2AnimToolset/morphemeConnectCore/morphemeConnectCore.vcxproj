@@ -171,6 +171,7 @@
     <ClCompile Include="mcd\Attribute\Array\BoolArrayAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\Array\FloatArrayAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\Array\IntArrayAttribute.cpp" />
+    <ClCompile Include="mcd\Attribute\Array\RefArrayAttribute.cpp" />
     <ClCompile Include="mcd\Attribute\Attribute.cpp" />
     <ClCompile Include="mcd\Attribute\AttributePlaceholder\AttributePlaceholder.cpp" />
     <ClCompile Include="mcd\Attribute\RequestAttribute\RequestAttribute.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="mcc\AttributeInfo\AttributeInfo.h" />
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\StateMachine\MMStateMachineNode.h" />
     <ClInclude Include="mcd\AttributePinNodeBase\AttributePinNodeBase.h" />
+    <ClInclude Include="mcd\Attribute\Array\RefArrayAttribute.h" />
     <ClInclude Include="mcd\Attribute\RequestAttribute\RequestAttribute.h" />
     <ClInclude Include="mcd\Attribute\RigChannelName\RigChannelNameAttribute.h" />
     <ClInclude Include="mcu\Log.h" />

@@ -52,40 +52,33 @@ void btRootWithNestedSMExample(mcc::MorphemeManifest* manifest)
 
 	g_doc->createNewStateMachine("SM_Main", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), smGraph);
 	g_doc->createNewBlendTree("SM_BlendTree1", smGraph);
-	g_doc->createStateMachineNode(manifest->getStateMachineNodeManifest(MANIFEST_STATE_MACHINE_NODE_ACTIVESTATE), smGraph, "ActiveState1");
+	g_doc->createStateMachineNode(manifest->findStateMachineNodeManifest(MANIFEST_STATE_MACHINE_NODE_ACTIVESTATE), smGraph, "ActiveState1");
 
 	g_doc->saveAs("btRootWithNestedSM.xml");
 }
 
 int main()
 {
-	try
-	{
-		g_registry = db::Registry::getInstance();
-		g_registry->enableRuntimeIDGeneration(true);
+	g_registry = db::Registry::getInstance();
+	g_registry->enableRuntimeIDGeneration(true);
 
-		g_doc = new mcc::MorphemeDocument();
+	g_doc = new mcc::MorphemeDocument();
 
-		printf_s("--------Loading manifest--------\n");
+	printf_s("--------Loading manifest--------\n");
 
-		mcc::MorphemeManifest* manifest = g_doc->getManifest();
+	mcc::MorphemeManifest* manifest = g_doc->getManifest();
 
-		if (!manifest->init())
-			throw std::runtime_error("Failed to initialize Morpheme manifest.");
+	if (!manifest->init())
+		throw std::runtime_error("Failed to initialize Morpheme manifest.");
 
-		manifest->printRegisteredManifests();
+	manifest->printRegisteredManifests();
 
-		printf_s("--------Manifest loaded successfully.--------\n");
+	printf_s("--------Manifest loaded successfully.--------\n");
 
-		btRootWithBlend2NodeExample(manifest);
-		btRootWithNestedSMExample(manifest);
+	btRootWithBlend2NodeExample(manifest);
+	btRootWithNestedSMExample(manifest);
 
-		//manifest->shutdown();
+	//manifest->shutdown();
 
-		delete g_doc;
-	}
-	catch (const std::exception& e)
-	{
-		MessageBoxA(NULL, e.what(), "Exception Caught", MB_OK | MB_ICONERROR);
-	}
+	delete g_doc;
 }

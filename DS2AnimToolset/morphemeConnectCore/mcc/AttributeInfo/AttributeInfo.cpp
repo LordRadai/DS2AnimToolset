@@ -9,6 +9,7 @@
 #include "mcd/Attribute/Array/BoolArrayAttribute.h"
 #include "mcd/Attribute/Array/FloatArrayAttribute.h"
 #include "mcd/Attribute/Array/IntArrayAttribute.h"
+#include "mcd/Attribute/Array/RefArrayAttribute.h"
 
 #include "mcd/Attribute/RigChannelName/RigChannelNameAttribute.h"
 #include "mcd/Attribute/AnimationSet/AnimationSetAttribute.h"
@@ -96,6 +97,9 @@ namespace mcc
 		case mcc::AttributeInfo::AttributeType::kAnimationTake:
 			attribute = new mcd::AnimationTakeAttribute(parent, m_manifestAttribute->getName());
 			break;
+		case mcc::AttributeInfo::AttributeType::kRef:
+			attribute = new mcd::RefAttribute(parent, m_manifestAttribute->getName(), mcd::RefAttribute::stringAsRefKind(m_manifestAttribute->getRefKind().c_str()), m_manifestAttribute->isWeakRef());
+			break;
 		case mcc::AttributeInfo::AttributeType::kBoolArray:
 			attribute = new mcd::BoolArrayAttribute(parent, m_manifestAttribute->getName());
 
@@ -114,14 +118,17 @@ namespace mcc
 			for (int i = 0; i < m_manifestAttribute->size(); i++)
 				dynamic_cast<mcd::IntArrayAttribute*>(attribute)->addElement(m_manifestAttribute->getIntValue(i));
 			break;
+		case mcc::AttributeInfo::AttributeType::kRefArray:
+			attribute = new mcd::RefArrayAttribute(parent, m_manifestAttribute->getName());
+
+			if (m_manifestAttribute->size() > 0)
+				throw std::runtime_error("RefArrayAttribute creation from manifest is not yet implemented.");
+			break;
 		case mcc::AttributeInfo::AttributeType::kRigChannelNames:
 			attribute = new mcd::RigChannelNameAttribute(parent, m_manifestAttribute->getName());
 			break;
 		case mcc::AttributeInfo::AttributeType::kRequest:
 			attribute = new mcd::RequestAttribute(parent, m_manifestAttribute->getName());
-			break;
-		case mcc::AttributeInfo::AttributeType::kRef:
-			attribute = new mcd::RefAttribute(parent, m_manifestAttribute->getName(), mcd::RefAttribute::stringAsRefKind(m_manifestAttribute->getRefKind().c_str()), m_manifestAttribute->isWeakRef());
 			break;
 		default:
 			throw std::runtime_error("Unhandled attribute type: " + getManifestDataTypeName(m_attribType));

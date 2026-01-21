@@ -165,6 +165,9 @@
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\StateMachine\MMStateMachineNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\Attribute\Array\RefArrayAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -345,6 +348,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\StateMachine\MMStateMachineNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\Attribute\Array\RefArrayAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
