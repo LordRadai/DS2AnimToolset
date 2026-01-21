@@ -3,7 +3,8 @@
 namespace mcd
 {
 	RefArrayAttribute::RefArrayAttribute(db::CompositeAttribute* parent, std::string name)
-		: Attribute(parent, name, "Value")
+		: Attribute(parent, name, "Value"),
+		m_valueAttr(std::make_unique<db::TypedAttributeArray<AttributePinNodeBase>>(this, "Value"))
 	{
 		this->addAttribute(m_valueAttr.get());
 	}
