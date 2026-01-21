@@ -162,6 +162,9 @@
     <ClCompile Include="mcu\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\StateMachine\MMStateMachineNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -339,6 +342,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcu\OutputMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\StateMachine\MMStateMachineNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

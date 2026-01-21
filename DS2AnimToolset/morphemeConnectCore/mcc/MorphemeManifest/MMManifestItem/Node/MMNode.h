@@ -14,6 +14,7 @@ namespace mcc
 {
 	class MMNode : public MMManifestItemBase
 	{
+	protected:
 		std::vector<MMAttribute*> m_attributes;
 		std::vector<MMDataPin*> m_dataPins;
 		std::vector<MMFunctionalPin*> m_functionalPins;

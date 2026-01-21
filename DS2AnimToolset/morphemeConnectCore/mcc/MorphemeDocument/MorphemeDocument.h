@@ -6,6 +6,7 @@
 #include "mcd/BlendTree/BlendTree.h"
 #include "mcd/StateMachine/StateMachine.h"
 #include "mcc/MorphemeManifest/MMManifestItem/StateMachine/MMStateMachine.h"
+#include "mcc/MorphemeManifest/MMManifestItem/StateMachine/MMStateMachineNode.h"
 #include "mcd/Pin/DataPin.h"
 
 namespace mcc
@@ -147,6 +148,28 @@ namespace mcc
 		mcd::BlendTreeNode* createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& name);
 
 		/**
+		 * \brief Creates a state machine node at the specified x and y coordinates.
+		 * 
+		 * \param manifestNode The manifest state machine node to create the state machine node from.
+		 * \param parent The parent graph for the new state machine node.
+		 * \param name The name of the new state machine node. If left empty, it will use the default name from the manifest.
+		 * \param xPos The x position of the new state machine node.
+		 * \param yPos The y position of the new state machine node.
+		 * \return A pointer to the created state machine node.
+		 */
+		mcd::StateMachineNode* createStateMachineNode(mcc::MMStateMachineNode* manifestNode, mcd::Graph* parent, const std::string& name, float xPos, float yPos);
+
+		/**
+		 * \brief Creates a state machine node at the first free position under the parent graph.
+		 * 
+		 * \param manifestNode The manifest state machine node to create the state machine node from.
+		 * \param parent The parent graph for the new state machine node.
+		 * \param name The name of the new state machine node.
+		 * \return A pointer to the created state machine node.
+		 */
+		mcd::StateMachineNode* createStateMachineNode(mcc::MMStateMachineNode* manifestNode, mcd::Graph* parent, const std::string& name);
+
+		/**
 		 * \brief Creates a new blend tree with the specified name and parent state machine.
 		 * 
 		 * \param name The name of the new blend tree.
@@ -208,10 +231,32 @@ namespace mcc
 		 */
 		mcd::GraphNode* createNewStateMachine(const std::string& name, mcc::MMStateMachine* manifestSM, mcd::Graph* parent);
 
+		/**
+		 * \brief Sets a default name for the specified node under the given parent.
+		 * 
+		 * \param node The node to set the default name for.
+		 * \param parent The parent node.
+		 */
+		void setDefaultName(db::Node* node, db::Node* parent);
+
+		/**
+		 * \brief Creates a new request with the specified name.
+		 * 
+		 * \param name The name of the new request.
+		 * \return A pointer to the created request.
+		 */
 		mcd::Request* createRequest(const std::string& name);
 
+		/**
+		 * \brief Saves a Morpheme document to XML.
+		 */
 		void save();
 
+		/**
+		 * \brief Saves the Morpheme document to the specified file path.
+		 * 
+		 * \param filename The file path to save the Morpheme document to.
+		 */
 		void saveAs(const std::string& filename);
 	};
 }

@@ -67,6 +67,13 @@ int main()
 		bt1->getResultPin()->connectTo(source0);
 		bt2->getResultPin()->connectTo(source1);
 
+		mcd::BlendTreeNode* sm = dynamic_cast<mcd::BlendTreeNode*>(g_doc->createNewStateMachine("StateMachine1", manifest->findStateMachineManifest(MANIFEST_NODE_STATE_MACHINE), rootBt));
+
+		mcd::StateMachine* smGraph = dynamic_cast<mcd::StateMachine*>(sm->getGraphEntry());
+
+		g_doc->createStateMachineNode(manifest->findStateMachineNodeManifest(MANIFEST_NODE_STATE_MACHINE), smGraph, "SM_Main");
+		g_doc->createNewBlendTree("SM_BlendTree1", smGraph);
+
 		printf_s("--------Nodes created successfully.--------\n");
 
 		g_doc->saveAs("testMorphemeDoc.xml");

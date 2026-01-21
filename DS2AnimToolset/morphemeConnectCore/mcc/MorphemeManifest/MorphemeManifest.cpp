@@ -28,7 +28,37 @@ namespace mcc
 		if (index >= m_registeredStateMachines.size())
 			throw std::out_of_range("Index out of range for registered state machines");
 
+		delete m_registeredStateMachines[index];
 		m_registeredStateMachines.erase(m_registeredStateMachines.begin() + index);
+	}
+
+	void MorphemeManifest::registerStateMachineNode(std::string manifestPath)
+	{
+		if (!std::filesystem::exists(manifestPath))
+			throw std::runtime_error("Manifest file does not exist: " + manifestPath);
+
+		std::ifstream file(manifestPath);
+		nlohmann::json jsonData = nlohmann::json::parse(file);
+
+		file.close();
+
+		if (!jsonData.is_object())
+			throw std::runtime_error("Invalid JSON format for MorphemeManifest state machine node registration");
+
+		MMStateMachineNode* stateMachineNode = new MMStateMachineNode(jsonData);
+		stateMachineNode->setName(std::filesystem::path(manifestPath).filename().replace_extension("").string());
+
+		m_registeredStateMachineNodes.push_back(stateMachineNode);
+	}
+
+	void MorphemeManifest::unregisterStateMachineNode(uint32_t index)
+	{
+		if (index >= m_registeredStateMachineNodes.size())
+			throw std::out_of_range("Index out of range for registered state machine nodes");
+
+		delete m_registeredStateMachineNodes[index];
+
+		m_registeredStateMachineNodes.erase(m_registeredStateMachineNodes.begin() + index);
 	}
 
 	void MorphemeManifest::registerNode(std::string manifestPath)
@@ -129,6 +159,7 @@ namespace mcc
 		}
 
 		registerStateMachine("Data\\manifest\\nodes\\animation\\StateMachine.json");
+		registerStateMachineNode("Data\\manifest\\nodes\\animation\\StateMachine.json");
 
 		for (const auto& entry : std::filesystem::recursive_directory_iterator("Data\\manifest\\nodes\\"))
 		{
@@ -180,6 +211,9 @@ namespace mcc
 		for (size_t i = 0; i < m_registeredStateMachines.size(); i++)
 			unregisterStateMachine(i);
 
+		for (size_t i = 0; i < m_registeredStateMachineNodes.size(); i++)
+			unregisterStateMachineNode(i);
+
 		// Unregister all nodes
 		for (size_t i = 0; i < m_registeredNodes.size(); i++)
 			unregisterNode(i);
@@ -212,6 +246,47 @@ namespace mcc
 		return nullptr;
 	}
 
+	MMStateMachine* MorphemeManifest::findStateMachineManifest(const std::string& name)
+	{
+		for (auto& stateMachine : m_registeredStateMachines)
+		{
+			if (stateMachine->getName() == name)
+				return stateMachine;
+		}
+
+		return nullptr;
+	}
+
+	MMStateMachineNode* MorphemeManifest::getStateMachineNodeManifest(uint32_t index)
+	{
+		if (index >= m_registeredStateMachineNodes.size())
+			return nullptr;
+
+		return m_registeredStateMachineNodes[index];
+	}
+
+	MMStateMachineNode* MorphemeManifest::findStateMachineNodeManifest(uint32_t id)
+	{
+		for (auto& stateMachineNode : m_registeredStateMachineNodes)
+		{
+			if (stateMachineNode->getID() == id)
+				return stateMachineNode;
+		}
+
+		return nullptr;
+	}
+
+	MMStateMachineNode* MorphemeManifest::findStateMachineNodeManifest(const std::string& name)
+	{
+		for (auto& stateMachineNode : m_registeredStateMachineNodes)
+		{
+			if (stateMachineNode->getName() == name)
+				return stateMachineNode;
+		}
+
+		return nullptr;
+	}
+
 	MMNode* MorphemeManifest::getNodeManifest(uint32_t index)
 	{
 		if (index >= m_registeredNodes.size())
@@ -225,6 +300,17 @@ namespace mcc
 		for (auto& node : m_registeredNodes)
 		{
 			if (node->getID() == id)
+				return node;
+		}
+
+		return nullptr;
+	}
+
+	MMNode* MorphemeManifest::findNodeManifest(const std::string& name)
+	{
+		for (auto& node : m_registeredNodes)
+		{
+			if (node->getName() == name)
 				return node;
 		}
 
@@ -250,6 +336,17 @@ namespace mcc
 		return nullptr;
 	}
 
+	MMCondition* MorphemeManifest::findConditionManifest(const std::string& name)
+	{
+		for (auto& condition : m_registeredConditions)
+		{
+			if (condition->getName() == name)
+				return condition;
+		}
+
+		return nullptr;
+	}
+
 	MMTransition* MorphemeManifest::getTransitionManifest(uint32_t index)
 	{
 		if (index >= m_regosteredTransitions.size())
@@ -269,6 +366,17 @@ namespace mcc
 		return nullptr;
 	}
 
+	MMTransition* MorphemeManifest::findTransitionManifest(const std::string& name)
+	{
+		for (auto& transition : m_regosteredTransitions)
+		{
+			if (transition->getName() == name)
+				return transition;
+		}
+
+		return nullptr;
+	}
+
 	void MorphemeManifest::printRegisteredManifests()
 	{
 		for (size_t i = 0; i < getNumRegisteredStateMachines(); i++)
@@ -279,6 +387,15 @@ namespace mcc
 			const std::string name = stateMachine->getName();
 
 			printf_s("Registered State Machine: ID=%d, Name=%s\n", id, name.c_str());
+		}
+
+		for (size_t i = 0; i < getNumRegisteredStateMachineNodes(); i++)
+		{
+			MMStateMachineNode* stateMachineNode = getStateMachineNodeManifest(static_cast<uint32_t>(i));
+			const int id = stateMachineNode->getID();
+			const std::string name = stateMachineNode->getName();
+
+			printf_s("Registered State Machine Node: ID=%d, Name=%s\n", id, name.c_str());
 		}
 
 		for (size_t i = 0; i < getNumRegisteredNodes(); i++)

@@ -162,6 +162,7 @@
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMDataPin.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMFunctionalPin.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Pin\MMPin.cpp" />
+    <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\StateMachine\MMStateMachineNode.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MMManifestItem\Transition\MMTransition.cpp" />
     <ClCompile Include="mcc\MorphemeManifest\MorphemeManifest.cpp" />
     <ClCompile Include="mcd\AttributePinNodeBase\AttributePinNodeBase.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="mcc\MorphemeDBLoader\MorphemeDBLoader.h" />
     <ClInclude Include="mcc\MorphemeDocument\MorphemeDocument.h" />
     <ClInclude Include="mcc\AttributeInfo\AttributeInfo.h" />
+    <ClInclude Include="mcc\MorphemeManifest\MMManifestItem\StateMachine\MMStateMachineNode.h" />
     <ClInclude Include="mcd\AttributePinNodeBase\AttributePinNodeBase.h" />
     <ClInclude Include="mcd\Attribute\RequestAttribute\RequestAttribute.h" />
     <ClInclude Include="mcd\Attribute\RigChannelName\RigChannelNameAttribute.h" />

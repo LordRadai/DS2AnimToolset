@@ -133,6 +133,45 @@ namespace mcc
 		return createBlendTreeNode(manifestNode, parent, name, xPos, yPos);
 	}
 
+	mcd::StateMachineNode* MorphemeDocument::createStateMachineNode(mcc::MMStateMachineNode* manifestNode, mcd::Graph* parent, const std::string& name, float xPos, float yPos)
+	{
+		if (!parent->isOfType<mcd::StateMachine>())
+			return nullptr;
+
+		mcd::StateMachine* smParent = dynamic_cast<mcd::StateMachine*>(parent);
+		mcd::StateMachineNode* smNode = manifestNode->createStateMachineNode("StateMachineNode");
+
+		if (smNode != nullptr)
+		{
+			if (!name.empty())
+				smNode->setName(name);
+
+			smNode->setXPos(xPos);
+			smNode->setYPos(yPos);
+			smParent->addStateMachineNode(smNode);
+
+			return smNode;
+		}
+
+		return nullptr;
+	}
+
+	mcd::StateMachineNode* MorphemeDocument::createStateMachineNode(mcc::MMStateMachineNode* manifestNode, mcd::Graph* parent, const std::string& name)
+	{
+		if (manifestNode == nullptr)
+			throw std::runtime_error("Cannot create StateMachineNode. Manifest node is nullptr.");
+
+		float xPos = 0.f;
+		float yPos = 0.f;
+
+		if (parent->isOfType<mcd::BlendTree>())
+			dynamic_cast<mcd::BlendTree*>(parent)->getFreePosition(xPos, yPos);
+		else if (parent->isOfType<mcd::StateMachine>())
+			dynamic_cast<mcd::StateMachine*>(parent)->getFreePosition(xPos, yPos);
+
+		return createStateMachineNode(manifestNode, parent, name, xPos, yPos);
+	}
+
 	mcd::StateMachineNode* MorphemeDocument::createNewBlendTree(const std::string& name, mcd::StateMachine* parent, float xPos, float yPos)
 	{
 		mcd::BlendTree* bt = new mcd::BlendTree(parent, name);
@@ -218,6 +257,10 @@ namespace mcc
 			dynamic_cast<mcd::StateMachine*>(parent)->getFreePosition(xPos, yPos);
 
 		return createNewStateMachine(name, manifestSM, parent, xPos, yPos);
+	}
+
+	void MorphemeDocument::setDefaultName(db::Node* node, db::Node* parent)
+	{
 	}
 
 	mcd::Request* MorphemeDocument::createRequest(const std::string& name)
