@@ -1,7 +1,7 @@
 #include "DataPin.h"
 #include "mcu/Log.h"
 #include "PassDownPin.h"
-#include "mcd/ControlParameter/ControlParameter.h"
+#include "mcd/EmittedControlParameter/EmittedControlParameter.h"
 #include "mcd/Graph/GraphNode.h"
 
 namespace mcd
@@ -107,9 +107,7 @@ namespace mcd
 		if (!isInput())
 			return false;
 
-		LOG_TODO("Handle emitted control parameters");
-
-		if (hasIncidentEdge())
+		if (!hasParentNode<EmittedControlParameter>() && hasIncidentEdge())
 			return false;
 
 		return true;

@@ -2,7 +2,7 @@
 #include "mcd/MorphemeDB/MorphemeDB.h"
 #include "PassDownPin.h"
 #include "mcd/ControlParameter/ControlParameter.h"
-#include "mcd/EmittedControlParametersNode/EmittedControlParametersNode.h"
+#include "mcd/EmittedControlParameter/EmittedControlParameter.h"
 #include "mcd/Graph/Graph.h"
 #include "mcd/Edge/FlowEdge.h"
 #include "mcu/Log.h"
@@ -183,7 +183,7 @@ namespace mcd
 			return nullptr;
 		}
 
-		if (to->hasParentNode<EmittedControlParametersNode>())
+		if (to->hasParentNode<EmittedControlParameter>())
 			return nullptr;
 
 		if (!canConnectTo(to))
