@@ -7,7 +7,7 @@
 
 namespace mcc
 {
-	class MorphemeDocument
+	class MorphemeDocument;
 }
 
 namespace mcd
