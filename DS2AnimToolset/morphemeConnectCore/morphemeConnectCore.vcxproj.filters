@@ -168,6 +168,12 @@
     <ClCompile Include="mcd\Attribute\Array\RefArrayAttribute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mcd\EmittedControlParameter\EmittedControlParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mcd\EmittedControlParametersNode\EmittedControlParametersNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcd\mcd.h">
@@ -351,6 +357,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mcd\Attribute\Array\RefArrayAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\EmittedControlParametersNode\EmittedControlParametersNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mcd\EmittedControlParameter\EmittedControlParameter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

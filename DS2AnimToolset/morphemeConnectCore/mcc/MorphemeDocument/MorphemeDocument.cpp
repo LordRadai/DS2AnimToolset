@@ -108,6 +108,123 @@ namespace mcc
 		return param;
 	}
 
+	mcd::EmittedControlParameter* MorphemeDocument::createEmittedControlParameter(const std::string& name, mcd::DataPin::DataType dataType)
+	{
+		mcd::EmittedControlParametersNode* emittedCpNode = m_morphemeDB->getNetwork()->getEmittedControlParametersNode();
+
+		mcd::ControlParameter* cp = createControlParmeter(name, dataType);
+
+		return new mcd::EmittedControlParameter(emittedCpNode, name, cp);
+	}
+
+	mcd::EmittedControlParameter* MorphemeDocument::createFloatEmittedControlParameter(const std::string& name, float min, float max, float defaultValue)
+	{
+		mcd::EmittedControlParameter* ecp = createEmittedControlParameter(name, mcd::DataPin::DataType::kFloat);
+		mcd::ControlParameter* cp = ecp->getControlParameter();
+
+		cp->m_min->setValue(min);
+		cp->m_max->setValue(max);
+		cp->m_defaultFloat->setValue(defaultValue);
+
+		cp->addAttribute(cp->m_min.get());
+		cp->addAttribute(cp->m_max.get());
+		cp->addAttribute(cp->m_defaultFloat.get());
+
+		return ecp;
+	}
+
+	mcd::EmittedControlParameter* MorphemeDocument::createVector3EmittedControlParameter(const std::string& name, float min, float max, const NMP::Vector3& defaultValue)
+	{
+		mcd::EmittedControlParameter* ecp = createEmittedControlParameter(name, mcd::DataPin::DataType::kVector3);
+		mcd::ControlParameter* cp = ecp->getControlParameter();
+
+		cp->m_min->setValue(min);
+		cp->m_max->setValue(max);
+		cp->m_defaultVector3->setValue(defaultValue);
+
+		cp->addAttribute(cp->m_min.get());
+		cp->addAttribute(cp->m_max.get());
+		cp->addAttribute(cp->m_defaultVector3.get());
+
+		return ecp;
+	}
+
+	mcd::EmittedControlParameter* MorphemeDocument::createVector4EmittedControlParameter(const std::string& name, float min, float max, const NMP::Quat& defaultValue)
+	{
+		mcd::EmittedControlParameter* ecp = createEmittedControlParameter(name, mcd::DataPin::DataType::kVector4);
+		mcd::ControlParameter* cp = ecp->getControlParameter();
+
+		cp->m_min->setValue(min);
+		cp->m_max->setValue(max);
+		cp->m_defaultQuaternion->setValue(defaultValue);
+
+		cp->addAttribute(cp->m_min.get());
+		cp->addAttribute(cp->m_max.get());
+		cp->addAttribute(cp->m_defaultQuaternion.get());
+
+		return ecp;
+	}
+
+	mcd::EmittedControlParameter* MorphemeDocument::createQuaternionEmittedControlParameter(const std::string& name, float min, float max, const NMP::Quat& defaultValue)
+	{
+		mcd::EmittedControlParameter* ecp = createEmittedControlParameter(name, mcd::DataPin::DataType::kQuaternion);
+		mcd::ControlParameter* cp = ecp->getControlParameter();
+
+		cp->m_min->setValue(min);
+		cp->m_max->setValue(max);
+		cp->m_defaultQuaternion->setValue(defaultValue);
+
+		cp->addAttribute(cp->m_min.get());
+		cp->addAttribute(cp->m_max.get());
+		cp->addAttribute(cp->m_defaultQuaternion.get());
+
+		return ecp;
+	}
+
+	mcd::EmittedControlParameter* MorphemeDocument::createBoolEmittedControlParameter(const std::string& name, bool defaultValue)
+	{
+		mcd::EmittedControlParameter* ecp = createEmittedControlParameter(name, mcd::DataPin::DataType::kBool);
+		mcd::ControlParameter* cp = ecp->getControlParameter();
+
+		cp->m_defaultBool->setValue(defaultValue);
+
+		cp->addAttribute(cp->m_defaultBool.get());
+
+		return ecp;
+	}
+
+	mcd::EmittedControlParameter* MorphemeDocument::createIntEmittedControlParameter(const std::string& name, int min, int max, int defaultValue)
+	{
+		mcd::EmittedControlParameter* ecp = createEmittedControlParameter(name, mcd::DataPin::DataType::kInt);
+		mcd::ControlParameter* cp = ecp->getControlParameter();
+
+		cp->m_minInt->setValue(min);
+		cp->m_maxInt->setValue(max);
+		cp->m_defaultInt->setValue(defaultValue);
+
+		cp->addAttribute(cp->m_minInt.get());
+		cp->addAttribute(cp->m_maxInt.get());
+		cp->addAttribute(cp->m_defaultInt.get());
+
+		return ecp;
+	}
+
+	mcd::EmittedControlParameter* MorphemeDocument::createUIntEmittedControlParameter(const std::string& name, uint32_t min, uint32_t max, uint32_t defaultValue)
+	{
+		mcd::EmittedControlParameter* ecp = createEmittedControlParameter(name, mcd::DataPin::DataType::kUInt);
+		mcd::ControlParameter* cp = ecp->getControlParameter();
+
+		cp->m_minInt->setValue(min);
+		cp->m_maxInt->setValue(max);
+		cp->m_defaultInt->setValue(defaultValue);
+
+		cp->addAttribute(cp->m_minInt.get());
+		cp->addAttribute(cp->m_maxInt.get());
+		cp->addAttribute(cp->m_defaultInt.get());
+
+		return ecp;
+	}
+
 	mcd::BlendTreeNode* MorphemeDocument::createBlendTreeNode(mcc::MMNode* manifestNode, mcd::BlendTree* parent, const std::string& name, float xPos, float yPos)
 	{
 		mcd::BlendTreeNode* btNode = manifestNode->createDatabaseNode(parent, m_morphemeDB.get());

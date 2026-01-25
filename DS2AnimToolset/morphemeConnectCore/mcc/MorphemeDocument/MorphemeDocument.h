@@ -126,6 +126,82 @@ namespace mcc
 		mcd::ControlParameter* createUIntControlParameter(const std::string& name, uint32_t min, uint32_t max, uint32_t defaultValue);
 
 		/**
+		 * \brief Creates an emitted control parameter with the specified name and data type.
+		 * 
+		 * \param name The name of the emitted control parameter.
+		 * \param dataType The data type of the emitted control parameter.
+		 * \return A pointer to the created emitted control parameter.
+		 */
+		mcd::EmittedControlParameter* createEmittedControlParameter(const std::string& name, mcd::DataPin::DataType dataType);
+
+		/*
+		* \brief Creates a float emitted control parameter with the specified name.
+		* \param name The name of the emitted control parameter.
+		* \param min The minimum value for the float control parameter.
+		* \param max The maximum value for the float control parameter.
+		* \param defaultValue The default value for the float control parameter.
+		* \param return A pointer to the created float emitted control parameter.
+		*/
+		mcd::EmittedControlParameter* createFloatEmittedControlParameter(const std::string& name, float min, float max, float defaultValue);
+
+		/*
+		* \brief Creates a vector3 emitted control parameter with the specified name.
+		* \param name The name of the emitted control parameter.
+		* \param min The minimum value for the vector3 control parameter.
+		* \param max The maximum value for the vector3 control parameter.
+		* \param defaultValue The default value for the vector3 control parameter.
+		* \return A pointer to the created vector3 emitted control parameter.
+		*/
+		mcd::EmittedControlParameter* createVector3EmittedControlParameter(const std::string& name, float min, float max, const NMP::Vector3& defaultValue);
+
+		/*
+		* \brief Creates a vector4 emitted control parameter with the specified name.
+		* \param name The name of the emitted control parameter.
+		* \param min The minimum value for the vector3 control parameter.
+		* \param max The maximum value for the vector3 control parameter.
+		* \param defaultValue The default value for the vector3 control parameter.
+		* \return A pointer to the created vector4 emitted control parameter.
+		*/
+		mcd::EmittedControlParameter* createVector4EmittedControlParameter(const std::string& name, float min, float max, const NMP::Quat& defaultValue);
+
+		/*
+		* \brief Creates a boolean emitted control parameter with the specified name.
+		* \param name The name of the emitted control parameter.
+		* \param defaultValue The default value for the boolean control parameter.
+		* \return A pointer to the created boolean emitted control parameter.
+		*/
+		mcd::EmittedControlParameter* createBoolEmittedControlParameter(const std::string& name, bool defaultValue);
+
+		/*
+		* \param name The name of the emitted control parameter.
+		* \param min The minimum value for the quaternion control parameter.
+		* \param max The maximum value for the quaternion control parameter.
+		* \param defaultValue The default value for the quaternion control parameter.
+		* \return A pointer to the created quaternion emitted control parameter.
+		*/
+		mcd::EmittedControlParameter* createQuaternionEmittedControlParameter(const std::string& name, float min, float max, const NMP::Quat& defaultValue);
+
+		/*
+		* \brief Creates an integer emitted control parameter with the specified name.
+		* \param name The name of the emitted control parameter.
+		* \param min The minimum value for the integer control parameter.
+		* \param max The maximum value for the integer control parameter.
+		* \param defaultValue The default value for the integer control parameter.
+		* \return A pointer to the created integer emitted control parameter.
+		*/
+		mcd::EmittedControlParameter* createIntEmittedControlParameter(const std::string& name, int min, int max, int defaultValue);
+
+		/*
+		* \brief Creates an unsigned integer emitted control parameter with the specified name.
+		* \param name The name of the emitted control parameter.
+		* \param min The minimum value for the unsigned integer control parameter.
+		* \param max The maximum value for the unsigned integer control parameter.
+		* \param defaultValue The default value for the unsigned integer control parameter.
+		* \return A pointer to the created unsigned integer emitted control parameter.
+		*/
+		mcd::EmittedControlParameter* createUIntEmittedControlParameter(const std::string& name, uint32_t min, uint32_t max, uint32_t defaultValue);
+
+		/**
 		 * \brief Creates a blend tree node at the specified x and y coordinates.
 		 * 
 		 * \param manifestNode The manifest node to create the blend tree node from.

@@ -188,6 +188,8 @@
     <ClCompile Include="mcd\ControlParametersNode\ControlParametersNode.cpp" />
     <ClCompile Include="mcd\ControlParameter\ControlParameter.cpp" />
     <ClCompile Include="mcd\Edge\FlowEdge.cpp" />
+    <ClCompile Include="mcd\EmittedControlParametersNode\EmittedControlParametersNode.cpp" />
+    <ClCompile Include="mcd\EmittedControlParameter\EmittedControlParameter.cpp" />
     <ClCompile Include="mcd\Graph\GraphNode.cpp" />
     <ClCompile Include="mcd\Graph\Graph.cpp" />
     <ClCompile Include="mcd\MorphemeDB\MorphemeDB.cpp" />
@@ -215,6 +217,8 @@
     <ClInclude Include="mcd\Attribute\Array\RefArrayAttribute.h" />
     <ClInclude Include="mcd\Attribute\RequestAttribute\RequestAttribute.h" />
     <ClInclude Include="mcd\Attribute\RigChannelName\RigChannelNameAttribute.h" />
+    <ClInclude Include="mcd\EmittedControlParametersNode\EmittedControlParametersNode.h" />
+    <ClInclude Include="mcd\EmittedControlParameter\EmittedControlParameter.h" />
     <ClInclude Include="mcu\Log.h" />
     <ClInclude Include="mcu\OutputMessage.h" />
     <ClInclude Include="NMDBExtensions\PointerArray.inl" />
