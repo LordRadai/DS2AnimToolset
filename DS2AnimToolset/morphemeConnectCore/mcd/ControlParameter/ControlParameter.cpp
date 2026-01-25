@@ -27,4 +27,14 @@ namespace mcd
 
 		return m_dataPins->getNode(0);
 	}
+
+	DataPin::DataType ControlParameter::getDataType() const
+	{
+		mcd::DataPin* resultPin = getResultDataPin();
+
+		if (resultPin)
+			return resultPin->getDataType();
+
+		throw std::runtime_error("ControlParameter::getDataType() - No Result DataPin found.");
+	}
 }

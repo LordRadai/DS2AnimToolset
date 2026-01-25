@@ -6,7 +6,7 @@
 
 namespace mcd
 {
-	DataPin::DataPin(db::Node* parent, const std::string pinName, DataType dataType)
+	DataPin::DataPin(db::Node* parent, const std::string& pinName, DataType dataType)
 		: Pin(parent, "DataPin", pinName),
 		m_dataType(std::make_unique<db::EnumAttribute>(this, "Type", ""))
 	{

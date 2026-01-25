@@ -36,5 +36,7 @@ namespace mcd
 		virtual mcd::Pin* getPin(const std::string& name) override { return m_dataPins->find(name); }
 
 		mcd::DataPin* getResultDataPin() const;
+
+		DataPin::DataType getDataType() const;
 	};
 }

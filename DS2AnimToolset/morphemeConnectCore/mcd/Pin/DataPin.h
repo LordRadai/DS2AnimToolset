@@ -23,7 +23,7 @@ namespace mcd
 	private:
 		std::unique_ptr<db::EnumAttribute> m_dataType;
 	public:
-		DataPin(db::Node* parent, const std::string pinName, DataType dataType);
+		DataPin(db::Node* parent, const std::string& pinName, DataType dataType);
 
 		virtual ~DataPin() override {};
 		virtual bool isCompatibleConnectionTarget(Pin* to) override;
