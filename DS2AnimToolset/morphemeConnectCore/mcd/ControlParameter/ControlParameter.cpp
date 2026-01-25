@@ -16,7 +16,7 @@ namespace mcd
 		m_minInt(std::make_unique<db::IntAttribute>(this, "MinInt", 0)),
 		m_maxInt(std::make_unique<db::IntAttribute>(this, "MaxInt", 100)),
 		m_defaultQuaternion(std::make_unique<db::QuaternionAttribute>(this, "DefaultQuaternion", NMP::QuatIdentity())),
-		m_emittedControlParameter(std::make_unique<db::Pointer<EmittedControlParameter>>(this, "EmittedControlParameters", nullptr))
+		m_emittedControlParameter(std::make_unique<db::Pointer<EmittedControlParameter>>(this, "EmittedControlParameter", nullptr))
 	{
 		this->addAttribute(m_dataPins.get());
 		m_dataPins->add(new mcd::DataPin(this, "Result", dataType));

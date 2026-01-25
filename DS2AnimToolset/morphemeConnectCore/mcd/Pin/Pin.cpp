@@ -183,7 +183,9 @@ namespace mcd
 			return nullptr;
 		}
 
-		if (to->hasParentNode<EmittedControlParameter>())
+		MorphemeDB* db = dynamic_cast<MorphemeDB*>(getDatabase());
+
+		if (!to->hasParentNode<EmittedControlParameter>() && !to->isOfType<PassDownPin>() && db->getConnectedFlowEdgeCount(to))
 			return nullptr;
 
 		if (!canConnectTo(to))

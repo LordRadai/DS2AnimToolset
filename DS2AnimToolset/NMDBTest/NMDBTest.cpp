@@ -65,9 +65,19 @@ void emittedControlParametersExample(mcc::MorphemeManifest* manifest)
 	morphemeDB->createNetwork("Network");
 
 	mcd::Network* network = morphemeDB->getNetwork();
+	mcd::BlendTree* rootBt = network->createBlendTreeAsParent();
 
 	mcd::EmittedControlParameter* emittedParam = g_doc->createFloatEmittedControlParameter("EmittedFloatParam", 0.f, 1.f, 0.0f);
 	network->addEmittedControlParameter(emittedParam);
+
+	mcd::BlendTreeNode* noiseGen = g_doc->createBlendTreeNode(manifest->findNodeManifest(MANIFEST_NODE_OPERATORNOISEGEN), rootBt, "OperatorNoiseGen1");
+	mcd::DataPin* input = noiseGen->getPin("Input")->asDataPin();
+	mcd::DataPin* output = noiseGen->getPin("Result")->asDataPin();
+
+	mcd::ControlParameter* cp = emittedParam->getControlParameter();
+
+	cp->getResultDataPin()->connectTo(input);
+	output->connectTo(emittedParam->getOutputPin());
 
 	g_doc->saveAs("emittedControlParametersExample.xml");
 }
