@@ -2,6 +2,7 @@
 #include "mcd/MorphemeDB/MorphemeDB.h"
 #include "PassDownPin.h"
 #include "mcd/ControlParameter/ControlParameter.h"
+#include "mcd/EmittedControlParametersNode/EmittedControlParametersNode.h"
 #include "mcd/Graph/Graph.h"
 #include "mcd/Edge/FlowEdge.h"
 #include "mcu/Log.h"
@@ -182,6 +183,9 @@ namespace mcd
 			return nullptr;
 		}
 
+		if (to->hasParentNode<EmittedControlParametersNode>())
+			return nullptr;
+
 		if (!canConnectTo(to))
 			return nullptr;
 
@@ -211,7 +215,7 @@ namespace mcd
 		ownerGraph->addFlowEdge(edge);
 
 		// TODO: Handle emitted control parameters
-		LOG_TODO("Handle emitted control parameters");
+		//LOG_TODO("Handle emitted control parameters");
 
 		return edge;
 	}
