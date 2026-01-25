@@ -9,7 +9,7 @@ namespace mcc
 		mcd::ControlParametersNode* cpNode = m_morphemeDB->getNetwork()->getControlParametersNode();
 
 		mcd::ControlParameter* cp = new mcd::ControlParameter(cpNode, name, dataType);
-		cpNode->addAttribute(cp);
+		cpNode->addControlParameter(cp);
 
 		return cp;
 	}
@@ -114,7 +114,12 @@ namespace mcc
 
 		mcd::ControlParameter* cp = createControlParmeter(name, dataType);
 
-		return new mcd::EmittedControlParameter(emittedCpNode, name, cp);
+		mcd::EmittedControlParameter* emittedCp = new mcd::EmittedControlParameter(emittedCpNode, name, cp);
+
+		cp->addAttribute(cp->m_emittedControlParameter.get());
+		cp->m_emittedControlParameter->setValue(emittedCp);
+
+		return emittedCp;
 	}
 
 	mcd::EmittedControlParameter* MorphemeDocument::createFloatEmittedControlParameter(const std::string& name, float min, float max, float defaultValue)

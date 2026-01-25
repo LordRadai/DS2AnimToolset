@@ -57,6 +57,21 @@ void btRootWithNestedSMExample(mcc::MorphemeManifest* manifest)
 	g_doc->saveAs("btRootWithNestedSM.xml");
 }
 
+void emittedControlParametersExample(mcc::MorphemeManifest* manifest)
+{
+	mcd::MorphemeDB* morphemeDB = g_doc->getMorphemeDB();
+
+	morphemeDB->removeNetwork();
+	morphemeDB->createNetwork("Network");
+
+	mcd::Network* network = morphemeDB->getNetwork();
+
+	mcd::EmittedControlParameter* emittedParam = g_doc->createFloatEmittedControlParameter("EmittedFloatParam", 0.f, 1.f, 0.0f);
+	network->addEmittedControlParameter(emittedParam);
+
+	g_doc->saveAs("emittedControlParametersExample.xml");
+}
+
 int main()
 {
 	g_registry = db::Registry::getInstance();
@@ -77,6 +92,7 @@ int main()
 
 	btRootWithBlend2NodeExample(manifest);
 	btRootWithNestedSMExample(manifest);
+	emittedControlParametersExample(manifest);
 
 	//manifest->shutdown();
 

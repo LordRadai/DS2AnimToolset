@@ -1,16 +1,19 @@
 #pragma once
 #include "NMDatabase/NMDatabase.h"
 #include "NMDBExtensions/TypedNodeContainer.inl"
+#include "NMDBExtensions/Pointer.inl"
 #include "mcd/Pin/DataPin.h"
 #include "mcd/AttributePinNodeBase/AttributePinNodeBase.h"
 
 namespace mcc
 {
-	class MorphemeDocument;
+	class MorphemeDocument
 }
 
 namespace mcd
 {
+	class EmittedControlParameter;
+
 	class ControlParameter : public mcd::AttributePinNodeBase
 	{
 		friend class mcc::MorphemeDocument;
@@ -26,6 +29,7 @@ namespace mcd
 		std::unique_ptr<db::IntAttribute> m_minInt;
 		std::unique_ptr<db::IntAttribute> m_maxInt;
 		std::unique_ptr<db::QuaternionAttribute> m_defaultQuaternion;
+		std::unique_ptr<db::Pointer<EmittedControlParameter>> m_emittedControlParameter;
 
 	public:
 		ControlParameter(db::Node* parent, const std::string& name, DataPin::DataType dataType);
