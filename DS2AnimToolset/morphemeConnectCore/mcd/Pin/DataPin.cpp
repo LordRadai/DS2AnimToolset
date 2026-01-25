@@ -35,7 +35,8 @@ namespace mcd
 			{
 				db::Attribute* parentAttribute = getParentAttribute();
 
-				LOG_TODO("Disallow ControlParameter -> EmittedControlParameter connection");
+				if (hasParentNode<ControlParameter>() && to->hasParentNode<EmittedControlParameter>())
+					return false;
 
 				return true;
 			}
