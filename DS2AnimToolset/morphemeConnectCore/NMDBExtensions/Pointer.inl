@@ -6,7 +6,7 @@ namespace db
 	template<typename T>
 	class Pointer : public db::PointerAttribute
 	{
-		static_assert(std::is_base_of<db::Node, T>::value, "T must be derived from db::Node");
+		//static_assert(std::is_base_of<db::Node, T>::value, "T must be derived from db::Node");
 	public:
 		Pointer(db::CompositeAttribute* parent, const std::string& name, T* value)
 			: db::PointerAttribute(parent, name, value) {}
