@@ -376,13 +376,13 @@ namespace
 		for (uint32_t i = 0; i < nodeDef->getNumChildNodes(); i++)
 		{
 			if (isContainer)
-				printNode(netDef, nodeDef->getChildNodeID(i), animLibrary, file, numIndents + 1, nodeMap, false);
+				printNode(netDef, nodeDef->getChildNodeID(i), animLibrary, file, numIndents + 1, nodeMap, false, cachedNodeNames);
 			else
-				printNode(netDef, nodeDef->getChildNodeID(i), animLibrary, file, numIndents + 1, nodeMap, true);
+				printNode(netDef, nodeDef->getChildNodeID(i), animLibrary, file, numIndents + 1, nodeMap, true, cachedNodeNames);
 		}
 
 		for (uint32_t i = 0; i < nodeDef->getNumInputCPConnections(); i++)
-			printNode(netDef, nodeDef->getInputCPConnectionSourceNodeID(i), animLibrary, file, numIndents + 1, nodeMap, true);
+			printNode(netDef, nodeDef->getInputCPConnectionSourceNodeID(i), animLibrary, file, numIndents + 1, nodeMap, true, cachedNodeNames);
 
 		if (isContainer)
 			file << indendationString + "}\n";
@@ -395,11 +395,14 @@ namespace
 		tinyxml2::XMLDocument xmlDoc;
 		tinyxml2::XMLElement* root = xmlDoc.NewElement("Nodes");
 
+		std::map<MR::NodeID, std::string> cachedNodeNames;
+		MD::NodeUtils::buildNodeNameMap(netDef, cachedNodeNames);
+
 		const int numNodes = netDef->getNumNodeDefs();
 
 		for (int i = 0; i < numNodes; i++)
 		{
-			addNodeToXML(netDef, i, animLibrary, root, false);
+			addNodeToXML(netDef, i, animLibrary, root, false, cachedNodeNames);
 			printNodeFnTables(netDef, i, nodeDumpExt);
 		}
 
