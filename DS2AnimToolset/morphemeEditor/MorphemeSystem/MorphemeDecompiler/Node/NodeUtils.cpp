@@ -406,22 +406,18 @@ namespace MD
 				if (name != "")
 				{
 					if (cachedNodeNames[nodeDef->getNodeID()] != getCurrentNodeName(name))
-					{
 						cachedNodeNames[nodeDef->getNodeID()] = getCurrentNodeName(name);
-						g_appLog->debugMessage(MsgLevel_Debug, "Duplicate node name detected: %s. Using %s instead.\n", cachedNodeNames[nodeDef->getNodeID()].c_str(), getCurrentNodeName(name).c_str());
-					}
 
 					MR::NodeID parentNodeID = nodeDef->getParentNodeID();
 
+					std::string currentName = name;
 					while (parentNodeID != MR::INVALID_NODE_ID)
 					{
 						MR::NodeDef* parentNode = netDef->getNodeDef(parentNodeID);
+						currentName = getParentNodeName(currentName);
 
-						if (cachedNodeNames[parentNodeID] != getParentNodeName(name))
-						{
-							cachedNodeNames[parentNodeID] = getParentNodeName(name);
-							g_appLog->debugMessage(MsgLevel_Debug, "Duplicate node name detected: %s. Using %s instead.\n", cachedNodeNames[parentNodeID].c_str(), getParentNodeName(name).c_str());
-						}
+						if (cachedNodeNames[parentNodeID] != getCurrentNodeName(currentName))
+							cachedNodeNames[parentNodeID] = getCurrentNodeName(currentName);
 
 						parentNodeID = parentNode->getParentNodeID();
 					}
