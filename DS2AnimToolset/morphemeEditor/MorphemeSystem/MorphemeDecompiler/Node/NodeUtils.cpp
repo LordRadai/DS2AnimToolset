@@ -5,6 +5,29 @@
 #include "RCore.h"
 #include "MorphemeSystem/MorphemeUtils/MorphemeUtils.h"
 
+namespace
+{
+	std::string getParentNodeName(std::string nodeName)
+	{
+		size_t pos = nodeName.rfind('|');
+
+		if (pos != std::string::npos)
+			return nodeName.substr(0, pos);
+
+		return "";
+	}
+
+	std::string getCurrentNodeName(std::string nodeName)
+	{
+		size_t pos = nodeName.rfind('|');
+
+		if (pos != std::string::npos)
+			return nodeName.substr(pos + 1);
+
+		return nodeName;
+	}
+}
+
 namespace MD
 {
 	namespace NodeUtils
@@ -113,23 +136,20 @@ namespace MD
 			if (isNodeControlParameter(nodeDef))
 				return netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
+			if (nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK)
+				return "mainNetwork";
+
 			std::string name = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
-			/*
-			if ((nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT) && (nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_SYNC_EVENTS))
+			std::string btName = "";
+
+			if (isNodeBlendTree(netDef, nodeDef))
 			{
-				for (size_t i = 0; i < nodeDef->getNumChildNodes(); i++)
-				{
-					MR::NodeDef* childNode = nodeDef->getChildNodeDef(i);
+				char tmp[256];
+				sprintf_s(tmp, "BlendTree%d|", nodeDef->getNodeID());
 
-					if (childNode->getNodeTypeID() == NODE_TYPE_STATE_MACHINE)
-						name = netDef->getNodeNameFromNodeID(childNode->getNodeID());
-
-					if (name != "")
-						break;
-				}
+				btName = tmp;
 			}
-			*/
 
 			if (name == "")
 			{
@@ -139,32 +159,278 @@ namespace MD
 
 					assert(sourceAnim != nullptr);
 
-					return RString::removeExtension(animLibrary->getAnimationSet(0)->getAnimationEntry(sourceAnim->m_animAssetID)->getAnimationFilename()) + "_" + std::to_string(nodeDef->getNodeID());
+					name = btName + RString::removeExtension(animLibrary->getAnimationSet(0)->getAnimationEntry(sourceAnim->m_animAssetID)->getAnimationFilename()) + std::to_string(nodeDef->getNodeID());
 				}
 				else if ((nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT) || (nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT_SYNC_EVENTS))
 				{
-					std::string srcName = "ActiveState";
+					std::string srcName = "ActiveState1";
 
 					if (nodeDef->getChildNodeID(0) != MR::INVALID_NODE_ID)
-						srcName = buildNodeName(netDef, nodeDef->getChildNodeDef(0), animLibrary);
+					{
+						MR::NodeDef* srcNode = nodeDef->getChildNodeDef(0);
 
-					std::string dstName = "ActiveState";
+						if (isNodeBlendTree(netDef, srcNode))
+							srcName = "BlendTree" + std::to_string(srcNode->getNodeID());
+						else
+							srcName = buildNodeName(netDef, srcNode, animLibrary);
+					}
+
+					std::string dstName = "ActiveState1";
 
 					if (nodeDef->getChildNodeID(1) != MR::INVALID_NODE_ID)
-						dstName = buildNodeName(netDef, nodeDef->getChildNodeDef(1), animLibrary);
-										
-					return srcName + "_" + dstName;
+					{
+						MR::NodeDef* dstNode = nodeDef->getChildNodeDef(1);
+
+						if (isNodeBlendTree(netDef, dstNode))
+							dstName = "BlendTree" + std::to_string(dstNode->getNodeID());
+						else
+							dstName = buildNodeName(netDef, dstNode, animLibrary);
+					}
+
+					name = srcName + "_" + dstName;
 				}
+				else
+				{
+					const char* typeName = MorphemeUtils::getNodeTypeName(nodeDef->getNodeTypeID());
 
-				const char* typeName = MorphemeUtils::getNodeTypeName(nodeDef->getNodeTypeID());
+					char nodeName[256];
+					sprintf_s(nodeName, "%s%s%d", btName.c_str(), typeName, nodeDef->getNodeID());
 
-				char nodeName[256];
-				sprintf_s(nodeName, "%s_%d", typeName, nodeDef->getNodeID());
-
-				name = nodeName;
+					name = nodeName;
+				}
 			}
 
 			return name;
+		}
+
+		std::string buildNodeName(
+			MR::NetworkDef* netDef,
+			MR::NodeDef* nodeDef,
+			ME::AnimationLibraryExport* animLibrary,
+			std::map<MR::NodeID, std::string>& cachedNodeNames)
+		{
+			const MR::NodeID nodeID = nodeDef->getNodeID();
+
+			// Fast path: cached
+			auto it = cachedNodeNames.find(nodeID);
+			if (it != cachedNodeNames.end() &&
+				cachedNodeNames[nodeID] != "")
+				return it->second;
+
+			std::string name;
+
+			// Control parameters have authoritative names
+			if (isNodeControlParameter(nodeDef))
+			{
+				name = getCurrentNodeName(netDef->getNodeNameFromNodeID(nodeID));
+				cachedNodeNames[nodeID] = name;
+				return name;
+			}
+
+			// Network root
+			if (nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK)
+			{
+				name = "mainNetwork";
+				cachedNodeNames[nodeID] = name;
+				return name;
+			}
+
+			// Base name from network
+			name = netDef->getNodeNameFromNodeID(nodeID);
+
+			// Optional blend tree prefix
+			std::string btPrefix;
+			if (isNodeBlendTree(netDef, nodeDef))
+			{
+				char tmp[64];
+				sprintf_s(tmp, "BlendTree%d|", nodeID);
+				btPrefix = tmp;
+			}
+
+			// Generate fallback name if empty
+			if (name.empty())
+			{
+				const MR::NodeType nodeType = nodeDef->getNodeTypeID();
+
+				if (nodeType == NODE_TYPE_ANIM_EVENTS)
+				{
+					auto* sourceAnim =
+						static_cast<MR::AttribDataSourceAnim*>(
+							nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM));
+
+					assert(sourceAnim != nullptr);
+
+					const char* animFilename =
+						animLibrary->getAnimationSet(0)
+						->getAnimationEntry(sourceAnim->m_animAssetID)
+						->getAnimationFilename();
+
+					name = btPrefix
+						+ RString::removeExtension(animFilename)
+						+ std::to_string(nodeID);
+				}
+				else if (nodeType == NODE_TYPE_TRANSIT ||
+					nodeType == NODE_TYPE_TRANSIT_SYNC_EVENTS)
+				{
+					auto resolveEndpointName = [&](uint32_t childIndex) -> std::string
+						{
+							if (nodeDef->getChildNodeID(childIndex) == MR::INVALID_NODE_ID)
+								return "ActiveState1";
+
+							MR::NodeDef* child = nodeDef->getChildNodeDef(childIndex);
+
+							if (isNodeBlendTree(netDef, child))
+								return "BlendTree" + std::to_string(child->getNodeID());
+
+							return buildNodeName(netDef, child, animLibrary, cachedNodeNames);
+						};
+
+					std::string srcName = resolveEndpointName(0);
+					std::string dstName = resolveEndpointName(1);
+
+					name = srcName + "_" + dstName;
+				}
+				else
+				{
+					const char* typeName =
+						MorphemeUtils::getNodeTypeName(nodeType);
+
+					char nodeName[128];
+					sprintf_s(nodeName, "%s%s%d",
+						btPrefix.c_str(),
+						typeName,
+						nodeID);
+
+					name = nodeName;
+				}
+			}
+
+			// Store in cache before returning
+			cachedNodeNames[nodeID] = name;
+			return name;
+		}
+
+
+		std::string buildFullNodeName(MR::NetworkDef* netDef, MR::NodeDef* nodeDef, ME::AnimationLibraryExport* animLibrary, std::map<MR::NodeID, std::string>& cachedNodeNames)
+		{
+			std::string name = buildNodeName(netDef, nodeDef, animLibrary, cachedNodeNames);
+
+			if (isNodeControlParameter(nodeDef))
+				return "ControlParameters|" + name;
+
+			MR::NodeDef* parentNodeContainer = getParentNodeContainer(netDef, nodeDef);
+
+			while (parentNodeContainer != nullptr)
+			{
+				if (parentNodeContainer->getNodeTypeID() != NODE_TYPE_NETWORK)
+				{
+					std::string parentName = buildNodeName(netDef, parentNodeContainer, animLibrary, cachedNodeNames);
+
+					if (isNodeBlendTree(netDef, parentNodeContainer))
+					{
+						char btName[256];
+						sprintf_s(btName, "BlendTree%d", parentNodeContainer->getNodeID());
+
+						parentName = btName;
+					}
+
+					name = parentName + "|" + name;
+				}
+
+				parentNodeContainer = getParentNodeContainer(netDef, parentNodeContainer);
+			}
+
+			return name;
+		}
+
+		MR::NodeDef* getParentNodeContainer(MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			if (nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK || isNodeControlParameter(nodeDef))
+				return nullptr;
+
+			const MR::NodeID parentNodeID = nodeDef->getParentNodeID();
+
+			if (parentNodeID == MR::INVALID_NODE_ID)
+				return nullptr;
+
+			MR::NodeDef* nodeToCheck = netDef->getNodeDef(parentNodeID);
+
+			while (nodeToCheck != nullptr)
+			{
+				if (isNodeContainer(netDef, nodeToCheck))
+					return nodeToCheck;
+
+				const MR::NodeID parentNodeID = nodeToCheck->getParentNodeID();
+
+				if (parentNodeID == MR::INVALID_NODE_ID)
+					break;
+
+				nodeToCheck = netDef->getNodeDef(parentNodeID);
+			}
+
+			return nullptr;
+		}
+
+		bool isNodeBlendTree(MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			const MR::NodeID parentNodeID = nodeDef->getParentNodeID();
+
+			if (parentNodeID == MR::INVALID_NODE_ID)
+				return false;
+
+			MR::NodeDef* parentNodeDef = netDef->getNodeDef(parentNodeID);
+			
+			if (parentNodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE &&
+				nodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+				return true;
+
+			return false;
+		}
+
+		bool isNodeContainer(MR::NetworkDef* netDef, MR::NodeDef* nodeDef)
+		{
+			if (isNodeBlendTree(netDef, nodeDef))
+				return true;
+
+			return nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK || nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE;
+		}
+
+		void buildNodeNameMap(MR::NetworkDef* netDef, std::map<MR::NodeID, std::string>& cachedNodeNames)
+		{
+			for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
+			{
+				MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+
+				const std::string name = nodeDef->getName();
+
+				if (name != "")
+				{
+					if (cachedNodeNames[nodeDef->getNodeID()] != getCurrentNodeName(name))
+					{
+						cachedNodeNames[nodeDef->getNodeID()] = getCurrentNodeName(name);
+						g_appLog->debugMessage(MsgLevel_Debug, "Duplicate node name detected: %s. Using %s instead.\n", cachedNodeNames[nodeDef->getNodeID()].c_str(), getCurrentNodeName(name).c_str());
+					}
+
+					MR::NodeID parentNodeID = nodeDef->getParentNodeID();
+
+					while (parentNodeID != MR::INVALID_NODE_ID)
+					{
+						MR::NodeDef* parentNode = netDef->getNodeDef(parentNodeID);
+
+						if (cachedNodeNames[parentNodeID] != getParentNodeName(name))
+						{
+							cachedNodeNames[parentNodeID] = getParentNodeName(name);
+							g_appLog->debugMessage(MsgLevel_Debug, "Duplicate node name detected: %s. Using %s instead.\n", cachedNodeNames[parentNodeID].c_str(), getParentNodeName(name).c_str());
+						}
+
+						parentNodeID = parentNode->getParentNodeID();
+					}
+				}
+				else
+				{
+					cachedNodeNames[nodeDef->getNodeID()] = name;
+				}
+			}
 		}
 	}
 }

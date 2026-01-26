@@ -6,15 +6,21 @@
 #include "morpheme/mrMirroredAnimMapping.h"
 #include "NMGeomUtils/NMJointLimits.h"
 #include "Node/Node.h"
-#include "Node/StateMachineNode.h"
-#include "Node/ControlParamNode.h"
-#include "Node/BlendNode.h"
-#include "Node/TransitNode.h"
-#include "Node/IKNode.h"
-#include "Node/OperatorNode.h"
+#include "Node/NodeUtils.h"
 
 namespace
 {
+	ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+	{
+		MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
+
+		g_appLog->debugMessage(MsgLevel_Info, "\tExporting node %d (name=\"%s\", typeId=%d)\n", nodeDef->getNodeID(), nodeName.c_str(), nodeTypeID);
+
+		MD::Node::NodeDecompiler nodeDecompiler;
+
+		return nodeDecompiler.exportNode(netDefExport, netDef, nodeDef, nodeName);
+	}
+
 	ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId, std::string nodeName)
 	{
 		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
@@ -319,8 +325,16 @@ namespace MD
 
 		netDefExport->setNetworkWorldOrientation(NMP::Vector3YAxis(), NMP::Vector3XAxis(), NMP::Vector3ZAxis());
 
+		std::map<MR::NodeID, std::string> cachedNodeNames;
+		MD::NodeUtils::buildNodeNameMap(netDef, cachedNodeNames);
+
 		for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
-			exportNode(netDefExport, netDef, i, netDef->getNodeNameFromNodeID(i));
+		{
+			MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+
+			std::string nodeName = MD::NodeUtils::buildFullNodeName(netDef, nodeDef, animLibraryExport, cachedNodeNames);
+			exportNode(netDefExport, netDef, nodeDef, nodeName);
+		}
 
 		const NMP::IDMappedStringTable* messageTable = netDef->getMessageIDNamesTable();
 

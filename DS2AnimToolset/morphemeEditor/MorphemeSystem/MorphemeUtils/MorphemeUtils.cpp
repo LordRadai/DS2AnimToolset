@@ -145,7 +145,6 @@ namespace MorphemeUtils
 
 	const char* getNodeTypeName(MR::NodeType typeID)
 	{
-        NODE_TYPE_NETWORK;
         switch (typeID) {
             case GEN_NODE_TYPE_ID(NM_ID_NAMESPACE, 9): return "Network";
             case GEN_NODE_TYPE_ID(NM_ID_NAMESPACE, 10): return "StateMachine";

@@ -210,13 +210,13 @@ namespace
 		return nodeXML;
 	}
 
-	void addNodeToXML(MR::NetworkDef* netDef, MR::NodeID nodeID, ME::AnimationLibraryExport* animLibrary, tinyxml2::XMLElement* parent, bool isInput)
+	void addNodeToXML(MR::NetworkDef* netDef, MR::NodeID nodeID, ME::AnimationLibraryExport* animLibrary, tinyxml2::XMLElement* parent, bool isInput, std::map<MR::NodeID, std::string>& cachedNodeNames)
 	{
 		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
 
 		const bool isContainer = ((nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE) || (nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK));
 
-		std::string nodeName = MD::NodeUtils::buildNodeName(netDef, nodeDef, animLibrary);
+		std::string nodeName = MD::NodeUtils::buildNodeName(netDef, nodeDef, animLibrary, cachedNodeNames);
 
 		tinyxml2::XMLElement* nodeXML = createNodeXML(nodeDef, parent, nodeName, false);
 
@@ -233,7 +233,7 @@ namespace
 				{
 					if (nodeDef->getChildNodeID(i) != MR::INVALID_NODE_ID)
 					{
-						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
+						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary, cachedNodeNames);
 						createNodeXML(nodeDef->getChildNodeDef(i), inputNodes, name, false);
 					}
 					else
@@ -254,7 +254,7 @@ namespace
 				{
 					if (nodeDef->getInputCPConnectionSourceNodeID(i) != MR::INVALID_NODE_ID)
 					{
-						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getInputCPConnectionSourceNodeDef(i), animLibrary);
+						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getInputCPConnectionSourceNodeDef(i), animLibrary, cachedNodeNames);
 						createNodeXML(nodeDef->getInputCPConnectionSourceNodeDef(i), inputCPs, name, false);
 					}
 					else
@@ -276,7 +276,7 @@ namespace
 				{
 					if (nodeDef->getChildNodeID(i) != MR::INVALID_NODE_ID)
 					{
-						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
+						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary, cachedNodeNames);
 						createNodeXML(nodeDef->getChildNodeDef(i), childNodes, name, false);
 					}
 					else
@@ -320,7 +320,7 @@ namespace
 		}
 	}
 
-	void printNode(MR::NetworkDef* netDef, MR::NodeID nodeID, ME::AnimationLibraryExport* animLibrary, std::ofstream& file, int numIndents, std::unordered_map<MR::NodeID, std::string>& nodeMap, bool isInput)
+	void printNode(MR::NetworkDef* netDef, MR::NodeID nodeID, ME::AnimationLibraryExport* animLibrary, std::ofstream& file, int numIndents, std::unordered_map<MR::NodeID, std::string>& nodeMap, bool isInput, std::map<MR::NodeID, std::string>& cachedNodeNames)
 	{
 		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
 
@@ -345,7 +345,7 @@ namespace
 
 		if (!alreadyExported)
 		{
-			std::string nodeName = MD::NodeUtils::buildNodeName(netDef, nodeDef, animLibrary);
+			std::string nodeName = MD::NodeUtils::buildNodeName(netDef, nodeDef, animLibrary, cachedNodeNames);
 
 			char nodeBuf[256];
 
