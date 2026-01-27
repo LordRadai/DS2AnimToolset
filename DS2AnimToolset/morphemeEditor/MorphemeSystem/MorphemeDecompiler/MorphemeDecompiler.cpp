@@ -325,15 +325,11 @@ namespace MD
 
 		netDefExport->setNetworkWorldOrientation(NMP::Vector3YAxis(), NMP::Vector3XAxis(), NMP::Vector3ZAxis());
 
-		std::map<MR::NodeID, std::string> cachedNodeNames;
-		MD::NodeUtils::buildNodeNameMap(netDef, cachedNodeNames);
-
 		for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
 		{
 			MR::NodeDef* nodeDef = netDef->getNodeDef(i);
 
-			std::string nodeName = MD::NodeUtils::buildFullNodeName(netDef, nodeDef, animLibraryExport, cachedNodeNames);
-			exportNode(netDefExport, netDef, nodeDef, nodeName);
+			exportNode(netDefExport, netDef, nodeDef, netDef->getNodeNameFromNodeID(i));
 		}
 
 		const NMP::IDMappedStringTable* messageTable = netDef->getMessageIDNamesTable();
