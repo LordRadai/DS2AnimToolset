@@ -12,15 +12,5 @@ namespace MD
 		int getAxisIndex(NMP::Vector3 axis);
 		void writeSyncEventFlagsFromAttribData(ME::DataBlockExportXML* attribDataBlock, MR::AttribDataUInt* durationEventMatchingOpAttrib);
 		void writeInputCPConnection(ME::DataBlockExportXML* attribDataBlock, const char* name, const MR::CPConnection* cpConnection, bool optional);
-
-		std::string buildNodeName(MR::NetworkDef* netDef, MR::NodeDef* nodeDef, ME::AnimationLibraryExport* animLibrary);
-		std::string buildNodeName(MR::NetworkDef* netDef, MR::NodeDef* nodeDef, ME::AnimationLibraryExport* animLibrary, std::map<MR::NodeID, std::string>& cachedNodeNames);
-		std::string buildFullNodeName(MR::NetworkDef* netDef, MR::NodeDef* nodeDef, ME::AnimationLibraryExport* animLibrary, std::map<MR::NodeID, std::string>& cachedNodeNames);
-		MR::NodeDef* getParentNodeContainer(MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
-
-		bool isNodeControlParameter(MR::NodeDef* nodeDef);
-		bool isNodeBlendTree(MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
-		bool isNodeContainer(MR::NetworkDef* netDef, MR::NodeDef* nodeDef);
-		void buildNodeNameMap(MR::NetworkDef* netDef, std::map<MR::NodeID, std::string>& cachedNodeNames);
 	}
 }

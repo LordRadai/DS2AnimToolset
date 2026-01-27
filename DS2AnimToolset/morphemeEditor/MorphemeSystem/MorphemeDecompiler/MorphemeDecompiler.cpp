@@ -71,7 +71,7 @@ namespace MD
 
 			std::string guid = RString::guidToString(gidReference);
 
-			ME::DiscreteEventTrackExportXML* trackXML = (ME::DiscreteEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
+			ME::DiscreteEventTrackExportXML* trackXML = dynamic_cast<ME::DiscreteEventTrackExportXML*>(take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData()));
 
 			for (size_t j = 0; j < track->getNumEvents(); j++)
 				trackXML->createEvent(j, track->getEvent(j)->getStartTime(), track->getEvent(j)->getUserData());
@@ -86,7 +86,7 @@ namespace MD
 
 			std::string guid = RString::guidToString(gidReference);
 
-			ME::CurveEventTrackExportXML* trackXML = (ME::CurveEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_CURVE, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
+			ME::CurveEventTrackExportXML* trackXML = dynamic_cast<ME::CurveEventTrackExportXML*>(take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_CURVE, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData()));
 
 			for (size_t j = 0; j < track->getNumEvents(); j++)
 				trackXML->createEvent(j, track->getEvent(j)->getTime(), track->getEvent(j)->getValue(), track->getEvent(j)->getUserData());
@@ -101,7 +101,7 @@ namespace MD
 
 			std::string guid = RString::guidToString(gidReference);
 
-			ME::DurationEventTrackExportXML* trackXML = (ME::DurationEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DURATION, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
+			ME::DurationEventTrackExportXML* trackXML = dynamic_cast<ME::DurationEventTrackExportXML*>(take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DURATION, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData()));
 
 			for (size_t j = 0; j < track->getNumEvents(); j++)
 				trackXML->createEvent(j, track->getEvent(j)->getStartTime(), track->getEvent(j)->getDuration(), track->getEvent(j)->getUserData());
