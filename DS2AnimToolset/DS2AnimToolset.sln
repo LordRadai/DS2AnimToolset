@@ -54,8 +54,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrTarget_NoPhysics", "Morph
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "morphemeBinderPacker", "morphemeBinderPacker\morphemeBinderPacker.vcxproj", "{455ED4DE-295D-4B37-9EAA-C6AAA76E8A02}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "networkAnalyzer", "networkAnalyzer\networkAnalyzer.vcxproj", "{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Tool|x64 = Debug Tool|x64
@@ -528,30 +526,6 @@ Global
 		{455ED4DE-295D-4B37-9EAA-C6AAA76E8A02}.Target LE64 Release|x64.Build.0 = Release|x64
 		{455ED4DE-295D-4B37-9EAA-C6AAA76E8A02}.Target LE64 Release|x86.ActiveCfg = Release|Win32
 		{455ED4DE-295D-4B37-9EAA-C6AAA76E8A02}.Target LE64 Release|x86.Build.0 = Release|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Debug Tool|x64.ActiveCfg = Debug|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Debug Tool|x64.Build.0 = Debug|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Debug Tool|x86.ActiveCfg = Debug|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Debug Tool|x86.Build.0 = Debug|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Debug|x64.ActiveCfg = Debug|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Debug|x64.Build.0 = Debug|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Debug|x86.ActiveCfg = Debug|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Debug|x86.Build.0 = Debug|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Release Tool|x64.ActiveCfg = Release|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Release Tool|x64.Build.0 = Release|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Release Tool|x86.ActiveCfg = Release|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Release Tool|x86.Build.0 = Release|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Release|x64.ActiveCfg = Release|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Release|x64.Build.0 = Release|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Release|x86.ActiveCfg = Release|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Release|x86.Build.0 = Release|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Target LE64 Debug|x64.ActiveCfg = Release|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Target LE64 Debug|x64.Build.0 = Release|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Target LE64 Debug|x86.ActiveCfg = Release|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Target LE64 Debug|x86.Build.0 = Release|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Target LE64 Release|x64.ActiveCfg = Release|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Target LE64 Release|x64.Build.0 = Release|x64
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Target LE64 Release|x86.ActiveCfg = Release|Win32
-		{FB7A252C-3CFD-417D-AE85-2F71DA1A0A4F}.Target LE64 Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
