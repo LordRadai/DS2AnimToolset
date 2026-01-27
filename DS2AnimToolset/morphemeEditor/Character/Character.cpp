@@ -289,7 +289,7 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
 		character->m_characterMotionCtrl->initialize(filename, doSimulateNetwork);
 
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
-    character->m_characterName = generateCharacterName(character->m_chrId);
+    character->m_characterName = RString::toWide(RString::removeExtension(std::filesystem::path(filename).filename().string()));
 
     std::wstring gamePath = utils::findGamePath(RString::toWide(filename));
 
