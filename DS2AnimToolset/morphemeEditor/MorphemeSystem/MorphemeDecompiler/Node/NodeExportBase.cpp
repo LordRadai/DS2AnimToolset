@@ -60,7 +60,7 @@ namespace MD
 			bool downstreamMultiplyConnected = false;
 
 			if ((nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK) || (nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE) ||
-				NodeUtils::isNodeControlParameter(nodeDef))
+				nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 				persistent = true;
 
 			if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
