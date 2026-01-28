@@ -112,7 +112,7 @@ namespace NodeEditor
         style.NodePadding.y = 5.0f;
         style.NodeBorderThickness = 0.f;
         style.NodeCornerRounding = 0.f;
-        style.PinOffset = -7.f;
+        style.PinOffset = -5.5f;
 
         style.LinkLineSegmentsPerLength = 1.f;
         style.LinkThickness = 2.f;
