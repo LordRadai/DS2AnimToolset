@@ -42,6 +42,8 @@ private:
 	void timeActEditorWindow();
 	void eventTrackInfoWindow();
 	void timeActInfoWindow();
+	void networkPreviewWindow();
+	void trackEditorWindow();
 
 	void graphicsSettingsWindow();
 	void colorSettingsWindow();

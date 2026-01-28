@@ -241,6 +241,11 @@
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h" />
     <ClInclude Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.h" />
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h" />
+    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_bezier_math.h" />
+    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_canvas.h" />
+    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_extra_math.h" />
+    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor.h" />
+    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_internal.h" />
     <ClInclude Include="PlayerModelPreset\PlayerModelPreset.h" />
     <ClInclude Include="RenderManager\DebugDraw\DebugDraw.h" />
     <ClInclude Include="RenderManager\RenderManager.h" />
@@ -323,6 +328,9 @@
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.cpp" />
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp" />
+    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_canvas.cpp" />
+    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor.cpp" />
+    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_api.cpp" />
     <ClCompile Include="PlayerModelPreset\PlayerModelPreset.cpp" />
     <ClCompile Include="RenderManager\RenderManager.cpp" />
     <ClCompile Include="TrackEditor\EventTrackEditor.cpp" />
@@ -344,6 +352,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fromloader\src\util\stringio\simple_sjis_table.bin" />
+    <None Include="NodeEditor\ImGuiNodeEditor\imgui_bezier_math.inl" />
+    <None Include="NodeEditor\ImGuiNodeEditor\imgui_extra_math.inl" />
+    <None Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_internal.inl" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -312,6 +312,21 @@
     <ClInclude Include="CharacterMotionCtrl\CharacterMotionCtrl.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_bezier_math.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_canvas.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_internal.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_extra_math.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -542,6 +557,15 @@
     <ClCompile Include="CharacterMotionCtrl\CharacterMotionCtrl.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_canvas.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_api.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="morphemeEditor.rc">
@@ -561,5 +585,14 @@
       <Filter>File di risorse</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include="NodeEditor\ImGuiNodeEditor\imgui_bezier_math.inl">
+      <Filter>File di intestazione</Filter>
+    </None>
+    <None Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_internal.inl">
+      <Filter>File di intestazione</Filter>
+    </None>
+    <None Include="NodeEditor\ImGuiNodeEditor\imgui_extra_math.inl">
+      <Filter>File di intestazione</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -703,10 +703,8 @@ void GuiManager::update(float dt)
 	this->rootWindow();
 	this->assetsWindow();
 	this->sceneWindow();
-	this->eventTrackEditorWindow();
-	this->timeActEditorWindow();
-	this->eventTrackInfoWindow();
-	this->timeActInfoWindow();
+	this->trackEditorWindow();
+	this->networkPreviewWindow();
 
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 	MorphemeEditorApp::WindowFlags* windowFlags = editorApp->getWindowFlags();
@@ -1405,6 +1403,8 @@ void GuiManager::eventTrackEditorWindow()
 
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
+	//ImGui::SetNextWindowDockID(ImGui::GetID("TrackEditorDock"), ImGuiCond_Always);
+
 	ImGui::Begin("EventTrack");
 	TrackEditor::EventTrackEditor* eventTrackEditor = editorApp->getEventTrackEditor();
 
@@ -1656,6 +1656,37 @@ void GuiManager::timeActInfoWindow()
 			}
 		}
 	}
+
+	ImGui::End();
+}
+
+void GuiManager::networkPreviewWindow()
+{
+	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
+
+	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
+
+	ImGui::Begin("Network Preview");
+
+	ImGui::End();
+}
+
+void GuiManager::trackEditorWindow()
+{
+	ImGui::Begin("Track Editor");
+	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
+
+	ImGuiID dockspace_id = ImGui::GetID("TrackEditorDockSpace");
+	ImGui::DockSpace(
+		dockspace_id,
+		ImVec2(0.0f, 0.0f),
+		ImGuiDockNodeFlags_None
+	);
+
+	eventTrackEditorWindow();
+	timeActEditorWindow();
+	eventTrackInfoWindow();
+	timeActInfoWindow();
 
 	ImGui::End();
 }
