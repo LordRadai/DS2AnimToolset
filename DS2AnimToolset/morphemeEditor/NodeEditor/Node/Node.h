@@ -40,5 +40,7 @@ namespace NodeEditor
 		Graph* getSubGraph() const { return m_subGraph; }
 
 		void setPosition(float x, float y);
+
+		bool hasSubGraph() const { return m_subGraph != nullptr; }
 	};
 }

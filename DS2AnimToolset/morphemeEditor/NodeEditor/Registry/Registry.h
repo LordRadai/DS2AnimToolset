@@ -3,7 +3,7 @@
 
 namespace NodeEditor
 {
-	class Node;
+	class Entity;
 	class Graph;
 
 	class Registry
@@ -14,18 +14,22 @@ namespace NodeEditor
 		static Registry* getInstance();
 		static void destroyInstance();
 
-		int generateUniqueRuntimeID();
+		int generateUniqueRuntimeID() { return m_nextRuntimeID++; }
+		int generateUniqueGraphID() { return m_nextGraphID++; }
 
-		void registerNode(Node* node) { m_registeredNodes.push_back(node); }
-		void unregisterNode(Node* node);
-		size_t getNumRegisteredNodes() const { return m_registeredNodes.size(); }
+		void registerEntity(Entity* node) { m_registeredEntities.push_back(node); }
+		void unregisterEntity(Entity* node);
+		size_t getNumRegisteredEntities() const { return m_registeredEntities.size(); }
+		Entity* findEntity(int id) const;
 
 		void registerGraph(Graph* graph) { m_registeredGraphs.push_back(graph); }
 		void unregisterGraph(Graph* graph);
 		size_t getNumRegisteredGraphs() const { return m_registeredGraphs.size(); }
+		Graph* findGraph(int id) const;
 	private:
 		int m_nextRuntimeID;
-		std::vector<Node*> m_registeredNodes;
+		int m_nextGraphID;
+		std::vector<Entity*> m_registeredEntities;
 		std::vector<Graph*> m_registeredGraphs;
 
 		Registry() : m_nextRuntimeID(0) {}

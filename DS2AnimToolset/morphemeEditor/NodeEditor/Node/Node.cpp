@@ -1,14 +1,12 @@
 #include "Node.h"
 #include "NodeEditor/Graph/Graph.h"
-#include "NodeEditor/Registry/Registry.h"
 #include "NodeEditor/imnodes/imnodes.h"
 
 namespace NodeEditor
 {
 	Node::Node(Graph* parent, int id, const std::string& name, Graph* subGraph) : Entity(),
-		m_parentGraph(parent), m_name(name), m_subGraph(subGraph), m_position(ImVec2(0.f, 0.f))
+		m_parentGraph(parent), m_nodeID(id), m_name(name), m_subGraph(subGraph), m_position(ImVec2(0.f, 0.f))
 	{
-		Registry::getInstance()->registerNode(this);
 	}
 
 	Node::~Node()
@@ -18,16 +16,11 @@ namespace NodeEditor
 
 		for (Pin* outputPin : m_outputPins)
 			delete outputPin;
-
-		Registry::getInstance()->unregisterNode(this);
-
-		if (m_subGraph)
-			delete m_subGraph;
 	}
 
 	void Node::draw()
 	{
-		ImNodes::BeginNode(reinterpret_cast<intptr_t>(this));
+		ImNodes::BeginNode(m_id);
 
 		ImNodes::BeginNodeTitleBar();
 		ImGui::TextUnformatted(m_name.c_str());

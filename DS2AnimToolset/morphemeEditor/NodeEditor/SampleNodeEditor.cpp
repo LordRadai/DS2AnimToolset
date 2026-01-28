@@ -1,4 +1,6 @@
 #include "SampleNodeEditor.h"
+#include "extern.h"
+#include "RLog/RLog.h"
 
 namespace NodeEditor
 {
@@ -11,16 +13,24 @@ namespace NodeEditor
 
 		m_currentGraph = new Graph();
 
-		Node* node1 = m_currentGraph->addNode(1, "Sample Node 1");
+		Node* node1 = m_currentGraph->addNode(1, "Node1");
 		node1->addInputPin("Source0");
 		node1->addInputPin("Source1");
 
 		node1->addOutputPin("Result");
 
-		Node* node2 = m_currentGraph->addNode(2, "Sample Node 2");
+		Node* node2 = m_currentGraph->addNode(2, "Node2");
 		node2->addInputPin("Source");
 		node2->addOutputPin("Result");
 
-		node1->getOutputPin("Result")->connectTo(node2->getInputPin("Source"));
+		Node* stateMachine = m_currentGraph->addContainerNode(3, "StateMachine");
+		Graph* subGraph = stateMachine->getSubGraph();
+
+		subGraph->addNode(4, "SubNode1");
+
+		if (!node1->getOutputPin("Result")->connectTo(node2->getInputPin("Source")))
+			g_appLog->debugMessage(MsgLevel_Error, "Failed to connect pins\n");
+
+		return true;
 	}
 }

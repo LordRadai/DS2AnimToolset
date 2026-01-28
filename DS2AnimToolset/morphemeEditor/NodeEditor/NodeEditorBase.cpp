@@ -1,11 +1,12 @@
 #include "NodeEditorBase.h"
 #include "imnodes/imnodes.h"
 #include "Registry/Registry.h"
+#include "extern.h"
+#include "RLog/RLog.h"
 
 namespace NodeEditor
 {
 	NodeEditorBase::NodeEditorBase()
-		: m_currentGraph(nullptr)
 	{
 	}
 
@@ -30,13 +31,41 @@ namespace NodeEditor
 		ImNodes::DestroyContext();
 	}
 
+	void NodeEditorBase::update(float dt)
+	{
+		int hoveredNodeId = -1;
+
+		if (ImNodes::IsNodeHovered(&hoveredNodeId))
+		{
+			Graph* currentGraph = getCurrentGraph();
+
+			Registry* registry = Registry::getInstance();
+			Node* hoveredNode = static_cast<Node*>(registry->findEntity(hoveredNodeId));
+
+			if (hoveredNode && hoveredNode->hasSubGraph() && ImGui::IsMouseDoubleClicked(0))
+				pushGraph(hoveredNode->getSubGraph());
+		}
+		else if (ImGui::IsMouseDoubleClicked(1))
+		{
+			popGraph();
+		}
+	}
+
 	void NodeEditorBase::draw()
 	{
 		ImNodes::BeginNodeEditor();
 
-		if (m_currentGraph)
-			m_currentGraph->draw();
+		Graph* currentGraph = getCurrentGraph();
 
-		ImNodes::EndNodeEditor();
+		if (currentGraph)
+			currentGraph->draw();
+
+		ImNodes::EndNodeEditor();	
+	}
+
+	void NodeEditorBase::popGraph()
+	{
+		if (m_graphStack.size() > 1)
+			m_graphStack.pop();
 	}
 }

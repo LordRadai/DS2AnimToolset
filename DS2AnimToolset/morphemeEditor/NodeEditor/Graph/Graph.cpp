@@ -6,6 +6,7 @@ namespace NodeEditor
 	Graph::Graph()
 	{
 		m_context = ImNodes::CreateContext();
+		m_id = Registry::getInstance()->generateUniqueGraphID();
 		Registry::getInstance()->registerGraph(this);
 	}
 
@@ -13,6 +14,8 @@ namespace NodeEditor
 	{
 		for (Node* node : m_nodes)
 			delete node;
+
+		Registry::getInstance()->unregisterGraph(this);
 	}
 
 	Node* Graph::addNode(int nodeID, const std::string& name)
@@ -45,5 +48,8 @@ namespace NodeEditor
 	{
 		for (Node* node : m_nodes)
 			node->draw();
+
+		for (Link* link : m_links)
+			link->draw();
 	}
 }

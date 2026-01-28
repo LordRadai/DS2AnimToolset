@@ -17,17 +17,17 @@ namespace NodeEditor
 		switch (m_type)
 		{
 		case NodeEditor::Pin::kPinTypeInput:
-			ImNodes::BeginInputAttribute(reinterpret_cast<intptr_t>(this), ImNodesPinShape_CircleFilled);
+			ImNodes::BeginInputAttribute(m_id, ImNodesPinShape_CircleFilled);
 			ImGui::TextUnformatted(m_name.c_str());
 			ImNodes::EndInputAttribute();
 			break;
 		case NodeEditor::Pin::kPinTypeOutput:
-			ImNodes::BeginOutputAttribute(reinterpret_cast<intptr_t>(this), ImNodesPinShape_CircleFilled);
+			ImNodes::BeginOutputAttribute(m_id, ImNodesPinShape_CircleFilled);
 			ImGui::TextUnformatted(m_name.c_str());
 			ImNodes::EndOutputAttribute();
 			break;
 		default:
-			break;
+			throw "Unknown pin type in Pin::draw()";
 		}
 	}
 

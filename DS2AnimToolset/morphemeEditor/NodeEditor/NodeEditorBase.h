@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <stack>
 #include "Graph/Graph.h"
 
 namespace NodeEditor
@@ -7,16 +7,18 @@ namespace NodeEditor
 	class NodeEditorBase
 	{
 	protected:
-		Graph* m_currentGraph;
+		std::stack<Graph*> m_graphStack;
 	public:
 		NodeEditorBase();
 		virtual ~NodeEditorBase();
 
 		virtual bool initialise();
 		virtual void shutdown();
+		virtual void update(float dt);
 		virtual void draw();
 
-		Graph* getCurrentGraph() const { return m_currentGraph; }
-		void setCurrentGraph(Graph* graph) { m_currentGraph = graph; }
+		Graph* getCurrentGraph() const { return m_graphStack.top(); }
+		void pushGraph(Graph* graph) { m_graphStack.push(graph); }
+		void popGraph();
 	};
 }

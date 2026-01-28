@@ -804,6 +804,9 @@ void MorphemeEditorApp::update(float dt)
 	if (this->m_eventTrackEditor)
 		this->m_eventTrackEditor->update(dt);
 
+	if (this->m_nodeEditor)
+		this->m_nodeEditor->update(dt);
+
 	if (this->m_taskFlags.loadFile)
 	{
 		this->m_taskFlags.loadFile = false;

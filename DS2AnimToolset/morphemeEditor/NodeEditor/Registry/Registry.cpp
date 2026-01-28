@@ -1,5 +1,5 @@
 #include "Registry.h"
-#include "NodeEditor/Node/Node.h"
+#include "NodeEditor/Entity/Entity.h"
 #include "NodeEditor/Graph/Graph.h"
 
 namespace NodeEditor
@@ -8,13 +8,13 @@ namespace NodeEditor
 
 	Registry::~Registry()
 	{
-		for (Node* node : m_registeredNodes)
+		for (Entity* node : m_registeredEntities)
 			delete node;
 
 		for (Graph* graph : m_registeredGraphs)
 			delete graph;
 
-		m_registeredNodes.clear();
+		m_registeredEntities.clear();
 		m_registeredGraphs.clear();
 	}
 
@@ -35,17 +35,23 @@ namespace NodeEditor
 		}
 	}
 
-	int Registry::generateUniqueRuntimeID()
+	void Registry::unregisterEntity(Entity* node)
 	{
-		return m_nextRuntimeID++;
+		auto it = std::find(m_registeredEntities.begin(), m_registeredEntities.end(), node);
+
+		if (it != m_registeredEntities.end())
+			m_registeredEntities.erase(it);
 	}
 
-	void Registry::unregisterNode(Node* node)
+	Entity* Registry::findEntity(int id) const
 	{
-		auto it = std::find(m_registeredNodes.begin(), m_registeredNodes.end(), node);
+		for (Entity* entity : m_registeredEntities)
+		{
+			if (entity->getID() == id)
+				return entity;
+		}
 
-		if (it != m_registeredNodes.end())
-			m_registeredNodes.erase(it);
+		return nullptr;
 	}
 
 	void Registry::unregisterGraph(Graph* graph)
@@ -54,5 +60,16 @@ namespace NodeEditor
 
 		if (it != m_registeredGraphs.end())
 			m_registeredGraphs.erase(it);
+	}
+
+	Graph* Registry::findGraph(int id) const
+	{
+		for (Graph* graph : m_registeredGraphs)
+		{
+			if (graph->getID() == id)
+				return graph;
+		}
+
+		return nullptr;
 	}
 }
