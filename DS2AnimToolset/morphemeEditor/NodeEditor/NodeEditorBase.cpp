@@ -117,6 +117,8 @@ namespace NodeEditor
         style.LinkLineSegmentsPerLength = 1.f;
         style.LinkThickness = 2.f;
 
+        style.PinTriangleSideLength = 8.f;
+
         style.Colors[ImNodesCol_NodeBackground] = IM_COL32(26, 55, 80, 255);
         style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(26, 55, 80, 255);
         style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(118, 113, 25, 255);
