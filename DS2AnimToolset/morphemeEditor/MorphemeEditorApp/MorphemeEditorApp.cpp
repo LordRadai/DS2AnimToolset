@@ -706,8 +706,12 @@ void MorphemeEditorApp::initialise()
 	this->m_timeActEditor = TrackEditor::TimeActEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds, g_taeTemplate);
 	this->m_eventTrackEditor = TrackEditor::EventTrackEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorRenameTrack | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds);
 
+	this->m_nodeEditor = new NodeEditor();
+
 	this->m_eventTrackEditor->registerListener(this->m_timeActEditor);
 	this->m_timeActEditor->registerListener(this->m_eventTrackEditor);
+
+	this->m_nodeEditor->initialise();
 
 	this->loadSettings();
 	this->loadPlayerModelPreset();
@@ -969,6 +973,9 @@ void MorphemeEditorApp::shutdown()
 
 	if (this->m_eventTrackEditor)
 		this->m_eventTrackEditor->destroy();
+
+	if (this->m_nodeEditor)
+		delete this->m_nodeEditor;
 
 	if (this->_instance)
 		delete this->_instance;

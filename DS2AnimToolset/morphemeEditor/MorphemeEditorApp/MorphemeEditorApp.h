@@ -11,10 +11,13 @@
 #include "Character/Character.h"
 #include "AnimPlayer/AnimPlayer.h"
 #include "Camera/Camera.h"
+#include "NodeEditor/NodeEditor.h"
 #include "TrackEditor/TimeActEditor.h"
 #include "TrackEditor/EventTrackEditor.h"
 #include "FileIDNamesTable/FileIDNamesTable.h"
 #include "PlayerModelPreset/PlayerModelPreset.h"
+
+#include "NodeEditor/NodeEditor.h"
 
 struct FlverResources
 {
@@ -120,6 +123,7 @@ public:
 	TrackEditor::EventTrackEditor* getEventTrackEditor() const { return this->m_eventTrackEditor; }
 	FlverResources* getFlverResources() const { return this->m_flverResources; }
 	PlayerModelPreset* getPlayerModelPreset() const { return this->m_playerModelPreset; }
+	NodeEditor::NodeEditor* getNodeEditor() const { return this->m_nodeEditor; }
 
 	WindowFlags* getWindowFlags() { return &this->m_windowFlags; }
 	TaskFlags* getTaskFlags() { return &this->m_taskFlags; }
@@ -183,6 +187,7 @@ private:
 
 	TrackEditor::TimeActEditor* m_timeActEditor = nullptr;
 	TrackEditor::EventTrackEditor* m_eventTrackEditor = nullptr;
+	NodeEditor::NodeEditor* m_nodeEditor = nullptr;
 
 	std::vector<std::wstring> m_timeActFileList;
 

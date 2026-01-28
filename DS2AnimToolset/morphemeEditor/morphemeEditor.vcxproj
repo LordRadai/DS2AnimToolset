@@ -241,12 +241,16 @@
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h" />
     <ClInclude Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.h" />
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h" />
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\crude_json.h" />
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_bezier_math.h" />
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_canvas.h" />
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_extra_math.h" />
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor.h" />
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_internal.h" />
+    <ClInclude Include="NodeEditor\Entity\Entity.h" />
+    <ClInclude Include="NodeEditor\Graph\Graph.h" />
+    <ClInclude Include="NodeEditor\imnodes\imnodes.h" />
+    <ClInclude Include="NodeEditor\imnodes\imnodes_internal.h" />
+    <ClInclude Include="NodeEditor\Link\Link.h" />
+    <ClInclude Include="NodeEditor\Node\Node.h" />
+    <ClInclude Include="NodeEditor\NodeEditorBase.h" />
+    <ClInclude Include="NodeEditor\Pin\Pin.h" />
+    <ClInclude Include="NodeEditor\Registry\Registry.h" />
+    <ClInclude Include="NodeEditor\SampleNodeEditor.h" />
     <ClInclude Include="PlayerModelPreset\PlayerModelPreset.h" />
     <ClInclude Include="RenderManager\DebugDraw\DebugDraw.h" />
     <ClInclude Include="RenderManager\RenderManager.h" />
@@ -329,10 +333,15 @@
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.cpp" />
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp" />
-    <ClCompile Include="NodeEditor\ImGuiNodeEditor\crude_json.cpp" />
-    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_canvas.cpp" />
-    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor.cpp" />
-    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_api.cpp" />
+    <ClCompile Include="NodeEditor\Entity\Entity.cpp" />
+    <ClCompile Include="NodeEditor\Graph\Graph.cpp" />
+    <ClCompile Include="NodeEditor\imnodes\imnodes.cpp" />
+    <ClCompile Include="NodeEditor\Link\Link.cpp" />
+    <ClCompile Include="NodeEditor\Node\Node.cpp" />
+    <ClCompile Include="NodeEditor\NodeEditorBase.cpp" />
+    <ClCompile Include="NodeEditor\Pin\Pin.cpp" />
+    <ClCompile Include="NodeEditor\Registry\Registry.cpp" />
+    <ClCompile Include="NodeEditor\SampleNodeEditor.cpp" />
     <ClCompile Include="PlayerModelPreset\PlayerModelPreset.cpp" />
     <ClCompile Include="RenderManager\RenderManager.cpp" />
     <ClCompile Include="TrackEditor\EventTrackEditor.cpp" />
@@ -354,9 +363,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fromloader\src\util\stringio\simple_sjis_table.bin" />
-    <None Include="NodeEditor\ImGuiNodeEditor\imgui_bezier_math.inl" />
-    <None Include="NodeEditor\ImGuiNodeEditor\imgui_extra_math.inl" />
-    <None Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_internal.inl" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

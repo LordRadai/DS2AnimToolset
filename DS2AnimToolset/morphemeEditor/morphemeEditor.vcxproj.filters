@@ -312,22 +312,34 @@
     <ClInclude Include="CharacterMotionCtrl\CharacterMotionCtrl.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\crude_json.h">
+    <ClInclude Include="NodeEditor\NodeEditorBase.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_bezier_math.h">
+    <ClInclude Include="NodeEditor\imnodes\imnodes.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_canvas.h">
+    <ClInclude Include="NodeEditor\imnodes\imnodes_internal.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_extra_math.h">
+    <ClInclude Include="NodeEditor\Node\Node.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor.h">
+    <ClInclude Include="NodeEditor\Pin\Pin.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_internal.h">
+    <ClInclude Include="NodeEditor\Graph\Graph.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Link\Link.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Registry\Registry.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Entity\Entity.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\SampleNodeEditor.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -560,16 +572,31 @@
     <ClCompile Include="CharacterMotionCtrl\CharacterMotionCtrl.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\ImGuiNodeEditor\crude_json.cpp">
+    <ClCompile Include="NodeEditor\NodeEditorBase.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_canvas.cpp">
+    <ClCompile Include="NodeEditor\imnodes\imnodes.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor.cpp">
+    <ClCompile Include="NodeEditor\Node\Node.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_api.cpp">
+    <ClCompile Include="NodeEditor\Pin\Pin.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Graph\Graph.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Link\Link.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Registry\Registry.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Entity\Entity.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\SampleNodeEditor.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -591,14 +618,5 @@
       <Filter>File di risorse</Filter>
     </None>
     <None Include="packages.config" />
-    <None Include="NodeEditor\ImGuiNodeEditor\imgui_bezier_math.inl">
-      <Filter>File di intestazione</Filter>
-    </None>
-    <None Include="NodeEditor\ImGuiNodeEditor\imgui_extra_math.inl">
-      <Filter>File di intestazione</Filter>
-    </None>
-    <None Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_internal.inl">
-      <Filter>File di intestazione</Filter>
-    </None>
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
 #include "WorkerThread/WorkerThread.h"
 #include "Camera/Camera.h"
-#include "NodeEditor/ImGuiNodeEditor/imgui_node_editor.h"
+#include "NodeEditor/NodeEditor.h"
 
 #define MSAA_SETTING_COUNT 3
 
@@ -707,6 +707,11 @@ void GuiManager::update(float dt)
 	this->trackEditorWindow();
 	this->networkPreviewWindow();
 
+	this->eventTrackEditorWindow();
+	this->timeActEditorWindow();
+	this->eventTrackInfoWindow();
+	this->timeActInfoWindow();
+
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 	MorphemeEditorApp::WindowFlags* windowFlags = editorApp->getWindowFlags();
 
@@ -1404,8 +1409,6 @@ void GuiManager::eventTrackEditorWindow()
 
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
-	//ImGui::SetNextWindowDockID(ImGui::GetID("TrackEditorDock"), ImGuiCond_Always);
-
 	ImGui::Begin("EventTrack");
 	TrackEditor::EventTrackEditor* eventTrackEditor = editorApp->getEventTrackEditor();
 
@@ -1668,28 +1671,7 @@ void GuiManager::networkPreviewWindow()
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
 	ImGui::Begin("Network Preview");
-
-	using namespace ax::NodeEditor;
-	static EditorContext* ctx = CreateEditor();
-	SetCurrentEditor(ctx);
-	int uniqueID = 1;
-	ImGui::Begin("Node Editor Example");
-	Begin("My Editor");
-
-	BeginNode(uniqueID++);
-	ImGui::Text("Node A");
-	BeginPin(uniqueID++, PinKind::Input);
-	ImGui::Text("Input Pin");
-	EndPin();
-
-	BeginPin(uniqueID++, PinKind::Output);
-	ImGui::Text("Output Pin");
-	EndPin();
-
-	End();
-	ImGui::End();
-	SetCurrentEditor(nullptr);
-
+	editorApp->getNodeEditor()->draw();
 	ImGui::End();
 }
 
@@ -1704,11 +1686,6 @@ void GuiManager::trackEditorWindow()
 		ImVec2(0.0f, 0.0f),
 		ImGuiDockNodeFlags_None
 	);
-
-	this->eventTrackEditorWindow();
-	this->timeActEditorWindow();
-	this->eventTrackInfoWindow();
-	this->timeActInfoWindow();
 
 	ImGui::End();
 }
