@@ -11,19 +11,20 @@ namespace NodeEditor
 		if (!bInit)
 			return false;
 
-		m_currentGraph = new Graph();
+		Graph* rootGraph = new Graph();
+		pushGraph(rootGraph);
 
-		Node* node1 = m_currentGraph->addNode(1, "Node1");
+		Node* node1 = rootGraph->addNode(1, "Node1");
 		node1->addInputPin("Source0");
 		node1->addInputPin("Source1");
 
 		node1->addOutputPin("Result");
 
-		Node* node2 = m_currentGraph->addNode(2, "Node2");
+		Node* node2 = rootGraph->addNode(2, "Node2");
 		node2->addInputPin("Source");
 		node2->addOutputPin("Result");
 
-		Node* stateMachine = m_currentGraph->addContainerNode(3, "StateMachine");
+		Node* stateMachine = rootGraph->addContainerNode(3, "StateMachine");
 		Graph* subGraph = stateMachine->getSubGraph();
 
 		subGraph->addNode(4, "SubNode1");
