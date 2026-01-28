@@ -706,7 +706,7 @@ void MorphemeEditorApp::initialise()
 	this->m_timeActEditor = TrackEditor::TimeActEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds, g_taeTemplate);
 	this->m_eventTrackEditor = TrackEditor::EventTrackEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorRenameTrack | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds);
 
-	this->m_nodeEditor = new NodeEditor();
+	this->m_nodeEditor = new NodeEditor::SampleNodeEditor();
 
 	this->m_eventTrackEditor->registerListener(this->m_timeActEditor);
 	this->m_timeActEditor->registerListener(this->m_eventTrackEditor);
