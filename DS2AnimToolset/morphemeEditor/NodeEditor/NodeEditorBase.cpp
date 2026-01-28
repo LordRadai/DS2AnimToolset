@@ -85,6 +85,7 @@ namespace NodeEditor
 
 		ImGui::SameLine();
 
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 		ImGui::Label(parentGraphList.c_str());
 
 		ImNodes::BeginNodeEditor();
