@@ -7,7 +7,7 @@
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
 #include "WorkerThread/WorkerThread.h"
 #include "Camera/Camera.h"
-#include "NodeEditor/NodeEditor.h"
+#include "NodeEditor/NodeEditorBase.h"
 
 #define MSAA_SETTING_COUNT 3
 
