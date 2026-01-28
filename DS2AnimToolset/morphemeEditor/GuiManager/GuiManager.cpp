@@ -7,6 +7,7 @@
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
 #include "WorkerThread/WorkerThread.h"
 #include "Camera/Camera.h"
+#include "NodeEditor/ImGuiNodeEditor/imgui_node_editor.h"
 
 #define MSAA_SETTING_COUNT 3
 
@@ -1668,6 +1669,27 @@ void GuiManager::networkPreviewWindow()
 
 	ImGui::Begin("Network Preview");
 
+	using namespace ax::NodeEditor;
+	static EditorContext* ctx = CreateEditor();
+	SetCurrentEditor(ctx);
+	int uniqueID = 1;
+	ImGui::Begin("Node Editor Example");
+	Begin("My Editor");
+
+	BeginNode(uniqueID++);
+	ImGui::Text("Node A");
+	BeginPin(uniqueID++, PinKind::Input);
+	ImGui::Text("Input Pin");
+	EndPin();
+
+	BeginPin(uniqueID++, PinKind::Output);
+	ImGui::Text("Output Pin");
+	EndPin();
+
+	End();
+	ImGui::End();
+	SetCurrentEditor(nullptr);
+
 	ImGui::End();
 }
 
@@ -1683,10 +1705,10 @@ void GuiManager::trackEditorWindow()
 		ImGuiDockNodeFlags_None
 	);
 
-	eventTrackEditorWindow();
-	timeActEditorWindow();
-	eventTrackInfoWindow();
-	timeActInfoWindow();
+	this->eventTrackEditorWindow();
+	this->timeActEditorWindow();
+	this->eventTrackInfoWindow();
+	this->timeActInfoWindow();
 
 	ImGui::End();
 }

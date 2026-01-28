@@ -19,7 +19,6 @@
 # include <sstream>
 # include <streambuf>
 # include <type_traits>
-# include <nlohmann/json.hpp>
 
 // https://stackoverflow.com/a/8597498
 # define DECLARE_HAS_NESTED(Name, Member)                                          \
@@ -2674,9 +2673,9 @@ void ed::NodeSettings::MakeDirty(SaveReasonFlags reason)
     m_DirtyReason = m_DirtyReason | reason;
 }
 
-ed::json::json ed::NodeSettings::Serialize()
+ed::json::value ed::NodeSettings::Serialize()
 {
-    json::json result;
+    json::value result;
     result["location"]["x"] = m_Location.x;
     result["location"]["y"] = m_Location.y;
 
@@ -2691,19 +2690,19 @@ ed::json::json ed::NodeSettings::Serialize()
 
 bool ed::NodeSettings::Parse(const std::string& string, NodeSettings& settings)
 {
-    auto settingsValue = json::json::parse(string);
+    auto settingsValue = json::value::parse(string);
     if (settingsValue.is_discarded())
         return false;
 
     return Parse(settingsValue, settings);
 }
 
-bool ed::NodeSettings::Parse(const json::json&data, NodeSettings& result)
+bool ed::NodeSettings::Parse(const json::value& data, NodeSettings& result)
 {
     if (!data.is_object())
         return false;
 
-    auto tryParseVector = [](const json::json& v, ImVec2& result) -> bool
+    auto tryParseVector = [](const json::value& v, ImVec2& result) -> bool
     {
         if (v.is_object())
         {
@@ -2797,7 +2796,7 @@ void ed::Settings::MakeDirty(SaveReasonFlags reason, Node* node)
 
 std::string ed::Settings::Serialize()
 {
-    json::json result;
+    json::value result;
 
     auto serializeObjectId = [](ObjectId id)
     {
@@ -2839,14 +2838,14 @@ bool ed::Settings::Parse(const std::string& string, Settings& settings)
 {
     Settings result = settings;
 
-    auto settingsValue = json::json::parse(string);
+    auto settingsValue = json::value::parse(string);
     if (settingsValue.is_discarded())
         return false;
 
     if (!settingsValue.is_object())
         return false;
 
-    auto tryParseVector = [](const json::json& v, ImVec2& result) -> bool
+    auto tryParseVector = [](const json::value& v, ImVec2& result) -> bool
     {
         if (v.is_object() && v.contains("x") && v.contains("y"))
         {
@@ -2886,7 +2885,7 @@ bool ed::Settings::Parse(const std::string& string, Settings& settings)
     auto& nodesValue = settingsValue["nodes"];
     if (nodesValue.is_object())
     {
-        for (auto& node : nodesValue.get<json::json::object_t>())
+        for (auto& node : nodesValue.get<json::object>())
         {
             auto id = deserializeObjectId(node.first.c_str()).AsNodeId();
 
@@ -2901,14 +2900,14 @@ bool ed::Settings::Parse(const std::string& string, Settings& settings)
     auto& selectionValue = settingsValue["selection"];
     if (selectionValue.is_array())
     {
-        const auto selectionArray = selectionValue.get<json::json::array_t>();
+        const auto selectionArray = selectionValue.get<json::array>();
 
         result.m_Selection.reserve(selectionArray.size());
         result.m_Selection.resize(0);
         for (auto& selection : selectionArray)
         {
             if (selection.is_string())
-                result.m_Selection.push_back(deserializeObjectId(selection.get<json::json::string_t>()));
+                result.m_Selection.push_back(deserializeObjectId(selection.get<json::string>()));
         }
     }
 

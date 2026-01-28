@@ -241,6 +241,7 @@
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h" />
     <ClInclude Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.h" />
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h" />
+    <ClInclude Include="NodeEditor\ImGuiNodeEditor\crude_json.h" />
     <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_bezier_math.h" />
     <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_canvas.h" />
     <ClInclude Include="NodeEditor\ImGuiNodeEditor\imgui_extra_math.h" />
@@ -328,6 +329,7 @@
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.cpp" />
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp" />
+    <ClCompile Include="NodeEditor\ImGuiNodeEditor\crude_json.cpp" />
     <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_canvas.cpp" />
     <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor.cpp" />
     <ClCompile Include="NodeEditor\ImGuiNodeEditor\imgui_node_editor_api.cpp" />

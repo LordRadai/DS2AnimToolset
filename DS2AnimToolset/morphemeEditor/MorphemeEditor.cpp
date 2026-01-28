@@ -112,77 +112,69 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return 1;
     }
 
-    try
+    g_appLog->debugMessage(MsgLevel_Info, "Creating FBX Manager\n");
+    g_pFbxManager = FbxManager::Create();
+
+    if (!g_pFbxManager)
+        throw std::runtime_error("Error: Unable to create FBX Manager!");
+
+    // Main loop
+    bool done = false;
+    while (!done)
     {
-        g_appLog->debugMessage(MsgLevel_Info, "Creating FBX Manager\n");
-        g_pFbxManager = FbxManager::Create();
-
-        if (!g_pFbxManager)
-			throw std::runtime_error("Error: Unable to create FBX Manager!");
-
-        // Main loop
-        bool done = false;
-        while (!done)
-        {
 #ifdef _CONSOLE
-            g_appLog->setConsoleVisibility(true);
+        g_appLog->setConsoleVisibility(true);
 #endif
 
-            WorkerThread::getInstance()->update();
+        WorkerThread::getInstance()->update();
 
-            timer.Tick([&]()
-                {
-                    const float dt = float(timer.GetElapsedSeconds());
-
-                    g_renderManager->update(dt);
-                    g_guiManager->update(dt);
-                    g_morphemeEditorApp->update(dt);
-                });
-
-            // Rendering
-            if (timer.GetFrameCount() > 0)
-                g_renderManager->render();
-
-            g_renderManager->present();
-
-            // Poll and handle messages (inputs, window resize, etc.)
-            // See the WndProc() function below for our to dispatch events to the Win32 backend.
-            MSG msg;
-            while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
+        timer.Tick([&]()
             {
-                ::TranslateMessage(&msg);
-                ::DispatchMessage(&msg);
+                const float dt = float(timer.GetElapsedSeconds());
 
-                if (msg.message == WM_QUIT)
-                    done = true;
-            }
+                g_renderManager->update(dt);
+                g_guiManager->update(dt);
+                g_morphemeEditorApp->update(dt);
+            });
+
+        // Rendering
+        if (timer.GetFrameCount() > 0)
+            g_renderManager->render();
+
+        g_renderManager->present();
+
+        // Poll and handle messages (inputs, window resize, etc.)
+        // See the WndProc() function below for our to dispatch events to the Win32 backend.
+        MSG msg;
+        while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
+        {
+            ::TranslateMessage(&msg);
+            ::DispatchMessage(&msg);
+
+            if (msg.message == WM_QUIT)
+                done = true;
         }
-
-        WorkerThread::getInstance()->join();
-
-        // Cleanup
-        g_appLog->debugMessage(MsgLevel_Info, "Main app module shutdown\n");
-        g_morphemeEditorApp->shutdown();
-
-        g_appLog->debugMessage(MsgLevel_Info, "Gui module shutdown\n");
-        g_guiManager->shutdown();
-
-        g_appLog->debugMessage(MsgLevel_Info, "Rendering module shutdown\n");
-        g_renderManager->shutdown();
-
-        ::DestroyWindow(hwnd);
-        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
-
-        g_appLog->debugMessage(MsgLevel_Info, "Exit\n");
-        g_appLog->shutdown();
-
-        delete g_appLog;
     }
-    catch (const std::exception& e)
-    {
-        g_appLog->panicMessage(e.what());
-        return 1;
-    }
+
+    WorkerThread::getInstance()->join();
+
+    // Cleanup
+    g_appLog->debugMessage(MsgLevel_Info, "Main app module shutdown\n");
+    g_morphemeEditorApp->shutdown();
+
+    g_appLog->debugMessage(MsgLevel_Info, "Gui module shutdown\n");
+    g_guiManager->shutdown();
+
+    g_appLog->debugMessage(MsgLevel_Info, "Rendering module shutdown\n");
+    g_renderManager->shutdown();
+
+    ::DestroyWindow(hwnd);
+    ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+
+    g_appLog->debugMessage(MsgLevel_Info, "Exit\n");
+    g_appLog->shutdown();
+
+    delete g_appLog;
     
     return 0;
 }
