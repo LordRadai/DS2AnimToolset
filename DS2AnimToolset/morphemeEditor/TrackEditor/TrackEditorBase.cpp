@@ -310,6 +310,18 @@ namespace TrackEditor
         return nullptr;
     }
 
+    void TrackEditorBase::styleEditor()
+    {
+        ImGui::ColorEdit4("Track", (float*)&m_colors.m_trackColor);
+        ImGui::ColorEdit4("Track Inactive", (float*)&m_colors.m_trackColorInactive);
+        ImGui::ColorEdit4("Track Active", (float*)&m_colors.m_trackColorActive);
+        ImGui::ColorEdit4("Track Bounding Box", (float*)&m_colors.m_trackBoundingBox);
+        ImGui::ColorEdit4("Track Bounding Box Active", (float*)&m_colors.m_trackBoundingBoxActive);
+        ImGui::ColorEdit4("Highlight", (float*)&m_colors.m_highlight);
+        ImGui::ColorEdit4("Track Text Color", (float*)&m_colors.m_trackTextColor);
+        ImGui::ColorEdit4("Cursor Color", (float*)&m_colors.m_cursorColor);
+    }
+
     void TrackEditorBase::loadColorsFromXML(const char* filename)
     {
         RXML::XMLFileObj* xml = new RXML::XMLFileObj;

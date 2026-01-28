@@ -11,6 +11,7 @@ namespace NodeEditor
 		Pin* m_outputPin;
 	public:
 		Link(Pin* inputPin, Pin* outputPin) : Entity(), m_inputPin(inputPin), m_outputPin(outputPin) {}
+		virtual ~Link() override {}
 
 		Pin* getInputPin() const { return m_inputPin; }
 		Pin* getOutputPin() const { return m_outputPin; }

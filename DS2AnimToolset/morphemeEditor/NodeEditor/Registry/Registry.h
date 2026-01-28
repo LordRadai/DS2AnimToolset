@@ -21,11 +21,13 @@ namespace NodeEditor
 		void unregisterEntity(Entity* node);
 		size_t getNumRegisteredEntities() const { return m_registeredEntities.size(); }
 		Entity* findEntity(int id) const;
+		Entity* getEntityAtIndex(size_t index) const { return m_registeredEntities[index]; }
 
 		void registerGraph(Graph* graph) { m_registeredGraphs.push_back(graph); }
 		void unregisterGraph(Graph* graph);
 		size_t getNumRegisteredGraphs() const { return m_registeredGraphs.size(); }
 		Graph* findGraph(int id) const;
+		Graph* getGraphAtIndex(size_t index) const { return m_registeredGraphs[index]; }
 	private:
 		int m_nextRuntimeID;
 		int m_nextGraphID;

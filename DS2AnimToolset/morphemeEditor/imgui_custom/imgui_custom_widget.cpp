@@ -96,3 +96,29 @@ void ImGui::InputDragInt(const char* label, int* v, float dragSpeed, int min, in
 
     ImGui::SliderInt(label, v, min, max, "");
 }
+
+bool ImGui::Label(const char* labelText, ImGuiInputTextFlags flags)
+{
+	char textID[256];
+	sprintf_s(textID, "##%sLabel", labelText);
+
+    char label[256];
+	sprintf_s(label, "%s", labelText);
+
+	return ImGui::InputText(textID, label, 256, flags | ImGuiInputTextFlags_ReadOnly);
+}
+
+bool ImGui::ColorEditUInt(const char* label, ImU32* color, ImGuiColorEditFlags flags)
+{
+    if (!color)
+        return false;
+
+    ImVec4 col = ImGui::ColorConvertU32ToFloat4(*color);
+
+    bool changed = ImGui::ColorEdit4(label, &col.x, flags);
+
+    if (changed)
+        *color = ImGui::ColorConvertFloat4ToU32(col);
+
+    return changed;
+}

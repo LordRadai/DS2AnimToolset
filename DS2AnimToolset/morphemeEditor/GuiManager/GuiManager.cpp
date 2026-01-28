@@ -13,18 +13,6 @@
 
 namespace
 {
-	void trackEditorColorSelector(TrackEditor::TrackEditorBase* trackEditor)
-	{
-		ImGui::ColorEdit4("Track", (float*)&trackEditor->getColors()->m_trackColor);
-		ImGui::ColorEdit4("Track Inactive", (float*)&trackEditor->getColors()->m_trackColorInactive);
-		ImGui::ColorEdit4("Track Active", (float*)&trackEditor->getColors()->m_trackColorActive);
-		ImGui::ColorEdit4("Track Bounding Box", (float*)&trackEditor->getColors()->m_trackBoundingBox);
-		ImGui::ColorEdit4("Track Bounding Box Active", (float*)&trackEditor->getColors()->m_trackBoundingBoxActive);
-		ImGui::ColorEdit4("Highlight", (float*)&trackEditor->getColors()->m_highlight);
-		ImGui::ColorEdit4("Track Text Color", (float*)&trackEditor->getColors()->m_trackTextColor);
-		ImGui::ColorEdit4("Cursor Color", (float*)&trackEditor->getColors()->m_cursorColor);
-	}
-
 	TimeAct::TaeExport::TimeActTrackExportXML* getTimeActTrackForAnimation(AnimObject* animObj)
 	{
 		MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
@@ -1670,8 +1658,12 @@ void GuiManager::networkPreviewWindow()
 
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
-	ImGui::Begin("Network Preview");
-	editorApp->getNodeEditor()->draw();
+	ImGui::Begin("Network Preview", nullptr, ImGuiWindowFlags_MenuBar);
+
+	NodeEditor::NodeEditorBase* nodeEditor = editorApp->getNodeEditor();
+
+	nodeEditor->draw();
+
 	ImGui::End();
 }
 
@@ -1749,25 +1741,30 @@ void GuiManager::colorSettingsWindow()
 
 	ImGui::BeginTabBar("color_categories");
 
-#ifdef _DEBUG
 	if (ImGui::BeginTabItem("ImGui"))
 	{
 		ImGui::ShowStyleEditor();
 
 		ImGui::EndTabItem();
 	}
-#endif
 
-	if (ImGui::BeginTabItem("EventTrack Editor"))
+	if (ImGui::BeginTabItem("Node Editor"))
 	{
-		trackEditorColorSelector(editorApp->getEventTrackEditor());
+		editorApp->getNodeEditor()->styleEditor();
 
 		ImGui::EndTabItem();
 	}
 
-	if (ImGui::BeginTabItem("TimeAct Editor"))
+	if (ImGui::BeginTabItem("Event Track Editor"))
 	{
-		trackEditorColorSelector(editorApp->getTimeActEditor());
+		editorApp->getEventTrackEditor()->styleEditor();
+
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("Time Act Editor"))
+	{
+		editorApp->getTimeActEditor()->styleEditor();
 
 		ImGui::EndTabItem();
 	}

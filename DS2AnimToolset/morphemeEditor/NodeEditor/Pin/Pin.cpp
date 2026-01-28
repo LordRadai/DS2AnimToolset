@@ -16,18 +16,9 @@ namespace NodeEditor
 	{
 		switch (m_type)
 		{
-		case NodeEditor::Pin::kPinTypeInput:
-			ImNodes::BeginInputAttribute(m_id, ImNodesPinShape_CircleFilled);
-			ImGui::TextUnformatted(m_name.c_str());
-			ImNodes::EndInputAttribute();
-			break;
-		case NodeEditor::Pin::kPinTypeOutput:
-			ImNodes::BeginOutputAttribute(m_id, ImNodesPinShape_CircleFilled);
-			ImGui::TextUnformatted(m_name.c_str());
-			ImNodes::EndOutputAttribute();
-			break;
-		default:
-			throw "Unknown pin type in Pin::draw()";
+		case NodeEditor::Pin::kPinTypeInput:	return drawInputPin();
+		case NodeEditor::Pin::kPinTypeOutput:	return drawOutputPin();
+		default:								throw "Unknown pin type in Pin::draw()";
 		}
 	}
 
@@ -50,5 +41,30 @@ namespace NodeEditor
 
 		delete link;
 		return false;
+	}
+
+	void Pin::drawInputPin()
+	{
+		ImNodes::BeginInputAttribute(m_id, ImNodesPinShape_TriangleFilled);
+		ImGui::TextUnformatted(m_name.c_str());
+		ImNodes::EndInputAttribute();
+	}
+
+	void Pin::drawOutputPin()
+	{
+		ImNodes::BeginOutputAttribute(m_id, ImNodesPinShape_TriangleFilled);
+
+		// Get node width in content space
+		ImVec2 labelSize = ImGui::CalcTextSize(m_name.c_str());
+
+		ImVec2 nodeSize;
+		m_parentNode->calcNodeSize(nodeSize.x, nodeSize.y);
+
+		// Move label to the right edge of the node
+		ImGui::Dummy(ImVec2(nodeSize.x - labelSize.x, 0));
+		ImGui::SameLine();
+		ImGui::TextUnformatted(m_name.c_str());
+
+		ImNodes::EndOutputAttribute();
 	}
 }

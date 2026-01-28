@@ -8,7 +8,7 @@ namespace NodeEditor
 		int m_id;
 	public:
 		Entity();
-		~Entity();
+		virtual ~Entity();
 
 		int getID() const { return m_id; }
 	};

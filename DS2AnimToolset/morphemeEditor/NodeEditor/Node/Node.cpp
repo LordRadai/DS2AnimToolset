@@ -1,6 +1,7 @@
 #include "Node.h"
 #include "NodeEditor/Graph/Graph.h"
 #include "NodeEditor/imnodes/imnodes.h"
+#include "NodeEditor/StyleSettings.h"
 
 namespace NodeEditor
 {
@@ -22,15 +23,37 @@ namespace NodeEditor
 	{
 		ImNodes::BeginNode(m_id);
 
+		ImVec2 textSize = ImGui::CalcTextSize(m_name.c_str());
+
+		float nodeWidth, nodeHeight;
+		calcNodeSize(nodeWidth, nodeHeight);
+
+		// ---- Title bar ----
 		ImNodes::BeginNodeTitleBar();
 		ImGui::TextUnformatted(m_name.c_str());
 		ImNodes::EndNodeTitleBar();
 
+		// ---- Content area ----
+		StyleSettings& style = getStyleSettings();
+
+		float pinAreaHeight = style.nodeMinContentHeight;
+		int totalPins = (int)(m_inputPins.size() + m_outputPins.size());
+
+		float dummyHeight = pinAreaHeight - totalPins * style.nodePinSpacing;
+		if (dummyHeight < 0.0f) dummyHeight = 0.0f;
+
+		// Add a dummy to enforce minimum node height
+		ImGui::Dummy(ImVec2(nodeWidth, dummyHeight));
+
+		// ---- Draw pins ----
 		for (Pin* inputPin : m_inputPins)
 			inputPin->draw();
 
 		for (Pin* outputPin : m_outputPins)
 			outputPin->draw();
+
+		// ---- Node position ----
+		ImNodes::SetNodeGridSpacePos(m_id, m_position);
 
 		ImNodes::EndNode();
 	}
@@ -92,5 +115,29 @@ namespace NodeEditor
 	void Node::setPosition(float x, float y)
 	{
 		m_position = ImVec2(x, y);
+	}
+
+	const std::string Node::getFullName() const
+	{
+		if (m_parentGraph)
+			return m_parentGraph->getFullName() + "|" + m_name;
+
+		return m_name;
+	}
+
+	void Node::calcNodeSize(float& width, float& height) const
+	{
+		ImNodesStyle& imStyle = ImNodes::GetStyle();
+
+		StyleSettings& style = getStyleSettings();
+		ImVec2 textSize = ImGui::CalcTextSize(m_name.c_str());
+
+		const float titleBarHeight = 2.f * imStyle.NodePadding.y + textSize.y;
+		const float nodeTotalMinHeight = titleBarHeight + style.nodeMinContentHeight;
+		const int totalPins = (int)(m_inputPins.size() + m_outputPins.size());
+		const float nodeHeight = totalPins * style.nodePinSpacing;
+
+		width = std::max(style.nodeMinWidth, textSize.x);
+		height = std::max(nodeTotalMinHeight, nodeHeight);
 	}
 }

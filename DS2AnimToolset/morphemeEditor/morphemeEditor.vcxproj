@@ -253,6 +253,7 @@
     <ClInclude Include="NodeEditor\Pin\Pin.h" />
     <ClInclude Include="NodeEditor\Registry\Registry.h" />
     <ClInclude Include="NodeEditor\SampleNodeEditor.h" />
+    <ClInclude Include="NodeEditor\StyleSettings.h" />
     <ClInclude Include="PlayerModelPreset\PlayerModelPreset.h" />
     <ClInclude Include="RenderManager\DebugDraw\DebugDraw.h" />
     <ClInclude Include="RenderManager\RenderManager.h" />
@@ -344,6 +345,7 @@
     <ClCompile Include="NodeEditor\Pin\Pin.cpp" />
     <ClCompile Include="NodeEditor\Registry\Registry.cpp" />
     <ClCompile Include="NodeEditor\SampleNodeEditor.cpp" />
+    <ClCompile Include="NodeEditor\StyleSettings.cpp" />
     <ClCompile Include="PlayerModelPreset\PlayerModelPreset.cpp" />
     <ClCompile Include="RenderManager\RenderManager.cpp" />
     <ClCompile Include="TrackEditor\EventTrackEditor.cpp" />

@@ -7,6 +7,7 @@ namespace NodeEditor
 	class NodeEditorBase
 	{
 	protected:
+		bool m_showStyleEditor;
 		std::stack<Graph*> m_graphStack;
 	public:
 		NodeEditorBase();
@@ -20,5 +21,9 @@ namespace NodeEditor
 		Graph* getCurrentGraph() const { return m_graphStack.top(); }
 		void pushGraph(Graph* graph) { m_graphStack.push(graph); }
 		void popGraph();
+
+		void styleEditor();
+	private:
+		void initStyle();
 	};
 }

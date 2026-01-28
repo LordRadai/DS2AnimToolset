@@ -1635,7 +1635,7 @@ void Initialize(ImNodesContext* context)
     context->CurrentAttributeFlags = ImNodesAttributeFlags_None;
     context->AttributeFlagStack.push_back(GImNodes->CurrentAttributeFlags);
 
-    StyleColorsDark();
+    //StyleColorsDark();
 }
 
 void Shutdown(ImNodesContext* ctx) { EditorContextFree(ctx->DefaultEditorCtx); }

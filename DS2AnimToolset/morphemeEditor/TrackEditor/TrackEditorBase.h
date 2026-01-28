@@ -82,6 +82,8 @@ namespace TrackEditor
         Track* getSelectedTrack() const;
         Event* getSelectedEvent() const;
 
+        void styleEditor();
+
         void setEditorOptions(TrackEditorOptions options) { this->m_editorOptions = options; }
         void setCurrentTime(float time) { this->m_currentFrame = RMath::timeToFrame(time, this->m_fps); }
         void setFps(int fps) { this->m_fps = fps; }

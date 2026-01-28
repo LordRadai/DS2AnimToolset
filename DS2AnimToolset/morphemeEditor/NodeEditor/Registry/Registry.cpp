@@ -8,12 +8,6 @@ namespace NodeEditor
 
 	Registry::~Registry()
 	{
-		for (Entity* node : m_registeredEntities)
-			delete node;
-
-		for (Graph* graph : m_registeredGraphs)
-			delete graph;
-
 		m_registeredEntities.clear();
 		m_registeredGraphs.clear();
 	}

@@ -10,20 +10,22 @@ namespace NodeEditor
 
 	class Node : public Entity
 	{
+	protected:
+		Graph* m_parentGraph;
 		int m_nodeID;
 		std::string m_name;
 		std::vector<Pin*> m_inputPins;
 		std::vector<Pin*> m_outputPins;
 
-		Graph* m_parentGraph;
 		Graph* m_subGraph;
 
 		ImVec2 m_position;
 	public:
 		Node(Graph* parent, int id, const std::string& name, Graph* subGraph);
-		~Node();
+		virtual ~Node() override;
 
 		const std::string& getName() const { return m_name; }
+		ImVec2 getPosition() const { return m_position; }
 
 		void draw();
 
@@ -42,5 +44,9 @@ namespace NodeEditor
 		void setPosition(float x, float y);
 
 		bool hasSubGraph() const { return m_subGraph != nullptr; }
+
+		const std::string getFullName() const;
+
+		void calcNodeSize(float& width, float& height) const;
 	};
 }
