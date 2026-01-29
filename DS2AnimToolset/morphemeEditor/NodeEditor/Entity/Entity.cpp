@@ -3,7 +3,7 @@
 
 namespace NodeEditor
 {
-	Entity::Entity()
+	Entity::Entity(const std::string& name) : m_name(name)
 	{
 		m_id = Registry::getInstance()->generateUniqueRuntimeID();
 		Registry::getInstance()->registerEntity(this);

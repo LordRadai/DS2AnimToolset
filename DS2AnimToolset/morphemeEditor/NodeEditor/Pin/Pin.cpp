@@ -6,8 +6,8 @@
 
 namespace NodeEditor
 {
-	Pin::Pin(Node* parent, const std::string& name, bool isInput) : Entity(),
-		m_parentNode(parent), m_name(name)
+	Pin::Pin(Node* parent, const std::string& name, bool isInput) : Entity(name),
+		m_parentNode(parent)
 	{
 		m_type = isInput ? kPinTypeInput : kPinTypeOutput;
 	}
@@ -57,8 +57,7 @@ namespace NodeEditor
 		// Get node width in content space
 		ImVec2 labelSize = ImGui::CalcTextSize(m_name.c_str());
 
-		ImVec2 nodeSize;
-		m_parentNode->calcNodeSize(nodeSize.x, nodeSize.y);
+		ImVec2 nodeSize = m_parentNode->getSize();
 
 		// Move label to the right edge of the node
 		ImGui::Dummy(ImVec2(nodeSize.x - labelSize.x, 0));

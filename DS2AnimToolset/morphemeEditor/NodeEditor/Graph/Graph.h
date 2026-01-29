@@ -3,17 +3,17 @@
 #include <string>
 #include "NodeEditor/imnodes/imnodes.h"
 #include "NodeEditor/Node/Node.h"
+#include "NodeEditor/Transition/Transition.h"
 #include "NodeEditor/Link/Link.h"
 
 namespace NodeEditor
 {
-	class Graph
+	class Graph : public Entity
 	{
 		Graph* m_parentGraph;
-		int m_id;
-		std::string m_name;
 		ImNodesContext* m_context;
 		std::vector<Node*> m_nodes;
+		std::vector<Transition*> m_transitions;
 		std::vector<Link*> m_links;
 	public:
 		Graph(Graph* parent, const std::string& name);
@@ -24,8 +24,16 @@ namespace NodeEditor
 		Graph* getParentGraph() const { return m_parentGraph; }
 		bool isRootGraph() const { return m_parentGraph == nullptr; }
 
+		Node* getNode(int nodeID) const;
+		Node* getNode(const std::string& name) const;
+
+		Transition* getTransition(int nodeID) const;
+		Transition* getTransition(const std::string& name) const;
+
 		Node* createNode(int nodeID, const std::string& name);
 		Node* createContainerNode(int nodeID, const std::string& name);
+		Transition* createTransition(int nodeID, Node* sourceNode, Node* destinationNode);
+
 		void removeNode(Node* node);
 
 		void addLink(Link* link) { m_links.push_back(link); }

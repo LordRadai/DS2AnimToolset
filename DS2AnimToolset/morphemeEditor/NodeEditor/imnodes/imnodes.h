@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 
 #ifdef IMNODES_USER_CONFIG
 #include IMNODES_USER_CONFIG
@@ -413,4 +414,14 @@ void SaveEditorStateToIniFile(const ImNodesEditorContext* editor, const char* fi
 
 void LoadCurrentEditorStateFromIniFile(const char* file_name);
 void LoadEditorStateFromIniFile(ImNodesEditorContext* editor, const char* file_name);
+
+ImVec2 ScreenSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v);
+ImRect ScreenSpaceToGridSpace(const ImNodesEditorContext& editor, const ImRect& r);
+ImVec2 GridSpaceToScreenSpace(const ImNodesEditorContext& editor, const ImVec2& v);
+ImVec2 GridSpaceToEditorSpace(const ImNodesEditorContext& editor, const ImVec2& v);
+ImVec2 EditorSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v);
+ImVec2 EditorSpaceToScreenSpace(const ImVec2& v);
+ImVec2 MiniMapSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v);
+ImVec2 ScreenSpaceToMiniMapSpace(const ImNodesEditorContext& editor, const ImVec2& v);
+ImRect ScreenSpaceToMiniMapSpace(const ImNodesEditorContext& editor, const ImRect& r);
 } // namespace IMNODES_NAMESPACE

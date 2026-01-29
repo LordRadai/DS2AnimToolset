@@ -5,8 +5,8 @@
 
 namespace NodeEditor
 {
-	Node::Node(Graph* parent, int id, const std::string& name, Graph* subGraph) : Entity(),
-		m_parentGraph(parent), m_nodeID(id), m_name(name), m_subGraph(subGraph), m_position(ImVec2(0.f, 0.f))
+	Node::Node(Graph* parent, int id, const std::string& name, Graph* subGraph) : Entity(name),
+		m_parentGraph(parent), m_nodeID(id), m_subGraph(subGraph), m_position(ImVec2(0.f, 0.f))
 	{
 	}
 
@@ -56,6 +56,22 @@ namespace NodeEditor
 		ImNodes::SetNodeGridSpacePos(m_id, m_position);
 
 		ImNodes::EndNode();
+	}
+
+	ImVec2 Node::getSize() const
+	{
+		float width, height;
+		calcNodeSize(width, height);
+
+		return ImVec2(width, height);
+	}
+
+	ImVec2 Node::getCenter() const
+	{
+		float width, height;
+		calcNodeSize(width, height);
+
+		return ImVec2(m_position.x + width * 0.5f, m_position.y + height * 0.5f);
 	}
 
 	Pin* Node::addInputPin(const std::string& name)

@@ -17,16 +17,13 @@ namespace NodeEditor
 
 	private:
 		Node* m_parentNode;
-		std::string m_name;
 		PinType m_type;
 
 	public:
 		Pin(Node* parent, const std::string& name, bool isInput);
 		virtual ~Pin() override {}
 
-		const std::string& getName() const { return m_name; }
-
-		void draw();
+		virtual void draw() override;
 
 		bool connectTo(Pin* other);
 	private:

@@ -13,21 +13,20 @@ namespace NodeEditor
 	protected:
 		Graph* m_parentGraph;
 		int m_nodeID;
-		std::string m_name;
 		std::vector<Pin*> m_inputPins;
 		std::vector<Pin*> m_outputPins;
-
+		ImVec2 m_position;
 		Graph* m_subGraph;
 
-		ImVec2 m_position;
 	public:
 		Node(Graph* parent, int id, const std::string& name, Graph* subGraph);
 		virtual ~Node() override;
 
-		const std::string& getName() const { return m_name; }
-		ImVec2 getPosition() const { return m_position; }
+		void draw() override;
 
-		void draw();
+		ImVec2 getPosition() const { return m_position; }
+		ImVec2 getCenter() const;
+		ImVec2 getSize() const;
 
 		Pin* addInputPin(const std::string& name);
 		Pin* addOutputPin(const std::string& name);
@@ -47,6 +46,7 @@ namespace NodeEditor
 
 		const std::string getFullName() const;
 
+	private:
 		void calcNodeSize(float& width, float& height) const;
 	};
 }

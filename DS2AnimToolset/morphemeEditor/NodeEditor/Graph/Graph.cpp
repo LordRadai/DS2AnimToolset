@@ -3,7 +3,7 @@
 
 namespace NodeEditor
 {
-	Graph::Graph(Graph* parent, const std::string& name) : m_parentGraph(parent), m_name(name), m_context(nullptr)
+	Graph::Graph(Graph* parent, const std::string& name) : Entity(name), m_parentGraph(parent), m_context(nullptr)
 	{
 		m_context = ImNodes::CreateContext();
 		m_id = Registry::getInstance()->generateUniqueGraphID();
@@ -17,6 +17,50 @@ namespace NodeEditor
 
 		Registry::getInstance()->unregisterGraph(this);
 		ImNodes::DestroyContext(m_context);
+	}
+
+	Node* Graph::getNode(int nodeID) const
+	{
+		for (Node* node : m_nodes)
+		{
+			if (node->getID() == nodeID)
+				return node;
+		}
+
+		return nullptr;
+	}
+
+	Node* Graph::getNode(const std::string& name) const
+	{
+		for (Node* node : m_nodes)
+		{
+			if (node->getName() == name)
+				return node;
+		}
+
+		return nullptr;
+	}
+
+	Transition* Graph::getTransition(int nodeID) const
+	{
+		for (Transition* transition : m_transitions)
+		{
+			if (transition->getID() == nodeID)
+				return transition;
+		}
+
+		return nullptr;
+	}
+
+	Transition* Graph::getTransition(const std::string& name) const
+	{
+		for (Transition* transition : m_transitions)
+		{
+			if (transition->getName() == name)
+				return transition;
+		}
+
+		return nullptr;
 	}
 
 	Node* Graph::createNode(int nodeID, const std::string& name)
@@ -45,6 +89,14 @@ namespace NodeEditor
 		return node;
 	}
 
+	Transition* Graph::createTransition(int nodeID, Node* sourceNode, Node* destinationNode)
+	{
+		Transition* transition = new Transition(this, nodeID, sourceNode, destinationNode);
+		m_transitions.push_back(transition);
+
+		return transition;
+	}
+
 	void Graph::removeNode(Node* node)
 	{
 		auto it = std::find(m_nodes.begin(), m_nodes.end(), node);
@@ -62,6 +114,9 @@ namespace NodeEditor
 
 		for (Link* link : m_links)
 			link->draw();
+
+		for (Transition* transition : m_transitions)
+			transition->draw();
 	}
 
 	const std::string Graph::getFullName() const

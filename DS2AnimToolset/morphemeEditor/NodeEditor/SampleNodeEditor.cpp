@@ -31,7 +31,9 @@ namespace NodeEditor
 		Node* stateMachine = rootGraph->createContainerNode(3, "NodeContainer");
 		Graph* subGraph = stateMachine->getSubGraph();
 
-		subGraph->createNode(4, "Node1");
+		Node* src = subGraph->createNode(4, "Node1");
+		Node* dst = subGraph->createNode(5, "Node2");
+		subGraph->createTransition(6, src, dst);
 
 		if (!node1->getOutputPin("Result")->connectTo(node2->getInputPin("Source")))
 			g_appLog->debugMessage(MsgLevel_Error, "Failed to connect pins\n");
