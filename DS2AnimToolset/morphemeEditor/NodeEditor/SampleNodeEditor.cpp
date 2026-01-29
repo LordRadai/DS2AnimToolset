@@ -32,7 +32,7 @@ namespace NodeEditor
 		Graph* subGraph = stateMachine->getSubGraph();
 
 		Node* src = subGraph->createNode(4, "Node1");
-		Node* dst = subGraph->createNode(5, "Node2");
+		Node* dst = subGraph->createContainerNode(5, "NodeContainer");
 		subGraph->createTransition(6, src, dst);
 		subGraph->createTransition(7, dst, src);
 
