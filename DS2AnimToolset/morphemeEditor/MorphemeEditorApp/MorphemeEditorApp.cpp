@@ -188,10 +188,30 @@ namespace
 		{
 			const MR::NodeDef* nodeDef = netDef->getNodeDef(nodeIDNamesTable->getEntryID(i));
 
-			tinyxml2::XMLElement* elem = root->InsertNewChildElement("Entry");
-			elem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(i));
-			elem->SetAttribute("NodeTypeID", nodeDef->getNodeTypeID());
-			elem->SetAttribute("Name", nodeIDNamesTable->getEntryString(i));
+			if (i < netDef->getNumNodeDefs())
+			{
+				tinyxml2::XMLElement* elem = root->InsertNewChildElement("Node");
+
+				elem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(i));
+				elem->SetAttribute("NodeTypeID", nodeDef->getNodeTypeID());
+				elem->SetAttribute("Name", nodeIDNamesTable->getEntryString(i));
+			}
+			else
+			{
+				tinyxml2::XMLElement* elem = root->InsertNewChildElement("SubStateNode");
+
+				const MR::NodeDef* parentNodeDef = netDef->getNodeDef(nodeDef->getParentNodeID());
+
+				elem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(i));
+				elem->SetAttribute("NodeTypeID", nodeDef->getNodeTypeID());
+				elem->SetAttribute("Name", nodeIDNamesTable->getEntryString(i));
+
+				tinyxml2::XMLElement* parentData = elem->InsertNewChildElement("ParentNode");
+
+				parentData->SetAttribute("NodeID", nodeDef->getParentNodeID());
+				parentData->SetAttribute("NodeTypeID", parentNodeDef->getNodeTypeID());
+				parentData->SetAttribute("Name", nodeIDNamesTable->getStringForID(nodeDef->getParentNodeID()));
+			}
 		}
 
 		xmlDoc.InsertEndChild(root);
