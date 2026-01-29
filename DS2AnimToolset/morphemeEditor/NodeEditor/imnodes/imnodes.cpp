@@ -251,6 +251,8 @@ inline bool RectangleOverlapsLink(
     return false;
 }
 
+// [SECTION] Transition helpers
+
 ImVec2 ClosestPointSymmetric(const ImRect& rectA, const ImRect& rectB)
 {
     // X-axis
@@ -266,6 +268,105 @@ ImVec2 ClosestPointSymmetric(const ImRect& rectA, const ImRect& rectB)
     else y = (rectA.GetCenter().y + rectB.GetCenter().y) * 0.5f; // overlap: pick center
 
     return ImVec2(x, y);
+}
+
+static float DistancePointToSegmentSq(const ImVec2& p, const ImVec2& a, const ImVec2& b)
+{
+    ImVec2 ab = b - a;
+    ImVec2 ap = p - a;
+
+    float ab_len_sq = ab.x * ab.x + ab.y * ab.y;
+    if (ab_len_sq == 0.0f)
+        return ap.x * ap.x + ap.y * ap.y;
+
+    float t = (ap.x * ab.x + ap.y * ab.y) / ab_len_sq;
+    t = ImClamp(t, 0.0f, 1.0f);
+
+    ImVec2 closest = a + ab * t;
+    ImVec2 d = p - closest;
+    return d.x * d.x + d.y * d.y;
+}
+
+ImVector<ImTransitionData> GetTransitionsBetweenNodes(const ImObjectPool<ImTransitionData>& transitions, const int start_node_idx, const int end_node_idx)
+{
+    ImVector<ImTransitionData> transitions_between_nodes;
+
+    for (int transition_idx = 0; transition_idx < transitions.Pool.Size; ++transition_idx)
+    {
+        const ImTransitionData& transition = transitions.Pool[transition_idx];
+
+        if ((transition.StartNodeIdx == start_node_idx && transition.EndNodeIdx == end_node_idx) ||
+            (transition.StartNodeIdx == end_node_idx && transition.EndNodeIdx == start_node_idx))
+        {
+            transitions_between_nodes.push_back(transition);
+        }
+    }
+
+    return transitions_between_nodes;
+}
+
+void ComputeTransitionAnchors(const int transition_id, const ImNodeData& source, const ImNodeData& dest, ImVec2& src_anchor, ImVec2& dst_anchor, const ImVector<ImTransitionData>& transiton_between_nodes)
+{
+    int num_transitions_between_nodes = transiton_between_nodes.Size;
+
+    int this_transition_index = -1;
+    for (int i = 0; i < num_transitions_between_nodes; ++i)
+    {
+        if (transiton_between_nodes[i].Id == transition_id)
+        {
+            this_transition_index = i;
+            break;
+        }
+    }
+
+	IM_ASSERT(this_transition_index != -1);
+
+	const ImRect& src_rect = source.Rect;
+	const ImRect& dst_rect = dest.Rect;
+
+    src_anchor = ClosestPointSymmetric(src_rect, dst_rect);
+    dst_anchor = ClosestPointSymmetric(dst_rect, src_rect);
+
+    ImVec2 line = dst_anchor - src_anchor;
+    ImVec2 perp(-line.y, line.x);
+
+    const float len = sqrt(perp.x * perp.x + perp.y * perp.y);
+
+    if (len > 0.0f)
+        perp.x /= len, perp.y /= len;
+
+    if (source.Id > dest.Id)
+        perp = -perp;
+
+    float offsetAmount = (this_transition_index - (num_transitions_between_nodes - 1) / 2.0f) * GImNodes->Style.TransitionSpacingOffset;
+    ImVec2 offset = perp * offsetAmount;
+
+    src_anchor += offset;
+    dst_anchor += offset;
+}
+
+void DrawArrow(ImDrawList* drawList, ImVec2 src, ImVec2 dst, ImU32 color, float thickness = 2.0f, float arrowSize = 10.0f)
+{
+    // Draw main line
+    drawList->AddLine(src, dst, color, thickness);
+
+    // Compute direction vector of the line
+    ImVec2 dir = dst - src;
+    float length = sqrtf(dir.x * dir.x + dir.y * dir.y);
+    if (length == 0.0f) return; // avoid division by zero
+    dir.x /= length;
+    dir.y /= length;
+
+    // Perpendicular vector for arrowhead
+    ImVec2 perp(-dir.y, dir.x);
+
+    // Two arrowhead points
+    ImVec2 arrowP1 = dst - dir * arrowSize + perp * (arrowSize * 0.5f);
+    ImVec2 arrowP2 = dst - dir * arrowSize - perp * (arrowSize * 0.5f);
+
+    // Draw arrowhead lines
+    drawList->AddLine(dst, arrowP1, color, thickness);
+    drawList->AddLine(dst, arrowP2, color, thickness);
 }
 
 // [SECTION] coordinates conversion helpers
@@ -401,30 +502,6 @@ void ImDrawListSplitterSwapChannels(
     {
         splitter._Current = lhs_idx;
     }
-}
-
-void DrawArrow(ImDrawList* drawList, ImVec2 src, ImVec2 dst, ImU32 color, float thickness = 2.0f, float arrowSize = 10.0f)
-{
-    // Draw main line
-    drawList->AddLine(src, dst, color, thickness);
-
-    // Compute direction vector of the line
-    ImVec2 dir = dst - src;
-    float length = sqrtf(dir.x * dir.x + dir.y * dir.y);
-    if (length == 0.0f) return; // avoid division by zero
-    dir.x /= length;
-    dir.y /= length;
-
-    // Perpendicular vector for arrowhead
-    ImVec2 perp(-dir.y, dir.x);
-
-    // Two arrowhead points
-    ImVec2 arrowP1 = dst - dir * arrowSize + perp * (arrowSize * 0.5f);
-    ImVec2 arrowP2 = dst - dir * arrowSize - perp * (arrowSize * 0.5f);
-
-    // Draw arrowhead lines
-    drawList->AddLine(dst, arrowP1, color, thickness);
-    drawList->AddLine(dst, arrowP2, color, thickness);
 }
 
 void DrawListSet(ImDrawList* window_draw_list)
@@ -751,6 +828,15 @@ void BeginTransitionCreation(ImNodesEditorContext& editor, const int hovered_nod
     editor.ClickInteraction.TransitionCreation.EndNodeIdx.Reset();
     editor.ClickInteraction.TransitionCreation.Type = ImNodesTransitionCreationType_Standard;
     GImNodes->ImNodesUIState |= ImNodesUIState_TransitionStarted;
+}
+
+void BeginTransitionInterfaction(
+    ImNodesEditorContext& editor,
+    const int             transition_idx,
+    const ImOptionalIndex pin_idx = ImOptionalIndex())
+{
+    // For now, only handle selection
+    BeginTransitionSelection(editor, transition_idx);
 }
 
 static inline bool IsMiniMapHovered();
@@ -1125,6 +1211,19 @@ void ClickInteractionUpdate(ImNodesEditorContext& editor)
         }
     }
     break;
+    case ImNodesClickInteractionType_Transition:
+    {
+        if (GImNodes->LeftMouseReleased)
+        {
+            editor.ClickInteraction.Type = ImNodesClickInteractionType_None;
+        }
+    }
+	break;
+    case ImNodesClickInteractionType_TransitionCreation:
+    {
+		// TODO: implement transition creation visual feedback
+    }
+    break;
     case ImNodesClickInteractionType_Panning:
     {
         const bool dragging = GImNodes->AltMouseDragging;
@@ -1330,6 +1429,48 @@ ImOptionalIndex ResolveHoveredLink(
 
     return link_idx_with_smallest_distance;
 }
+
+ImOptionalIndex ResolveHoveredTransition(
+    const ImObjectPool<ImTransitionData>& transitions,
+    const ImObjectPool<ImNodeData>& nodes)
+{
+    const ImVec2 mouse = ImGui::GetMousePos();
+    const float hover_radius = GImNodes->Style.TransitionHoverDistance;
+    const float hover_radius_sq = hover_radius * hover_radius;
+
+    float best_dist_sq = FLT_MAX;
+    ImOptionalIndex hovered;
+
+    for (int idx = 0; idx < transitions.Pool.Size; ++idx)
+    {
+        if (!transitions.InUse[idx])
+            continue;
+
+        const ImTransitionData& t = transitions.Pool[idx];
+        const ImNodeData& src = nodes.Pool[t.StartNodeIdx];
+        const ImNodeData& dst = nodes.Pool[t.EndNodeIdx];
+
+		ImVector<ImTransitionData> transitions_between_nodes = GetTransitionsBetweenNodes(transitions, t.StartNodeIdx, t.EndNodeIdx);
+
+        // Same offset logic
+        ImVec2 src_anchor, dst_anchor;
+        ComputeTransitionAnchors(t.Id, src, dst, src_anchor, dst_anchor, transitions_between_nodes);
+
+        // ------------------------------------------------------------
+        // Distance test
+        // ------------------------------------------------------------
+        float dist_sq = DistancePointToSegmentSq(mouse, src_anchor, dst_anchor);
+
+        if (dist_sq < hover_radius_sq && dist_sq < best_dist_sq)
+        {
+            best_dist_sq = dist_sq;
+            hovered = idx;
+        }
+    }
+
+    return hovered;
+}
+
 
 // [SECTION] render helpers
 
@@ -1675,32 +1816,28 @@ void DrawTransition(ImNodesEditorContext& editor, const int transition_idx)
         GImNodes->HoveredTransitionIdx = transition_idx;
     }
 
-    ImU32 link_color = transition.ColorStyle.Base;
+    ImU32 color = transition.ColorStyle.Base;
     if (editor.SelectedTransitionIndices.contains(transition_idx))
     {
-        link_color = transition.ColorStyle.Selected;
+        color = transition.ColorStyle.Selected;
     }
     else if (link_hovered)
     {
-        link_color = transition.ColorStyle.Hovered;
+        color = transition.ColorStyle.Hovered;
     }
+    
+    ImVector<ImTransitionData> transitions_between_nodes = GetTransitionsBetweenNodes(editor.Transitions, transition.StartNodeIdx, transition.EndNodeIdx);
+	ImVec2 src_anchor, dst_anchor;
 
-    // ------------------------------------------------------------
-    // Node geometry
-    // ------------------------------------------------------------
-	const ImRect srcRect = start_node.Rect;
-	const ImRect dstRect = end_node.Rect;
-
-    ImVec2 srcAnchor = ClosestPointSymmetric(srcRect, dstRect);
-    ImVec2 dstAnchor = ClosestPointSymmetric(dstRect, srcRect);
+    ComputeTransitionAnchors(transition.Id, start_node, end_node, src_anchor, dst_anchor, transitions_between_nodes);
 
     // ------------------------------------------------------------
     // Draw straight line
     // ------------------------------------------------------------
-    DrawArrow(GImNodes->CanvasDrawList, srcAnchor, dstAnchor, IM_COL32(255, 255, 255, 255), 2.0f, 12.0f);
+    DrawArrow(GImNodes->CanvasDrawList, src_anchor, dst_anchor, color, GImNodes->Style.TransitionThickness, GImNodes->Style.TransitionArrowSize);
 
-    //GImNodes->CanvasDrawList->AddCircleFilled(srcAnchor, 4.0f, IM_COL32(0, 255, 0, 255));
-    //GImNodes->CanvasDrawList->AddCircleFilled(dstAnchor, 4.0f, IM_COL32(255, 0, 0, 255));
+    //GImNodes->CanvasDrawList->AddCircleFilled(src_anchor, 4.0f, IM_COL32(0, 255, 0, 255));
+    //GImNodes->CanvasDrawList->AddCircleFilled(dst_anchor, 4.0f, IM_COL32(255, 0, 0, 255));
 }
 
 void BeginPinAttribute(
@@ -2064,6 +2201,7 @@ ImNodesIO::ImNodesIO()
 ImNodesStyle::ImNodesStyle()
     : GridSpacing(32.f), NodeCornerRounding(4.f), NodePadding(8.f, 8.f), NodeBorderThickness(1.f),
       LinkThickness(3.f), LinkLineSegmentsPerLength(0.1f), LinkHoverDistance(10.f),
+      TransitionSpacingOffset(10.0f), TransitionThickness(2.f), TransitionArrowSize(6.f), TransitionHoverDistance(10.f),
       PinCircleRadius(4.f), PinQuadSideLength(7.f), PinTriangleSideLength(9.5),
       PinLineThickness(1.f), PinHoverRadius(10.f), PinOffset(0.f), MiniMapPadding(8.0f, 8.0f),
       MiniMapOffset(4.0f, 4.0f), Flags(ImNodesStyleFlags_NodeOutline | ImNodesStyleFlags_GridLines),
@@ -2152,6 +2290,9 @@ void StyleColorsDark()
     GImNodes->Style.Colors[ImNodesCol_Link] = IM_COL32(61, 133, 224, 200);
     GImNodes->Style.Colors[ImNodesCol_LinkHovered] = IM_COL32(66, 150, 250, 255);
     GImNodes->Style.Colors[ImNodesCol_LinkSelected] = IM_COL32(66, 150, 250, 255);
+    GImNodes->Style.Colors[ImNodesCol_Transition] = IM_COL32(61, 133, 224, 200);
+    GImNodes->Style.Colors[ImNodesCol_TransitionHovered] = IM_COL32(66, 150, 250, 255);
+    GImNodes->Style.Colors[ImNodesCol_TransitionSelected] = IM_COL32(66, 150, 250, 255);
     // pin colors match ImGui's button colors
     GImNodes->Style.Colors[ImNodesCol_Pin] = IM_COL32(53, 150, 250, 180);
     GImNodes->Style.Colors[ImNodesCol_PinHovered] = IM_COL32(53, 150, 250, 255);
@@ -2191,6 +2332,9 @@ void StyleColorsClassic()
     GImNodes->Style.Colors[ImNodesCol_Link] = IM_COL32(255, 255, 255, 100);
     GImNodes->Style.Colors[ImNodesCol_LinkHovered] = IM_COL32(105, 99, 204, 153);
     GImNodes->Style.Colors[ImNodesCol_LinkSelected] = IM_COL32(105, 99, 204, 153);
+	GImNodes->Style.Colors[ImNodesCol_Transition] = IM_COL32(255, 255, 255, 100);
+    GImNodes->Style.Colors[ImNodesCol_TransitionHovered] = IM_COL32(105, 99, 204, 153);
+    GImNodes->Style.Colors[ImNodesCol_TransitionSelected] = IM_COL32(105, 99, 204, 153);
     GImNodes->Style.Colors[ImNodesCol_Pin] = IM_COL32(89, 102, 156, 170);
     GImNodes->Style.Colors[ImNodesCol_PinHovered] = IM_COL32(102, 122, 179, 200);
     GImNodes->Style.Colors[ImNodesCol_BoxSelector] = IM_COL32(82, 82, 161, 100);
@@ -2229,6 +2373,11 @@ void StyleColorsLight()
     // original imgui values: 117, 138, 204
     GImNodes->Style.Colors[ImNodesCol_LinkHovered] = IM_COL32(66, 150, 250, 242);
     GImNodes->Style.Colors[ImNodesCol_LinkSelected] = IM_COL32(66, 150, 250, 242);
+    // original imgui values: 66, 150, 250
+    GImNodes->Style.Colors[ImNodesCol_Transition] = IM_COL32(66, 150, 250, 100);
+    // original imgui values: 117, 138, 204
+    GImNodes->Style.Colors[ImNodesCol_TransitionHovered] = IM_COL32(66, 150, 250, 242);
+    GImNodes->Style.Colors[ImNodesCol_TransitionSelected] = IM_COL32(66, 150, 250, 242);
     // original imgui values: 66, 150, 250
     GImNodes->Style.Colors[ImNodesCol_Pin] = IM_COL32(66, 150, 250, 160);
     GImNodes->Style.Colors[ImNodesCol_PinHovered] = IM_COL32(66, 150, 250, 255);
@@ -2272,8 +2421,10 @@ void BeginNodeEditor()
     GImNodes->HoveredNodeIdx.Reset();
     GImNodes->HoveredLinkIdx.Reset();
     GImNodes->HoveredPinIdx.Reset();
+    GImNodes->HoveredTransitionIdx.Reset();
     GImNodes->DeletedLinkIdx.Reset();
     GImNodes->SnapLinkIdx.Reset();
+	GImNodes->DeletedTransitionIdx.Reset();
 
     GImNodes->NodeIndicesOverlappingWithMouse.clear();
 
@@ -2375,6 +2526,11 @@ void EndNodeEditor()
         {
             GImNodes->HoveredLinkIdx = ResolveHoveredLink(editor.Links, editor.Pins);
         }
+
+        if (!GImNodes->HoveredTransitionIdx.HasValue())
+        {
+			GImNodes->HoveredTransitionIdx = ResolveHoveredTransition(editor.Transitions, editor.Nodes);
+        }
     }
 
     for (int node_idx = 0; node_idx < editor.Nodes.Pool.size(); ++node_idx)
@@ -2395,6 +2551,14 @@ void EndNodeEditor()
         if (editor.Links.InUse[link_idx])
         {
             DrawLink(editor, link_idx);
+        }
+    }
+
+	for (int transition_idx = 0; transition_idx < editor.Transitions.Pool.size(); ++transition_idx)
+    {
+        if (editor.Transitions.InUse[transition_idx])
+        {
+            DrawTransition(editor, transition_idx);
         }
     }
 
@@ -2427,6 +2591,11 @@ void EndNodeEditor()
         else if (GImNodes->LeftMouseClicked && GImNodes->HoveredNodeIdx.HasValue())
         {
             BeginNodeSelection(editor, GImNodes->HoveredNodeIdx.Value());
+        }
+
+		else if (GImNodes->LeftMouseClicked && GImNodes->HoveredTransitionIdx.HasValue())
+        {
+            BeginTransitionInterfaction(editor, GImNodes->HoveredTransitionIdx.Value());
         }
 
         else if (
@@ -2464,6 +2633,7 @@ void EndNodeEditor()
 
     // After the links have been rendered, the link pool can be updated as well.
     ObjectPoolUpdate(editor.Links);
+    ObjectPoolUpdate(editor.Transitions);
 
     // Finally, merge the draw channels
     GImNodes->CanvasDrawList->ChannelsMerge();
@@ -2996,10 +3166,10 @@ void ClearLinkSelection(int link_id)
     ClearObjectSelection(editor.Links, editor.SelectedLinkIndices, link_id);
 }
 
-void ClearTransitionSelection()
+void ClearTransitionSelection(int transition_id)
 {
     ImNodesEditorContext& editor = EditorContextGet();
-    editor.SelectedTransitionIndices.clear();
+    ClearObjectSelection(editor.Transitions, editor.SelectedTransitionIndices, transition_id);
 }
 
 void SelectNode(int node_id)

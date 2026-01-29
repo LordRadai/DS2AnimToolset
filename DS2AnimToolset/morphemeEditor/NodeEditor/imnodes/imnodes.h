@@ -180,6 +180,18 @@ struct ImNodesStyle
     // Offsets the pins' positions from the edge of the node to the outside of the node.
     float PinOffset;
 
+	// Offset between transitions between the same node pair.
+    float TransitionSpacingOffset;
+
+	// The distance from the mouse cursor at which auto-panning starts when dragging a node or link.
+	float TransitionHoverDistance;
+
+	// The thickness of the transition line.
+	float TransitionThickness;
+
+	// The size of the arrowhead rendered at the end of a transition.
+    float TransitionArrowSize;
+
     // Mini-map padding size between mini-map edge and mini-map content.
     ImVec2 MiniMapPadding;
     // Mini-map offset from the screen side.

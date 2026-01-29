@@ -249,6 +249,11 @@ namespace NodeEditor
         {
             ImGui::SeparatorText("Sizes");
 
+			ImGui::SliderFloat("Spacing Offset", &style.TransitionSpacingOffset, 0.0f, 32.0f);
+			ImGui::SliderFloat("Hover Distance", &style.TransitionHoverDistance, 1.0f, 20.0f);
+			ImGui::SliderFloat("Thickness", &style.TransitionThickness, 1.0f, 8.0f);
+			ImGui::SliderFloat("Arrow Size", &style.TransitionArrowSize, 4.0f, 20.0f);
+
             ImGui::SeparatorText("Colors");
 
             ImGui::ColorEditUInt("Transition", &style.Colors[ImNodesCol_Transition]);
