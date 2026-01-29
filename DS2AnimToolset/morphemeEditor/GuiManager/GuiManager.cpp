@@ -657,10 +657,10 @@ void GuiManager::initGuiStyle()
 	colors[ImGuiCol_TabHovered] = ImVec4(0.27f, 0.27f, 0.27f, 1.00f);
 	colors[ImGuiCol_Tab] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
 	colors[ImGuiCol_TabSelected] = ImVec4(0.27f, 0.27f, 0.27f, 1.00f);
-	colors[ImGuiCol_TabSelectedOverline] = ImVec4(0.73f, 0.11f, 0.11f, 1.00f);
+	colors[ImGuiCol_TabSelectedOverline] = ImVec4(0.17f, 0.53f, 0.87f, 1.00f);
 	colors[ImGuiCol_TabDimmed] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
 	colors[ImGuiCol_TabDimmedSelected] = ImVec4(0.27f, 0.27f, 0.27f, 1.00f);
-	colors[ImGuiCol_TabDimmedSelectedOverline] = ImVec4(0.73f, 0.11f, 0.11f, 1.00f);
+	colors[ImGuiCol_TabDimmedSelectedOverline] = ImVec4(0.17f, 0.53f, 0.87f, 1.00f);
 	colors[ImGuiCol_DockingPreview] = ImVec4(0.26f, 0.59f, 0.98f, 0.70f);
 	colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
 	colors[ImGuiCol_PlotLines] = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
