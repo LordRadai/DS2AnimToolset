@@ -20,7 +20,7 @@ namespace NodeEditor
     void Transition::draw()
     {
         ImNodes::Transition(
-            this->getID(),
+            this->m_id,
             this->m_sourceNode->getID(),
 			this->m_destinationNode->getID());
     }

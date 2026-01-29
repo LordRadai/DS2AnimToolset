@@ -41,6 +41,11 @@ namespace NodeEditor
 		return nullptr;
 	}
 
+	void Graph::setPanning(float x, float y)
+	{
+		m_panning = ImVec2(x, y);
+	}
+
 	Transition* Graph::getTransition(int nodeID) const
 	{
 		for (Transition* transition : m_transitions)
@@ -117,6 +122,8 @@ namespace NodeEditor
 
 		for (Transition* transition : m_transitions)
 			transition->draw();
+
+		m_panning = ImNodes::EditorContextGetPanning();
 	}
 
 	const std::string Graph::getFullName() const

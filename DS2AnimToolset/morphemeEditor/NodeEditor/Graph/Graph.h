@@ -15,6 +15,7 @@ namespace NodeEditor
 		std::vector<Node*> m_nodes;
 		std::vector<Transition*> m_transitions;
 		std::vector<Link*> m_links;
+		ImVec2 m_panning;
 	public:
 		Graph(Graph* parent, const std::string& name);
 		~Graph();
@@ -23,6 +24,9 @@ namespace NodeEditor
 
 		Graph* getParentGraph() const { return m_parentGraph; }
 		bool isRootGraph() const { return m_parentGraph == nullptr; }
+
+		ImVec2 getPanning() const { return m_panning; }
+		void setPanning(float x, float y);
 
 		Node* getNode(int nodeID) const;
 		Node* getNode(const std::string& name) const;
