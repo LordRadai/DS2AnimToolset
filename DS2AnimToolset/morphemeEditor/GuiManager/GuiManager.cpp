@@ -605,14 +605,15 @@ void GuiManager::initGuiStyle()
 {
 	ImGuiStyle* style = &ImGui::GetStyle();
 	style->WindowBorderSize = 1;
-	style->FrameBorderSize = 0;
+	style->FrameBorderSize = 1;
 	style->PopupBorderSize = 1;
-	style->FrameBorderSize = 0;
-	style->TabBorderSize = 0;
+	style->FrameBorderSize = 1;
+	style->TabBorderSize = 1;
+	style->TabBarBorderSize = 1;
 
 	style->WindowRounding = 0;
 	style->ChildRounding = 0;
-	style->FrameRounding = 0;
+	style->FrameRounding = 1;
 	style->PopupRounding = 0;
 	style->ScrollbarRounding = 12;
 	style->GrabRounding = 0;
