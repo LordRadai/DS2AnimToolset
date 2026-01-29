@@ -39,53 +39,23 @@ namespace NodeEditor
             drawList->AddLine(dst, arrowP2, color, thickness);
         }
 
-        ImVec2 ClosestPoint(const ImRect& a, const ImRect& b)
+        ImVec2 ClosestPointSymmetric(const ImRect& rectA, const ImRect& rectB)
         {
-            ImVec2 center = a.GetCenter();
-            ImVec2 halfSize(a.GetWidth() * 0.5f, a.GetHeight() * 0.5f);
+            // X-axis
+            float x;
+            if (rectA.Max.x < rectB.Min.x) x = rectA.Max.x; // A left of B
+            else if (rectB.Max.x < rectA.Min.x) x = rectA.Min.x; // A right of B
+            else x = (rectA.GetCenter().x + rectB.GetCenter().x) * 0.5f; // overlap: pick center
 
-            ImVec2 otherCenter = b.GetCenter();
-            ImVec2 closestPoint;
+            // Y-axis
+            float y;
+            if (rectA.Max.y < rectB.Min.y) y = rectA.Max.y; // A above B
+            else if (rectB.Max.y < rectA.Min.y) y = rectA.Min.y; // A below B
+            else y = (rectA.GetCenter().y + rectB.GetCenter().y) * 0.5f; // overlap: pick center
 
-            // Compute min/max bounds
-            float minX = center.x - halfSize.x;
-            float maxX = center.x + halfSize.x;
-            float minY = center.y - halfSize.y;
-            float maxY = center.y + halfSize.y;
-
-            // Clamp to rectangle bounds
-            closestPoint.x = std::fmax(minX, std::fmin(otherCenter.x, maxX));
-            closestPoint.y = std::fmax(minY, std::fmin(otherCenter.y, maxY));
-
-            return closestPoint;
+            return ImVec2(x, y);
         }
 
-        ImVec2 ClosestPointToRect(const ImRect& rect, const ImVec2& point, bool clampToEdge = true)
-        {
-            // Clamp the point to rectangle bounds
-            float x = std::fmax(rect.Min.x, std::fmin(point.x, rect.Max.x));
-            float y = std::fmax(rect.Min.y, std::fmin(point.y, rect.Max.y));
-
-            ImVec2 closest(x, y);
-
-            if (clampToEdge && rect.Contains(point))
-            {
-                // Push to the nearest edge if point is inside
-                float leftDist = point.x - rect.Min.x;
-                float rightDist = rect.Max.x - point.x;
-                float topDist = point.y - rect.Min.y;
-                float bottomDist = rect.Max.y - point.y;
-
-                float minDist = std::min({ leftDist, rightDist, topDist, bottomDist });
-
-                if (minDist == leftDist)       closest.x = rect.Min.x;
-                else if (minDist == rightDist) closest.x = rect.Max.x;
-                else if (minDist == topDist)   closest.y = rect.Min.y;
-                else                           closest.y = rect.Max.y;
-            }
-
-            return closest;
-        }
     }
 
 	Transition::Transition(Graph* parent, int nodeID, Node* sourceNode, Node* destinationNode) : Node(parent, nodeID, sourceNode->getName() + "_" + destinationNode->getName(), nullptr),
@@ -109,26 +79,8 @@ namespace NodeEditor
 		ImRect srcRect(srcPos, ImVec2(srcPos.x + srcSize.x, srcPos.y + srcSize.y));
 		ImRect dstRect(dstPos, ImVec2(dstPos.x + dstSize.x, dstPos.y + dstSize.y));
 
-        ImVec2 centerSrc = srcRect.GetCenter();
-        ImVec2 centerDst = dstRect.GetCenter();
-        ImVec2 dir = centerDst - centerSrc;
-
-        int selectedNodeID = -1;
-		ImNodes::GetSelectedNodes(&selectedNodeID);
-
-        ImVec2 srcAnchor;
-        ImVec2 dstAnchor;
-
-        if (selectedNodeID == m_destinationNode->getID())
-        {
-            srcAnchor = ClosestPointToRect(srcRect, dstRect.GetCenter());
-            dstAnchor = ClosestPointToRect(dstRect, srcAnchor);
-        }
-        else
-        {
-            dstAnchor = ClosestPointToRect(dstRect, srcRect.GetCenter());
-            srcAnchor = ClosestPointToRect(srcRect, dstAnchor);
-        }
+        ImVec2 srcAnchor = ClosestPointSymmetric(srcRect, dstRect);
+        ImVec2 dstAnchor = ClosestPointSymmetric(dstRect, srcRect);
         
         // ------------------------------------------------------------
         // Draw straight line
