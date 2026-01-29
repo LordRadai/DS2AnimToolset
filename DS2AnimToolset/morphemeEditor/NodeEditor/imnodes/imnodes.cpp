@@ -251,6 +251,74 @@ inline bool RectangleOverlapsLink(
     return false;
 }
 
+ImVec2 ClosestPointSymmetric(const ImRect& rectA, const ImRect& rectB)
+{
+    // X-axis
+    float x;
+    if (rectA.Max.x < rectB.Min.x) x = rectA.Max.x; // A left of B
+    else if (rectB.Max.x < rectA.Min.x) x = rectA.Min.x; // A right of B
+    else x = (rectA.GetCenter().x + rectB.GetCenter().x) * 0.5f; // overlap: pick center
+
+    // Y-axis
+    float y;
+    if (rectA.Max.y < rectB.Min.y) y = rectA.Max.y; // A above B
+    else if (rectB.Max.y < rectA.Min.y) y = rectA.Min.y; // A below B
+    else y = (rectA.GetCenter().y + rectB.GetCenter().y) * 0.5f; // overlap: pick center
+
+    return ImVec2(x, y);
+}
+
+// [SECTION] coordinates conversion helpers
+
+inline ImVec2 ScreenSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v)
+{
+    return v - GImNodes->CanvasOriginScreenSpace - editor.Panning;
+}
+
+inline ImRect ScreenSpaceToGridSpace(const ImNodesEditorContext& editor, const ImRect& r)
+{
+    return ImRect(ScreenSpaceToGridSpace(editor, r.Min), ScreenSpaceToGridSpace(editor, r.Max));
+}
+
+inline ImVec2 GridSpaceToScreenSpace(const ImNodesEditorContext& editor, const ImVec2& v)
+{
+    return v + GImNodes->CanvasOriginScreenSpace + editor.Panning;
+}
+
+inline ImVec2 GridSpaceToEditorSpace(const ImNodesEditorContext& editor, const ImVec2& v)
+{
+    return v + editor.Panning;
+}
+
+inline ImVec2 EditorSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v)
+{
+    return v - editor.Panning;
+}
+
+inline ImVec2 EditorSpaceToScreenSpace(const ImVec2& v)
+{
+    return GImNodes->CanvasOriginScreenSpace + v;
+}
+
+inline ImVec2 MiniMapSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v)
+{
+    return (v - editor.MiniMapContentScreenSpace.Min) / editor.MiniMapScaling +
+        editor.GridContentBounds.Min;
+};
+
+inline ImVec2 ScreenSpaceToMiniMapSpace(const ImNodesEditorContext& editor, const ImVec2& v)
+{
+    return (ScreenSpaceToGridSpace(editor, v) - editor.GridContentBounds.Min) *
+        editor.MiniMapScaling +
+        editor.MiniMapContentScreenSpace.Min;
+};
+
+inline ImRect ScreenSpaceToMiniMapSpace(const ImNodesEditorContext& editor, const ImRect& r)
+{
+    return ImRect(
+        ScreenSpaceToMiniMapSpace(editor, r.Min), ScreenSpaceToMiniMapSpace(editor, r.Max));
+};
+
 // [SECTION] draw list helper
 
 void ImDrawListGrowChannels(ImDrawList* draw_list, const int num_channels)
@@ -333,6 +401,30 @@ void ImDrawListSplitterSwapChannels(
     {
         splitter._Current = lhs_idx;
     }
+}
+
+void DrawArrow(ImDrawList* drawList, ImVec2 src, ImVec2 dst, ImU32 color, float thickness = 2.0f, float arrowSize = 10.0f)
+{
+    // Draw main line
+    drawList->AddLine(src, dst, color, thickness);
+
+    // Compute direction vector of the line
+    ImVec2 dir = dst - src;
+    float length = sqrtf(dir.x * dir.x + dir.y * dir.y);
+    if (length == 0.0f) return; // avoid division by zero
+    dir.x /= length;
+    dir.y /= length;
+
+    // Perpendicular vector for arrowhead
+    ImVec2 perp(-dir.y, dir.x);
+
+    // Two arrowhead points
+    ImVec2 arrowP1 = dst - dir * arrowSize + perp * (arrowSize * 0.5f);
+    ImVec2 arrowP2 = dst - dir * arrowSize - perp * (arrowSize * 0.5f);
+
+    // Draw arrowhead lines
+    drawList->AddLine(dst, arrowP1, color, thickness);
+    drawList->AddLine(dst, arrowP2, color, thickness);
 }
 
 void DrawListSet(ImDrawList* window_draw_list)
@@ -538,6 +630,7 @@ void BeginNodeSelection(ImNodesEditorContext& editor, const int node_idx)
     {
         editor.SelectedNodeIndices.clear();
         editor.SelectedLinkIndices.clear();
+		editor.SelectedTransitionIndices.clear();
         editor.SelectedNodeIndices.push_back(node_idx);
 
         // Ensure that individually selected nodes get rendered on top
@@ -556,6 +649,7 @@ void BeginLinkSelection(ImNodesEditorContext& editor, const int link_idx)
     // as the sole selection.
     editor.SelectedNodeIndices.clear();
     editor.SelectedLinkIndices.clear();
+    editor.SelectedTransitionIndices.clear();
     editor.SelectedLinkIndices.push_back(link_idx);
 }
 
@@ -627,6 +721,36 @@ void BeginLinkInteraction(
             BeginLinkSelection(editor, link_idx);
         }
     }
+}
+
+void BeginTransitionSelection(ImNodesEditorContext& editor, const int transition_idx)
+{
+    editor.ClickInteraction.Type = ImNodesClickInteractionType_Transition;
+
+    editor.SelectedNodeIndices.clear();
+    editor.SelectedLinkIndices.clear();
+    editor.SelectedTransitionIndices.clear();
+    editor.SelectedTransitionIndices.push_back(transition_idx);
+}
+
+void BeginTransitionDetatch(ImNodesEditorContext& editor, const int transition_idx, const int detatch_node_idx)
+{
+    const ImTransitionData& transition = editor.Transitions.Pool[transition_idx];
+    ImClickInteractionState& state = editor.ClickInteraction;
+    state.Type = ImNodesClickInteractionType_TransitionCreation;
+    state.TransitionCreation.EndNodeIdx.Reset();
+    state.TransitionCreation.StartNodeIdx =
+        detatch_node_idx == transition.StartNodeIdx ? transition.EndNodeIdx : transition.StartNodeIdx;
+    GImNodes->DeletedTransitionIdx = transition_idx;
+}
+
+void BeginTransitionCreation(ImNodesEditorContext& editor, const int hovered_node_idx)
+{
+    editor.ClickInteraction.Type = ImNodesClickInteractionType_TransitionCreation;
+    editor.ClickInteraction.TransitionCreation.StartNodeIdx = hovered_node_idx;
+    editor.ClickInteraction.TransitionCreation.EndNodeIdx.Reset();
+    editor.ClickInteraction.TransitionCreation.Type = ImNodesTransitionCreationType_Standard;
+    GImNodes->ImNodesUIState |= ImNodesUIState_TransitionStarted;
 }
 
 static inline bool IsMiniMapHovered();
@@ -720,6 +844,24 @@ void BoxSelectorUpdateSelection(ImNodesEditorContext& editor, ImRect box_rect)
             }
         }
     }
+
+    for (int transition_idx = 0; transition_idx < editor.Transitions.Pool.size(); ++transition_idx)
+    {
+        if (editor.Transitions.InUse[transition_idx])
+        {
+            const ImTransitionData& transition = editor.Transitions.Pool[transition_idx];
+            const ImNodeData& start_node = editor.Nodes.Pool[transition.StartNodeIdx];
+            const ImNodeData& end_node = editor.Nodes.Pool[transition.EndNodeIdx];
+            const ImVec2 start = start_node.Rect.GetCenter();
+            const ImVec2 end = end_node.Rect.GetCenter();
+
+            // Test
+            if (RectangleOverlapsLink(box_rect, start, end, ImNodesAttributeType_Output))
+            {
+                editor.SelectedTransitionIndices.push_back(transition_idx);
+            }
+        }
+	}
 }
 
 void TranslateSelectedNodes(ImNodesEditorContext& editor)
@@ -1516,6 +1658,49 @@ void DrawLink(ImNodesEditorContext& editor, const int link_idx)
         link_color,
         GImNodes->Style.LinkThickness,
         cubic_bezier.NumSegments);
+}
+
+void DrawTransition(ImNodesEditorContext& editor, const int transition_idx)
+{
+    const ImTransitionData& transition = editor.Transitions.Pool[transition_idx];
+    const ImNodeData& start_node = editor.Nodes.Pool[transition.StartNodeIdx];
+    const ImNodeData& end_node = editor.Nodes.Pool[transition.EndNodeIdx];
+
+    const bool link_hovered =
+        GImNodes->HoveredTransitionIdx == transition_idx &&
+        editor.ClickInteraction.Type != ImNodesClickInteractionType_BoxSelection;
+
+    if (link_hovered)
+    {
+        GImNodes->HoveredTransitionIdx = transition_idx;
+    }
+
+    ImU32 link_color = transition.ColorStyle.Base;
+    if (editor.SelectedTransitionIndices.contains(transition_idx))
+    {
+        link_color = transition.ColorStyle.Selected;
+    }
+    else if (link_hovered)
+    {
+        link_color = transition.ColorStyle.Hovered;
+    }
+
+    // ------------------------------------------------------------
+    // Node geometry
+    // ------------------------------------------------------------
+	const ImRect srcRect = start_node.Rect;
+	const ImRect dstRect = end_node.Rect;
+
+    ImVec2 srcAnchor = ClosestPointSymmetric(srcRect, dstRect);
+    ImVec2 dstAnchor = ClosestPointSymmetric(dstRect, srcRect);
+
+    // ------------------------------------------------------------
+    // Draw straight line
+    // ------------------------------------------------------------
+    DrawArrow(GImNodes->CanvasDrawList, srcAnchor, dstAnchor, IM_COL32(255, 255, 255, 255), 2.0f, 12.0f);
+
+    //GImNodes->CanvasDrawList->AddCircleFilled(srcAnchor, 4.0f, IM_COL32(0, 255, 0, 255));
+    //GImNodes->CanvasDrawList->AddCircleFilled(dstAnchor, 4.0f, IM_COL32(255, 0, 0, 255));
 }
 
 void BeginPinAttribute(
@@ -2490,6 +2675,22 @@ void Link(const int id, const int start_attr_id, const int end_attr_id)
     }
 }
 
+void Transition(int id, int start_node_id, int end_node_id)
+{
+    assert(GImNodes->CurrentScope == ImNodesScope_Editor);
+
+    ImNodesEditorContext& editor = EditorContextGet();
+    ImTransitionData& transition = ObjectPoolFindOrCreateObject(editor.Transitions, id);
+	transition.Id = id;
+	transition.StartNodeIdx = ObjectPoolFindOrCreateIndex(editor.Nodes, start_node_id);
+	transition.EndNodeIdx = ObjectPoolFindOrCreateIndex(editor.Nodes, end_node_id);
+    transition.ColorStyle.Base = GImNodes->Style.Colors[ImNodesCol_Transition];
+    transition.ColorStyle.Hovered = GImNodes->Style.Colors[ImNodesCol_TransitionHovered];
+    transition.ColorStyle.Selected = GImNodes->Style.Colors[ImNodesCol_TransitionSelected];
+
+    // Would need to add a way of creating transitions, but for this is read only
+}
+
 void PushColorStyle(const ImNodesCol item, unsigned int color)
 {
     GImNodes->ColorModifierStack.push_back(ImNodesColElement(GImNodes->Style.Colors[item], item));
@@ -2699,6 +2900,21 @@ bool IsPinHovered(int* const attr)
     return is_hovered;
 }
 
+bool IsTransitionHovered(int* transition_id)
+{
+    assert(GImNodes->CurrentScope == ImNodesScope_None);
+    assert(transition_id != NULL);
+
+    const bool is_hovered = GImNodes->HoveredTransitionIdx.HasValue();
+    if (is_hovered)
+    {
+        const ImNodesEditorContext& editor = EditorContextGet();
+        *transition_id = editor.Pins.Pool[GImNodes->HoveredTransitionIdx.Value()].Id;
+    }
+
+    return is_hovered;
+}
+
 int NumSelectedNodes()
 {
     assert(GImNodes->CurrentScope == ImNodesScope_None);
@@ -2711,6 +2927,13 @@ int NumSelectedLinks()
     assert(GImNodes->CurrentScope == ImNodesScope_None);
     const ImNodesEditorContext& editor = EditorContextGet();
     return editor.SelectedLinkIndices.size();
+}
+
+int NumSelectedTransitions()
+{
+    assert(GImNodes->CurrentScope == ImNodesScope_None);
+    const ImNodesEditorContext& editor = EditorContextGet();
+    return editor.SelectedTransitionIndices.size();
 }
 
 void GetSelectedNodes(int* node_ids)
@@ -2734,6 +2957,18 @@ void GetSelectedLinks(int* link_ids)
     {
         const int link_idx = editor.SelectedLinkIndices[i];
         link_ids[i] = editor.Links.Pool[link_idx].Id;
+    }
+}
+
+void GetSelectedTransition(int* transition_ids)
+{
+    assert(transition_ids != NULL);
+
+    const ImNodesEditorContext& editor = EditorContextGet();
+    for (int i = 0; i < editor.SelectedTransitionIndices.size(); ++i)
+    {
+        const int link_idx = editor.SelectedTransitionIndices[i];
+        transition_ids[i] = editor.Transitions.Pool[link_idx].Id;
     }
 }
 
@@ -2761,6 +2996,12 @@ void ClearLinkSelection(int link_id)
     ClearObjectSelection(editor.Links, editor.SelectedLinkIndices, link_id);
 }
 
+void ClearTransitionSelection()
+{
+    ImNodesEditorContext& editor = EditorContextGet();
+    editor.SelectedTransitionIndices.clear();
+}
+
 void SelectNode(int node_id)
 {
     ImNodesEditorContext& editor = EditorContextGet();
@@ -2773,6 +3014,12 @@ void SelectLink(int link_id)
     SelectObject(editor.Links, editor.SelectedLinkIndices, link_id);
 }
 
+void SelectTransition(int transition_id)
+{
+    ImNodesEditorContext& editor = EditorContextGet();
+    SelectObject(editor.Transitions, editor.SelectedTransitionIndices, transition_id);
+}
+
 bool IsNodeSelected(int node_id)
 {
     ImNodesEditorContext& editor = EditorContextGet();
@@ -2783,6 +3030,12 @@ bool IsLinkSelected(int link_id)
 {
     ImNodesEditorContext& editor = EditorContextGet();
     return IsObjectSelected(editor.Links, editor.SelectedLinkIndices, link_id);
+}
+
+bool IsTransitionSelected(int transition_id)
+{
+    ImNodesEditorContext& editor = EditorContextGet();
+    return IsObjectSelected(editor.Transitions, editor.SelectedTransitionIndices, transition_id);
 }
 
 bool IsAttributeActive()
@@ -3121,53 +3374,4 @@ void LoadEditorStateFromIniFile(ImNodesEditorContext* const editor, const char* 
     LoadEditorStateFromIniString(editor, file_data, data_size);
     ImGui::MemFree(file_data);
 }
-
-ImVec2 ScreenSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v)
-{
-    return v - GImNodes->CanvasOriginScreenSpace - editor.Panning;
-}
-
-ImRect ScreenSpaceToGridSpace(const ImNodesEditorContext& editor, const ImRect& r)
-{
-    return ImRect(ScreenSpaceToGridSpace(editor, r.Min), ScreenSpaceToGridSpace(editor, r.Max));
-}
-
-ImVec2 GridSpaceToScreenSpace(const ImNodesEditorContext& editor, const ImVec2& v)
-{
-    return v + GImNodes->CanvasOriginScreenSpace + editor.Panning;
-}
-
-ImVec2 GridSpaceToEditorSpace(const ImNodesEditorContext& editor, const ImVec2& v)
-{
-    return v + editor.Panning;
-}
-
-ImVec2 EditorSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v)
-{
-    return v - editor.Panning;
-}
-
-ImVec2 EditorSpaceToScreenSpace(const ImVec2& v)
-{
-    return GImNodes->CanvasOriginScreenSpace + v;
-}
-
-ImVec2 MiniMapSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v)
-{
-    return (v - editor.MiniMapContentScreenSpace.Min) / editor.MiniMapScaling +
-        editor.GridContentBounds.Min;
-};
-
-ImVec2 ScreenSpaceToMiniMapSpace(const ImNodesEditorContext& editor, const ImVec2& v)
-{
-    return (ScreenSpaceToGridSpace(editor, v) - editor.GridContentBounds.Min) *
-        editor.MiniMapScaling +
-        editor.MiniMapContentScreenSpace.Min;
-};
-
-ImRect ScreenSpaceToMiniMapSpace(const ImNodesEditorContext& editor, const ImRect& r)
-{
-    return ImRect(
-        ScreenSpaceToMiniMapSpace(editor, r.Min), ScreenSpaceToMiniMapSpace(editor, r.Max));
-};
 } // namespace IMNODES_NAMESPACE

@@ -134,6 +134,10 @@ namespace NodeEditor
         style.Colors[ImNodesCol_Link] = IM_COL32(255, 255, 255, 200);
         style.Colors[ImNodesCol_LinkHovered] = IM_COL32(255, 255, 255, 255);
         style.Colors[ImNodesCol_LinkSelected] = IM_COL32(255, 255, 255, 255);
+
+		style.Colors[ImNodesCol_Transition] = IM_COL32(200, 200, 200, 255);
+		style.Colors[ImNodesCol_TransitionHovered] = IM_COL32(200, 200, 200, 255);
+		style.Colors[ImNodesCol_TransitionSelected] = IM_COL32(255, 255, 255, 255);
 	}
 
     void NodeEditorBase::styleEditor()
@@ -156,6 +160,11 @@ namespace NodeEditor
             if (gridLines) style.Flags |= ImNodesStyleFlags_GridLines;
             else           style.Flags &= ~ImNodesStyleFlags_GridLines;
         }
+
+		ImGui::SeparatorText("Box Selector Colors");
+
+        ImGui::ColorEditUInt("Box Selector", &style.Colors[ImNodesCol_BoxSelector]);
+        ImGui::ColorEditUInt("Box Selector Outline", &style.Colors[ImNodesCol_BoxSelectorOutline]);
 
         if (!ImGui::BeginTabBar("##ImNodesComponentList"))
             return;
@@ -231,10 +240,22 @@ namespace NodeEditor
 
             ImGui::ColorEditUInt("Pin", &style.Colors[ImNodesCol_Pin]);
             ImGui::ColorEditUInt("Pin Hovered", &style.Colors[ImNodesCol_PinHovered]);
-            ImGui::ColorEditUInt("Box Selector", &style.Colors[ImNodesCol_BoxSelector]);
-            ImGui::ColorEditUInt("Box Selector Outline", &style.Colors[ImNodesCol_BoxSelectorOutline]);
 
             ImGui::EndTabItem();
+        }
+
+		// ------------------- Transition --------------------
+        if (ImGui::BeginTabItem("Transition"))
+        {
+            ImGui::SeparatorText("Sizes");
+
+            ImGui::SeparatorText("Colors");
+
+            ImGui::ColorEditUInt("Transition", &style.Colors[ImNodesCol_Transition]);
+            ImGui::ColorEditUInt("Transition Hovered", &style.Colors[ImNodesCol_TransitionHovered]);
+            ImGui::ColorEditUInt("Transition Selected", &style.Colors[ImNodesCol_TransitionSelected]);
+
+			ImGui::EndTabItem();
         }
 
         // -------------------- Mini-map --------------------

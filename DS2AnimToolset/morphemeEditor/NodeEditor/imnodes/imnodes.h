@@ -31,6 +31,9 @@ enum ImNodesCol_
     ImNodesCol_Link,
     ImNodesCol_LinkHovered,
     ImNodesCol_LinkSelected,
+	ImNodesCol_Transition,
+	ImNodesCol_TransitionHovered,
+	ImNodesCol_TransitionSelected,
     ImNodesCol_Pin,
     ImNodesCol_PinHovered,
     ImNodesCol_BoxSelector,
@@ -309,6 +312,9 @@ void PopAttributeFlag();
 // calls. The order of start_attr and end_attr doesn't make a difference for rendering the link.
 void Link(int id, int start_attribute_id, int end_attribute_id);
 
+// Render a transition (a special kind of link) between two nodes.
+void Transition(int id, int start_node_id, int end_node_id);
+
 // Enable or disable the ability to click and drag a specific node.
 void SetNodeDraggable(int node_id, const bool draggable);
 
@@ -338,16 +344,19 @@ bool IsEditorHovered();
 bool IsNodeHovered(int* node_id);
 bool IsLinkHovered(int* link_id);
 bool IsPinHovered(int* attribute_id);
+bool IsTransitionHovered(int* transition_id);
 
 // Use The following two functions to query the number of selected nodes or links in the current
 // editor. Use after calling EndNodeEditor().
 int NumSelectedNodes();
 int NumSelectedLinks();
+int NumSelectedTransitions();
 // Get the selected node/link ids. The pointer argument should point to an integer array with at
 // least as many elements as the respective NumSelectedNodes/NumSelectedLinks function call
 // returned.
 void GetSelectedNodes(int* node_ids);
 void GetSelectedLinks(int* link_ids);
+void GetSelectedTransition(int* transition_ids);
 // Clears the list of selected nodes/links. Useful if you want to delete a selected node or link.
 void ClearNodeSelection();
 void ClearLinkSelection();
@@ -363,6 +372,9 @@ bool IsNodeSelected(int node_id);
 void SelectLink(int link_id);
 void ClearLinkSelection(int link_id);
 bool IsLinkSelected(int link_id);
+void SelectTransition(int transition_id);
+void ClearTransitionSelection(int transition_id);
+bool IsTransitionSelected(int transition_id);
 
 // Was the previous attribute active? This will continuously return true while the left mouse button
 // is being pressed over the UI content of the attribute.
@@ -414,14 +426,4 @@ void SaveEditorStateToIniFile(const ImNodesEditorContext* editor, const char* fi
 
 void LoadCurrentEditorStateFromIniFile(const char* file_name);
 void LoadEditorStateFromIniFile(ImNodesEditorContext* editor, const char* file_name);
-
-ImVec2 ScreenSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v);
-ImRect ScreenSpaceToGridSpace(const ImNodesEditorContext& editor, const ImRect& r);
-ImVec2 GridSpaceToScreenSpace(const ImNodesEditorContext& editor, const ImVec2& v);
-ImVec2 GridSpaceToEditorSpace(const ImNodesEditorContext& editor, const ImVec2& v);
-ImVec2 EditorSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v);
-ImVec2 EditorSpaceToScreenSpace(const ImVec2& v);
-ImVec2 MiniMapSpaceToGridSpace(const ImNodesEditorContext& editor, const ImVec2& v);
-ImVec2 ScreenSpaceToMiniMapSpace(const ImNodesEditorContext& editor, const ImVec2& v);
-ImRect ScreenSpaceToMiniMapSpace(const ImNodesEditorContext& editor, const ImRect& r);
 } // namespace IMNODES_NAMESPACE

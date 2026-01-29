@@ -27,6 +27,7 @@ typedef int ImNodesAttributeType;
 typedef int ImNodesUIState;
 typedef int ImNodesClickInteractionType;
 typedef int ImNodesLinkCreationType;
+typedef int ImNodesTransitionCreationType;
 
 enum ImNodesScope_
 {
@@ -48,7 +49,10 @@ enum ImNodesUIState_
     ImNodesUIState_None = 0,
     ImNodesUIState_LinkStarted = 1 << 0,
     ImNodesUIState_LinkDropped = 1 << 1,
-    ImNodesUIState_LinkCreated = 1 << 2
+    ImNodesUIState_LinkCreated = 1 << 2,
+	ImNodesUIState_TransitionStarted = 1 << 3,
+	ImNodesUIState_TransitionDropped = 1 << 4,
+	ImNodesUIState_TransitionCreated = 1 << 5
 };
 
 enum ImNodesClickInteractionType_
@@ -56,6 +60,8 @@ enum ImNodesClickInteractionType_
     ImNodesClickInteractionType_Node,
     ImNodesClickInteractionType_Link,
     ImNodesClickInteractionType_LinkCreation,
+    ImNodesClickInteractionType_Transition,
+    ImNodesClickInteractionType_TransitionCreation,
     ImNodesClickInteractionType_Panning,
     ImNodesClickInteractionType_BoxSelection,
     ImNodesClickInteractionType_ImGuiItem,
@@ -66,6 +72,12 @@ enum ImNodesLinkCreationType_
 {
     ImNodesLinkCreationType_Standard,
     ImNodesLinkCreationType_FromDetach
+};
+
+enum ImNodesTransitionCreationType_
+{
+    ImNodesTransitionCreationType_Standard,
+    ImNodesTransitionCreationType_FromDetach
 };
 
 // [SECTION] internal data structures
@@ -198,6 +210,19 @@ struct ImLinkData
     ImLinkData(const int link_id) : Id(link_id), StartPinIdx(), EndPinIdx(), ColorStyle() {}
 };
 
+struct ImTransitionData
+{
+    int Id;
+    int StartNodeIdx, EndNodeIdx;
+
+    struct
+    {
+        ImU32 Base, Hovered, Selected;
+    } ColorStyle;
+
+    ImTransitionData(const int transition_id) : Id(transition_id), StartNodeIdx(), EndNodeIdx(), ColorStyle() {}
+};
+
 struct ImClickInteractionState
 {
     ImNodesClickInteractionType Type;
@@ -208,6 +233,13 @@ struct ImClickInteractionState
         ImOptionalIndex         EndPinIdx;
         ImNodesLinkCreationType Type;
     } LinkCreation;
+
+    struct
+    {
+        int                     StartNodeIdx;
+        ImOptionalIndex         EndNodeIdx;
+        ImNodesTransitionCreationType Type;
+    } TransitionCreation;
 
     struct
     {
@@ -249,6 +281,7 @@ struct ImNodesEditorContext
     ImObjectPool<ImNodeData> Nodes;
     ImObjectPool<ImPinData>  Pins;
     ImObjectPool<ImLinkData> Links;
+	ImObjectPool<ImTransitionData> Transitions;
 
     ImVector<int> NodeDepthOrder;
 
@@ -261,6 +294,7 @@ struct ImNodesEditorContext
 
     ImVector<int> SelectedNodeIndices;
     ImVector<int> SelectedLinkIndices;
+	ImVector<int> SelectedTransitionIndices;
 
     ImClickInteractionState ClickInteraction;
 
@@ -324,9 +358,12 @@ struct ImNodesContext
     ImOptionalIndex HoveredNodeIdx;
     ImOptionalIndex HoveredLinkIdx;
     ImOptionalIndex HoveredPinIdx;
+    ImOptionalIndex HoveredTransitionIdx;
 
     ImOptionalIndex DeletedLinkIdx;
     ImOptionalIndex SnapLinkIdx;
+
+	ImOptionalIndex DeletedTransitionIdx;
 
     // Event helper state
     // TODO: this should be a part of a state machine, and not a member of the global struct.
