@@ -1373,23 +1373,6 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 		MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
-		int numSubStateNodes = 0;
-		for (size_t i = 0; i < netDef->getNumStateMachines(); i++)
-		{
-			const MR::NodeID stateMachineNodeID = netDef->getStateMachineNodeID(i);
-			const MR::NodeDef* nodeDef = netDef->getNodeDef(stateMachineNodeID);
-
-			for (size_t childNodeIdx = 0; childNodeIdx < nodeDef->getNumChildNodes(); childNodeIdx++)
-			{
-				const MR::NodeDef* childNodeDef = netDef->getNodeDef(nodeDef->getChildNodeID(childNodeIdx));
-
-				if (!childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
-					numSubStateNodes++;
-			}
-		}
-
-		assert(numSubStateNodes + netDef->getNumNodeDefs() == netDef->getNodeIDNamesTable()->getNumEntries());
-
 #ifdef EXPORT_DEBUG_NETWORK_INFO
 		dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
 		dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
