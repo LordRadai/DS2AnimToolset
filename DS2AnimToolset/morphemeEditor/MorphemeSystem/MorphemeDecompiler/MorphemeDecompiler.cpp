@@ -328,8 +328,19 @@ namespace MD
 		for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
 		{
 			MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+			std::string nodeName = netDef->getNodeNameFromNodeID(i);
 
-			exportNode(netDefExport, netDef, nodeDef, netDef->getNodeNameFromNodeID(i));
+			const MR::NodeID parentNodeID = nodeDef->getParentNodeID();
+
+			if (parentNodeID != MR::INVALID_NODE_ID)
+			{
+				std::string parentNodeName = netDef->getNodeNameFromNodeID(parentNodeID);
+
+				if (nodeName == parentNodeName)
+					nodeName = "";
+			}
+
+			exportNode(netDefExport, netDef, nodeDef, nodeName);
 		}
 
 		const NMP::IDMappedStringTable* messageTable = netDef->getMessageIDNamesTable();
