@@ -1,6 +1,6 @@
 #include "Graph.h"
 #include "NodeEditor/Registry/Registry.h"
-#include "NodeEditor/NodeEditorBase.h"
+#include "NodeEditor/NodeEditor.h"
 #include "BlendTree.h"
 #include "StateMachine.h"
 #include "extern.h"
@@ -8,7 +8,7 @@
 
 namespace NodeEditor
 {
-	Graph::Graph(NodeEditorBase* editor, Graph* parent, const std::string& name) : Entity(editor, name), m_parentGraph(parent), m_context(nullptr)
+	Graph::Graph(NodeEditor* editor, Graph* parent, const std::string& name) : Entity(editor, name), m_parentGraph(parent), m_context(nullptr)
 	{
 		Registry* registry = m_ownerEditor->getRegistry();
 

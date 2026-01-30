@@ -7,7 +7,7 @@
 
 namespace NodeEditor
 {
-	Transition::Transition(NodeEditorBase* editor, Graph* parent, int nodeID, Node* sourceNode, Node* destinationNode) : Node(editor, parent, nodeID, sourceNode->getName() + "_" + destinationNode->getName(), nullptr),
+	Transition::Transition(NodeEditor* editor, Graph* parent, int nodeID, Node* sourceNode, Node* destinationNode) : Node(editor, parent, nodeID, sourceNode->getName() + "_" + destinationNode->getName(), nullptr),
 		m_sourceNode(sourceNode), m_destinationNode(destinationNode)
 	{
 	}

@@ -8,7 +8,7 @@ namespace NodeEditor
 {
 	bool SampleNodeEditor::initialise()
 	{
-		bool bInit = NodeEditorBase::initialise();
+		bool bInit = NodeEditor::initialise();
 
 		if (!bInit)
 			return false;

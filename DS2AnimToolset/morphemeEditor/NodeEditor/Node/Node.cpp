@@ -1,11 +1,11 @@
 #include "Node.h"
 #include "NodeEditor/Graph/Graph.h"
 #include "NodeEditor/imnodes/imnodes.h"
-#include "NodeEditor/NodeEditorBase.h"
+#include "NodeEditor/NodeEditor.h"
 
 namespace NodeEditor
 {
-	Node::Node(NodeEditorBase* editor, Graph* parent, int id, const std::string& name, Graph* subGraph) : Entity(editor, name),
+	Node::Node(NodeEditor* editor, Graph* parent, int id, const std::string& name, Graph* subGraph) : Entity(editor, name),
 		m_parentGraph(parent), m_nodeID(id), m_subGraph(subGraph), m_position(ImVec2(0.f, 0.f))
 	{
 	}
@@ -36,10 +36,10 @@ namespace NodeEditor
 		// ---- Content area ----
 		StyleSettings& style = m_ownerEditor->getStyleSettings();
 
-		float pinAreaHeight = style.nodeMinContentHeight;
+		float pinAreaHeight = style.NodeMinContentHeight;
 		int totalPins = (int)(m_inputPins.size() + m_outputPins.size());
 
-		float dummyHeight = pinAreaHeight - totalPins * style.nodePinSpacing;
+		float dummyHeight = pinAreaHeight - totalPins * style.NodePinSpacing;
 		if (dummyHeight < 0.0f) dummyHeight = 0.0f;
 
 		// Add a dummy to enforce minimum node height
@@ -163,11 +163,11 @@ namespace NodeEditor
 		ImVec2 textSize = ImGui::CalcTextSize(m_name.c_str());
 
 		const float titleBarHeight = 2.f * imStyle.NodePadding.y + textSize.y;
-		const float nodeTotalMinHeight = titleBarHeight + style.nodeMinContentHeight;
+		const float nodeTotalMinHeight = titleBarHeight + style.NodeMinContentHeight;
 		const int totalPins = (int)(m_inputPins.size() + m_outputPins.size());
-		const float nodeHeight = totalPins * style.nodePinSpacing;
+		const float nodeHeight = totalPins * style.NodePinSpacing;
 
-		width = std::max(style.nodeMinWidth, textSize.x);
+		width = std::max(style.NodeMinWidth, textSize.x);
 		height = std::max(nodeTotalMinHeight, nodeHeight);
 	}
 }

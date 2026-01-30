@@ -121,7 +121,7 @@ public:
 	TrackEditor::EventTrackEditor* getEventTrackEditor() const { return this->m_eventTrackEditor; }
 	FlverResources* getFlverResources() const { return this->m_flverResources; }
 	PlayerModelPreset* getPlayerModelPreset() const { return this->m_playerModelPreset; }
-	NodeEditor::NodeEditorBase* getNodeEditor() const { return this->m_nodeEditor; }
+	NodeEditor::NodeEditor* getNodeEditor() const { return this->m_nodeEditor; }
 
 	WindowFlags* getWindowFlags() { return &this->m_windowFlags; }
 	TaskFlags* getTaskFlags() { return &this->m_taskFlags; }
@@ -185,7 +185,7 @@ private:
 
 	TrackEditor::TimeActEditor* m_timeActEditor = nullptr;
 	TrackEditor::EventTrackEditor* m_eventTrackEditor = nullptr;
-	NodeEditor::NodeEditorBase* m_nodeEditor = nullptr;
+	NodeEditor::NodeEditor* m_nodeEditor = nullptr;
 
 	std::vector<std::wstring> m_timeActFileList;
 

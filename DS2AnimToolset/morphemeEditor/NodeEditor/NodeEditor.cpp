@@ -1,4 +1,4 @@
-#include "NodeEditorBase.h"
+#include "NodeEditor.h"
 #include "imnodes/imnodes.h"
 #include "Registry/Registry.h"
 #include "IconsFontAwesome6.h"
@@ -11,21 +11,27 @@ namespace NodeEditor
 {
     StyleSettings::StyleSettings()
     {
-        nodeMinWidth = 150.0f;
-        nodeMinContentHeight = 30.0f;
-        nodePinSpacing = 20.0f;
+        NodeMinWidth = 150.0f;
+        NodeMinContentHeight = 30.0f;
+        NodePinSpacing = 20.0f;
+		ControlParametersNodeBackground = ImColor(26, 55, 80);
+		ControlParametersNodeBackgroundHovered = ImColor(26, 55, 80);
+		ControlParametersNodeBackgroundSelected = ImColor(118, 113, 25);
+		ControlParametersNodeTitleBar = ImColor(47, 93, 160);
+		ControlParametersNodeTitleBarHovered = ImColor(47, 93, 160);
+		ControlParametersNodeTitleBarSelected = ImColor(156, 150, 35);
     }
 
-	NodeEditorBase::NodeEditorBase() : m_showStyleEditor(false), m_registry(nullptr)
+	NodeEditor::NodeEditor() : m_showStyleEditor(false), m_registry(nullptr)
 	{
 	}
 
-	NodeEditorBase::~NodeEditorBase()
+	NodeEditor::~NodeEditor()
 	{
 		shutdown();
 	}
 
-	bool NodeEditorBase::initialise()
+	bool NodeEditor::initialise()
 	{
 		if (!ImNodes::CreateContext())
 			return false;
@@ -38,13 +44,13 @@ namespace NodeEditor
 		return true;
 	}
 
-	void NodeEditorBase::shutdown()
+	void NodeEditor::shutdown()
 	{
 		delete m_registry;
 		ImNodes::DestroyContext();
 	}
 
-	void NodeEditorBase::update(float dt)
+	void NodeEditor::update(float dt)
 	{
 		Graph* currentGraph = getCurrentGraph();
 
@@ -79,7 +85,7 @@ namespace NodeEditor
 		}
 	}
 
-	void NodeEditorBase::draw()
+	void NodeEditor::draw()
 	{
 		std::string parentGraphList = "";
 		std::stack<Graph*> tempStack = m_graphStack;
@@ -118,7 +124,7 @@ namespace NodeEditor
 		ImNodes::EndNodeEditor();
 	}
 
-	ControlParameter* NodeEditorBase::createControlParameter(const std::string& name, ControlParameter::ParameterType parameterType)
+	ControlParameter* NodeEditor::createControlParameter(const std::string& name, ControlParameter::ParameterType parameterType)
     {
         if (hasControlParameter(name))
         {
@@ -133,42 +139,42 @@ namespace NodeEditor
         return parameter;
 	}
 
-    ControlParameter* NodeEditorBase::createControlParameterFloat(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterFloat(const std::string& name)
     {
         return createControlParameter(name, ControlParameter::kParameterTypeFloat);
     }
 
-    ControlParameter* NodeEditorBase::createControlParameterInt(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterInt(const std::string& name)
     {
         return createControlParameter(name, ControlParameter::kParameterTypeInt);
 	}
 
-    ControlParameter* NodeEditorBase::createControlParameterUInt(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterUInt(const std::string& name)
     {
         return createControlParameter(name, ControlParameter::kParameterTypeUInt);
     }
 
-    ControlParameter* NodeEditorBase::createControlParameterBool(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterBool(const std::string& name)
     {
         return createControlParameter(name, ControlParameter::kParameterTypeBool);
 	}
 
-    ControlParameter* NodeEditorBase::createControlParameterVector3(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterVector3(const std::string& name)
     {
         return createControlParameter(name, ControlParameter::kParameterTypeVector3);
     }
 
-    ControlParameter* NodeEditorBase::createControlParameterVector4(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterVector4(const std::string& name)
     {
         return createControlParameter(name, ControlParameter::kParameterTypeVector4);
     }
 
-    ControlParameter* NodeEditorBase::createControlParameterQuaternion(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterQuaternion(const std::string& name)
     {
         return createControlParameter(name, ControlParameter::kParameterTypeQuaternion);
     }
 
-    ControlParameter* NodeEditorBase::getControlParameter(const std::string& name) const
+    ControlParameter* NodeEditor::getControlParameter(const std::string& name) const
     {
         for (ControlParameter* parameter : m_controlParameters)
         {
@@ -179,7 +185,7 @@ namespace NodeEditor
         return nullptr;
 	}
 
-    bool NodeEditorBase::removeControlParameter(ControlParameter* parameter)
+    bool NodeEditor::removeControlParameter(ControlParameter* parameter)
     {
         auto it = std::find(m_controlParameters.begin(), m_controlParameters.end(), parameter);
         if (it != m_controlParameters.end())
@@ -192,7 +198,7 @@ namespace NodeEditor
         return false;
 	}
 
-    bool NodeEditorBase::hasControlParameter(const std::string& name) const
+    bool NodeEditor::hasControlParameter(const std::string& name) const
     {
         for (ControlParameter* parameter : m_controlParameters)
         {
@@ -203,13 +209,13 @@ namespace NodeEditor
         return false;
 	}
 
-	void NodeEditorBase::popGraph()
+	void NodeEditor::popGraph()
 	{
 		if (m_graphStack.size() > 1)
 			m_graphStack.pop();
 	}
 
-    void NodeEditorBase::initStyle()
+    void NodeEditor::initStyle()
     {
         ImNodes::StyleColorsDark();
 
@@ -243,9 +249,19 @@ namespace NodeEditor
 		style.Colors[ImNodesCol_Transition] = IM_COL32(200, 200, 200, 255);
 		style.Colors[ImNodesCol_TransitionHovered] = IM_COL32(200, 200, 200, 255);
 		style.Colors[ImNodesCol_TransitionSelected] = IM_COL32(255, 255, 255, 255);
+
+        m_styleSettings.NodeMinWidth = 150.0f;
+        m_styleSettings.NodeMinContentHeight = 30.0f;
+        m_styleSettings.NodePinSpacing = 20.0f;
+        m_styleSettings.ControlParametersNodeBackground = IM_COL32(70, 70, 70, 255);
+        m_styleSettings.ControlParametersNodeBackgroundHovered = IM_COL32(70, 70, 70, 255);
+        m_styleSettings.ControlParametersNodeBackgroundSelected = IM_COL32(118, 113, 25, 255);
+        m_styleSettings.ControlParametersNodeTitleBar = IM_COL32(100, 100, 100, 255);
+        m_styleSettings.ControlParametersNodeTitleBarHovered = IM_COL32(100, 100, 100, 255);
+        m_styleSettings.ControlParametersNodeTitleBarSelected = IM_COL32(118, 113, 25, 255);
 	}
 
-    void NodeEditorBase::styleEditor()
+    void NodeEditor::styleEditor()
     {
         ImNodesStyle& style = ImNodes::GetStyle();
 

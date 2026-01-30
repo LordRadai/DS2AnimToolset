@@ -11,7 +11,7 @@ namespace NodeEditor
 		Node* m_destinationNode;
 
 	public:
-		Transition(NodeEditorBase* editor, Graph* parent, int nodeID, Node* sourceNode, Node* destinationNode);
+		Transition(NodeEditor* editor, Graph* parent, int nodeID, Node* sourceNode, Node* destinationNode);
 		virtual ~Transition() override {}
 
 		virtual void draw() override;

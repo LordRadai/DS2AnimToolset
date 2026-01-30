@@ -8,7 +8,7 @@ namespace NodeEditor
 		std::vector<Transition*> m_transitions;
 
 	public:
-		StateMachine(NodeEditorBase* editor, Graph* parent, const std::string& name);
+		StateMachine(NodeEditor* editor, Graph* parent, const std::string& name);
 		~StateMachine() override;
 
 		void draw() override;

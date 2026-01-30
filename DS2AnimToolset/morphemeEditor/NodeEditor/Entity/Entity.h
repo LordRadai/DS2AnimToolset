@@ -3,16 +3,16 @@
 
 namespace NodeEditor
 {
-	class NodeEditorBase;
+	class NodeEditor;
 
 	class Entity
 	{
 	protected:
-		NodeEditorBase* m_ownerEditor = nullptr;
+		NodeEditor* m_ownerEditor = nullptr;
 		int m_id;
 		std::string m_name;
 	public:
-		Entity(NodeEditorBase* editor, const std::string& name);
+		Entity(NodeEditor* editor, const std::string& name);
 		virtual ~Entity();
 		virtual void draw() = 0;
 

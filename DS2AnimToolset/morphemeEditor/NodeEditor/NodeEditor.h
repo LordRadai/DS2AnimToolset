@@ -9,14 +9,20 @@ namespace NodeEditor
 {
 	struct StyleSettings
 	{
-		float nodeMinContentHeight;
-		float nodeMinWidth;
-		float nodePinSpacing;
+		float NodeMinContentHeight;
+		float NodeMinWidth;
+		float NodePinSpacing;
+		unsigned int ControlParametersNodeBackground;
+		unsigned int ControlParametersNodeBackgroundHovered;
+		unsigned int ControlParametersNodeBackgroundSelected;
+		unsigned int ControlParametersNodeTitleBar;
+		unsigned int ControlParametersNodeTitleBarHovered;
+		unsigned int ControlParametersNodeTitleBarSelected;
 
 		StyleSettings();
 	};
 
-	class NodeEditorBase
+	class NodeEditor
 	{
 	protected:
 		StyleSettings m_styleSettings;
@@ -27,8 +33,8 @@ namespace NodeEditor
 		bool m_showStyleEditor;
 
 	public:
-		NodeEditorBase();
-		virtual ~NodeEditorBase();
+		NodeEditor();
+		virtual ~NodeEditor();
 
 		virtual bool initialise();
 		virtual void shutdown();

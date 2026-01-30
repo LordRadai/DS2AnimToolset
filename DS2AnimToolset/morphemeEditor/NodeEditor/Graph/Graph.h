@@ -16,7 +16,7 @@ namespace NodeEditor
 		std::vector<Node*> m_nodes;
 		ImVec2 m_panning;
 	public:
-		Graph(NodeEditorBase* editor, Graph* parent, const std::string& name);
+		Graph(NodeEditor* editor, Graph* parent, const std::string& name);
 		~Graph();
 
 		void draw();

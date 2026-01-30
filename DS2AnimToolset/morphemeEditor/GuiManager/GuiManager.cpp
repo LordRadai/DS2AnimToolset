@@ -7,7 +7,7 @@
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
 #include "WorkerThread/WorkerThread.h"
 #include "Camera/Camera.h"
-#include "NodeEditor/NodeEditorBase.h"
+#include "NodeEditor/NodeEditor.h"
 
 #define MSAA_SETTING_COUNT 3
 
@@ -1661,7 +1661,7 @@ void GuiManager::networkPreviewWindow()
 
 	ImGui::Begin("Network Preview", nullptr, ImGuiWindowFlags_MenuBar);
 
-	NodeEditor::NodeEditorBase* nodeEditor = editorApp->getNodeEditor();
+	NodeEditor::NodeEditor* nodeEditor = editorApp->getNodeEditor();
 
 	nodeEditor->draw();
 

@@ -312,7 +312,7 @@
     <ClInclude Include="CharacterMotionCtrl\CharacterMotionCtrl.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\NodeEditorBase.h">
+    <ClInclude Include="NodeEditor\NodeEditor.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="NodeEditor\imnodes\imnodes.h">
@@ -590,7 +590,7 @@
     <ClCompile Include="CharacterMotionCtrl\CharacterMotionCtrl.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\NodeEditorBase.cpp">
+    <ClCompile Include="NodeEditor\NodeEditor.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\imnodes\imnodes.cpp">

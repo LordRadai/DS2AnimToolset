@@ -1,9 +1,9 @@
 #include "BlendTree.h"
-#include "NodeEditor/NodeEditorBase.h"
+#include "NodeEditor/NodeEditor.h"
 
 namespace NodeEditor
 {
-	BlendTree::BlendTree(NodeEditorBase* editor, Graph* parent, const std::string& name) : Graph(editor, parent, name)
+	BlendTree::BlendTree(NodeEditor* editor, Graph* parent, const std::string& name) : Graph(editor, parent, name)
 	{
 	}
 

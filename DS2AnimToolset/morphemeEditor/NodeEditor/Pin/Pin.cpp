@@ -7,7 +7,7 @@
 
 namespace NodeEditor
 {
-	Pin::Pin(NodeEditorBase* editor, Node* parent, const std::string& name, bool isInput) : Entity(editor, name),
+	Pin::Pin(NodeEditor* editor, Node* parent, const std::string& name, bool isInput) : Entity(editor, name),
 		m_parentNode(parent), m_isInput(isInput)
 	{
 	}

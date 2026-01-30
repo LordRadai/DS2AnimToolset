@@ -1,12 +1,12 @@
 #pragma once
-#include "NodeEditorBase.h"
+#include "NodeEditor.h"
 
 namespace NodeEditor
 {
-	class SampleNodeEditor : public NodeEditorBase
+	class SampleNodeEditor : public NodeEditor
 	{
 	public:
-		SampleNodeEditor() : NodeEditorBase() {}
+		SampleNodeEditor() : NodeEditor() {}
 		~SampleNodeEditor() override {}
 		
 		virtual bool initialise() override;

@@ -1,9 +1,9 @@
 #include "ControlParameter.h"
-#include "NodeEditor/NodeEditorBase.h"
+#include "NodeEditor/NodeEditor.h"
 
 namespace NodeEditor
 {
-	ControlParameter::ControlParameter(NodeEditorBase* editor, const std::string& name, ParameterType parameterType)
+	ControlParameter::ControlParameter(NodeEditor* editor, const std::string& name, ParameterType parameterType)
 		: Entity(editor, name), m_parameterType(parameterType)
 	{
 		DataPin::DataType dataType;

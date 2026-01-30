@@ -23,7 +23,7 @@ namespace NodeEditor
 		DataPin* m_output;
 		ParameterType m_parameterType;
 	public:
-		ControlParameter(NodeEditorBase* editor, const std::string& name, ParameterType parameterType);
+		ControlParameter(NodeEditor* editor, const std::string& name, ParameterType parameterType);
 
 		virtual ~ControlParameter() override {}
 

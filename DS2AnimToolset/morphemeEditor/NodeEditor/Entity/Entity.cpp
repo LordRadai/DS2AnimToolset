@@ -1,9 +1,9 @@
 #include "Entity.h"
-#include "NodeEditor/NodeEditorBase.h"
+#include "NodeEditor/NodeEditor.h"
 
 namespace NodeEditor
 {
-	Entity::Entity(NodeEditorBase* editor, const std::string& name) : m_name(name), m_ownerEditor(editor)
+	Entity::Entity(NodeEditor* editor, const std::string& name) : m_name(name), m_ownerEditor(editor)
 	{
 		Registry* registry = editor->getRegistry();
 

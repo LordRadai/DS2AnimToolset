@@ -1,21 +1,24 @@
 #include "ControlParametersNode.h"
+#include "NodeEditor/NodeEditor.h"
 
 namespace NodeEditor
 {
-	ControlParametersNode::ControlParametersNode(NodeEditorBase* editor, const std::string& name)
+	ControlParametersNode::ControlParametersNode(NodeEditor* editor, const std::string& name)
 		: Node(editor, nullptr, -1, name, nullptr)
 	{
 	}
 
 	void ControlParametersNode::draw()
 	{
-        ImNodes::PushColorStyle(ImNodesCol_NodeBackground, IM_COL32(70, 70, 70, 255));
-        ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundHovered, IM_COL32(70, 70, 70, 255));
-        ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundSelected, IM_COL32(70, 70, 70, 255));
+		StyleSettings& style = m_ownerEditor->getStyleSettings();
 
-        ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(100, 100, 100, 255));
-        ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(100, 100, 100, 255));
-        ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(100, 100, 100, 255));
+        ImNodes::PushColorStyle(ImNodesCol_NodeBackground, style.ControlParametersNodeBackground);
+        ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundHovered, style.ControlParametersNodeBackgroundHovered);
+        ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundSelected, style.ControlParametersNodeBackgroundSelected);
+
+        ImNodes::PushColorStyle(ImNodesCol_TitleBar, style.ControlParametersNodeTitleBar);
+        ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, style.ControlParametersNodeTitleBarHovered);
+        ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, style.ControlParametersNodeTitleBarSelected);
 
 		Node::draw();
 
