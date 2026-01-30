@@ -21,20 +21,19 @@ namespace NodeEditor
 		if (m_isInput == other->m_isInput)
 			return false;
 
+		Graph* parentGraph = m_parentNode->getParentGraph();
+
+		if (!parentGraph->isOfType<BlendTree>())
+			return false;
+
 		Pin* inputPin = (m_isInput) ? this : other;
 		Pin* outputPin = (!m_isInput) ? this : other;
 
 		Link* link = new Link(m_ownerEditor, inputPin, outputPin);
-		Graph* parentGraph = m_parentNode->getParentGraph();
 
-		if (parentGraph->isOfType<BlendTree>())
-		{
-			parentGraph->asType<BlendTree>()->addLink(link);
-			return true;
-		}
+		parentGraph->asType<BlendTree>()->addLink(link);
 
-		delete link;
-		return false;
+		return true;
 	}
 
 	void Pin::drawInternal(ImNodesPinShape_ shape, ImColor color)
