@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "NodeEditor/Entity/Entity.h"
+#include "NodeEditor/imnodes/imnodes.h"
 
 namespace NodeEditor
 {
@@ -8,16 +9,9 @@ namespace NodeEditor
 
 	class Pin : public Entity
 	{
-	public:
-		enum PinType
-		{
-			kPinTypeInput,
-			kPinTypeOutput
-		};
-
-	private:
+	protected:
 		Node* m_parentNode;
-		PinType m_type;
+		bool m_isInput;
 
 	public:
 		Pin(Node* parent, const std::string& name, bool isInput);
@@ -26,8 +20,7 @@ namespace NodeEditor
 		virtual void draw() override;
 
 		bool connectTo(Pin* other);
-	private:
-		void drawInputPin();
-		void drawOutputPin();
+	protected:
+		void drawInternal(ImNodesPinShape_ shape, ImColor color);
 	};
 }

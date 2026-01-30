@@ -250,6 +250,7 @@
     <ClInclude Include="NodeEditor\Link\Link.h" />
     <ClInclude Include="NodeEditor\Node\Node.h" />
     <ClInclude Include="NodeEditor\NodeEditorBase.h" />
+    <ClInclude Include="NodeEditor\Pin\DataPin.h" />
     <ClInclude Include="NodeEditor\Pin\Pin.h" />
     <ClInclude Include="NodeEditor\Registry\Registry.h" />
     <ClInclude Include="NodeEditor\SampleNodeEditor.h" />
@@ -343,6 +344,7 @@
     <ClCompile Include="NodeEditor\Link\Link.cpp" />
     <ClCompile Include="NodeEditor\Node\Node.cpp" />
     <ClCompile Include="NodeEditor\NodeEditorBase.cpp" />
+    <ClCompile Include="NodeEditor\Pin\DataPin.cpp" />
     <ClCompile Include="NodeEditor\Pin\Pin.cpp" />
     <ClCompile Include="NodeEditor\Registry\Registry.cpp" />
     <ClCompile Include="NodeEditor\SampleNodeEditor.cpp" />

@@ -28,8 +28,11 @@ namespace NodeEditor
 		ImVec2 getCenter() const;
 		ImVec2 getSize() const;
 
-		Pin* addInputPin(const std::string& name);
-		Pin* addOutputPin(const std::string& name);
+		Pin* createInputPin(const std::string& name);
+		Pin* createOutputPin(const std::string& name);
+
+		void addInputPin(Pin* pin) { m_inputPins.push_back(pin); }
+		void addOutputPin(Pin* pin) { m_outputPins.push_back(pin); }
 
 		Pin* getInputPin(size_t index) const;
 		Pin* getInputPin(const std::string& name) const;

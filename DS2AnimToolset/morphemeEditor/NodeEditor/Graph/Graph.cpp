@@ -1,5 +1,6 @@
 #include "Graph.h"
 #include "NodeEditor/Registry/Registry.h"
+#include "NodeEditor/Pin/DataPin.h"
 
 namespace NodeEditor
 {
@@ -8,6 +9,7 @@ namespace NodeEditor
 		m_context = ImNodes::CreateContext();
 		m_id = Registry::getInstance()->generateUniqueGraphID();
 		Registry::getInstance()->registerGraph(this);
+		m_controlParametersNode = new Node(this, -1, "ControlParameters", nullptr);
 	}
 
 	Graph::~Graph()
@@ -17,6 +19,7 @@ namespace NodeEditor
 
 		Registry::getInstance()->unregisterGraph(this);
 		ImNodes::DestroyContext(m_context);
+		delete m_controlParametersNode;
 	}
 
 	Node* Graph::getNode(int nodeID) const
@@ -102,6 +105,48 @@ namespace NodeEditor
 		return transition;
 	}
 
+	void Graph::createControlParameterFloat(const std::string& name)
+	{
+		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeFloat);
+		m_controlParametersNode->addOutputPin(outputPin);
+	}
+
+	void Graph::createControlParameterInt(const std::string& name)
+	{
+		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeInt);
+		m_controlParametersNode->addOutputPin(outputPin);
+	}
+
+	void Graph::createControlParameterUInt(const std::string& name)
+	{
+		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeUInt);
+		m_controlParametersNode->addOutputPin(outputPin);
+	}
+
+	void Graph::createControlParameterBool(const std::string& name)
+	{
+		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeBool);
+		m_controlParametersNode->addOutputPin(outputPin);
+	}
+
+	void Graph::createControlParameterVector3(const std::string& name)
+	{
+		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeVector3);
+		m_controlParametersNode->addOutputPin(outputPin);
+	}
+
+	void Graph::createControlParameterVector4(const std::string& name)
+	{
+		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeVector4);
+		m_controlParametersNode->addOutputPin(outputPin);
+	}
+
+	void Graph::createControlParameterQuaternion(const std::string& name)
+	{
+		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeQuaternion);
+		m_controlParametersNode->addOutputPin(outputPin);
+	}
+
 	void Graph::removeNode(Node* node)
 	{
 		auto it = std::find(m_nodes.begin(), m_nodes.end(), node);
@@ -114,6 +159,24 @@ namespace NodeEditor
 
 	void Graph::draw()
 	{
+		ImNodes::PushColorStyle(ImNodesCol_NodeBackground, IM_COL32(70, 70, 70, 255));
+		ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundHovered, IM_COL32(70, 70, 70, 255));
+		ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundSelected, IM_COL32(70, 70, 70, 255));
+
+		ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(100, 100, 100, 255));
+		ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(100, 100, 100, 255));
+		ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(100, 100, 100, 255));
+
+		m_controlParametersNode->draw();
+
+		ImNodes::PopColorStyle();
+		ImNodes::PopColorStyle();
+		ImNodes::PopColorStyle();
+		
+		ImNodes::PopColorStyle();
+		ImNodes::PopColorStyle();
+		ImNodes::PopColorStyle();
+
 		for (Node* node : m_nodes)
 			node->draw();
 

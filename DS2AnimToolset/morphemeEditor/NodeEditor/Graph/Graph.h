@@ -12,6 +12,7 @@ namespace NodeEditor
 	{
 		Graph* m_parentGraph;
 		ImNodesContext* m_context;
+		Node* m_controlParametersNode;
 		std::vector<Node*> m_nodes;
 		std::vector<Transition*> m_transitions;
 		std::vector<Link*> m_links;
@@ -28,6 +29,8 @@ namespace NodeEditor
 		ImVec2 getPanning() const { return m_panning; }
 		void setPanning(float x, float y);
 
+		Node* getControlParametersNode() const { return m_controlParametersNode; }
+
 		Node* getNode(int nodeID) const;
 		Node* getNode(const std::string& name) const;
 
@@ -37,6 +40,14 @@ namespace NodeEditor
 		Node* createNode(int nodeID, const std::string& name);
 		Node* createContainerNode(int nodeID, const std::string& name);
 		Transition* createTransition(int nodeID, Node* sourceNode, Node* destinationNode);
+
+		void createControlParameterFloat(const std::string& name);
+		void createControlParameterInt(const std::string& name);
+		void createControlParameterUInt(const std::string& name);
+		void createControlParameterBool(const std::string& name);
+		void createControlParameterVector3(const std::string& name);
+		void createControlParameterVector4(const std::string& name);
+		void createControlParameterQuaternion(const std::string& name);
 
 		void removeNode(Node* node);
 

@@ -14,19 +14,21 @@ namespace NodeEditor
 		Graph* rootGraph = new Graph(nullptr, "Root");
 		pushGraph(rootGraph);
 
-		Node* node1 = rootGraph->createNode(1, "Node1");
-		node1->addInputPin("Source0");
-		node1->addInputPin("Source1");
+		rootGraph->createControlParameterFloat("Speed");
 
-		node1->addOutputPin("Result");
+		Node* node1 = rootGraph->createNode(1, "Node1");
+		node1->createInputPin("Source0");
+		node1->createInputPin("Source1");
+
+		node1->createOutputPin("Result");
 
 		Node* node2 = rootGraph->createNode(2, "Node2");
-		node2->addInputPin("Source");
-		node2->addOutputPin("Result");
+		node2->createInputPin("Source");
+		node2->createOutputPin("Result");
 
 		Node* node5 = rootGraph->createNode(5, "NodeWithAVeryLongNameItsSoLongItShouldExtendTheNormalNodeWidth");
-		node5->addInputPin("Source");
-		node5->addOutputPin("Result");
+		node5->createInputPin("Source");
+		node5->createOutputPin("Result");
 
 		Node* stateMachine = rootGraph->createContainerNode(3, "NodeContainer");
 		Graph* subGraph = stateMachine->getSubGraph();

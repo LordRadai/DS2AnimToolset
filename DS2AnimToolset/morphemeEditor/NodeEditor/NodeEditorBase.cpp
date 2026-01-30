@@ -41,8 +41,9 @@ namespace NodeEditor
 
 		if (currentGraph)
 		{
-			//ImVec2 panning = ImNodes::EditorContextGetPanning();
-			//currentGraph->setPanning(panning.x, panning.y);
+            Node* cpNode = currentGraph->getControlParametersNode();
+			ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(cpNode->getID());
+			cpNode->setPosition(cpNodePos.x, cpNodePos.y);
 
 			for (Node* node : currentGraph->getNodes())
 			{

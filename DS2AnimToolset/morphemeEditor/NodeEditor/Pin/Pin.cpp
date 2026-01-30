@@ -7,28 +7,22 @@
 namespace NodeEditor
 {
 	Pin::Pin(Node* parent, const std::string& name, bool isInput) : Entity(name),
-		m_parentNode(parent)
+		m_parentNode(parent), m_isInput(isInput)
 	{
-		m_type = isInput ? kPinTypeInput : kPinTypeOutput;
 	}
 
 	void Pin::draw()
-	{
-		switch (m_type)
-		{
-		case NodeEditor::Pin::kPinTypeInput:	return drawInputPin();
-		case NodeEditor::Pin::kPinTypeOutput:	return drawOutputPin();
-		default:								throw "Unknown pin type in Pin::draw()";
-		}
+	{	
+		drawInternal(ImNodesPinShape_TriangleFilled, ImNodes::GetStyle().Colors[ImNodesCol_Pin]);
 	}
 
 	bool Pin::connectTo(Pin* other)
 	{
-		if (m_type == other->m_type)
+		if (m_isInput == other->m_isInput)
 			return false;
 
-		Pin* inputPin = (m_type == kPinTypeInput) ? this : other;
-		Pin* outputPin = (m_type == kPinTypeOutput) ? this : other;
+		Pin* inputPin = (m_isInput) ? this : other;
+		Pin* outputPin = (!m_isInput) ? this : other;
 
 		Link* link = new Link(inputPin, outputPin);
 		Graph* parentGraph = m_parentNode->getParentGraph();
@@ -43,27 +37,35 @@ namespace NodeEditor
 		return false;
 	}
 
-	void Pin::drawInputPin()
+	void Pin::drawInternal(ImNodesPinShape_ shape, ImColor color)
 	{
-		ImNodes::BeginInputAttribute(m_id, ImNodesPinShape_TriangleFilled);
-		ImGui::TextUnformatted(m_name.c_str());
-		ImNodes::EndInputAttribute();
-	}
+		ImNodes::PushColorStyle(ImNodesCol_Pin, color);
+		ImNodes::PushColorStyle(ImNodesCol_PinHovered, color);
 
-	void Pin::drawOutputPin()
-	{
-		ImNodes::BeginOutputAttribute(m_id, ImNodesPinShape_TriangleFilled);
+		if (m_isInput)
+		{
+			ImNodes::BeginInputAttribute(m_id, shape);
+			ImGui::TextUnformatted(m_name.c_str());
+			ImNodes::EndInputAttribute();
+		}
+		else
+		{
+			ImNodes::BeginOutputAttribute(m_id, shape);
 
-		// Get node width in content space
-		ImVec2 labelSize = ImGui::CalcTextSize(m_name.c_str());
+			// Get node width in content space
+			ImVec2 labelSize = ImGui::CalcTextSize(m_name.c_str());
 
-		ImVec2 nodeSize = m_parentNode->getSize();
+			ImVec2 nodeSize = m_parentNode->getSize();
 
-		// Move label to the right edge of the node
-		ImGui::Dummy(ImVec2(nodeSize.x - labelSize.x, 0));
-		ImGui::SameLine();
-		ImGui::TextUnformatted(m_name.c_str());
+			// Move label to the right edge of the node
+			ImGui::Dummy(ImVec2(nodeSize.x - labelSize.x, 0));
+			ImGui::SameLine();
+			ImGui::TextUnformatted(m_name.c_str());
 
-		ImNodes::EndOutputAttribute();
+			ImNodes::EndOutputAttribute();
+		}
+
+		ImNodes::PopColorStyle();
+		ImNodes::PopColorStyle();
 	}
 }

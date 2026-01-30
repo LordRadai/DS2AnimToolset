@@ -74,7 +74,7 @@ namespace NodeEditor
 		return ImVec2(m_position.x + width * 0.5f, m_position.y + height * 0.5f);
 	}
 
-	Pin* Node::addInputPin(const std::string& name)
+	Pin* Node::createInputPin(const std::string& name)
 	{
 		Pin* pin = new Pin(this, name, true);
 		m_inputPins.push_back(pin);
@@ -82,7 +82,7 @@ namespace NodeEditor
 		return pin;
 	}
 
-	Pin* Node::addOutputPin(const std::string& name)
+	Pin* Node::createOutputPin(const std::string& name)
 	{
 		Pin* pin = new Pin(this, name, false);
 		m_outputPins.push_back(pin);
