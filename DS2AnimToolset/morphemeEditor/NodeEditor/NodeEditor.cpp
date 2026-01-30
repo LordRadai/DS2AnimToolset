@@ -228,6 +228,8 @@ namespace NodeEditor
         style.PinTriangleSideLength = 8.f;
 
         style.Colors[ImNodesCol_GridBackground] = IM_COL32(19, 18, 17, 255);
+		style.Colors[ImNodesCol_BoxSelector] = IM_COL32(113, 99, 96, 20);
+        style.Colors[ImNodesCol_BoxSelectorOutline] = IM_COL32(113, 99, 96, 100);
 
         style.Colors[ImNodesCol_NodeBackground] = IM_COL32(4, 86, 187, 255);
         style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(4, 86, 187, 255);
@@ -252,6 +254,8 @@ namespace NodeEditor
 
         m_styleSettings.NodeMinWidth = 150.0f;
         m_styleSettings.NodeMinContentHeight = 15.0f;
+		m_styleSettings.StateNodeCornerRounding = 4.0f;
+		m_styleSettings.StateNodeOutlineThickness = 1.0f;
 
 		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeBackground] = IM_COL32(3, 51, 109, 255);
 		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeBackgroundHovered] = IM_COL32(3, 51, 109, 255);
