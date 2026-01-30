@@ -103,7 +103,7 @@ namespace NodeEditor
 
     void NodeEditor::handleUserInput()
     {
-        if (!ImGui::IsWindowFocused())
+        if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
             return;
 
         int hoveredNodeId = -1;
@@ -261,7 +261,7 @@ namespace NodeEditor
         m_styleSettings.NodeMinWidth = 150.0f;
         m_styleSettings.NodeMinContentHeight = 15.0f;
 		m_styleSettings.StateNodeCornerRounding = 4.0f;
-		m_styleSettings.StateNodeOutlineThickness = 1.0f;
+		m_styleSettings.StateNodeOutlineThickness = 2.0f;
 
 		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeBackground] = IM_COL32(3, 51, 109, 255);
 		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeBackgroundHovered] = IM_COL32(3, 51, 109, 255);
