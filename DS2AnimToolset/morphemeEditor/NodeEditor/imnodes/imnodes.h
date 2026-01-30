@@ -191,6 +191,9 @@ struct ImNodesStyle
 	// The thickness of the transition line.
 	float TransitionThickness;
 
+	// The offset of the transition anchor points from the source and destination nodes.
+    float TransitionNodeOffset;
+
 	// The size of the arrowhead rendered at the end of a transition.
     float TransitionArrowSize;
 

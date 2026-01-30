@@ -305,7 +305,7 @@ ImVector<ImTransitionData> GetTransitionsBetweenNodes(const ImObjectPool<ImTrans
     return transitions_between_nodes;
 }
 
-void ComputeTransitionAnchors(const int transition_id, const ImNodeData& source, const ImNodeData& dest, ImVec2& src_anchor, ImVec2& dst_anchor, const ImVector<ImTransitionData>& transiton_between_nodes)
+void ComputeTransitionAnchors(const int transition_id, const ImNodeData& source, const ImNodeData& dest, ImVec2& src_anchor, ImVec2& dst_anchor, const ImVector<ImTransitionData>& transiton_between_nodes, float distance_from_nodes)
 {
     int num_transitions_between_nodes = transiton_between_nodes.Size;
 
@@ -330,16 +330,34 @@ void ComputeTransitionAnchors(const int transition_id, const ImNodeData& source,
     ImVec2 line = dst_anchor - src_anchor;
     ImVec2 perp(-line.y, line.x);
 
-    const float len = sqrt(perp.x * perp.x + perp.y * perp.y);
+    // Tangent (direction)
+    ImVec2 tangent = dst_anchor - src_anchor;
+    float t_len = sqrtf(tangent.x * tangent.x + tangent.y * tangent.y);
+    if (t_len > 0.0f)
+        tangent /= t_len;
 
-    if (len > 0.0f)
-        perp.x /= len, perp.y /= len;
+    // Normal (perpendicular)
+    ImVec2 normal(-tangent.y, tangent.x);
 
+    // Canonicalize normal direction per node-pair
     if (source.Id > dest.Id)
-        perp = -perp;
+        normal = -normal;
 
-    float offsetAmount = (this_transition_index - (num_transitions_between_nodes - 1) / 2.0f) * GImNodes->Style.TransitionSpacingOffset;
-    ImVec2 offset = perp * offsetAmount;
+    // -----------------------------
+    // Perpendicular spacing offset
+    // -----------------------------
+    const float spacing = GImNodes->Style.TransitionSpacingOffset;
+    const float center = (num_transitions_between_nodes - 1) * 0.5f;
+    const float perp_amount = (this_transition_index - center) * spacing;
+
+    // -----------------------------
+    // Along-direction offset
+    // -----------------------------
+    const float tangent_amount = distance_from_nodes;
+
+    const ImVec2 offset =
+        normal * perp_amount +
+        tangent * tangent_amount;
 
     src_anchor += offset;
     dst_anchor += offset;
@@ -1454,7 +1472,7 @@ ImOptionalIndex ResolveHoveredTransition(
 
         // Same offset logic
         ImVec2 src_anchor, dst_anchor;
-        ComputeTransitionAnchors(t.Id, src, dst, src_anchor, dst_anchor, transitions_between_nodes);
+        ComputeTransitionAnchors(t.Id, src, dst, src_anchor, dst_anchor, transitions_between_nodes, GImNodes->Style.TransitionNodeOffset);
 
         // ------------------------------------------------------------
         // Distance test
@@ -1832,7 +1850,7 @@ void DrawTransition(ImNodesEditorContext& editor, const int transition_idx)
     ImVector<ImTransitionData> transitions_between_nodes = GetTransitionsBetweenNodes(editor.Transitions, transition.StartNodeIdx, transition.EndNodeIdx);
 	ImVec2 src_anchor, dst_anchor;
 
-    ComputeTransitionAnchors(transition.Id, start_node, end_node, src_anchor, dst_anchor, transitions_between_nodes);
+    ComputeTransitionAnchors(transition.Id, start_node, end_node, src_anchor, dst_anchor, transitions_between_nodes, GImNodes->Style.TransitionNodeOffset);
 
     // ------------------------------------------------------------
     // Draw straight line
@@ -2202,7 +2220,7 @@ ImNodesIO::ImNodesIO()
 ImNodesStyle::ImNodesStyle()
     : GridSpacing(32.f), NodeCornerRounding(4.f), NodePadding(8.f, 8.f), NodeBorderThickness(1.f),
       LinkThickness(3.f), LinkLineSegmentsPerLength(0.1f), LinkHoverDistance(10.f),
-      TransitionSpacingOffset(10.0f), TransitionThickness(2.f), TransitionArrowSize(6.f), TransitionHoverDistance(10.f),
+	  TransitionSpacingOffset(10.0f), TransitionThickness(2.f), TransitionArrowSize(6.f), TransitionHoverDistance(10.f), TransitionNodeOffset(20.f),
       PinCircleRadius(4.f), PinQuadSideLength(7.f), PinTriangleSideLength(9.5),
       PinLineThickness(1.f), PinHoverRadius(10.f), PinOffset(0.f), MiniMapPadding(8.0f, 8.0f),
       MiniMapOffset(4.0f, 4.0f), Flags(ImNodesStyleFlags_NodeOutline | ImNodesStyleFlags_GridLines),
