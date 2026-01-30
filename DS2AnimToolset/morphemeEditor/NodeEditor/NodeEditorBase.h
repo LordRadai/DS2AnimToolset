@@ -1,6 +1,7 @@
 #pragma once
 #include <stack>
 #include "Graph/Graph.h"
+#include "ControlParametersNode/ControlParametersNode.h"
 #include "ControlParameter/ControlParameter.h"
 #include "Registry/Registry.h"
 
@@ -21,7 +22,7 @@ namespace NodeEditor
 		StyleSettings m_styleSettings;
 		std::stack<Graph*> m_graphStack;
 		std::vector<ControlParameter*> m_controlParameters;
-		Node* m_controlParametersNode;
+		ControlParametersNode* m_controlParametersNode;
 		Registry* m_registry;
 		bool m_showStyleEditor;
 
@@ -62,7 +63,5 @@ namespace NodeEditor
 		void initStyle();
 
 		ControlParameter* createControlParameter(const std::string& name, ControlParameter::ParameterType parameterType);
-
-		void drawControlParametersNode();
 	};
 }

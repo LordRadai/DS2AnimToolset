@@ -19,6 +19,7 @@ namespace NodeEditor
 
 		virtual void draw() override;
 
+		Node* getParentNode() const { return m_parentNode; }
 		bool connectTo(Pin* other);
 	protected:
 		void drawInternal(ImNodesPinShape_ shape, ImColor color);

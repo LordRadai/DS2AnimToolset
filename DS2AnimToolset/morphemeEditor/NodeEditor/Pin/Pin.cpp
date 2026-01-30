@@ -3,6 +3,7 @@
 #include "NodeEditor/Node/Node.h"
 #include "NodeEditor/Link/Link.h"
 #include "NodeEditor/imnodes/imnodes.h"
+#include "NodeEditor/ControlParametersNode/ControlParametersNode.h"
 
 namespace NodeEditor
 {
@@ -21,7 +22,12 @@ namespace NodeEditor
 		if (m_isInput == other->m_isInput)
 			return false;
 
-		Graph* parentGraph = m_parentNode->getParentGraph();
+		Graph* parentGraph = nullptr;
+
+		if (m_parentNode->isOfType<ControlParametersNode>())
+			parentGraph = other->m_parentNode->getParentGraph();
+		else
+			parentGraph = m_parentNode->getParentGraph();
 
 		if (!parentGraph->isOfType<BlendTree>())
 			return false;

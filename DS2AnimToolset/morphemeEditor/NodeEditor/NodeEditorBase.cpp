@@ -31,7 +31,7 @@ namespace NodeEditor
 			return false;
 
 		m_registry = new Registry(this);
-        m_controlParametersNode = new Node(this, nullptr, -1, "ControlParameters", nullptr);
+        m_controlParametersNode = new ControlParametersNode(this, "ControlParameters");
 
 		initStyle();
 
@@ -48,12 +48,15 @@ namespace NodeEditor
 	{
 		Graph* currentGraph = getCurrentGraph();
 
-        Node* cpNode = m_controlParametersNode;
-        ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(cpNode->getID());
-        cpNode->setPosition(cpNodePos.x, cpNodePos.y);
-
 		if (currentGraph)
 		{
+            if (currentGraph->isOfType<BlendTree>())
+            {
+                Node* cpNode = m_controlParametersNode;
+                ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(cpNode->getID());
+                cpNode->setPosition(cpNodePos.x, cpNodePos.y);
+            }
+
 			for (Node* node : currentGraph->getNodes())
 			{
 				ImVec2 nodePos = ImNodes::GetNodeGridSpacePos(node->getID());
@@ -109,7 +112,7 @@ namespace NodeEditor
             currentGraph->draw();
 
             if (currentGraph->isOfType<BlendTree>())
-				drawControlParametersNode();
+				m_controlParametersNode->draw();
         }
 
 		ImNodes::EndNodeEditor();
@@ -392,26 +395,5 @@ namespace NodeEditor
         }
 
         ImGui::EndTabBar();
-    }
-
-    void NodeEditorBase::drawControlParametersNode()
-    {
-        ImNodes::PushColorStyle(ImNodesCol_NodeBackground, IM_COL32(70, 70, 70, 255));
-        ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundHovered, IM_COL32(70, 70, 70, 255));
-        ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundSelected, IM_COL32(70, 70, 70, 255));
-
-        ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(100, 100, 100, 255));
-        ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(100, 100, 100, 255));
-        ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(100, 100, 100, 255));
-
-        m_controlParametersNode->draw();
-
-        ImNodes::PopColorStyle();
-        ImNodes::PopColorStyle();
-        ImNodes::PopColorStyle();
-
-        ImNodes::PopColorStyle();
-        ImNodes::PopColorStyle();
-        ImNodes::PopColorStyle();
     }
 }

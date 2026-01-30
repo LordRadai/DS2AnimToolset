@@ -74,6 +74,20 @@ namespace NodeEditor
 		return ImVec2(m_position.x + width * 0.5f, m_position.y + height * 0.5f);
 	}
 
+	DataPin* Node::createInputDataPin(const std::string& name, DataPin::DataType dataType)
+	{
+		DataPin* pin = new DataPin(m_ownerEditor, this, name, true, dataType);
+		m_inputPins.push_back(pin);
+		return pin;
+	}
+
+	DataPin* Node::createOutputDataPin(const std::string& name, DataPin::DataType dataType)
+	{
+		DataPin* pin = new DataPin(m_ownerEditor, this, name, false, dataType);
+		m_outputPins.push_back(pin);
+		return pin;
+	}
+
 	Pin* Node::createInputPin(const std::string& name)
 	{
 		Pin* pin = new Pin(m_ownerEditor, this, name, true);

@@ -1,6 +1,7 @@
 #pragma once
 #include <imgui/imgui.h>
 #include "NodeEditor/Pin/Pin.h"
+#include "NodeEditor/Pin/DataPin.h"
 #include "NodeEditor/Entity/Entity.h"
 #include <vector>
 
@@ -27,6 +28,9 @@ namespace NodeEditor
 		ImVec2 getPosition() const { return m_position; }
 		ImVec2 getCenter() const;
 		ImVec2 getSize() const;
+
+		DataPin* createInputDataPin(const std::string& name, DataPin::DataType dataType);
+		DataPin* createOutputDataPin(const std::string& name, DataPin::DataType dataType);
 
 		Pin* createInputPin(const std::string& name);
 		Pin* createOutputPin(const std::string& name);
