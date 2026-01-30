@@ -31,6 +31,7 @@ namespace NodeEditor
 			return false;
 
 		m_registry = new Registry(this);
+        m_controlParametersNode = new Node(this, nullptr, -1, "ControlParameters", nullptr);
 
 		initStyle();
 
@@ -47,18 +48,12 @@ namespace NodeEditor
 	{
 		Graph* currentGraph = getCurrentGraph();
 
+        Node* cpNode = m_controlParametersNode;
+        ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(cpNode->getID());
+        cpNode->setPosition(cpNodePos.x, cpNodePos.y);
+
 		if (currentGraph)
 		{
-            if (currentGraph->isOfType<BlendTree>())
-            {
-				BlendTree* blendTree = currentGraph->asType<BlendTree>();
-
-                Node* cpNode = blendTree->getControlParametersNode();
-                ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(cpNode->getID());
-                cpNode->setPosition(cpNodePos.x, cpNodePos.y);
-            }
-            
-
 			for (Node* node : currentGraph->getNodes())
 			{
 				ImVec2 nodePos = ImNodes::GetNodeGridSpacePos(node->getID());
@@ -109,10 +104,100 @@ namespace NodeEditor
 
 		Graph* currentGraph = getCurrentGraph();
 
-		if (currentGraph)
-			currentGraph->draw();
+        if (currentGraph)
+        {
+            currentGraph->draw();
+
+            if (currentGraph->isOfType<BlendTree>())
+				drawControlParametersNode();
+        }
 
 		ImNodes::EndNodeEditor();
+	}
+
+	ControlParameter* NodeEditorBase::createControlParameter(const std::string& name, ControlParameter::ParameterType parameterType)
+    {
+        if (hasControlParameter(name))
+        {
+            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createControlParameter: Control parameter with name '%s' already exists.\n", name.c_str());
+            return nullptr;
+        }
+
+        ControlParameter* parameter = new ControlParameter(this, name, parameterType);
+        m_controlParameters.push_back(parameter);
+		m_controlParametersNode->addOutputPin(parameter->getOutputPin());
+
+        return parameter;
+	}
+
+    ControlParameter* NodeEditorBase::createControlParameterFloat(const std::string& name)
+    {
+        return createControlParameter(name, ControlParameter::kParameterTypeFloat);
+    }
+
+    ControlParameter* NodeEditorBase::createControlParameterInt(const std::string& name)
+    {
+        return createControlParameter(name, ControlParameter::kParameterTypeInt);
+	}
+
+    ControlParameter* NodeEditorBase::createControlParameterUInt(const std::string& name)
+    {
+        return createControlParameter(name, ControlParameter::kParameterTypeUInt);
+    }
+
+    ControlParameter* NodeEditorBase::createControlParameterBool(const std::string& name)
+    {
+        return createControlParameter(name, ControlParameter::kParameterTypeBool);
+	}
+
+    ControlParameter* NodeEditorBase::createControlParameterVector3(const std::string& name)
+    {
+        return createControlParameter(name, ControlParameter::kParameterTypeVector3);
+    }
+
+    ControlParameter* NodeEditorBase::createControlParameterVector4(const std::string& name)
+    {
+        return createControlParameter(name, ControlParameter::kParameterTypeVector4);
+    }
+
+    ControlParameter* NodeEditorBase::createControlParameterQuaternion(const std::string& name)
+    {
+        return createControlParameter(name, ControlParameter::kParameterTypeQuaternion);
+    }
+
+    ControlParameter* NodeEditorBase::getControlParameter(const std::string& name) const
+    {
+        for (ControlParameter* parameter : m_controlParameters)
+        {
+            if (parameter->getName() == name)
+                return parameter;
+        }
+
+        return nullptr;
+	}
+
+    bool NodeEditorBase::removeControlParameter(ControlParameter* parameter)
+    {
+        auto it = std::find(m_controlParameters.begin(), m_controlParameters.end(), parameter);
+        if (it != m_controlParameters.end())
+        {
+            m_controlParameters.erase(it);
+            delete parameter;
+            return true;
+        }
+
+        return false;
+	}
+
+    bool NodeEditorBase::hasControlParameter(const std::string& name) const
+    {
+        for (ControlParameter* parameter : m_controlParameters)
+        {
+            if (parameter->getName() == name)
+                return true;
+        }
+
+        return false;
 	}
 
 	void NodeEditorBase::popGraph()
@@ -307,5 +392,26 @@ namespace NodeEditor
         }
 
         ImGui::EndTabBar();
+    }
+
+    void NodeEditorBase::drawControlParametersNode()
+    {
+        ImNodes::PushColorStyle(ImNodesCol_NodeBackground, IM_COL32(70, 70, 70, 255));
+        ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundHovered, IM_COL32(70, 70, 70, 255));
+        ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundSelected, IM_COL32(70, 70, 70, 255));
+
+        ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(100, 100, 100, 255));
+        ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(100, 100, 100, 255));
+        ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(100, 100, 100, 255));
+
+        m_controlParametersNode->draw();
+
+        ImNodes::PopColorStyle();
+        ImNodes::PopColorStyle();
+        ImNodes::PopColorStyle();
+
+        ImNodes::PopColorStyle();
+        ImNodes::PopColorStyle();
+        ImNodes::PopColorStyle();
     }
 }

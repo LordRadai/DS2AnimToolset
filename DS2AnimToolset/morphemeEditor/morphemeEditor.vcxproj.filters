@@ -354,6 +354,9 @@
     <ClInclude Include="NodeEditor\Graph\StateMachine.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="NodeEditor\ControlParameter\ControlParameter.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -621,6 +624,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\Graph\StateMachine.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\ControlParameter\ControlParameter.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

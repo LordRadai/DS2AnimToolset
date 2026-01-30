@@ -59,7 +59,7 @@ namespace NodeEditor
 	{
 		if (!isOfType<BlendTree>())
 		{
-			g_appLog->debugMessage(MsgLevel_Warn, "Graph::createNode: Attempted to create a standard node within a non BlendTree graph (%s).\n", m_name);
+			g_appLog->panicMessage("Graph::createNode: Attempted to create a standard node within a non BlendTree graph (%s).\n", m_name);
 			return nullptr;
 		}
 

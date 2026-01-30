@@ -76,7 +76,7 @@ namespace NodeEditor
 
 	Pin* Node::createInputPin(const std::string& name)
 	{
-		Pin* pin = new Pin(this, name, true);
+		Pin* pin = new Pin(m_ownerEditor, this, name, true);
 		m_inputPins.push_back(pin);
 
 		return pin;
@@ -84,7 +84,7 @@ namespace NodeEditor
 
 	Pin* Node::createOutputPin(const std::string& name)
 	{
-		Pin* pin = new Pin(this, name, false);
+		Pin* pin = new Pin(m_ownerEditor, this, name, false);
 		m_outputPins.push_back(pin);
 
 		return pin;

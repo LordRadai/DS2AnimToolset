@@ -16,7 +16,7 @@ namespace NodeEditor
 		BlendTree* rootGraph = new BlendTree(this, nullptr, "Root");
 		pushGraph(rootGraph);
 
-		rootGraph->createControlParameterFloat("Speed");
+		ControlParameter* cp = createControlParameterFloat("Speed");
 
 		Node* node1 = rootGraph->createNode(1, "Node1");
 		node1->createInputPin("Source0");
@@ -35,8 +35,8 @@ namespace NodeEditor
 		Node* stateMachine = rootGraph->createStateMachine(3, "NodeContainer");
 		StateMachine* subGraph = stateMachine->getSubGraph()->asType<StateMachine>();
 
-		Node* src = subGraph->createNode(4, "Node1");
-		Node* dst = subGraph->createBlendTree(5, "NodeContainer");
+		Node* src = subGraph->createBlendTree(4, "BlendTree1");
+		Node* dst = subGraph->createBlendTree(5, "BlendTree2");
 		subGraph->createTransition(6, src, dst);
 		subGraph->createTransition(7, dst, src);
 
