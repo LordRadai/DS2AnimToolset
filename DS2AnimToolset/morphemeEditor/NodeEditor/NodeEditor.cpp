@@ -9,7 +9,7 @@
 
 namespace NodeEditor
 {
-    StyleSettings::StyleSettings() : NodeMinWidth(150.f), NodeMinContentHeight(30.f), StateNodeCornerRounding(2.f), StateNodeOutlineThickness(2.f), Colors();
+    StyleSettings::StyleSettings() : NodeMinWidth(150.f), NodeMinContentHeight(30.f), StateNodeCornerRounding(2.f), StateNodeOutlineThickness(2.f), Colors()
     {
     }
 
