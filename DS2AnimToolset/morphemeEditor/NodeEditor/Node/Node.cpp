@@ -36,10 +36,10 @@ namespace NodeEditor
 		// ---- Content area ----
 		StyleSettings& style = m_ownerEditor->getStyleSettings();
 
-		float pinAreaHeight = style.NodeMinContentHeight;
 		int totalPins = (int)(m_inputPins.size() + m_outputPins.size());
+		float pinAreaHeight = totalPins * 10.f;
 
-		float dummyHeight = pinAreaHeight - totalPins * style.NodePinSpacing;
+		float dummyHeight = style.NodeMinContentHeight - pinAreaHeight;
 		if (dummyHeight < 0.0f) dummyHeight = 0.0f;
 
 		// Add a dummy to enforce minimum node height
@@ -165,7 +165,7 @@ namespace NodeEditor
 		const float titleBarHeight = 2.f * imStyle.NodePadding.y + textSize.y;
 		const float nodeTotalMinHeight = titleBarHeight + style.NodeMinContentHeight;
 		const int totalPins = (int)(m_inputPins.size() + m_outputPins.size());
-		const float nodeHeight = totalPins * style.NodePinSpacing;
+		const float nodeHeight = totalPins * 10.f;
 
 		width = std::max(style.NodeMinWidth, textSize.x);
 		height = std::max(nodeTotalMinHeight, nodeHeight);

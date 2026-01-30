@@ -1,5 +1,6 @@
 #pragma once
 #include "Graph.h"
+#include "NodeEditor/StateNode/StateNode.h"
 
 namespace NodeEditor
 {
@@ -12,6 +13,8 @@ namespace NodeEditor
 		~StateMachine() override;
 
 		void draw() override;
+
+		StateNode* createStateNode(int nodeID, const std::string& name);
 
 		Transition* getTransition(int nodeID) const;
 		Transition* getTransition(const std::string& name) const;

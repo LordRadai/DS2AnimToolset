@@ -25,6 +25,8 @@ enum ImNodesCol_
     ImNodesCol_NodeBackgroundHovered,
     ImNodesCol_NodeBackgroundSelected,
     ImNodesCol_NodeOutline,
+    ImNodesCol_NodeOutlineHovered,
+    ImNodesCol_NodeOutlineSelected,
     ImNodesCol_TitleBar,
     ImNodesCol_TitleBarHovered,
     ImNodesCol_TitleBarSelected,

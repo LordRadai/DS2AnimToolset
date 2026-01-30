@@ -95,6 +95,9 @@ namespace NodeEditor
 		Node* node = new Node(m_ownerEditor, this, nodeID, name, new StateMachine(m_ownerEditor, this, name));
 		node->setPosition(x, y);
 
+		if (isOfType<BlendTree>())
+			node->createOutputPin("Result");
+
 		m_nodes.push_back(node);
 
 		return node;

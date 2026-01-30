@@ -7,17 +7,46 @@
 
 namespace NodeEditor
 {
+	enum NodeEditorStyleCol
+	{
+		NodeEditorStyleCol_StateNodeBackground,
+		NodeEditorStyleCol_StateNodeBackgroundHovered,
+		NodeEditorStyleCol_StateNodeBackgroundSelected,
+		NodeEditorStyleCol_StateNodeTitleBar,
+		NodeEditorStyleCol_StateNodeTitleBarHovered,
+		NodeEditorStyleCol_StateNodeTitleBarSelected,
+		NodeEditorStyleCol_StateNodeOutline,
+		NodeEditorStyleCol_StateNodeOutlineHovered,
+		NodeEditorStyleCol_StateNodeOutlineSelected,
+
+		NodeEditorStyleCol_ControlParamNodeBackground,
+		NodeEditorStyleCol_ControlParamNodeBackgroundHovered,
+		NodeEditorStyleCol_ControlParamNodeBackgroundSelected,
+		NodeEditorStyleCol_ControlParamNodeTitleBar,
+		NodeEditorStyleCol_ControlParamNodeTitleBarHovered,
+		NodeEditorStyleCol_ControlParamNodeTitleBarSelected,
+		NodeEditorStyleCol_ControlParamNodeOutline,
+		NodeEditorStyleCol_ControlParamNodeOutlineHovered,
+		NodeEditorStyleCol_ControlParamNodeOutlineSelected,
+
+		NodeEditorStyleCol_FloatDataPin,
+		NodeEditorStyleCol_IntDataPin,
+		NodeEditorStyleCol_UIntDataPin,
+		NodeEditorStyleCol_BoolDataPin,
+		NodeEditorStyleCol_Vector3DataPin,
+		NodeEditorStyleCol_Vector4DataPin,
+		NodeEditorStyleCol_QuaternionDataPin,
+
+		NodeEditorStyleCol_NumStyleCols
+	};
+
 	struct StyleSettings
 	{
 		float NodeMinContentHeight;
 		float NodeMinWidth;
-		float NodePinSpacing;
-		unsigned int ControlParametersNodeBackground;
-		unsigned int ControlParametersNodeBackgroundHovered;
-		unsigned int ControlParametersNodeBackgroundSelected;
-		unsigned int ControlParametersNodeTitleBar;
-		unsigned int ControlParametersNodeTitleBarHovered;
-		unsigned int ControlParametersNodeTitleBarSelected;
+		float StateNodeCornerRounding;
+		float StateNodeOutlineThickness;
+		unsigned int Colors[NodeEditorStyleCol_NumStyleCols];
 
 		StyleSettings();
 	};

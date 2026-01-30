@@ -30,12 +30,14 @@ namespace NodeEditor
 		node2->createOutputPin("Result");
 
 		Node* stateMachine = rootGraph->createStateMachine(3, "StateMachine");
-		StateMachine* subGraph = stateMachine->getSubGraph()->asType<StateMachine>();
+		StateMachine* sm = stateMachine->getSubGraph()->asType<StateMachine>();
 
-		Node* src = subGraph->createBlendTree(4, "BlendTree1");
-		Node* dst = subGraph->createBlendTree(5, "BlendTree2");
-		subGraph->createTransition(6, src, dst);
-		subGraph->createTransition(7, dst, src);
+		Node* src = sm->createBlendTree(4, "BlendTree1");
+		Node* dst = sm->createBlendTree(5, "BlendTree2");
+		sm->createStateNode(8, "ActiveState");
+
+		sm->createTransition(6, src, dst);
+		sm->createTransition(7, dst, src);
 
 		Node* blend2 = src->getSubGraph()->asType<BlendTree>()->createNode(1, "Blend2");
 		blend2->createInputPin("Source0");

@@ -9,20 +9,11 @@
 
 namespace NodeEditor
 {
-    StyleSettings::StyleSettings()
+    StyleSettings::StyleSettings() : NodeMinWidth(150.f), NodeMinContentHeight(30.f), StateNodeCornerRounding(2.f), StateNodeOutlineThickness(2.f), Colors();
     {
-        NodeMinWidth = 150.0f;
-        NodeMinContentHeight = 30.0f;
-        NodePinSpacing = 20.0f;
-		ControlParametersNodeBackground = ImColor(26, 55, 80);
-		ControlParametersNodeBackgroundHovered = ImColor(26, 55, 80);
-		ControlParametersNodeBackgroundSelected = ImColor(118, 113, 25);
-		ControlParametersNodeTitleBar = ImColor(47, 93, 160);
-		ControlParametersNodeTitleBarHovered = ImColor(47, 93, 160);
-		ControlParametersNodeTitleBarSelected = ImColor(156, 150, 35);
     }
 
-	NodeEditor::NodeEditor() : m_showStyleEditor(false), m_registry(nullptr)
+	NodeEditor::NodeEditor() : m_showStyleEditor(false), m_registry(nullptr), m_controlParametersNode(nullptr)
 	{
 	}
 
@@ -220,6 +211,11 @@ namespace NodeEditor
         ImNodes::StyleColorsDark();
 
         ImNodesStyle& style = ImNodes::GetStyle();
+        style.Flags = ImNodesStyleFlags_None;
+		style.Flags |= ImNodesStyleFlags_NodeOutline;
+
+		style.GridSpacing = 20.f;
+
         style.NodePadding.x = 13.0f;
         style.NodePadding.y = 5.0f;
         style.NodeBorderThickness = 0.f;
@@ -231,39 +227,65 @@ namespace NodeEditor
 
         style.PinTriangleSideLength = 8.f;
 
-        style.Colors[ImNodesCol_NodeBackground] = IM_COL32(26, 55, 80, 255);
-        style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(26, 55, 80, 255);
-        style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(118, 113, 25, 255);
-        style.Colors[ImNodesCol_TitleBar] = IM_COL32(47, 93, 160, 255);
-        style.Colors[ImNodesCol_TitleBarHovered] = IM_COL32(47, 93, 160, 255);
-		style.Colors[ImNodesCol_TitleBarSelected] = IM_COL32(156, 150, 35, 255);
-		style.Colors[ImNodesCol_NodeOutline] = IM_COL32(60, 60, 60, 255);
+        style.Colors[ImNodesCol_GridBackground] = IM_COL32(19, 18, 17, 255);
+
+        style.Colors[ImNodesCol_NodeBackground] = IM_COL32(4, 86, 187, 255);
+        style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(4, 86, 187, 255);
+        style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(179, 120, 0, 255);
+        style.Colors[ImNodesCol_TitleBar] = IM_COL32(3, 51, 109, 255);
+        style.Colors[ImNodesCol_TitleBarHovered] = IM_COL32(3, 51, 109, 255);
+		style.Colors[ImNodesCol_TitleBarSelected] = IM_COL32(215, 167, 0, 255);
+		style.Colors[ImNodesCol_NodeOutline] = IM_COL32(3, 57, 124, 255);
+        style.Colors[ImNodesCol_NodeOutlineHovered] = IM_COL32(3, 57, 124, 255);
+        style.Colors[ImNodesCol_NodeOutlineSelected] = IM_COL32(179, 120, 0, 255);
 
 		style.Colors[ImNodesCol_Pin] = IM_COL32(200, 200, 200, 255);
 		style.Colors[ImNodesCol_PinHovered] = IM_COL32(255, 255, 255, 255);
 
-        style.Colors[ImNodesCol_Link] = IM_COL32(255, 255, 255, 200);
-        style.Colors[ImNodesCol_LinkHovered] = IM_COL32(255, 255, 255, 255);
-        style.Colors[ImNodesCol_LinkSelected] = IM_COL32(255, 255, 255, 255);
+        style.Colors[ImNodesCol_Link] = IM_COL32(148, 140, 137, 255);
+        style.Colors[ImNodesCol_LinkHovered] = IM_COL32(148, 140, 137, 255);
+        style.Colors[ImNodesCol_LinkSelected] = IM_COL32(148, 140, 137, 255);
 
 		style.Colors[ImNodesCol_Transition] = IM_COL32(200, 200, 200, 255);
 		style.Colors[ImNodesCol_TransitionHovered] = IM_COL32(200, 200, 200, 255);
 		style.Colors[ImNodesCol_TransitionSelected] = IM_COL32(255, 255, 255, 255);
 
         m_styleSettings.NodeMinWidth = 150.0f;
-        m_styleSettings.NodeMinContentHeight = 30.0f;
-        m_styleSettings.NodePinSpacing = 20.0f;
-        m_styleSettings.ControlParametersNodeBackground = IM_COL32(70, 70, 70, 255);
-        m_styleSettings.ControlParametersNodeBackgroundHovered = IM_COL32(70, 70, 70, 255);
-        m_styleSettings.ControlParametersNodeBackgroundSelected = IM_COL32(118, 113, 25, 255);
-        m_styleSettings.ControlParametersNodeTitleBar = IM_COL32(100, 100, 100, 255);
-        m_styleSettings.ControlParametersNodeTitleBarHovered = IM_COL32(100, 100, 100, 255);
-        m_styleSettings.ControlParametersNodeTitleBarSelected = IM_COL32(118, 113, 25, 255);
+        m_styleSettings.NodeMinContentHeight = 15.0f;
+
+		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeBackground] = IM_COL32(3, 51, 109, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeBackgroundHovered] = IM_COL32(3, 51, 109, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeBackgroundSelected] = style.Colors[ImNodesCol_TitleBarSelected];
+		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeTitleBar] = IM_COL32(3, 51, 109, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeTitleBarHovered] = IM_COL32(3, 51, 109, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeTitleBarSelected] = style.Colors[ImNodesCol_TitleBarSelected];
+		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeOutline] = IM_COL32(255, 255, 255, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeOutlineHovered] = IM_COL32(255, 255, 255, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_StateNodeOutlineSelected] = style.Colors[ImNodesCol_NodeOutlineSelected];
+
+        m_styleSettings.Colors[NodeEditorStyleCol_ControlParamNodeBackground] = IM_COL32(103, 96, 94, 255);
+        m_styleSettings.Colors[NodeEditorStyleCol_ControlParamNodeBackgroundHovered] = IM_COL32(103, 96, 94, 255);
+        m_styleSettings.Colors[NodeEditorStyleCol_ControlParamNodeBackgroundSelected] = style.Colors[ImNodesCol_NodeBackgroundSelected];
+        m_styleSettings.Colors[NodeEditorStyleCol_ControlParamNodeTitleBar] = IM_COL32(67, 65, 63, 255);
+        m_styleSettings.Colors[NodeEditorStyleCol_ControlParamNodeTitleBarHovered] = IM_COL32(67, 65, 63, 255);
+        m_styleSettings.Colors[NodeEditorStyleCol_ControlParamNodeTitleBarSelected] = style.Colors[ImNodesCol_TitleBarSelected];
+        m_styleSettings.Colors[NodeEditorStyleCol_ControlParamNodeOutline] = IM_COL32(54, 49, 47, 255);
+        m_styleSettings.Colors[NodeEditorStyleCol_ControlParamNodeOutlineHovered] = IM_COL32(54, 49, 47, 255);
+        m_styleSettings.Colors[NodeEditorStyleCol_ControlParamNodeOutlineSelected] = style.Colors[ImNodesCol_NodeOutlineSelected];
+
+		m_styleSettings.Colors[NodeEditorStyleCol_FloatDataPin] = IM_COL32(150, 150, 250, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_IntDataPin] = IM_COL32(150, 250, 150, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_UIntDataPin] = IM_COL32(150, 250, 250, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_BoolDataPin] = IM_COL32(250, 150, 150, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_Vector3DataPin] = IM_COL32(250, 250, 150, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_Vector4DataPin] = IM_COL32(250, 150, 250, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_QuaternionDataPin] = IM_COL32(200, 200, 200, 255);
 	}
 
     void NodeEditor::styleEditor()
     {
         ImNodesStyle& style = ImNodes::GetStyle();
+		StyleSettings& customStyle = m_styleSettings;
 
         bool nodeOutline = (style.Flags & ImNodesStyleFlags_NodeOutline) != 0;
         bool gridLines = (style.Flags & ImNodesStyleFlags_GridLines) != 0;
@@ -314,15 +336,44 @@ namespace NodeEditor
             ImGui::SliderFloat2("Padding", &style.NodePadding.x, 0.0f, 32.0f);
             ImGui::SliderFloat("Border Thickness", &style.NodeBorderThickness, 0.0f, 4.0f);
 
+			ImGui::SliderFloat("Pin Offset", &style.PinOffset, -16.0f, 16.0f);
+			ImGui::SliderFloat("Min Width", &customStyle.NodeMinWidth, 0.f, 300.0f);
+			ImGui::SliderFloat("Min Content Height", &customStyle.NodeMinContentHeight, 0.f, 100.0f);
+
+			ImGui::SliderFloat("State Node Corner Rounding", &customStyle.StateNodeCornerRounding, 0.0f, 12.0f);
+			ImGui::SliderFloat("State Node Outline Thickness", &customStyle.StateNodeOutlineThickness, 0.0f, 8.0f);
+
             ImGui::SeparatorText("Colors");
 
             ImGui::ColorEditUInt("Node Background", &style.Colors[ImNodesCol_NodeBackground]);
             ImGui::ColorEditUInt("Node Background Hovered", &style.Colors[ImNodesCol_NodeBackgroundHovered]);
             ImGui::ColorEditUInt("Node Background Selected", &style.Colors[ImNodesCol_NodeBackgroundSelected]);
             ImGui::ColorEditUInt("Node Outline", &style.Colors[ImNodesCol_NodeOutline]);
+			ImGui::ColorEditUInt("Node Outline Hovered", &style.Colors[ImNodesCol_NodeOutlineHovered]);
+			ImGui::ColorEditUInt("Node Outline Selected", &style.Colors[ImNodesCol_NodeOutlineSelected]);
             ImGui::ColorEditUInt("Title Bar", &style.Colors[ImNodesCol_TitleBar]);
             ImGui::ColorEditUInt("Title Bar Hovered", &style.Colors[ImNodesCol_TitleBarHovered]);
             ImGui::ColorEditUInt("Title Bar Selected", &style.Colors[ImNodesCol_TitleBarSelected]);
+
+			ImGui::ColorEditUInt("Control Param Node Background", &customStyle.Colors[NodeEditorStyleCol_ControlParamNodeBackground]);
+			ImGui::ColorEditUInt("Control Param Node Background Hovered", &customStyle.Colors[NodeEditorStyleCol_ControlParamNodeBackgroundHovered]);
+			ImGui::ColorEditUInt("Control Param Node Background Selected", &customStyle.Colors[NodeEditorStyleCol_ControlParamNodeBackgroundSelected]);
+			ImGui::ColorEditUInt("Control Param Node Title Bar", &customStyle.Colors[NodeEditorStyleCol_ControlParamNodeTitleBar]);
+			ImGui::ColorEditUInt("Control Param Node Title Bar Hovered", &customStyle.Colors[NodeEditorStyleCol_ControlParamNodeTitleBarHovered]);
+			ImGui::ColorEditUInt("Control Param Node Title Bar Selected", &customStyle.Colors[NodeEditorStyleCol_ControlParamNodeTitleBarSelected]);
+			ImGui::ColorEditUInt("Control Param Node Outline", &customStyle.Colors[NodeEditorStyleCol_ControlParamNodeOutline]);
+			ImGui::ColorEditUInt("Control Param Node Outline Hovered", &customStyle.Colors[NodeEditorStyleCol_ControlParamNodeOutlineHovered]);
+			ImGui::ColorEditUInt("Control Param Node Outline Selected", &customStyle.Colors[NodeEditorStyleCol_ControlParamNodeOutlineSelected]);
+
+			ImGui::ColorEditUInt("State Node Background", &customStyle.Colors[NodeEditorStyleCol_StateNodeBackground]);
+			ImGui::ColorEditUInt("State Node Background Hovered", &customStyle.Colors[NodeEditorStyleCol_StateNodeBackgroundHovered]);
+			ImGui::ColorEditUInt("State Node Background Selected", &customStyle.Colors[NodeEditorStyleCol_StateNodeBackgroundSelected]);
+			ImGui::ColorEditUInt("State Node Title Bar", &customStyle.Colors[NodeEditorStyleCol_StateNodeTitleBar]);
+			ImGui::ColorEditUInt("State Node Title Bar Hovered", &customStyle.Colors[NodeEditorStyleCol_StateNodeTitleBarHovered]);
+			ImGui::ColorEditUInt("State Node Title Bar Selected", &customStyle.Colors[NodeEditorStyleCol_StateNodeTitleBarSelected]);
+			ImGui::ColorEditUInt("State Node Outline", &customStyle.Colors[NodeEditorStyleCol_StateNodeOutline]);
+			ImGui::ColorEditUInt("State Node Outline Hovered", &customStyle.Colors[NodeEditorStyleCol_StateNodeOutlineHovered]);
+			ImGui::ColorEditUInt("State Node Outline Selected", &customStyle.Colors[NodeEditorStyleCol_StateNodeOutlineSelected]);
 
             ImGui::EndTabItem();
         }
@@ -355,12 +406,19 @@ namespace NodeEditor
             ImGui::SliderFloat("Triangle Side Length", &style.PinTriangleSideLength, 4.0f, 20.0f);
             ImGui::SliderFloat("Line Thickness", &style.PinLineThickness, 1.0f, 4.0f);
             ImGui::SliderFloat("Hover Radius", &style.PinHoverRadius, 4.0f, 20.0f);
-            ImGui::SliderFloat("Pin Offset", &style.PinOffset, -8.0f, 8.0f);
 
             ImGui::SeparatorText("Colors");
 
             ImGui::ColorEditUInt("Pin", &style.Colors[ImNodesCol_Pin]);
             ImGui::ColorEditUInt("Pin Hovered", &style.Colors[ImNodesCol_PinHovered]);
+
+			ImGui::ColorEditUInt("Float Data Pin", &customStyle.Colors[NodeEditorStyleCol_FloatDataPin]);
+			ImGui::ColorEditUInt("Int Data Pin", &customStyle.Colors[NodeEditorStyleCol_IntDataPin]);
+			ImGui::ColorEditUInt("UInt Data Pin", &customStyle.Colors[NodeEditorStyleCol_UIntDataPin]);
+			ImGui::ColorEditUInt("Bool Data Pin", &customStyle.Colors[NodeEditorStyleCol_BoolDataPin]);
+			ImGui::ColorEditUInt("Vector3 Data Pin", &customStyle.Colors[NodeEditorStyleCol_Vector3DataPin]);
+			ImGui::ColorEditUInt("Vector4 Data Pin", &customStyle.Colors[NodeEditorStyleCol_Vector4DataPin]);
+			ImGui::ColorEditUInt("Quaternion Data Pin", &customStyle.Colors[NodeEditorStyleCol_QuaternionDataPin]);
 
             ImGui::EndTabItem();
         }

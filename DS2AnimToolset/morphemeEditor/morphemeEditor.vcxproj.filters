@@ -360,6 +360,9 @@
     <ClInclude Include="NodeEditor\ControlParametersNode\ControlParametersNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="NodeEditor\StateNode\StateNode.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -633,6 +636,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\ControlParametersNode\ControlParametersNode.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\StateNode\StateNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

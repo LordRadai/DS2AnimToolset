@@ -150,7 +150,7 @@ struct ImNodeData
 
     struct
     {
-        ImU32 Background, BackgroundHovered, BackgroundSelected, Outline, Titlebar, TitlebarHovered,
+        ImU32 Background, BackgroundHovered, BackgroundSelected, Outline, OutlineHovered, OutlineSelected, Titlebar, TitlebarHovered,
             TitlebarSelected;
     } ColorStyle;
 

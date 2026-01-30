@@ -1676,16 +1676,19 @@ void DrawNode(ImNodesEditorContext& editor, const int node_idx)
 
     ImU32 node_background = node.ColorStyle.Background;
     ImU32 titlebar_background = node.ColorStyle.Titlebar;
+    ImU32 outline_color = node.ColorStyle.Outline;
 
     if (editor.SelectedNodeIndices.contains(node_idx))
     {
         node_background = node.ColorStyle.BackgroundSelected;
         titlebar_background = node.ColorStyle.TitlebarSelected;
+		outline_color = node.ColorStyle.OutlineSelected;
     }
     else if (node_hovered)
     {
         node_background = node.ColorStyle.BackgroundHovered;
         titlebar_background = node.ColorStyle.TitlebarHovered;
+		outline_color = node.ColorStyle.OutlineHovered;
     }
 
     {
@@ -1730,7 +1733,7 @@ void DrawNode(ImNodesEditorContext& editor, const int node_idx)
             GImNodes->CanvasDrawList->AddRect(
                 node.Rect.Min,
                 node.Rect.Max,
-                node.ColorStyle.Outline,
+                outline_color,
                 node.LayoutStyle.CornerRounding,
                 ImDrawFlags_RoundCornersAll,
                 node.LayoutStyle.BorderThickness);
@@ -2280,6 +2283,9 @@ void StyleColorsDark()
     GImNodes->Style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(75, 75, 75, 255);
     GImNodes->Style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(75, 75, 75, 255);
     GImNodes->Style.Colors[ImNodesCol_NodeOutline] = IM_COL32(100, 100, 100, 255);
+    GImNodes->Style.Colors[ImNodesCol_NodeOutlineHovered] = IM_COL32(150, 150, 150, 255);
+    GImNodes->Style.Colors[ImNodesCol_NodeOutlineSelected] = IM_COL32(150, 150, 150, 255);
+
     // title bar colors match ImGui's titlebg colors
     GImNodes->Style.Colors[ImNodesCol_TitleBar] = IM_COL32(41, 74, 122, 255);
     GImNodes->Style.Colors[ImNodesCol_TitleBarHovered] = IM_COL32(66, 150, 250, 255);
@@ -2324,6 +2330,9 @@ void StyleColorsClassic()
     GImNodes->Style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(75, 75, 75, 255);
     GImNodes->Style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(75, 75, 75, 255);
     GImNodes->Style.Colors[ImNodesCol_NodeOutline] = IM_COL32(100, 100, 100, 255);
+    GImNodes->Style.Colors[ImNodesCol_NodeOutlineHovered] = IM_COL32(150, 150, 150, 255);
+    GImNodes->Style.Colors[ImNodesCol_NodeOutlineSelected] = IM_COL32(150, 150, 150, 255);
+
     GImNodes->Style.Colors[ImNodesCol_TitleBar] = IM_COL32(69, 69, 138, 255);
     GImNodes->Style.Colors[ImNodesCol_TitleBarHovered] = IM_COL32(82, 82, 161, 255);
     GImNodes->Style.Colors[ImNodesCol_TitleBarSelected] = IM_COL32(82, 82, 161, 255);
@@ -2363,6 +2372,8 @@ void StyleColorsLight()
     GImNodes->Style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(240, 240, 240, 255);
     GImNodes->Style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(240, 240, 240, 255);
     GImNodes->Style.Colors[ImNodesCol_NodeOutline] = IM_COL32(100, 100, 100, 255);
+    GImNodes->Style.Colors[ImNodesCol_NodeOutlineHovered] = IM_COL32(150, 150, 150, 255);
+    GImNodes->Style.Colors[ImNodesCol_NodeOutlineSelected] = IM_COL32(150, 150, 150, 255);
     GImNodes->Style.Colors[ImNodesCol_TitleBar] = IM_COL32(248, 248, 248, 255);
     GImNodes->Style.Colors[ImNodesCol_TitleBarHovered] = IM_COL32(209, 209, 209, 255);
     GImNodes->Style.Colors[ImNodesCol_TitleBarSelected] = IM_COL32(209, 209, 209, 255);
@@ -2689,6 +2700,8 @@ void BeginNode(const int node_id)
     node.ColorStyle.BackgroundHovered = GImNodes->Style.Colors[ImNodesCol_NodeBackgroundHovered];
     node.ColorStyle.BackgroundSelected = GImNodes->Style.Colors[ImNodesCol_NodeBackgroundSelected];
     node.ColorStyle.Outline = GImNodes->Style.Colors[ImNodesCol_NodeOutline];
+	node.ColorStyle.OutlineHovered = GImNodes->Style.Colors[ImNodesCol_NodeOutlineHovered];
+	node.ColorStyle.OutlineSelected = GImNodes->Style.Colors[ImNodesCol_NodeOutlineSelected];
     node.ColorStyle.Titlebar = GImNodes->Style.Colors[ImNodesCol_TitleBar];
     node.ColorStyle.TitlebarHovered = GImNodes->Style.Colors[ImNodesCol_TitleBarHovered];
     node.ColorStyle.TitlebarSelected = GImNodes->Style.Colors[ImNodesCol_TitleBarSelected];
