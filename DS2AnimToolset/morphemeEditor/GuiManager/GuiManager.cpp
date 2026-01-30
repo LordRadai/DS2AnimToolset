@@ -1663,6 +1663,7 @@ void GuiManager::networkPreviewWindow()
 
 	NodeEditor::NodeEditor* nodeEditor = editorApp->getNodeEditor();
 
+	nodeEditor->handleUserInput();
 	nodeEditor->draw();
 
 	ImGui::End();

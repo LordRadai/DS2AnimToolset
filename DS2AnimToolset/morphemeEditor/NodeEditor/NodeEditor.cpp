@@ -43,13 +43,10 @@ namespace NodeEditor
 
 	void NodeEditor::update(float dt)
 	{
-        if (!ImNodes::IsEditorHovered())
-            return;
-
         Graph* currentGraph = getCurrentGraph();
 
-		if (currentGraph)
-		{
+        if (currentGraph)
+        {
             if (currentGraph->isOfType<BlendTree>())
             {
                 Node* cpNode = m_controlParametersNode;
@@ -57,26 +54,12 @@ namespace NodeEditor
                 cpNode->setPosition(cpNodePos.x, cpNodePos.y);
             }
 
-			for (Node* node : currentGraph->getNodes())
-			{
-				ImVec2 nodePos = ImNodes::GetNodeGridSpacePos(node->getID());
-				node->setPosition(nodePos.x, nodePos.y);
-			}
-		}
-
-		int hoveredNodeId = -1;
-
-		if (ImNodes::IsNodeHovered(&hoveredNodeId))
-		{
-			Node* hoveredNode = dynamic_cast<Node*>(m_registry->findEntity(hoveredNodeId));
-
-			if (hoveredNode && hoveredNode->hasSubGraph() && ImGui::IsMouseDoubleClicked(0))
-				pushGraph(hoveredNode->getSubGraph());
-		}
-		else if (ImGui::IsMouseDoubleClicked(0))
-		{
-			popGraph();
-		}
+            for (Node* node : currentGraph->getNodes())
+            {
+                ImVec2 nodePos = ImNodes::GetNodeGridSpacePos(node->getID());
+                node->setPosition(nodePos.x, nodePos.y);
+            }
+        }
 	}
 
 	void NodeEditor::draw()
@@ -117,6 +100,26 @@ namespace NodeEditor
 
 		ImNodes::EndNodeEditor();
 	}
+
+    void NodeEditor::handleUserInput()
+    {
+        if (!ImGui::IsWindowFocused())
+            return;
+
+        int hoveredNodeId = -1;
+
+        if (ImNodes::IsNodeHovered(&hoveredNodeId))
+        {
+            Node* hoveredNode = dynamic_cast<Node*>(m_registry->findEntity(hoveredNodeId));
+
+            if (hoveredNode && hoveredNode->hasSubGraph() && ImGui::IsMouseDoubleClicked(0))
+                pushGraph(hoveredNode->getSubGraph());
+        }
+        else if (ImGui::IsMouseDoubleClicked(0))
+        {
+            popGraph();
+        }
+    }
 
 	ControlParameter* NodeEditor::createControlParameter(const std::string& name, ControlParameter::ParameterType parameterType)
     {

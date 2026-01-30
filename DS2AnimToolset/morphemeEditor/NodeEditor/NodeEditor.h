@@ -69,6 +69,7 @@ namespace NodeEditor
 		virtual void shutdown();
 		virtual void update(float dt);
 		virtual void draw();
+		virtual void handleUserInput();
 
 		StyleSettings& getStyleSettings() { return m_styleSettings; }
 		Registry* getRegistry() const { return m_registry; }
