@@ -695,6 +695,7 @@ void GuiManager::update(float dt)
 	this->sceneWindow();
 	this->trackEditorWindow();
 	this->networkPreviewWindow();
+	this->selectedNodeInfoWindow();
 
 	this->eventTrackEditorWindow();
 	this->timeActEditorWindow();
@@ -1661,10 +1662,35 @@ void GuiManager::networkPreviewWindow()
 
 	ImGui::Begin("Network Preview", nullptr, ImGuiWindowFlags_MenuBar);
 
+	ImGuiID dockspace_id = ImGui::GetID("NetworkPreviewDockspace");
+	ImGui::DockSpace(
+		dockspace_id,
+		ImVec2(0.0f, 0.0f),
+		ImGuiDockNodeFlags_None
+	);
+
 	NodeEditor::NodeEditor* nodeEditor = editorApp->getNodeEditor();
 
 	nodeEditor->handleUserInput();
 	nodeEditor->draw();
+
+	ImGui::End();
+}
+
+void GuiManager::selectedNodeInfoWindow()
+{
+	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
+
+	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
+
+	ImGui::Begin("AttributeInfo", nullptr);
+
+	NodeEditor::NodeEditor* nodeEditor = editorApp->getNodeEditor();
+
+	NodeEditor::Node* selectedNode = nodeEditor->getSelectedNode();
+
+	if (selectedNode != nullptr)
+		selectedNode->editorGUI();
 
 	ImGui::End();
 }

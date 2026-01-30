@@ -43,6 +43,7 @@ private:
 	void eventTrackInfoWindow();
 	void timeActInfoWindow();
 	void networkPreviewWindow();
+	void selectedNodeInfoWindow();
 	void trackEditorWindow();
 
 	void graphicsSettingsWindow();

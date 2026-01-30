@@ -3,6 +3,7 @@
 #include "NodeEditor/Pin/Pin.h"
 #include "NodeEditor/Pin/DataPin.h"
 #include "NodeEditor/Entity/Entity.h"
+#include "NodeEditor/Attribute/Attribute.h"
 #include <vector>
 
 namespace NodeEditor
@@ -14,6 +15,7 @@ namespace NodeEditor
 	protected:
 		Graph* m_parentGraph;
 		int m_nodeID;
+		std::vector<Attribute*> m_attributes;
 		std::vector<Pin*> m_inputPins;
 		std::vector<Pin*> m_outputPins;
 		ImVec2 m_position;
@@ -28,6 +30,12 @@ namespace NodeEditor
 		ImVec2 getPosition() const { return m_position; }
 		ImVec2 getCenter() const;
 		ImVec2 getSize() const;
+
+		Attribute* createAttribute(const std::string& name, Attribute::AttributeType type);
+		void addAttribute(Attribute* attribute) { m_attributes.push_back(attribute); }
+		Attribute* getAttribute(size_t index) const;
+		Attribute* getAttribute(const std::string& name) const;
+		size_t getNumAttributes() const { return m_attributes.size(); }
 
 		DataPin* createInputDataPin(const std::string& name, DataPin::DataType dataType);
 		DataPin* createOutputDataPin(const std::string& name, DataPin::DataType dataType);
@@ -53,6 +61,7 @@ namespace NodeEditor
 
 		const std::string getFullName() const;
 
+		void editorGUI();
 	private:
 		void calcNodeSize(float& width, float& height) const;
 	};

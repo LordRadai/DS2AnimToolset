@@ -29,6 +29,7 @@ namespace NodeEditor
 
 		m_registry = new Registry(this);
         m_controlParametersNode = new ControlParametersNode(this, "ControlParameters");
+        m_controlParametersNode->setPosition(100.f, 400.f);
 
 		initStyle();
 
@@ -52,6 +53,10 @@ namespace NodeEditor
                 Node* cpNode = m_controlParametersNode;
                 ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(cpNode->getID());
                 cpNode->setPosition(cpNodePos.x, cpNodePos.y);
+
+				Node* outputNode = currentGraph->asType<BlendTree>()->getOutputNode();
+                ImVec2 outputNodePos = ImNodes::GetNodeGridSpacePos(outputNode->getID());
+				outputNode->setPosition(outputNodePos.x, outputNodePos.y);
             }
 
             for (Node* node : currentGraph->getNodes())
@@ -64,6 +69,8 @@ namespace NodeEditor
 
 	void NodeEditor::draw()
 	{
+		ImGui::Begin("Node Editor");
+
 		std::string parentGraphList = "";
 		std::stack<Graph*> tempStack = m_graphStack;
 
@@ -99,6 +106,8 @@ namespace NodeEditor
         }
 
 		ImNodes::EndNodeEditor();
+
+		ImGui::End();
 	}
 
     void NodeEditor::handleUserInput()
@@ -205,6 +214,18 @@ namespace NodeEditor
 
         return false;
 	}
+
+    Node* NodeEditor::getSelectedNode() const
+    {
+		int selectedNodeID = -1;
+
+        if (ImNodes::NumSelectedNodes() != 1)
+            return nullptr;
+
+        ImNodes::GetSelectedNodes(&selectedNodeID);
+
+        return dynamic_cast<Node*>(m_registry->findEntity(selectedNodeID));
+    }
 
 	void NodeEditor::popGraph()
 	{

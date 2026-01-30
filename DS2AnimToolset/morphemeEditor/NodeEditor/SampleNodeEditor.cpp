@@ -54,6 +54,7 @@ namespace NodeEditor
 		node1->getOutputPin("Result")->connectTo(node2->getInputPin("Source"));
 
 		cp->getOutputPin()->connectTo(blend2->getInputPin("Weight"));
+		rootGraph->connectToOutput(node2->getOutputPin("Result"));
 
 		return true;
 	}

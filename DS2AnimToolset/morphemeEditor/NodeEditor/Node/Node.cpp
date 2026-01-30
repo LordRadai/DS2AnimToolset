@@ -2,6 +2,7 @@
 #include "NodeEditor/Graph/Graph.h"
 #include "NodeEditor/imnodes/imnodes.h"
 #include "NodeEditor/NodeEditor.h"
+#include "imgui_custom/imgui_custom_widget.h"
 
 namespace NodeEditor
 {
@@ -72,6 +73,32 @@ namespace NodeEditor
 		calcNodeSize(width, height);
 
 		return ImVec2(m_position.x + width * 0.5f, m_position.y + height * 0.5f);
+	}
+
+	Attribute* Node::createAttribute(const std::string& name, Attribute::AttributeType type)
+	{
+		Attribute* attribute = new Attribute(this, name, type);
+		m_attributes.push_back(attribute);
+		return attribute;
+	}
+
+	Attribute* Node::getAttribute(size_t index) const
+	{
+		if (index < m_attributes.size())
+			return m_attributes[index];
+
+		return nullptr;
+	}
+
+	Attribute* Node::getAttribute(const std::string& name) const
+	{
+		for (Attribute* attribute : m_attributes)
+		{
+			if (attribute->getName() == name)
+				return attribute;
+		}
+
+		return nullptr;
 	}
 
 	DataPin* Node::createInputDataPin(const std::string& name, DataPin::DataType dataType)
@@ -169,5 +196,18 @@ namespace NodeEditor
 
 		width = std::max(style.NodeMinWidth, textSize.x);
 		height = std::max(nodeTotalMinHeight, nodeHeight);
+	}
+
+	void Node::editorGUI()
+	{
+		ImGui::TextUnformatted(m_name.c_str());
+		ImGui::DragFloat2("Position", &m_position.x);
+
+		ImGui::SeparatorText("Attributes");
+
+		for (Attribute* attribute : m_attributes)
+		{
+			attribute->editorGUI();
+		}
 	}
 }

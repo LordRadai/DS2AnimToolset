@@ -80,6 +80,8 @@ namespace NodeEditor
 		bool removeControlParameter(ControlParameter* parameter);
 		bool hasControlParameter(const std::string& name) const;
 
+		Node* getSelectedNode() const;
+
 		Node* getControlParametersNode() const { return m_controlParametersNode; }
 
 		ControlParameter* createControlParameterFloat(const std::string& name);
