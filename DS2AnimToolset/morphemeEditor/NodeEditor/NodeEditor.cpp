@@ -277,13 +277,13 @@ namespace NodeEditor
         m_styleSettings.Colors[NodeEditorStyleCol_ControlParamNodeOutlineHovered] = IM_COL32(54, 49, 47, 255);
         m_styleSettings.Colors[NodeEditorStyleCol_ControlParamNodeOutlineSelected] = style.Colors[ImNodesCol_NodeOutlineSelected];
 
-		m_styleSettings.Colors[NodeEditorStyleCol_FloatDataPin] = IM_COL32(150, 150, 250, 255);
-		m_styleSettings.Colors[NodeEditorStyleCol_IntDataPin] = IM_COL32(150, 250, 150, 255);
-		m_styleSettings.Colors[NodeEditorStyleCol_UIntDataPin] = IM_COL32(150, 250, 250, 255);
-		m_styleSettings.Colors[NodeEditorStyleCol_BoolDataPin] = IM_COL32(250, 150, 150, 255);
-		m_styleSettings.Colors[NodeEditorStyleCol_Vector3DataPin] = IM_COL32(250, 250, 150, 255);
-		m_styleSettings.Colors[NodeEditorStyleCol_Vector4DataPin] = IM_COL32(250, 150, 250, 255);
-		m_styleSettings.Colors[NodeEditorStyleCol_QuaternionDataPin] = IM_COL32(200, 200, 200, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_FloatDataPin] = IM_COL32(142, 142, 142, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_IntDataPin] = IM_COL32(142, 232, 232, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_UIntDataPin] = IM_COL32(239, 142, 239, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_BoolDataPin] = IM_COL32(142, 142, 234, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_Vector3DataPin] = IM_COL32(237, 143, 143, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_Vector4DataPin] = IM_COL32(142, 234, 142, 255);
+		m_styleSettings.Colors[NodeEditorStyleCol_QuaternionDataPin] = IM_COL32(240, 240, 142, 255);
 	}
 
     void NodeEditor::styleEditor()

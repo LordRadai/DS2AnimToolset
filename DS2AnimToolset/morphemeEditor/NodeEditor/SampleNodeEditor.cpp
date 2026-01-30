@@ -16,7 +16,13 @@ namespace NodeEditor
 		BlendTree* rootGraph = new BlendTree(this, nullptr, "Root");
 		pushGraph(rootGraph);
 
-		ControlParameter* cp = createControlParameterFloat("Speed");
+		ControlParameter* cp = createControlParameterFloat("Float");
+		createControlParameterBool("Bool");
+		createControlParameterInt("Int");
+		createControlParameterUInt("UInt");
+		createControlParameterVector3("Vector3");
+		createControlParameterVector4("Vector4");
+		createControlParameterQuaternion("Quaternion");
 
 		Node* node1 = rootGraph->createNode(1, "Blend2");
 		node1->createInputPin("Source0");
