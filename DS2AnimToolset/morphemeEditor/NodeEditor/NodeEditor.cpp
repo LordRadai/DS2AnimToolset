@@ -112,7 +112,7 @@ namespace NodeEditor
 
     void NodeEditor::handleUserInput()
     {
-        if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
+        if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_DockHierarchy))
             return;
 
         int hoveredNodeId = -1;
