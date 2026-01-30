@@ -342,13 +342,16 @@
     <ClInclude Include="NodeEditor\SampleNodeEditor.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\StyleSettings.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="NodeEditor\Transition\Transition.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="NodeEditor\Pin\DataPin.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Graph\BlendTree.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Graph\StateMachine.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -608,13 +611,16 @@
     <ClCompile Include="NodeEditor\SampleNodeEditor.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\StyleSettings.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="NodeEditor\Transition\Transition.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\Pin\DataPin.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Graph\BlendTree.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Graph\StateMachine.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

@@ -244,7 +244,9 @@
     <ClInclude Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.h" />
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h" />
     <ClInclude Include="NodeEditor\Entity\Entity.h" />
+    <ClInclude Include="NodeEditor\Graph\BlendTree.h" />
     <ClInclude Include="NodeEditor\Graph\Graph.h" />
+    <ClInclude Include="NodeEditor\Graph\StateMachine.h" />
     <ClInclude Include="NodeEditor\imnodes\imnodes.h" />
     <ClInclude Include="NodeEditor\imnodes\imnodes_internal.h" />
     <ClInclude Include="NodeEditor\Link\Link.h" />
@@ -254,7 +256,6 @@
     <ClInclude Include="NodeEditor\Pin\Pin.h" />
     <ClInclude Include="NodeEditor\Registry\Registry.h" />
     <ClInclude Include="NodeEditor\SampleNodeEditor.h" />
-    <ClInclude Include="NodeEditor\StyleSettings.h" />
     <ClInclude Include="NodeEditor\Transition\Transition.h" />
     <ClInclude Include="PlayerModelPreset\PlayerModelPreset.h" />
     <ClInclude Include="RenderManager\DebugDraw\DebugDraw.h" />
@@ -339,7 +340,9 @@
     <ClCompile Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.cpp" />
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp" />
     <ClCompile Include="NodeEditor\Entity\Entity.cpp" />
+    <ClCompile Include="NodeEditor\Graph\BlendTree.cpp" />
     <ClCompile Include="NodeEditor\Graph\Graph.cpp" />
+    <ClCompile Include="NodeEditor\Graph\StateMachine.cpp" />
     <ClCompile Include="NodeEditor\imnodes\imnodes.cpp" />
     <ClCompile Include="NodeEditor\Link\Link.cpp" />
     <ClCompile Include="NodeEditor\Node\Node.cpp" />
@@ -348,7 +351,6 @@
     <ClCompile Include="NodeEditor\Pin\Pin.cpp" />
     <ClCompile Include="NodeEditor\Registry\Registry.cpp" />
     <ClCompile Include="NodeEditor\SampleNodeEditor.cpp" />
-    <ClCompile Include="NodeEditor\StyleSettings.cpp" />
     <ClCompile Include="NodeEditor\Transition\Transition.cpp" />
     <ClCompile Include="PlayerModelPreset\PlayerModelPreset.cpp" />
     <ClCompile Include="RenderManager\RenderManager.cpp" />

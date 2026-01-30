@@ -23,8 +23,8 @@ namespace NodeEditor
 		DataType m_dataType;
 
 	public:
-		DataPin(Node* parent, const std::string& name, bool isInput, DataType dataType)
-			: Pin(parent, name, isInput), m_dataType(dataType) {}
+		DataPin(NodeEditorBase* editor, Node* parent, const std::string& name, bool isInput, DataType dataType)
+			: Pin(editor, parent, name, isInput), m_dataType(dataType) {}
 
 		virtual ~DataPin() override {}
 		virtual void draw() override;

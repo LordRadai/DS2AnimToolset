@@ -5,14 +5,15 @@ namespace NodeEditor
 {
 	class Entity;
 	class Graph;
+	class NodeEditorBase;
 
 	class Registry
 	{
-		static Registry* s_instance;
+		NodeEditorBase* m_ownerEditor;
 
 	public:
-		static Registry* getInstance();
-		static void destroyInstance();
+		Registry(NodeEditorBase* editor) : m_nextRuntimeID(0), m_nextGraphID(0), m_ownerEditor(editor) {}
+		~Registry();
 
 		int generateUniqueRuntimeID() { return m_nextRuntimeID++; }
 		int generateUniqueGraphID() { return m_nextGraphID++; }
@@ -33,8 +34,5 @@ namespace NodeEditor
 		int m_nextGraphID;
 		std::vector<Entity*> m_registeredEntities;
 		std::vector<Graph*> m_registeredGraphs;
-
-		Registry() : m_nextRuntimeID(0) {}
-		~Registry();
 	};
 }

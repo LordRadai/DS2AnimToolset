@@ -4,7 +4,7 @@
 
 namespace NodeEditor
 {
-	Link::Link(Pin* inputPin, Pin* outputPin) : Entity(inputPin->getName() + "_" + outputPin->getName()),
+	Link::Link(NodeEditorBase* editor, Pin* inputPin, Pin* outputPin) : Entity(editor, inputPin->getName() + "_" + outputPin->getName()),
 		m_inputPin(inputPin), m_outputPin(outputPin)
 	{
 	}

@@ -3,12 +3,20 @@
 #include "Registry/Registry.h"
 #include "IconsFontAwesome6.h"
 #include "imgui_custom/imgui_custom_widget.h"
+#include "Graph/BlendTree.h"
 #include "extern.h"
 #include "RLog/RLog.h"
 
 namespace NodeEditor
 {
-	NodeEditorBase::NodeEditorBase()
+    StyleSettings::StyleSettings()
+    {
+        nodeMinWidth = 150.0f;
+        nodeMinContentHeight = 30.0f;
+        nodePinSpacing = 20.0f;
+    }
+
+	NodeEditorBase::NodeEditorBase() : m_showStyleEditor(false), m_registry(nullptr)
 	{
 	}
 
@@ -22,7 +30,7 @@ namespace NodeEditor
 		if (!ImNodes::CreateContext())
 			return false;
 
-		Registry::getInstance();
+		m_registry = new Registry(this);
 
 		initStyle();
 
@@ -31,7 +39,7 @@ namespace NodeEditor
 
 	void NodeEditorBase::shutdown()
 	{
-		Registry::destroyInstance();
+		delete m_registry;
 		ImNodes::DestroyContext();
 	}
 
@@ -41,9 +49,15 @@ namespace NodeEditor
 
 		if (currentGraph)
 		{
-            Node* cpNode = currentGraph->getControlParametersNode();
-			ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(cpNode->getID());
-			cpNode->setPosition(cpNodePos.x, cpNodePos.y);
+            if (currentGraph->isOfType<BlendTree>())
+            {
+				BlendTree* blendTree = currentGraph->asType<BlendTree>();
+
+                Node* cpNode = blendTree->getControlParametersNode();
+                ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(cpNode->getID());
+                cpNode->setPosition(cpNodePos.x, cpNodePos.y);
+            }
+            
 
 			for (Node* node : currentGraph->getNodes())
 			{
@@ -56,8 +70,7 @@ namespace NodeEditor
 
 		if (ImNodes::IsNodeHovered(&hoveredNodeId))
 		{
-			Registry* registry = Registry::getInstance();
-			Node* hoveredNode = dynamic_cast<Node*>(registry->findEntity(hoveredNodeId));
+			Node* hoveredNode = dynamic_cast<Node*>(m_registry->findEntity(hoveredNodeId));
 
 			if (hoveredNode && hoveredNode->hasSubGraph() && ImGui::IsMouseDoubleClicked(0))
 				pushGraph(hoveredNode->getSubGraph());

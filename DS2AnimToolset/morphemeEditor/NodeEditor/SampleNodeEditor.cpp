@@ -1,6 +1,8 @@
 #include "SampleNodeEditor.h"
 #include "extern.h"
 #include "RLog/RLog.h"
+#include "Graph/BlendTree.h"
+#include "Graph/StateMachine.h"
 
 namespace NodeEditor
 {
@@ -11,7 +13,7 @@ namespace NodeEditor
 		if (!bInit)
 			return false;
 
-		Graph* rootGraph = new Graph(nullptr, "Root");
+		BlendTree* rootGraph = new BlendTree(this, nullptr, "Root");
 		pushGraph(rootGraph);
 
 		rootGraph->createControlParameterFloat("Speed");
@@ -30,11 +32,11 @@ namespace NodeEditor
 		node5->createInputPin("Source");
 		node5->createOutputPin("Result");
 
-		Node* stateMachine = rootGraph->createContainerNode(3, "NodeContainer");
-		Graph* subGraph = stateMachine->getSubGraph();
+		Node* stateMachine = rootGraph->createStateMachine(3, "NodeContainer");
+		StateMachine* subGraph = stateMachine->getSubGraph()->asType<StateMachine>();
 
 		Node* src = subGraph->createNode(4, "Node1");
-		Node* dst = subGraph->createContainerNode(5, "NodeContainer");
+		Node* dst = subGraph->createBlendTree(5, "NodeContainer");
 		subGraph->createTransition(6, src, dst);
 		subGraph->createTransition(7, dst, src);
 

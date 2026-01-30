@@ -1,15 +1,20 @@
 #include "Graph.h"
 #include "NodeEditor/Registry/Registry.h"
-#include "NodeEditor/Pin/DataPin.h"
+#include "NodeEditor/NodeEditorBase.h"
+#include "BlendTree.h"
+#include "StateMachine.h"
+#include "extern.h"
+#include "RLog/RLog.h"
 
 namespace NodeEditor
 {
-	Graph::Graph(Graph* parent, const std::string& name) : Entity(name), m_parentGraph(parent), m_context(nullptr)
+	Graph::Graph(NodeEditorBase* editor, Graph* parent, const std::string& name) : Entity(editor, name), m_parentGraph(parent), m_context(nullptr)
 	{
+		Registry* registry = m_ownerEditor->getRegistry();
+
 		m_context = ImNodes::CreateContext();
-		m_id = Registry::getInstance()->generateUniqueGraphID();
-		Registry::getInstance()->registerGraph(this);
-		m_controlParametersNode = new Node(this, -1, "ControlParameters", nullptr);
+		m_id = registry->generateUniqueGraphID();
+		registry->registerGraph(this);
 	}
 
 	Graph::~Graph()
@@ -17,9 +22,10 @@ namespace NodeEditor
 		for (Node* node : m_nodes)
 			delete node;
 
-		Registry::getInstance()->unregisterGraph(this);
+		Registry* registry = m_ownerEditor->getRegistry();
+
+		registry->unregisterGraph(this);
 		ImNodes::DestroyContext(m_context);
-		delete m_controlParametersNode;
 	}
 
 	Node* Graph::getNode(int nodeID) const
@@ -49,34 +55,18 @@ namespace NodeEditor
 		m_panning = ImVec2(x, y);
 	}
 
-	Transition* Graph::getTransition(int nodeID) const
-	{
-		for (Transition* transition : m_transitions)
-		{
-			if (transition->getID() == nodeID)
-				return transition;
-		}
-
-		return nullptr;
-	}
-
-	Transition* Graph::getTransition(const std::string& name) const
-	{
-		for (Transition* transition : m_transitions)
-		{
-			if (transition->getName() == name)
-				return transition;
-		}
-
-		return nullptr;
-	}
-
 	Node* Graph::createNode(int nodeID, const std::string& name)
 	{
+		if (!isOfType<BlendTree>())
+		{
+			g_appLog->debugMessage(MsgLevel_Warn, "Graph::createNode: Attempted to create a standard node within a non BlendTree graph (%s).\n", m_name);
+			return nullptr;
+		}
+
 		float x, y;
 		getFreePosition(x, y);
 
-		Node* node = new Node(this, nodeID, name, nullptr);
+		Node* node = new Node(m_ownerEditor, this, nodeID, name, nullptr);
 		node->setPosition(x, y);
 
 		m_nodes.push_back(node);
@@ -84,12 +74,12 @@ namespace NodeEditor
 		return node;
 	}
 
-	Node* Graph::createContainerNode(int nodeID, const std::string& name)
+	Node* Graph::createBlendTree(int nodeID, const std::string& name)
 	{
 		float x, y;
 		getFreePosition(x, y);
 
-		Node* node = new Node(this, nodeID, name, new Graph(this, name));
+		Node* node = new Node(m_ownerEditor, this, nodeID, name, new BlendTree(m_ownerEditor, this, name));
 		node->setPosition(x, y);
 
 		m_nodes.push_back(node);
@@ -97,54 +87,17 @@ namespace NodeEditor
 		return node;
 	}
 
-	Transition* Graph::createTransition(int nodeID, Node* sourceNode, Node* destinationNode)
+	Node* Graph::createStateMachine(int nodeID, const std::string& name)
 	{
-		Transition* transition = new Transition(this, nodeID, sourceNode, destinationNode);
-		m_transitions.push_back(transition);
+		float x, y;
+		getFreePosition(x, y);
 
-		return transition;
-	}
+		Node* node = new Node(m_ownerEditor, this, nodeID, name, new StateMachine(m_ownerEditor, this, name));
+		node->setPosition(x, y);
 
-	void Graph::createControlParameterFloat(const std::string& name)
-	{
-		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeFloat);
-		m_controlParametersNode->addOutputPin(outputPin);
-	}
+		m_nodes.push_back(node);
 
-	void Graph::createControlParameterInt(const std::string& name)
-	{
-		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeInt);
-		m_controlParametersNode->addOutputPin(outputPin);
-	}
-
-	void Graph::createControlParameterUInt(const std::string& name)
-	{
-		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeUInt);
-		m_controlParametersNode->addOutputPin(outputPin);
-	}
-
-	void Graph::createControlParameterBool(const std::string& name)
-	{
-		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeBool);
-		m_controlParametersNode->addOutputPin(outputPin);
-	}
-
-	void Graph::createControlParameterVector3(const std::string& name)
-	{
-		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeVector3);
-		m_controlParametersNode->addOutputPin(outputPin);
-	}
-
-	void Graph::createControlParameterVector4(const std::string& name)
-	{
-		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeVector4);
-		m_controlParametersNode->addOutputPin(outputPin);
-	}
-
-	void Graph::createControlParameterQuaternion(const std::string& name)
-	{
-		DataPin* outputPin = new DataPin(m_controlParametersNode, name, false, DataPin::kDataTypeQuaternion);
-		m_controlParametersNode->addOutputPin(outputPin);
+		return node;
 	}
 
 	void Graph::removeNode(Node* node)
@@ -159,32 +112,8 @@ namespace NodeEditor
 
 	void Graph::draw()
 	{
-		ImNodes::PushColorStyle(ImNodesCol_NodeBackground, IM_COL32(70, 70, 70, 255));
-		ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundHovered, IM_COL32(70, 70, 70, 255));
-		ImNodes::PushColorStyle(ImNodesCol_NodeBackgroundSelected, IM_COL32(70, 70, 70, 255));
-
-		ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(100, 100, 100, 255));
-		ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(100, 100, 100, 255));
-		ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(100, 100, 100, 255));
-
-		m_controlParametersNode->draw();
-
-		ImNodes::PopColorStyle();
-		ImNodes::PopColorStyle();
-		ImNodes::PopColorStyle();
-		
-		ImNodes::PopColorStyle();
-		ImNodes::PopColorStyle();
-		ImNodes::PopColorStyle();
-
 		for (Node* node : m_nodes)
 			node->draw();
-
-		for (Link* link : m_links)
-			link->draw();
-
-		for (Transition* transition : m_transitions)
-			transition->draw();
 
 		m_panning = ImNodes::EditorContextGetPanning();
 	}

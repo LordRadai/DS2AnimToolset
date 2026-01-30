@@ -1,11 +1,11 @@
 #include "Node.h"
 #include "NodeEditor/Graph/Graph.h"
 #include "NodeEditor/imnodes/imnodes.h"
-#include "NodeEditor/StyleSettings.h"
+#include "NodeEditor/NodeEditorBase.h"
 
 namespace NodeEditor
 {
-	Node::Node(Graph* parent, int id, const std::string& name, Graph* subGraph) : Entity(name),
+	Node::Node(NodeEditorBase* editor, Graph* parent, int id, const std::string& name, Graph* subGraph) : Entity(editor, name),
 		m_parentGraph(parent), m_nodeID(id), m_subGraph(subGraph), m_position(ImVec2(0.f, 0.f))
 	{
 	}
@@ -34,7 +34,7 @@ namespace NodeEditor
 		ImNodes::EndNodeTitleBar();
 
 		// ---- Content area ----
-		StyleSettings& style = getStyleSettings();
+		StyleSettings& style = m_ownerEditor->getStyleSettings();
 
 		float pinAreaHeight = style.nodeMinContentHeight;
 		int totalPins = (int)(m_inputPins.size() + m_outputPins.size());
@@ -145,7 +145,7 @@ namespace NodeEditor
 	{
 		ImNodesStyle& imStyle = ImNodes::GetStyle();
 
-		StyleSettings& style = getStyleSettings();
+		StyleSettings& style = m_ownerEditor->getStyleSettings();
 		ImVec2 textSize = ImGui::CalcTextSize(m_name.c_str());
 
 		const float titleBarHeight = 2.f * imStyle.NodePadding.y + textSize.y;

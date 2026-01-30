@@ -1,12 +1,12 @@
 #include "Pin.h"
-#include "NodeEditor/Graph/Graph.h"
+#include "NodeEditor/Graph/BlendTree.h"
 #include "NodeEditor/Node/Node.h"
 #include "NodeEditor/Link/Link.h"
 #include "NodeEditor/imnodes/imnodes.h"
 
 namespace NodeEditor
 {
-	Pin::Pin(Node* parent, const std::string& name, bool isInput) : Entity(name),
+	Pin::Pin(NodeEditorBase* editor, Node* parent, const std::string& name, bool isInput) : Entity(editor, name),
 		m_parentNode(parent), m_isInput(isInput)
 	{
 	}
@@ -24,12 +24,12 @@ namespace NodeEditor
 		Pin* inputPin = (m_isInput) ? this : other;
 		Pin* outputPin = (!m_isInput) ? this : other;
 
-		Link* link = new Link(inputPin, outputPin);
+		Link* link = new Link(m_ownerEditor, inputPin, outputPin);
 		Graph* parentGraph = m_parentNode->getParentGraph();
 
-		if (parentGraph)
+		if (parentGraph->isOfType<BlendTree>())
 		{
-			parentGraph->addLink(link);
+			parentGraph->asType<BlendTree>()->addLink(link);
 			return true;
 		}
 

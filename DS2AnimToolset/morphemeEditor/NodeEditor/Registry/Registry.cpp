@@ -4,29 +4,10 @@
 
 namespace NodeEditor
 {
-	Registry* Registry::s_instance = nullptr;
-
 	Registry::~Registry()
 	{
 		m_registeredEntities.clear();
 		m_registeredGraphs.clear();
-	}
-
-	Registry* Registry::getInstance()
-	{
-		if (!s_instance)
-			s_instance = new Registry();
-
-		return s_instance;
-	}
-
-	void Registry::destroyInstance()
-	{
-		if (s_instance)
-		{
-			delete s_instance;
-			s_instance = nullptr;
-		}
 	}
 
 	void Registry::unregisterEntity(Entity* node)

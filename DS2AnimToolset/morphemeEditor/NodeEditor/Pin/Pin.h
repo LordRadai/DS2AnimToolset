@@ -14,7 +14,7 @@ namespace NodeEditor
 		bool m_isInput;
 
 	public:
-		Pin(Node* parent, const std::string& name, bool isInput);
+		Pin(NodeEditorBase* editor, Node* parent, const std::string& name, bool isInput);
 		virtual ~Pin() override {}
 
 		virtual void draw() override;

@@ -19,7 +19,7 @@ namespace NodeEditor
 		Graph* m_subGraph;
 
 	public:
-		Node(Graph* parent, int id, const std::string& name, Graph* subGraph);
+		Node(NodeEditorBase* editor, Graph* parent, int id, const std::string& name, Graph* subGraph);
 		virtual ~Node() override;
 
 		void draw() override;
