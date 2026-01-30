@@ -194,8 +194,8 @@ namespace NodeEditor
 		const int totalPins = (int)(m_inputPins.size() + m_outputPins.size());
 		const float nodeHeight = totalPins * 10.f;
 
-		width = std::max(style.NodeMinWidth, textSize.x);
-		height = std::max(nodeTotalMinHeight, nodeHeight);
+		width = std::fmax(style.NodeMinWidth, textSize.x);
+		height = std::fmax(nodeTotalMinHeight, nodeHeight);
 	}
 
 	void Node::editorGUI()
