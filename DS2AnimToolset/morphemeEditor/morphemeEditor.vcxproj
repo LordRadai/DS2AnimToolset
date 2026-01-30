@@ -246,6 +246,11 @@
     <ClInclude Include="NodeEditor\Attribute\Attribute.h" />
     <ClInclude Include="NodeEditor\ControlParametersNode\ControlParametersNode.h" />
     <ClInclude Include="NodeEditor\ControlParameter\ControlParameter.h" />
+    <ClInclude Include="NodeEditor\EditorProject\Attribute\Attribute.h" />
+    <ClInclude Include="NodeEditor\EditorProject\ControlParameter\ControlParameter.h" />
+    <ClInclude Include="NodeEditor\EditorProject\EditorProject.h" />
+    <ClInclude Include="NodeEditor\EditorProject\Entity\Entity.h" />
+    <ClInclude Include="NodeEditor\EditorProject\Node\Node.h" />
     <ClInclude Include="NodeEditor\Entity\Entity.h" />
     <ClInclude Include="NodeEditor\Graph\BlendTree.h" />
     <ClInclude Include="NodeEditor\Graph\Graph.h" />
@@ -346,6 +351,11 @@
     <ClCompile Include="NodeEditor\Attribute\Attribute.cpp" />
     <ClCompile Include="NodeEditor\ControlParametersNode\ControlParametersNode.cpp" />
     <ClCompile Include="NodeEditor\ControlParameter\ControlParameter.cpp" />
+    <ClCompile Include="NodeEditor\EditorProject\Attribute\Attribute.cpp" />
+    <ClCompile Include="NodeEditor\EditorProject\ControlParameter\ControlParameter.cpp" />
+    <ClCompile Include="NodeEditor\EditorProject\EditorProject.cpp" />
+    <ClCompile Include="NodeEditor\EditorProject\Entity\Entity.cpp" />
+    <ClCompile Include="NodeEditor\EditorProject\Node\Node.cpp" />
     <ClCompile Include="NodeEditor\Entity\Entity.cpp" />
     <ClCompile Include="NodeEditor\Graph\BlendTree.cpp" />
     <ClCompile Include="NodeEditor\Graph\Graph.cpp" />

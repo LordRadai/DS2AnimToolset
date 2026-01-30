@@ -54,6 +54,8 @@ public:
 
 		bool compileNetwork = false;
 		bool compileTaes = false;
+
+		bool createTestEditorProject = false;
 	};
 
 	struct CameraFlags
@@ -170,6 +172,7 @@ private:
 	bool exportAnimMarkup(std::wstring path, int animSetIdx, int animId, std::vector<ME::EventTrackExport*>& exportedTracks);
 
 	void exportTaeTemplateXML();
+	void createTestEditorProject();
 
 	WindowFlags m_windowFlags;
 	TaskFlags m_taskFlags;

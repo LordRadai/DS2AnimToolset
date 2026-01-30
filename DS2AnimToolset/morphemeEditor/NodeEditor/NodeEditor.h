@@ -4,6 +4,7 @@
 #include "ControlParametersNode/ControlParametersNode.h"
 #include "ControlParameter/ControlParameter.h"
 #include "Registry/Registry.h"
+#include "EditorProject/EditorProject.h"
 
 namespace NodeEditor
 {

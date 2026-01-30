@@ -965,6 +965,13 @@ void MorphemeEditorApp::update(float dt)
 
 		g_workerThread.load()->startThread("Export TimeAct Template", &MorphemeEditorApp::exportTaeTemplateXML, this);
 	}
+
+	if (this->m_taskFlags.createTestEditorProject)
+	{
+		this->m_taskFlags.createTestEditorProject = false;
+
+		g_workerThread.load()->startThread("Create test editor project", &MorphemeEditorApp::createTestEditorProject, this);
+	}
 #endif
 }
 
@@ -1894,4 +1901,20 @@ void MorphemeEditorApp::exportTaeTemplateXML()
 
 	templateXML->setDstFileName("Export\\TimeActTemplate.xml");
 	templateXML->save();
+}
+
+void MorphemeEditorApp::createTestEditorProject()
+{
+	NodeEditor::Project::EditorProject* testProject = new NodeEditor::Project::EditorProject();
+	testProject->setProjectName("Sample Editor Project");
+	testProject->createControlParameter("Speed", "float");
+
+	NodeEditor::Project::Node* root = testProject->createRootBlendTreeNode("RootBT", 0);
+
+	NodeEditor::Project::Node* blend2 = root->createChildNode("Blend2", 3, NODE_TYPE_BLEND_2);
+	blend2->createInputNode("WalkAnim", 1, NODE_TYPE_ANIM_EVENTS);
+	blend2->createInputNode("JobAnim", 2, NODE_TYPE_ANIM_EVENTS);
+	blend2->addInputControlParameter(testProject->getControlParameter("Speed"));
+
+	testProject->saveProject("SampleEditorProject.mproj");
 }
