@@ -69,6 +69,7 @@ namespace NodeEditor
 		virtual bool initialise();
 		virtual void shutdown();
 		virtual void update(float dt);
+		virtual void reset();
 		virtual void draw();
 		virtual void handleUserInput();
 
@@ -85,6 +86,7 @@ namespace NodeEditor
 
 		Node* getControlParametersNode() const { return m_controlParametersNode; }
 
+		void addControlParameter(ControlParameter* parameter);
 		ControlParameter* createControlParameterFloat(const std::string& name);
 		ControlParameter* createControlParameterInt(const std::string& name);
 		ControlParameter* createControlParameterUInt(const std::string& name);
@@ -98,6 +100,8 @@ namespace NodeEditor
 		void popGraph();
 
 		void styleEditor();
+
+		bool loadProject(const std::string& filePath);
 	private:
 		void initStyle();
 

@@ -48,9 +48,12 @@ namespace NodeEditor
 
 		Node* EditorProject::createRootNode(const std::string& name, int nodeID, int typeID)
 		{
-			tinyxml2::XMLElement* nodeList = m_rootElement->FirstChildElement("Nodes");
+			tinyxml2::XMLElement* rootNodeElem = m_rootElement->FirstChildElement("RootNode");
 
-			Node* node = new Node(nodeList);
+			if (!rootNodeElem)
+				rootNodeElem = m_rootElement->InsertNewChildElement("RootNode");
+
+			Node* node = new Node(rootNodeElem);
 			node->setName(name);
 			node->setNodeID(nodeID);
 
@@ -110,9 +113,12 @@ namespace NodeEditor
 
 		ControlParameter* EditorProject::createControlParameter(const std::string& name, const std::string& type)
 		{
-			tinyxml2::XMLElement* cpElem = m_rootElement->FirstChildElement("ControlParameters");
+			tinyxml2::XMLElement* cpList = m_rootElement->FirstChildElement("ControlParameters");
 
-			ControlParameter* cp = new ControlParameter(cpElem);
+			if (!cpList)
+				cpList = m_rootElement->InsertNewChildElement("ControlParameters");
+
+			ControlParameter* cp = new ControlParameter(cpList);
 
 			cp->setName(name);
 			cp->setType(type);
@@ -123,6 +129,8 @@ namespace NodeEditor
 
 		bool EditorProject::saveProject(const std::string& filePath)
 		{
+			m_xmlDoc->InsertFirstChild(m_rootElement);
+
 			m_xmlDoc->SaveFile(filePath.c_str());
 
 			return true;

@@ -1,4 +1,5 @@
 #include "NodeEditor.h"
+#include "EditorProject/EditorProject.h"
 #include "imnodes/imnodes.h"
 #include "Registry/Registry.h"
 #include "IconsFontAwesome6.h"
@@ -38,6 +39,12 @@ namespace NodeEditor
 
 	void NodeEditor::shutdown()
 	{
+        for (size_t i = 0; i < m_controlParameters.size(); i++)
+            delete m_controlParameters[i];
+
+        m_controlParameters.clear();
+
+		delete m_controlParametersNode;
 		delete m_registry;
 		ImNodes::DestroyContext();
 	}
@@ -65,6 +72,20 @@ namespace NodeEditor
                 node->setPosition(nodePos.x, nodePos.y);
             }
         }
+	}
+
+    void NodeEditor::reset()
+    {
+        for (size_t i = 0; i < m_controlParameters.size(); i++)
+			delete m_controlParameters[i];
+
+		m_controlParameters.clear();
+
+        while (!m_graphStack.empty())
+            m_graphStack.pop();
+
+		delete m_controlParametersNode;
+		m_controlParametersNode = new ControlParametersNode(this, "ControlParameters");
 	}
 
 	void NodeEditor::draw()
@@ -139,11 +160,16 @@ namespace NodeEditor
         }
 
         ControlParameter* parameter = new ControlParameter(this, name, parameterType);
-        m_controlParameters.push_back(parameter);
-		m_controlParametersNode->addOutputPin(parameter->getOutputPin());
+		addControlParameter(parameter);
 
         return parameter;
 	}
+
+    void NodeEditor::addControlParameter(ControlParameter* parameter)
+    {
+        m_controlParameters.push_back(parameter);
+        m_controlParametersNode->addOutputPin(parameter->getOutputPin());
+    }
 
     ControlParameter* NodeEditor::createControlParameterFloat(const std::string& name)
     {
@@ -503,5 +529,24 @@ namespace NodeEditor
         }
 
         ImGui::EndTabBar();
+    }
+
+    bool NodeEditor::loadProject(const std::string& filePath)
+    {
+		Project::EditorProject project;
+
+		if (!project.loadProject(filePath))
+			return false;
+
+		reset();
+
+        for (size_t i = 0; i < project.getNumControlParameters(); ++i)
+        {
+            Project::ControlParameter* parameter = project.getControlParameter(i);
+
+			addControlParameter(new ControlParameter(this, parameter));
+        }
+
+		pushGraph(new BlendTree(this, nullptr, "RootBT"));
     }
 }

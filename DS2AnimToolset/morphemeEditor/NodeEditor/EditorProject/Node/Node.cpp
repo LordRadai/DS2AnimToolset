@@ -159,11 +159,21 @@ namespace NodeEditor
 				m_xmlElement->SetAttribute("containerType", type.c_str());
 		}
 
-		Node* Node::getInputNode(size_t index) const
+		Node* Node::getInputNodeAtIndex(size_t index) const
 		{
 			if (index < m_inputNodes.size())
 				return m_inputNodes[index];
 
+			return nullptr;
+		}
+
+		Node* Node::getInputNode(int nodeID) const
+		{
+			for (Node* inputNode : m_inputNodes)
+			{
+				if (inputNode->getNodeID() == nodeID)
+					return inputNode;
+			}
 			return nullptr;
 		}
 
@@ -182,6 +192,10 @@ namespace NodeEditor
 		Node* Node::createInputNode(const std::string& name, int nodeID, int typeID)
 		{
 			tinyxml2::XMLElement* inputNodeList = m_xmlElement->FirstChildElement("InputNodes");
+
+			if (!inputNodeList)
+				inputNodeList = m_xmlElement->InsertNewChildElement("InputNodes");
+
 			Node* node = new Node(inputNodeList);
 			node->setName(name);
 			node->setNodeID(nodeID);
@@ -205,10 +219,21 @@ namespace NodeEditor
 			return node;
 		}
 
-		Node* Node::getChildNode(size_t index) const
+		Node* Node::getChildNodeAtIndex(size_t index) const
 		{
 			if (index < m_childrenNodes.size())
 				return m_childrenNodes[index];
+
+			return nullptr;
+		}
+
+		Node* Node::getChildNode(int nodeID) const
+		{
+			for (Node* childNode : m_childrenNodes)
+			{
+				if (childNode->getNodeID() == nodeID)
+					return childNode;
+			}
 
 			return nullptr;
 		}
@@ -227,6 +252,10 @@ namespace NodeEditor
 		Node* Node::createChildNode(const std::string& name, int nodeID, int typeID)
 		{
 			tinyxml2::XMLElement* childNodeList = m_xmlElement->FirstChildElement("ChildNodes");
+
+			if (!childNodeList)
+				childNodeList = m_xmlElement->InsertNewChildElement("ChildNodes");
+
 			Node* node = new Node(childNodeList);
 			node->setName(name);
 			node->setNodeID(nodeID);
@@ -248,6 +277,45 @@ namespace NodeEditor
 			node->setContainerType("StateMachine");
 
 			return node;
+		}
+
+		Transition* Node::getTransition(size_t index) const
+		{
+			if (index < m_transitions.size())
+				return m_transitions[index];
+
+			return nullptr;
+		}
+
+		void Node::addTransition(Transition* transition)
+		{
+			m_transitions.push_back(transition);
+			tinyxml2::XMLElement* transitionList = m_xmlElement->FirstChildElement("Transitions");
+
+			if (!transitionList)
+				transitionList = m_xmlElement->InsertNewChildElement("Transitions");
+
+			transitionList->InsertEndChild(transition->getXMLElement());
+		}
+
+		Transition* Node::createTransition(int sourceNodeID, int destinationNodeID)
+		{
+			if (!isNodeStateMachine())
+				throw std::runtime_error("Transitions can only be created for State Machine nodes.");
+
+			if (!getChildNode(sourceNodeID) || !getChildNode(destinationNodeID))
+				throw std::runtime_error("Source or Destination Node ID does not exist among child nodes.");
+
+			tinyxml2::XMLElement* transitionList = m_xmlElement->FirstChildElement("Transitions");
+
+			if (!transitionList)
+				transitionList = m_xmlElement->InsertNewChildElement("Transitions");
+
+			Transition* transition = new Transition(transitionList);
+			transition->setSourceNodeID(sourceNodeID);
+			transition->setDestinationNodeID(destinationNodeID);
+			addTransition(transition);
+			return transition;
 		}
 
 		const std::string Node::getInputControlParameter(size_t index) const

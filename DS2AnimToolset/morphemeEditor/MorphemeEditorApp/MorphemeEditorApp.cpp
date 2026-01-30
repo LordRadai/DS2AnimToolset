@@ -1916,5 +1916,11 @@ void MorphemeEditorApp::createTestEditorProject()
 	blend2->createInputNode("JobAnim", 2, NODE_TYPE_ANIM_EVENTS);
 	blend2->addInputControlParameter(testProject->getControlParameter("Speed"));
 
-	testProject->saveProject("SampleEditorProject.mproj");
+	const std::string projName = "SampleEditorProject.xml";
+
+	testProject->saveProject(projName);
+
+	m_nodeEditor->loadProject(projName);
+
+	delete testProject;
 }
