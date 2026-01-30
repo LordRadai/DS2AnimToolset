@@ -350,17 +350,15 @@ void ComputeTransitionAnchors(const int transition_id, const ImNodeData& source,
     const float center = (num_transitions_between_nodes - 1) * 0.5f;
     const float perp_amount = (this_transition_index - center) * spacing;
 
-    // -----------------------------
-    // Along-direction offset
-    // -----------------------------
-    const float tangent_amount = distance_from_nodes;
+    const ImVec2 perp_offset = normal * perp_amount;
 
-    const ImVec2 offset =
-        normal * perp_amount +
-        tangent * tangent_amount;
+    // --------------------------------
+    // Segment contraction
+    // --------------------------------
+    const ImVec2 contract = tangent * distance_from_nodes;
 
-    src_anchor += offset;
-    dst_anchor += offset;
+    src_anchor += perp_offset + contract;
+    dst_anchor += perp_offset - contract;
 }
 
 void DrawArrow(ImDrawList* drawList, ImVec2 src, ImVec2 dst, ImU32 color, float thickness = 2.0f, float arrowSize = 10.0f)
@@ -2220,7 +2218,7 @@ ImNodesIO::ImNodesIO()
 ImNodesStyle::ImNodesStyle()
     : GridSpacing(32.f), NodeCornerRounding(4.f), NodePadding(8.f, 8.f), NodeBorderThickness(1.f),
       LinkThickness(3.f), LinkLineSegmentsPerLength(0.1f), LinkHoverDistance(10.f),
-	  TransitionSpacingOffset(10.0f), TransitionThickness(2.f), TransitionArrowSize(6.f), TransitionHoverDistance(10.f), TransitionNodeOffset(20.f),
+	  TransitionSpacingOffset(10.0f), TransitionThickness(2.f), TransitionArrowSize(6.f), TransitionHoverDistance(10.f), TransitionNodeOffset(0.f),
       PinCircleRadius(4.f), PinQuadSideLength(7.f), PinTriangleSideLength(9.5),
       PinLineThickness(1.f), PinHoverRadius(10.f), PinOffset(0.f), MiniMapPadding(8.0f, 8.0f),
       MiniMapOffset(4.0f, 4.0f), Flags(ImNodesStyleFlags_NodeOutline | ImNodesStyleFlags_GridLines),

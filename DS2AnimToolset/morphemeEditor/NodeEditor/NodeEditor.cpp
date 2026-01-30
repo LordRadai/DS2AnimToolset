@@ -227,7 +227,7 @@ namespace NodeEditor
         style.NodeBorderThickness = 0.f;
         style.NodeCornerRounding = 2.f;
 		style.TransitionSpacingOffset = 10.f;
-        style.TransitionNodeOffset = 20.f;
+        style.TransitionNodeOffset = 1.5f;
         style.PinOffset = -5.5f;
 
         style.LinkLineSegmentsPerLength = 1.f;
@@ -440,8 +440,8 @@ namespace NodeEditor
         {
             ImGui::SeparatorText("Sizes");
 
-			ImGui::SliderFloat("Spacing Offset", &style.TransitionSpacingOffset, 0.0f, 52.0f);
-            ImGui::SliderFloat("Node Offset", &style.TransitionNodeOffset, 0.0f, 50.0f);
+			ImGui::SliderFloat("Spacing Offset", &style.TransitionSpacingOffset, 0.0f, 32.0f);
+            ImGui::SliderFloat("Node Offset", &style.TransitionNodeOffset, 0.0f, 32.0f);
 			ImGui::SliderFloat("Hover Distance", &style.TransitionHoverDistance, 1.0f, 20.0f);
 			ImGui::SliderFloat("Thickness", &style.TransitionThickness, 1.0f, 8.0f);
 			ImGui::SliderFloat("Arrow Size", &style.TransitionArrowSize, 4.0f, 20.0f);
