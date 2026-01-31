@@ -286,6 +286,8 @@ namespace NodeEditor
 	{
         if (m_graphStack.size() > 1)
             m_graphStack.pop();
+
+		clearSelection();
 	}
 
     void NodeEditor::initStyle()
