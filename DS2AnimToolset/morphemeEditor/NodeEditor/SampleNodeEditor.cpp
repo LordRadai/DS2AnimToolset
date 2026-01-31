@@ -35,7 +35,7 @@ namespace NodeEditor
 		node2->createInputPin("Source");
 		node2->createOutputPin("Result");
 
-		Node* stateMachine = rootGraph->createStateMachine(3);
+		Node* stateMachine = rootGraph->createStateMachine(3, "SM_Main");
 		StateMachine* sm = stateMachine->getSubGraph()->asType<StateMachine>();
 
 		Node* src = sm->createBlendTree(4);

@@ -174,10 +174,15 @@ namespace NodeEditor
 				numNodesWithName++;
 		}
 
+		std::string splitChar = "";
+
+		if (std::isdigit(desiredName.back()))
+			splitChar = "_";
+
 		if (typeName == desiredName)
-			return std::string(desiredName + std::to_string(numNodesWithName + 1));
+			return std::string(desiredName + splitChar +std::to_string(numNodesWithName + 1));
 		else if (numNodesWithName > 0)
-			return std::string(desiredName + std::to_string(numNodesWithName + 1));
+			return std::string(desiredName + splitChar + std::to_string(numNodesWithName + 1));
 
 		return desiredName;
 	}
