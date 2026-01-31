@@ -3201,6 +3201,12 @@ void ClearLinkSelection()
     editor.SelectedLinkIndices.clear();
 }
 
+void ClearTransitionSelection()
+{
+    ImNodesEditorContext& editor = EditorContextGet();
+	editor.SelectedTransitionIndices.clear();
+}
+
 void ClearLinkSelection(int link_id)
 {
     ImNodesEditorContext& editor = EditorContextGet();

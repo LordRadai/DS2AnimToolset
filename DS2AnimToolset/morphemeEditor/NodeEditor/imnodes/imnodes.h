@@ -377,6 +377,7 @@ void GetSelectedTransition(int* transition_ids);
 // Clears the list of selected nodes/links. Useful if you want to delete a selected node or link.
 void ClearNodeSelection();
 void ClearLinkSelection();
+void ClearTransitionSelection();
 // Use the following functions to add or remove individual nodes or links from the current editors
 // selection. Note that all functions require the id to be an existing valid id for this editor.
 // Select-functions has the precondition that the object is currently considered unselected.

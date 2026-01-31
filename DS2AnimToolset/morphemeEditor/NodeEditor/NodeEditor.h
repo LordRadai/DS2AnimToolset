@@ -85,6 +85,7 @@ namespace NodeEditor
 
 		Node* getSelectedNode() const;
 		Transition* getSelectedTransition() const;
+		void clearSelection();
 
 		Node* getControlParametersNode() const { return m_controlParametersNode; }
 

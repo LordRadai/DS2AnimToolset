@@ -265,12 +265,21 @@ namespace NodeEditor
         return dynamic_cast<Transition*>(m_registry->findEntity(selectedNodeID));
     }
 
+    void NodeEditor::clearSelection()
+    {
+        ImNodes::ClearLinkSelection();
+        ImNodes::ClearNodeSelection();
+		ImNodes::ClearTransitionSelection();
+    }
+
 	void NodeEditor::pushGraph(Graph* graph)
     {
         if (m_graphStack.empty())
 			m_rootGraph = graph;
 
         m_graphStack.push(graph);
+
+		clearSelection();
 	}
 
 	void NodeEditor::popGraph()
