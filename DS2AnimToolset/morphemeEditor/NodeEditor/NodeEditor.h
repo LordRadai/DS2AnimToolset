@@ -56,6 +56,7 @@ namespace NodeEditor
 	{
 	protected:
 		StyleSettings m_styleSettings;
+		Graph* m_rootGraph;
 		std::stack<Graph*> m_graphStack;
 		std::vector<ControlParameter*> m_controlParameters;
 		ControlParametersNode* m_controlParametersNode;
@@ -95,8 +96,9 @@ namespace NodeEditor
 		ControlParameter* createControlParameterVector4(const std::string& name);
 		ControlParameter* createControlParameterQuaternion(const std::string& name);
 
+		Graph* getRootGraph() const { return m_rootGraph; }
 		Graph* getCurrentGraph() const { return m_graphStack.top(); }
-		void pushGraph(Graph* graph) { m_graphStack.push(graph); }
+		void pushGraph(Graph* graph);
 		void popGraph();
 
 		void styleEditor();

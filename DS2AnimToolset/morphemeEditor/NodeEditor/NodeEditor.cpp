@@ -253,10 +253,21 @@ namespace NodeEditor
         return dynamic_cast<Node*>(m_registry->findEntity(selectedNodeID));
     }
 
+	void NodeEditor::pushGraph(Graph* graph)
+    {
+        if (m_graphStack.empty())
+			m_rootGraph = graph;
+
+        m_graphStack.push(graph);
+	}
+
 	void NodeEditor::popGraph()
 	{
-		if (m_graphStack.size() > 1)
-			m_graphStack.pop();
+        if (!m_graphStack.empty())
+            m_graphStack.pop();
+
+		if (m_graphStack.empty())
+			m_rootGraph = nullptr;
 	}
 
     void NodeEditor::initStyle()

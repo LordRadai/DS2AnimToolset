@@ -357,15 +357,12 @@ void ComputeTransitionAnchors(const int transition_id, const ImNodeData& source,
     // --------------------------------
     const ImVec2 contract = tangent * distance_from_nodes;
 
-    src_anchor += perp_offset + contract;
+    src_anchor += perp_offset;
     dst_anchor += perp_offset - contract;
 }
 
-void DrawArrow(ImDrawList* drawList, ImVec2 src, ImVec2 dst, ImU32 color, float thickness = 2.0f, float arrowSize = 10.0f)
+void DrawTransitionConnector(ImDrawList* drawList, ImVec2 src, ImVec2 dst, ImU32 color, float thickness = 2.0f, float arrowSize = 10.0f)
 {
-    // Draw main line
-    drawList->AddLine(src, dst, color, thickness);
-
     // Compute direction vector of the line
     ImVec2 dir = dst - src;
     float length = sqrtf(dir.x * dir.x + dir.y * dir.y);
@@ -376,13 +373,23 @@ void DrawArrow(ImDrawList* drawList, ImVec2 src, ImVec2 dst, ImU32 color, float 
     // Perpendicular vector for arrowhead
     ImVec2 perp(-dir.y, dir.x);
 
-    // Two arrowhead points
     ImVec2 arrowP1 = dst - dir * arrowSize + perp * (arrowSize * 0.5f);
     ImVec2 arrowP2 = dst - dir * arrowSize - perp * (arrowSize * 0.5f);
+    ImVec2 arrowMid = dst - dir * arrowSize * 0.5f;
+
+	ImVec2 midPoint = (src + dst) * 0.5f;
+
+	// Source anchor point
+    drawList->AddCircleFilled(src, thickness * 1.5f, color);
+
+	// Breakout transit anchor point
+    drawList->AddCircleFilled(midPoint, thickness * 1.5f, color);
 
     // Draw arrowhead lines
-    drawList->AddLine(dst, arrowP1, color, thickness);
-    drawList->AddLine(dst, arrowP2, color, thickness);
+	drawList->AddTriangleFilled(dst, arrowP1, arrowP2, color);
+
+    // Draw main line
+    drawList->AddLine(src, arrowMid, color, thickness);
 }
 
 // [SECTION] coordinates conversion helpers
@@ -1853,7 +1860,7 @@ void DrawTransition(ImNodesEditorContext& editor, const int transition_idx)
     // ------------------------------------------------------------
     // Draw straight line
     // ------------------------------------------------------------
-    DrawArrow(GImNodes->CanvasDrawList, src_anchor, dst_anchor, color, GImNodes->Style.TransitionThickness, GImNodes->Style.TransitionArrowSize);
+    DrawTransitionConnector(GImNodes->CanvasDrawList, src_anchor, dst_anchor, color, GImNodes->Style.TransitionThickness, GImNodes->Style.TransitionArrowSize);
 
     //GImNodes->CanvasDrawList->AddCircleFilled(src_anchor, 4.0f, IM_COL32(0, 255, 0, 255));
     //GImNodes->CanvasDrawList->AddCircleFilled(dst_anchor, 4.0f, IM_COL32(255, 0, 0, 255));
