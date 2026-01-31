@@ -90,13 +90,13 @@ namespace NodeEditor
 		Node* getControlParametersNode() const { return m_controlParametersNode; }
 
 		void addControlParameter(ControlParameter* parameter);
-		ControlParameter* createControlParameterFloat(const std::string& name);
-		ControlParameter* createControlParameterInt(const std::string& name);
-		ControlParameter* createControlParameterUInt(const std::string& name);
-		ControlParameter* createControlParameterBool(const std::string& name);
-		ControlParameter* createControlParameterVector3(const std::string& name);
-		ControlParameter* createControlParameterVector4(const std::string& name);
-		ControlParameter* createControlParameterQuaternion(const std::string& name);
+		ControlParameter* createControlParameterFloat(int id, const std::string& name);
+		ControlParameter* createControlParameterInt(int id, const std::string& name);
+		ControlParameter* createControlParameterUInt(int id, const std::string& name);
+		ControlParameter* createControlParameterBool(int id, const std::string& name);
+		ControlParameter* createControlParameterVector3(int id, const std::string& name);
+		ControlParameter* createControlParameterVector4(int id, const std::string& name);
+		ControlParameter* createControlParameterQuaternion(int id, const std::string& name);
 
 		Graph* getRootGraph() const { return m_rootGraph; }
 		Graph* getCurrentGraph() const { return m_graphStack.top(); }
@@ -109,6 +109,6 @@ namespace NodeEditor
 	private:
 		void initStyle();
 
-		ControlParameter* createControlParameter(const std::string& name, ControlParameter::ParameterType parameterType);
+		ControlParameter* createControlParameter(int id, const std::string& name, ControlParameter::ParameterType parameterType);
 	};
 }

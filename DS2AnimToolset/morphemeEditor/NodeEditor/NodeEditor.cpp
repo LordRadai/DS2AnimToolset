@@ -151,7 +151,7 @@ namespace NodeEditor
         }
     }
 
-	ControlParameter* NodeEditor::createControlParameter(const std::string& name, ControlParameter::ParameterType parameterType)
+	ControlParameter* NodeEditor::createControlParameter(int id, const std::string& name, ControlParameter::ParameterType parameterType)
     {
         if (hasControlParameter(name))
         {
@@ -159,7 +159,7 @@ namespace NodeEditor
             return nullptr;
         }
 
-        ControlParameter* parameter = new ControlParameter(this, name, parameterType);
+        ControlParameter* parameter = new ControlParameter(this, id, name, parameterType);
 		addControlParameter(parameter);
 
         return parameter;
@@ -171,39 +171,39 @@ namespace NodeEditor
         m_controlParametersNode->addOutputPin(parameter->getOutputPin());
     }
 
-    ControlParameter* NodeEditor::createControlParameterFloat(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterFloat(int id, const std::string& name)
     {
-        return createControlParameter(name, ControlParameter::kParameterTypeFloat);
+        return createControlParameter(id, name, ControlParameter::kParameterTypeFloat);
     }
 
-    ControlParameter* NodeEditor::createControlParameterInt(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterInt(int id, const std::string& name)
     {
-        return createControlParameter(name, ControlParameter::kParameterTypeInt);
+        return createControlParameter(id, name, ControlParameter::kParameterTypeInt);
 	}
 
-    ControlParameter* NodeEditor::createControlParameterUInt(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterUInt(int id, const std::string& name)
     {
-        return createControlParameter(name, ControlParameter::kParameterTypeUInt);
+        return createControlParameter(id, name, ControlParameter::kParameterTypeUInt);
     }
 
-    ControlParameter* NodeEditor::createControlParameterBool(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterBool(int id, const std::string& name)
     {
-        return createControlParameter(name, ControlParameter::kParameterTypeBool);
+        return createControlParameter(id, name, ControlParameter::kParameterTypeBool);
 	}
 
-    ControlParameter* NodeEditor::createControlParameterVector3(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterVector3(int id, const std::string& name)
     {
-        return createControlParameter(name, ControlParameter::kParameterTypeVector3);
+        return createControlParameter(id, name, ControlParameter::kParameterTypeVector3);
     }
 
-    ControlParameter* NodeEditor::createControlParameterVector4(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterVector4(int id, const std::string& name)
     {
-        return createControlParameter(name, ControlParameter::kParameterTypeVector4);
+        return createControlParameter(id, name, ControlParameter::kParameterTypeVector4);
     }
 
-    ControlParameter* NodeEditor::createControlParameterQuaternion(const std::string& name)
+    ControlParameter* NodeEditor::createControlParameterQuaternion(int id, const std::string& name)
     {
-        return createControlParameter(name, ControlParameter::kParameterTypeQuaternion);
+        return createControlParameter(id, name, ControlParameter::kParameterTypeQuaternion);
     }
 
     ControlParameter* NodeEditor::getControlParameter(const std::string& name) const
