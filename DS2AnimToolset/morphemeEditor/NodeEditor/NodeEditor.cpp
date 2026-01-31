@@ -253,6 +253,18 @@ namespace NodeEditor
         return dynamic_cast<Node*>(m_registry->findEntity(selectedNodeID));
     }
 
+    Transition* NodeEditor::getSelectedTransition() const
+    {
+        int selectedNodeID = -1;
+
+        if (ImNodes::NumSelectedTransitions() != 1)
+            return nullptr;
+
+        ImNodes::GetSelectedTransition(&selectedNodeID);
+
+        return dynamic_cast<Transition*>(m_registry->findEntity(selectedNodeID));
+    }
+
 	void NodeEditor::pushGraph(Graph* graph)
     {
         if (m_graphStack.empty())

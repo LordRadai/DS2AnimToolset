@@ -84,6 +84,7 @@ namespace NodeEditor
 		bool hasControlParameter(const std::string& name) const;
 
 		Node* getSelectedNode() const;
+		Transition* getSelectedTransition() const;
 
 		Node* getControlParametersNode() const { return m_controlParametersNode; }
 

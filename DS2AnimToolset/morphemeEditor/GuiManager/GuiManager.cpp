@@ -1690,7 +1690,10 @@ void GuiManager::selectedNodeInfoWindow()
 
 	NodeEditor::Node* selectedNode = nodeEditor->getSelectedNode();
 
-	if (selectedNode != nullptr)
+	if (!selectedNode)
+		selectedNode = nodeEditor->getSelectedTransition();
+
+	if (selectedNode)
 		selectedNode->editorGUI();
 
 	ImGui::End();
