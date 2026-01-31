@@ -3,7 +3,7 @@
 #include "NodeEditor/Node/Node.h"
 #include "NodeEditor/Link/Link.h"
 #include "NodeEditor/imnodes/imnodes.h"
-#include "NodeEditor/ControlParametersNode/ControlParametersNode.h"
+#include "NodeEditor/Node/ControlParametersNode.h"
 
 namespace NodeEditor
 {
