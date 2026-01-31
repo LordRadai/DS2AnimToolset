@@ -24,8 +24,8 @@ namespace NodeEditor
 			int getNodeID() const;
 			void setNodeID(int id);
 
-			int getNodeTypeID();
-			void setNodeTypeID(int typeID);
+			const std::string getNodeTypeName();
+			void setNodeTypeName(const std::string& typeName);
 
 			int getParentNodeID() const;
 			void setParentNodeID(int id);
@@ -47,7 +47,7 @@ namespace NodeEditor
 			ProjectNode* getInputNode(int nodeID) const;
 			size_t getNumInputNodes() const { return m_inputNodes.size(); }
 			void addInputNode(ProjectNode* node);
-			ProjectNode* createInputNode(const std::string& name, int nodeID, int typeID);
+			ProjectNode* createInputNode(const std::string& name, int nodeID, const std::string& typeName);
 			ProjectNode* createInputBlendTreeNode(const std::string& name, int nodeID);
 			ProjectNode* createInputStateMachineNode(const std::string& name, int nodeID);
 
@@ -55,7 +55,7 @@ namespace NodeEditor
 			ProjectNode* getChildNode(int nodeID) const;
 			size_t getNumChildNodes() const { return m_childrenNodes.size(); }
 			void addChildNode(ProjectNode* node);
-			ProjectNode* createChildNode(const std::string& name, int nodeID, int typeID);
+			ProjectNode* createChildNode(const std::string& name, int nodeID, const std::string& typeName);
 			ProjectNode* createChildBlendTreeNode(const std::string& name, int nodeID);
 			ProjectNode* createChildStateMachineNode(const std::string& name, int nodeID);
 

@@ -1,5 +1,4 @@
 #include "ProjectNode.h"
-#include "morpheme/mrDefines.h"
 
 namespace NodeEditor
 {
@@ -76,17 +75,16 @@ namespace NodeEditor
 				m_xmlElement->SetAttribute("nodeID", id);
 		}
 
-		int ProjectNode::getNodeTypeID()
+		const std::string ProjectNode::getNodeTypeName()
 		{
 			if (m_xmlElement)
-				return m_xmlElement->IntAttribute("typeID");
-			throw std::runtime_error("XML Element is null, cannot get Node Type ID.");
+				return m_xmlElement->Attribute("nodeType");
 		}
 
-		void ProjectNode::setNodeTypeID(int typeID)
+		void ProjectNode::setNodeTypeName(const std::string& typeName)
 		{
 			if (m_xmlElement)
-				m_xmlElement->SetAttribute("typeID", typeID);
+				m_xmlElement->SetAttribute("nodeType", typeName.c_str());
 		}
 
 		int ProjectNode::getParentNodeID() const
@@ -189,7 +187,7 @@ namespace NodeEditor
 			inputNodeList->InsertEndChild(node->getXMLElement());
 		}
 
-		ProjectNode* ProjectNode::createInputNode(const std::string& name, int nodeID, int typeID)
+		ProjectNode* ProjectNode::createInputNode(const std::string& name, int nodeID, const std::string& typeName)
 		{
 			tinyxml2::XMLElement* inputNodeList = m_xmlElement->FirstChildElement("InputNodes");
 
@@ -199,7 +197,7 @@ namespace NodeEditor
 			ProjectNode* node = new ProjectNode(inputNodeList);
 			node->setName(name);
 			node->setNodeID(nodeID);
-			node->setNodeTypeID(typeID);
+			node->setNodeTypeName(typeName);
 
 			addInputNode(node);
 			return node;
@@ -207,14 +205,14 @@ namespace NodeEditor
 
 		ProjectNode* ProjectNode::createInputBlendTreeNode(const std::string& name, int nodeID)
 		{
-			ProjectNode* node = createInputNode(name, nodeID, -1);
+			ProjectNode* node = createInputNode(name, nodeID, "BlendTree");
 			node->setContainerType("BlendTree");
 			return node;
 		}
 
 		ProjectNode* ProjectNode::createInputStateMachineNode(const std::string& name, int nodeID)
 		{
-			ProjectNode* node = createInputNode(name, nodeID, NODE_TYPE_STATE_MACHINE);
+			ProjectNode* node = createInputNode(name, nodeID, "StateMachine");
 			node->setContainerType("StateMachine");
 			return node;
 		}
@@ -249,7 +247,7 @@ namespace NodeEditor
 			childNodeList->InsertEndChild(node->getXMLElement());
 		}
 
-		ProjectNode* ProjectNode::createChildNode(const std::string& name, int nodeID, int typeID)
+		ProjectNode* ProjectNode::createChildNode(const std::string& name, int nodeID, const std::string& typeName)
 		{
 			tinyxml2::XMLElement* childNodeList = m_xmlElement->FirstChildElement("ChildNodes");
 
@@ -259,21 +257,23 @@ namespace NodeEditor
 			ProjectNode* node = new ProjectNode(childNodeList);
 			node->setName(name);
 			node->setNodeID(nodeID);
-			node->setNodeTypeID(typeID);
+			node->setNodeTypeName(typeName);
+
 			addChildNode(node);
+
 			return node;
 		}
 
 		ProjectNode* ProjectNode::createChildBlendTreeNode(const std::string& name, int nodeID)
 		{
-			ProjectNode* node = createChildNode(name, nodeID, -1);
+			ProjectNode* node = createChildNode(name, nodeID, "BLendTree");
 			node->setContainerType("BlendTree");
 			return node;
 		}
 
 		ProjectNode* ProjectNode::createChildStateMachineNode(const std::string& name, int nodeID)
 		{
-			ProjectNode* node = createChildNode(name, nodeID, NODE_TYPE_STATE_MACHINE);
+			ProjectNode* node = createChildNode(name, nodeID, "StateMachine");
 			node->setContainerType("StateMachine");
 
 			return node;
