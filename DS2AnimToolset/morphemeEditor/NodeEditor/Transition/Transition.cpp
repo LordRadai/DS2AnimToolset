@@ -24,8 +24,6 @@ namespace NodeEditor
     {
         Node::editorGUI();
 
-        ImGui::SeparatorText("Conditions");
-
         for (Condition* condition : m_conditions)
             condition->editorGUI();
 	}

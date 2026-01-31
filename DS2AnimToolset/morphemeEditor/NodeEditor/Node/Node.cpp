@@ -217,9 +217,6 @@ namespace NodeEditor
 	{
 		ImGui::TextUnformatted(m_typeName.c_str());
 		ImGui::Label(m_name.c_str());
-		ImGui::DragFloat2("Position", &m_position.x);
-
-		ImGui::SeparatorText("Attributes");
 
 		for (Attribute* attribute : m_attributes)
 		{
