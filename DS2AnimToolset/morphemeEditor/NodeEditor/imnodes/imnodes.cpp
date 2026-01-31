@@ -853,7 +853,7 @@ void BeginTransitionCreation(ImNodesEditorContext& editor, const int hovered_nod
     GImNodes->ImNodesUIState |= ImNodesUIState_TransitionStarted;
 }
 
-void BeginTransitionInterfaction(
+void BeginTransitionInteraction(
     ImNodesEditorContext& editor,
     const int             transition_idx,
     const ImOptionalIndex pin_idx = ImOptionalIndex())
@@ -868,7 +868,7 @@ void BeginCanvasInteraction(ImNodesEditorContext& editor)
 {
     const bool any_ui_element_hovered =
         GImNodes->HoveredNodeIdx.HasValue() || GImNodes->HoveredLinkIdx.HasValue() ||
-        GImNodes->HoveredPinIdx.HasValue() || ImGui::IsAnyItemHovered();
+        GImNodes->HoveredPinIdx.HasValue() || GImNodes->HoveredTransitionIdx.HasValue() || ImGui::IsAnyItemHovered();
 
     const bool mouse_not_in_canvas = !MouseInCanvas();
 
@@ -953,6 +953,12 @@ void BoxSelectorUpdateSelection(ImNodesEditorContext& editor, ImRect box_rect)
             }
         }
     }
+
+    // Update transition selection
+
+    editor.SelectedTransitionIndices.clear();
+
+    // Test for overlap against transitions
 
     for (int transition_idx = 0; transition_idx < editor.Transitions.Pool.size(); ++transition_idx)
     {
@@ -2628,7 +2634,7 @@ void EndNodeEditor()
 
 		else if (GImNodes->LeftMouseClicked && GImNodes->HoveredTransitionIdx.HasValue())
         {
-            BeginTransitionInterfaction(editor, GImNodes->HoveredTransitionIdx.Value());
+            BeginTransitionInteraction(editor, GImNodes->HoveredTransitionIdx.Value());
         }
 
         else if (
