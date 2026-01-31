@@ -9,10 +9,6 @@ namespace NodeEditor
 		createInputPin("Output");
 	}
 
-	BlendTreeOutputNode::~BlendTreeOutputNode()
-	{
-	}
-
 	void BlendTreeOutputNode::draw()
 	{
 		StyleSettings& style = m_ownerEditor->getStyleSettings();
