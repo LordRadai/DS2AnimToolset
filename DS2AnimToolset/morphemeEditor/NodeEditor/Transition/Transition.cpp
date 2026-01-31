@@ -55,7 +55,7 @@ namespace NodeEditor
         return nullptr;
 	}
 
-    const std::string Transition::makeConditionNameValid(const std::string& desiredName, const std::string& typeName)
+    const std::string Transition::makeConditionNameValid(const std::string& desiredName)
     {
         int numConditionsWithName = 0;
 
