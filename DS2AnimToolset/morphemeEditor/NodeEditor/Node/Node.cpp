@@ -216,6 +216,8 @@ namespace NodeEditor
 	void Node::editorGUI()
 	{
 		ImGui::TextUnformatted(m_typeName.c_str());
+
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 		ImGui::Label(m_name.c_str());
 
 		for (Attribute* attribute : m_attributes)
