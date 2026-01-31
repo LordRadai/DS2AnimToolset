@@ -5,7 +5,7 @@ namespace NodeEditor
 {
 	BlendTree::BlendTree(NodeEditor* editor, Graph* parent, const std::string& name) : Graph(editor, parent, name), m_resultNode(nullptr)
 	{
-		m_resultNode = new Node(editor, this, -1, "Output", nullptr);
+		m_resultNode = new Node(editor, this, -1, "", "Output", nullptr);
 		m_resultNode->createInputPin("Output");
 
 		m_resultNode->setPosition(600.0f, 200.0f);
@@ -24,6 +24,11 @@ namespace NodeEditor
 
 		for (Link* link : m_links)
 			link->draw();
+	}
+
+	Node* BlendTree::createNode(int nodeID, const std::string& typeName, const std::string& name)
+	{
+		return Graph::createNode(nodeID, typeName, name);
 	}
 
 	bool BlendTree::connectToOutput(Pin* outputPin)

@@ -6,8 +6,8 @@
 
 namespace NodeEditor
 {
-	Node::Node(NodeEditor* editor, Graph* parent, int id, const std::string& name, Graph* subGraph) : Entity(editor, name),
-		m_parentGraph(parent), m_nodeID(id), m_subGraph(subGraph), m_position(ImVec2(0.f, 0.f))
+	Node::Node(NodeEditor* editor, Graph* parent, int id, const std::string typeName, const std::string& name, Graph* subGraph) : Entity(editor, name),
+		m_parentGraph(parent), m_nodeID(id), m_typeName(typeName), m_subGraph(subGraph), m_position(ImVec2(0.f, 0.f))
 	{
 	}
 
@@ -182,6 +182,21 @@ namespace NodeEditor
 		return m_name;
 	}
 
+	const std::string Node::getTypeName() const
+	{
+		if (m_subGraph)
+		{
+			if (m_subGraph->getName().find("StateMachine") != std::string::npos)
+				return "StateMachine";
+			if (m_subGraph->getName().find("BlendTree") != std::string::npos)
+				return "BlendTree";
+
+
+		}
+
+		return "UnknownNode";
+	}
+
 	void Node::calcNodeSize(float& width, float& height) const
 	{
 		ImNodesStyle& imStyle = ImNodes::GetStyle();
@@ -200,7 +215,8 @@ namespace NodeEditor
 
 	void Node::editorGUI()
 	{
-		ImGui::TextUnformatted(m_name.c_str());
+		ImGui::TextUnformatted(m_typeName.c_str());
+		ImGui::Label(m_name.c_str());
 		ImGui::DragFloat2("Position", &m_position.x);
 
 		ImGui::SeparatorText("Attributes");

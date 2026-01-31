@@ -4,7 +4,7 @@
 namespace NodeEditor
 {
 	StateNode::StateNode(NodeEditor* editor, Graph* parent, int id, const std::string& name, Graph* subGraph)
-		: Node(editor, parent, id, name, subGraph)
+		: Node(editor, parent, id, "ActiveState", name, subGraph)
 	{
 	}
 

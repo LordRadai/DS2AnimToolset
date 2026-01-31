@@ -15,6 +15,7 @@ namespace NodeEditor
 	protected:
 		Graph* m_parentGraph;
 		int m_nodeID;
+		std::string m_typeName;
 		std::vector<Attribute*> m_attributes;
 		std::vector<Pin*> m_inputPins;
 		std::vector<Pin*> m_outputPins;
@@ -22,7 +23,7 @@ namespace NodeEditor
 		Graph* m_subGraph;
 
 	public:
-		Node(NodeEditor* editor, Graph* parent, int id, const std::string& name, Graph* subGraph);
+		Node(NodeEditor* editor, Graph* parent, int id, const std::string typeName, const std::string& name, Graph* subGraph);
 		virtual ~Node() override;
 
 		void draw() override;
@@ -60,6 +61,7 @@ namespace NodeEditor
 		bool hasSubGraph() const { return m_subGraph != nullptr; }
 
 		const std::string getFullName() const;
+		const std::string getTypeName() const;
 
 		void editorGUI();
 	private:

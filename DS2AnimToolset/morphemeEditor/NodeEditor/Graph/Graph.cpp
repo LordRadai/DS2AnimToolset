@@ -4,6 +4,7 @@
 #include "BlendTree.h"
 #include "StateMachine.h"
 #include "extern.h"
+#include "morpheme/mrDefines.h"s
 #include "RLog/RLog.h"
 
 namespace NodeEditor
@@ -55,7 +56,7 @@ namespace NodeEditor
 		m_panning = ImVec2(x, y);
 	}
 
-	Node* Graph::createNode(int nodeID, const std::string& name)
+	Node* Graph::createNode(int nodeID, const std::string& typeName, const std::string& name)
 	{
 		if (!isOfType<BlendTree>())
 		{
@@ -66,7 +67,14 @@ namespace NodeEditor
 		float x, y;
 		getFreePosition(x, y);
 
-		Node* node = new Node(m_ownerEditor, this, nodeID, name, nullptr);
+		std::string nameToUse = name;
+
+		if (nameToUse == "")
+			nameToUse = typeName;
+
+		std::string nodeName = makeNameValid(nameToUse);
+
+		Node* node = new Node(m_ownerEditor, this, nodeID, typeName, nodeName, nullptr);
 		node->setPosition(x, y);
 
 		m_nodes.push_back(node);
@@ -79,7 +87,7 @@ namespace NodeEditor
 		float x, y;
 		getFreePosition(x, y);
 
-		Node* node = new Node(m_ownerEditor, this, nodeID, name, new BlendTree(m_ownerEditor, this, name));
+		Node* node = new Node(m_ownerEditor, this, nodeID, "BlendTree", name, new BlendTree(m_ownerEditor, this, name));
 		node->setPosition(x, y);
 
 		m_nodes.push_back(node);
@@ -92,7 +100,7 @@ namespace NodeEditor
 		float x, y;
 		getFreePosition(x, y);
 
-		Node* node = new Node(m_ownerEditor, this, nodeID, name, new StateMachine(m_ownerEditor, this, name));
+		Node* node = new Node(m_ownerEditor, this, nodeID, "StateMachine", name, new StateMachine(m_ownerEditor, this, name));
 		node->setPosition(x, y);
 
 		if (isOfType<BlendTree>())
@@ -147,5 +155,20 @@ namespace NodeEditor
 
 		x = 10.f;
 		y = maxY + 100.f;
+	}
+
+	const std::string Graph::makeNameValid(const std::string& desiredName)
+	{
+		int numNodesWithName = 0;
+
+		for (size_t i = 0; i < m_nodes.size(); i++)
+		{
+			Node* node = m_nodes[i];
+
+			if (node->getName() == desiredName)
+				numNodesWithName++;
+		}
+
+		return std::string(desiredName + std::to_string(numNodesWithName));
 	}
 }

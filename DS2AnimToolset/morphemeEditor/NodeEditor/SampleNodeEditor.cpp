@@ -31,16 +31,16 @@ namespace NodeEditor
 
 		node1->createOutputPin("Result");
 
-		Node* node2 = rootGraph->createNode(2, "Node2");
+		Node* node2 = rootGraph->createNode(2, "PassThrough");
 		node2->createInputPin("Source");
 		node2->createOutputPin("Result");
 
-		Node* stateMachine = rootGraph->createStateMachine(3, "StateMachine");
+		Node* stateMachine = rootGraph->createStateMachine(3);
 		StateMachine* sm = stateMachine->getSubGraph()->asType<StateMachine>();
 
-		Node* src = sm->createBlendTree(4, "BlendTree1");
-		Node* dst = sm->createBlendTree(5, "BlendTree2");
-		sm->createStateNode(8, "ActiveState");
+		Node* src = sm->createBlendTree(4);
+		Node* dst = sm->createBlendTree(5);
+		sm->createStateNode(8);
 
 		sm->createTransition(6, src, dst);
 		sm->createTransition(7, dst, src);

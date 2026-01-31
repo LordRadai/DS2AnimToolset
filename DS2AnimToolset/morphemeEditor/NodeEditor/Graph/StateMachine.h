@@ -14,7 +14,7 @@ namespace NodeEditor
 
 		void draw() override;
 
-		StateNode* createStateNode(int nodeID, const std::string& name);
+		StateNode* createStateNode(int nodeID, const std::string& name = "ActiveState");
 
 		Transition* getTransition(int nodeID) const;
 		Transition* getTransition(const std::string& name) const;
