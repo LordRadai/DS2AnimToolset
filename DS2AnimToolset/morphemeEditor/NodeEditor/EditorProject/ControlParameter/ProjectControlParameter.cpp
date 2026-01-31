@@ -1,4 +1,4 @@
-#include "ControlParameter.h"
+#include "ProjectControlParameter.h"
 #include "NMPlatform/NMQuat.h"
 #include "NMPlatform/NMVector3.h"
 
