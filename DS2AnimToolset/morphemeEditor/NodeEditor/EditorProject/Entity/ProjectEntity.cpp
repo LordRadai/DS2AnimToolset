@@ -1,15 +1,15 @@
-#include "Entity.h"
+#include "ProjectEntity.h"
 
 namespace NodeEditor
 {
 	namespace Project
 	{
-		Entity::Entity(tinyxml2::XMLElement* xmlElement, const std::string& elemName)
+		ProjectEntity::ProjectEntity(tinyxml2::XMLElement* xmlElement, const std::string& elemName)
 		{
 			m_xmlElement = xmlElement->InsertNewChildElement(elemName.c_str());
 		}
 
-		bool Entity::loadFromXMLElement(tinyxml2::XMLElement* xmlElement)
+		bool ProjectEntity::loadFromXMLElement(tinyxml2::XMLElement* xmlElement)
 		{
 			if (xmlElement)
 			{
@@ -20,7 +20,7 @@ namespace NodeEditor
 			return false;
 		}
 
-		const std::string Entity::getName() const
+		const std::string ProjectEntity::getName() const
 		{
 			if (m_xmlElement)
 			{
@@ -33,7 +33,7 @@ namespace NodeEditor
 			return "";
 		}
 
-		void Entity::setName(const std::string& name)
+		void ProjectEntity::setName(const std::string& name)
 		{
 			if (m_xmlElement)
 				m_xmlElement->SetAttribute("name", name.c_str());

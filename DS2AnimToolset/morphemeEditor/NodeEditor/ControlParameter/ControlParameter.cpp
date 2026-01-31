@@ -39,7 +39,7 @@ namespace NodeEditor
 		m_output = new DataPin(editor, editor->getControlParametersNode(), name, false, dataType);
 	}
 
-	ControlParameter::ControlParameter(NodeEditor* editor, Project::ControlParameter* projectParameter) : Entity(editor, projectParameter)
+	ControlParameter::ControlParameter(NodeEditor* editor, Project::ProjectControlParameter* projectParameter) : Entity(editor, projectParameter)
 	{
 		const std::string typeStr = projectParameter->getType();
 

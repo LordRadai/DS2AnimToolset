@@ -1,15 +1,15 @@
 #pragma once
-#include "NodeEditor/EditorProject/Entity/Entity.h"
+#include "NodeEditor/EditorProject/Entity/ProjectEntity.h"
 
 namespace NodeEditor
 {
 	namespace Project
 	{
-		class ControlParameter : public Entity
+		class ProjectControlParameter : public ProjectEntity
 		{
 		public:
-			ControlParameter(tinyxml2::XMLElement* xmlElement) : Entity(xmlElement, "ControlParameter") {}
-			virtual ~ControlParameter() override {}
+			ProjectControlParameter(tinyxml2::XMLElement* xmlElement) : ProjectEntity(xmlElement, "ControlParameter") {}
+			virtual ~ProjectControlParameter() override {}
 			virtual bool loadFromXMLElement(tinyxml2::XMLElement* xmlElement) override;
 
 			const std::string getType() const;

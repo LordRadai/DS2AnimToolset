@@ -1,7 +1,7 @@
 #pragma once
 #include "RCore.h"
-#include "Node/Node.h"
-#include "ControlParameter/ControlParameter.h"
+#include "Node/ProjectNode.h"
+#include "ControlParameter/ProjectControlParameter.h"
 
 namespace NodeEditor
 {
@@ -12,8 +12,8 @@ namespace NodeEditor
 			tinyxml2::XMLDocument* m_xmlDoc;
 			tinyxml2::XMLElement* m_rootElement;
 
-			Node* m_rootNode;
-			std::vector<ControlParameter*> m_controlParameters;
+			ProjectNode* m_rootNode;
+			std::vector<ProjectControlParameter*> m_controlParameters;
 		public:
 			EditorProject();
 			~EditorProject();
@@ -21,23 +21,23 @@ namespace NodeEditor
 			const std::string getProjectName() const;
 			void setProjectName(const std::string& name);
 
-			Node* getRootNode() const { return m_rootNode; }
-			void setRootNode(Node* node);
+			ProjectNode* getRootNode() const { return m_rootNode; }
+			void setRootNode(ProjectNode* node);
 
-			Node* createRootBlendTreeNode(const std::string& name, int nodeID);
-			Node* createRootStateMachineNode(const std::string& name, int nodeID);
+			ProjectNode* createRootBlendTreeNode(const std::string& name, int nodeID);
+			ProjectNode* createRootStateMachineNode(const std::string& name, int nodeID);
 
-			ControlParameter* getControlParameter(size_t index) const;
-			ControlParameter* getControlParameter(const std::string& name) const;
+			ProjectControlParameter* getControlParameter(size_t index) const;
+			ProjectControlParameter* getControlParameter(const std::string& name) const;
 			size_t getNumControlParameters() const { return m_controlParameters.size(); }
-			void addControlParameter(ControlParameter* parameter);
-			ControlParameter* createControlParameter(const std::string& name, const std::string& type);
+			void addControlParameter(ProjectControlParameter* parameter);
+			ProjectControlParameter* createControlParameter(const std::string& name, const std::string& type);
 
 			bool saveProject(const std::string& filePath);
 			bool loadProject(const std::string& filePath);
 
 		private:
-			Node* createRootNode(const std::string& name, int nodeID, int typeID);
+			ProjectNode* createRootNode(const std::string& name, int nodeID, int typeID);
 		};
 	}
 }

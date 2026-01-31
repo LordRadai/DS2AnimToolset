@@ -1909,9 +1909,9 @@ void MorphemeEditorApp::createTestEditorProject()
 	testProject->setProjectName("Sample Editor Project");
 	testProject->createControlParameter("Speed", "float");
 
-	NodeEditor::Project::Node* root = testProject->createRootBlendTreeNode("RootBT", 0);
+	NodeEditor::Project::ProjectNode* root = testProject->createRootBlendTreeNode("RootBT", 0);
 
-	NodeEditor::Project::Node* blend2 = root->createChildNode("Blend2", 3, NODE_TYPE_BLEND_2);
+	NodeEditor::Project::ProjectNode* blend2 = root->createChildNode("Blend2", 3, NODE_TYPE_BLEND_2);
 	blend2->createInputNode("WalkAnim", 1, NODE_TYPE_ANIM_EVENTS);
 	blend2->createInputNode("JobAnim", 2, NODE_TYPE_ANIM_EVENTS);
 	blend2->addInputControlParameter(testProject->getControlParameter("Speed"));

@@ -6,7 +6,7 @@ namespace NodeEditor
 {
 	namespace Project
 	{
-		bool ControlParameter::loadFromXMLElement(tinyxml2::XMLElement* xmlElement)
+		bool ProjectControlParameter::loadFromXMLElement(tinyxml2::XMLElement* xmlElement)
 		{
 			if (xmlElement)
 			{
@@ -17,7 +17,7 @@ namespace NodeEditor
 			return false;
 		}
 
-		const std::string ControlParameter::getType() const
+		const std::string ProjectControlParameter::getType() const
 		{
 			if (m_xmlElement)
 				return m_xmlElement->Attribute("dataType");
@@ -25,14 +25,14 @@ namespace NodeEditor
 			return "";
 		}
 
-		void ControlParameter::setType(const std::string& type)
+		void ProjectControlParameter::setType(const std::string& type)
 		{
 			if (m_xmlElement)
 				m_xmlElement->SetAttribute("dataType", type.c_str());
 		}
 
 		template<>
-		int ControlParameter::getDefaultValue<int>() const
+		int ProjectControlParameter::getDefaultValue<int>() const
 		{
 			tinyxml2::XMLElement* xmlElem = m_xmlElement->FirstChildElement("DefaultValue");
 
@@ -43,7 +43,7 @@ namespace NodeEditor
 		}
 
 		template<>
-		void ControlParameter::setDefaultValue<int>(const int& value)
+		void ProjectControlParameter::setDefaultValue<int>(const int& value)
 		{
 			tinyxml2::XMLElement* xmlElem = m_xmlElement->FirstChildElement("DefaultValue");
 			if (!xmlElem)
@@ -55,7 +55,7 @@ namespace NodeEditor
 		}
 
 		template<>
-		float ControlParameter::getDefaultValue<float>() const
+		float ProjectControlParameter::getDefaultValue<float>() const
 		{
 			tinyxml2::XMLElement* xmlElem = m_xmlElement->FirstChildElement("DefaultValue");
 
@@ -66,7 +66,7 @@ namespace NodeEditor
 		}
 
 		template<>
-		void ControlParameter::setDefaultValue<float>(const float& value)
+		void ProjectControlParameter::setDefaultValue<float>(const float& value)
 		{
 			tinyxml2::XMLElement* xmlElem = m_xmlElement->FirstChildElement("DefaultValue");
 			if (!xmlElem)
@@ -78,7 +78,7 @@ namespace NodeEditor
 		}
 
 		template<>
-		NMP::Vector3 ControlParameter::getDefaultValue<NMP::Vector3>() const
+		NMP::Vector3 ProjectControlParameter::getDefaultValue<NMP::Vector3>() const
 		{
 			tinyxml2::XMLElement* xmlElem = m_xmlElement->FirstChildElement("DefaultValue");
 
@@ -97,7 +97,7 @@ namespace NodeEditor
 		}
 
 		template<>
-		void ControlParameter::setDefaultValue<NMP::Vector3>(const NMP::Vector3& value)
+		void ProjectControlParameter::setDefaultValue<NMP::Vector3>(const NMP::Vector3& value)
 		{
 			tinyxml2::XMLElement* xmlElem = m_xmlElement->FirstChildElement("DefaultValue");
 
@@ -137,7 +137,7 @@ namespace NodeEditor
 		}
 
 		template<>
-		NMP::Quat ControlParameter::getDefaultValue<NMP::Quat>() const
+		NMP::Quat ProjectControlParameter::getDefaultValue<NMP::Quat>() const
 		{
 			tinyxml2::XMLElement* xmlElem = m_xmlElement->FirstChildElement("DefaultValue");
 			if (xmlElem)
@@ -155,7 +155,7 @@ namespace NodeEditor
 		}
 
 		template<>
-		void ControlParameter::setDefaultValue<NMP::Quat>(const NMP::Quat& value)
+		void ProjectControlParameter::setDefaultValue<NMP::Quat>(const NMP::Quat& value)
 		{
 			tinyxml2::XMLElement* xmlElem = m_xmlElement->FirstChildElement("DefaultValue");
 			if (!xmlElem)
@@ -194,7 +194,7 @@ namespace NodeEditor
 		}
 
 		template<>
-		bool ControlParameter::getDefaultValue<bool>() const
+		bool ProjectControlParameter::getDefaultValue<bool>() const
 		{
 			tinyxml2::XMLElement* xmlElem = m_xmlElement->FirstChildElement("DefaultValue");
 			if (xmlElem)
@@ -206,7 +206,7 @@ namespace NodeEditor
 		}
 
 		template<>
-		void ControlParameter::setDefaultValue<bool>(const bool& value)
+		void ProjectControlParameter::setDefaultValue<bool>(const bool& value)
 		{
 			tinyxml2::XMLElement* xmlElem = m_xmlElement->FirstChildElement("DefaultValue");
 			if (!xmlElem)

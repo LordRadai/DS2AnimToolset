@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "NodeEditor/EditorProject/Entity/Entity.h"
+#include "NodeEditor/EditorProject/Entity/ProjectEntity.h"
 
 namespace NodeEditor
 {
@@ -14,7 +14,7 @@ namespace NodeEditor
 		std::string m_name;
 	public:
 		Entity(NodeEditor* editor, const std::string& name);
-		Entity(NodeEditor* editor, Project::Entity* projectEntity) : Entity(editor, projectEntity->getName()) {}
+		Entity(NodeEditor* editor, Project::ProjectEntity* projectEntity) : Entity(editor, projectEntity->getName()) {}
 
 		virtual ~Entity();
 		virtual void draw() = 0;

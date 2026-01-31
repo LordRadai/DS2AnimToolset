@@ -5,13 +5,13 @@ namespace NodeEditor
 {
 	namespace Project
 	{
-		class Entity
+		class ProjectEntity
 		{
 		protected:
 			tinyxml2::XMLElement* m_xmlElement;
 		public:
-			Entity(tinyxml2::XMLElement* xmlElement, const std::string& elemName);
-			virtual ~Entity() {}
+			ProjectEntity(tinyxml2::XMLElement* xmlElement, const std::string& elemName);
+			virtual ~ProjectEntity() {}
 			virtual bool loadFromXMLElement(tinyxml2::XMLElement* xmlElement);
 
 			tinyxml2::XMLElement* getXMLElement() const { return m_xmlElement; }

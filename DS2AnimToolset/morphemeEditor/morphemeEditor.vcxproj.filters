@@ -369,19 +369,19 @@
     <ClInclude Include="NodeEditor\EditorProject\EditorProject.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\EditorProject\Node\Node.h">
+    <ClInclude Include="NodeEditor\EditorProject\Node\ProjectNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\EditorProject\Entity\Entity.h">
+    <ClInclude Include="NodeEditor\EditorProject\Entity\ProjectEntity.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\EditorProject\Attribute\Attribute.h">
+    <ClInclude Include="NodeEditor\EditorProject\Attribute\ProjectAttribute.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\EditorProject\ControlParameter\ControlParameter.h">
+    <ClInclude Include="NodeEditor\EditorProject\ControlParameter\ProjectControlParameter.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\EditorProject\Transition\Transition.h">
+    <ClInclude Include="NodeEditor\EditorProject\Transition\ProjectTransition.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -668,19 +668,19 @@
     <ClCompile Include="NodeEditor\EditorProject\EditorProject.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\EditorProject\Entity\Entity.cpp">
+    <ClCompile Include="NodeEditor\EditorProject\Entity\ProjectEntity.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\EditorProject\Node\Node.cpp">
+    <ClCompile Include="NodeEditor\EditorProject\Node\ProjectNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\EditorProject\ControlParameter\ControlParameter.cpp">
+    <ClCompile Include="NodeEditor\EditorProject\ControlParameter\ProjectControlParameter.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\EditorProject\Attribute\Attribute.cpp">
+    <ClCompile Include="NodeEditor\EditorProject\Attribute\ProjectAttribute.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\EditorProject\Transition\Transition.cpp">
+    <ClCompile Include="NodeEditor\EditorProject\Transition\ProjectTransition.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #pragma once
 #include "NodeEditor/Entity/Entity.h"
 #include "NodeEditor/Pin/DataPin.h"
-#include "NodeEditor/EditorProject/ControlParameter/ControlParameter.h"
+#include "NodeEditor/EditorProject/ControlParameter/ProjectControlParameter.h"
 
 namespace NodeEditor
 {
@@ -25,7 +25,7 @@ namespace NodeEditor
 		ParameterType m_parameterType;
 	public:
 		ControlParameter(NodeEditor* editor, const std::string& name, ParameterType parameterType);
-		ControlParameter(NodeEditor* editor, Project::ControlParameter* projectParameter);
+		ControlParameter(NodeEditor* editor, Project::ProjectControlParameter* projectParameter);
 
 		virtual ~ControlParameter() override {}
 

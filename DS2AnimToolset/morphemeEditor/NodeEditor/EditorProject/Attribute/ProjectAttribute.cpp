@@ -1,10 +1,10 @@
-#include "Attribute.h"
+#include "ProjectAttribute.h"
 
 namespace NodeEditor
 {
 	namespace Project
 	{
-		bool Attribute::loadFromXMLElement(tinyxml2::XMLElement* xmlElement)
+		bool ProjectAttribute::loadFromXMLElement(tinyxml2::XMLElement* xmlElement)
 		{
 			if (xmlElement)
 			{

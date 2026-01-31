@@ -553,7 +553,7 @@ namespace NodeEditor
 
         for (size_t i = 0; i < project.getNumControlParameters(); ++i)
         {
-            Project::ControlParameter* parameter = project.getControlParameter(i);
+            Project::ProjectControlParameter* parameter = project.getControlParameter(i);
 
 			addControlParameter(new ControlParameter(this, parameter));
         }
