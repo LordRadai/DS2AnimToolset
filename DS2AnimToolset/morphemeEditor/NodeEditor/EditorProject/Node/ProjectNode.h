@@ -24,18 +24,15 @@ namespace NodeEditor
 			int getNodeID() const;
 			void setNodeID(int id);
 
-			const std::string getNodeTypeName();
+			const std::string getNodeTypeName() const;
 			void setNodeTypeName(const std::string& typeName);
 
 			int getParentNodeID() const;
 			void setParentNodeID(int id);
 
-			const std::string getContainerType() const;
-			void setContainerType(const std::string& type);
-
 			bool isNodeContainer() const { return isNodeStateMachine() || isNodeBlendTree(); }
-			bool isNodeStateMachine() const { return getContainerType() == "StateMachine"; }
-			bool isNodeBlendTree() const { return getContainerType() == "BlendTree"; }
+			bool isNodeStateMachine() const { return getNodeTypeName() == "StateMachine"; }
+			bool isNodeBlendTree() const { return getNodeTypeName() == "BlendTree"; }
 
 			ProjectAttribute* getAttribute(size_t index) const;
 			ProjectAttribute* getAttribute(const std::string& name) const;

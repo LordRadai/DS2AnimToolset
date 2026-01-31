@@ -75,7 +75,7 @@ namespace NodeEditor
 				m_xmlElement->SetAttribute("nodeID", id);
 		}
 
-		const std::string ProjectNode::getNodeTypeName()
+		const std::string ProjectNode::getNodeTypeName() const
 		{
 			if (m_xmlElement)
 				return m_xmlElement->Attribute("nodeType");
@@ -143,20 +143,6 @@ namespace NodeEditor
 			return attribute;
 		}
 
-		const std::string ProjectNode::getContainerType() const
-		{
-			if (m_xmlElement && m_xmlElement->FindAttribute("containerType"))
-				return m_xmlElement->Attribute("containerType");
-
-			return "";
-		}
-
-		void ProjectNode::setContainerType(const std::string& type)
-		{
-			if (m_xmlElement)
-				m_xmlElement->SetAttribute("containerType", type.c_str());
-		}
-
 		ProjectNode* ProjectNode::getInputNodeAtIndex(size_t index) const
 		{
 			if (index < m_inputNodes.size())
@@ -205,16 +191,12 @@ namespace NodeEditor
 
 		ProjectNode* ProjectNode::createInputBlendTreeNode(const std::string& name, int nodeID)
 		{
-			ProjectNode* node = createInputNode(name, nodeID, "BlendTree");
-			node->setContainerType("BlendTree");
-			return node;
+			return createInputNode(name, nodeID, "BlendTree");
 		}
 
 		ProjectNode* ProjectNode::createInputStateMachineNode(const std::string& name, int nodeID)
 		{
-			ProjectNode* node = createInputNode(name, nodeID, "StateMachine");
-			node->setContainerType("StateMachine");
-			return node;
+			return createInputNode(name, nodeID, "StateMachine");
 		}
 
 		ProjectNode* ProjectNode::getChildNodeAtIndex(size_t index) const
@@ -266,17 +248,12 @@ namespace NodeEditor
 
 		ProjectNode* ProjectNode::createChildBlendTreeNode(const std::string& name, int nodeID)
 		{
-			ProjectNode* node = createChildNode(name, nodeID, "BLendTree");
-			node->setContainerType("BlendTree");
-			return node;
+			return createChildNode(name, nodeID, "BlendTree");
 		}
 
 		ProjectNode* ProjectNode::createChildStateMachineNode(const std::string& name, int nodeID)
 		{
-			ProjectNode* node = createChildNode(name, nodeID, "StateMachine");
-			node->setContainerType("StateMachine");
-
-			return node;
+			return createChildNode(name, nodeID, "StateMachine");
 		}
 
 		ProjectTransition* ProjectNode::getTransition(size_t index) const

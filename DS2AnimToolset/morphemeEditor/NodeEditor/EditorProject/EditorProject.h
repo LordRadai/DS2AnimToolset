@@ -37,7 +37,7 @@ namespace NodeEditor
 			bool loadProject(const std::string& filePath);
 
 		private:
-			ProjectNode* createRootNode(const std::string& name, int nodeID, int typeID);
+			ProjectNode* createRootNode(const std::string& name, int nodeID, const std::string& typeName);
 		};
 	}
 }

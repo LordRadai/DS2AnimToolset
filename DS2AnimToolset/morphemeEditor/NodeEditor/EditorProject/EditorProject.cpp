@@ -46,7 +46,7 @@ namespace NodeEditor
 			rootNodeElem->InsertEndChild(node->getXMLElement());
 		}
 
-		ProjectNode* EditorProject::createRootNode(const std::string& name, int nodeID, int typeID)
+		ProjectNode* EditorProject::createRootNode(const std::string& name, int nodeID, const std::string& typeName)
 		{
 			tinyxml2::XMLElement* rootNodeElem = m_rootElement->FirstChildElement("RootNode");
 
@@ -56,6 +56,7 @@ namespace NodeEditor
 			ProjectNode* node = new ProjectNode(rootNodeElem);
 			node->setName(name);
 			node->setNodeID(nodeID);
+			node->setNodeTypeName(typeName);
 
 			setRootNode(node);
 
@@ -64,20 +65,12 @@ namespace NodeEditor
 
 		ProjectNode* EditorProject::createRootBlendTreeNode(const std::string& name, int nodeID)
 		{
-			ProjectNode* node = createRootNode(name, nodeID, -1);
-
-			node->setContainerType("BlendTree");
-
-			return node;
+			return createRootNode(name, nodeID, "BlendTree");
 		}
 
 		ProjectNode* EditorProject::createRootStateMachineNode(const std::string& name, int nodeID)
 		{
-			ProjectNode* node = createRootNode(name, nodeID, NODE_TYPE_STATE_MACHINE);
-
-			node->setContainerType("StateMachine");
-
-			return node;
+			return createRootNode(name, nodeID, "StateMachine");
 		}
 
 		ProjectControlParameter* EditorProject::getControlParameter(size_t index) const
