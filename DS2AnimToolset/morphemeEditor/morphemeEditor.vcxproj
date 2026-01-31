@@ -244,6 +244,7 @@
     <ClInclude Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.h" />
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h" />
     <ClInclude Include="NodeEditor\Attribute\Attribute.h" />
+    <ClInclude Include="NodeEditor\BlendTreeOutputNode\BlendTreeOutputNode.h" />
     <ClInclude Include="NodeEditor\ControlParametersNode\ControlParametersNode.h" />
     <ClInclude Include="NodeEditor\ControlParameter\ControlParameter.h" />
     <ClInclude Include="NodeEditor\EditorProject\Attribute\ProjectAttribute.h" />
@@ -350,6 +351,7 @@
     <ClCompile Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.cpp" />
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp" />
     <ClCompile Include="NodeEditor\Attribute\Attribute.cpp" />
+    <ClCompile Include="NodeEditor\BlendTreeOutputNode\BlendTreeOutputNode.cpp" />
     <ClCompile Include="NodeEditor\ControlParametersNode\ControlParametersNode.cpp" />
     <ClCompile Include="NodeEditor\ControlParameter\ControlParameter.cpp" />
     <ClCompile Include="NodeEditor\EditorProject\Attribute\ProjectAttribute.cpp" />

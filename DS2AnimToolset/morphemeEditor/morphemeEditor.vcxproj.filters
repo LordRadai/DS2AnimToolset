@@ -384,6 +384,9 @@
     <ClInclude Include="NodeEditor\EditorProject\Transition\ProjectTransition.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="NodeEditor\BlendTreeOutputNode\BlendTreeOutputNode.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -681,6 +684,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\EditorProject\Transition\ProjectTransition.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\BlendTreeOutputNode\BlendTreeOutputNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

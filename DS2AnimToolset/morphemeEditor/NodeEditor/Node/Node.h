@@ -25,8 +25,8 @@ namespace NodeEditor
 	public:
 		Node(NodeEditor* editor, Graph* parent, int id, const std::string typeName, const std::string& name, Graph* subGraph);
 		virtual ~Node() override;
-
-		void draw() override;
+		virtual void draw() override;
+		virtual void editorGUI();
 
 		ImVec2 getPosition() const { return m_position; }
 		ImVec2 getCenter() const;
@@ -62,8 +62,6 @@ namespace NodeEditor
 
 		const std::string getFullName() const;
 		const std::string getTypeName() const;
-
-		void editorGUI();
 	private:
 		void calcNodeSize(float& width, float& height) const;
 	};

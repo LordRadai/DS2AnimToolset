@@ -1,11 +1,12 @@
 #pragma once
 #include "Graph.h"
+#include "NodeEditor/BlendTreeOutputNode/BlendTreeOutputNode.h"
 
 namespace NodeEditor
 {
 	class BlendTree : public Graph
 	{
-		Node* m_resultNode;
+		BlendTreeOutputNode* m_resultNode;
 		std::vector<Link*> m_links;
 		ImVec2 m_controlParamsNodePos;
 	public:
@@ -19,10 +20,8 @@ namespace NodeEditor
 
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name = "");
 
-		Node* getOutputNode() const { return m_resultNode; }
+		BlendTreeOutputNode* getOutputNode() const { return m_resultNode; }
 
 		bool connectToOutput(Pin* outputPin);
-	private:
-		void drawResultNode();
 	};
 }
