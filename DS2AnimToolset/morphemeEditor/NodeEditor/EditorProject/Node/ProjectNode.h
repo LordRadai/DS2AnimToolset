@@ -11,18 +11,33 @@ namespace NodeEditor
 	{
 		class ProjectNode : public ProjectEntity
 		{
+		public:
+			struct InputCPConnection
+			{
+				int nodeID;
+				int pinIndex;
+
+				InputCPConnection(int id, int index) : nodeID(id), pinIndex(index) {}
+			};
+
+			ProjectNode* m_parentNodeContainer = nullptr;
 			std::vector<ProjectAttribute*> m_attributes;
 			std::vector<ProjectNode*> m_inputNodes;
 			std::vector<ProjectNode*> m_childrenNodes;
 			std::vector<ProjectTransition*> m_transitions;
-			std::vector<std::string> m_inputControlParameters;
+			std::vector<InputCPConnection*> m_inputCPConnections;
 		public:
-			ProjectNode(tinyxml2::XMLElement* xmlElement) : ProjectEntity(xmlElement, "Node") {}
+			ProjectNode(EditorProject* project, ProjectNode* parentContainer, tinyxml2::XMLElement* xmlElement);
 			virtual ~ProjectNode() override {}
 			virtual bool loadFromXMLElement(tinyxml2::XMLElement* xmlElement) override;
 
+			ProjectNode* getParentNodeContainer() const { return m_parentNodeContainer; }
+
 			int getNodeID() const;
 			void setNodeID(int id);
+
+			int getNumOutputCPPins() const;
+			void setNumOutputCPPins(int numPins);
 
 			const std::string getNodeTypeName() const;
 			void setNodeTypeName(const std::string& typeName);
@@ -61,9 +76,10 @@ namespace NodeEditor
 			void addTransition(ProjectTransition* transition);
 			ProjectTransition* createTransition(int sourceNodeID, int destinationNodeID);
 
-			const std::string getInputControlParameter(size_t index) const;
-			size_t getNumInputControlParameters() const { return m_inputControlParameters.size(); }
-			void addInputControlParameter(ProjectControlParameter* cp);
+			InputCPConnection* getInputCPConnection(size_t index) const;
+			size_t getNumInputCPConnections() const { return m_inputCPConnections.size(); }
+			void addInputCPConnection(ProjectControlParameter* cp);
+			void addInputCPConnection(ProjectNode* node, int pinIndex);
 		};
 	}
 }

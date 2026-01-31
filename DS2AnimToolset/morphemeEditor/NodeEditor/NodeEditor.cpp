@@ -578,6 +578,7 @@ namespace NodeEditor
 			addControlParameter(new ControlParameter(this, parameter));
         }
 
-		pushGraph(new BlendTree(this, nullptr, "RootBT"));
+		BlendTree* rootBlendTree = new BlendTree(this, nullptr, "");
+		pushGraph(rootBlendTree);
     }
 }

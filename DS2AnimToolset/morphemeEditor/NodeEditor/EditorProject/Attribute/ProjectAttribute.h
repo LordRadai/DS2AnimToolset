@@ -9,7 +9,7 @@ namespace NodeEditor
 		{
 			ProjectEntity* m_parent;
 		public:
-			ProjectAttribute(ProjectEntity* parent, tinyxml2::XMLElement* xmlElement) : ProjectEntity(xmlElement, "Attribute"), m_parent(parent) {}
+			ProjectAttribute(EditorProject* project, ProjectEntity* parent, tinyxml2::XMLElement* xmlElement) : ProjectEntity(project, xmlElement, "Attribute"), m_parent(parent) {}
 			virtual ~ProjectAttribute() override {}
 			virtual bool loadFromXMLElement(tinyxml2::XMLElement* xmlElement) override;
 

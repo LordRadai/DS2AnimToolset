@@ -4,6 +4,7 @@
 #include "NodeEditor/Pin/DataPin.h"
 #include "NodeEditor/Entity/Entity.h"
 #include "NodeEditor/Attribute/Attribute.h"
+#include "NodeEditor/EditorProject/Node/ProjectNode.h"
 #include <vector>
 
 namespace NodeEditor
@@ -24,6 +25,8 @@ namespace NodeEditor
 
 	public:
 		Node(NodeEditor* editor, Graph* parent, int id, const std::string typeName, const std::string& name, Graph* subGraph);
+		Node(NodeEditor* editor, Graph* parent, Project::ProjectNode* projectNode);
+
 		virtual ~Node() override;
 		virtual void draw() override;
 		virtual void editorGUI();

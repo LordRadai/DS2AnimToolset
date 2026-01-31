@@ -5,10 +5,12 @@ namespace NodeEditor
 {
 	namespace Project
 	{
+		class ProjectNode;
+
 		class ProjectTransition : public ProjectEntity
 		{
 		public:
-			ProjectTransition(tinyxml2::XMLElement* xmlElement) : ProjectEntity(xmlElement, "Transition") {}
+			ProjectTransition(EditorProject* project, tinyxml2::XMLElement* xmlElement);
 			virtual ~ProjectTransition() override {}
 			virtual bool loadFromXMLElement(tinyxml2::XMLElement* xmlElement) override;
 

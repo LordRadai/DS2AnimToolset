@@ -1914,7 +1914,7 @@ void MorphemeEditorApp::createTestEditorProject()
 	NodeEditor::Project::ProjectNode* blend2 = root->createChildNode("Blend2", 3, "Blend2");
 	blend2->createInputNode("WalkAnim", 1, "AnimWithEvents");
 	blend2->createInputNode("JobAnim", 2, "AnimWithEvents");
-	blend2->addInputControlParameter(testProject->getControlParameter("Speed"));
+	blend2->addInputCPConnection(testProject->getControlParameter("Speed"));
 
 	const std::string projName = "SampleEditorProject.xml";
 

@@ -8,12 +8,15 @@ namespace NodeEditor
 		class ProjectControlParameter : public ProjectEntity
 		{
 		public:
-			ProjectControlParameter(tinyxml2::XMLElement* xmlElement) : ProjectEntity(xmlElement, "ControlParameter") {}
+			ProjectControlParameter(EditorProject* project, tinyxml2::XMLElement* xmlElement) : ProjectEntity(project, xmlElement, "ControlParameter") {}
 			virtual ~ProjectControlParameter() override {}
 			virtual bool loadFromXMLElement(tinyxml2::XMLElement* xmlElement) override;
 
 			const std::string getType() const;
 			void setType(const std::string& type);
+
+			int getControlParameterID() const;
+			void setControlParameterID(int id);
 
 			template<typename T>
 			T getDefaultValue() const

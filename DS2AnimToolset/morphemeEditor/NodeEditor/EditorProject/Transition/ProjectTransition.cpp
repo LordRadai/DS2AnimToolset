@@ -1,9 +1,14 @@
 #include "ProjectTransition.h"
+#include "NodeEditor/EditorProject/EditorProject.h"
 
 namespace NodeEditor
 {
 	namespace Project
 	{
+		ProjectTransition::ProjectTransition(EditorProject* project, tinyxml2::XMLElement* xmlElement) : ProjectEntity(project, xmlElement, "Transition")
+		{
+		}
+
 		bool ProjectTransition::loadFromXMLElement(tinyxml2::XMLElement* xmlElement)
 		{
 			if (!ProjectEntity::loadFromXMLElement(xmlElement))

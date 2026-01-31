@@ -53,7 +53,7 @@ namespace NodeEditor
 			if (!rootNodeElem)
 				rootNodeElem = m_rootElement->InsertNewChildElement("RootNode");
 
-			ProjectNode* node = new ProjectNode(rootNodeElem);
+			ProjectNode* node = new ProjectNode(this, nullptr, rootNodeElem);
 			node->setName(name);
 			node->setNodeID(nodeID);
 			node->setNodeTypeName(typeName);
@@ -111,7 +111,7 @@ namespace NodeEditor
 			if (!cpList)
 				cpList = m_rootElement->InsertNewChildElement("ControlParameters");
 
-			ProjectControlParameter* cp = new ProjectControlParameter(cpList);
+			ProjectControlParameter* cp = new ProjectControlParameter(this, cpList);
 
 			cp->setName(name);
 			cp->setType(type);
@@ -141,7 +141,7 @@ namespace NodeEditor
 			{
 				tinyxml2::XMLElement* nodeElem = rootNode->FirstChildElement("Node");
 
-				ProjectNode* node = new ProjectNode(nodeElem);
+				ProjectNode* node = new ProjectNode(this, nullptr, nodeElem);
 
 				node->loadFromXMLElement(nodeElem);
 				m_rootNode = node;
@@ -155,7 +155,7 @@ namespace NodeEditor
 
 				while (cpElem)
 				{
-					ProjectControlParameter* cp = new ProjectControlParameter(cpElem);
+					ProjectControlParameter* cp = new ProjectControlParameter(this, cpElem);
 
 					cp->loadFromXMLElement(cpElem);
 					m_controlParameters.push_back(cp);

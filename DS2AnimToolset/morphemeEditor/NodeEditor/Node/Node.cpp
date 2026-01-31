@@ -2,6 +2,7 @@
 #include "NodeEditor/Graph/Graph.h"
 #include "NodeEditor/imnodes/imnodes.h"
 #include "NodeEditor/NodeEditor.h"
+#include "NodeEditor/EditorProject/EditorProject.h"
 #include "imgui_custom/imgui_custom_widget.h"
 
 namespace NodeEditor
@@ -9,6 +10,37 @@ namespace NodeEditor
 	Node::Node(NodeEditor* editor, Graph* parent, int id, const std::string typeName, const std::string& name, Graph* subGraph) : Entity(editor, name),
 		m_parentGraph(parent), m_nodeID(id), m_typeName(typeName), m_subGraph(subGraph), m_position(ImVec2(0.f, 0.f))
 	{
+	}
+
+	Node::Node(NodeEditor* editor, Graph* parent, Project::ProjectNode* projectNode) : Entity(editor, projectNode->getName()),
+		m_parentGraph(parent), m_nodeID(projectNode->getNodeID()), m_typeName(projectNode->getNodeTypeName()), m_position(ImVec2(0.f, 0.f))
+	{
+		for (size_t i = 0; i < projectNode->getNumAttributes(); i++)
+		{
+			Project::ProjectAttribute* projectAttribute = projectNode->getAttribute(i);
+
+			addAttribute(new Attribute(this, projectAttribute));
+		}
+
+		for (size_t i = 0; i < projectNode->getNumInputNodes(); i++)
+		{
+			char pinName[256];
+			sprintf_s(pinName, "Source%d", i);
+
+			createInputPin(pinName);
+		}
+
+		for (size_t i = 0; i < projectNode->getNumInputCPConnections(); i++)
+		{
+			Project::ProjectControlParameter* projectCP = projectNode->getProject()->getControlParameter(projectNode->getInputCPConnection(i));
+
+			char pinName[256];
+			sprintf_s(pinName, "Input%d", i);
+			
+			createInputDataPin(pinName, DataPin::stringToDataType(projectCP->getType()));
+		}
+
+		createOutputPin("Output");
 	}
 
 	Node::~Node()

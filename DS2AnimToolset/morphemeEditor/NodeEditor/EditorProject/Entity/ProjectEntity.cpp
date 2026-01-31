@@ -1,10 +1,11 @@
 #include "ProjectEntity.h"
+#include "NodeEditor/EditorProject/EditorProject.h"
 
 namespace NodeEditor
 {
 	namespace Project
 	{
-		ProjectEntity::ProjectEntity(tinyxml2::XMLElement* xmlElement, const std::string& elemName)
+		ProjectEntity::ProjectEntity(EditorProject* project, tinyxml2::XMLElement* xmlElement, const std::string& elemName) : m_project(project), m_xmlElement(nullptr)
 		{
 			m_xmlElement = xmlElement->InsertNewChildElement(elemName.c_str());
 		}

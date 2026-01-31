@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "NodeEditor/EditorProject/Attribute/ProjectAttribute.h"
 
 namespace NodeEditor
 {
@@ -26,6 +27,8 @@ namespace NodeEditor
 
 	public:
 		Attribute(Entity* owner, const std::string& name, AttributeType type) : m_owner(owner), m_name(name), m_type(type) {}
+		Attribute(Entity* owner, Project::ProjectAttribute* projectAttribute) : m_owner(owner), m_name(projectAttribute->getName()) {}
+
 		virtual ~Attribute() {}
 		virtual void editorGUI();
 

@@ -31,6 +31,20 @@ namespace NodeEditor
 				m_xmlElement->SetAttribute("dataType", type.c_str());
 		}
 
+		int ProjectControlParameter::getControlParameterID() const
+		{
+			if (m_xmlElement)
+				return m_xmlElement->IntAttribute("nodeID", 0);
+
+			return 0;
+		}
+
+		void ProjectControlParameter::setControlParameterID(int id)
+		{
+			if (m_xmlElement)
+				m_xmlElement->SetAttribute("nodeID", id);
+		}
+
 		template<>
 		int ProjectControlParameter::getDefaultValue<int>() const
 		{

@@ -1,9 +1,15 @@
 #include "ProjectNode.h"
+#include "NodeEditor/EditorProject/EditorProject.h"
 
 namespace NodeEditor
 {
 	namespace Project
 	{
+		ProjectNode::ProjectNode(EditorProject* project, ProjectNode* parentContainer, tinyxml2::XMLElement* xmlElement) : ProjectEntity(project, xmlElement, "Node"),
+			m_parentNodeContainer(parentContainer)
+		{
+		}
+
 		bool ProjectNode::loadFromXMLElement(tinyxml2::XMLElement* xmlElement)
 		{
 			if (xmlElement)
@@ -17,7 +23,7 @@ namespace NodeEditor
 
 				while (attribElem)
 				{
-					ProjectAttribute* attribute = new ProjectAttribute(this, attribElem);
+					ProjectAttribute* attribute = new ProjectAttribute(m_project, this, attribElem);
 
 					attribute->loadFromXMLElement(attribElem);
 					m_attributes.push_back(attribute);
@@ -34,7 +40,7 @@ namespace NodeEditor
 
 				while (inputNodeElem)
 				{
-					ProjectNode* node = new ProjectNode(inputNodeElem);
+					ProjectNode* node = new ProjectNode(m_project, m_parentNodeContainer, inputNodeElem);
 
 					node->loadFromXMLElement(inputNodeElem);
 					m_inputNodes.push_back(node);
@@ -43,18 +49,18 @@ namespace NodeEditor
 				}
 			}
 
-			tinyxml2::XMLElement* inputCPList = m_xmlElement->FirstChildElement("InputControlParameters");
+			tinyxml2::XMLElement* inputCPList = m_xmlElement->FirstChildElement("InputCPConnections");
 
 			if (inputCPList)
 			{
-				tinyxml2::XMLElement* inputCPElem = inputCPList->FirstChildElement("ControlParameter");
+				tinyxml2::XMLElement* inputCPElem = inputCPList->FirstChildElement("CPConnection");
 
 				while (inputCPElem)
 				{
 					if (inputCPElem->GetText())
-						m_inputControlParameters.push_back(std::string(inputCPElem->GetText()));
+						m_inputCPConnections.push_back(new InputCPConnection(inputCPElem->IntAttribute("nodeID"), inputCPElem->IntAttribute("pinIndex")));
 
-					inputCPElem = inputCPElem->NextSiblingElement("ControlParameter");
+					inputCPElem = inputCPElem->NextSiblingElement("CPConnection");
 				}
 			}
 
@@ -73,6 +79,22 @@ namespace NodeEditor
 		{
 			if (m_xmlElement)
 				m_xmlElement->SetAttribute("nodeID", id);
+
+			throw std::runtime_error("XML Element is null, cannot set Node ID.");
+		}
+
+		int ProjectNode::getNumOutputCPPins() const
+		{
+			if (m_xmlElement)
+				return m_xmlElement->IntAttribute("numOutputCPPins");
+
+			throw std::runtime_error("XML Element is null, cannot get Number of Output CP Pins.");
+		}
+
+		void ProjectNode::setNumOutputCPPins(int numPins)
+		{
+			if (m_xmlElement)
+				m_xmlElement->SetAttribute("numOutputCPPins", numPins);
 		}
 
 		const std::string ProjectNode::getNodeTypeName() const
@@ -136,7 +158,7 @@ namespace NodeEditor
 		{
 			tinyxml2::XMLElement* attribList = m_xmlElement->FirstChildElement("Attributes");
 
-			ProjectAttribute* attribute = new ProjectAttribute(this, attribList);
+			ProjectAttribute* attribute = new ProjectAttribute(m_project, this, attribList);
 			attribute->setName(name);
 			addAttribute(attribute);
 
@@ -180,7 +202,7 @@ namespace NodeEditor
 			if (!inputNodeList)
 				inputNodeList = m_xmlElement->InsertNewChildElement("InputNodes");
 
-			ProjectNode* node = new ProjectNode(inputNodeList);
+			ProjectNode* node = new ProjectNode(m_project, m_parentNodeContainer, inputNodeList);
 			node->setName(name);
 			node->setNodeID(nodeID);
 			node->setNodeTypeName(typeName);
@@ -236,7 +258,7 @@ namespace NodeEditor
 			if (!childNodeList)
 				childNodeList = m_xmlElement->InsertNewChildElement("ChildNodes");
 
-			ProjectNode* node = new ProjectNode(childNodeList);
+			ProjectNode* node = new ProjectNode(m_project, m_parentNodeContainer, childNodeList);
 			node->setName(name);
 			node->setNodeID(nodeID);
 			node->setNodeTypeName(typeName);
@@ -288,33 +310,45 @@ namespace NodeEditor
 			if (!transitionList)
 				transitionList = m_xmlElement->InsertNewChildElement("Transitions");
 
-			ProjectTransition* transition = new ProjectTransition(transitionList);
+			ProjectTransition* transition = new ProjectTransition(m_project, transitionList);
 			transition->setSourceNodeID(sourceNodeID);
 			transition->setDestinationNodeID(destinationNodeID);
 			addTransition(transition);
 			return transition;
 		}
 
-		const std::string ProjectNode::getInputControlParameter(size_t index) const
+		ProjectNode::InputCPConnection* ProjectNode::getInputCPConnection(size_t index) const
 		{
-			if (index < m_inputControlParameters.size())
-				return m_inputControlParameters[index];
+			if (index < m_inputCPConnections.size())
+				return m_inputCPConnections[index];
 
-			return "";
+			return nullptr;
 		}
 
-		void ProjectNode::addInputControlParameter(ProjectControlParameter* cp)
+		void ProjectNode::addInputCPConnection(ProjectControlParameter* cp)
 		{
-			std::string controlParamName = cp->getName();
-
-			m_inputControlParameters.push_back(controlParamName);
-			tinyxml2::XMLElement* inputCPList = m_xmlElement->FirstChildElement("InputControlParameters");
+			m_inputCPConnections.push_back(new InputCPConnection(cp->getControlParameterID(), 0));
+			tinyxml2::XMLElement* inputCPList = m_xmlElement->FirstChildElement("InputCPConnections");
 
 			if (!inputCPList)
-				inputCPList = m_xmlElement->InsertNewChildElement("InputControlParameters");
+				inputCPList = m_xmlElement->InsertNewChildElement("InputCPConnections");
 
-			tinyxml2::XMLElement* cpElem = inputCPList->InsertNewChildElement("ControlParameter");
-			cpElem->SetText(controlParamName.c_str());
+			tinyxml2::XMLElement* cpElem = inputCPList->InsertNewChildElement("CPConnection");
+			cpElem->SetAttribute("nodeID", cp->getControlParameterID());
+			cpElem->SetAttribute("pinIndex", 0);
+		}
+
+		void ProjectNode::addInputCPConnection(ProjectNode* node, int pinIndex)
+		{
+			m_inputCPConnections.push_back(new InputCPConnection(node->getNodeID(), pinIndex));
+			tinyxml2::XMLElement* inputCPList = m_xmlElement->FirstChildElement("InputCPConnections");
+
+			if (!inputCPList)
+				inputCPList = m_xmlElement->InsertNewChildElement("InputCPConnections");
+
+			tinyxml2::XMLElement* cpElem = inputCPList->InsertNewChildElement("CPConnection");
+			cpElem->SetAttribute("nodeID", node->getNodeID());
+			cpElem->SetAttribute("pinIndex", pinIndex);
 		}
 	}
 }

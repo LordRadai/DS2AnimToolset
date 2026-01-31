@@ -38,4 +38,39 @@ namespace NodeEditor
 
 		drawInternal(ImNodesPinShape_QuadFilled, color);
 	}
+
+	const char* DataPin::dataTypeToString(DataType dataType)
+	{
+		switch (dataType)
+		{
+		case kDataTypeFloat:		return "float";
+		case kDataTypeVector3:		return "vector3";
+		case kDataTypeVector4:		return "vector4";
+		case kDataTypeBool:			return "bool";
+		case kDataTypeQuaternion:	return "quaternion";
+		case kDataTypeInt:			return "int";
+		case kDataTypeUInt:			return "uint";
+		default:					return "unknown";
+		}
+	}
+
+	DataPin::DataType DataPin::stringToDataType(const std::string& typeStr)
+	{
+		if (typeStr == "float")
+			return kDataTypeFloat;
+		else if (typeStr == "vector3")
+			return kDataTypeVector3;
+		else if (typeStr == "vector4")
+			return kDataTypeVector4;
+		else if (typeStr == "bool")
+			return kDataTypeBool;
+		else if (typeStr == "quaternion")
+			return kDataTypeQuaternion;
+		else if (typeStr == "int")
+			return kDataTypeInt;
+		else if (typeStr == "uint")
+			return kDataTypeUInt;
+
+		throw std::invalid_argument("Invalid data type string: " + typeStr);
+	}
 }

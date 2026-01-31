@@ -30,5 +30,8 @@ namespace NodeEditor
 		virtual void draw() override;
 
 		DataType getDataType() const { return m_dataType; }
+
+		static const char* dataTypeToString(DataType dataType);
+		static DataType stringToDataType(const std::string& typeStr);
 	};
 }
