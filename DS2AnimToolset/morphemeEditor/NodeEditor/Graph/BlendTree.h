@@ -19,6 +19,7 @@ namespace NodeEditor
 		const std::vector<Link*>& getLinks() const { return m_links; }
 
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name = "");
+		Node* createNode(int nodeID, const std::string& typeName, const std::string& name, float x, float y);
 
 		BlendTreeOutputNode* getOutputNode() const { return m_resultNode; }
 

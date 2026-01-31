@@ -31,7 +31,9 @@ namespace NodeEditor
 		Node* getNode(const std::string& name) const;
 
 		Node* createStateMachine(int nodeID, const std::string& name = "");
+		Node* createStateMachine(int nodeID, const std::string& name, float x, float y);
 		Node* createBlendTree(int nodeID, const std::string& name = "");
+		Node* createBlendTree(int nodeID, const std::string& name, float x, float y);
 
 		void removeNode(Node* node);
 
@@ -43,9 +45,10 @@ namespace NodeEditor
 
 	protected:
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name);
+		Node* createNode(int nodeID, const std::string& typeName, const std::string& name, float x, float y);
 
 		void getFreePosition(float& x, float& y);
 
-		const std::string makeNameValid(const std::string& desiredName);
+		const std::string makeNameValid(const std::string& desiredName, const std::string& typeName);
 	};
 }

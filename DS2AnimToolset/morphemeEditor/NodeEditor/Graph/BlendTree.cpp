@@ -29,6 +29,11 @@ namespace NodeEditor
 		return Graph::createNode(nodeID, typeName, name);
 	}
 
+	Node* BlendTree::createNode(int nodeID, const std::string& typeName, const std::string& name, float x, float y)
+	{
+		return Graph::createNode(nodeID, typeName, name, x, y);
+	}
+
 	bool BlendTree::connectToOutput(Pin* outputPin)
 	{
 		if (m_resultNode)

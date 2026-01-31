@@ -54,7 +54,9 @@ namespace NodeEditor
 		Pin* getOutputPin(const std::string& name) const;
 
 		Graph* getParentGraph() const { return m_parentGraph; }
+
 		Graph* getSubGraph() const { return m_subGraph; }
+		void setSubGraph(Graph* subGraph) { m_subGraph = subGraph; }
 
 		void setPosition(float x, float y);
 

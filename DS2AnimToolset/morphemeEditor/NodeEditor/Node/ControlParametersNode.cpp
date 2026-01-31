@@ -4,7 +4,7 @@
 namespace NodeEditor
 {
 	ControlParametersNode::ControlParametersNode(NodeEditor* editor, const std::string& name)
-		: Node(editor, nullptr, -1, name, "", nullptr)
+		: Node(editor, nullptr, -1, "", name, nullptr)
 	{
 	}
 

@@ -57,21 +57,20 @@ namespace NodeEditor
 
 	Node* Graph::createNode(int nodeID, const std::string& typeName, const std::string& name)
 	{
-		if (!isOfType<BlendTree>())
-		{
-			g_appLog->panicMessage("Graph::createNode: Attempted to create a standard node within a non BlendTree graph (%s).\n", m_name);
-			return nullptr;
-		}
-
 		float x, y;
 		getFreePosition(x, y);
+		
+		return createNode(nodeID, typeName, name, x, y);
+	}
 
+	Node* Graph::createNode(int nodeID, const std::string& typeName, const std::string& name, float x, float y)
+	{
 		std::string nameToUse = name;
 
 		if (nameToUse == "")
 			nameToUse = typeName;
 
-		std::string nodeName = makeNameValid(nameToUse);
+		std::string nodeName = makeNameValid(nameToUse, typeName);
 
 		Node* node = new Node(m_ownerEditor, this, nodeID, typeName, nodeName, nullptr);
 		node->setPosition(x, y);
@@ -81,15 +80,30 @@ namespace NodeEditor
 		return node;
 	}
 
+	Node* Graph::createBlendTree(int nodeID, const std::string& name, float x, float y)
+	{
+		Node* node = createNode(nodeID, "BlendTree", name, x, y);
+		node->setSubGraph(new BlendTree(m_ownerEditor, this, node->getName()));
+		node->createOutputPin("Result");
+
+		return node;
+	}
+
 	Node* Graph::createBlendTree(int nodeID, const std::string& name)
 	{
 		float x, y;
 		getFreePosition(x, y);
 
-		Node* node = new Node(m_ownerEditor, this, nodeID, "BlendTree", name, new BlendTree(m_ownerEditor, this, name));
-		node->setPosition(x, y);
+		return createBlendTree(nodeID, name, x, y);
+	}
 
-		m_nodes.push_back(node);
+	Node* Graph::createStateMachine(int nodeID, const std::string& name, float x, float y)
+	{
+		Node* node = createNode(nodeID, "StateMachine", name, x, y);
+		node->setSubGraph(new StateMachine(m_ownerEditor, this, name));
+
+		if (isOfType<BlendTree>())
+			node->createOutputPin("Result");
 
 		return node;
 	}
@@ -99,15 +113,7 @@ namespace NodeEditor
 		float x, y;
 		getFreePosition(x, y);
 
-		Node* node = new Node(m_ownerEditor, this, nodeID, "StateMachine", name, new StateMachine(m_ownerEditor, this, name));
-		node->setPosition(x, y);
-
-		if (isOfType<BlendTree>())
-			node->createOutputPin("Result");
-
-		m_nodes.push_back(node);
-
-		return node;
+		return createStateMachine(nodeID, name, x, y);
 	}
 
 	void Graph::removeNode(Node* node)
@@ -156,7 +162,7 @@ namespace NodeEditor
 		y = maxY + 100.f;
 	}
 
-	const std::string Graph::makeNameValid(const std::string& desiredName)
+	const std::string Graph::makeNameValid(const std::string& desiredName, const std::string& typeName)
 	{
 		int numNodesWithName = 0;
 
@@ -168,6 +174,11 @@ namespace NodeEditor
 				numNodesWithName++;
 		}
 
-		return std::string(desiredName + std::to_string(numNodesWithName));
+		if (typeName == desiredName)
+			return std::string(desiredName + std::to_string(numNodesWithName + 1));
+		else if (numNodesWithName > 0)
+			return std::string(desiredName + std::to_string(numNodesWithName + 1));
+
+		return desiredName;
 	}
 }
