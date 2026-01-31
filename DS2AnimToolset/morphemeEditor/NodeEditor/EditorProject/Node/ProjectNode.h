@@ -12,12 +12,16 @@ namespace NodeEditor
 		class ProjectNode : public ProjectEntity
 		{
 		public:
-			struct InputCPConnection
+			class InputCPConnection
 			{
 				int nodeID;
 				int pinIndex;
 
+			public:
 				InputCPConnection(int id, int index) : nodeID(id), pinIndex(index) {}
+
+				int getNodeID() const { return nodeID; }
+				int getPinIndex() const { return pinIndex; }
 			};
 
 			ProjectNode* m_parentNodeContainer = nullptr;

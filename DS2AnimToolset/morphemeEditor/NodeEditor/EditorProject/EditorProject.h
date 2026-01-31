@@ -27,7 +27,8 @@ namespace NodeEditor
 			ProjectNode* createRootBlendTreeNode(const std::string& name, int nodeID);
 			ProjectNode* createRootStateMachineNode(const std::string& name, int nodeID);
 
-			ProjectControlParameter* getControlParameter(size_t index) const;
+			ProjectControlParameter* getControlParameterAtIndex(size_t index) const;
+			ProjectControlParameter* getControlParameter(int controlParameterID) const;
 			ProjectControlParameter* getControlParameter(const std::string& name) const;
 			size_t getNumControlParameters() const { return m_controlParameters.size(); }
 			void addControlParameter(ProjectControlParameter* parameter);

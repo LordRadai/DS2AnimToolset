@@ -64,7 +64,7 @@ namespace NodeEditor
 				}
 			}
 
-			return false;
+			return true;
 		}
 
 		int ProjectNode::getNodeID() const
@@ -79,8 +79,6 @@ namespace NodeEditor
 		{
 			if (m_xmlElement)
 				m_xmlElement->SetAttribute("nodeID", id);
-
-			throw std::runtime_error("XML Element is null, cannot set Node ID.");
 		}
 
 		int ProjectNode::getNumOutputCPPins() const
@@ -101,6 +99,8 @@ namespace NodeEditor
 		{
 			if (m_xmlElement)
 				return m_xmlElement->Attribute("nodeType");
+
+			throw std::runtime_error("XML Element is null, cannot get Node Type Name.");
 		}
 
 		void ProjectNode::setNodeTypeName(const std::string& typeName)
@@ -208,6 +208,7 @@ namespace NodeEditor
 			node->setNodeTypeName(typeName);
 
 			addInputNode(node);
+
 			return node;
 		}
 

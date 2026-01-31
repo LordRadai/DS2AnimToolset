@@ -73,10 +73,21 @@ namespace NodeEditor
 			return createRootNode(name, nodeID, "StateMachine");
 		}
 
-		ProjectControlParameter* EditorProject::getControlParameter(size_t index) const
+		ProjectControlParameter* EditorProject::getControlParameterAtIndex(size_t index) const
 		{
 			if (index < m_controlParameters.size())
 				return m_controlParameters[index];
+
+			return nullptr;
+		}
+
+		ProjectControlParameter* EditorProject::getControlParameter(int controlParameterID) const
+		{
+			for (ProjectControlParameter* cp : m_controlParameters)
+			{
+				if (cp->getControlParameterID() == controlParameterID)
+					return cp;
+			}
 
 			return nullptr;
 		}
@@ -114,7 +125,9 @@ namespace NodeEditor
 			ProjectControlParameter* cp = new ProjectControlParameter(this, cpList);
 
 			cp->setName(name);
+			cp->setControlParameterID(getNumControlParameters());
 			cp->setType(type);
+
 			addControlParameter(cp);
 
 			return cp;

@@ -3,8 +3,8 @@
 
 namespace NodeEditor
 {
-	ControlParameter::ControlParameter(NodeEditor* editor, const std::string& name, ParameterType parameterType)
-		: Entity(editor, name), m_parameterType(parameterType)
+	ControlParameter::ControlParameter(NodeEditor* editor, int id, const std::string& name, ParameterType parameterType)
+		: Entity(editor, name), m_controlParameterID(id), m_parameterType(parameterType)
 	{
 		DataPin::DataType dataType;
 
@@ -39,57 +39,35 @@ namespace NodeEditor
 		m_output = new DataPin(editor, editor->getControlParametersNode(), name, false, dataType);
 	}
 
-	ControlParameter::ControlParameter(NodeEditor* editor, Project::ProjectControlParameter* projectParameter) : Entity(editor, projectParameter)
+	ControlParameter::ControlParameter(NodeEditor* editor, Project::ProjectControlParameter* projectParameter) : ControlParameter(editor, projectParameter->getControlParameterID(), projectParameter->getName(), stringToParameterType(projectParameter->getType()))
 	{
-		const std::string typeStr = projectParameter->getType();
+	}
 
-		if (typeStr == "float")
-			m_parameterType = kParameterTypeFloat;
-		else if (typeStr == "int")
-			m_parameterType = kParameterTypeInt;
-		else if (typeStr == "uint")
-			m_parameterType = kParameterTypeUInt;
-		else if (typeStr == "bool")
-			m_parameterType = kParameterTypeBool;
-		else if (typeStr == "vector3")
-			m_parameterType = kParameterTypeVector3;
-		else if (typeStr == "vector4")
-			m_parameterType = kParameterTypeVector4;
-		else if (typeStr == "quaternion")
-			m_parameterType = kParameterTypeQuaternion;
-		else
-			m_parameterType = kParameterTypeFloat;
-
-		DataPin::DataType dataType;
-
-		switch (m_parameterType)
+	const char* ControlParameter::parameterTypeToString(ParameterType type)
+	{
+		switch (type)
 		{
-		case kParameterTypeFloat:
-			dataType = DataPin::kDataTypeFloat;
-			break;
-		case kParameterTypeInt:
-			dataType = DataPin::kDataTypeInt;
-			break;
-		case kParameterTypeUInt:
-			dataType = DataPin::kDataTypeUInt;
-			break;
-		case kParameterTypeBool:
-			dataType = DataPin::kDataTypeBool;
-			break;
-		case kParameterTypeVector3:
-			dataType = DataPin::kDataTypeVector3;
-			break;
-		case kParameterTypeVector4:
-			dataType = DataPin::kDataTypeVector4;
-			break;
-		case kParameterTypeQuaternion:
-			dataType = DataPin::kDataTypeQuaternion;
-			break;
-		default:
-			dataType = DataPin::kDataTypeFloat;
-			break;
+		case kParameterTypeFloat:			return "float";
+		case kParameterTypeInt:				return "int";
+		case kParameterTypeUInt:			return "uint";
+		case kParameterTypeBool:			return "bool";
+		case kParameterTypeVector3:			return "vector3";
+		case kParameterTypeVector4:			return "vector4";
+		case kParameterTypeQuaternion:		return "quaternion";
+		default:							return "unknown";
 		}
+	}
 
-		m_output = new DataPin(editor, editor->getControlParametersNode(), getName(), false, dataType);
+	ControlParameter::ParameterType ControlParameter::stringToParameterType(const std::string& typeStr)
+	{
+		if (typeStr == "float")				return kParameterTypeFloat;
+		else if (typeStr == "int")			return kParameterTypeInt;
+		else if (typeStr == "uint")			return kParameterTypeUInt;
+		else if (typeStr == "bool")			return kParameterTypeBool;
+		else if (typeStr == "vector3")		return kParameterTypeVector3;
+		else if (typeStr == "vector4")		return kParameterTypeVector4;
+		else if (typeStr == "quaternion")	return kParameterTypeQuaternion;
+
+		throw std::invalid_argument("Invalid ControlParameter type string: " + typeStr);
 	}
 }

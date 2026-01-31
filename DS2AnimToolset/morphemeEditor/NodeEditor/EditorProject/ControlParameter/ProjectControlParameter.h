@@ -8,7 +8,7 @@ namespace NodeEditor
 		class ProjectControlParameter : public ProjectEntity
 		{
 		public:
-			ProjectControlParameter(EditorProject* project, tinyxml2::XMLElement* xmlElement) : ProjectEntity(project, xmlElement, "ControlParameter") {}
+			ProjectControlParameter(EditorProject* project, tinyxml2::XMLElement* xmlElement);
 			virtual ~ProjectControlParameter() override {}
 			virtual bool loadFromXMLElement(tinyxml2::XMLElement* xmlElement) override;
 

@@ -21,10 +21,11 @@ namespace NodeEditor
 			kNumParameterTypes
 		};
 	private:
+		int m_controlParameterID;
 		DataPin* m_output;
 		ParameterType m_parameterType;
 	public:
-		ControlParameter(NodeEditor* editor, const std::string& name, ParameterType parameterType);
+		ControlParameter(NodeEditor* editor, int id, const std::string& name, ParameterType parameterType);
 		ControlParameter(NodeEditor* editor, Project::ProjectControlParameter* projectParameter);
 
 		virtual ~ControlParameter() override {}
@@ -33,5 +34,8 @@ namespace NodeEditor
 
 		DataPin* getOutputPin() const { return m_output; }
 		ParameterType getParameterType() const { return m_parameterType; }
+
+		static const char* parameterTypeToString(ParameterType type);
+		static ParameterType stringToParameterType(const std::string& typeStr);
 	};
 }

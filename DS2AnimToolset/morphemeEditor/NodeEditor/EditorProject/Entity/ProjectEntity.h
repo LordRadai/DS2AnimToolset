@@ -3,10 +3,10 @@
 
 namespace NodeEditor
 {
-	class EditorProject;
-
 	namespace Project
 	{
+		class EditorProject;
+
 		class ProjectEntity
 		{
 		protected:

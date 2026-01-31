@@ -1,16 +1,25 @@
 #include "ProjectControlParameter.h"
 #include "NMPlatform/NMQuat.h"
 #include "NMPlatform/NMVector3.h"
+#include "NodeEditor/EditorProject/EditorProject.h"
 
 namespace NodeEditor
 {
 	namespace Project
 	{
+		ProjectControlParameter::ProjectControlParameter(EditorProject* project, tinyxml2::XMLElement* xmlElement) :
+			ProjectEntity(project, xmlElement, "ControlParameter")
+		{
+		}
+
 		bool ProjectControlParameter::loadFromXMLElement(tinyxml2::XMLElement* xmlElement)
 		{
 			if (xmlElement)
 			{
 				m_xmlElement = xmlElement;
+
+				setControlParameterID(xmlElement->IntAttribute("nodeID", 0));
+
 				return true;
 			}
 

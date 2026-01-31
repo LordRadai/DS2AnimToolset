@@ -32,7 +32,7 @@ namespace NodeEditor
 
 		for (size_t i = 0; i < projectNode->getNumInputCPConnections(); i++)
 		{
-			Project::ProjectControlParameter* projectCP = projectNode->getProject()->getControlParameter(projectNode->getInputCPConnection(i));
+			Project::ProjectControlParameter* projectCP = projectNode->getProject()->getControlParameter(projectNode->getInputCPConnection(i)->getNodeID());
 
 			char pinName[256];
 			sprintf_s(pinName, "Input%d", i);
