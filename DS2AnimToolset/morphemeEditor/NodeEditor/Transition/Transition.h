@@ -22,9 +22,12 @@ namespace NodeEditor
 		Node* getSourceNode() const { return m_sourceNode; }
 		Node* getDestinationNode() const { return m_destinationNode; }
 
-		void addCondition(Condition* condition) { m_conditions.push_back(condition); }
+		void addCondition(Condition* condition);
 		Condition* getCondition(size_t index) const;
 		Condition* getCondition(const std::string& name) const;
 		size_t getNumConditions() const { return m_conditions.size(); }
+
+	private:
+		const std::string makeConditionNameValid(const std::string& desiredName);
 	};
 }

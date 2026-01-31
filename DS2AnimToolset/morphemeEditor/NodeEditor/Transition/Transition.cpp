@@ -30,6 +30,12 @@ namespace NodeEditor
             condition->editorGUI();
 	}
 
+    void Transition::addCondition(Condition* condition)
+    {
+		condition->setName(makeConditionNameValid(condition->getName()));
+        m_conditions.push_back(condition);
+    }
+
     Condition* Transition::getCondition(size_t index) const
     {
         if (index < m_conditions.size())
@@ -47,5 +53,18 @@ namespace NodeEditor
         }
 
         return nullptr;
+	}
+
+    const std::string Transition::makeConditionNameValid(const std::string& desiredName, const std::string& typeName)
+    {
+        int numConditionsWithName = 0;
+
+        for (Condition* condition : m_conditions)
+        {
+            if (condition->getName() == desiredName)
+                numConditionsWithName++;
+        }
+
+        return desiredName + std::to_string(numConditionsWithName + 1);
 	}
 }
