@@ -33,7 +33,7 @@ namespace NodeEditor
 
 	StateNode* StateMachine::createStateNode(int nodeID, const std::string& name)
 	{
-		std::string nodeName = makeNameValid(name);
+		std::string nodeName = makeNameValid(name, "ActiveState");
 
 		StateNode* stateNode = new StateNode(m_ownerEditor, this, nodeID, nodeName, nullptr);
 		m_nodes.push_back(stateNode);
