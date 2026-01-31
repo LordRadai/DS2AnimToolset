@@ -63,9 +63,9 @@ namespace NodeEditor
 		return nullptr;
 	}
 
-	Transition* StateMachine::createTransition(int nodeID, Node* sourceNode, Node* destinationNode)
+	Transition* StateMachine::createTransition(int nodeID, const std::string& typeName, Node* sourceNode, Node* destinationNode)
 	{
-		Transition* transition = new Transition(m_ownerEditor, this, nodeID, sourceNode, destinationNode);
+		Transition* transition = new Transition(m_ownerEditor, this, nodeID, typeName, sourceNode, destinationNode);
 		m_transitions.push_back(transition);
 
 		return transition;

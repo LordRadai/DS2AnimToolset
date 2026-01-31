@@ -42,8 +42,8 @@ namespace NodeEditor
 		Node* dst = sm->createBlendTree(5);
 		sm->createStateNode(8);
 
-		sm->createTransition(6, src, dst);
-		sm->createTransition(7, dst, src);
+		sm->createTransition(6, "Transit", src, dst);
+		sm->createTransition(7, "Transit", dst, src);
 
 		Node* blend2 = src->getSubGraph()->asType<BlendTree>()->createNode(1, "Blend2");
 		blend2->createInputPin("Source0");

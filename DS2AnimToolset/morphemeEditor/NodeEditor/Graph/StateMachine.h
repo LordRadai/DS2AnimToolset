@@ -19,6 +19,6 @@ namespace NodeEditor
 		Transition* getTransition(int nodeID) const;
 		Transition* getTransition(const std::string& name) const;
 
-		Transition* createTransition(int nodeID, Node* sourceNode, Node* destinationNode);
+		Transition* createTransition(int nodeID, const std::string& typeName, Node* sourceNode, Node* destinationNode);
 	};
 }

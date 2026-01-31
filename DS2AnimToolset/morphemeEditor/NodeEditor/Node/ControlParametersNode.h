@@ -9,6 +9,6 @@ namespace NodeEditor
 		ControlParametersNode(NodeEditor* editor, const std::string& name);
 		virtual ~ControlParametersNode() override {}
 		virtual void draw() override;
-		virtual void editorGUI() override;
+		virtual void editorGUI() override {}
 	};
 }
