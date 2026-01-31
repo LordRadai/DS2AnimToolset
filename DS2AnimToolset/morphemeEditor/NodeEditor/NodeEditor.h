@@ -1,7 +1,7 @@
 #pragma once
 #include <stack>
 #include "Graph/Graph.h"
-#include "ControlParametersNode/ControlParametersNode.h"
+#include "Node/ControlParametersNode.h"
 #include "ControlParameter/ControlParameter.h"
 #include "Registry/Registry.h"
 #include "EditorProject/EditorProject.h"

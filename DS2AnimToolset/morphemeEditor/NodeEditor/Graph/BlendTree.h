@@ -1,6 +1,6 @@
 #pragma once
 #include "Graph.h"
-#include "NodeEditor/BlendTreeOutputNode/BlendTreeOutputNode.h"
+#include "NodeEditor/Node/BlendTreeOutputNode.h"
 
 namespace NodeEditor
 {

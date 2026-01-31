@@ -357,7 +357,7 @@
     <ClInclude Include="NodeEditor\ControlParameter\ControlParameter.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\ControlParametersNode\ControlParametersNode.h">
+    <ClInclude Include="NodeEditor\Node\ControlParametersNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="NodeEditor\StateNode\StateNode.h">
@@ -384,7 +384,7 @@
     <ClInclude Include="NodeEditor\EditorProject\Transition\ProjectTransition.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\BlendTreeOutputNode\BlendTreeOutputNode.h">
+    <ClInclude Include="NodeEditor\Node\BlendTreeOutputNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -659,7 +659,7 @@
     <ClCompile Include="NodeEditor\ControlParameter\ControlParameter.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\ControlParametersNode\ControlParametersNode.cpp">
+    <ClCompile Include="NodeEditor\Node\ControlParametersNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\StateNode\StateNode.cpp">
@@ -686,7 +686,7 @@
     <ClCompile Include="NodeEditor\EditorProject\Transition\ProjectTransition.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\BlendTreeOutputNode\BlendTreeOutputNode.cpp">
+    <ClCompile Include="NodeEditor\Node\BlendTreeOutputNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
