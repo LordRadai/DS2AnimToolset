@@ -219,8 +219,6 @@ namespace NodeEditor
 		ImGui::Label(m_name.c_str());
 
 		for (Attribute* attribute : m_attributes)
-		{
 			attribute->editorGUI();
-		}
 	}
 }
