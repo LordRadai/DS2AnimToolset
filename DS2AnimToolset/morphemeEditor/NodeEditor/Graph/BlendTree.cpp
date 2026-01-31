@@ -6,8 +6,6 @@ namespace NodeEditor
 	BlendTree::BlendTree(NodeEditor* editor, Graph* parent, const std::string& name) : Graph(editor, parent, name), m_resultNode(nullptr)
 	{
 		m_resultNode = new BlendTreeOutputNode(editor, this);
-		m_resultNode->createInputPin("Output");
-
 		m_resultNode->setPosition(600.0f, 200.0f);
 	}
 
