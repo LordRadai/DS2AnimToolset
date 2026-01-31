@@ -1,5 +1,6 @@
 #pragma once
 #include "NodeEditor/Node/Node.h"
+#include "NodeEditor/Condition/Condition.h"
 
 namespace NodeEditor
 {
@@ -9,6 +10,7 @@ namespace NodeEditor
 	{
 		Node* m_sourceNode;
 		Node* m_destinationNode;
+		std::vector<Condition*> m_conditions;
 
 	public:
 		Transition(NodeEditor* editor, Graph* parent, int nodeID, const std::string& typeName, Node* sourceNode, Node* destinationNode);
@@ -19,5 +21,10 @@ namespace NodeEditor
 
 		Node* getSourceNode() const { return m_sourceNode; }
 		Node* getDestinationNode() const { return m_destinationNode; }
+
+		void addCondition(Condition* condition) { m_conditions.push_back(condition); }
+		Condition* getCondition(size_t index) const;
+		Condition* getCondition(const std::string& name) const;
+		size_t getNumConditions() const { return m_conditions.size(); }
 	};
 }

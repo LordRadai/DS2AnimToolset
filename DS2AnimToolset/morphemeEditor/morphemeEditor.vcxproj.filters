@@ -387,6 +387,9 @@
     <ClInclude Include="NodeEditor\Node\BlendTreeOutputNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="NodeEditor\Condition\Condition.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -687,6 +690,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\Node\BlendTreeOutputNode.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Condition\Condition.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

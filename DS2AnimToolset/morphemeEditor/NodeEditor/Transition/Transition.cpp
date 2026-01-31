@@ -25,5 +25,27 @@ namespace NodeEditor
         Node::editorGUI();
 
         ImGui::SeparatorText("Conditions");
+
+        for (Condition* condition : m_conditions)
+            condition->editorGUI();
+	}
+
+    Condition* Transition::getCondition(size_t index) const
+    {
+        if (index < m_conditions.size())
+            return m_conditions[index];
+
+        return nullptr;
+	}
+
+    Condition* Transition::getCondition(const std::string& name) const
+    {
+        for (Condition* condition : m_conditions)
+        {
+            if (condition->getName() == name)
+                return condition;
+        }
+
+        return nullptr;
 	}
 }
