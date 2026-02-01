@@ -259,7 +259,7 @@
     <ClInclude Include="NodeEditor\NodeEditor.h" />
     <ClInclude Include="NodeEditor\Editor\Pin\DataPin.h" />
     <ClInclude Include="NodeEditor\Editor\Pin\Pin.h" />
-    <ClInclude Include="NodeEditor\Editor\Registry\Registry.h" />
+    <ClInclude Include="NodeEditor\Registry\Registry.h" />
     <ClInclude Include="NodeEditor\SampleNodeEditor.h" />
     <ClInclude Include="NodeEditor\Editor\Node\StateNode.h" />
     <ClInclude Include="NodeEditor\Editor\Transition\Transition.h" />
@@ -360,7 +360,7 @@
     <ClCompile Include="NodeEditor\NodeEditor.cpp" />
     <ClCompile Include="NodeEditor\Editor\Pin\DataPin.cpp" />
     <ClCompile Include="NodeEditor\Editor\Pin\Pin.cpp" />
-    <ClCompile Include="NodeEditor\Editor\Registry\Registry.cpp" />
+    <ClCompile Include="NodeEditor\Registry\Registry.cpp" />
     <ClCompile Include="NodeEditor\SampleNodeEditor.cpp" />
     <ClCompile Include="NodeEditor\Editor\Node\StateNode.cpp" />
     <ClCompile Include="NodeEditor\Editor\Transition\Transition.cpp" />

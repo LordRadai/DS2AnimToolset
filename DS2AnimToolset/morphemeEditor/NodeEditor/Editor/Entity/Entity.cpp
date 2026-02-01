@@ -1,5 +1,5 @@
 #include "Entity.h"
-#include "NodeEditor/Editor/Registry/Registry.h"
+
 #include "NodeEditor/NodeEditor.h"
 
 namespace NodeEditor

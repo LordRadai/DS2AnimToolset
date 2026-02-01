@@ -1,7 +1,6 @@
 #include "BlendTree.h"
+
 #include "NodeEditor/NodeEditor.h"
-#include "RCore.h"
-#include "extern.h"
 
 namespace NodeEditor
 {

@@ -1,4 +1,5 @@
 #include "StateMachine.h"
+
 #include "NodeEditor/NodeEditor.h"
 
 namespace NodeEditor

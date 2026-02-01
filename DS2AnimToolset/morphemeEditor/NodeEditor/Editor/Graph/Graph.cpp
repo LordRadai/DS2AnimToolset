@@ -1,10 +1,8 @@
 #include "Graph.h"
-#include "NodeEditor/Editor/Registry/Registry.h"
-#include "NodeEditor/NodeEditor.h"
 #include "BlendTree.h"
 #include "StateMachine.h"
-#include "extern.h"
-#include "RLog/RLog.h"
+
+#include "NodeEditor/NodeEditor.h"
 
 namespace NodeEditor
 {

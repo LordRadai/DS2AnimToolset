@@ -333,9 +333,6 @@
     <ClInclude Include="NodeEditor\Editor\Link\Link.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Editor\Registry\Registry.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
     <ClInclude Include="NodeEditor\Editor\Entity\Entity.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
@@ -370,6 +367,9 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="NodeEditor\Editor\Condition\Condition.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Registry\Registry.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -620,9 +620,6 @@
     <ClCompile Include="NodeEditor\Editor\Link\Link.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Editor\Registry\Registry.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="NodeEditor\Editor\Entity\Entity.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
@@ -657,6 +654,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\Editor\Condition\Condition.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Registry\Registry.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

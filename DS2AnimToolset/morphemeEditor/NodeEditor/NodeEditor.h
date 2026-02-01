@@ -5,8 +5,9 @@
 #include "Editor/Graph/StateMachine.h"
 #include "Editor/Node/ControlParametersNode.h"
 #include "Editor/ControlParameter/ControlParameter.h"
-#include "Editor/Registry/Registry.h"
 #include "Editor/Transition/Transition.h"
+
+#include "Registry/Registry.h"
 
 namespace NodeEditor
 {
