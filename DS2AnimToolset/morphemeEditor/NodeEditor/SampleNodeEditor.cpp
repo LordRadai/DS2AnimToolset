@@ -22,16 +22,10 @@ namespace NodeEditor
 		createControlParameterQuaternion(6, "Quaternion");
 
 		Node* blend2Node = createNode("", "Blend2", 7);
-		blend2Node->createOutputPin("Result");
-		blend2Node->createInputPin("Source0");
-		blend2Node->createInputPin("Source1");
-		blend2Node->createInputDataPin("Weight", DataPin::kDataTypeFloat);
 
 		rootBlendTree->connectToOutput(blend2Node->getOutputPin(0));
 
 		Node* idleAnim = createNode("", "AnimWithEvents", 8, "Idle");
-		idleAnim->createOutputPin("Result");
-
 		Node* moveStateMachine = createStateMachine("", 9, "SM_Move");
 
 		idleAnim->getOutputPin("Result")->connectTo(blend2Node->getInputPin("Source0"));

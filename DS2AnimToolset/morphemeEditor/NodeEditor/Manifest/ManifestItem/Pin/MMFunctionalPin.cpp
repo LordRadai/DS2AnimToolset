@@ -1,38 +1,41 @@
 #include "MMFunctionalPin.h"
 
-namespace Manifest
+namespace NodeEditor
 {
-	void MMFunctionalPin::fromJson(const nlohmann::json& json)
+	namespace Manifest
 	{
-		if (!json.contains("interfaces"))
-			throw std::runtime_error("MMFunctionalPin JSON does not contain 'interfaces' field");
-
-		for (const auto& intr : json["interfaces"]["optional"])
-			m_optionalInterfaces.push_back(intr.get<std::string>());
-
-		for (const auto& intr : json["interfaces"]["required"])
-			m_requiredInterfaces.push_back(intr.get<std::string>());
-	}
-
-	std::string MMFunctionalPin::getOptionalInterface(const std::string& interfaceName) const
-	{
-		for (const auto& intr : m_optionalInterfaces)
+		void MMFunctionalPin::fromJson(const nlohmann::json& json)
 		{
-			if (intr == interfaceName)
-				return intr;
+			if (!json.contains("interfaces"))
+				throw std::runtime_error("MMFunctionalPin JSON does not contain 'interfaces' field");
+
+			for (const auto& intr : json["interfaces"]["optional"])
+				m_optionalInterfaces.push_back(intr.get<std::string>());
+
+			for (const auto& intr : json["interfaces"]["required"])
+				m_requiredInterfaces.push_back(intr.get<std::string>());
 		}
 
-		return "";
-	}
-
-	std::string MMFunctionalPin::getRequiredInterface(const std::string& interfaceName) const
-	{
-		for (const auto& intr : m_requiredInterfaces)
+		std::string MMFunctionalPin::getOptionalInterface(const std::string& interfaceName) const
 		{
-			if (intr == interfaceName)
-				return intr;
+			for (const auto& intr : m_optionalInterfaces)
+			{
+				if (intr == interfaceName)
+					return intr;
+			}
+
+			return "";
 		}
 
-		return "";
+		std::string MMFunctionalPin::getRequiredInterface(const std::string& interfaceName) const
+		{
+			for (const auto& intr : m_requiredInterfaces)
+			{
+				if (intr == interfaceName)
+					return intr;
+			}
+
+			return "";
+		}
 	}
 }

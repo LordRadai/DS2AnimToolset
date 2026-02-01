@@ -1,42 +1,48 @@
 #pragma once
 #include "../ManifestItemBase.h"
+#include "NodeEditor/Editor/Attribute/Attribute.h"
 
-namespace Manifest
+namespace NodeEditor
 {
-	class MMAttribute : public ManifestItemBase
+	namespace Manifest
 	{
-	public:
-		MMAttribute() {}
-		MMAttribute(const nlohmann::json& json) { fromJson(json); }
+		class MMAttribute : public ManifestItemBase
+		{
+		public:
+			MMAttribute() {}
+			MMAttribute(const nlohmann::json& json) { fromJson(json); }
 
-		virtual ~MMAttribute() override {}
-		virtual void fromJson(const nlohmann::json& json) override;
+			virtual ~MMAttribute() override {}
+			virtual void fromJson(const nlohmann::json& json) override;
 
-		std::string getName() const { return m_jsonData["name"]; }
-		std::string getType() const { return m_jsonData["type"]; }
-		std::string getHelpText() const { return m_jsonData.value("helptext", ""); }
-		nlohmann::json getValue() const { return m_jsonData.value("value", nlohmann::json(nullptr)); }
-		bool isPerAnimSet() const { return m_jsonData.value("perAnimSet", false); }
-		bool isSyncWithRigChannels() const { return m_jsonData.value("syncWithRigChannels", false); }
-		bool isWeakRef() const { return m_jsonData.value("weak", false); }
-		std::string getRefKind() const { return m_jsonData.value("kind", ""); }
+			std::string getName() const { return m_jsonData["name"]; }
+			std::string getType() const { return m_jsonData["type"]; }
+			std::string getHelpText() const { return m_jsonData.value("helptext", ""); }
+			nlohmann::json getValue() const { return m_jsonData.value("value", nlohmann::json(nullptr)); }
+			bool isPerAnimSet() const { return m_jsonData.value("perAnimSet", false); }
+			bool isSyncWithRigChannels() const { return m_jsonData.value("syncWithRigChannels", false); }
+			bool isWeakRef() const { return m_jsonData.value("weak", false); }
+			std::string getRefKind() const { return m_jsonData.value("kind", ""); }
 
-		bool isArray() const;
-		uint32_t size() const;
+			bool isArray() const;
+			uint32_t size() const;
 
-		bool getBoolValue() const;
-		float getFloatValue() const;
-		int getIntValue() const;
-		std::string getStringValue() const;
+			bool getBoolValue() const;
+			float getFloatValue() const;
+			int getIntValue() const;
+			std::string getStringValue() const;
 
-		bool getBoolValue(const uint32_t index) const;
-		float getFloatValue(const uint32_t index) const;
-		int getIntValue(const uint32_t index) const;
-		std::string getStringValue(const uint32_t index) const;
+			bool getBoolValue(const uint32_t index) const;
+			float getFloatValue(const uint32_t index) const;
+			int getIntValue(const uint32_t index) const;
+			std::string getStringValue(const uint32_t index) const;
 
-		float getFloatMin() const { return m_jsonData.value("min", 0.0f); }
-		float getFloatMax() const { return m_jsonData.value("max", 1.0f); }
-		int getIntMin() const { return m_jsonData.value("min", -1); }
-		int getIntMax() const { return m_jsonData.value("max", 1); }
-	};
+			float getFloatMin() const { return m_jsonData.value("min", 0.0f); }
+			float getFloatMax() const { return m_jsonData.value("max", 1.0f); }
+			int getIntMin() const { return m_jsonData.value("min", -1); }
+			int getIntMax() const { return m_jsonData.value("max", 1); }
+
+			Attribute* makeAttribute(Entity* owner);
+		};
+	}
 }

@@ -1,5 +1,8 @@
 #include "MMStateMachineNode.h"
 
-namespace Manifest
+namespace NodeEditor
 {
+	namespace Manifest
+	{
+	}
 }

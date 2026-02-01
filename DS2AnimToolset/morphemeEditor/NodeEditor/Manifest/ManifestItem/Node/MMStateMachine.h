@@ -1,14 +1,17 @@
 #pragma once
 #include "MMNode.h"
 
-namespace Manifest
+namespace NodeEditor
 {
-	class MMStateMachine : public MMNode
+	namespace Manifest
 	{
-	public:
-		MMStateMachine() : MMNode() {};
-		MMStateMachine(const nlohmann::json& json) : MMNode(json) {};
+		class MMStateMachine : public MMNode
+		{
+		public:
+			MMStateMachine() : MMNode() {};
+			MMStateMachine(const nlohmann::json& json) : MMNode(json) {};
 
-		virtual ~MMStateMachine() override = default;
-	};
+			virtual ~MMStateMachine() override = default;
+		};
+	}
 }

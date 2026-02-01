@@ -70,7 +70,9 @@ namespace NodeEditor
 
 		std::string nodeName = makeNameValid(nameToUse, typeName);
 
-		Node* node = new Node(m_ownerEditor, this, nodeID, typeName, nodeName, nullptr);
+		Manifest::MMNode* manifestNode = m_ownerEditor->getManifest()->findNodeManifest(typeName);
+
+		Node* node = manifestNode->makeNode(m_ownerEditor, this, nodeID, nodeName);
 		node->setPosition(x, y);
 
 		m_nodes.push_back(node);
@@ -80,8 +82,18 @@ namespace NodeEditor
 
 	Node* Graph::createBlendTree(int nodeID, const std::string& name, float x, float y)
 	{
-		Node* node = createNode(nodeID, "BlendTree", name, x, y);
-		node->setSubGraph(new BlendTree(m_ownerEditor, this, node->getName()));
+		std::string nameToUse = name;
+
+		if (nameToUse == "")
+			nameToUse = "BlendTree";
+
+		std::string nodeName = makeNameValid(nameToUse, "BlendTree");
+
+		Node* node = new Node(m_ownerEditor, this, nodeID, "BlendTree", nodeName, new BlendTree(m_ownerEditor, this, name));
+		node->setPosition(x, y);
+
+		m_nodes.push_back(node);
+
 		node->createOutputPin("Result");
 
 		return node;
@@ -97,7 +109,20 @@ namespace NodeEditor
 
 	Node* Graph::createStateMachine(int nodeID, const std::string& name, float x, float y)
 	{
-		Node* node = createNode(nodeID, "StateMachine", name, x, y);
+		std::string nameToUse = name;
+
+		if (nameToUse == "")
+			nameToUse = "StateMachine";
+
+		std::string nodeName = makeNameValid(nameToUse, "StateMachine");
+
+		Manifest::MMStateMachine* manifestNode = m_ownerEditor->getManifest()->findStateMachineManifest("StateMachine");
+
+		Node* node = manifestNode->makeNode(m_ownerEditor, this, nodeID, name);
+		node->setPosition(x, y);
+
+		m_nodes.push_back(node);
+
 		node->setSubGraph(new StateMachine(m_ownerEditor, this, name));
 
 		if (isOfType<BlendTree>())

@@ -1,41 +1,47 @@
 #pragma once
-#include "../Attribute/MMAttribute.h"
-#include "../Pin/MMDataPin.h"
-#include "../Pin/MMFunctionalPin.h"
+#include "NodeEditor/Manifest/ManifestItem/Attribute/MMAttribute.h"
+#include "NodeEditor/Manifest/ManifestItem/Pin/MMDataPin.h"
+#include "NodeEditor/Manifest/ManifestItem/Pin/MMFunctionalPin.h"
+#include "NodeEditor/Editor/Node/Node.h"
 
-namespace Manifest
+namespace NodeEditor
 {
-	class MMNode : public ManifestItemBase
+	namespace Manifest
 	{
-	protected:
-		std::vector<MMAttribute*> m_attributes;
-		std::vector<MMDataPin*> m_dataPins;
-		std::vector<MMFunctionalPin*> m_functionalPins;
-		std::vector<std::string> m_pinOrder;
+		class MMNode : public ManifestItemBase
+		{
+		protected:
+			std::vector<MMAttribute*> m_attributes;
+			std::vector<MMDataPin*> m_dataPins;
+			std::vector<MMFunctionalPin*> m_functionalPins;
+			std::vector<std::string> m_pinOrder;
 
-		std::vector<MMPin*> getSortedPins();
-	public:
-		MMNode() {}
-		MMNode(const nlohmann::json& json) { fromJson(json); }
+			std::vector<MMPin*> getSortedPins();
+		public:
+			MMNode() {}
+			MMNode(const nlohmann::json& json) { fromJson(json); }
 
-		virtual ~MMNode() override;
-		virtual void fromJson(const nlohmann::json& json) override;
+			virtual ~MMNode() override;
+			virtual void fromJson(const nlohmann::json& json) override;
 
-		int getID() const { return m_jsonData["id"]; }
-		std::string getGroup() const { return m_jsonData["group"]; }
-		std::string getDisplayName() const { return m_jsonData["displayName"]; }
-		std::string getImage() const { return m_jsonData["image"]; }
+			int getID() const { return m_jsonData["id"]; }
+			std::string getGroup() const { return m_jsonData["group"]; }
+			std::string getDisplayName() const { return m_jsonData["displayName"]; }
+			std::string getImage() const { return m_jsonData["image"]; }
 
-		MMAttribute* getAttribute(uint32_t index);
-		MMAttribute* findAttribute(const std::string& name);
-		uint32_t getNumAttributes() const { return static_cast<uint32_t>(m_attributes.size()); }
+			MMAttribute* getAttribute(uint32_t index);
+			MMAttribute* findAttribute(const std::string& name);
+			uint32_t getNumAttributes() const { return static_cast<uint32_t>(m_attributes.size()); }
 
-		MMDataPin* getDataPin(uint32_t index);
-		MMDataPin* findDataPin(const std::string& name);
-		uint32_t getNumDataPins() const { return static_cast<uint32_t>(m_dataPins.size()); }
+			MMDataPin* getDataPin(uint32_t index);
+			MMDataPin* findDataPin(const std::string& name);
+			uint32_t getNumDataPins() const { return static_cast<uint32_t>(m_dataPins.size()); }
 
-		MMFunctionalPin* getFunctionalPin(uint32_t index);
-		MMFunctionalPin* findFunctionalPin(const std::string& name);
-		uint32_t getNumFunctionalPins() const { return static_cast<uint32_t>(m_functionalPins.size()); }
-	};
+			MMFunctionalPin* getFunctionalPin(uint32_t index);
+			MMFunctionalPin* findFunctionalPin(const std::string& name);
+			uint32_t getNumFunctionalPins() const { return static_cast<uint32_t>(m_functionalPins.size()); }
+
+			Node* makeNode(NodeEditor* editor, Graph* parent, int id, const std::string& name);
+		};
+	}
 }

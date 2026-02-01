@@ -1,15 +1,18 @@
 #pragma once
 #include "MMPin.h"
 
-namespace Manifest
+namespace NodeEditor
 {
-	class MMDataPin : public MMPin
+	namespace Manifest
 	{
-	public:
-		MMDataPin() = default;
-		MMDataPin(const std::string& name, const nlohmann::json& json) : MMPin(name, json) {};
+		class MMDataPin : public MMPin
+		{
+		public:
+			MMDataPin() = default;
+			MMDataPin(const std::string& name, const nlohmann::json& json) : MMPin(name, json) {};
 
-		virtual ~MMDataPin() override = default;
-		std::string getDataType() const { return m_jsonData["type"]; }
-	};
+			virtual ~MMDataPin() override = default;
+			std::string getDataType() const { return m_jsonData["type"]; }
+		};
+	}
 }

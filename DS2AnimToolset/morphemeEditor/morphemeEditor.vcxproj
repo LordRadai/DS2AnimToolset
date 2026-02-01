@@ -371,6 +371,7 @@
     <ClCompile Include="NodeEditor\Manifest\ManifestItem\Attribute\MMAttribute.cpp" />
     <ClCompile Include="NodeEditor\Manifest\ManifestItem\Condition\MMCondition.cpp" />
     <ClCompile Include="NodeEditor\Manifest\ManifestItem\Node\MMNode.cpp" />
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Node\MMStateMachine.cpp" />
     <ClCompile Include="NodeEditor\Manifest\ManifestItem\Pin\MMDataPin.cpp" />
     <ClCompile Include="NodeEditor\Manifest\ManifestItem\Pin\MMFunctionalPin.cpp" />
     <ClCompile Include="NodeEditor\Manifest\ManifestItem\Pin\MMPin.cpp" />

@@ -719,6 +719,9 @@
     <ClCompile Include="NodeEditor\Manifest\Manifest.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Node\MMStateMachine.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="morphemeEditor.rc">

@@ -1,9 +1,12 @@
 #include "MMPin.h"
 
-namespace Manifest
+namespace NodeEditor
 {
-	void MMPin::fromJson(const nlohmann::json& json)
+	namespace Manifest
 	{
-		this->m_jsonData = json;
+		void MMPin::fromJson(const nlohmann::json& json)
+		{
+			this->m_jsonData = json;
+		}
 	}
 }

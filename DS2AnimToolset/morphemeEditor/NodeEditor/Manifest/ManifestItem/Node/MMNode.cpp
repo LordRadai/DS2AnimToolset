@@ -1,129 +1,182 @@
 #include "MMNode.h"
 
-namespace Manifest
+namespace NodeEditor
 {
-	MMNode::~MMNode()
+	namespace Manifest
 	{
-		for (size_t i = 0; i < m_attributes.size(); i++)
-			delete m_attributes[i];
-
-		for (size_t i = 0; i < m_dataPins.size(); i++)
-			delete m_dataPins[i];
-
-		for (size_t i = 0; i < m_functionalPins.size(); i++)
-			delete m_functionalPins[i];
-
-		m_attributes.clear();
-		m_dataPins.clear();
-		m_functionalPins.clear();
-		m_pinOrder.clear();
-	}
-
-	void MMNode::fromJson(const nlohmann::json& json)
-	{
-		this->m_jsonData = json;
-
-		if (json.contains("attributes"))
+		MMNode::~MMNode()
 		{
-			for (const auto& attrJson : json["attributes"])
-				m_attributes.push_back(new MMAttribute(attrJson));
+			for (size_t i = 0; i < m_attributes.size(); i++)
+				delete m_attributes[i];
+
+			for (size_t i = 0; i < m_dataPins.size(); i++)
+				delete m_dataPins[i];
+
+			for (size_t i = 0; i < m_functionalPins.size(); i++)
+				delete m_functionalPins[i];
+
+			m_attributes.clear();
+			m_dataPins.clear();
+			m_functionalPins.clear();
+			m_pinOrder.clear();
 		}
 
-		if (json.contains("dataPins"))
+		void MMNode::fromJson(const nlohmann::json& json)
 		{
-			for (const auto& [name, pinJson] : json["dataPins"].items())
-				m_dataPins.push_back(new MMDataPin(name, pinJson));
-		}
+			this->m_jsonData = json;
 
-		if (json.contains("functionPins"))
-		{
-			for (const auto& [name, pinJson] : json["functionPins"].items())
-				m_functionalPins.push_back(new MMFunctionalPin(name, pinJson));
-		}
-
-		if (json.contains("pinOrder"))
-		{
-			for (const auto& pinName : json["pinOrder"])
+			if (json.contains("attributes"))
 			{
-				if (pinName.is_string())
-					m_pinOrder.push_back(pinName.get<std::string>());
+				for (const auto& attrJson : json["attributes"])
+					m_attributes.push_back(new MMAttribute(attrJson));
+			}
+
+			if (json.contains("dataPins"))
+			{
+				for (const auto& [name, pinJson] : json["dataPins"].items())
+					m_dataPins.push_back(new MMDataPin(name, pinJson));
+			}
+
+			if (json.contains("functionPins"))
+			{
+				for (const auto& [name, pinJson] : json["functionPins"].items())
+					m_functionalPins.push_back(new MMFunctionalPin(name, pinJson));
+			}
+
+			if (json.contains("pinOrder"))
+			{
+				for (const auto& pinName : json["pinOrder"])
+				{
+					if (pinName.is_string())
+						m_pinOrder.push_back(pinName.get<std::string>());
+				}
 			}
 		}
-	}
 
-	MMAttribute* MMNode::getAttribute(uint32_t index)
-	{
-		if (index >= m_attributes.size())
+		MMAttribute* MMNode::getAttribute(uint32_t index)
+		{
+			if (index >= m_attributes.size())
+				return nullptr;
+
+			return m_attributes[index];
+		}
+
+		MMAttribute* MMNode::findAttribute(const std::string& name)
+		{
+			for (auto& attr : m_attributes)
+			{
+				if (attr->getName() == name)
+					return attr;
+			}
+
 			return nullptr;
-
-		return m_attributes[index];
-	}
-
-	MMAttribute* MMNode::findAttribute(const std::string& name)
-	{
-		for (auto& attr : m_attributes)
-		{
-			if (attr->getName() == name)
-				return attr;
 		}
 
-		return nullptr;
-	}
+		MMDataPin* MMNode::getDataPin(uint32_t index)
+		{
+			if (index >= m_dataPins.size())
+				return nullptr;
 
-	MMDataPin* MMNode::getDataPin(uint32_t index)
-	{
-		if (index >= m_dataPins.size())
+			return m_dataPins[index];
+		}
+
+		MMDataPin* MMNode::findDataPin(const std::string& name)
+		{
+			for (auto& pin : m_dataPins)
+			{
+				if (pin->getPinName() == name)
+					return pin;
+			}
+
 			return nullptr;
-
-		return m_dataPins[index];
-	}
-
-	MMDataPin* MMNode::findDataPin(const std::string& name)
-	{
-		for (auto& pin : m_dataPins)
-		{
-			if (pin->getPinName() == name)
-				return pin;
 		}
 
-		return nullptr;
-	}
+		MMFunctionalPin* MMNode::getFunctionalPin(uint32_t index)
+		{
+			if (index >= m_functionalPins.size())
+				return nullptr;
 
-	MMFunctionalPin* MMNode::getFunctionalPin(uint32_t index)
-	{
-		if (index >= m_functionalPins.size())
+			return m_functionalPins[index];
+		}
+
+		MMFunctionalPin* MMNode::findFunctionalPin(const std::string& name)
+		{
+			for (auto& pin : m_functionalPins)
+			{
+				if (pin->getPinName() == name)
+					return pin;
+			}
+
 			return nullptr;
-
-		return m_functionalPins[index];
-	}
-
-	MMFunctionalPin* MMNode::findFunctionalPin(const std::string& name)
-	{
-		for (auto& pin : m_functionalPins)
-		{
-			if (pin->getPinName() == name)
-				return pin;
 		}
 
-		return nullptr;
-	}
-
-	std::vector<MMPin*> MMNode::getSortedPins()
-	{
-		std::vector<MMPin*> sortedPins;
-		sortedPins.reserve(m_functionalPins.size() + m_dataPins.size());
-
-		for (const auto& pinName : m_pinOrder)
+		std::vector<MMPin*> MMNode::getSortedPins()
 		{
-			MMPin* pin = findFunctionalPin(pinName);
+			std::vector<MMPin*> sortedPins;
+			sortedPins.reserve(m_functionalPins.size() + m_dataPins.size());
 
-			if (pin == nullptr)
-				pin = findDataPin(pinName);
+			if (m_pinOrder.size() == 0)
+			{
+				for (auto& pin : m_functionalPins)
+					sortedPins.push_back(pin);
 
-			if (pin)
-				sortedPins.push_back(pin);
+				for (auto& pin : m_dataPins)
+					sortedPins.push_back(pin);
+			}
+
+			for (const auto& pinName : m_pinOrder)
+			{
+				MMPin* pin = findFunctionalPin(pinName);
+
+				if (pin == nullptr)
+					pin = findDataPin(pinName);
+
+				if (pin)
+					sortedPins.push_back(pin);
+			}
+
+			return sortedPins;
 		}
 
-		return sortedPins;
+		Node* MMNode::makeNode(NodeEditor* editor, Graph* parent, int id, const std::string& name)
+		{
+			Node* node = new Node(editor, parent, id, getName(), name, nullptr);
+
+			// Add pins
+			std::vector<MMPin*> sortedPins = getSortedPins();
+			for (auto& pin : sortedPins)
+			{
+				if (pin->isOfType<MMDataPin>())
+				{
+					MMDataPin* dataPin = pin->asType<MMDataPin>();
+					DataPin::DataType dataType = DataPin::stringToDataType(dataPin->getDataType());
+
+					if (dataPin->isInput())
+						node->createInputDataPin(dataPin->getPinName(), dataType);
+					else
+						node->createOutputDataPin(dataPin->getPinName(), dataType);
+				}
+
+				else if (pin->isOfType<MMFunctionalPin>())
+				{
+					MMFunctionalPin* funcPin = pin->asType<MMFunctionalPin>();
+
+					if (funcPin->isInput())
+						node->createInputPin(funcPin->getPinName());
+					else
+						node->createOutputPin(funcPin->getPinName());
+				}
+			}
+
+			// Add attributes
+			for (uint32_t i = 0; i < getNumAttributes(); i++)
+			{
+				MMAttribute* mmAttr = getAttribute(i);
+
+				node->addAttribute(mmAttr->makeAttribute(node));
+			}
+
+			return node;
+		}
 	}
 }

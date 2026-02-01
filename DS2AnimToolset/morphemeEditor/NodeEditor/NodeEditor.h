@@ -81,6 +81,7 @@ namespace NodeEditor
 
 		StyleSettings& getStyleSettings() { return m_styleSettings; }
 		Registry* getRegistry() const { return m_registry; }
+		Manifest::Manifest* getManifest() const { return m_manifest; }
 
 		ControlParameter* getControlParameter(const std::string& name) const;
 		ControlParameter* getControlParameterAtIndex(size_t index) const { return m_controlParameters[index]; }
