@@ -20,7 +20,9 @@ namespace NodeEditor
 
 		NodeEditor* getOwnerEditor() const { return m_ownerEditor; }
 		int getID() const { return m_id; }
+
 		const std::string& getName() const { return m_name; }
+		void setName(const std::string& name) { m_name = name; }
 
 		template<typename T>
 		bool isOfType() const

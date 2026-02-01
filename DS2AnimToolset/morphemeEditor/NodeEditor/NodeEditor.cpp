@@ -208,7 +208,7 @@ namespace NodeEditor
         return createControlParameter(id, name, ControlParameter::kParameterTypeQuaternion);
     }
 
-    Node* NodeEditor::createNode(const std::string& parentPath, const std::string& typeName, int id, const std::string& name = "")
+    Node* NodeEditor::createNode(const std::string& parentPath, const std::string& typeName, int id, const std::string& name)
     {
         BlendTree* parentGraph = findGraphByPath(parentPath)->asType<BlendTree>();
 
@@ -229,7 +229,7 @@ namespace NodeEditor
 		return newNode;
     }
 
-    Node* NodeEditor::createBlendTree(const std::string& parentPath, int id, const std::string& name = "")
+    Node* NodeEditor::createBlendTree(const std::string& parentPath, int id, const std::string& name)
     {
         Graph* parentGraph = findGraphByPath(parentPath);
 
@@ -249,7 +249,7 @@ namespace NodeEditor
         return newNode;
 	}
 
-    Node* NodeEditor::createStateMachine(const std::string& parentPath, int id, const std::string& name = "")
+    Node* NodeEditor::createStateMachine(const std::string& parentPath, int id, const std::string& name)
     {
         Graph* parentGraph = findGraphByPath(parentPath);
 

@@ -1,9 +1,12 @@
-﻿#include "Transition.h"
-#include "NodeEditor/Node/Node.h"
+﻿#include <cmath>
+
+#include "Transition.h"
+
+#include "NodeEditor/Editor/Node/Node.h"
 #include "NodeEditor/imnodes/imnodes.h"
 #include "NodeEditor/imnodes/imnodes_internal.h"
+
 #include "imgui/imgui_internal.h"
-#include <cmath>
 
 namespace NodeEditor
 {
