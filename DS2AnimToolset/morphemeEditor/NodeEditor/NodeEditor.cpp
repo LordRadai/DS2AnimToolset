@@ -1,12 +1,12 @@
 #include "NodeEditor.h"
-#include "EditorProject/EditorProject.h"
-#include "Node/Node.h"
+#include "Editor/Graph/BlendTree.h"
+#include "Editor/Graph/StateMachine.h"
+
 #include "imnodes/imnodes.h"
-#include "Registry/Registry.h"
+
 #include "IconsFontAwesome6.h"
 #include "imgui_custom/imgui_custom_widget.h"
-#include "Graph/BlendTree.h"
-#include "Graph/StateMachine.h"
+
 #include "extern.h"
 #include "RLog/RLog.h"
 
@@ -208,6 +208,68 @@ namespace NodeEditor
         return createControlParameter(id, name, ControlParameter::kParameterTypeQuaternion);
     }
 
+    Node* NodeEditor::createNode(const std::string& parentPath, const std::string& typeName, int id, const std::string& name = "")
+    {
+        BlendTree* parentGraph = findGraphByPath(parentPath)->asType<BlendTree>();
+
+        if (!parentGraph)
+        {
+            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createNode: Parent graph with path '%s' not found or is not a BlendTree\n", parentPath.c_str());
+            return nullptr;
+        }
+
+        if (!isNodeIDAvailable(id))
+        {
+            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createNode: Node ID '%d' is already in use.\n", id);
+            return nullptr;
+        }
+
+        Node* newNode = parentGraph->createNode(id, typeName, name);
+
+		return newNode;
+    }
+
+    Node* NodeEditor::createBlendTree(const std::string& parentPath, int id, const std::string& name = "")
+    {
+        Graph* parentGraph = findGraphByPath(parentPath);
+
+        if (!parentGraph)
+        {
+            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createBlendTree: Parent graph with path '%s' not found or is not a BlendTree\n", parentPath.c_str());
+            return nullptr;
+        }
+        if (!isNodeIDAvailable(id))
+        {
+            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createBlendTree: Node ID '%d' is already in use.\n", id);
+            return nullptr;
+        }
+
+        Node* newNode = parentGraph->createBlendTree(id, name);
+
+        return newNode;
+	}
+
+    Node* NodeEditor::createStateMachine(const std::string& parentPath, int id, const std::string& name = "")
+    {
+        Graph* parentGraph = findGraphByPath(parentPath);
+
+        if (!parentGraph)
+        {
+            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createStateMachine: Parent graph with path '%s' not found or is not a BlendTree\n", parentPath.c_str());
+            return nullptr;
+        }
+
+        if (!isNodeIDAvailable(id))
+        {
+            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createStateMachine: Node ID '%d' is already in use.\n", id);
+            return nullptr;
+        }
+
+        Node* newNode = parentGraph->createStateMachine(id, name);
+
+        return newNode;
+    }
+
     ControlParameter* NodeEditor::getControlParameter(const std::string& name) const
     {
         for (ControlParameter* parameter : m_controlParameters)
@@ -271,6 +333,70 @@ namespace NodeEditor
         return nullptr;
 	}
 
+    Node* NodeEditor::getNode(const std::string& name) const
+	{
+		std::vector<Node*> allNodes;
+		getAllNodes(allNodes);
+
+        for (Node* node : allNodes)
+        {
+			if (node->getName() == name)
+                return node;
+        }
+
+		return nullptr;
+	}
+
+    Node* NodeEditor::findNodeByPath(const std::string& path) const
+    {
+        std::vector<Node*> allNodes;
+        getAllNodes(allNodes);
+
+        for (Node* node : allNodes)
+        {
+            if (node->getFullName() == path)
+                return node;
+        }
+
+        return nullptr;
+    }
+
+    Graph* NodeEditor::getGraph(int graphID) const
+    {
+        for (size_t i = 0; i < m_registry->getNumRegisteredGraphs(); i++)
+        {
+            Graph* graph = m_registry->getGraphAtIndex(i);
+            if (graph->getID() == graphID)
+                return graph;
+        }
+
+        return nullptr;
+    }
+
+    Graph* NodeEditor::getGraph(const std::string& name) const
+    {
+        for (size_t i = 0; i < m_registry->getNumRegisteredGraphs(); i++)
+        {
+            Graph* graph = m_registry->getGraphAtIndex(i);
+            if (graph->getName() == name)
+                return graph;
+        }
+
+        return nullptr;
+	}
+
+    Graph* NodeEditor::findGraphByPath(const std::string& path) const
+    {
+        for (size_t i = 0; i < m_registry->getNumRegisteredGraphs(); i++)
+        {
+            Graph* graph = m_registry->getGraphAtIndex(i);
+            if (graph->getFullName() == path)
+                return graph;
+        }
+
+        return nullptr;
+    }
+
     Transition* NodeEditor::getTransitionBetweenNodes(Node* sourceNode, Node* destinationNode) const
     {
         for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)
@@ -319,6 +445,30 @@ namespace NodeEditor
         ImNodes::ClearNodeSelection();
 		ImNodes::ClearTransitionSelection();
     }
+
+    BlendTree* NodeEditor::createRootBlendTree()
+    {
+        if (!m_rootGraph)
+            return nullptr;
+
+		BlendTree* blendTree = new BlendTree(this, nullptr, "");
+
+        pushGraph(blendTree);
+
+		return blendTree;
+	}
+
+    StateMachine* NodeEditor::createRootStateMachine()
+    {
+        if (!m_rootGraph)
+            return nullptr;
+
+        StateMachine* stateMachine = new StateMachine(this, nullptr, "");
+
+		pushGraph(stateMachine);
+
+        return stateMachine;
+	}
 
 	void NodeEditor::pushGraph(Graph* graph)
     {
@@ -619,42 +769,5 @@ namespace NodeEditor
         }
 
         ImGui::EndTabBar();
-    }
-
-    bool NodeEditor::loadProject(const std::string& filePath)
-    {
-		Project::EditorProject project;
-
-		if (!project.loadProject(filePath))
-			return false;
-
-		reset();
-
-        for (size_t i = 0; i < project.getNumControlParameters(); ++i)
-        {
-            Project::ProjectControlParameter* parameter = project.getControlParameter(i);
-
-			addControlParameter(new ControlParameter(this, parameter));
-        }
-
-		Project::ProjectNode* rootNode = project.getRootNode();
-
-        if (rootNode->isNodeBlendTree())
-        {
-            BlendTree* rootBlendTree = new BlendTree(this, nullptr, "");
-            pushGraph(rootBlendTree);
-        }
-        else if (rootNode->isNodeStateMachine())
-        {
-            StateMachine* rootStateMachine = new StateMachine(this, nullptr, "");
-            pushGraph(rootStateMachine);
-        }
-        else
-        {
-            g_appLog->debugMessage(MsgLevel_Error, "NodeEditor::loadProject: Root node is not a container type.\n");
-			return false;
-        }
-
-		m_rootGraph->loadFromProjectNode(rootNode);
     }
 }

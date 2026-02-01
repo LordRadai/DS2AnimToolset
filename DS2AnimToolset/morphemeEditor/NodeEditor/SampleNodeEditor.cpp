@@ -1,8 +1,6 @@
 #include "SampleNodeEditor.h"
 #include "extern.h"
 #include "RLog/RLog.h"
-#include "Graph/BlendTree.h"
-#include "Graph/StateMachine.h"
 
 namespace NodeEditor
 {
@@ -13,10 +11,9 @@ namespace NodeEditor
 		if (!bInit)
 			return false;
 
-		BlendTree* rootGraph = new BlendTree(this, nullptr, "Root");
-		pushGraph(rootGraph);
+		BlendTree* rootBlendTree = createRootBlendTree();
 
-		ControlParameter* cp = createControlParameterFloat(0, "Float");
+		createControlParameterFloat(0, "Float");
 		createControlParameterBool(1, "Bool");
 		createControlParameterInt(2, "Int");
 		createControlParameterUInt(3, "UInt");
@@ -24,37 +21,23 @@ namespace NodeEditor
 		createControlParameterVector4(5, "Vector4");
 		createControlParameterQuaternion(6, "Quaternion");
 
-		Node* node1 = rootGraph->createNode(7, "Blend2");
-		node1->createInputPin("Source0");
-		node1->createInputPin("Source1");
-		node1->createInputDataPin("Weight", DataPin::kDataTypeFloat);
+		Node* blend2Node = createNode("", "Blend2", 7);
+		blend2Node->createOutputPin("Result");
+		blend2Node->createInputPin("Source0");
+		blend2Node->createInputPin("Source2");
+		blend2Node->createInputDataPin("Weight", DataPin::kDataTypeFloat);
 
-		node1->createOutputPin("Result");
+		rootBlendTree->connectToOutput(blend2Node->getOutputPin(0));
 
-		Node* node2 = rootGraph->createNode(8, "PassThrough");
-		node2->createInputPin("Source");
-		node2->createOutputPin("Result");
+		Node* walkAnim = createNode("", "AnimWithEvents", 8, "WalkAnim");
+		walkAnim->createOutputPin("Result");
 
-		Node* stateMachine = rootGraph->createStateMachine(9, "SM_Main");
-		StateMachine* sm = stateMachine->getSubGraph()->asType<StateMachine>();
+		Node* runAnim = createNode("", "AnimWithEvents", 9, "RunAnim");
+		runAnim->createOutputPin("Result");
 
-		Node* src = sm->createBlendTree(10);
-		Node* dst = sm->createBlendTree(11);
-		sm->createStateNode(8);
-
-		sm->createTransition(6, "Transit", src, dst);
-		sm->createTransition(7, "Transit", dst, src);
-
-		Node* blend2 = src->getSubGraph()->asType<BlendTree>()->createNode(12, "Blend2");
-		blend2->createInputPin("Source0");
-		blend2->createInputPin("Source1");
-		blend2->createInputDataPin("Weight", DataPin::kDataTypeFloat);
-
-		cp->getOutputPin()->connectTo(node1->getInputPin("Weight"));
-		node1->getOutputPin("Result")->connectTo(node2->getInputPin("Source"));
-
-		cp->getOutputPin()->connectTo(blend2->getInputPin("Weight"));
-		rootGraph->connectToOutput(node2->getOutputPin("Result"));
+		walkAnim->getOutputPin("Result")->connectTo(blend2Node->getInputPin("Source0"));
+		runAnim->getOutputPin("Result")->connectTo(blend2Node->getInputPin("Source2"));
+		getControlParameter("Float")->getOutputPin()->connectTo(blend2Node->getInputPin("Weight"));
 
 		return true;
 	}

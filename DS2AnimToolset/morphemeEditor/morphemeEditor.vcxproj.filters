@@ -321,73 +321,55 @@
     <ClInclude Include="NodeEditor\imnodes\imnodes_internal.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Node\Node.h">
+    <ClInclude Include="NodeEditor\Editor\Node\Node.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Pin\Pin.h">
+    <ClInclude Include="NodeEditor\Editor\Pin\Pin.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Graph\Graph.h">
+    <ClInclude Include="NodeEditor\Editor\Graph\Graph.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Link\Link.h">
+    <ClInclude Include="NodeEditor\Editor\Link\Link.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Registry\Registry.h">
+    <ClInclude Include="NodeEditor\Editor\Registry\Registry.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Entity\Entity.h">
+    <ClInclude Include="NodeEditor\Editor\Entity\Entity.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="NodeEditor\SampleNodeEditor.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Transition\Transition.h">
+    <ClInclude Include="NodeEditor\Editor\Transition\Transition.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Pin\DataPin.h">
+    <ClInclude Include="NodeEditor\Editor\Pin\DataPin.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Graph\BlendTree.h">
+    <ClInclude Include="NodeEditor\Editor\Graph\BlendTree.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Graph\StateMachine.h">
+    <ClInclude Include="NodeEditor\Editor\Graph\StateMachine.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\ControlParameter\ControlParameter.h">
+    <ClInclude Include="NodeEditor\Editor\ControlParameter\ControlParameter.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Node\ControlParametersNode.h">
+    <ClInclude Include="NodeEditor\Editor\Node\ControlParametersNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\StateNode\StateNode.h">
+    <ClInclude Include="NodeEditor\Editor\Node\StateNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\Attribute\Attribute.h">
+    <ClInclude Include="NodeEditor\Editor\Attribute\Attribute.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\EditorProject\EditorProject.h">
+    <ClInclude Include="NodeEditor\Editor\Node\BlendTreeOutputNode.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="NodeEditor\EditorProject\Node\ProjectNode.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeEditor\EditorProject\Entity\ProjectEntity.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeEditor\EditorProject\Attribute\ProjectAttribute.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeEditor\EditorProject\ControlParameter\ProjectControlParameter.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeEditor\EditorProject\Transition\ProjectTransition.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeEditor\Node\BlendTreeOutputNode.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="NodeEditor\Condition\Condition.h">
+    <ClInclude Include="NodeEditor\Editor\Condition\Condition.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -626,73 +608,55 @@
     <ClCompile Include="NodeEditor\imnodes\imnodes.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Node\Node.cpp">
+    <ClCompile Include="NodeEditor\Editor\Node\Node.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Pin\Pin.cpp">
+    <ClCompile Include="NodeEditor\Editor\Pin\Pin.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Graph\Graph.cpp">
+    <ClCompile Include="NodeEditor\Editor\Graph\Graph.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Link\Link.cpp">
+    <ClCompile Include="NodeEditor\Editor\Link\Link.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Registry\Registry.cpp">
+    <ClCompile Include="NodeEditor\Editor\Registry\Registry.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Entity\Entity.cpp">
+    <ClCompile Include="NodeEditor\Editor\Entity\Entity.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\SampleNodeEditor.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Transition\Transition.cpp">
+    <ClCompile Include="NodeEditor\Editor\Transition\Transition.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Pin\DataPin.cpp">
+    <ClCompile Include="NodeEditor\Editor\Pin\DataPin.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Graph\BlendTree.cpp">
+    <ClCompile Include="NodeEditor\Editor\Graph\BlendTree.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Graph\StateMachine.cpp">
+    <ClCompile Include="NodeEditor\Editor\Graph\StateMachine.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\ControlParameter\ControlParameter.cpp">
+    <ClCompile Include="NodeEditor\Editor\ControlParameter\ControlParameter.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Node\ControlParametersNode.cpp">
+    <ClCompile Include="NodeEditor\Editor\Node\ControlParametersNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\StateNode\StateNode.cpp">
+    <ClCompile Include="NodeEditor\Editor\Node\StateNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\Attribute\Attribute.cpp">
+    <ClCompile Include="NodeEditor\Editor\Attribute\Attribute.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\EditorProject\EditorProject.cpp">
+    <ClCompile Include="NodeEditor\Editor\Node\BlendTreeOutputNode.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="NodeEditor\EditorProject\Entity\ProjectEntity.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeEditor\EditorProject\Node\ProjectNode.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeEditor\EditorProject\ControlParameter\ProjectControlParameter.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeEditor\EditorProject\Attribute\ProjectAttribute.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeEditor\EditorProject\Transition\ProjectTransition.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeEditor\Node\BlendTreeOutputNode.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeEditor\Condition\Condition.cpp">
+    <ClCompile Include="NodeEditor\Editor\Condition\Condition.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

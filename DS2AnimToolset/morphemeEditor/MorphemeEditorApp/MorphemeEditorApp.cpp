@@ -1905,22 +1905,4 @@ void MorphemeEditorApp::exportTaeTemplateXML()
 
 void MorphemeEditorApp::createTestEditorProject()
 {
-	NodeEditor::Project::EditorProject* testProject = new NodeEditor::Project::EditorProject();
-	testProject->setProjectName("Sample Editor Project");
-	testProject->createControlParameter("Speed", "float");
-
-	NodeEditor::Project::ProjectNode* root = testProject->createRootBlendTreeNode("RootBT", 0);
-
-	NodeEditor::Project::ProjectNode* blend2 = root->createChildNode("Blend2", 3, "Blend2");
-	blend2->createInputNode("WalkAnim", 1, "AnimWithEvents");
-	blend2->createInputNode("JobAnim", 2, "AnimWithEvents");
-	blend2->addInputCPConnection(testProject->getControlParameter("Speed"));
-
-	const std::string projName = "SampleEditorProject.xml";
-
-	testProject->saveProject(projName);
-
-	m_nodeEditor->loadProject(projName);
-
-	delete testProject;
 }

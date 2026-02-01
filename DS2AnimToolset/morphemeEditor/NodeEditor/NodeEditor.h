@@ -1,10 +1,12 @@
 #pragma once
 #include <stack>
-#include "Graph/Graph.h"
-#include "Node/ControlParametersNode.h"
-#include "ControlParameter/ControlParameter.h"
-#include "Registry/Registry.h"
-#include "EditorProject/EditorProject.h"
+#include "Editor/Graph/Graph.h"
+#include "Editor/Graph/BlendTree.h"
+#include "Editor/Graph/StateMachine.h"
+#include "Editor/Node/ControlParametersNode.h"
+#include "Editor/ControlParameter/ControlParameter.h"
+#include "Editor/Registry/Registry.h"
+#include "Editor/Transition/Transition.h"
 
 namespace NodeEditor
 {
@@ -86,6 +88,13 @@ namespace NodeEditor
 		void getAllNodes(std::vector<Node*>& outNodes) const;
 
 		Node* getNode(int nodeID) const;
+		Node* getNode(const std::string& name) const;
+		Node* findNodeByPath(const std::string& path) const;
+
+		Graph* getGraph(int graphID) const;
+		Graph* getGraph(const std::string& name) const;
+		Graph* findGraphByPath(const std::string& path) const;
+
 		Transition* getTransitionBetweenNodes(Node* sourceNode, Node* destinationNode) const;
 
 		Node* getSelectedNode() const;
@@ -103,14 +112,20 @@ namespace NodeEditor
 		ControlParameter* createControlParameterVector4(int id, const std::string& name);
 		ControlParameter* createControlParameterQuaternion(int id, const std::string& name);
 
+		Node* createNode(const std::string& parentPath, const std::string& typeName, int id, const std::string& name = "");
+		Node* createBlendTree(const std::string& parentPath, int id, const std::string& name = "");
+		Node* createStateMachine(const std::string& parentPath, int id, const std::string& name = "");
+
 		Graph* getRootGraph() const { return m_rootGraph; }
 		Graph* getCurrentGraph() const { return m_graphStack.top(); }
+
+		BlendTree* createRootBlendTree();
+		StateMachine* createRootStateMachine();
+
 		void pushGraph(Graph* graph);
 		void popGraph();
 
 		void styleEditor();
-
-		bool loadProject(const std::string& filePath);
 	private:
 		void initStyle();
 
