@@ -27,7 +27,7 @@ namespace NodeEditor
 
 	bool NodeEditor::initialise()
 	{
-		g_appLog->debugMessage(MsgLevel_Info, "NodeEditor::initialise: Initialising Node Editor...\n");
+		g_appLog->debugMessage(MsgLevel_Info, "NodeEditor::initialise: Initialising Node Editor\n");
 
 		if (!ImNodes::CreateContext())
 			return false;
@@ -36,7 +36,7 @@ namespace NodeEditor
 		m_manifest = new Manifest::Manifest();
 
         if (!m_manifest->init())
-			g_appLog->debugMessage(MsgLevel_Error, "NodeEditor::initialise: Failed to initialise Manifest.\n");
+			g_appLog->alertMessage(MsgLevel_Error, "NodeEditor::initialise: Failed to initialise Manifest.\n");
 
         m_controlParametersNode = new ControlParametersNode(this, "ControlParameters");
         m_controlParametersNode->setPosition(100.f, 400.f);
