@@ -27,6 +27,8 @@ namespace NodeEditor
 
 	bool NodeEditor::initialise()
 	{
+		g_appLog->debugMessage(MsgLevel_Info, "NodeEditor::initialise: Initialising Node Editor...\n");
+
 		if (!ImNodes::CreateContext())
 			return false;
 
