@@ -448,7 +448,7 @@ namespace NodeEditor
 
     BlendTree* NodeEditor::createRootBlendTree()
     {
-        if (!m_rootGraph)
+        if (m_rootGraph)
             return nullptr;
 
 		BlendTree* blendTree = new BlendTree(this, nullptr, "");
@@ -460,7 +460,7 @@ namespace NodeEditor
 
     StateMachine* NodeEditor::createRootStateMachine()
     {
-        if (!m_rootGraph)
+        if (m_rootGraph)
             return nullptr;
 
         StateMachine* stateMachine = new StateMachine(this, nullptr, "");
@@ -574,7 +574,7 @@ namespace NodeEditor
     {
         for (size_t i = 0; i < m_controlParameters.size(); i++)
         {
-            if (m_controlParameters[i]->getID() == nodeID)
+            if (m_controlParameters[i]->getControlParameterID() == nodeID)
                 return false;
         }
 

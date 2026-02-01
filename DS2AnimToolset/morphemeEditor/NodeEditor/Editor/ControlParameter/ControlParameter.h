@@ -29,6 +29,8 @@ namespace NodeEditor
 		virtual ~ControlParameter() override {}
 		virtual void draw() override {}
 
+		int getControlParameterID() const { return m_controlParameterID; }
+
 		DataPin* getOutputPin() const { return m_output; }
 		ParameterType getParameterType() const { return m_parameterType; }
 
