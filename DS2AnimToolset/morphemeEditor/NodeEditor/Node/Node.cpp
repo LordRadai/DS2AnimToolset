@@ -1,5 +1,6 @@
 #include "Node.h"
 #include "NodeEditor/Graph/Graph.h"
+#include "NodeEditor/Graph/BlendTree.h"
 #include "NodeEditor/imnodes/imnodes.h"
 #include "NodeEditor/NodeEditor.h"
 #include "NodeEditor/EditorProject/EditorProject.h"
@@ -28,6 +29,15 @@ namespace NodeEditor
 			sprintf_s(pinName, "Source%d", i);
 
 			createInputPin(pinName);
+
+			if (!m_parentGraph->isOfType<BlendTree>())
+				throw std::runtime_error("Only BlendTree graphs can have input nodes.");
+
+			BlendTree* parentGraph = m_parentGraph->asType<BlendTree>();
+
+			Project::ProjectNode* projectInputNode = projectNode->getInputNodeAtIndex(i);
+
+			parentGraph->createNode(projectInputNode);
 		}
 
 		for (size_t i = 0; i < projectNode->getNumInputCPConnections(); i++)
@@ -212,21 +222,6 @@ namespace NodeEditor
 			return m_parentGraph->getFullName() + "|" + m_name;
 
 		return m_name;
-	}
-
-	const std::string Node::getTypeName() const
-	{
-		if (m_subGraph)
-		{
-			if (m_subGraph->getName().find("StateMachine") != std::string::npos)
-				return "StateMachine";
-			if (m_subGraph->getName().find("BlendTree") != std::string::npos)
-				return "BlendTree";
-
-
-		}
-
-		return "UnknownNode";
 	}
 
 	void Node::calcNodeSize(float& width, float& height) const

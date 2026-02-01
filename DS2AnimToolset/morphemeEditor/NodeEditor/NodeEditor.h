@@ -83,6 +83,11 @@ namespace NodeEditor
 		bool removeControlParameter(ControlParameter* parameter);
 		bool hasControlParameter(const std::string& name) const;
 
+		void getAllNodes(std::vector<Node*>& outNodes) const;
+
+		Node* getNode(int nodeID) const;
+		Transition* getTransitionBetweenNodes(Node* sourceNode, Node* destinationNode) const;
+
 		Node* getSelectedNode() const;
 		Transition* getSelectedTransition() const;
 		void clearSelection();
@@ -108,6 +113,8 @@ namespace NodeEditor
 		bool loadProject(const std::string& filePath);
 	private:
 		void initStyle();
+
+		bool isNodeIDAvailable(int nodeID) const;
 
 		ControlParameter* createControlParameter(int id, const std::string& name, ControlParameter::ParameterType parameterType);
 	};

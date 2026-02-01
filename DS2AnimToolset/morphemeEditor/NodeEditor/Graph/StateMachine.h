@@ -12,7 +12,8 @@ namespace NodeEditor
 		StateMachine(NodeEditor* editor, Graph* parent, const std::string& name);
 		~StateMachine() override;
 
-		void draw() override;
+		virtual void draw() override;
+		virtual bool loadFromProjectNode(Project::ProjectNode* projectNode) override;
 
 		StateNode* createStateNode(int nodeID, const std::string& name = "ActiveState");
 

@@ -1,10 +1,12 @@
 #include "NodeEditor.h"
 #include "EditorProject/EditorProject.h"
+#include "Node/Node.h"
 #include "imnodes/imnodes.h"
 #include "Registry/Registry.h"
 #include "IconsFontAwesome6.h"
 #include "imgui_custom/imgui_custom_widget.h"
 #include "Graph/BlendTree.h"
+#include "Graph/StateMachine.h"
 #include "extern.h"
 #include "RLog/RLog.h"
 
@@ -241,6 +243,52 @@ namespace NodeEditor
         return false;
 	}
 
+    void NodeEditor::getAllNodes(std::vector<Node*>& outNodes) const
+    {
+        for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)
+        {
+            Entity* entity = m_registry->getEntityAtIndex(i);
+
+            if (entity->isOfType<Node>())
+            {
+                Node* node = dynamic_cast<Node*>(entity);
+                outNodes.push_back(node);
+            }
+		}
+    }
+
+    Node* NodeEditor::getNode(int nodeID) const
+    {
+		std::vector<Node*> allNodes;
+		getAllNodes(allNodes);
+
+        for (Node* node : allNodes)
+        {
+            if (node->getNodeID() == nodeID)
+				return node;
+        }
+
+        return nullptr;
+	}
+
+    Transition* NodeEditor::getTransitionBetweenNodes(Node* sourceNode, Node* destinationNode) const
+    {
+        for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)
+        {
+            Entity* entity = m_registry->getEntityAtIndex(i);
+
+            if (entity->isOfType<Transition>())
+            {
+                Transition* transition = dynamic_cast<Transition*>(entity);
+
+                if (transition->getSourceNode() == sourceNode && transition->getDestinationNode() == destinationNode)
+                    return transition;
+            }
+        }
+
+        return nullptr;
+	}
+
     Node* NodeEditor::getSelectedNode() const
     {
 		int selectedNodeID = -1;
@@ -370,6 +418,17 @@ namespace NodeEditor
 		m_styleSettings.Colors[NodeEditorStyleCol_Vector3DataPin] = IM_COL32(237, 143, 143, 255);
 		m_styleSettings.Colors[NodeEditorStyleCol_Vector4DataPin] = IM_COL32(142, 234, 142, 255);
 		m_styleSettings.Colors[NodeEditorStyleCol_QuaternionDataPin] = IM_COL32(240, 240, 142, 255);
+	}
+
+    bool NodeEditor::isNodeIDAvailable(int nodeID) const
+    {
+        for (size_t i = 0; i < m_controlParameters.size(); i++)
+        {
+            if (m_controlParameters[i]->getID() == nodeID)
+                return false;
+        }
+
+        return (getNode(nodeID) == nullptr);
 	}
 
     void NodeEditor::styleEditor()
@@ -578,7 +637,24 @@ namespace NodeEditor
 			addControlParameter(new ControlParameter(this, parameter));
         }
 
-		BlendTree* rootBlendTree = new BlendTree(this, nullptr, "");
-		pushGraph(rootBlendTree);
+		Project::ProjectNode* rootNode = project.getRootNode();
+
+        if (rootNode->isNodeBlendTree())
+        {
+            BlendTree* rootBlendTree = new BlendTree(this, nullptr, "");
+            pushGraph(rootBlendTree);
+        }
+        else if (rootNode->isNodeStateMachine())
+        {
+            StateMachine* rootStateMachine = new StateMachine(this, nullptr, "");
+            pushGraph(rootStateMachine);
+        }
+        else
+        {
+            g_appLog->debugMessage(MsgLevel_Error, "NodeEditor::loadProject: Root node is not a container type.\n");
+			return false;
+        }
+
+		m_rootGraph->loadFromProjectNode(rootNode);
     }
 }

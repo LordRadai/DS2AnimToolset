@@ -19,7 +19,8 @@ namespace NodeEditor
 		Graph(NodeEditor* editor, Graph* parent, const std::string& name);
 		~Graph();
 
-		void draw();
+		virtual void draw() override;
+		virtual bool loadFromProjectNode(Project::ProjectNode* projectNode);
 
 		Graph* getParentGraph() const { return m_parentGraph; }
 		bool isRootGraph() const { return m_parentGraph == nullptr; }
@@ -32,8 +33,10 @@ namespace NodeEditor
 
 		Node* createStateMachine(int nodeID, const std::string& name = "");
 		Node* createStateMachine(int nodeID, const std::string& name, float x, float y);
+		Node* createStateMachine(Project::ProjectNode* projectNode);
 		Node* createBlendTree(int nodeID, const std::string& name = "");
 		Node* createBlendTree(int nodeID, const std::string& name, float x, float y);
+		Node* createBlendTree(Project::ProjectNode* projectNode);
 
 		void removeNode(Node* node);
 
@@ -42,10 +45,10 @@ namespace NodeEditor
 		const std::vector<Node*>& getNodes() const { return m_nodes; }
 
 		const std::string getFullName() const;
-
 	protected:
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name);
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name, float x, float y);
+		Node* createNode(Project::ProjectNode* projectNode);
 
 		void getFreePosition(float& x, float& y);
 

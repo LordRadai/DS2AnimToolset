@@ -31,6 +31,9 @@ namespace NodeEditor
 		virtual void draw() override;
 		virtual void editorGUI();
 
+		int getNodeID() const { return m_nodeID; }
+		const std::string getTypeName() const { return m_typeName; }
+
 		ImVec2 getPosition() const { return m_position; }
 		ImVec2 getCenter() const;
 		ImVec2 getSize() const;
@@ -66,7 +69,6 @@ namespace NodeEditor
 		bool hasSubGraph() const { return m_subGraph != nullptr; }
 
 		const std::string getFullName() const;
-		const std::string getTypeName() const;
 	private:
 		void calcNodeSize(float& width, float& height) const;
 	};

@@ -31,6 +31,14 @@ namespace NodeEditor
 			transition->draw();
 	}
 
+	bool StateMachine::loadFromProjectNode(Project::ProjectNode* projectNode)
+	{
+		if (!Graph::loadFromProjectNode(projectNode))
+			return false;
+		
+		return true;
+	}
+
 	StateNode* StateMachine::createStateNode(int nodeID, const std::string& name)
 	{
 		std::string nodeName = makeNameValid(name, "ActiveState");

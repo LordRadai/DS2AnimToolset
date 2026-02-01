@@ -963,14 +963,14 @@ void MorphemeEditorApp::update(float dt)
 	{
 		this->m_taskFlags.exportTaeTemplateXml = false;
 
-		g_workerThread.load()->startThread("Export TimeAct Template", &MorphemeEditorApp::exportTaeTemplateXML, this);
+		exportTaeTemplateXML();
 	}
 
 	if (this->m_taskFlags.createTestEditorProject)
 	{
 		this->m_taskFlags.createTestEditorProject = false;
 
-		g_workerThread.load()->startThread("Create test editor project", &MorphemeEditorApp::createTestEditorProject, this);
+		createTestEditorProject();
 	}
 #endif
 }

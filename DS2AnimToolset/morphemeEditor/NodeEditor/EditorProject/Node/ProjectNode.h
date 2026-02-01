@@ -49,6 +49,12 @@ namespace NodeEditor
 			int getParentNodeID() const;
 			void setParentNodeID(int id);
 
+			float getXPosition() const;
+			void setXPosition(float x);
+
+			float getYPosition() const;
+			void setYPosition(float y);
+
 			bool isNodeContainer() const { return isNodeStateMachine() || isNodeBlendTree(); }
 			bool isNodeStateMachine() const { return getNodeTypeName() == "StateMachine"; }
 			bool isNodeBlendTree() const { return getNodeTypeName() == "BlendTree"; }

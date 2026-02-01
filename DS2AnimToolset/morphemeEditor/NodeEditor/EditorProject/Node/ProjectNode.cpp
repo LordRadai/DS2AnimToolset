@@ -49,6 +49,23 @@ namespace NodeEditor
 				}
 			}
 
+			tinyxml2::XMLElement* childNodeList = m_xmlElement->FirstChildElement("ChildNodes");
+
+			if (childNodeList)
+			{
+				tinyxml2::XMLElement* childNodeElem = childNodeList->FirstChildElement("Node");
+
+				while (childNodeElem)
+				{
+					ProjectNode* node = new ProjectNode(m_project, this, childNodeElem);
+					node->loadFromXMLElement(childNodeElem);
+
+					m_childrenNodes.push_back(node);
+
+					childNodeElem = childNodeElem->NextSiblingElement("Node");
+				}
+			}
+
 			tinyxml2::XMLElement* inputCPList = m_xmlElement->FirstChildElement("InputCPConnections");
 
 			if (inputCPList)
@@ -57,8 +74,7 @@ namespace NodeEditor
 
 				while (inputCPElem)
 				{
-					if (inputCPElem->GetText())
-						m_inputCPConnections.push_back(new InputCPConnection(inputCPElem->IntAttribute("nodeID"), inputCPElem->IntAttribute("pinIndex")));
+					m_inputCPConnections.push_back(new InputCPConnection(inputCPElem->IntAttribute("nodeID"), inputCPElem->IntAttribute("pinIndex")));
 
 					inputCPElem = inputCPElem->NextSiblingElement("CPConnection");
 				}
@@ -121,6 +137,34 @@ namespace NodeEditor
 		{
 			if (m_xmlElement)
 				m_xmlElement->SetAttribute("parentNodeID", id);
+		}
+
+		float ProjectNode::getXPosition() const
+		{
+			if (m_xmlElement)
+				return m_xmlElement->FloatAttribute("XPos");
+
+			throw std::runtime_error("XML Element is null, cannot get Position X.");
+		}
+
+		void ProjectNode::setXPosition(float x)
+		{
+			if (m_xmlElement)
+				m_xmlElement->SetAttribute("XPos", x);
+		}
+
+		float ProjectNode::getYPosition() const
+		{
+			if (m_xmlElement)
+				return m_xmlElement->FloatAttribute("YPos");
+
+			throw std::runtime_error("XML Element is null, cannot get Position Y.");
+		}
+
+		void ProjectNode::setYPosition(float y)
+		{
+			if (m_xmlElement)
+				m_xmlElement->SetAttribute("YPos", y);
 		}
 
 		ProjectAttribute* ProjectNode::getAttribute(size_t index) const

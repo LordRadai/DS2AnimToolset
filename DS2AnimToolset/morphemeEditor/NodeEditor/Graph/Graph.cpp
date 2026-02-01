@@ -32,7 +32,7 @@ namespace NodeEditor
 	{
 		for (Node* node : m_nodes)
 		{
-			if (node->getID() == nodeID)
+			if (node->getNodeID() == nodeID)
 				return node;
 		}
 
@@ -80,12 +80,29 @@ namespace NodeEditor
 		return node;
 	}
 
+	Node* Graph::createNode(Project::ProjectNode* projectNode)
+	{
+		Node* node = new Node(m_ownerEditor, this, projectNode);
+		m_nodes.push_back(node);
+
+		return node;
+	}
+
 	Node* Graph::createBlendTree(int nodeID, const std::string& name, float x, float y)
 	{
 		Node* node = createNode(nodeID, "BlendTree", name, x, y);
 		node->setSubGraph(new BlendTree(m_ownerEditor, this, node->getName()));
 		node->createOutputPin("Result");
 
+		return node;
+	}
+
+	Node* Graph::createBlendTree(Project::ProjectNode* projectNode)
+	{
+		Node* node = createNode(projectNode->getNodeID(), "BlendTree", projectNode->getName());
+		node->setSubGraph(new BlendTree(m_ownerEditor, this, projectNode->getName()));
+
+		node->createOutputPin("Result");
 		return node;
 	}
 
@@ -101,6 +118,17 @@ namespace NodeEditor
 	{
 		Node* node = createNode(nodeID, "StateMachine", name, x, y);
 		node->setSubGraph(new StateMachine(m_ownerEditor, this, name));
+
+		if (isOfType<BlendTree>())
+			node->createOutputPin("Result");
+
+		return node;
+	}
+
+	Node* Graph::createStateMachine(Project::ProjectNode* projectNode)
+	{
+		Node* node = createNode(projectNode->getNodeID(), "StateMachine", projectNode->getName());
+		node->setSubGraph(new StateMachine(m_ownerEditor, this, projectNode->getName()));
 
 		if (isOfType<BlendTree>())
 			node->createOutputPin("Result");
@@ -132,6 +160,13 @@ namespace NodeEditor
 			node->draw();
 
 		m_panning = ImNodes::EditorContextGetPanning();
+	}
+
+	bool Graph::loadFromProjectNode(Project::ProjectNode* projectNode)
+	{
+		m_name = projectNode->getName();
+
+		return true;
 	}
 
 	const std::string Graph::getFullName() const
