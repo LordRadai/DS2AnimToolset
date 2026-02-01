@@ -56,61 +56,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     g_appLog->debugMessage(MsgLevel_Info, "Application startup\n");
 
-    try
-    {
-        g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct template\n");
+    g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct template\n");
+    g_taeTemplate = TimeAct::TaeTemplate::load(L"Data\\res\\TimeActTemplate.xml");
 
-        g_taeTemplate = TimeAct::TaeTemplate::load(L"Data\\res\\TimeActTemplate.xml");
-    }
-    catch (const std::exception& e)
-    {
-        g_appLog->alertMessage(MsgLevel_Error, e.what());
-    }
+    g_appLog->debugMessage(MsgLevel_Info, "Initialising application core module\n");
+    g_morphemeEditorApp->initialise();
 
-    try
-    {
-        g_appLog->debugMessage(MsgLevel_Info, "Initialising application core module\n");
-        g_morphemeEditorApp->initialise();
-    }
-    catch (const std::exception& e)
-    {
-        g_morphemeEditorApp->shutdown();
-        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+    g_appLog->debugMessage(MsgLevel_Info, "Initialising rendering module\n");
+    g_renderManager->initialise(hwnd);
 
-        g_appLog->panicMessage(e.what());
-
-        return 1;
-    }
-
-    try
-    {
-        g_appLog->debugMessage(MsgLevel_Info, "Initialising rendering module\n");
-
-        g_renderManager->initialise(hwnd);
-    }
-    catch (const std::exception& e)
-    {
-        g_renderManager->shutdown();
-        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
-
-        g_appLog->panicMessage(e.what());
-
-        return 1;
-    }
-
-    try
-    {
-        g_appLog->debugMessage(MsgLevel_Info, "Initialising GUI module\n");
-        g_guiManager->initialise(hwnd, g_renderManager->getDeviceContext(), g_renderManager->getDevice());
-    }
-    catch (const std::exception& e)
-    {
-        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
-
-        g_appLog->panicMessage(e.what());
-
-        return 1;
-    }
+    g_appLog->debugMessage(MsgLevel_Info, "Initialising GUI module\n");
+    g_guiManager->initialise(hwnd, g_renderManager->getDeviceContext(), g_renderManager->getDevice());
 
     g_appLog->debugMessage(MsgLevel_Info, "Creating FBX Manager\n");
     g_pFbxManager = FbxManager::Create();
