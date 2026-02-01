@@ -1,16 +1,12 @@
 #include "MorphemeSystem.h"
-#include "AssetLoader/AssetLoader.h"
-#include "simpleBundle/simpleBundle.h"
-#include "NMPlatform/NMFile.h"
-#include "morpheme/Nodes/mrNodes.h"
-#include "morpheme/Nodes/mrNodeAnimSyncEvents.h"
 #include "AnimLoader/AnimLoader.h"
 #include "XMD/Model.h"
 
 #include "extern.h"
 #include "RCore.h"
 
-//----------------------------------------------------------------------------------------------------------------------
+#define NUM_EXPECTED_ATTRIB_SEMANTICS 74
+
 void MorphemeSystem::initMorpheme()
 {
     NMP::Memory::init();
@@ -45,10 +41,10 @@ void MorphemeSystem::initMorpheme()
 
     const int numRegisteredAttribSemantics = MR::Manager::getInstance().getNumRegisteredAttribSemantics();
 
-    // Dark Souls II registers exactly 74 ATTRIB_SEMANTICs. We must ensure that the count matches or else the output nmb will be incorrect
-    if (numRegisteredAttribSemantics != 74)
-        g_appLog->panicMessage("Invalid amount of registered ATTRIB_SEMANTIC (expecting 74, got %d)\n", numRegisteredAttribSemantics);
-
+    //----------------------------
+    // Dark Souls II Scholar of the First Sin registers exactly 74 ATTRIB_SEMANTICs. We must ensure that the count matches or else the output nmb will be incorrect
+    if (numRegisteredAttribSemantics != NUM_EXPECTED_ATTRIB_SEMANTICS)
+        g_appLog->panicMessage("Invalid amount of registered ATTRIB_SEMANTIC (expecting %d, got %d)\n", NUM_EXPECTED_ATTRIB_SEMANTICS, numRegisteredAttribSemantics);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -742,7 +742,7 @@ void MorphemeEditorApp::initialise()
 void MorphemeEditorApp::update(float dt)
 {
 	if (!this->m_initialised)
-		throw("Called update() without calling initialise() first\n");
+		throw("Called MorphemeEditorApp::update without having called MorphemeEditorApp::initialise first\n");
 
 	if (this->m_animPlayer)
 	{
@@ -1017,9 +1017,11 @@ void MorphemeEditorApp::loadSettings()
 {
 	RINI* settings = RINI::open("Data\\res\\settings.ini");
 
+	g_appLog->debugMessage(MsgLevel_Info, "Loading application settings\n");
+
 	if (settings == nullptr)
 	{
-		throw("Failed to open settings.ini");
+		g_appLog->panicMessage("Failed to read application settings\n");
 		return;
 	}
 
@@ -1045,6 +1047,8 @@ void MorphemeEditorApp::loadSettings()
 
 void MorphemeEditorApp::saveSettings()
 {
+	g_appLog->debugMessage(MsgLevel_Info, "Saving application settings\n");
+
 	RINI* settings = RINI::open("Data\\res\\settings.ini");
 
 	if (settings == nullptr)
@@ -1074,6 +1078,8 @@ void MorphemeEditorApp::saveSettings()
 
 void MorphemeEditorApp::loadPlayerModelPreset()
 {
+	g_appLog->debugMessage(MsgLevel_Info, "Loading player model preset\n");
+
 	this->m_playerModelPreset = PlayerModelPreset::loadFromFile("Data\\res\\c0001.ini");
 
 	if (this->m_playerModelPreset == nullptr)
