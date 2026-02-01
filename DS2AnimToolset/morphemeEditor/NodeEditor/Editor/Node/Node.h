@@ -28,6 +28,7 @@ namespace NodeEditor
 		virtual ~Node() override;
 		virtual void draw() override;
 		virtual void editorGUI();
+		virtual const std::string getFullName() const override;
 
 		int getNodeID() const { return m_nodeID; }
 		const std::string getTypeName() const { return m_typeName; }
@@ -53,9 +54,11 @@ namespace NodeEditor
 
 		Pin* getInputPin(size_t index) const;
 		Pin* getInputPin(const std::string& name) const;
+		size_t getNumInputPins() const { return m_inputPins.size(); }
 
 		Pin* getOutputPin(size_t index) const;
 		Pin* getOutputPin(const std::string& name) const;
+		size_t getNumOutputPins() const { return m_outputPins.size(); }
 
 		Graph* getParentGraph() const { return m_parentGraph; }
 
@@ -65,8 +68,6 @@ namespace NodeEditor
 		void setPosition(float x, float y);
 
 		bool hasSubGraph() const { return m_subGraph != nullptr; }
-
-		const std::string getFullName() const;
 	private:
 		void calcNodeSize(float& width, float& height) const;
 	};

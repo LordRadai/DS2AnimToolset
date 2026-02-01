@@ -37,5 +37,10 @@ namespace NodeEditor
 
 			return "";
 		}
+
+		Transition* MMTransition::makeTransition(NodeEditor* editor, int id, Node* sourceNode, Node* destinationNode)
+		{
+			return new Transition(editor, sourceNode->getParentGraph(), id, this->getName(), sourceNode, destinationNode);
+		}
 	}
 }

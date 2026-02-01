@@ -99,6 +99,9 @@ namespace NodeEditor
 		Graph* getGraph(const std::string& name) const;
 		Graph* findGraphByPath(const std::string& path) const;
 
+		Attribute* findAttributeByPath(const std::string& path) const;
+		Pin* findPinByPath(const std::string& path) const;
+
 		Transition* getTransitionBetweenNodes(Node* sourceNode, Node* destinationNode) const;
 
 		Node* getSelectedNode() const;
@@ -119,6 +122,8 @@ namespace NodeEditor
 		Node* createNode(const std::string& parentPath, const std::string& typeName, int id, const std::string& name = "");
 		Node* createBlendTree(const std::string& parentPath, int id, const std::string& name = "");
 		Node* createStateMachine(const std::string& parentPath, int id, const std::string& name = "");
+
+		bool connect(const std::string& inputPinPath, const std::string& outputPinPath);
 
 		Graph* getRootGraph() const { return m_rootGraph; }
 		Graph* getCurrentGraph() const { return m_graphStack.top(); }

@@ -28,10 +28,12 @@ namespace NodeEditor
 		Node* idleAnim = createNode("", "AnimWithEvents", 8, "Idle");
 		Node* moveStateMachine = createStateMachine("", 9, "SM_Move");
 
-		idleAnim->getOutputPin("Result")->connectTo(blend2Node->getInputPin("Source0"));
-		moveStateMachine->getOutputPin("Result")->connectTo(blend2Node->getInputPin("Source1"));
+		createBlendTree("SM_Move", 10, "BT_Jump");
+		createBlendTree("SM_Move", 11, "BT_Landing");
 
-		getControlParameter("Float")->getOutputPin()->connectTo(blend2Node->getInputPin("Weight"));
+		connect("Idle.Result", "Blend2_1.Source0");
+		connect("SM_Move.Output", "Blend2_1.Source1");
+		connect("ControlParameters|Float.Output", "Blend2.Weight");
 
 		return true;
 	}

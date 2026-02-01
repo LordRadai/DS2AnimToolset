@@ -221,9 +221,7 @@ namespace NodeEditor
             return nullptr;
         }
 
-        Node* newNode = parentGraph->createNode(id, typeName, name);
-
-		return newNode;
+		return parentGraph->createNode(id, typeName, name);
     }
 
     Node* NodeEditor::createBlendTree(const std::string& parentPath, int id, const std::string& name)
@@ -235,15 +233,14 @@ namespace NodeEditor
             g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createBlendTree: Parent graph with path '%s' not found or is not a BlendTree\n", parentPath.c_str());
             return nullptr;
         }
+
         if (!isNodeIDAvailable(id))
         {
             g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createBlendTree: Node ID '%d' is already in use.\n", id);
             return nullptr;
         }
 
-        Node* newNode = parentGraph->createBlendTree(id, name);
-
-        return newNode;
+        return parentGraph->createBlendTree(id, name);
 	}
 
     Node* NodeEditor::createStateMachine(const std::string& parentPath, int id, const std::string& name)
@@ -262,9 +259,27 @@ namespace NodeEditor
             return nullptr;
         }
 
-        Node* newNode = parentGraph->createStateMachine(id, name);
+        return parentGraph->createStateMachine(id, name);
+    }
 
-        return newNode;
+    bool NodeEditor::connect(const std::string& inputPinPath, const std::string& outputPinPath)
+    {
+        Pin* inputPin = findPinByPath(inputPinPath);
+        Pin* outputPin = findPinByPath(outputPinPath);
+
+        if (!inputPin)
+        {
+            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::connect: Input pin with path '%s' not found.\n", inputPinPath.c_str());
+            return false;
+        }
+
+        if (!outputPin)
+        {
+            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::connect: Output pin with path '%s' not found.\n", outputPinPath.c_str());
+            return false;
+        }
+
+        return inputPin->connectTo(outputPin);
     }
 
     ControlParameter* NodeEditor::getControlParameter(const std::string& name) const
@@ -389,6 +404,48 @@ namespace NodeEditor
             Graph* graph = m_registry->getGraphAtIndex(i);
             if (graph->getFullName() == path)
                 return graph;
+        }
+
+        return nullptr;
+    }
+
+    Attribute* NodeEditor::findAttributeByPath(const std::string& path) const
+    {
+        std::vector<Node*> allNodes;
+        getAllNodes(allNodes);
+
+        for (Node* node : allNodes)
+        {
+            for (size_t i = 0; i < node->getNumAttributes(); i++)
+            {
+                Attribute* attribute = node->getAttribute(i);
+
+                if (attribute->getFullName() == path)
+                    return attribute;
+            }
+        }
+        return nullptr;
+	}
+
+    Pin* NodeEditor::findPinByPath(const std::string& path) const
+    {
+        std::vector<Node*> allNodes;
+        getAllNodes(allNodes);
+
+        for (Node* node : allNodes)
+        {
+            for (size_t i = 0; i < node->getNumInputPins(); i++)
+            {
+                Pin* pin = node->getInputPin(i);
+                if (pin->getFullName() == path)
+                    return pin;
+            }
+            for (size_t i = 0; i < node->getNumOutputPins(); i++)
+            {
+                Pin* pin = node->getOutputPin(i);
+                if (pin->getFullName() == path)
+                    return pin;
+            }
         }
 
         return nullptr;

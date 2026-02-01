@@ -19,6 +19,7 @@ namespace NodeEditor
 		~Graph();
 
 		virtual void draw() override;
+		virtual const std::string getFullName() const override;
 
 		Graph* getParentGraph() const { return m_parentGraph; }
 		bool isRootGraph() const { return m_parentGraph == nullptr; }
@@ -39,8 +40,6 @@ namespace NodeEditor
 		const int getID() const { return m_id; }
 		const std::string& getName() const { return m_name; }
 		const std::vector<Node*>& getNodes() const { return m_nodes; }
-
-		const std::string getFullName() const;
 	protected:
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name);
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name, float x, float y);

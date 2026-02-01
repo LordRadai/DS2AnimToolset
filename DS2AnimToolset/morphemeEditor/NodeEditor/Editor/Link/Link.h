@@ -14,6 +14,7 @@ namespace NodeEditor
 		virtual ~Link() override {}
 
 		virtual void draw() override;
+		virtual const std::string getFullName() const override { return ""; }
 
 		Pin* getInputPin() const { return m_inputPin; }
 		Pin* getOutputPin() const { return m_outputPin; }

@@ -36,7 +36,9 @@ namespace NodeEditor
 	{
 		std::string nodeName = makeNameValid(name, "ActiveState");
 
-		StateNode* stateNode = new StateNode(m_ownerEditor, this, nodeID, nodeName, nullptr);
+		Manifest::MMStateMachineNode* manifestNode = m_ownerEditor->getManifest()->findStateMachineNodeManifest("ActiveState");
+
+		StateNode* stateNode = manifestNode->makeNode(m_ownerEditor, this, nodeID, nodeName);
 		m_nodes.push_back(stateNode);
 
 		return stateNode;

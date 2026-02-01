@@ -28,6 +28,7 @@ namespace NodeEditor
 
 		virtual ~ControlParameter() override {}
 		virtual void draw() override {}
+		virtual const std::string getFullName() const override { return "ControlParameters|" + m_name; }
 
 		int getControlParameterID() const { return m_controlParameterID; }
 

@@ -18,6 +18,7 @@ namespace NodeEditor
 		virtual ~Pin() override {}
 
 		virtual void draw() override;
+		virtual const std::string getFullName() const override;
 
 		Node* getParentNode() const { return m_parentNode; }
 		bool connectTo(Pin* other);

@@ -1,6 +1,7 @@
 #pragma once
 #include "../ManifestItemBase.h"
 #include "../Attribute/MMAttribute.h"
+#include "NodeEditor/Editor/Condition/Condition.h"
 
 namespace NodeEditor
 {
@@ -22,6 +23,8 @@ namespace NodeEditor
 			MMAttribute* getAttribute(uint32_t index);
 			MMAttribute* findAttribute(const std::string& name);
 			uint32_t getNumAttributes() const { return static_cast<uint32_t>(m_attributes.size()); }
+
+			Condition* makeCondition(Transition* owner);
 		};
 	}
 }

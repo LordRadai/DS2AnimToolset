@@ -1,4 +1,5 @@
 #include "MMCondition.h"
+#include "NodeEditor/Editor/Transition/Transition.h"
 
 namespace NodeEditor
 {
@@ -39,6 +40,22 @@ namespace NodeEditor
 			}
 
 			return nullptr;
+		}
+
+		Condition* MMCondition::makeCondition(Transition* owner)
+		{
+			std::string conditionName = owner->makeConditionNameValid(this->getName());
+
+			Condition* condition = new Condition(owner, this->getName(), conditionName);
+			
+			// Add attributes
+			for (uint32_t i = 0; i < getNumAttributes(); i++)
+			{
+				MMAttribute* mmAttr = getAttribute(i);
+				condition->addAttribute(mmAttr->makeAttribute(condition));
+			}
+
+			return condition;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "../ManifestItemBase.h"
+#include "NodeEditor/Editor/Transition/Transition.h"
 
 namespace NodeEditor
 {
@@ -24,6 +25,8 @@ namespace NodeEditor
 			std::string getInterface(uint32_t index) const;
 			std::string findInterface(const std::string& name) const;
 			uint32_t getNumInterfaces() const { return static_cast<uint32_t>(m_interfaces.size()); }
+
+			Transition* makeTransition(NodeEditor* editor, int id, Node* sourceNode, Node* destinationNode);
 		};
 	}
 }

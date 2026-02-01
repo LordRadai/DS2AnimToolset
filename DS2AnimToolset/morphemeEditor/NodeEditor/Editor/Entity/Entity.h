@@ -17,6 +17,7 @@ namespace NodeEditor
 		virtual ~Entity();
 		virtual void draw() {}
 		virtual void editorGUI() {}
+		virtual const std::string getFullName() const { return m_name; }
 
 		NodeEditor* getOwnerEditor() const { return m_ownerEditor; }
 		int getID() const { return m_id; }

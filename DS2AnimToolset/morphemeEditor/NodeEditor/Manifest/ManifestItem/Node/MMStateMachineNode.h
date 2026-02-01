@@ -1,5 +1,6 @@
 #pragma once
 #include "MMNode.h"
+#include "NodeEditor/Editor/Node/StateNode.h"
 
 namespace NodeEditor
 {
@@ -12,6 +13,8 @@ namespace NodeEditor
 			MMStateMachineNode(const nlohmann::json& json) : MMNode(json) {};
 
 			virtual ~MMStateMachineNode() override = default;
+
+			StateNode* makeNode(NodeEditor* editor, Graph* parent, int id, const std::string& name);
 		};
 	}
 }

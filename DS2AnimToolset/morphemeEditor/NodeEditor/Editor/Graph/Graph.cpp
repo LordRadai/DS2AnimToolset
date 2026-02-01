@@ -72,6 +72,9 @@ namespace NodeEditor
 
 		Manifest::MMNode* manifestNode = m_ownerEditor->getManifest()->findNodeManifest(typeName);
 
+		if (!manifestNode)
+			throw std::runtime_error("Graph::createNode: Node type '" + typeName + "' not found in Manifest.");
+
 		Node* node = manifestNode->makeNode(m_ownerEditor, this, nodeID, nodeName);
 		node->setPosition(x, y);
 
@@ -117,6 +120,9 @@ namespace NodeEditor
 		std::string nodeName = makeNameValid(nameToUse, "StateMachine");
 
 		Manifest::MMStateMachine* manifestNode = m_ownerEditor->getManifest()->findStateMachineManifest("StateMachine");
+
+		if (!manifestNode)
+			throw std::runtime_error("Graph::createStateMachine: StateMachine type 'StateMachine' not found in Manifest.");
 
 		Node* node = manifestNode->makeNode(m_ownerEditor, this, nodeID, name);
 		node->setPosition(x, y);

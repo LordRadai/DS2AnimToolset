@@ -17,6 +17,11 @@ namespace NodeEditor
 		drawInternal(ImNodesPinShape_TriangleFilled, ImNodes::GetStyle().Colors[ImNodesCol_Pin]);
 	}
 
+	const std::string Pin::getFullName() const
+	{
+		return m_parentNode->getFullName() + "." + m_name;
+	}
+
 	bool Pin::connectTo(Pin* other)
 	{
 		if (m_isInput == other->m_isInput)

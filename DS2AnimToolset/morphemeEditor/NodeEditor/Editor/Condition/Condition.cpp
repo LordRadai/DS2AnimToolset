@@ -19,6 +19,11 @@ namespace NodeEditor
 		ImGui::TreePop();
 	}
 
+	const std::string Condition::getFullName() const
+	{
+		return m_owner->getFullName() + "." + m_name;
+	}
+
 	Attribute* Condition::getAttribute(size_t index) const
 	{
 		if (index < m_attributes.size())

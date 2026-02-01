@@ -14,6 +14,7 @@ namespace NodeEditor
 		Attribute(Entity* owner, const std::string& name, const std::string& type);
 
 		virtual ~Attribute() override {}
+		virtual const std::string getFullName() const override { return m_owner->getFullName() + "." + m_name; }
 
 		Entity* getOwnerEntity() const { return m_owner; }
 		const std::string& getName() const { return m_name; }
