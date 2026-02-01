@@ -9,15 +9,20 @@
 
 void MorphemeSystem::initMorpheme()
 {
+    g_appLog->debugMessage(MsgLevel_Info, "Initialising Morpheme System\n");
+
+	g_appLog->debugMessage(MsgLevel_Info, "Initialising Memory module\n");
     NMP::Memory::init();
 
     //----------------------------
     // Initialise morpheme library
-    g_appLog->debugMessage(MsgLevel_Info, "Initialising Morpheme\n");
+    g_appLog->debugMessage(MsgLevel_Info, "Initialising Morpheme lib\n");
     MR::Manager::initMorphemeLib();
 
     //----------------------------
     // Dispatcher initialisation
+
+	g_appLog->debugMessage(MsgLevel_Info, "Initialising Dispatcher\n");
     MR::Dispatcher* dispatcher = MR::DispatcherBasic::createAndInit();
 
     //----------------------------
@@ -37,6 +42,7 @@ void MorphemeSystem::initMorpheme()
         AnimLoader::requestAnim,
         AnimLoader::releaseAnim);
 
+	g_appLog->debugMessage(MsgLevel_Info, "Initialising XMD\n");
     XMD::XMDInit();
 
     const int numRegisteredAttribSemantics = MR::Manager::getInstance().getNumRegisteredAttribSemantics();
@@ -45,6 +51,8 @@ void MorphemeSystem::initMorpheme()
     // Dark Souls II Scholar of the First Sin registers exactly 74 ATTRIB_SEMANTICs. We must ensure that the count matches or else the output nmb will be incorrect
     if (numRegisteredAttribSemantics != NUM_EXPECTED_ATTRIB_SEMANTICS)
         g_appLog->panicMessage("Invalid amount of registered ATTRIB_SEMANTIC (expecting %d, got %d)\n", NUM_EXPECTED_ATTRIB_SEMANTICS, numRegisteredAttribSemantics);
+
+	g_appLog->debugMessage(MsgLevel_Info, "Morpheme System initialised successfully\n");
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -59,16 +67,23 @@ void MorphemeSystem::initMorpheme()
 // details.
 void MorphemeSystem::termMorpheme()
 {
-    g_appLog->debugMessage(MsgLevel_Info, "Terminating Morpheme\n");
+    g_appLog->debugMessage(MsgLevel_Info, "Terminating Morpheme System\n");
 
     //----------------------------
     // Terminate morpheme library
+	g_appLog->debugMessage(MsgLevel_Info, "Cleaning up XMD\n");
     XMD::XMDCleanup();
+
+	g_appLog->debugMessage(MsgLevel_Info, "Terminating Dispatcher\n");
     MR::DispatcherBasic::term();
+
+	g_appLog->debugMessage(MsgLevel_Info, "Terminating Morpheme lib\n");
     MR::Manager::termMorphemeLib();
+
+	g_appLog->debugMessage(MsgLevel_Info, "Shutting down Memory module\n");
     NMP::Memory::shutdown();
 
-    g_appLog->debugMessage(MsgLevel_Info, "Morpheme shutdown\n");
+	g_appLog->debugMessage(MsgLevel_Info, "Morpheme System terminated successfully\n");
 }
 
 //----------------------------------------------------------------------------------------------------------------------
