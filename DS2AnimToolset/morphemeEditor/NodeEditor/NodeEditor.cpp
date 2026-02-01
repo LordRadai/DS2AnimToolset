@@ -93,32 +93,18 @@ namespace NodeEditor
 	void NodeEditor::draw()
 	{
 		ImGui::Begin("Node Editor");
-
-		std::string parentGraphList = "";
-		std::stack<Graph*> tempStack = m_graphStack;
-
-		while (!tempStack.empty())
-		{
-			Graph* graph = tempStack.top();
-			tempStack.pop();
-
-			if (!parentGraphList.empty())
-				parentGraphList = graph->getName() + "|" + parentGraphList;
-			else
-				parentGraphList = graph->getName();
-		}
 		
 		if (ImGui::Button(ICON_FA_ARROW_UP))
 			popGraph();
 
 		ImGui::SameLine();
 
+        Graph* currentGraph = getCurrentGraph();
+
 		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-		ImGui::Label(parentGraphList.c_str());
+		ImGui::Label(currentGraph->getFullName().c_str());
 
 		ImNodes::BeginNodeEditor();
-
-		Graph* currentGraph = getCurrentGraph();
 
         if (currentGraph)
         {

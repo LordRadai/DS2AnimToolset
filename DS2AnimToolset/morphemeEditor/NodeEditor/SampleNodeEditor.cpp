@@ -24,19 +24,19 @@ namespace NodeEditor
 		Node* blend2Node = createNode("", "Blend2", 7);
 		blend2Node->createOutputPin("Result");
 		blend2Node->createInputPin("Source0");
-		blend2Node->createInputPin("Source2");
+		blend2Node->createInputPin("Source1");
 		blend2Node->createInputDataPin("Weight", DataPin::kDataTypeFloat);
 
 		rootBlendTree->connectToOutput(blend2Node->getOutputPin(0));
 
-		Node* walkAnim = createNode("", "AnimWithEvents", 8, "WalkAnim");
-		walkAnim->createOutputPin("Result");
+		Node* idleAnim = createNode("", "AnimWithEvents", 8, "Idle");
+		idleAnim->createOutputPin("Result");
 
-		Node* runAnim = createNode("", "AnimWithEvents", 9, "RunAnim");
-		runAnim->createOutputPin("Result");
+		Node* moveStateMachine = createStateMachine("", 9, "SM_Move");
 
-		walkAnim->getOutputPin("Result")->connectTo(blend2Node->getInputPin("Source0"));
-		runAnim->getOutputPin("Result")->connectTo(blend2Node->getInputPin("Source2"));
+		idleAnim->getOutputPin("Result")->connectTo(blend2Node->getInputPin("Source0"));
+		moveStateMachine->getOutputPin("Result")->connectTo(blend2Node->getInputPin("Source1"));
+
 		getControlParameter("Float")->getOutputPin()->connectTo(blend2Node->getInputPin("Weight"));
 
 		return true;
