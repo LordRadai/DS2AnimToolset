@@ -8,9 +8,6 @@
             "helptext": "Script to be executed and displayed. The script should return a string (or example 'return ls()')"
         }
     ],
-    "getNoteDisplayText": null,
     "group": "Notes",
-    "setNoteEditText": null,
-    "helptext": "A script note",
-    "getNoteEditText": null
+    "helptext": "A script note"
 }

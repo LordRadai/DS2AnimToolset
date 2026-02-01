@@ -1,13 +1,10 @@
 {
-    "onPinDisconnected": null,
-    "upgrade": null,
     "group": "Blends",
     "image": "BlendN.png",
     "attributes": [
         {
             "type": "floatArray",
             "name": "SourceWeights",
-            "set": null,
             "value": [
                 0,
                 0,
@@ -35,7 +32,6 @@
         {
             "type": "int",
             "name": "SourceWeightDistribution",
-            "set": null,
             "value": 1,
             "helptext": "Defines how the input to the weight pin blends between the input nodes",
             "displayName": "Distribution"
@@ -43,7 +39,6 @@
         {
             "type": "bool",
             "name": "WrapWeights",
-            "set": null,
             "value": false,
             "helptext": "Interpolate across the last animation back to the first one",
             "displayName": "Wrap Weights"
@@ -279,10 +274,7 @@
         }
     },
     "helptext": "Blends N animation streams together",
-    "onPinConnected": null,
-    "serialize": null,
     "id": 108,
-    "validate": null,
     "displayName": "Blend N",
     "pinOrder": [
         "Source0",
@@ -300,8 +292,6 @@
         "Weight"
     ],
     "version": 10,
-    "getTransformChannels": null,
-    "updatePins": null,
     "dataPins": {
         "Weight": {
             "input": true,

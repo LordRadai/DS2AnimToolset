@@ -1,10 +1,6 @@
 {
-    "serialize": null,
-    "onAttributeInherited": null,
-    "upgrade": null,
     "group": "Utilities",
     "id": 135,
-    "validate": null,
     "displayName": "Mirror Transforms",
     "pinOrder": [
         "Source",
@@ -12,7 +8,6 @@
     ],
     "image": "Mirror.png",
     "version": 3,
-    "getTransformChannels": null,
     "functionPins": {
         "Result": {
             "passThrough": true,
@@ -50,7 +45,6 @@
         {
             "type": "bool",
             "name": "EventPassThrough",
-            "set": null,
             "value": true
         },
         {
@@ -61,6 +55,5 @@
             "perAnimSet": true
         }
     ],
-    "helptext": "mirrors animation along a preferred axis",
-    "getEvents": null
+    "helptext": "mirrors animation along a preferred axis"
 }

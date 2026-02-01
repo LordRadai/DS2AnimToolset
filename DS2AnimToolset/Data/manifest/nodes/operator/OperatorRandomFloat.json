@@ -1,7 +1,5 @@
 {
-    "serialize": null,
     "group": "Float Operators",
-    "validate": null,
     "displayName": "Random Float",
     "pinOrder": [
         "Result"

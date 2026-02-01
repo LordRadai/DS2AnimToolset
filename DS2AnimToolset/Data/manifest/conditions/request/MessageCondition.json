@@ -1,9 +1,6 @@
 {
-    "serialize": null,
     "version": 2,
-    "upgrade": null,
     "id": 601,
-    "validate": null,
     "helptext": "Requires that a message with the given name is sent to the network before the transition is started.  These message are typically sent by the game directly, but they can also be sent from connect by pressing a button that will appear when the network is run.",
     "attributes": {
         "Message": {

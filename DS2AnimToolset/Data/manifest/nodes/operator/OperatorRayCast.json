@@ -1,8 +1,5 @@
 {
-    "serialize": null,
-    "upgrade": null,
     "group": "Vector3 Operators",
-    "validate": null,
     "displayName": "Ray Cast",
     "pinOrder": [
         "hitDistance",

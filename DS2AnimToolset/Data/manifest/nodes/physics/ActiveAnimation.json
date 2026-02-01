@@ -1,9 +1,5 @@
 {
-    "serialize": null,
-    "upgrade": null,
     "group": "Physics",
-    "getTransformChannels": null,
-    "validate": null,
     "displayName": "Active Animation",
     "pinOrder": [
         "Source",

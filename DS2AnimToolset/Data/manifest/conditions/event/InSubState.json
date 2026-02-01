@@ -1,8 +1,6 @@
 {
-    "serialize": null,
     "version": 1,
     "id": 617,
-    "validate": null,
     "helptext": "Requires that the source state machine has a specific sub state node active.",
     "attributes": {
         "Node": {

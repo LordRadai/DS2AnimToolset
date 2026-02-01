@@ -1,14 +1,11 @@
 {
     "animId": 400,
-    "upgrade": null,
     "interfaces": [
         "Transforms",
         "Time",
         "Events"
     ],
-    "validate": null,
     "version": 5,
-    "serialize": null,
     "supportsTransitToSelf": false,
     "attributes": [
         {

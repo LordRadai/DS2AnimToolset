@@ -1,8 +1,5 @@
 {
-    "serialize": null,
-    "upgrade": null,
     "group": "Utilities",
-    "validate": null,
     "displayName": "Pass Through",
     "pinOrder": [
         "Source",
@@ -38,7 +35,6 @@
             }
         }
     },
-    "getTransformChannels": null,
     "helptext": "Passes any input data to its output. Performs no operations",
     "id": 134
 }

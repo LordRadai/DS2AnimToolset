@@ -1,12 +1,8 @@
 {
-    "serialize": null,
-    "upgrade": null,
     "group": "Utilities",
-    "validate": null,
     "id": 126,
     "image": "LastFramesTransforms.png",
     "version": 1,
-    "getTransformChannels": null,
     "functionPins": {
         "Result": {
             "input": false,
@@ -26,6 +22,5 @@
     "attributes": [
         
     ],
-    "helptext": "Outputs the last transformation state of the system",
-    "getEvents": null
+    "helptext": "Outputs the last transformation state of the system"
 }

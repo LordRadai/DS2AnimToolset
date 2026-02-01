@@ -1,9 +1,5 @@
 {
-    "serialize": null,
-    "upgrade": null,
     "group": "IK",
-    "getTransformChannels": null,
-    "validate": null,
     "displayName": "Predictive Uneven Terrain",
     "pinOrder": [
         "Source",

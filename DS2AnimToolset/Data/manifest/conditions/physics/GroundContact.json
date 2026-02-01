@@ -1,8 +1,6 @@
 {
-    "serialize": null,
     "version": 1,
     "id": 614,
-    "validate": null,
     "helptext": "Condition depending on character contact with the ground (or not) greater than a certain time",
     "attributes": {
         "TriggerTime": {

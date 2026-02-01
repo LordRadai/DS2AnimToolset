@@ -1,17 +1,11 @@
 {
-    "serialize": null,
-    "onNodeCreated": null,
-    "upgrade": null,
     "group": "Retargeting",
-    "validate": null,
-    "onAnimationSetCreated": null,
     "pinOrder": [
         "Source",
         "Result"
     ],
     "image": "Retarget.png",
     "version": 4,
-    "getTransformChannels": null,
     "functionPins": {
         "Result": {
             "input": false,
@@ -44,7 +38,6 @@
         {
             "type": "ref",
             "name": "InputAnimSet",
-            "set": null,
             "kind": "AnimationSet",
             "helptext": "Specifies the anim set of the input sub network.",
             "perAnimSet": true

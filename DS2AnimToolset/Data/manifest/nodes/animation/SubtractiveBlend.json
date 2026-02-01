@@ -1,12 +1,8 @@
 {
-    "serialize": null,
-    "getTransformChannels": null,
-    "upgrade": null,
     "group": "Blends",
     "dataPins": [
         
     ],
-    "validate": null,
     "displayName": "Subtractive Blend",
     "pinOrder": [
         "Source0",
@@ -135,7 +131,6 @@
             }
         }
     },
-    "updatePins": null,
     "helptext": "Subtracts an animation's transforms from a base animation's transforms",
     "id": 170
 }

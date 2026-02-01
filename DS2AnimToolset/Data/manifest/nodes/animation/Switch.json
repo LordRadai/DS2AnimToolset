@@ -1,13 +1,10 @@
 {
-    "onPinDisconnected": null,
-    "upgrade": null,
     "group": "Utilities",
     "image": "Switch.png",
     "attributes": [
         {
             "type": "floatArray",
             "name": "SourceWeights",
-            "set": null,
             "value": [
                 0,
                 0,
@@ -35,7 +32,6 @@
         {
             "type": "int",
             "name": "SourceWeightDistribution",
-            "set": null,
             "value": 1,
             "helptext": "Defines how the input to the weight pin blends between the input nodes",
             "displayName": "Source Weight Distribution"
@@ -43,7 +39,6 @@
         {
             "type": "bool",
             "name": "WrapWeights",
-            "set": null,
             "value": false,
             "helptext": "Interpolate across the last animation back to the first one",
             "displayName": "Wrap Weights"
@@ -225,10 +220,7 @@
         }
     },
     "helptext": "Handles switching between n source nodes",
-    "onPinConnected": null,
-    "serialize": null,
     "id": 131,
-    "validate": null,
     "displayName": "Switch",
     "pinOrder": [
         "Source0",
@@ -246,7 +238,6 @@
         "Weight"
     ],
     "version": 5,
-    "getTransformChannels": null,
     "dataPins": {
         "Weight": {
             "input": true,

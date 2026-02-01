@@ -1,12 +1,9 @@
 {
     "animId": 402,
-    "upgrade": null,
     "interfaces": [
         "Transforms",
         "Time"
     ],
-    "validate": null,
-    "serialize": null,
     "version": 4,
     "attributes": [
         {

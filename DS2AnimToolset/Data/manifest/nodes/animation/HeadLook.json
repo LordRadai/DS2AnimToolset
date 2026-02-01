@@ -1,9 +1,5 @@
 {
-    "serialize": null,
-    "upgrade": null,
     "group": "IK",
-    "getTransformChannels": null,
-    "validate": null,
     "displayName": "Head Look",
     "pinOrder": [
         "Source",

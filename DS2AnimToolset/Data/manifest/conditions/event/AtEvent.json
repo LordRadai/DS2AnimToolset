@@ -1,8 +1,6 @@
 {
-    "serialize": null,
     "version": 1,
     "id": 604,
-    "validate": null,
     "helptext": "Requires that the source state crosses a specific event number in the sync track before the transition is started. The event number can be a floating point value.",
     "attributes": {
         "EventPosition": {

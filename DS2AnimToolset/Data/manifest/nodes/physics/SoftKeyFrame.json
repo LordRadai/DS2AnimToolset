@@ -1,10 +1,5 @@
 {
-    "serialize": null,
-    "onNodeCreated": null,
-    "upgrade": null,
     "group": "Physics",
-    "getTransformChannels": null,
-    "validate": null,
     "displayName": "Soft Key Frame",
     "pinOrder": [
         "Source",

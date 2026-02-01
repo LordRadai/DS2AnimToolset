@@ -1,11 +1,8 @@
 {
-    "serialize": null,
     "presets": [
         
     ],
-    "upgrade": null,
     "id": 104,
-    "displayFunction": null,
     "version": 3,
     "attributes": [
         {
@@ -43,6 +40,5 @@
         }
     ],
     "supportsPresets": true,
-    "helptext": "Orchestrates a shot performance.",
-    "compareToPreset": null
+    "helptext": "Orchestrates a shot performance."
 }

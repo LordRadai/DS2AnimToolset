@@ -1,7 +1,4 @@
 {
-    "serialize": null,
-    "getTransformChannels": null,
-    "upgrade": null,
     "group": "Blends",
     "dataPins": {
         "WeightY": {
@@ -15,7 +12,6 @@
             "type": "float"
         }
     },
-    "validate": null,
     "displayName": "Blend 2x2",
     "pinOrder": [
         "Source0",
@@ -156,7 +152,6 @@
             }
         }
     },
-    "updatePins": null,
     "helptext": "Blends four animation streams together",
     "id": 149
 }

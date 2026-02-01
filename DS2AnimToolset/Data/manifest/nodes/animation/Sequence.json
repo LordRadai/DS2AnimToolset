@@ -1,7 +1,5 @@
 {
-    "serialize": null,
     "group": "Utilities",
-    "validate": null,
     "displayName": "Sequence",
     "pinOrder": [
         "Source0",
@@ -19,7 +17,6 @@
     ],
     "image": "Sequence.png",
     "version": 3,
-    "getTransformChannels": null,
     "functionPins": {
         "Source6": {
             "input": true,

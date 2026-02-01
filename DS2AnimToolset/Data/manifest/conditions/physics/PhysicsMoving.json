@@ -1,8 +1,6 @@
 {
-    "serialize": null,
     "version": 1,
     "id": 619,
-    "validate": null,
     "helptext": "Condition is true if a physical body's parts velocities are below the threshold for a given time",
     "attributes": {
         "OnNotSet": {

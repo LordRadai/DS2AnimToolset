@@ -1,7 +1,5 @@
 {
-    "serialize": null,
     "group": "Physics",
-    "validate": null,
     "displayName": "Hard Key Frame",
     "pinOrder": [
         "Source",
@@ -9,7 +7,6 @@
     ],
     "image": "HardKeyFrame.png",
     "version": 2,
-    "getTransformChannels": null,
     "functionPins": {
         "Result": {
             "input": false,

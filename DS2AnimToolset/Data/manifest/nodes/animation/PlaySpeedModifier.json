@@ -1,9 +1,5 @@
 {
-    "serialize": null,
-    "upgrade": null,
     "group": "Utilities",
-    "getTransformChannels": null,
-    "validate": null,
     "displayName": "Play Speed Modifier",
     "pinOrder": [
         "Source",

@@ -1,8 +1,6 @@
 {
-    "serialize": null,
     "version": 1,
     "id": 609,
-    "validate": null,
     "helptext": "Ensure that a control parameter is between a lower and upper test value before the transition is started. For instance, require that the 'speed' control parameter is between 0.2 and 0.6",
     "attributes": {
         "NotInRange": {

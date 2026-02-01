@@ -1,8 +1,6 @@
 {
-    "serialize": null,
     "version": 1,
     "id": 618,
-    "validate": null,
     "helptext": "Gets triggered when the source is, or is not, inside the requested event.",
     "attributes": {
         "EventTrackUserTypeID": {

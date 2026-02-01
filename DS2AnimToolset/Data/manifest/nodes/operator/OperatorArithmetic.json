@@ -1,7 +1,5 @@
 {
-    "serialize": null,
     "group": "Float Operators",
-    "validate": null,
     "displayName": "Arithmetic",
     "pinOrder": [
         "Input0",

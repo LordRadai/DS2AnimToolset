@@ -1,8 +1,6 @@
 {
-    "serialize": null,
     "version": 1,
     "id": 603,
-    "validate": null,
     "helptext": "Requires that the source state is specific fraction through an animation before the transition is triggered.  This condition becomes true the first frame that the specified fraction is reached.  For instance, you might specify that that the transition should occur 70% (0.7) through the animation. The condition is true the first frame where the sample point is greater than 70% and the previous sample point was less than 70%.",
     "attributes": {
         "TriggerPercent": {

@@ -1,7 +1,5 @@
 {
-    "serialize": null,
     "group": "Containers",
-    "validate": null,
     "displayName": "State Machine",
     "pinOrder": [
         "Result"

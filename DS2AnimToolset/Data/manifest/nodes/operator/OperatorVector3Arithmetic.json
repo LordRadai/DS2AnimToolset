@@ -1,7 +1,5 @@
 {
-    "serialize": null,
     "group": "Vector3 Operators",
-    "validate": null,
     "displayName": "Vec3 Arithmetic",
     "pinOrder": [
         "Input0",

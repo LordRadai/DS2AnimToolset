@@ -1,10 +1,5 @@
 {
-    "serialize": null,
-    "onAttributeInherited": null,
-    "upgrade": null,
     "group": "Utilities",
-    "getTransformChannels": null,
-    "validate": null,
     "displayName": "Smooth Transforms",
     "pinOrder": [
         "Source",

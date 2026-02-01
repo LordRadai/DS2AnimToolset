@@ -1,9 +1,6 @@
 {
-    "serialize": null,
     "version": 3,
-    "upgrade": null,
     "id": 615,
-    "validate": null,
     "helptext": "Condition is true if a raytest returns a hit/miss",
     "attributes": {
         "RayDeltaX": {

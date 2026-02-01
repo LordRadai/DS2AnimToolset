@@ -1,15 +1,11 @@
 {
-    "serialize": null,
-    "upgrade": null,
     "group": "Utilities",
-    "validate": null,
     "pinOrder": [
         "Source",
         "Result"
     ],
     "image": "ScaleCharacter.png",
     "version": 1,
-    "getTransformChannels": null,
     "functionPins": {
         "Result": {
             "input": false,

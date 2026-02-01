@@ -1,7 +1,4 @@
 {
-    "serialize": null,
-    "getTransformChannels": null,
-    "upgrade": null,
     "group": "Blends",
     "dataPins": {
         "Weight": {
@@ -10,7 +7,6 @@
             "type": "float"
         }
     },
-    "validate": null,
     "displayName": "Blend 2",
     "pinOrder": [
         "Source0",
@@ -32,7 +28,6 @@
         },
         {
             "type": "int",
-            "set": null,
             "max": 1,
             "min": 0,
             "name": "TimeStretchMode",
@@ -42,7 +37,6 @@
         },
         {
             "type": "int",
-            "set": null,
             "max": 2,
             "min": 0,
             "name": "PassThroughMode",
@@ -181,7 +175,6 @@
             }
         }
     },
-    "updatePins": null,
     "helptext": "Blends two animation streams together",
     "id": 107
 }

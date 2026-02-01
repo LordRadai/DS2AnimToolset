@@ -1,5 +1,4 @@
 {
-    "serialize": null,
     "presets": {
         "Shotgun": {
             "ReflexLookSwitch": true,
@@ -80,9 +79,7 @@
             "ReflexAnimSwitch": true
         }
     },
-    "upgrade": null,
     "id": 101,
-    "displayFunction": null,
     "version": 5,
     "supportsPresets": true,
     "attributes": [
@@ -479,6 +476,5 @@
             "displayName": "Killshot for head hit"
         }
     ],
-    "helptext": "Orchestrates a shot performance.",
-    "compareToPreset": null
+    "helptext": "Orchestrates a shot performance."
 }

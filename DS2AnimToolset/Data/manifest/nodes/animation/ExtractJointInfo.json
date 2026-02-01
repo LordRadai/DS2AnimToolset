@@ -1,8 +1,5 @@
 {
-    "serialize": null,
     "group": "Utilities",
-    "getTransformChannels": null,
-    "validate": null,
     "displayName": "Extract Joint Info",
     "pinOrder": [
         "Source",

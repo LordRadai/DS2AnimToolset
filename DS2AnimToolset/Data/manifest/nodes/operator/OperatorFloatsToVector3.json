@@ -1,7 +1,5 @@
 {
-    "serialize": null,
     "group": "Float Operators",
-    "validate": null,
     "displayName": "Floats To Vec3",
     "pinOrder": [
         "FloatX",

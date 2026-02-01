@@ -1,8 +1,6 @@
 {
-    "serialize": null,
     "version": 1,
     "id": 610,
-    "validate": null,
     "helptext": "Requires that the value on a specified float track dips below a certain value before the transition is started. For instance, require that the float track tagged with user data '8' has its value dip below 0.5. In this example the condition is only true if the float value started at a value above 0.5 originally.",
     "attributes": {
         "EventTrackUserTypeID": {

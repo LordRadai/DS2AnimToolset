@@ -1,8 +1,5 @@
 {
-    "serialize": null,
-    "upgrade": null,
     "group": "Float Operators",
-    "validate": null,
     "displayName": "Smooth Float",
     "pinOrder": [
         "Input",

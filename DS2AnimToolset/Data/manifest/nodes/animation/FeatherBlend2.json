@@ -1,5 +1,4 @@
 {
-    "upgrade": null,
     "group": "Blends",
     "image": "FeatherBlend2.png",
     "attributes": [
@@ -23,7 +22,6 @@
         },
         {
             "type": "int",
-            "set": null,
             "max": 2,
             "min": 0,
             "name": "PassThroughMode",
@@ -43,14 +41,12 @@
         {
             "type": "bool",
             "name": "AlwaysBlendTrajectoryAndTransforms",
-            "set": null,
             "value": false,
             "helptext": "Always blend evaluates the trajectory delta and transform value for Source0 and Source1 even if it is completely weighted to one input. This option will improve performance if the weight usually falls somewhere between 0 and 1 but is not precisely 0 or 1. When this option is disabled it  may improve performance if the weight is usually 0 or 1."
         },
         {
             "type": "bool",
             "name": "AlwaysCombineSampledEvents",
-            "set": null,
             "value": false,
             "helptext": "Always blend evaluates the event value for Source0 and Source1 even if it is completely weighted to one input. This option will improve performance if the weight usually falls somewhere between 0 and 1 but is not precisely 0 or 1. When this option is disabled it  may improve performance if the weight is usually 0 or 1."
         },
@@ -66,7 +62,6 @@
         {
             "type": "bool",
             "name": "AdditiveBlendAttitude",
-            "set": null,
             "value": false,
             "helptext": "Add the rotation of Source1 to Source0 instead of blending with spherical interpolation.",
             "displayName": "Additive Rotation"
@@ -74,7 +69,6 @@
         {
             "type": "bool",
             "name": "AdditiveBlendPosition",
-            "set": null,
             "value": false,
             "helptext": "Add the translation of Source1 to Source0 instead of blending with linear interpolation.",
             "displayName": "Additive Translation"
@@ -172,10 +166,7 @@
         }
     },
     "helptext": "Blends two animation streams together with per bone weighting",
-    "serialize": null,
-    "onAttributeInherited": null,
     "id": 114,
-    "validate": null,
     "displayName": "Feather Blend 2",
     "pinOrder": [
         "Source0",
@@ -184,8 +175,6 @@
         "Weight"
     ],
     "version": 5,
-    "getTransformChannels": null,
-    "updatePins": null,
     "dataPins": {
         "Weight": {
             "input": true,

@@ -1,10 +1,6 @@
 {
-    "serialize": null,
-    "onAttributeInherited": null,
-    "upgrade": null,
     "group": "Utilities",
     "id": 105,
-    "validate": null,
     "displayName": "Filter Transforms",
     "pinOrder": [
         "Source",
@@ -12,7 +8,6 @@
     ],
     "image": "FilterTransforms.png",
     "version": 2,
-    "getTransformChannels": null,
     "functionPins": {
         "Result": {
             "passThrough": true,
@@ -50,6 +45,5 @@
             "perAnimSet": true
         }
     ],
-    "helptext": "Filter out the specified channels from an input buffer. Pass through all other Node communication.",
-    "getEvents": null
+    "helptext": "Filter out the specified channels from an input buffer. Pass through all other Node communication."
 }

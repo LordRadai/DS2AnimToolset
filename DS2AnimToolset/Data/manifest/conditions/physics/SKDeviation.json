@@ -1,8 +1,6 @@
 {
-    "serialize": null,
     "version": 1,
     "id": 620,
-    "validate": null,
     "helptext": "Condition on the deviation of SK parts from their target",
     "attributes": {
         "DeviationTime": {

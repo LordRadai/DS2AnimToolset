@@ -1,8 +1,5 @@
 {
-    "serialize": null,
-    "upgrade": null,
     "group": "Utilities",
-    "validate": null,
     "displayName": "Emit Request",
     "pinOrder": [
         "Source",
@@ -36,7 +33,6 @@
             "passThrough": true
         }
     },
-    "getTransformChannels": null,
     "attributes": [
         {
             "type": "int",

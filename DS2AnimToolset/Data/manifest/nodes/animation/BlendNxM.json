@@ -1,7 +1,4 @@
 {
-    "serialize": null,
-    "getTransformChannels": null,
-    "upgrade": null,
     "group": "Blends",
     "dataPins": {
         "WeightY": {
@@ -15,7 +12,6 @@
             "type": "float"
         }
     },
-    "validate": null,
     "displayName": "Blend NxM",
     "pinOrder": [
         "Source0",
@@ -67,7 +63,6 @@
             "min": 2,
             "type": "int",
             "name": "XValue",
-            "set": null,
             "value": 2,
             "helptext": "X value (rows) of the NxM matrix",
             "max": 5
@@ -76,7 +71,6 @@
             "min": 2,
             "type": "int",
             "name": "YValue",
-            "set": null,
             "value": 2,
             "helptext": "Y value (columns) of the NxM matrix",
             "max": 5
@@ -376,7 +370,6 @@
             }
         }
     },
-    "updatePins": null,
     "helptext": "Blends NxM animation streams together (up to 4x4, 5x3 or 3x5)",
     "id": 147
 }

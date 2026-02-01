@@ -1,7 +1,4 @@
 {
-    "serialize": null,
-    "getTransformChannels": null,
-    "upgrade": null,
     "group": "Blends",
     "dataPins": {
         "Weight9": {
@@ -85,7 +82,6 @@
             "type": "float"
         }
     },
-    "validate": null,
     "displayName": "Blend All",
     "pinOrder": [
         "Source0",
@@ -408,7 +404,6 @@
             }
         }
     },
-    "updatePins": null,
     "helptext": "Blends all the input animations together",
     "id": 169
 }

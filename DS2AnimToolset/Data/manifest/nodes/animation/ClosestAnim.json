@@ -1,10 +1,5 @@
 {
-    "serialize": null,
-    "onAttributeInherited": null,
-    "upgrade": null,
     "group": "Utilities",
-    "getTransformChannels": null,
-    "validate": null,
     "displayName": "Closest Anim",
     "pinOrder": [
         "Source0",

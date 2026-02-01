@@ -1,7 +1,4 @@
 {
-    "serialize": null,
-    "getTransformChannels": null,
-    "upgrade": null,
     "group": "IK",
     "attributes": [
         {
@@ -128,7 +125,6 @@
             "perAnimSet": false
         }
     ],
-    "validate": null,
     "displayName": "Hips IK",
     "pinOrder": [
         "Source",
@@ -193,7 +189,6 @@
             "passThrough": false
         }
     },
-    "updatePins": null,
     "helptext": "Move the hips procedurally while keeping the same foot placement",
     "id": 129
 }

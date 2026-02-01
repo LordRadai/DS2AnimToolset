@@ -1,8 +1,6 @@
 {
-    "serialize": null,
     "version": 1,
     "id": 616,
-    "validate": null,
     "helptext": "Compare a control parameter to a given value before the transition is started using one of '>', '<', '>=' and '<='. For instance, require that the 'speed' control parameter is greater than 0.5.",
     "attributes": {
         "TriggerValue": {

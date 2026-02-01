@@ -1,8 +1,5 @@
 {
-    "serialize": null,
-    "upgrade": null,
     "group": "Float Operators",
-    "validate": null,
     "displayName": "Ramp Float",
     "pinOrder": [
         "Input",
@@ -14,7 +11,6 @@
         {
             "type": "float",
             "name": "Start",
-            "set": null,
             "value": 0,
             "helptext": "Initial value of Result."
         },
@@ -27,21 +23,18 @@
         {
             "type": "bool",
             "name": "Enable",
-            "set": null,
             "value": true,
             "helptext": "Enable clamping of Result."
         },
         {
             "type": "float",
             "name": "Minimum",
-            "set": null,
             "value": 0,
             "helptext": "Minimum value of Result."
         },
         {
             "type": "float",
             "name": "Maximum",
-            "set": null,
             "value": 1,
             "helptext": "Maximum value of Result."
         }
