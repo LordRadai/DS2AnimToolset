@@ -8,6 +8,7 @@
 #include "Editor/Transition/Transition.h"
 
 #include "Registry/Registry.h"
+#include "Manifest/Manifest.h"
 
 namespace NodeEditor
 {
@@ -64,6 +65,7 @@ namespace NodeEditor
 		std::vector<ControlParameter*> m_controlParameters;
 		ControlParametersNode* m_controlParametersNode;
 		Registry* m_registry;
+		Manifest::Manifest* m_manifest;
 		bool m_showStyleEditor;
 
 	public:

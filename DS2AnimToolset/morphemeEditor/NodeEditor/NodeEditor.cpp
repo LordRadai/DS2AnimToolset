@@ -16,7 +16,7 @@ namespace NodeEditor
     {
     }
 
-	NodeEditor::NodeEditor() : m_showStyleEditor(false), m_registry(nullptr), m_controlParametersNode(nullptr)
+	NodeEditor::NodeEditor() : m_showStyleEditor(false), m_registry(nullptr), m_controlParametersNode(nullptr), m_manifest(nullptr)
 	{
 	}
 
@@ -31,6 +31,11 @@ namespace NodeEditor
 			return false;
 
 		m_registry = new Registry(this);
+		m_manifest = new Manifest::Manifest();
+
+        if (!m_manifest->init())
+			g_appLog->debugMessage(MsgLevel_Error, "NodeEditor::initialise: Failed to initialise Manifest.\n");
+
         m_controlParametersNode = new ControlParametersNode(this, "ControlParameters");
         m_controlParametersNode->setPosition(100.f, 400.f);
 
@@ -45,9 +50,13 @@ namespace NodeEditor
             delete m_controlParameters[i];
 
         m_controlParameters.clear();
+        
+        m_manifest->shutdown();
 
 		delete m_controlParametersNode;
 		delete m_registry;
+		delete m_manifest;
+
 		ImNodes::DestroyContext();
 	}
 

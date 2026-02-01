@@ -372,6 +372,39 @@
     <ClInclude Include="NodeEditor\Registry\Registry.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Attribute\MMAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Condition\MMCondition.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Node\MMNode.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Pin\MMDataPin.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Pin\MMFunctionalPin.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Pin\MMPin.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Node\MMStateMachine.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Node\MMStateMachineNode.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Transition\MMTransition.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\ManifestItemBase.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Manifest\Manifest.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -657,6 +690,33 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\Registry\Registry.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Attribute\MMAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Condition\MMCondition.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Node\MMNode.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Pin\MMDataPin.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Pin\MMFunctionalPin.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Pin\MMPin.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Node\MMStateMachineNode.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Transition\MMTransition.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Manifest\Manifest.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
