@@ -10,7 +10,7 @@ namespace NodeEditor
 
 		virtual ~BlendTreeOutputNode() override {}
 		virtual void draw() override;
-		virtual void editorGUI() override {}
+		virtual bool editorGUI() override { return false; }
 
 		Pin* getOutputPin() const { return getInputPin(0); }
 	};

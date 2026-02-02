@@ -26,6 +26,7 @@ namespace NodeEditor
 		Condition* getCondition(size_t index) const;
 		Condition* getCondition(const std::string& name) const;
 		size_t getNumConditions() const { return m_conditions.size(); }
+		Condition* createCondition(const std::string& typeName);
 
 		const std::string makeConditionNameValid(const std::string& desiredName);
 	};

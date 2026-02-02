@@ -4,6 +4,15 @@ namespace NodeEditor
 {
 	namespace Manifest
 	{
+		MMAttribute::MMAttribute(const nlohmann::json& json, const std::string& name)
+		{
+			this->m_name = name;
+			fromJson(json);
+
+			if (json.contains("name"))
+				this->m_name = json["name"];
+		}
+
 		void MMAttribute::fromJson(const nlohmann::json& json)
 		{
 			this->m_jsonData = json;
@@ -136,7 +145,7 @@ namespace NodeEditor
 
 		Attribute* MMAttribute::makeAttribute(Entity* owner)
 		{
-			return new Attribute(owner, getName(), getType());
+			return Attribute::createAttribute(owner, getDisplayName(), getType());
 		}
 	}
 }

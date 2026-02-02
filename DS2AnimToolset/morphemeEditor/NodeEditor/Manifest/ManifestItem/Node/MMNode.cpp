@@ -27,8 +27,26 @@ namespace NodeEditor
 
 			if (json.contains("attributes"))
 			{
-				for (const auto& attrJson : json["attributes"])
-					m_attributes.push_back(new MMAttribute(attrJson));
+				const auto& attrs = json["attributes"];
+
+				if (attrs.is_object())
+				{
+					for (auto it = attrs.begin(); it != attrs.end(); ++it)
+					{
+						m_attributes.push_back(
+							new MMAttribute(it.value(), it.key())
+						);
+					}
+				}
+				else if (attrs.is_array())
+				{
+					for (const auto& attr : attrs)
+					{
+						m_attributes.push_back(
+							new MMAttribute(attr)
+						);
+					}
+				}
 			}
 
 			if (json.contains("dataPins"))

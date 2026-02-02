@@ -8,14 +8,16 @@ namespace NodeEditor
 	{
 		class MMAttribute : public ManifestItemBase
 		{
+			std::string m_name;
 		public:
 			MMAttribute() {}
-			MMAttribute(const nlohmann::json& json) { fromJson(json); }
+			MMAttribute(const nlohmann::json& json, const std::string& name = "");
 
 			virtual ~MMAttribute() override {}
 			virtual void fromJson(const nlohmann::json& json) override;
 
-			std::string getName() const { return m_jsonData["name"]; }
+			std::string getName() const { return m_name; }
+			std::string getDisplayName() const { return m_jsonData.value("displayName", m_name); }
 			std::string getType() const { return m_jsonData["type"]; }
 			std::string getHelpText() const { return m_jsonData.value("helptext", ""); }
 			nlohmann::json getValue() const { return m_jsonData.value("value", nlohmann::json(nullptr)); }

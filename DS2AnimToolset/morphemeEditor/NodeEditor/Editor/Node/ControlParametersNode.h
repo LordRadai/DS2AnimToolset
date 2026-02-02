@@ -10,6 +10,6 @@ namespace NodeEditor
 
 		virtual ~ControlParametersNode() override {}
 		virtual void draw() override;
-		virtual void editorGUI() override {}
+		virtual bool editorGUI() override { return false; }
 	};
 }

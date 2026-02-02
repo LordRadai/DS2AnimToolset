@@ -27,7 +27,7 @@ namespace NodeEditor
 
 		virtual ~Node() override;
 		virtual void draw() override;
-		virtual void editorGUI();
+		virtual bool editorGUI() override;
 		virtual const std::string getFullName() const override;
 
 		int getNodeID() const { return m_nodeID; }

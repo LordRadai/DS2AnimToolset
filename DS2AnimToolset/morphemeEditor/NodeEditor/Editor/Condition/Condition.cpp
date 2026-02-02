@@ -9,14 +9,17 @@ namespace NodeEditor
 	{
 	}
 
-	void Condition::editorGUI()
+	bool Condition::editorGUI()
 	{
-		ImGui::TreeNode(m_name.c_str());
+		if (ImGui::TreeNodeEx(m_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			for (Attribute* attrib : m_attributes)
+				attrib->editorGUI();
 
-		for (Attribute* attrib : m_attributes)
-			attrib->editorGUI();
+			ImGui::TreePop();
+		}
 
-		ImGui::TreePop();
+		return true;
 	}
 
 	const std::string Condition::getFullName() const

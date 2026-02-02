@@ -240,6 +240,76 @@ namespace NodeEditor
         return false;
 	}
 
+    Request* NodeEditor::createRequest(int id, const std::string& name)
+    {
+        if (hasRequest(id) || hasRequest(name))
+        {
+            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createRequest: Request with ID '%d' or name '%s' already exists.\n", id, name.c_str());
+            return nullptr;
+        }
+
+        Request* request = new Request(id, name);
+        m_requests.push_back(request);
+
+        return request;
+    }
+
+    Request* NodeEditor::getRequest(int id)
+    {
+        for (Request* request : m_requests)
+        {
+            if (request->getRequestID() == id)
+                return request;
+        }
+
+        return nullptr;
+    }
+
+    Request* NodeEditor::getRequest(const std::string& name) const
+    {
+        for (Request* request : m_requests)
+        {
+            if (request->getName() == name)
+                return request;
+        }
+        return nullptr;
+	}
+
+    bool NodeEditor::removeRequest(Request* request)
+    {
+        auto it = std::find(m_requests.begin(), m_requests.end(), request);
+        if (it != m_requests.end())
+        {
+            m_requests.erase(it);
+            delete request;
+            return true;
+        }
+
+        return false;
+    }
+
+    bool NodeEditor::hasRequest(int id) const
+    {
+        for (Request* request : m_requests)
+        {
+            if (request->getRequestID() == id)
+                return true;
+        }
+
+        return false;
+	}
+
+    bool NodeEditor::hasRequest(const std::string& name) const
+    {
+        for (Request* request : m_requests)
+        {
+            if (request->getName() == name)
+                return true;
+        }
+
+        return false;
+    }
+
     void NodeEditor::getAllNodes(std::vector<Node*>& outNodes) const
     {
         for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)

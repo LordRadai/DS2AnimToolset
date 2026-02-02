@@ -405,6 +405,48 @@
     <ClInclude Include="NodeEditor\Manifest\Manifest.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\IntAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\Array\IntArrayAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\BoolAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\Array\BoolArrayAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\FloatAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\Array\FloatArrayAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\StringAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\Array\StringArrayAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\RefAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\Array\RefArrayAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\ControlParameterAttribute\ControlParameterAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Request\Request.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\RequestAttribute\RequestAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEditor\Editor\Attribute\AnimationTakeAttribute\AnimationTakeAttribute.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -720,6 +762,45 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\Manifest\ManifestItem\Node\MMStateMachine.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\IntAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\Array\IntArrayAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\BoolAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\Array\BoolArrayAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\FloatAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\Array\FloatArrayAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\StringAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\Array\StringArrayAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\RefAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\Array\RefArrayAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\ControlParameterAttribute\ControlParameterAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\RequestAttribute\RequestAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEditor\Editor\Attribute\AnimationTakeAttribute\AnimationTakeAttribute.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

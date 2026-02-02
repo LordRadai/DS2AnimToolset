@@ -3,6 +3,9 @@
 #include "Transition.h"
 
 #include "NodeEditor/Editor/Node/Node.h"
+
+#include "NodeEditor/NodeEditor.h"
+
 #include "NodeEditor/imnodes/imnodes.h"
 #include "NodeEditor/imnodes/imnodes_internal.h"
 
@@ -55,6 +58,20 @@ namespace NodeEditor
 
         return nullptr;
 	}
+
+    Condition* Transition::createCondition(const std::string& typeName)
+    {
+		Manifest::MMCondition* conditionManifest = m_ownerEditor->getManifest()->findConditionManifest(typeName);
+
+		if (!conditionManifest)
+			throw std::runtime_error("Transition::createCondition: Condition type '" + typeName + "' not found in Manifest.");
+
+		Condition* condition = conditionManifest->makeCondition(this);
+
+		m_conditions.push_back(condition);
+
+		return condition;
+    }
 
     const std::string Transition::makeConditionNameValid(const std::string& desiredName)
     {

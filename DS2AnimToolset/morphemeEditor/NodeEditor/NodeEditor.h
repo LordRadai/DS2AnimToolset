@@ -5,6 +5,7 @@
 #include "Editor/Graph/StateMachine.h"
 #include "Editor/Node/ControlParametersNode.h"
 #include "Editor/ControlParameter/ControlParameter.h"
+#include "Editor/Request/Request.h"
 #include "Editor/Transition/Transition.h"
 
 #include "Registry/Registry.h"
@@ -63,6 +64,7 @@ namespace NodeEditor
 		Graph* m_rootGraph;
 		std::stack<Graph*> m_graphStack;
 		std::vector<ControlParameter*> m_controlParameters;
+		std::vector<Request*> m_requests;
 		ControlParametersNode* m_controlParametersNode;
 		Registry* m_registry;
 		Manifest::Manifest* m_manifest;
@@ -88,6 +90,14 @@ namespace NodeEditor
 		size_t getNumControlParameters() const { return m_controlParameters.size(); }
 		bool removeControlParameter(ControlParameter* parameter);
 		bool hasControlParameter(const std::string& name) const;
+
+		Request* createRequest(int id, const std::string& name);
+		Request* getRequest(int id);
+		Request* getRequest(const std::string& name) const;
+		size_t getNumRequests() const { return m_requests.size(); }
+		bool removeRequest(Request* request);
+		bool hasRequest(int id) const;
+		bool hasRequest(const std::string& name) const;
 
 		void getAllNodes(std::vector<Node*>& outNodes) const;
 		void getAllGraphs(std::vector<Graph*>& outGraphs) const;

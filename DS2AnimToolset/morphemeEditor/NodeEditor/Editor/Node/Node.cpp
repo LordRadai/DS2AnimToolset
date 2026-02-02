@@ -201,7 +201,7 @@ namespace NodeEditor
 		height = std::fmax(nodeTotalMinHeight, nodeHeight);
 	}
 
-	void Node::editorGUI()
+	bool Node::editorGUI()
 	{
 		ImGui::TextUnformatted(m_typeName.c_str());
 
@@ -210,5 +210,7 @@ namespace NodeEditor
 
 		for (Attribute* attribute : m_attributes)
 			attribute->editorGUI();
+
+		return true;
 	}
 }

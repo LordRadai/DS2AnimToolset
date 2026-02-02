@@ -16,12 +16,30 @@ namespace NodeEditor
 		void MMCondition::fromJson(const nlohmann::json& json)
 		{
 			m_jsonData = json;
+			m_attributes.clear();
 
-			if (json.contains("attributes"))
+			if (!json.contains("attributes"))
+				return;
+
+			const auto& attrs = json["attributes"];
+
+			if (attrs.is_object())
 			{
-				m_attributes.clear();
-				for (const auto& attr : json["attributes"])
-					m_attributes.push_back(new MMAttribute(attr));
+				for (auto it = attrs.begin(); it != attrs.end(); ++it)
+				{
+					m_attributes.push_back(
+						new MMAttribute(it.value(), it.key())
+					);
+				}
+			}
+			else if (attrs.is_array())
+			{
+				for (const auto& attr : attrs)
+				{
+					m_attributes.push_back(
+						new MMAttribute(attr)
+					);
+				}
 			}
 		}
 
@@ -29,6 +47,8 @@ namespace NodeEditor
 		{
 			if (index < m_attributes.size())
 				return m_attributes[index];
+
+			return nullptr;
 		}
 
 		MMAttribute* MMCondition::findAttribute(const std::string& name)

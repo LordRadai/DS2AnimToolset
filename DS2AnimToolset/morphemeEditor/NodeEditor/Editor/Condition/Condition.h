@@ -17,7 +17,7 @@ namespace NodeEditor
 		Condition(Transition* owner, const std::string& typeName, const std::string& name);
 
 		virtual ~Condition() {}
-		virtual void editorGUI() override;
+		virtual bool editorGUI() override;
 		virtual const std::string getFullName() const override;
 
 		Transition* getOwnerTransition() const { return m_owner; }
