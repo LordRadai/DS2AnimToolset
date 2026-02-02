@@ -11,9 +11,9 @@ namespace NodeEditor
 		if (!bInit)
 			return false;
 
-		BlendTree* rootBlendTree = createRootBlendTree();
+		BlendTree* rootGraph = createRootBlendTree();
 
-		createControlParameterFloat(0, "Float");
+		ControlParameter* cp = createControlParameterFloat(0, "Float");
 		createControlParameterBool(1, "Bool");
 		createControlParameterInt(2, "Int");
 		createControlParameterUInt(3, "UInt");
@@ -21,19 +21,37 @@ namespace NodeEditor
 		createControlParameterVector4(5, "Vector4");
 		createControlParameterQuaternion(6, "Quaternion");
 
-		Node* blend2Node = createNode("", "Blend2", 7);
+		Node* node1 = rootGraph->createNode(7, "Blend2");
+		node1->createInputPin("Source0");
+		node1->createInputPin("Source1");
+		node1->createInputDataPin("Weight", DataPin::kDataTypeFloat);
 
-		rootBlendTree->connectToOutput(blend2Node->getOutputPin(0));
+		node1->createOutputPin("Result");
 
-		Node* idleAnim = createNode("", "AnimWithEvents", 8, "Idle");
-		Node* moveStateMachine = createStateMachine("", 9, "SM_Move");
+		Node* node2 = rootGraph->createNode(8, "PassThrough");
+		node2->createInputPin("Source");
+		node2->createOutputPin("Result");
 
-		createBlendTree("SM_Move", 10, "BT_Jump");
-		createBlendTree("SM_Move", 11, "BT_Landing");
+		Node* stateMachine = rootGraph->createStateMachine(9, "SM_Main");
+		StateMachine* sm = stateMachine->getSubGraph()->asType<StateMachine>();
 
-		connect("Idle.Result", "Blend2_1.Source0");
-		connect("SM_Move.Output", "Blend2_1.Source1");
-		connect("ControlParameters|Float.Output", "Blend2.Weight");
+		Node* src = sm->createBlendTree(10);
+		Node* dst = sm->createBlendTree(11);
+		sm->createStateNode(8);
+
+		sm->createTransition(6, "Transit", src, dst);
+		sm->createTransition(7, "Transit", dst, src);
+
+		Node* blend2 = src->getSubGraph()->asType<BlendTree>()->createNode(12, "Blend2");
+		blend2->createInputPin("Source0");
+		blend2->createInputPin("Source1");
+		blend2->createInputDataPin("Weight", DataPin::kDataTypeFloat);
+
+		cp->getOutputPin()->connectTo(node1->getInputPin("Weight"));
+		node1->getOutputPin("Result")->connectTo(node2->getInputPin("Source"));
+
+		cp->getOutputPin()->connectTo(blend2->getInputPin("Weight"));
+		rootGraph->connectToOutput(node2->getOutputPin("Result"));
 
 		return true;
 	}

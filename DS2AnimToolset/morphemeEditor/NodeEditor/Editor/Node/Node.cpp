@@ -179,7 +179,7 @@ namespace NodeEditor
 
 	const std::string Node::getFullName() const
 	{
-		if (m_parentGraph)
+		if (m_parentGraph && !m_parentGraph->isRootGraph())
 			return m_parentGraph->getFullName() + "|" + m_name;
 
 		return m_name;

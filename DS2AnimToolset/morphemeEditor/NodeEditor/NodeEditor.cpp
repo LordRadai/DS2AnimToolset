@@ -16,7 +16,7 @@ namespace NodeEditor
     {
     }
 
-	NodeEditor::NodeEditor() : m_showStyleEditor(false), m_registry(nullptr), m_controlParametersNode(nullptr), m_manifest(nullptr)
+	NodeEditor::NodeEditor() : m_showStyleEditor(false), m_registry(nullptr), m_controlParametersNode(nullptr), m_manifest(nullptr), m_rootGraph(nullptr)
 	{
 	}
 
@@ -205,83 +205,6 @@ namespace NodeEditor
         return createControlParameter(id, name, ControlParameter::kParameterTypeQuaternion);
     }
 
-    Node* NodeEditor::createNode(const std::string& parentPath, const std::string& typeName, int id, const std::string& name)
-    {
-        BlendTree* parentGraph = findGraphByPath(parentPath)->asType<BlendTree>();
-
-        if (!parentGraph)
-        {
-            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createNode: Parent graph with path '%s' not found or is not a BlendTree\n", parentPath.c_str());
-            return nullptr;
-        }
-
-        if (!isNodeIDAvailable(id))
-        {
-            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createNode: Node ID '%d' is already in use.\n", id);
-            return nullptr;
-        }
-
-		return parentGraph->createNode(id, typeName, name);
-    }
-
-    Node* NodeEditor::createBlendTree(const std::string& parentPath, int id, const std::string& name)
-    {
-        Graph* parentGraph = findGraphByPath(parentPath);
-
-        if (!parentGraph)
-        {
-            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createBlendTree: Parent graph with path '%s' not found or is not a BlendTree\n", parentPath.c_str());
-            return nullptr;
-        }
-
-        if (!isNodeIDAvailable(id))
-        {
-            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createBlendTree: Node ID '%d' is already in use.\n", id);
-            return nullptr;
-        }
-
-        return parentGraph->createBlendTree(id, name);
-	}
-
-    Node* NodeEditor::createStateMachine(const std::string& parentPath, int id, const std::string& name)
-    {
-        Graph* parentGraph = findGraphByPath(parentPath);
-
-        if (!parentGraph)
-        {
-            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createStateMachine: Parent graph with path '%s' not found or is not a BlendTree\n", parentPath.c_str());
-            return nullptr;
-        }
-
-        if (!isNodeIDAvailable(id))
-        {
-            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createStateMachine: Node ID '%d' is already in use.\n", id);
-            return nullptr;
-        }
-
-        return parentGraph->createStateMachine(id, name);
-    }
-
-    bool NodeEditor::connect(const std::string& inputPinPath, const std::string& outputPinPath)
-    {
-        Pin* inputPin = findPinByPath(inputPinPath);
-        Pin* outputPin = findPinByPath(outputPinPath);
-
-        if (!inputPin)
-        {
-            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::connect: Input pin with path '%s' not found.\n", inputPinPath.c_str());
-            return false;
-        }
-
-        if (!outputPin)
-        {
-            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::connect: Output pin with path '%s' not found.\n", outputPinPath.c_str());
-            return false;
-        }
-
-        return inputPin->connectTo(outputPin);
-    }
-
     ControlParameter* NodeEditor::getControlParameter(const std::string& name) const
     {
         for (ControlParameter* parameter : m_controlParameters)
@@ -329,6 +252,55 @@ namespace NodeEditor
                 outNodes.push_back(node);
             }
 		}
+    }
+
+    void NodeEditor::getAllGraphs(std::vector<Graph*>& outGraphs) const
+    {
+        for (size_t i = 0; i < m_registry->getNumRegisteredGraphs(); i++)
+        {
+            Graph* graph = m_registry->getGraphAtIndex(i);
+            outGraphs.push_back(graph);
+        }
+    }
+
+    void NodeEditor::getAllPins(std::vector<Pin*>& outPins) const
+    {
+        for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)
+        {
+            Entity* entity = m_registry->getEntityAtIndex(i);
+
+            if (entity->isOfType<Pin>())
+            {
+                Pin* pin = dynamic_cast<Pin*>(entity);
+                outPins.push_back(pin);
+            }
+        }
+	}
+
+    void NodeEditor::getAllAttributes(std::vector<Attribute*>& outAttributes) const
+    {
+        for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)
+        {
+            Entity* entity = m_registry->getEntityAtIndex(i);
+            if (entity->isOfType<Attribute>())
+            {
+                Attribute* attribute = dynamic_cast<Attribute*>(entity);
+                outAttributes.push_back(attribute);
+            }
+        }
+    }
+
+    void NodeEditor::getAllTransitions(std::vector<Transition*>& outTransitions) const
+    {
+        for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)
+        {
+            Entity* entity = m_registry->getEntityAtIndex(i);
+            if (entity->isOfType<Transition>())
+            {
+                Transition* transition = dynamic_cast<Transition*>(entity);
+                outTransitions.push_back(transition);
+            }
+        }
     }
 
     Node* NodeEditor::getNode(int nodeID) const
@@ -411,60 +383,57 @@ namespace NodeEditor
 
     Attribute* NodeEditor::findAttributeByPath(const std::string& path) const
     {
-        std::vector<Node*> allNodes;
-        getAllNodes(allNodes);
+		std::vector<Attribute*> allAttributes;
+		getAllAttributes(allAttributes);
 
-        for (Node* node : allNodes)
+        for (Attribute* attribute : allAttributes)
         {
-            for (size_t i = 0; i < node->getNumAttributes(); i++)
-            {
-                Attribute* attribute = node->getAttribute(i);
-
-                if (attribute->getFullName() == path)
-                    return attribute;
-            }
+            if (attribute->getFullName() == path)
+                return attribute;
         }
+
         return nullptr;
 	}
 
     Pin* NodeEditor::findPinByPath(const std::string& path) const
     {
-        std::vector<Node*> allNodes;
-        getAllNodes(allNodes);
+		std::vector<Pin*> allPins;
+		getAllPins(allPins);
 
-        for (Node* node : allNodes)
+        for (Pin* pin : allPins)
         {
-            for (size_t i = 0; i < node->getNumInputPins(); i++)
-            {
-                Pin* pin = node->getInputPin(i);
-                if (pin->getFullName() == path)
-                    return pin;
-            }
-            for (size_t i = 0; i < node->getNumOutputPins(); i++)
-            {
-                Pin* pin = node->getOutputPin(i);
-                if (pin->getFullName() == path)
-                    return pin;
-            }
-        }
+            if (pin->getFullName() == path)
+                return pin;
+		}
 
         return nullptr;
     }
 
+    Transition* NodeEditor::findTransitionByPath(const std::string& path) const
+	{
+		std::vector<Transition*> allTransitions;
+        getAllTransitions(allTransitions);
+
+        for (Transition* transition : allTransitions)
+        {
+            if (transition->getFullName() == path)
+				return transition;
+        }
+
+		return nullptr;
+	}
+
     Transition* NodeEditor::getTransitionBetweenNodes(Node* sourceNode, Node* destinationNode) const
     {
-        for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)
+		std::vector<Transition*> allTransitions;
+		getAllTransitions(allTransitions);
+
+        for (Transition* transition : allTransitions)
         {
-            Entity* entity = m_registry->getEntityAtIndex(i);
-
-            if (entity->isOfType<Transition>())
-            {
-                Transition* transition = dynamic_cast<Transition*>(entity);
-
-                if (transition->getSourceNode() == sourceNode && transition->getDestinationNode() == destinationNode)
-                    return transition;
-            }
-        }
+            if ((transition->getSourceNode() == sourceNode && transition->getDestinationNode() == destinationNode) ||
+                (transition->getSourceNode() == destinationNode && transition->getDestinationNode() == sourceNode))
+                return transition;
+		}
 
         return nullptr;
 	}
