@@ -7,27 +7,38 @@
 
 namespace NodeEditor
 {
-	bool AnimationTakeAttribute::editorGUI()
-	{
-		bool readOnly = false;
-		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
-			readOnly = true;
+    bool AnimationTakeAttribute::editorGUI()
+    {
+        bool readOnly = (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly) != 0;
 
-		if (ImGui::TreeNode(m_name.c_str()))
-		{
-			ImGui::BeginDisabled(readOnly);
+        if (ImGui::TreeNode(m_name.c_str()))
+        {
+            ImGui::BeginDisabled(readOnly);
 
-			ImGui::NamedLabel("File", m_filename.c_str());
-			ImGui::NamedLabel("Take", m_takeName.c_str());
-			ImGui::NamedLabel("Sync Track", m_syncTrack.c_str());
+            float labelWidth = 0.0f;
+            const char* labels[] = { "File", "Take", "Sync Track" };
+            for (const char* l : labels)
+                labelWidth = ImMax(labelWidth, ImGui::CalcTextSize(l).x);
 
-			ImGui::EndDisabled();
+            float valueX = ImGui::GetCursorPosX() + labelWidth + ImGui::GetStyle().ItemInnerSpacing.x;
 
-			ImGui::TreePop();
-		}
+            auto Row = [&](const char* label, const char* value)
+                {
+                    ImGui::TextUnformatted(label);
+                    ImGui::SameLine(valueX);
+                    ImGui::Label(value);
+                };
 
-		return true;
-	}
+            Row("File", m_filename.c_str());
+            Row("Take", m_takeName.c_str());
+            Row("Sync Track", m_syncTrack.c_str());
+
+            ImGui::EndDisabled();
+            ImGui::TreePop();
+        }
+
+        return true;
+    }
 
 	void AnimationTakeAttribute::setValue(const std::vector<std::any>& values)
 	{
