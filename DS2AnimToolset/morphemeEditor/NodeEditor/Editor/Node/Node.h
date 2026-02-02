@@ -1,10 +1,11 @@
 #pragma once
 #include <imgui/imgui.h>
+#include <vector>
+
 #include "NodeEditor/Editor/Pin/Pin.h"
 #include "NodeEditor/Editor/Pin/DataPin.h"
 #include "NodeEditor/Editor/Entity/Entity.h"
 #include "NodeEditor/Editor/Attribute/Attribute.h"
-#include <vector>
 
 namespace NodeEditor
 {
@@ -68,6 +69,10 @@ namespace NodeEditor
 		void setPosition(float x, float y);
 
 		bool hasSubGraph() const { return m_subGraph != nullptr; }
+
+		bool setAttribute(const std::string& name, const std::vector<std::any>& values);
+		bool setAttribute(const std::string& name, const std::any& value);
+
 	private:
 		void calcNodeSize(float& width, float& height) const;
 	};

@@ -45,4 +45,30 @@ namespace NodeEditor
 
 		return nullptr;
 	}
+
+	bool Node::setAttribute(const std::string& name, const std::vector<std::any>& values)
+	{
+		Attribute* attribute = getAttribute(name);
+
+		if (attribute)
+		{
+			attribute->setValue(values);
+			return true;
+		}
+
+		return false;
+	}
+
+	bool Node::setAttribute(const std::string& name, const std::any& value)
+	{
+		Attribute* attribute = getAttribute(name);
+
+		if (attribute)
+		{
+			attribute->setValue({ value });
+			return true;
+		}
+
+		return false;
+	}
 }

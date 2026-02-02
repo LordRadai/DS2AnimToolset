@@ -21,6 +21,8 @@ namespace NodeEditor
 		ImGui::TextUnformatted("Sync Track");
 		ImGui::SameLine();
 		ImGui::Label(m_syncTrack.c_str());
+
+		return true;
 	}
 
 	void AnimationTakeAttribute::setValue(const std::vector<std::any>& values)

@@ -30,5 +30,8 @@ namespace NodeEditor
 		Attribute* getAttribute(size_t index) const;
 		Attribute* getAttribute(const std::string& name) const;
 		size_t getNumAttributes() const { return m_attributes.size(); }
+
+		bool setAttribute(const std::string& name, const std::vector<std::any>& values);
+		bool setAttribute(const std::string& name, const std::any& value);
 	};
 }
