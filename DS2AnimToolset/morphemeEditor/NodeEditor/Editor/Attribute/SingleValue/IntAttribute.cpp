@@ -8,6 +8,8 @@ namespace NodeEditor
 	bool IntAttribute::editorGUI()
 	{
 		ImGui::DragInt(m_name.c_str(), &m_value);
+
+		return true;
 	}
 
 	void IntAttribute::setValue(const std::vector<std::any>& values)
