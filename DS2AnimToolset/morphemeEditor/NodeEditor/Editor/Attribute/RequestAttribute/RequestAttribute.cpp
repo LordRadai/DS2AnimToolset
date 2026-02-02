@@ -13,7 +13,9 @@ namespace NodeEditor
 		if (m_request)
 			ImGui::Label(m_request->getName().c_str());
 		else
-			ImGui::Label("<No Request Assigned>");
+			ImGui::Label("");
+
+		return true;
 	}
 
 	void RequestAttribute::setValue(const std::vector<std::any>& values)
