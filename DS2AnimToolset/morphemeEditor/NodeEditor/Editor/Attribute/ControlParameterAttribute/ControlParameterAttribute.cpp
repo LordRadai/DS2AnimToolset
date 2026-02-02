@@ -16,7 +16,7 @@ namespace NodeEditor
 		ImGui::BeginDisabled(readOnly);
 
 		if (m_controlParameter)
-			ImGui::NamedLabel(m_name.c_str(), m_controlParameter->getFullName().c_str());
+			ImGui::NamedLabel(m_name.c_str(), m_controlParameter->getName().c_str());
 		else
 			ImGui::NamedLabel(m_name.c_str(), "");
 

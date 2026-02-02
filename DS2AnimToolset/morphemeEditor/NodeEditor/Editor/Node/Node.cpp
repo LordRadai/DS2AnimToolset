@@ -8,6 +8,9 @@
 #include "NodeEditor/NodeEditor.h"
 #include "imgui_custom/imgui_custom_widget.h"
 
+#include "extern.h"
+#include "RLog/RLog.h"
+
 namespace NodeEditor
 {
 	Node::Node(NodeEditor* editor, Graph* parent, int id, const std::string typeName, const std::string& name, Graph* subGraph) : Entity(editor, name),
@@ -109,6 +112,7 @@ namespace NodeEditor
 	{
 		DataPin* pin = new DataPin(m_ownerEditor, this, name, true, dataType);
 		m_inputPins.push_back(pin);
+
 		return pin;
 	}
 
@@ -116,6 +120,7 @@ namespace NodeEditor
 	{
 		DataPin* pin = new DataPin(m_ownerEditor, this, name, false, dataType);
 		m_outputPins.push_back(pin);
+
 		return pin;
 	}
 
@@ -188,6 +193,8 @@ namespace NodeEditor
 			return true;
 		}
 
+		g_appLog->debugMessage(MsgLevel_Warn, "Node::setAttribute: Attribute '%s' not found in node '%s'\n", name.c_str(), m_name.c_str());
+
 		return false;
 	}
 
@@ -200,6 +207,8 @@ namespace NodeEditor
 			attribute->setValue({ value });
 			return true;
 		}
+
+		g_appLog->debugMessage(MsgLevel_Warn, "Node::setAttribute: Attribute '%s' not found in node '%s'\n", name.c_str(), m_name.c_str());
 
 		return false;
 	}

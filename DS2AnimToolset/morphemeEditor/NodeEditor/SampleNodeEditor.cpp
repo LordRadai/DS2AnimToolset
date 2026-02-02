@@ -39,6 +39,8 @@ namespace NodeEditor
 		Transition* transit0 = sm->createTransition(6, "Transit", src, dst);
 		Transition* transit1 = sm->createTransition(7, "Transit", dst, src);
 
+		transit0->setAttribute("ReverseControlParameter", getControlParameter("Bool"));
+
 		transit0->createCondition("MessageCondition");
 
 		Node* blend2 = src->getSubGraph()->asType<BlendTree>()->createNode(12, "Blend2");
