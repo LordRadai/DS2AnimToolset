@@ -14,5 +14,5 @@ namespace NodeEditor
 		virtual void setValue(const std::vector<std::any>& values) override;
 
 		const std::vector<std::string>& getValues() const { return m_values; }
-	}
+	};
 }
