@@ -46,7 +46,7 @@ namespace NodeEditor
 		return nullptr;
 	}
 
-	bool Node::setAttribute(const std::string& name, const std::vector<std::any>& values)
+	bool Condition::setAttribute(const std::string& name, const std::vector<std::any>& values)
 	{
 		Attribute* attribute = getAttribute(name);
 
@@ -59,7 +59,7 @@ namespace NodeEditor
 		return false;
 	}
 
-	bool Node::setAttribute(const std::string& name, const std::any& value)
+	bool Condition::setAttribute(const std::string& name, const std::any& value)
 	{
 		Attribute* attribute = getAttribute(name);
 
