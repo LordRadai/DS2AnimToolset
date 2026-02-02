@@ -16,7 +16,7 @@ namespace NodeEditor
     {
     }
 
-	NodeEditor::NodeEditor() : m_showStyleEditor(false), m_registry(nullptr), m_controlParametersNode(nullptr), m_manifest(nullptr), m_rootGraph(nullptr)
+	NodeEditor::NodeEditor(int flags) : m_flags(flags), m_showStyleEditor(false), m_registry(nullptr), m_controlParametersNode(nullptr), m_manifest(nullptr), m_rootGraph(nullptr)
 	{
 	}
 
@@ -112,7 +112,6 @@ namespace NodeEditor
 
         Graph* currentGraph = getCurrentGraph();
 
-		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 		ImGui::Label(currentGraph->getFullName().c_str());
 
 		ImNodes::BeginNodeEditor();
@@ -147,6 +146,64 @@ namespace NodeEditor
         else if (ImGui::IsMouseDoubleClicked(0))
         {
             popGraph();
+        }
+    }
+
+    void NodeEditor::infoGui()
+    {
+        Node* selectedNode = getSelectedNode();
+
+        if (!selectedNode)
+            selectedNode = getSelectedTransition();
+
+        bool drawnInfo = false;
+
+        if (selectedNode)
+            drawnInfo = selectedNode->editorGUI();
+
+        if (!drawnInfo)
+        {
+			ImGui::SeparatorText("Control Parameters");
+
+            for (ControlParameter* parameter : m_controlParameters)
+            {
+                ImGui::BeginTable("##cpTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg);
+
+				ImGui::TableSetupColumn("Name");
+				ImGui::TableSetupColumn("Type");
+				ImGui::TableHeadersRow();
+
+				ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+
+				ImGui::TextUnformatted(parameter->getName().c_str());
+				ImGui::TableNextColumn();
+
+				ImGui::TextUnformatted(ControlParameter::parameterTypeToString(parameter->getParameterType()));
+
+				ImGui::EndTable();
+            }
+
+			ImGui::SeparatorText("Requests");
+
+            for (Request* request : m_requests)
+            {
+                ImGui::BeginTable("##requestTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg);
+
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("Type");
+                ImGui::TableHeadersRow();
+
+                ImGui::TableNextRow();
+
+                ImGui::TextUnformatted(request->getName().c_str());
+
+				ImGui::TableNextColumn();
+
+				ImGui::TextUnformatted(request->getType().c_str());
+
+                ImGui::EndTable();
+            }
         }
     }
 
@@ -248,7 +305,7 @@ namespace NodeEditor
             return nullptr;
         }
 
-        Request* request = new Request(id, name);
+        Request* request = new Request(id, name, "Request");
         m_requests.push_back(request);
 
         return request;

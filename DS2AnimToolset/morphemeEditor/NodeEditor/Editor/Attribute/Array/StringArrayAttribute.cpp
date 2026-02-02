@@ -1,7 +1,9 @@
 #include <stdexcept>
 
+#include "NodeEditor/NodeEditor.h"
 #include "StringArrayAttribute.h"
 #include "imgui/imgui.h"
+#include "imgui_custom/imgui_custom_widget.h"
 
 #define TEMP_BUFFER_SIZE 1024
 
@@ -9,17 +11,21 @@ namespace NodeEditor
 {
 	bool StringArrayAttribute::editorGUI()
 	{
+		bool readOnly = false;
+		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
+			readOnly = true;
+
+		ImGui::BeginDisabled(readOnly);
+
 		for (size_t i = 0; i < m_values.size(); i++)
 		{
 			char nameBuffer[32];
 			sprintf_s(nameBuffer, "%s%d", m_name.c_str(), (int)i);
 
-			char buffer[TEMP_BUFFER_SIZE];
-			strcpy_s(buffer, TEMP_BUFFER_SIZE, m_values[i].c_str());
-
-			if (ImGui::InputText(m_name.c_str(), buffer, sizeof(buffer)))
-				m_values[i] = std::string(buffer);
+			ImGui::NamedLabel(nameBuffer, m_values[i].c_str());
 		}
+
+		ImGui::EndDisabled();
 
 		return true;
 	}

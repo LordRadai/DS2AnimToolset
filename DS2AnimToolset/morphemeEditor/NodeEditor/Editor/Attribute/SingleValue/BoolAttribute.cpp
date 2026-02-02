@@ -1,13 +1,24 @@
 #include <stdexcept>
 
+#include "NodeEditor/NodeEditor.h"
+
 #include "BoolAttribute.h"
 #include "imgui/imgui.h"
+#include "imgui_custom/imgui_custom_widget.h"
 
 namespace NodeEditor
 {
 	bool BoolAttribute::editorGUI()
 	{
-		ImGui::Checkbox(m_name.c_str(), &m_value);
+		bool readOnly = false;
+		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
+			readOnly = true;
+
+		ImGui::BeginDisabled(readOnly);
+
+		ImGui::RightAlignedCheckbox(m_name.c_str(), &m_value);
+
+		ImGui::EndDisabled();
 
 		return true;
 	}

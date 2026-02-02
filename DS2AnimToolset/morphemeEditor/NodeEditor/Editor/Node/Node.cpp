@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include "Node.h"
+#include "NodeEditor/NodeEditor.h"
 #include "NodeEditor/Editor/Graph/Graph.h"
 #include "NodeEditor/Editor/Graph/BlendTree.h"
 #include "NodeEditor/imnodes/imnodes.h"
@@ -232,10 +233,19 @@ namespace NodeEditor
 		ImGui::TextUnformatted(m_typeName.c_str());
 
 		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+		bool readOnly = false;
+		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
+			readOnly = true;
+
+		ImGui::BeginDisabled(readOnly);
+
 		ImGui::Label(m_name.c_str());
 
 		for (Attribute* attribute : m_attributes)
 			attribute->editorGUI();
+
+		ImGui::EndDisabled();
 
 		return true;
 	}

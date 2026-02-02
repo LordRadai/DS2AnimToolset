@@ -1,13 +1,23 @@
 #include <stdexcept>
 
+#include "NodeEditor/NodeEditor.h"
 #include "IntAttribute.h"
 #include "imgui/imgui.h"
+#include "imgui_custom/imgui_custom_widget.h"
 
 namespace NodeEditor
 {
 	bool IntAttribute::editorGUI()
 	{
-		ImGui::DragInt(m_name.c_str(), &m_value);
+		bool readOnly = false;
+		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
+			readOnly = true;
+
+		ImGui::BeginDisabled(readOnly);
+
+		ImGui::RightAlignedInputInt(m_name.c_str(), &m_value);
+
+		ImGui::EndDisabled();
 
 		return true;
 	}

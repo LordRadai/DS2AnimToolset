@@ -1,5 +1,6 @@
 #include <stdexcept>
 
+#include "NodeEditor/NodeEditor.h"
 #include "ControlParameterAttribute.h"
 #include "imgui/imgui.h"
 #include "imgui_custom/imgui_custom_widget.h"
@@ -8,14 +9,18 @@ namespace NodeEditor
 {
 	bool ControlParameterAttribute::editorGUI()
 	{
-		ImGui::TextUnformatted(m_name.c_str());
+		bool readOnly = false;
+		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
+			readOnly = true;
 
-		ImGui::SameLine();
+		ImGui::BeginDisabled(readOnly);
 
 		if (m_controlParameter)
-			ImGui::Label(m_controlParameter->getFullName().c_str());
+			ImGui::NamedLabel(m_name.c_str(), m_controlParameter->getFullName().c_str());
 		else
-			ImGui::Label("");
+			ImGui::NamedLabel(m_name.c_str(), "");
+
+		ImGui::EndDisabled();
 
 		return true;
 	}

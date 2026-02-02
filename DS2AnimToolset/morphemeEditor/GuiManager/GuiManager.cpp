@@ -1688,13 +1688,7 @@ void GuiManager::selectedNodeInfoWindow()
 
 	NodeEditor::NodeEditor* nodeEditor = editorApp->getNodeEditor();
 
-	NodeEditor::Node* selectedNode = nodeEditor->getSelectedNode();
-
-	if (!selectedNode)
-		selectedNode = nodeEditor->getSelectedTransition();
-
-	if (selectedNode)
-		selectedNode->editorGUI();
+	nodeEditor->infoGui();
 
 	ImGui::End();
 }

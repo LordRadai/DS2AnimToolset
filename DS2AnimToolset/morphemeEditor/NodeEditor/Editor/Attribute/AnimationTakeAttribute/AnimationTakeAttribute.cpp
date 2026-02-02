@@ -1,5 +1,6 @@
 #include <stdexcept>
 
+#include "NodeEditor/NodeEditor.h"
 #include "AnimationTakeAttribute.h"
 #include "imgui/imgui.h"
 #include "imgui_custom/imgui_custom_widget.h"
@@ -10,17 +11,17 @@ namespace NodeEditor
 	{
 		ImGui::TextUnformatted(m_name.c_str());
 
-		ImGui::TextUnformatted("File");
-		ImGui::SameLine();
-		ImGui::Label(m_filename.c_str());
+		bool readOnly = false;
+		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
+			readOnly = true;
 
-		ImGui::TextUnformatted("Take");
-		ImGui::SameLine();
-		ImGui::Label(m_takeName.c_str());
+		ImGui::BeginDisabled(readOnly);
 
-		ImGui::TextUnformatted("Sync Track");
-		ImGui::SameLine();
-		ImGui::Label(m_syncTrack.c_str());
+		ImGui::NamedLabel("File", m_filename.c_str());
+		ImGui::NamedLabel("Take", m_takeName.c_str());
+		ImGui::NamedLabel("Sync Track", m_syncTrack.c_str());
+
+		ImGui::EndDisabled();
 
 		return true;
 	}

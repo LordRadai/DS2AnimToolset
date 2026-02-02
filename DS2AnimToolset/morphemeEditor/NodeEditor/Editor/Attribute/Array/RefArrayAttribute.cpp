@@ -1,5 +1,6 @@
 #include <stdexcept>
 
+#include "NodeEditor/NodeEditor.h"
 #include "RefArrayAttribute.h"
 #include "imgui/imgui.h"
 #include "imgui_custom/imgui_custom_widget.h"
@@ -8,15 +9,24 @@ namespace NodeEditor
 {
 	bool RefArrayAttribute::editorGUI()
 	{
-		ImGui::TextUnformatted(m_name.c_str());
+		bool readOnly = false;
+		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
+			readOnly = true;
+
+		ImGui::BeginDisabled(readOnly);
 
 		for (auto& value : m_values)
 		{
+			char nameBuffer[32];
+			sprintf_s(nameBuffer, "%s%d", m_name.c_str(), (int)&value);
+
 			if (value)
-				ImGui::Label(value->getFullName().c_str());
+				ImGui::NamedLabel(nameBuffer, value->getFullName().c_str());
 			else
-				ImGui::Label("");
+				ImGui::NamedLabel(nameBuffer, "");
 		}
+
+		ImGui::EndDisabled();
 
 		return true;
 	}

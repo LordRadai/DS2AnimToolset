@@ -1,19 +1,29 @@
 #include <stdexcept>
 
+#include "NodeEditor/NodeEditor.h"
 #include "IntArrayAttribute.h"
 #include "imgui/imgui.h"
+#include "imgui_custom/imgui_custom_widget.h"
 
 namespace NodeEditor
 {
 	bool IntArrayAttribute::editorGUI()
 	{
+		bool readOnly = false;
+		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
+			readOnly = true;
+
+		ImGui::BeginDisabled(readOnly);
+
 		for (size_t i = 0; i < m_values.size(); i++)
 		{
 			char nameBuffer[32];
 			sprintf_s(nameBuffer, "%s%d", m_name.c_str(), (int)i);
 
-			ImGui::InputInt(nameBuffer, &m_values[i]);
+			ImGui::RightAlignedInputInt(nameBuffer, &m_values[i]);
 		}
+
+		ImGui::EndDisabled();
 
 		return true;
 	}

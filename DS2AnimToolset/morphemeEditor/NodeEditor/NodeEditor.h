@@ -46,6 +46,12 @@ namespace NodeEditor
 		NodeEditorStyleCol_NumStyleCols
 	};
 
+	enum NodeEditorFlags
+	{
+		NodeEditorFlags_None = 0,
+		NodeEditorFlags_ReadOnly = 1 << 0
+	};
+
 	struct StyleSettings
 	{
 		float NodeMinContentHeight;
@@ -60,6 +66,7 @@ namespace NodeEditor
 	class NodeEditor
 	{
 	protected:
+		int m_flags;
 		StyleSettings m_styleSettings;
 		Graph* m_rootGraph;
 		std::stack<Graph*> m_graphStack;
@@ -71,7 +78,7 @@ namespace NodeEditor
 		bool m_showStyleEditor;
 
 	public:
-		NodeEditor();
+		NodeEditor(int flags = 0);
 		virtual ~NodeEditor();
 
 		virtual bool initialise();
@@ -80,6 +87,10 @@ namespace NodeEditor
 		virtual void reset();
 		virtual void draw();
 		virtual void handleUserInput();
+		virtual void infoGui();
+
+		int getFlags() const { return m_flags; }
+		void setFlags(int flags) { m_flags = flags; }
 
 		StyleSettings& getStyleSettings() { return m_styleSettings; }
 		Registry* getRegistry() const { return m_registry; }

@@ -1,3 +1,5 @@
+#include <functional>
+
 #include "imgui/imgui.h"
 
 namespace ImGui
@@ -14,5 +16,11 @@ namespace ImGui
 	IMGUI_API void			InputDragFloat(const char* label, float* v, float dragSpeed = 1.f, float min = 0.f, float max = 9999.f, const char* format = "%.3f", ImGuiInputFlags flags = 0);
 	IMGUI_API void			InputDragInt(const char* label, int* v, float dragSpeed = 1.f, int min = 0, int max = 9999, const char* format = "%d", ImGuiInputFlags flags = 0);
 	IMGUI_API bool			Label(const char* labelText, ImGuiInputTextFlags flags = 0);
+	IMGUI_API bool			NamedLabel(const char* label, const char* labelText, ImGuiInputTextFlags flags = 0);
 	IMGUI_API bool			ColorEditUInt(const char* label, ImU32* color, ImGuiColorEditFlags flags = 0);
+	IMGUI_API bool          RightAlignedCheckbox(const char* label, bool* v);
+	IMGUI_API bool			RightAlignedDragFloat(const char* label, float* v, float v_speed = 1.f, float v_min = 0.f, float v_max = 9999.f, const char* format = "%.3f", ImGuiInputFlags flags = 0);
+	IMGUI_API bool			RightAlignedDragInt(const char* label, int* v, float v_speed = 1.f, int v_min = 0, int v_max = 9999, const char* format = "%d", ImGuiInputFlags flags = 0);
+	IMGUI_API bool          RightAlignedInputFloat(const char* label, float* v, const char* format = "%.3f", ImGuiInputFlags flags = 0);
+	IMGUI_API bool          RightAlignedInputInt(const char* label, int* v, ImGuiInputFlags flags = 0);
 }

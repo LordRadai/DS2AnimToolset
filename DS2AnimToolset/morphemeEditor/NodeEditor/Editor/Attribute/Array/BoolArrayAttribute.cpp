@@ -1,12 +1,20 @@
 #include <stdexcept>
 
+#include "NodeEditor/NodeEditor.h"
 #include "BoolArrayAttribute.h"
 #include "imgui/imgui.h"
+#include "imgui_custom/imgui_custom_widget.h"
 
 namespace NodeEditor
 {
 	bool BoolArrayAttribute::editorGUI()
 	{
+		bool readOnly = false;
+		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
+			readOnly = true;
+
+		ImGui::BeginDisabled(readOnly);
+
 		for (size_t i = 0; i < m_values.size(); i++)
 		{
 			char nameBuffer[32];
@@ -14,9 +22,11 @@ namespace NodeEditor
 
 			bool value = m_values[i];
 
-			if (ImGui::Checkbox(nameBuffer, &value))
+			if (ImGui::RightAlignedCheckbox(nameBuffer, &value))
 				m_values[i] = value;
 		}
+
+		ImGui::EndDisabled();
 
 		return true;
 	}

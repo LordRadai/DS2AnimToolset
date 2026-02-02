@@ -105,7 +105,25 @@ bool ImGui::Label(const char* labelText, ImGuiInputTextFlags flags)
     char label[256];
 	sprintf_s(label, "%s", labelText);
 
-	return ImGui::InputText(textID, label, 256, flags | ImGuiInputTextFlags_ReadOnly);
+	ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+	return ImGui::InputText(textID, label, 256, flags);
+}
+
+bool ImGui::NamedLabel(const char* label, const char* labelText, ImGuiInputTextFlags flags)
+{
+    char textID[256];
+    sprintf_s(textID, "##%sLabel", label);
+    char labelBuffer[256];
+    sprintf_s(labelBuffer, "%s", labelText);
+
+	ImGui::TextUnformatted(label);
+
+	ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+    return Label(labelText, flags);
 }
 
 bool ImGui::ColorEditUInt(const char* label, ImU32* color, ImGuiColorEditFlags flags)
@@ -121,4 +139,49 @@ bool ImGui::ColorEditUInt(const char* label, ImU32* color, ImGuiColorEditFlags f
         *color = ImGui::ColorConvertFloat4ToU32(col);
 
     return changed;
+}
+
+bool ImGui::RightAlignedCheckbox(const char* label, bool* v)
+{
+	ImGui::TextUnformatted(label);
+
+    ImGui::SameLine();
+
+    return ImGui::Checkbox("", v);
+}
+
+bool ImGui::RightAlignedDragFloat(const char* label, float* v, float v_speed, float v_min, float v_max, const char* format, ImGuiInputFlags flags)
+{
+	ImGui::TextUnformatted(label);
+
+	ImGui::SameLine();
+
+    return ImGui::DragFloat("", v, v_speed, v_min, v_max, format, flags);
+}
+
+bool ImGui::RightAlignedDragInt(const char* label, int* v, float v_speed, int v_min, int v_max, const char* format, ImGuiInputFlags flags)
+{
+    ImGui::TextUnformatted(label);
+
+    ImGui::SameLine();
+
+    return ImGui::DragInt("", v, v_speed, v_min, v_max, format, flags);
+}
+
+bool ImGui::RightAlignedInputFloat(const char* label, float* v, const char* format, ImGuiInputFlags flags)
+{
+    ImGui::TextUnformatted(label);
+
+    ImGui::SameLine();
+
+    return ImGui::InputFloat("", v, 0.f, 0.f, format, flags);
+}
+
+bool ImGui::RightAlignedInputInt(const char* label, int* v, ImGuiInputFlags flags)
+{
+    ImGui::TextUnformatted(label);
+
+    ImGui::SameLine();
+
+    return ImGui::InputInt("", v, 0, 0, flags);
 }
