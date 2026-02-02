@@ -167,7 +167,7 @@ namespace NodeEditor
 
             for (ControlParameter* parameter : m_controlParameters)
             {
-                ImGui::BeginTable("##cpTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg);
+                ImGui::BeginTable("##cpTable", 2, ImGuiTableFlags_Borders);
 
 				ImGui::TableSetupColumn("Name");
 				ImGui::TableSetupColumn("Type");
@@ -188,7 +188,7 @@ namespace NodeEditor
 
             for (Request* request : m_requests)
             {
-                ImGui::BeginTable("##requestTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg);
+                ImGui::BeginTable("##requestTable", 2, ImGuiTableFlags_Borders);
 
                 ImGui::TableSetupColumn("Name");
                 ImGui::TableSetupColumn("Type");
