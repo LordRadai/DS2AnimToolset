@@ -191,7 +191,6 @@ namespace NodeEditor
 
             if (ImGui::TreeNodeEx("Requests", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow))
             {
-                ImGui::SeparatorText("Requests");
                 ImGui::BeginTable("##requestTable", 2, ImGuiTableFlags_BordersOuter);
 
                 ImGui::TableSetupColumn("Name");
