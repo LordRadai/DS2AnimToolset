@@ -165,45 +165,45 @@ namespace NodeEditor
         {
 			ImGui::SeparatorText("Control Parameters");
 
+            ImGui::BeginTable("##cpTable", 2, ImGuiTableFlags_BordersOuter);
+
+            ImGui::TableSetupColumn("Name");
+            ImGui::TableSetupColumn("Type");
+            ImGui::TableHeadersRow();
+
             for (ControlParameter* parameter : m_controlParameters)
             {
-                ImGui::BeginTable("##cpTable", 2, ImGuiTableFlags_Borders);
-
-				ImGui::TableSetupColumn("Name");
-				ImGui::TableSetupColumn("Type");
-				ImGui::TableHeadersRow();
-
 				ImGui::TableNextRow();
-                ImGui::TableNextColumn();
+				ImGui::TableNextColumn();
 
 				ImGui::TextUnformatted(parameter->getName().c_str());
 				ImGui::TableNextColumn();
 
 				ImGui::TextUnformatted(ControlParameter::parameterTypeToString(parameter->getParameterType()));
-
-				ImGui::EndTable();
             }
 
+            ImGui::EndTable();
+
 			ImGui::SeparatorText("Requests");
+            ImGui::BeginTable("##requestTable", 2, ImGuiTableFlags_BordersOuter);
+
+            ImGui::TableSetupColumn("Name");
+            ImGui::TableSetupColumn("Type");
+            ImGui::TableHeadersRow();
 
             for (Request* request : m_requests)
-            {
-                ImGui::BeginTable("##requestTable", 2, ImGuiTableFlags_Borders);
-
-                ImGui::TableSetupColumn("Name");
-                ImGui::TableSetupColumn("Type");
-                ImGui::TableHeadersRow();
-
+            {       
                 ImGui::TableNextRow();
+                ImGui::TableNextColumn();
 
                 ImGui::TextUnformatted(request->getName().c_str());
 
 				ImGui::TableNextColumn();
 
 				ImGui::TextUnformatted(request->getType().c_str());
-
-                ImGui::EndTable();
             }
+
+            ImGui::EndTable();
         }
     }
 

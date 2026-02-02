@@ -147,25 +147,12 @@ bool ImGui::RightAlignedCheckbox(const char* label, bool* v)
 
     ImGui::SameLine();
 
-    return ImGui::Checkbox("", v);
-}
+    char nameBuffer[256];
+    sprintf_s(nameBuffer, "##%sCheckbox", label);
 
-bool ImGui::RightAlignedDragFloat(const char* label, float* v, float v_speed, float v_min, float v_max, const char* format, ImGuiInputFlags flags)
-{
-	ImGui::TextUnformatted(label);
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 
-	ImGui::SameLine();
-
-    return ImGui::DragFloat("", v, v_speed, v_min, v_max, format, flags);
-}
-
-bool ImGui::RightAlignedDragInt(const char* label, int* v, float v_speed, int v_min, int v_max, const char* format, ImGuiInputFlags flags)
-{
-    ImGui::TextUnformatted(label);
-
-    ImGui::SameLine();
-
-    return ImGui::DragInt("", v, v_speed, v_min, v_max, format, flags);
+    return ImGui::Checkbox(nameBuffer, v);
 }
 
 bool ImGui::RightAlignedInputFloat(const char* label, float* v, const char* format, ImGuiInputFlags flags)
@@ -174,7 +161,12 @@ bool ImGui::RightAlignedInputFloat(const char* label, float* v, const char* form
 
     ImGui::SameLine();
 
-    return ImGui::InputFloat("", v, 0.f, 0.f, format, flags);
+    char nameBuffer[256];
+    sprintf_s(nameBuffer, "##%sInputFloat", label);
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+    return ImGui::InputFloat(nameBuffer, v, 0.f, 0.f, format, flags);
 }
 
 bool ImGui::RightAlignedInputInt(const char* label, int* v, ImGuiInputFlags flags)
@@ -183,5 +175,10 @@ bool ImGui::RightAlignedInputInt(const char* label, int* v, ImGuiInputFlags flag
 
     ImGui::SameLine();
 
-    return ImGui::InputInt("", v, 0, 0, flags);
+	char nameBuffer[256];
+	sprintf_s(nameBuffer, "##%sInputInt", label);
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+    return ImGui::InputInt(nameBuffer, v, 0, 0, flags);
 }

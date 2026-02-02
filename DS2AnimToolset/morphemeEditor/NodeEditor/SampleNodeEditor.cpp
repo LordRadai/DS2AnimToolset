@@ -21,16 +21,10 @@ namespace NodeEditor
 		createControlParameterVector4(5, "Vector4");
 		createControlParameterQuaternion(6, "Quaternion");
 
+		createRequest(0, "Default");
+
 		Node* node1 = rootGraph->createNode(7, "Blend2");
-		node1->createInputPin("Source0");
-		node1->createInputPin("Source1");
-		node1->createInputDataPin("Weight", DataPin::kDataTypeFloat);
-
-		node1->createOutputPin("Result");
-
 		Node* node2 = rootGraph->createNode(8, "PassThrough");
-		node2->createInputPin("Source");
-		node2->createOutputPin("Result");
 
 		Node* stateMachine = rootGraph->createStateMachine(9, "SM_Main");
 		StateMachine* sm = stateMachine->getSubGraph()->asType<StateMachine>();
@@ -45,9 +39,6 @@ namespace NodeEditor
 		transit0->createCondition("MessageCondition");
 
 		Node* blend2 = src->getSubGraph()->asType<BlendTree>()->createNode(12, "Blend2");
-		blend2->createInputPin("Source0");
-		blend2->createInputPin("Source1");
-		blend2->createInputDataPin("Weight", DataPin::kDataTypeFloat);
 
 		cp->getOutputPin()->connectTo(node1->getInputPin("Weight"));
 		node1->getOutputPin("Result")->connectTo(node2->getInputPin("Source"));

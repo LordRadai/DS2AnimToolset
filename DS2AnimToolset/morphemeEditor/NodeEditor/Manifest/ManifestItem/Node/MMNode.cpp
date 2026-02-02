@@ -162,30 +162,54 @@ namespace NodeEditor
 
 			// Add pins
 			std::vector<MMPin*> sortedPins = getSortedPins();
-			for (auto& pin : sortedPins)
-			{
-				if (pin->isOfType<MMDataPin>())
-				{
-					MMDataPin* dataPin = pin->asType<MMDataPin>();
-					DataPin::DataType dataType = DataPin::stringToDataType(dataPin->getDataType());
 
+			if (sortedPins.size())
+			{
+				for (auto& pin : sortedPins)
+				{
+					if (pin->isOfType<MMDataPin>())
+					{
+						MMDataPin* dataPin = pin->asType<MMDataPin>();
+						DataPin::DataType dataType = DataPin::stringToDataType(dataPin->getDataType());
+
+						if (dataPin->isInput())
+							node->createInputDataPin(dataPin->getPinName(), dataType);
+						else
+							node->createOutputDataPin(dataPin->getPinName(), dataType);
+					}
+					else if (pin->isOfType<MMFunctionalPin>())
+					{
+						MMFunctionalPin* funcPin = pin->asType<MMFunctionalPin>();
+
+						if (funcPin->isInput())
+							node->createInputPin(funcPin->getPinName());
+						else
+							node->createOutputPin(funcPin->getPinName());
+					}
+				}
+			}
+			else
+			{
+				for (uint32_t i = 0; i < getNumDataPins(); i++)
+				{
+					MMDataPin* dataPin = getDataPin(i);
+					DataPin::DataType dataType = DataPin::stringToDataType(dataPin->getDataType());
 					if (dataPin->isInput())
 						node->createInputDataPin(dataPin->getPinName(), dataType);
 					else
 						node->createOutputDataPin(dataPin->getPinName(), dataType);
 				}
 
-				else if (pin->isOfType<MMFunctionalPin>())
+				for (uint32_t i = 0; i < getNumFunctionalPins(); i++)
 				{
-					MMFunctionalPin* funcPin = pin->asType<MMFunctionalPin>();
-
+					MMFunctionalPin* funcPin = getFunctionalPin(i);
 					if (funcPin->isInput())
 						node->createInputPin(funcPin->getPinName());
 					else
 						node->createOutputPin(funcPin->getPinName());
 				}
 			}
-
+			
 			// Add attributes
 			for (uint32_t i = 0; i < getNumAttributes(); i++)
 			{
