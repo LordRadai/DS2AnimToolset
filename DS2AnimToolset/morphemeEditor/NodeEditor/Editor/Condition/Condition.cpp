@@ -11,7 +11,7 @@ namespace NodeEditor
 
 	bool Condition::editorGUI()
 	{
-		if (ImGui::TreeNodeEx(m_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::TreeNodeEx(m_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow))
 		{
 			for (Attribute* attrib : m_attributes)
 				attrib->editorGUI();

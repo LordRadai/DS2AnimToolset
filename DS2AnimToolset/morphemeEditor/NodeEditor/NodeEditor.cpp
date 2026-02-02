@@ -105,6 +105,8 @@ namespace NodeEditor
 	{
 		ImGui::Begin("Node Editor");
 		
+		handleUserInput();
+
 		if (ImGui::Button(ICON_FA_ARROW_UP))
 			popGraph();
 
@@ -163,47 +165,55 @@ namespace NodeEditor
 
         if (!drawnInfo)
         {
-			ImGui::SeparatorText("Control Parameters");
-
-            ImGui::BeginTable("##cpTable", 2, ImGuiTableFlags_BordersOuter);
-
-            ImGui::TableSetupColumn("Name");
-            ImGui::TableSetupColumn("Type");
-            ImGui::TableHeadersRow();
-
-            for (ControlParameter* parameter : m_controlParameters)
+            if (ImGui::TreeNodeEx("Control Parameters", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow))
             {
-				ImGui::TableNextRow();
-				ImGui::TableNextColumn();
+                ImGui::BeginTable("##cpTable", 2, ImGuiTableFlags_BordersOuter);
 
-				ImGui::TextUnformatted(parameter->getName().c_str());
-				ImGui::TableNextColumn();
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("Type");
+                ImGui::TableHeadersRow();
 
-				ImGui::TextUnformatted(ControlParameter::parameterTypeToString(parameter->getParameterType()));
+                for (ControlParameter* parameter : m_controlParameters)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+
+                    ImGui::TextUnformatted(parameter->getName().c_str());
+                    ImGui::TableNextColumn();
+
+                    ImGui::TextUnformatted(ControlParameter::parameterTypeToString(parameter->getParameterType()));
+                }
+
+                ImGui::EndTable();
+
+				ImGui::TreePop();
             }
 
-            ImGui::EndTable();
+            if (ImGui::TreeNodeEx("Requests", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow))
+            {
+                ImGui::SeparatorText("Requests");
+                ImGui::BeginTable("##requestTable", 2, ImGuiTableFlags_BordersOuter);
 
-			ImGui::SeparatorText("Requests");
-            ImGui::BeginTable("##requestTable", 2, ImGuiTableFlags_BordersOuter);
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("Type");
+                ImGui::TableHeadersRow();
 
-            ImGui::TableSetupColumn("Name");
-            ImGui::TableSetupColumn("Type");
-            ImGui::TableHeadersRow();
+                for (Request* request : m_requests)
+                {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
 
-            for (Request* request : m_requests)
-            {       
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn();
+                    ImGui::TextUnformatted(request->getName().c_str());
 
-                ImGui::TextUnformatted(request->getName().c_str());
+                    ImGui::TableNextColumn();
 
-				ImGui::TableNextColumn();
+                    ImGui::TextUnformatted(request->getType().c_str());
+                }
 
-				ImGui::TextUnformatted(request->getType().c_str());
+                ImGui::EndTable();
+
+				ImGui::TreePop();
             }
-
-            ImGui::EndTable();
         }
     }
 

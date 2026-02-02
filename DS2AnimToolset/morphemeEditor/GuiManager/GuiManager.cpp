@@ -950,7 +950,7 @@ void GuiManager::rootWindow()
 	{
 		if (ImGui::MenuItem("ImGui Demo", nullptr, editorApp->getWindowFlags()->imGuiDemo)) { editorApp->getWindowFlags()->imGuiDemo = !editorApp->getWindowFlags()->imGuiDemo; }
 		if (ImGui::MenuItem("Create Tae Template XML")) { editorApp->getTaskFlags()->exportTaeTemplateXml = true; }
-		if (ImGui::MenuItem("Create Node Editor Sample Project")) { editorApp->getTaskFlags()->createTestEditorProject = true; }
+		//if (ImGui::MenuItem("Create Node Editor Sample Project")) { editorApp->getTaskFlags()->createTestEditorProject = true; }
 
 		ImGui::EndMenu();
 	}
@@ -1672,7 +1672,6 @@ void GuiManager::networkPreviewWindow()
 
 	NodeEditor::NodeEditor* nodeEditor = editorApp->getNodeEditor();
 
-	nodeEditor->handleUserInput();
 	nodeEditor->draw();
 
 	ImGui::End();
