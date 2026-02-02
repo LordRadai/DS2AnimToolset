@@ -26,12 +26,14 @@ namespace NodeEditor
 			this->m_destinationNode->getID());
     }
 
-    void Transition::editorGUI()
+    bool Transition::editorGUI()
     {
         Node::editorGUI();
 
         for (Condition* condition : m_conditions)
             condition->editorGUI();
+
+		return true;
 	}
 
     void Transition::addCondition(Condition* condition)

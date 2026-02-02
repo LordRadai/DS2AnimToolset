@@ -17,7 +17,7 @@ namespace NodeEditor
 		virtual ~Transition() override {}
 
 		virtual void draw() override;
-		virtual void editorGUI() override;
+		virtual bool editorGUI() override;
 
 		Node* getSourceNode() const { return m_sourceNode; }
 		Node* getDestinationNode() const { return m_destinationNode; }
