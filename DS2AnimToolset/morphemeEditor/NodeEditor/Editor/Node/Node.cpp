@@ -242,10 +242,10 @@ namespace NodeEditor
 
 		ImGui::Label(m_name.c_str());
 
+		ImGui::EndDisabled();
+
 		for (Attribute* attribute : m_attributes)
 			attribute->editorGUI();
-
-		ImGui::EndDisabled();
 
 		return true;
 	}

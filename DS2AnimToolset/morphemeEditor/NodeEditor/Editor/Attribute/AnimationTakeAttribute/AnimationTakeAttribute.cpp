@@ -9,19 +9,22 @@ namespace NodeEditor
 {
 	bool AnimationTakeAttribute::editorGUI()
 	{
-		ImGui::TextUnformatted(m_name.c_str());
-
 		bool readOnly = false;
 		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
 			readOnly = true;
 
-		ImGui::BeginDisabled(readOnly);
+		if (ImGui::TreeNode(m_name.c_str()))
+		{
+			ImGui::BeginDisabled(readOnly);
 
-		ImGui::NamedLabel("File", m_filename.c_str());
-		ImGui::NamedLabel("Take", m_takeName.c_str());
-		ImGui::NamedLabel("Sync Track", m_syncTrack.c_str());
+			ImGui::NamedLabel("File", m_filename.c_str());
+			ImGui::NamedLabel("Take", m_takeName.c_str());
+			ImGui::NamedLabel("Sync Track", m_syncTrack.c_str());
 
-		ImGui::EndDisabled();
+			ImGui::EndDisabled();
+
+			ImGui::TreePop();
+		}
 
 		return true;
 	}

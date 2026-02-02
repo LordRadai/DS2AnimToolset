@@ -23,6 +23,9 @@ namespace NodeEditor
 
 		createRequest(0, "Default");
 
+		Node* animationNode = rootGraph->createNode(6, "AnimWithEvents", "IdleAnim");
+		animationNode->setAttribute("Loop", true);
+
 		Node* node1 = rootGraph->createNode(7, "Blend2");
 		Node* node2 = rootGraph->createNode(8, "PassThrough");
 
