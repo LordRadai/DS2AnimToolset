@@ -10,6 +10,8 @@ namespace NodeEditor
 	{
 		ImGui::TextUnformatted(m_name.c_str());
 
+		ImGui::SameLine();
+
 		if (m_controlParameter)
 			ImGui::Label(m_controlParameter->getFullName().c_str());
 		else
