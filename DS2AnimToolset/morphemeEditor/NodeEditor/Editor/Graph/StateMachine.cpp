@@ -68,9 +68,15 @@ namespace NodeEditor
 
 	Transition* StateMachine::createTransition(int nodeID, const std::string& typeName, Node* sourceNode, Node* destinationNode)
 	{
-		Transition* transition = new Transition(m_ownerEditor, this, nodeID, typeName, sourceNode, destinationNode);
-		m_transitions.push_back(transition);
+		Manifest::MMTransition* manifestTransition = m_ownerEditor->getManifest()->findTransitionManifest(typeName);
+		
+		if (manifestTransition == nullptr)
+			throw std::runtime_error("StateMachine::createTransition: Transition type '" + typeName + "' not found in manifest.");
 
-		return transition;
+		Transition* transit = manifestTransition->makeTransition(m_ownerEditor, nodeID, sourceNode, destinationNode);
+
+		m_transitions.push_back(transit);
+
+		return transit;
 	}
 }
