@@ -6,7 +6,7 @@ namespace NodeEditor
 	class SampleNodeEditor : public NodeEditor
 	{
 	public:
-		SampleNodeEditor() : NodeEditor() {}
+		SampleNodeEditor(int flags = 0) : NodeEditor(flags) {}
 		~SampleNodeEditor() override {}
 		
 		virtual bool initialise() override;
