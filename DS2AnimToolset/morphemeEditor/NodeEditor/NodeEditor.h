@@ -88,6 +88,7 @@ namespace NodeEditor
 		virtual void draw();
 		virtual void handleUserInput();
 		virtual void infoGui();
+		virtual void navigatorGui();
 
 		int getFlags() const { return m_flags; }
 		void setFlags(int flags) { m_flags = flags; }

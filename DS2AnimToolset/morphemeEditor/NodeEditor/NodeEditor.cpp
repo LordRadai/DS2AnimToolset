@@ -216,6 +216,14 @@ namespace NodeEditor
         }
     }
 
+    void NodeEditor::navigatorGui()
+    {
+		Graph* rootGraph = getRootGraph();
+
+        if (rootGraph)
+            rootGraph->navigatorGui();
+	}
+
 	ControlParameter* NodeEditor::createControlParameter(int id, const std::string& name, ControlParameter::ParameterType parameterType)
     {
         if (hasControlParameter(name))

@@ -155,6 +155,24 @@ namespace NodeEditor
 		}
 	}
 
+	void Graph::navigatorGui()
+	{
+		if (ImGui::TreeNodeEx(m_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			for (size_t i = 0; i < m_nodes.size(); i++)
+			{
+				Node* node = m_nodes[i];
+
+				if (!node->hasSubGraph())
+					ImGui::Selectable(node->getName().c_str());
+				else
+					node->getSubGraph()->navigatorGui();
+			}
+
+			ImGui::TreePop();
+		}
+	}
+
 	void Graph::draw()
 	{
 		for (Node* node : m_nodes)

@@ -1683,11 +1683,24 @@ void GuiManager::selectedNodeInfoWindow()
 
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
-	ImGui::Begin("AttributeInfo", nullptr);
+	ImGui::Begin("EditorInfoWindow", nullptr, ImGuiWindowFlags_NoTitleBar);
 
 	NodeEditor::NodeEditor* nodeEditor = editorApp->getNodeEditor();
 
-	nodeEditor->infoGui();
+	ImGui::BeginTabBar("info_tabs");
+
+	if (ImGui::BeginTabItem("AttributeEditor"))
+	{
+		nodeEditor->infoGui();
+		ImGui::EndTabItem();
+	}
+	if (ImGui::BeginTabItem("Navigator"))
+	{
+		nodeEditor->navigatorGui();
+		ImGui::EndTabItem();
+	}
+
+	ImGui::EndTabBar();
 
 	ImGui::End();
 }

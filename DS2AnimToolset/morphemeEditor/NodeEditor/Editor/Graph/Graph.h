@@ -40,6 +40,8 @@ namespace NodeEditor
 		const int getID() const { return m_id; }
 		const std::string& getName() const { return m_name; }
 		const std::vector<Node*>& getNodes() const { return m_nodes; }
+
+		void navigatorGui();
 	protected:
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name);
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name, float x, float y);
