@@ -21,4 +21,5 @@ namespace ImGui
 	IMGUI_API bool          RightAlignedCheckbox(const char* label, bool* v);
 	IMGUI_API bool          RightAlignedInputFloat(const char* label, float* v, const char* format = "%.3f", ImGuiInputFlags flags = 0);
 	IMGUI_API bool          RightAlignedInputInt(const char* label, int* v, ImGuiInputFlags flags = 0);
+	IMGUI_API bool			RightAlignedCombo(const char* label, int* current_item, const char* const items[], int items_count, ImGuiComboFlags flags = 0);
 }

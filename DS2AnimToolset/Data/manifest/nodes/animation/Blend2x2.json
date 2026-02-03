@@ -26,11 +26,15 @@
     "version": 2,
     "attributes": [
         {
+            "type": "enum",
+            "max": 1,
             "min": 0,
-            "type": "int",
             "name": "TimeStretchMode",
             "value": 1,
-            "max": 1,
+            "enumOptions": [
+                "None",
+                "Match Events"
+            ],
             "helptext": "Changes the time stretching functionality of this node.",
             "affectsPins": true
         },

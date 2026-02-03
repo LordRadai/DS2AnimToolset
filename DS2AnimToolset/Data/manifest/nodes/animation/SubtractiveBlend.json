@@ -13,29 +13,42 @@
     "version": 1,
     "attributes": [
         {
+            "type": "enum",
+            "max": 1,
             "min": 0,
-            "type": "int",
+            "name": "TimeStretchMode",
+            "value": 1,
+            "enumOptions": [
+                "None",
+                "Match Events"
+            ],
+            "helptext": "Changes the time stretching functionality of this node.",
+            "affectsPins": true
+        },
+        {
+            "type": "enum",
+            "max": 2,
+            "min": 0,
             "name": "PassThroughMode",
             "value": 2,
-            "max": 2,
+            "enumOptions": [
+                "Source 0",
+                "Source 1",
+                "None"
+            ],
             "helptext": "Changes the interface pass through functionality of this node.",
             "affectsPins": true
         },
         {
             "min": 0,
-            "type": "int",
-            "name": "TimeStretchMode",
-            "value": 1,
-            "max": 1,
-            "helptext": "Changes the time stretching functionality of this node.",
-            "affectsPins": true
-        },
-        {
-            "min": 0,
-            "type": "int",
+            "type": "enum",
             "name": "EventsBlendMode",
             "value": 0,
             "max": 1,
+            "enumOptions": [
+                "Add",
+                "Merge"
+            ],
             "helptext": "Changes events blending mode functionality between additive blending and merging.",
             "affectsPins": true
         },

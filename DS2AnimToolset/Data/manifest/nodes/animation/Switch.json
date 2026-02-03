@@ -30,9 +30,14 @@
             "helptext": "This is used to keep the same range for linear distribution of weights"
         },
         {
-            "type": "int",
+            "type": "enum",
             "name": "SourceWeightDistribution",
             "value": 1,
+            "enumOptions": [
+                "Custom",
+                "Linear",
+                "Integer"
+            ],
             "helptext": "Defines how the input to the weight pin blends between the input nodes",
             "displayName": "Source Weight Distribution"
         },
@@ -45,18 +50,28 @@
         },
         {
             "min": 0,
-            "type": "int",
+            "type": "enum",
             "name": "InputSelectionMethod",
             "value": 0,
             "max": 2,
+            "enumOptions": [
+                "Closest",
+                "Floor",
+                "Ceiling"
+            ],
             "helptext": "If true the blend weight is rounded to the closest source blend weight. By default the blend weight value is floored.",
             "affectsPins": false
         },
         {
             "min": 0,
-            "type": "int",
+            "type": "enum",
             "name": "EvaluationMethod",
             "value": 2,
+            "enumOptions": [
+                "EvalWhenActivating",
+                "EvalEveryFrame",
+                "EvalOnLoop"
+            ],
             "helptext": "If true the value of the weight pin is evaluated every frame potentially switching which input is used every frame. If false the value of the weight pin is only evaluated when the current input animation has finished so the animation only changes at the end of playback.",
             "max": 2
         }

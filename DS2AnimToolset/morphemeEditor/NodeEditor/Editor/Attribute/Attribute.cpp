@@ -1,14 +1,13 @@
 #include <stdexcept>
 
 #include "Attribute.h"
-#include "imgui/imgui.h"
-#include "imgui_custom/imgui_custom_widget.h"
 
 #include "SingleValue/BoolAttribute.h"
 #include "SingleValue/FloatAttribute.h"
 #include "SingleValue/IntAttribute.h"
 #include "SingleValue/RefAttribute.h"
 #include "SingleValue/StringAttribute.h"
+#include "SingleValue/EnumAttribute.h"
 
 #include "Array/BoolArrayAttribute.h"
 #include "Array/FloatArrayAttribute.h"
@@ -59,6 +58,8 @@ namespace NodeEditor
 			return new StringAttribute(owner, name);
 		else if (type == "animationTake")
 			return new AnimationTakeAttribute(owner, name);
+		else if (type == "enum")
+			return new EnumAttribute(owner, name);
 		else
 			throw std::runtime_error("Attribute::createAttribute: Unknown attribute type '" + type + "'");
 	}

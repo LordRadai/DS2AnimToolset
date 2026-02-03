@@ -250,6 +250,7 @@
     <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\BoolAttribute.h" />
     <ClInclude Include="NodeEditor\Editor\Attribute\ControlParameterAttribute\ControlParameterAttribute.h" />
     <ClInclude Include="NodeEditor\Editor\Attribute\Array\FloatArrayAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\EnumAttribute.h" />
     <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\FloatAttribute.h" />
     <ClInclude Include="NodeEditor\Editor\Attribute\Array\IntArrayAttribute.h" />
     <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\IntAttribute.h" />
@@ -377,6 +378,7 @@
     <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\BoolAttribute.cpp" />
     <ClCompile Include="NodeEditor\Editor\Attribute\ControlParameterAttribute\ControlParameterAttribute.cpp" />
     <ClCompile Include="NodeEditor\Editor\Attribute\Array\FloatArrayAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\EnumAttribute.cpp" />
     <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\FloatAttribute.cpp" />
     <ClCompile Include="NodeEditor\Editor\Attribute\Array\IntArrayAttribute.cpp" />
     <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\IntAttribute.cpp" />

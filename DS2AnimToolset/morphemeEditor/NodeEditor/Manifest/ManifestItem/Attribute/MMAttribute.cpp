@@ -1,5 +1,7 @@
 #include "MMAttribute.h"
 
+#include "NodeEditor/Editor/Attribute/SingleValue/EnumAttribute.h"
+
 namespace NodeEditor
 {
 	namespace Manifest
@@ -16,6 +18,22 @@ namespace NodeEditor
 		void MMAttribute::fromJson(const nlohmann::json& json)
 		{
 			this->m_jsonData = json;
+		}
+
+		std::vector<const std::string> MMAttribute::getEnumOptions() const
+		{
+			std::vector<const std::string> options;
+
+			if (m_jsonData.contains("enumOptions") && m_jsonData["enumOptions"].is_array())
+			{
+				for (const auto& option : m_jsonData["enumOptions"])
+				{
+					if (option.is_string())
+						options.push_back(option.get<std::string>());
+				}
+			}
+
+			return options;
 		}
 
 		bool MMAttribute::isArray() const
@@ -145,7 +163,17 @@ namespace NodeEditor
 
 		Attribute* MMAttribute::makeAttribute(Entity* owner)
 		{
-			return Attribute::createAttribute(owner, getDisplayName(), getType());
+			Attribute* attr = Attribute::createAttribute(owner, getDisplayName(), getType());
+
+			if (attr->isOfType<EnumAttribute>())
+			{
+				EnumAttribute* enumAttr = attr->asType<EnumAttribute>();
+
+				std::vector<const std::string> enumOptions = getEnumOptions();
+
+				for (size_t i = 0; i < enumOptions.size(); i++)
+					enumAttr->addEnumOption(enumOptions[i]);
+			}
 		}
 	}
 }

@@ -2,9 +2,13 @@
     "group": "IK",
     "attributes": [
         {
-            "type": "int",
+            "type": "enum",
             "name": "InputRotationType",
             "value": 1,
+            "enumOptions": [
+                "Euler Angle",
+                "Quaternion"
+            ],
             "helptext": "Define the input Rotation delta as either a Euler angle or as a Quaternion.",
             "affectsPins": true
         },

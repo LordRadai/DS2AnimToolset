@@ -182,3 +182,17 @@ bool ImGui::RightAlignedInputInt(const char* label, int* v, ImGuiInputFlags flag
 
     return ImGui::InputInt(nameBuffer, v, 0, 0, flags);
 }
+
+bool ImGui::RightAlignedCombo(const char* label, int* current_item, const char* const items[], int items_count, ImGuiComboFlags flags)
+{
+    ImGui::TextUnformatted(label);
+
+    ImGui::SameLine();
+
+    char nameBuffer[256];
+    sprintf_s(nameBuffer, "##%sCombo", label);
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+    return ImGui::Combo(nameBuffer, current_item, items, items_count, flags);
+}
