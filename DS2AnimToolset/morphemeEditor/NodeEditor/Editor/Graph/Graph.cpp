@@ -199,7 +199,7 @@ namespace NodeEditor
 		{
 			Node* node = m_nodes[i];
 
-			if (node->getName() == desiredName)
+			if (node->getTypeName() == typeName)
 				numNodesWithName++;
 		}
 
@@ -210,8 +210,6 @@ namespace NodeEditor
 
 		if (typeName == desiredName)
 			return std::string(desiredName + splitChar +std::to_string(numNodesWithName + 1));
-		else if (numNodesWithName > 0)
-			return std::string(desiredName + splitChar + std::to_string(numNodesWithName + 1));
 
 		return desiredName;
 	}
