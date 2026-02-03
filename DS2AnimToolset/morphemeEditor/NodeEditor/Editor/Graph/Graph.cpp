@@ -92,7 +92,7 @@ namespace NodeEditor
 
 		std::string nodeName = makeNameValid(nameToUse, "BlendTree");
 
-		Node* node = new Node(m_ownerEditor, this, nodeID, "BlendTree", nodeName, new BlendTree(m_ownerEditor, this, name));
+		Node* node = new Node(m_ownerEditor, this, nodeID, "BlendTree", nodeName, new BlendTree(m_ownerEditor, this, nodeName));
 		node->setPosition(x, y);
 
 		m_nodes.push_back(node);
@@ -124,12 +124,12 @@ namespace NodeEditor
 		if (!manifestNode)
 			throw std::runtime_error("Graph::createStateMachine: StateMachine type 'StateMachine' not found in Manifest.");
 
-		Node* node = manifestNode->makeNode(m_ownerEditor, this, nodeID, name);
+		Node* node = manifestNode->makeNode(m_ownerEditor, this, nodeID, nodeName);
 		node->setPosition(x, y);
 
 		m_nodes.push_back(node);
 
-		node->setSubGraph(new StateMachine(m_ownerEditor, this, name));
+		node->setSubGraph(new StateMachine(m_ownerEditor, this, nodeName));
 
 		if (isOfType<BlendTree>())
 			node->createOutputPin("Result");
@@ -157,14 +157,21 @@ namespace NodeEditor
 
 	void Graph::navigatorGui()
 	{
-		if (ImGui::TreeNodeEx(m_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+		const std::string name = isRootGraph() ? "mainNetwork" : m_name;
+
+		int flags = ImGuiTreeNodeFlags_SpanFullWidth;
+
+		if (m_nodes.size())
+			flags |= ImGuiTreeNodeFlags_DefaultOpen;
+
+		if (ImGui::TreeNodeEx(name.c_str(), flags))
 		{
 			for (size_t i = 0; i < m_nodes.size(); i++)
 			{
 				Node* node = m_nodes[i];
 
 				if (!node->hasSubGraph())
-					ImGui::Selectable(node->getName().c_str());
+					ImGui::TreeNodeEx(node->getName().c_str(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_SpanFullWidth);
 				else
 					node->getSubGraph()->navigatorGui();
 			}
