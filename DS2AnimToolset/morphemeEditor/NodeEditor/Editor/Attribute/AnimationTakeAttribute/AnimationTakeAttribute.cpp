@@ -11,7 +11,7 @@ namespace NodeEditor
     {
         bool readOnly = (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly) != 0;
 
-        if (ImGui::TreeNode(m_name.c_str()))
+        if (ImGui::TreeNodeEx(m_name.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow))
         {
             ImGui::BeginDisabled(readOnly);
 
