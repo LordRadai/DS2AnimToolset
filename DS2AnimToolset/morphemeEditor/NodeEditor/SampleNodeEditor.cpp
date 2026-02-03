@@ -32,6 +32,8 @@ namespace NodeEditor
 		Node* stateMachine = rootGraph->createStateMachine(9, "SM_Main");
 		StateMachine* sm = stateMachine->getSubGraph()->asType<StateMachine>();
 
+		rootGraph->createNode(15, "OperatorFunction");
+
 		Node* src = sm->createBlendTree(10);
 		Node* dst = sm->createBlendTree(11);
 		sm->createStateNode(8);
