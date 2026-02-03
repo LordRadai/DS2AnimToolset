@@ -41,7 +41,8 @@ namespace NodeEditor
 
 		transit0->setAttribute("ReverseControlParameter", getControlParameter("Bool"));
 
-		transit0->createCondition("MessageCondition");
+		Condition* cond = transit0->createCondition("MessageCondition");
+		cond->setAttribute("Message", getRequest("Default"));
 
 		Node* blend2 = src->getSubGraph()->asType<BlendTree>()->createNode(12, "Blend2");
 
