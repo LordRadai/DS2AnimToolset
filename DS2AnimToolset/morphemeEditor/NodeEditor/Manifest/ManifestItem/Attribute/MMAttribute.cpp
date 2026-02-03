@@ -20,9 +20,9 @@ namespace NodeEditor
 			this->m_jsonData = json;
 		}
 
-		std::vector<const std::string> MMAttribute::getEnumOptions() const
+		std::vector<std::string> MMAttribute::getEnumOptions() const
 		{
-			std::vector<const std::string> options;
+			std::vector<std::string> options;
 
 			if (m_jsonData.contains("enumOptions") && m_jsonData["enumOptions"].is_array())
 			{
@@ -169,11 +169,13 @@ namespace NodeEditor
 			{
 				EnumAttribute* enumAttr = attr->asType<EnumAttribute>();
 
-				std::vector<const std::string> enumOptions = getEnumOptions();
+				std::vector<std::string> enumOptions = getEnumOptions();
 
 				for (size_t i = 0; i < enumOptions.size(); i++)
 					enumAttr->addEnumOption(enumOptions[i]);
 			}
+
+			return attr;
 		}
 	}
 }

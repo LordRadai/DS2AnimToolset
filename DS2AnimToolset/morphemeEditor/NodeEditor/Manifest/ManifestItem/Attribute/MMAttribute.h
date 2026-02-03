@@ -19,7 +19,7 @@ namespace NodeEditor
 			std::string getName() const { return m_name; }
 			std::string getDisplayName() const { return m_jsonData.value("displayName", m_name); }
 			std::string getType() const { return m_jsonData["type"]; }
-			std::vector<const std::string> getEnumOptions() const;
+			std::vector<std::string> getEnumOptions() const;
 			std::string getHelpText() const { return m_jsonData.value("helptext", ""); }
 			nlohmann::json getValue() const { return m_jsonData.value("value", nlohmann::json(nullptr)); }
 			bool isPerAnimSet() const { return m_jsonData.value("perAnimSet", false); }

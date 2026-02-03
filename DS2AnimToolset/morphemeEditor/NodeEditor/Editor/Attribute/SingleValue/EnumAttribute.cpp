@@ -5,8 +5,7 @@
 #include "imgui/imgui.h"
 #include "imgui_custom/imgui_custom_widget.h"
 
-namespace 
-NodeEditor
+namespace NodeEditor
 {
 	bool EnumAttribute::editorGUI()
 	{
@@ -16,17 +15,16 @@ NodeEditor
 
 		ImGui::BeginDisabled(readOnly);
 
-		const char** optionsArray = new char*[m_enumOptions.size()];
+		std::vector<char*> optionsArray;
+		optionsArray.reserve(m_enumOptions.size());
 
 		for (size_t i = 0; i < m_enumOptions.size(); i++)
-			optionsArray[i] = m_enumOptions[i].c_str();
+			optionsArray.push_back(const_cast<char*>(m_enumOptions[i].c_str()));
 
 		if (m_enumOptions.empty())
 			ImGui::NamedLabel(m_name.c_str(), "No options");
 		else
-			ImGui::RightAlignedCombo(m_name.c_str(), &m_value, optionsArray, m_enumOptions.size());
-
-		delete[] optionsArray;
+			ImGui::RightAlignedCombo(m_name.c_str(), &m_value, optionsArray.data(), m_enumOptions.size());
 
 		ImGui::EndDisabled();
 

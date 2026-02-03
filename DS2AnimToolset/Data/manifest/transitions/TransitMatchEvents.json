@@ -77,9 +77,14 @@
             "helptext": "Control parameter for transition reversing."
         },
         {
-            "type": "int",
+            "type": "enum",
             "name": "DeltaTrajSource",
             "value": 3,
+            "enumOptions": [
+                "Destination",
+                "Source",
+                "Blend"
+            ],
             "helptext": "Specifies which child/children we will use to source our delta trajectory."
         },
         {
