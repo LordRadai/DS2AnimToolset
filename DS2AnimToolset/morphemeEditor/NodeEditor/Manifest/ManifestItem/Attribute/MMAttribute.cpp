@@ -1,6 +1,21 @@
 #include "MMAttribute.h"
 
 #include "NodeEditor/Editor/Attribute/SingleValue/EnumAttribute.h"
+#include "NodeEditor/Editor/Attribute/SingleValue/BoolAttribute.h"
+#include "NodeEditor/Editor/Attribute/SingleValue/FloatAttribute.h"
+#include "NodeEditor/Editor/Attribute/SingleValue/IntAttribute.h"
+#include "NodeEditor/Editor/Attribute/SingleValue/RefAttribute.h"
+#include "NodeEditor/Editor/Attribute/SingleValue/StringAttribute.h"
+
+#include "NodeEditor/Editor/Attribute/Array/BoolArrayAttribute.h"
+#include "NodeEditor/Editor/Attribute/Array/FloatArrayAttribute.h"
+#include "NodeEditor/Editor/Attribute/Array/IntArrayAttribute.h"
+#include "NodeEditor/Editor/Attribute/Array/RefArrayAttribute.h"
+#include "NodeEditor/Editor/Attribute/Array/StringArrayAttribute.h"
+
+#include "NodeEditor/Editor/Attribute/AnimationTakeAttribute/AnimationTakeAttribute.h"
+#include "NodeEditor/Editor/Attribute/ControlParameterAttribute/ControlParameterAttribute.h"
+#include "NodeEditor/Editor/Attribute/RequestAttribute/RequestAttribute.h"
 
 namespace NodeEditor
 {
@@ -164,6 +179,7 @@ namespace NodeEditor
 		Attribute* MMAttribute::makeAttribute(Entity* owner)
 		{
 			Attribute* attr = Attribute::createAttribute(owner, getDisplayName(), getType());
+			attr->setHelpText(getHelpText());
 
 			if (attr->isOfType<EnumAttribute>())
 			{
@@ -173,6 +189,103 @@ namespace NodeEditor
 
 				for (size_t i = 0; i < enumOptions.size(); i++)
 					enumAttr->addEnumOption(enumOptions[i]);
+
+				enumAttr->setValue({ getIntValue() });
+			}
+			else if (attr->isOfType<BoolAttribute>())
+			{
+				BoolAttribute* boolAttr = attr->asType<BoolAttribute>();
+				boolAttr->setValue({ getBoolValue() });
+			}
+			else if (attr->isOfType<FloatAttribute>())
+			{
+				FloatAttribute* floatAttr = attr->asType<FloatAttribute>();
+				floatAttr->setValue({ getFloatValue() });
+			}
+			else if (attr->isOfType<IntAttribute>())
+			{
+				IntAttribute* intAttr = attr->asType<IntAttribute>();
+				intAttr->setValue({ getIntValue() });
+			}
+			else if (attr->isOfType<StringAttribute>())
+			{
+				StringAttribute* stringAttr = attr->asType<StringAttribute>();
+				stringAttr->setValue({ getStringValue() });
+			}
+			else if (attr->isOfType<RefAttribute>())
+			{
+				RefAttribute* refAttr = attr->asType<RefAttribute>();
+				refAttr->setRefKind(getRefKind());
+				refAttr->setWeakRef(isWeakRef());
+			}
+			else if (attr->isOfType<RefArrayAttribute>())
+			{
+				RefArrayAttribute* refAttr = attr->asType<RefArrayAttribute>();
+				refAttr->setRefKind(getRefKind());
+				refAttr->setWeakRef(isWeakRef());
+			}
+			else if (attr->isOfType<IntArrayAttribute>())
+			{
+				IntArrayAttribute* intArrayAttr = attr->asType<IntArrayAttribute>();
+				nlohmann::json value = getValue();
+				if (value.is_array())
+				{
+					std::vector<int> intValues = value.get<std::vector<int>>();
+					std::vector<std::any> wrappedValues;
+
+					for (float v : intValues)
+						wrappedValues.push_back(v);
+
+					intArrayAttr->setValue(wrappedValues);
+				}
+			}
+			else if (attr->isOfType<BoolArrayAttribute>())
+			{
+				BoolArrayAttribute* boolAttr = attr->asType<BoolArrayAttribute>();
+				nlohmann::json value = getValue();
+				if (value.is_array())
+				{
+					std::vector<bool> boolValues = value.get<std::vector<bool>>();
+					std::vector<std::any> wrappedValues;
+
+					for (float v : boolValues)
+						wrappedValues.push_back(v);
+
+					boolAttr->setValue(wrappedValues);
+				}
+			}
+			else if (attr->isOfType<FloatArrayAttribute>())
+			{
+				FloatArrayAttribute* floatArrayAttr = attr->asType<FloatArrayAttribute>();
+				nlohmann::json value = getValue();
+				if (value.is_array())
+				{
+					std::vector<float> floatValues = value.get<std::vector<float>>();
+					std::vector<std::any> wrappedValues;
+
+					for (float v : floatValues)
+						wrappedValues.push_back(v);
+
+					floatArrayAttr->setValue(wrappedValues);
+				}
+			}
+			else if (attr->isOfType<StringArrayAttribute>())
+			{
+				StringArrayAttribute* stringArrayAttr = attr->asType<StringArrayAttribute>();
+				nlohmann::json value = getValue();
+				if (value.is_array())
+				{
+					std::vector<std::string> stringValues = value.get<std::vector<std::string>>();
+					stringArrayAttr->setValue({ stringValues });
+				}
+			}
+			else if (attr->isOfType<AnimationTakeAttribute>())
+			{
+				AnimationTakeAttribute* animTakeAttr = attr->asType<AnimationTakeAttribute>();
+				nlohmann::json value = getValue();
+
+				if (value.is_object())
+					animTakeAttr->setValue({ value.value("filename", ""), value.value("takename", ""), std::string("Footsteps") });
 			}
 
 			return attr;

@@ -16,7 +16,11 @@ namespace NodeEditor
 		virtual void setValue(const std::vector<std::any>& values) override;
 
 		Entity* getValue() const { return m_value; }
-		void setRefKind(const std::string& kind) { m_refKind = kind; }
+
 		const std::string& getRefKind() const { return m_refKind; }
+		void setRefKind(const std::string& kind) { m_refKind = kind; }
+
+		bool isWeakRef() const { return m_isWeakRef; }
+		void setWeakRef(bool isWeak) { m_isWeakRef = isWeak; }
 	};
 }

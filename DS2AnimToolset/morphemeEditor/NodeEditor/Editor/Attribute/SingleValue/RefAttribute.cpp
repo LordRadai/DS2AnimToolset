@@ -27,28 +27,12 @@ namespace NodeEditor
 
 	void RefAttribute::setValue(const std::vector<std::any>& values)
 	{
-		if (values.size() > 3)
+		if (values.size() != 1)
 			throw std::runtime_error("RefAttribute::setValue: Invalid number of values provided.");
 		
 		if (values[0].type() != typeid(Entity*))
 			throw std::runtime_error("RefAttribute::setValue: Invalid value type provided.");
 
 		m_value = std::any_cast<Entity*>(values[0]);
-
-		if (values.size() >= 2)
-		{
-			if (values[1].type() != typeid(std::string))
-				throw std::runtime_error("RefAttribute::setValue: Invalid ref kind type provided.");
-
-			m_refKind = std::any_cast<std::string>(values[1]);
-		}
-
-		if (values.size() == 3)
-		{
-			if (values[2].type() != typeid(bool))
-				throw std::runtime_error("RefAttribute::setValue: Invalid isWeakRef type provided.");
-
-			m_isWeakRef = std::any_cast<bool>(values[2]);
-		}
 	}
 }
