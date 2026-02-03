@@ -96,7 +96,7 @@
         {
             "type": "enum",
             "name": "DeltaTrajSource",
-            "value": 3,
+            "value": 2,
             "enumOptions": [
                 "Destination",
                 "Source",

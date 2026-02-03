@@ -72,8 +72,8 @@
             "value": 0,
             "max": 1,
             "enumOptions": [
-                "Interpolative",
-                "Additive"
+                "Interpolate",
+                "Add"
             ],
             "helptext": "Changes the position blend mode functionality of this node's transforms between interpolation and addition.",
             "affectsPins": true
@@ -85,8 +85,8 @@
             "value": 0,
             "max": 1,
             "enumOptions": [
-                "Interpolative",
-                "Additive"
+                "Interpolate",
+                "Add"
             ],
             "affectsPins": true
         },
