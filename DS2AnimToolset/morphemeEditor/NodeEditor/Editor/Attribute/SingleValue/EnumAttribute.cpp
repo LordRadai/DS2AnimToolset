@@ -26,6 +26,9 @@ namespace NodeEditor
 		else
 			ImGui::RightAlignedCombo(m_name.c_str(), &m_value, optionsArray.data(), m_enumOptions.size());
 
+		if (!m_helpText.empty())
+			ImGui::SetItemTooltip(m_helpText.c_str());
+
 		ImGui::EndDisabled();
 
 		return true;

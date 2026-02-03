@@ -27,6 +27,9 @@ namespace NodeEditor
                     ImGui::TextUnformatted(label);
                     ImGui::SameLine(valueX);
                     ImGui::Label(value);
+
+                    if (!m_helpText.empty())
+                        ImGui::SetItemTooltip(m_helpText.c_str());
                 };
 
             Row("File", m_filename.c_str());
@@ -34,6 +37,7 @@ namespace NodeEditor
             Row("Sync Track", m_syncTrack.c_str());
 
             ImGui::EndDisabled();
+
             ImGui::TreePop();
         }
 

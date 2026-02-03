@@ -24,6 +24,9 @@ namespace NodeEditor
 
 			if (ImGui::RightAlignedCheckbox(nameBuffer, &value))
 				m_values[i] = value;
+
+			if (!m_helpText.empty())
+				ImGui::SetItemTooltip(m_helpText.c_str());
 		}
 
 		ImGui::EndDisabled();

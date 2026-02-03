@@ -19,6 +19,9 @@ namespace NodeEditor
 
 		ImGui::NamedLabel(m_name.c_str(), m_value.c_str());
 
+		if (!m_helpText.empty())
+			ImGui::SetItemTooltip(m_helpText.c_str());
+
 		ImGui::EndDisabled();
 
 		return true;

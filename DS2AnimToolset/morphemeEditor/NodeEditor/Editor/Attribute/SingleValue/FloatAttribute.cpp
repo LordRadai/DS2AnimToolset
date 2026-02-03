@@ -17,6 +17,9 @@ namespace NodeEditor
 
 		ImGui::RightAlignedInputFloat(m_name.c_str(), &m_value);
 
+		if (!m_helpText.empty())
+			ImGui::SetItemTooltip(m_helpText.c_str());
+
 		ImGui::EndDisabled();
 
 		return true;

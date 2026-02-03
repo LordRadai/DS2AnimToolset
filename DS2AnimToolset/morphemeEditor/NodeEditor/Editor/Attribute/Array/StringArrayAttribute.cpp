@@ -23,6 +23,9 @@ namespace NodeEditor
 			sprintf_s(nameBuffer, "%s%d", m_name.c_str(), (int)i);
 
 			ImGui::NamedLabel(nameBuffer, m_values[i].c_str());
+
+			if (!m_helpText.empty())
+				ImGui::SetItemTooltip(m_helpText.c_str());
 		}
 
 		ImGui::EndDisabled();
