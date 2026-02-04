@@ -133,12 +133,14 @@ namespace NodeEditor
 		Transition* findTransitionByPath(const std::string& path) const;
 
 		Transition* getTransitionBetweenNodes(Node* sourceNode, Node* destinationNode) const;
+		void getTransitionsFromNode(Node* sourceNode, std::vector<Transition*>& outTransitions) const;
+		void getTransitionsToNode(Node* destinationNode, std::vector<Transition*>& outTransitions) const;
 
 		Node* getSelectedNode() const;
 		Transition* getSelectedTransition() const;
 		void clearSelection();
 
-		Node* getControlParametersNode() const { return m_controlParametersNode; }
+		ControlParametersNode* getControlParametersNode() const { return m_controlParametersNode; }
 
 		void addControlParameter(ControlParameter* parameter);
 		ControlParameter* createControlParameterFloat(int id, const std::string& name);

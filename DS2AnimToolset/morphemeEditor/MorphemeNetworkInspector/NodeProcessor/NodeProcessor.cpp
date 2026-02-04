@@ -1,6 +1,7 @@
 #include "NodeProcessor.h"
 #include "RLog/RLog.h"
 #include "extern.h"
+#include "morpheme/Nodes/mrNodeStateMachine.h"
 
 #include "morpheme/mrNetworkDef.h"
 
@@ -93,12 +94,11 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 		for (MR::NodeDef* child : childNodes)
 		{
 			const std::string childName = getNodeName(child->getNodeID());
-			processNode(graph, child, childName);
+			NodeEditor::Node* node = processNode(graph, child, childName);
 		}
 
-		processNodeConnectionsInBlendTree(
-			graph->asType<NodeEditor::BlendTree>(),
-			childNodes);
+		processNodeConnectionsInBlendTree(graph->asType<NodeEditor::BlendTree>(), childNodes);
+		setBlendTreeLayout(graph->asType<NodeEditor::BlendTree>(), childNodes);
 	}
 	else if (graph->isOfType<NodeEditor::StateMachine>())
 	{
@@ -110,8 +110,12 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 				continue;
 
 			const std::string childName = getNodeName(child->getNodeID());
-			processNode(graph, child, childName);
+			NodeEditor::Node* node = processNode(graph, child, childName);
 		}
+
+		MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(ownerNodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
+
+		graph->asType<NodeEditor::StateMachine>()->setDefaultNodeID(ownerNodeDef->getChildNodeID(stateMachineDef->m_defaultStartingStateID));
 
 		processNodeTransitionsInStateMachine(
 			graph->asType<NodeEditor::StateMachine>(),
@@ -139,8 +143,11 @@ void NodeProcessor::populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* own
 	}
 }
 
-void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, std::vector<MR::NodeDef*> childNodes)
+void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, std::vector<MR::NodeDef*>& childNodes)
 {
+	if (childNodes.size() == 0)
+		g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Invalid blend tree '%s'. No children node are present.", blendTree->getName().c_str());
+
 	MR::NetworkDef* netDef = childNodes[0]->getOwningNetworkDef();
 	for (MR::NodeDef* childNodeDef : childNodes)
 	{
@@ -211,6 +218,61 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 	}
 }
 
+void NodeProcessor::setBlendTreeLayout(NodeEditor::BlendTree* blendTree, std::vector<MR::NodeDef*>& childNodes)
+{
+	if (childNodes.size() == 0)
+		g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Invalid blend tree '%s'. No children node are present.", blendTree->getName().c_str());
+
+	ImVec2 startingPos(500.0f, 500.0f);
+	float x = startingPos.x - 300.f;
+	float y = startingPos.y - 100.f;
+
+	for (MR::NodeDef* childNodeDef : childNodes)
+	{
+		if (childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+			continue;
+
+		NodeEditor::Node* sourceNode = blendTree->getNode(childNodeDef->getNodeID());
+
+		if (!sourceNode)
+		{
+			g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find source node '%s' in blend tree '%s'.", getNodeName(childNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+			continue;
+		}
+
+		if (sourceNode->getNodeID() == blendTree->getGraphNodeID())
+			sourceNode->setPosition(startingPos.x, startingPos.y);
+
+		for (uint32_t i = 0; i < childNodeDef->getNumChildNodes(); ++i)
+		{
+			NodeEditor::Node* targetNode = blendTree->getNode(childNodeDef->getChildNodeID(i));
+
+			if (!targetNode)
+			{
+				g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.", getNodeName(childNodeDef->getChildNodeID(i)).c_str(), blendTree->getName().c_str());
+				continue;
+			}
+
+			targetNode->setPosition(x, y);
+			y += 100.f;
+		}
+
+		for (uint32_t i = 0; i < childNodeDef->getNumInputCPConnections(); ++i)
+		{
+			NodeEditor::Node* targetNode = blendTree->getNode(childNodeDef->getInputCPConnection(i)->m_sourceNodeID);
+
+			if (targetNode)
+			{
+				targetNode->setPosition(x, y);
+				y += 100.f;
+			}
+		}
+
+		y = startingPos.y - 100.f;
+		x -= 300.f;
+	}
+}
+
 void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef)
 {
 	for (size_t i = 0; i < nodeDef->getNumChildNodes(); i++)
@@ -233,6 +295,26 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 		
 		if (!transition)
 			g_appLog->panicMessage("NodeProcessor::processNodeTransitionsInStateMachine: Failed to create transition '%s' in state machine '%s'.", getNodeName(childNodeDef->getNodeID()).c_str(), stateMachine->getName().c_str());
+	}
+}
+
+void NodeProcessor::setStateMachineLayout(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef)
+{
+	ImVec2 defaultPos(500.f, 500.f);
+	float x = defaultPos.x;
+	float y = defaultPos.y;
+
+	for (size_t i = 0; i < nodeDef->getNumChildNodes(); i++)
+	{
+		MR::NodeDef* childNodeDef = nodeDef->getChildNodeDef(i);
+
+		if (childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+			continue;
+
+		NodeEditor::Node* node = stateMachine->getNode(childNodeDef->getNodeID());
+
+		if (node)
+			node->setPosition(x, y);
 	}
 }
 

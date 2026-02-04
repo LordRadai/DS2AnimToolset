@@ -1,10 +1,11 @@
 #include "StateMachine.h"
 
+#include "NodeEditor/imnodes/imnodes_internal.h"
 #include "NodeEditor/NodeEditor.h"
 
 namespace NodeEditor
 {
-	StateMachine::StateMachine(Editor* editor, Graph* parent, const std::string& name, int graphNodeID) : Graph(editor, parent, name, graphNodeID)
+	StateMachine::StateMachine(Editor* editor, Graph* parent, const std::string& name, int graphNodeID) : Graph(editor, parent, name, graphNodeID), m_defaultNodeID(-1)
 	{
 	}
 
@@ -30,6 +31,8 @@ namespace NodeEditor
 
 		for (Transition* transition : m_transitions)
 			transition->draw();
+
+		drawDefaultStateMarker();
 	}
 
 	StateNode* StateMachine::createStateNode(int nodeID, const std::string& name)
@@ -78,5 +81,26 @@ namespace NodeEditor
 		m_transitions.push_back(transit);
 
 		return transit;
+	}
+
+	void StateMachine::drawDefaultStateMarker()
+	{
+		Node* defaultNode = getNode(m_defaultNodeID);
+
+		ImRect rect = ImNodes::GetNodeScreenSpaceRect(defaultNode->getID());
+
+		ImVec2 arrowPoint = rect.Min;
+		ImVec2 arrowStart = ImVec2(arrowPoint.x - 30.f, arrowPoint.y);
+
+		ImDrawList* drawList = ImNodes::GetCurrentContext()->CanvasDrawList;
+		drawList->AddLine(arrowStart, arrowPoint, IM_COL32(255, 255, 255, 255), 2.0f);
+		drawList->AddTriangleFilled(
+			ImVec2(arrowPoint.x, arrowPoint.y - 5.f),
+			ImVec2(arrowPoint.x, arrowPoint.y + 5.f),
+			ImVec2(arrowPoint.x + 10.f, arrowPoint.y),
+			IM_COL32(255, 255, 255, 255)
+		);
+
+		drawList->AddCircleFilled(arrowStart, 5.f, IM_COL32(255, 255, 255, 255));
 	}
 }

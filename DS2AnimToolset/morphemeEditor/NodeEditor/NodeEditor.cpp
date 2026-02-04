@@ -608,6 +608,30 @@ namespace NodeEditor
         return nullptr;
 	}
 
+    void Editor::getTransitionsFromNode(Node* sourceNode, std::vector<Transition*>& outTransitions) const
+    {
+		std::vector<Transition*> allTransitions;
+		getAllTransitions(allTransitions);
+
+        for (Transition* transition : allTransitions)
+        {
+            if (transition->getSourceNode() == sourceNode)
+                outTransitions.push_back(transition);
+		}
+    }
+
+    void Editor::getTransitionsToNode(Node* destinationNode, std::vector<Transition*>& outTransitions) const
+    {
+		std::vector<Transition*> allTransitions;
+        getAllTransitions(allTransitions);
+
+        for (Transition* transition : allTransitions)
+        {
+            if (transition->getDestinationNode() == destinationNode)
+                outTransitions.push_back(transition);
+        }
+    }
+
     Node* Editor::getSelectedNode() const
     {
 		int selectedNodeID = -1;

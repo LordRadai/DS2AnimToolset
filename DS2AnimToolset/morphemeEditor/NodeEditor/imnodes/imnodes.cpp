@@ -1744,7 +1744,6 @@ void DrawNode(ImNodesEditorContext& editor, const int node_idx)
                 titlebar_background,
                 node.LayoutStyle.CornerRounding,
                 ImDrawFlags_RoundCornersTop);
-
 #endif
         }
 
@@ -3065,6 +3064,37 @@ ImVec2 GetNodeGridSpacePos(const int node_id)
     assert(node_idx != -1);
     ImNodeData& node = editor.Nodes.Pool[node_idx];
     return node.Origin;
+}
+
+ImRect GetNodeScreenSpaceRect(const int node_id)
+{
+    ImNodesEditorContext& editor = EditorContextGet();
+    const int             node_idx = ObjectPoolFind(editor.Nodes, node_id);
+    assert(node_idx != -1);
+    ImNodeData& node = editor.Nodes.Pool[node_idx];
+    return ImRect(
+        GridSpaceToScreenSpace(editor, node.Rect.Min),
+		GridSpaceToScreenSpace(editor, node.Rect.Max));
+}
+
+ImRect GetNodeEditorSpaceRect(const int node_id)
+{
+    ImNodesEditorContext& editor = EditorContextGet();
+    const int             node_idx = ObjectPoolFind(editor.Nodes, node_id);
+    assert(node_idx != -1);
+    ImNodeData& node = editor.Nodes.Pool[node_idx];
+    return ImRect(
+        GridSpaceToEditorSpace(editor, node.Rect.Min),
+		GridSpaceToEditorSpace(editor, node.Rect.Max));
+}
+
+ImRect GetNodeGridSpaceRect(const int node_id)
+{
+    ImNodesEditorContext& editor = EditorContextGet();
+    const int             node_idx = ObjectPoolFind(editor.Nodes, node_id);
+    assert(node_idx != -1);
+    ImNodeData& node = editor.Nodes.Pool[node_idx];
+	return node.Rect;
 }
 
 bool IsEditorHovered() { return MouseInCanvas(); }

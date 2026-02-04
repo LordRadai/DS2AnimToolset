@@ -351,6 +351,9 @@ void SetNodeGridSpacePos(int node_id, const ImVec2& grid_pos);
 ImVec2 GetNodeScreenSpacePos(const int node_id);
 ImVec2 GetNodeEditorSpacePos(const int node_id);
 ImVec2 GetNodeGridSpacePos(const int node_id);
+ImRect GetNodeScreenSpaceRect(const int node_id);
+ImRect GetNodeEditorSpaceRect(const int node_id);
+ImRect GetNodeGridSpaceRect(const int node_id);
 
 // Returns true if the current node editor canvas is being hovered over by the mouse, and is not
 // blocked by any other windows.

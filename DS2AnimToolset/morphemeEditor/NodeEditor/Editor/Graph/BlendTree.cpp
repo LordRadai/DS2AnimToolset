@@ -7,7 +7,12 @@ namespace NodeEditor
 	BlendTree::BlendTree(Editor* editor, Graph* parent, const std::string& name, int graphNodeID) : Graph(editor, parent, name, graphNodeID), m_resultNode(nullptr)
 	{
 		m_resultNode = new BlendTreeOutputNode(editor, this);
-		m_resultNode->setPosition(600.0f, 200.0f);
+		m_resultNode->setPosition(900.0f, 500.0f);
+
+		ControlParametersNode* controlParamsNode = editor->getControlParametersNode();
+
+		if (controlParamsNode)
+			controlParamsNode->setPosition(100.0f, 800.0f);
 	}
 
 	BlendTree::~BlendTree()
