@@ -313,7 +313,12 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 
 		// Active state transition
 		if (sourceNodeID == MR::INVALID_NODE_ID)
-			sourceNode = stateMachine->createStateNode(-1);
+		{
+			sourceNode = stateMachine->getDefaultStateNode();
+
+			if (!sourceNode)
+				sourceNode = stateMachine->createStateNode();
+		}
 
 		NodeEditor::Transition* transition = stateMachine->createTransition(childNodeDef->getNodeID(), transitTypeAsManifestName(childNodeDef->getNodeTypeID()), sourceNode, targetNode);
 		
@@ -322,16 +327,15 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 	}
 }
 
-void NodeProcessor::setStateMachineLayout(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef)
+void NodeProcessor::setStateMachineLayout(NodeEditor::StateMachine* stateMachine, MR::NodeDef* ownerNodeDef)
 {
-	if (!stateMachine || !nodeDef)
+	if (!stateMachine || !ownerNodeDef)
 		return;
 
 	NodeEditor::Editor* editor = stateMachine->getOwnerEditor();
 
-	// --- Step 0: Get default / starting node ---
-	NodeEditor::Node* defaultNode = stateMachine->getNode(stateMachine->getDefaultNodeID());
-
+	// --- Step 0: Default node as center ---
+	NodeEditor::Node* defaultNode = stateMachine->getDefaultNode();
 	if (!defaultNode)
 		return;
 
@@ -342,7 +346,7 @@ void NodeProcessor::setStateMachineLayout(NodeEditor::StateMachine* stateMachine
 	struct NodeData
 	{
 		NodeEditor::Node* node = nullptr;
-		int ring = -1;           // BFS distance
+		int ring = -1;           // BFS depth
 		NodeData* parent = nullptr;
 		Direction dir = Direction::North;
 	};
@@ -350,17 +354,12 @@ void NodeProcessor::setStateMachineLayout(NodeEditor::StateMachine* stateMachine
 	std::unordered_map<NodeEditor::Node*, NodeData> nodeMap;
 
 	for (NodeEditor::Node* node : stateMachine->getNodes())
-	{
-		if (node == defaultNode)
-			continue;
-
 		nodeMap[node] = { node, -1, nullptr, Direction::North };
-	}
 
-	// --- Step 2: BFS to assign rings & parents ---
+	// --- Step 2: BFS traversal assigning ring & parent ---
 	std::queue<NodeData*> q;
-	NodeData rootData{ defaultNode, 0, nullptr, Direction::North };
-	nodeMap[defaultNode] = rootData; // include default node for simplicity
+	nodeMap[defaultNode].ring = 0;
+	nodeMap[defaultNode].parent = nullptr;
 	q.push(&nodeMap[defaultNode]);
 
 	while (!q.empty())
@@ -396,26 +395,26 @@ void NodeProcessor::setStateMachineLayout(NodeEditor::StateMachine* stateMachine
 		}
 
 		if (data.ring > data.parent->ring)
-			data.dir = Direction::North;
+			data.dir = Direction::North; // outward nodes go UP
 		else if (data.ring < data.parent->ring)
-			data.dir = Direction::South;
+			data.dir = Direction::South; // return/fallback nodes go DOWN
 		else
 		{
-			std::vector<NodeEditor::Transition*> outgoing, incoming;
-			editor->getTransitionsFromNode(data.node, outgoing);
-			editor->getTransitionsToNode(data.node, incoming);
-			data.dir = (outgoing.size() >= incoming.size()) ? Direction::West : Direction::East;
+			std::vector<NodeEditor::Transition*> outTrans, inTrans;
+			editor->getTransitionsFromNode(data.node, outTrans);
+			editor->getTransitionsToNode(data.node, inTrans);
+			data.dir = (outTrans.size() >= inTrans.size()) ? Direction::East : Direction::West;
 		}
 	}
 
-	// --- Step 4: Bucket nodes by ring and direction ---
+	// --- Step 4: Bucket nodes per ring & direction ---
 	std::unordered_map<int, std::unordered_map<Direction, std::vector<NodeData*>>> ringBuckets;
 	for (auto& [nodePtr, data] : nodeMap)
 		ringBuckets[data.ring][data.dir].push_back(&data);
 
 	// --- Step 5: Compute positions ---
-	const float ringSpacing = 200.f;  // radial distance per ring
-	const float arcSpread = IM_PI / 6.f; // 30 deg max spread per bucket
+	const float ringSpacing = 200.f;   // distance between BFS rings
+	const float arcSpread = IM_PI / 6; // 30° max spread per direction bucket
 
 	for (auto& [ring, dirMap] : ringBuckets)
 	{

@@ -55,7 +55,7 @@ namespace NodeEditor
 		{
 			std::string type = getType();
 
-			return type == "boolArray" || type == "floatArray" || type == "intArray" || type == "refArray" || type == "rigChannelName";
+			return type == "boolArray" || type == "floatArray" || type == "intArray" || type == "refArray";
 		}
 
 		uint32_t MMAttribute::size() const

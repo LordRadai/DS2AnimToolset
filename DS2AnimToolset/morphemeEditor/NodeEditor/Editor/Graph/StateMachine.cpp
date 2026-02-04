@@ -25,6 +25,9 @@ namespace NodeEditor
 
 		Graph::draw();
 
+		for (StateNode* stateNode : m_stateNodes)
+			stateNode->draw();
+
 		ImNodes::PopColorStyle();
 		ImNodes::PopColorStyle();
 		ImNodes::PopColorStyle();
@@ -35,14 +38,41 @@ namespace NodeEditor
 		drawDefaultStateMarker();
 	}
 
-	StateNode* StateMachine::createStateNode(int nodeID, const std::string& name)
+	StateNode* StateMachine::getStateNode(const std::string& name) const
+	{
+		for (StateNode* stateNode : m_stateNodes)
+		{
+			if (stateNode->getName() == name)
+				return stateNode;
+		}
+
+		return nullptr;
+	}
+
+	StateNode* StateMachine::getStateNodeAt(size_t index) const
+	{
+		if (index >= m_stateNodes.size())
+			return nullptr;
+
+		return m_stateNodes[index];
+	}
+
+	StateNode* StateMachine::getDefaultStateNode() const
+	{
+		if (m_stateNodes.size())
+			return m_stateNodes[0];
+
+		return nullptr;
+	}
+
+	StateNode* StateMachine::createStateNode(const std::string& name)
 	{
 		std::string nodeName = makeNameValid(name, "ActiveState");
 
 		Manifest::MMStateMachineNode* manifestNode = m_ownerEditor->getManifest()->findStateMachineNodeManifest("ActiveState");
 
-		StateNode* stateNode = manifestNode->makeNode(m_ownerEditor, this, nodeID, nodeName);
-		m_nodes.push_back(stateNode);
+		StateNode* stateNode = manifestNode->makeNode(m_ownerEditor, this, -1, nodeName);
+		m_stateNodes.push_back(stateNode);
 
 		return stateNode;
 	}

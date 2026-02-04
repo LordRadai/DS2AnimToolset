@@ -36,7 +36,7 @@ namespace NodeEditor
 
 		Node* src = sm->createBlendTree(10);
 		Node* dst = sm->createBlendTree(11);
-		sm->createStateNode(8);
+		sm->createStateNode();
 
 		Transition* transit0 = sm->createTransition(6, "Transit", src, dst);
 		Transition* transit1 = sm->createTransition(7, "Transit", dst, src);
