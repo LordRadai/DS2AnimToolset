@@ -250,58 +250,102 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 void NodeProcessor::setBlendTreeLayout(NodeEditor::BlendTree* blendTree, std::vector<MR::NodeDef*>& childNodes)
 {
-	if (childNodes.size() == 0)
-		g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Invalid blend tree '%s'. No children node are present.", blendTree->getName().c_str());
+	if (childNodes.empty())
+		g_appLog->panicMessage("NodeProcessor::setBlendTreeLayout: Invalid blend tree '%s'. No children nodes are present.", blendTree->getName().c_str());
 
-	ImVec2 startingPos(500.0f, 500.0f);
-	float x = startingPos.x - 300.f;
-	float y = startingPos.y - 100.f;
+	NodeEditor::Node* sourceNode = nullptr;
+	MR::NodeDef* sourceNodeDef = nullptr;
 
-	for (MR::NodeDef* childNodeDef : childNodes)
+	for (MR::NodeDef* nodeDef : childNodes)
 	{
-		if (childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-			continue;
-
-		NodeEditor::Node* sourceNode = blendTree->getNode(childNodeDef->getNodeID());
-
-		if (!sourceNode)
+		if (nodeDef->getNodeID() == blendTree->getGraphNodeID())
 		{
-			g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find source node '%s' in blend tree '%s'.", getNodeName(childNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
-			continue;
+			sourceNode = blendTree->getNode(nodeDef->getNodeID());
+			sourceNodeDef = nodeDef;
 		}
-
-		if (sourceNode->getNodeID() == blendTree->getGraphNodeID())
-			sourceNode->setPosition(startingPos.x, startingPos.y);
-
-		for (uint32_t i = 0; i < childNodeDef->getNumChildNodes(); ++i)
-		{
-			NodeEditor::Node* targetNode = blendTree->getNode(childNodeDef->getChildNodeID(i));
-
-			if (!targetNode)
-			{
-				g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.", getNodeName(childNodeDef->getChildNodeID(i)).c_str(), blendTree->getName().c_str());
-				continue;
-			}
-
-			targetNode->setPosition(x, y);
-			y += 100.f;
-		}
-
-		for (uint32_t i = 0; i < childNodeDef->getNumInputCPConnections(); ++i)
-		{
-			NodeEditor::Node* targetNode = blendTree->getNode(childNodeDef->getInputCPConnection(i)->m_sourceNodeID);
-
-			if (targetNode)
-			{
-				targetNode->setPosition(x, y);
-				y += 100.f;
-			}
-		}
-
-		y = startingPos.y - 100.f;
-		x -= 300.f;
 	}
+
+	if (!sourceNode)
+		g_appLog->panicMessage("NodeProcessor::setBlendTreeLayout: Failed to find source node '%s' in blend tree '%s'.",
+			getNodeName(childNodes[0]->getNodeID()).c_str(), blendTree->getName().c_str());
+
+	ImVec2 startingPos(500.f, 500.f);
+	float xOffset = 300.f;
+	float yOffset = 100.f;
+
+	// Recursive lambda
+	std::function<void(NodeEditor::Node*, MR::NodeDef*, float, float)> layoutNode;
+	layoutNode = [&](NodeEditor::Node* node, MR::NodeDef* nodeDef, float x, float y)
+		{
+			if (!node || !nodeDef)
+				return;
+
+			MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
+
+			float xPos = x - xOffset;
+			float yPos = y - yOffset;
+
+			for (uint32_t i = 0; i < nodeDef->getNumChildNodes(); ++i)
+			{
+				NodeEditor::Node* childNode = blendTree->getNode(nodeDef->getChildNodeID(i));
+				MR::NodeDef* childNodeDef = nodeDef->getChildNodeDef(i);
+
+				if (childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+					continue;
+
+				if (!childNode)
+				{
+					g_appLog->panicMessage(
+						"NodeProcessor::setBlendTreeLayout: Failed to find child node '%s' in blend tree '%s'.",
+						getNodeName(nodeDef->getChildNodeID(i)).c_str(), blendTree->getName().c_str());
+					continue;
+				}
+
+				float vOffset = yOffset * (childNodeDef->getNumChildNodes() + 1);
+
+				childNode->setPosition(xPos, yPos);
+
+				layoutNode(childNode, childNodeDef, xPos, yPos);
+
+				yPos += vOffset;
+			}
+
+			for (uint32_t i = 0; i < nodeDef->getNumInputCPConnections(); ++i)
+			{
+				NodeEditor::Node* inputNode = blendTree->getNode(nodeDef->getInputCPConnection(i)->m_sourceNodeID);
+				MR::NodeDef* inputNodeDef = netDef->getNodeDef(nodeDef->getInputCPConnection(i)->m_sourceNodeID);
+
+				if (inputNode)
+				{
+					float vOffset = yOffset * (inputNodeDef->getNumInputCPConnections() + 1);
+
+					inputNode->setPosition(xPos, yPos);
+
+					layoutNode(inputNode, inputNodeDef, xPos, yPos);
+
+					yPos += vOffset;
+				}
+			}
+
+			ImVec2 cpNodePos = blendTree->getControlParamsNodePosition();
+			float cpX = cpNodePos.x;
+			float cpY = cpNodePos.y;
+
+			if (cpNodePos.x > xPos)
+				cpX = xPos - xOffset;
+
+			if (cpNodePos.y > yPos)
+				cpY = yPos + yOffset;
+
+			blendTree->setControlParamsNodePosition(cpX, cpY);
+		};
+
+	sourceNode->setPosition(startingPos.x, startingPos.y);
+
+	// Start recursion from source node
+	layoutNode(sourceNode, sourceNodeDef, startingPos.x, startingPos.y);
 }
+
 
 void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef)
 {
