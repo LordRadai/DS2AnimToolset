@@ -53,6 +53,14 @@ namespace NodeEditor
 		m_resultNode->setPosition(outputNodePos.x, outputNodePos.y);
 	}
 
+	void BlendTree::onGraphOpened()
+	{
+		Graph::onGraphOpened();
+
+		ControlParametersNode* cpNode = m_ownerEditor->getControlParametersNode();
+		cpNode->setPosition(m_controlParamsNodePos.x, m_controlParamsNodePos.y);
+	}
+
 	void BlendTree::setControlParamsNodePosition(float x, float y)
 	{
 		m_controlParamsNodePos = ImVec2(x, y);

@@ -676,7 +676,7 @@ namespace NodeEditor
 
         m_graphStack.push(graph);
 
-        onGraphChanged(graph);
+        graph->onGraphOpened();
 	}
 
 	void Editor::popGraph()
@@ -684,22 +684,8 @@ namespace NodeEditor
         if (m_graphStack.size() > 1)
             m_graphStack.pop();
 
-		onGraphChanged(getCurrentGraph());
+		getCurrentGraph()->onGraphOpened();
 	}
-
-    void Editor::onGraphChanged(Graph* newGraph)
-    {
-        clearSelection();
-
-        ImNodes::EditorContextResetPanning(newGraph->getPanning());
-
-        if (newGraph->isOfType<BlendTree>())
-        {
-            ImVec2 cpNodePos = newGraph->asType<BlendTree>()->getControlParamsNodePosition();
-
-            m_controlParametersNode->setPosition(cpNodePos.x, cpNodePos.y);
-        }
-    }
 
     void Editor::initStyle()
     {

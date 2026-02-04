@@ -214,6 +214,13 @@ namespace NodeEditor
 		}
 	}
 
+	void Graph::onGraphOpened()
+	{
+		m_ownerEditor->clearSelection();
+
+		ImNodes::EditorContextResetPanning(m_panning);
+	}
+
 	void Graph::getFreePosition(float& x, float& y)
 	{
 		float maxX = 0.f;
