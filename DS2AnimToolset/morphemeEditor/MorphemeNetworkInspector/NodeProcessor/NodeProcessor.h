@@ -70,8 +70,10 @@ private:
 
 	void populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
 	void populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
+
 	void processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, std::vector<MR::NodeDef*>& childNodes);
 	void setBlendTreeLayout(NodeEditor::BlendTree* blendTree, std::vector<MR::NodeDef*>& childNodes);
+
 	void processNodeTransitionsInStateMachine(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef);
 	void setStateMachineLayout(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef);
 };
