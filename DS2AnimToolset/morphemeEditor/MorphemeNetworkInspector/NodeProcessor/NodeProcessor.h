@@ -37,6 +37,7 @@ private:
 	void collectBlendTreeNodes(MR::NetworkDef* netDef);
 	void collectBlendTreeChildNodes(MR::NetworkDef* netDef);
 	void collectNodeNames(MR::NetworkDef* netDef);
+	void sanitizeNodeNames(MR::NetworkDef* netDef);
 
 	MR::NodeDef* getParentNodeContainer(MR::NodeDef* nodeDef);
 

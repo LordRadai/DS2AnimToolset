@@ -516,7 +516,14 @@ void NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
 	collectNames(rootNodeDef);
 
 	for (const auto& nodeNamePair : m_nodeNameMap)
-		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectNodeNames: Registered node name '%s' for node ID %d.\n", nodeNamePair.second.c_str(), nodeNamePair.first);
+		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectNodeNames: Associated node name '%s' for node ID %d.\n", nodeNamePair.second.c_str(), nodeNamePair.first);
+
+	sanitizeNodeNames(netDef);
+}
+
+void NodeProcessor::sanitizeNodeNames(MR::NetworkDef* netDef)
+{
+
 }
 
 MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
