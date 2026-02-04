@@ -20,7 +20,7 @@ namespace NodeEditor
 		const std::vector<Link*>& getLinks() const { return m_links; }
 
 		ImVec2 getControlParamsNodePosition() const { return m_controlParamsNodePos; }
-		void setControlParamsNodePosition(float x, float y) { m_controlParamsNodePos = ImVec2(x, y); }
+		void setControlParamsNodePosition(float x, float y);
 
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name = "");
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name, float x, float y);

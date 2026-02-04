@@ -270,8 +270,8 @@ void NodeProcessor::setBlendTreeLayout(NodeEditor::BlendTree* blendTree, std::ve
 			getNodeName(childNodes[0]->getNodeID()).c_str(), blendTree->getName().c_str());
 
 	ImVec2 startingPos(500.f, 500.f);
-	float xOffset = 300.f;
-	float yOffset = 100.f;
+	const float xOffset = 300.f;
+	const float yOffset = 100.f;
 
 	// Recursive lambda
 	std::function<void(NodeEditor::Node*, MR::NodeDef*, float, float)> layoutNode;
@@ -326,24 +326,28 @@ void NodeProcessor::setBlendTreeLayout(NodeEditor::BlendTree* blendTree, std::ve
 					yPos += vOffset;
 				}
 			}
-
-			ImVec2 cpNodePos = blendTree->getControlParamsNodePosition();
-			float cpX = cpNodePos.x;
-			float cpY = cpNodePos.y;
-
-			if (cpNodePos.x > xPos)
-				cpX = xPos - xOffset;
-
-			if (cpNodePos.y > yPos)
-				cpY = yPos + yOffset;
-
-			blendTree->setControlParamsNodePosition(cpX, cpY);
 		};
 
 	sourceNode->setPosition(startingPos.x, startingPos.y);
 
 	// Start recursion from source node
 	layoutNode(sourceNode, sourceNodeDef, startingPos.x, startingPos.y);
+
+	float minX = FLT_MAX;
+	float maxY = 0.f;
+	for (NodeEditor::Node* node : blendTree->getNodes())
+	{
+		ImVec2 pos = node->getPosition();
+		if (pos.x < minX)
+			minX = pos.x;
+		if (pos.y > maxY)
+			maxY = pos.y;
+	}
+
+	const float cpNodeOffsetX = 100.f;
+	const float cpNodeOffsetY = 200.f;
+
+	blendTree->setControlParamsNodePosition(minX - cpNodeOffsetX, maxY + cpNodeOffsetY);
 }
 
 

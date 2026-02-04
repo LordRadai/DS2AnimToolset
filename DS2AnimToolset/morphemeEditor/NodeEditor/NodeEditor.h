@@ -167,5 +167,7 @@ namespace NodeEditor
 		bool isNodeIDAvailable(int nodeID) const;
 
 		ControlParameter* createControlParameter(int id, const std::string& name, ControlParameter::ParameterType parameterType);
+
+		void onGraphChanged(Graph* newGraph);
 	};
 }

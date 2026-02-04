@@ -53,6 +53,11 @@ namespace NodeEditor
 		m_resultNode->setPosition(outputNodePos.x, outputNodePos.y);
 	}
 
+	void BlendTree::setControlParamsNodePosition(float x, float y)
+	{
+		m_controlParamsNodePos = ImVec2(x, y);
+	}
+
 	Node* BlendTree::createNode(int nodeID, const std::string& typeName, const std::string& name)
 	{
 		return Graph::createNode(nodeID, typeName, name);
