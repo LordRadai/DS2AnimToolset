@@ -291,11 +291,14 @@ void NodeProcessor::setBlendTreeLayout(NodeEditor::BlendTree* blendTree, std::ve
 		{
 			NodeEditor::Node* targetNode = blendTree->getNode(childNodeDef->getInputCPConnection(i)->m_sourceNodeID);
 
-			if (targetNode)
+			if (!targetNode)
 			{
-				targetNode->setPosition(x, y);
-				y += 100.f;
+				g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.", getNodeName(childNodeDef->getChildNodeID(i)).c_str(), blendTree->getName().c_str());
+				continue;
 			}
+
+			targetNode->setPosition(x, y);
+			y += 100.f;
 		}
 
 		y = startingPos.y - 100.f;
