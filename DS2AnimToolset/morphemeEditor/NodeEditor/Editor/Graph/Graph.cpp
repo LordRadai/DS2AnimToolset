@@ -209,7 +209,7 @@ namespace NodeEditor
 	{
 		for (Node* node : m_nodes)
 		{
-			ImVec2 nodePos = ImNodes::GetNodeEditorSpacePos(node->getNodeID());
+			ImVec2 nodePos = ImNodes::GetNodeEditorSpacePos(node->getID());
 			node->setPosition(nodePos.x, nodePos.y);
 		}
 	}
