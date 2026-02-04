@@ -7,9 +7,15 @@
 
 bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* network)
 {
-	m_nodeProcessor.preProcessNetwork(network);
-
 	const int numControlParams = network->getNumControlParameterNodes();
+
+	if (network->getNumMultiplyConnectedNodes() != numControlParams)
+	{
+		g_appLog->debugMessage(MsgLevel_Error, "MorphemeNetworkInspector::loadNetwork: Networks with multiply connected nodes are not yet supported.");
+		return false;
+	}
+
+	m_nodeProcessor.preProcessNetwork(network);
 
 	std::vector<MR::NodeID> controlParamNodeIDs(numControlParams);
 	network->getControlParameterNodeIDs(controlParamNodeIDs.data(), numControlParams);

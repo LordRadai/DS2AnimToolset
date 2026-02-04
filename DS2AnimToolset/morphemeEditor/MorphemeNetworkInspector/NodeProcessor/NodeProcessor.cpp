@@ -768,7 +768,14 @@ void NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
 			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
 			if (isNodeBlendTreeOutput(nodeDef))
-				m_blendTreeNodeNames[nodeDef->getNodeID()] = getBlendTreeNodeName(nodeName);
+			{
+				std::string blendTreeName = getBlendTreeNodeName(nodeName);
+
+				if (blendTreeName.empty())
+					blendTreeName = "BlendTree" + std::to_string(nodeDef->getNodeID());
+
+				m_blendTreeNodeNames[nodeDef->getNodeID()] = blendTreeName;
+			}
 
 			registerNodeName(nodeDef->getNodeID(), getNodeNameFromFullPath(nodeName));
 
@@ -794,6 +801,20 @@ void NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
 
 void NodeProcessor::sanitizeNodeNames(MR::NetworkDef* netDef)
 {
+	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
+	{
+		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+
+		MR::NodeDef::NodeFlags flags = nodeDef->getNodeFlags();
+		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) || flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+			continue;
+
+		char nameBuffer[256];
+		sprintf_s(nameBuffer, "%s%d", nodeTypeAsManifestName(nodeDef->getNodeTypeID()).c_str(), nodeDef->getNodeID());
+
+		if (m_nodeNameMap[nodeDef->getNodeID()].empty())
+			m_nodeNameMap[nodeDef->getNodeID()] = nameBuffer;
+	}
 }
 
 MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
