@@ -47,7 +47,7 @@ NodeEditor::Node* NodeProcessor::processNode(NodeEditor::Graph* graph, MR::NodeD
 	{
 		g_appLog->debugMessage(MsgLevel_Info, "NodeProcessor::processNode: Creating blend tree node for node %d.\n", nodeDef->getNodeID());
 
-		return graph->createBlendTree(nodeDef->getNodeID(), getBlendTreeNodeName(name));
+		return graph->createBlendTree(nodeDef->getNodeID(), m_blendTreeNodeNames[graph->getGraphNodeID()]);
 	}
 	else if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 	{
@@ -139,7 +139,6 @@ void NodeProcessor::populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* own
 	}
 }
 
-
 void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, std::vector<MR::NodeDef*> childNodes)
 {
 	MR::NetworkDef* netDef = childNodes[0]->getOwningNetworkDef();
@@ -216,14 +215,21 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 {
 	for (size_t i = 0; i < nodeDef->getNumChildNodes(); i++)
 	{
-		MR::NodeDef* childNodeDef = nodeDef->getOwningNetworkDef()->getNodeDef(i);
+		MR::NodeDef* childNodeDef = nodeDef->getChildNodeDef(i);
 		if (!childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
 			continue;
 
-		NodeEditor::Node* sourceNode = stateMachine->getNode(childNodeDef->getChildNodeID(0));
-		NodeEditor::Node* targetNode = stateMachine->getNode(childNodeDef->getChildNodeID(1));
+		const MR::NodeID sourceNodeID = childNodeDef->getChildNodeID(0);
+		const MR::NodeID targetNodeID = childNodeDef->getChildNodeID(1);
 
-		NodeEditor::Transition* transition = stateMachine->createTransition(childNodeDef->getNodeID(), nodeTypeAsManifestName(childNodeDef->getNodeTypeID()), sourceNode, targetNode);
+		NodeEditor::Node* sourceNode = stateMachine->getNode(sourceNodeID);
+		NodeEditor::Node* targetNode = stateMachine->getNode(targetNodeID);
+
+		// Active state transition
+		if (sourceNodeID == MR::INVALID_NODE_ID)
+			sourceNode = stateMachine->createStateNode(-1);
+
+		NodeEditor::Transition* transition = stateMachine->createTransition(childNodeDef->getNodeID(), transitTypeAsManifestName(childNodeDef->getNodeTypeID()), sourceNode, targetNode);
 		
 		if (!transition)
 			g_appLog->panicMessage("NodeProcessor::processNodeTransitionsInStateMachine: Failed to create transition '%s' in state machine '%s'.", getNodeName(childNodeDef->getNodeID()).c_str(), stateMachine->getName().c_str());
@@ -277,7 +283,7 @@ const std::string NodeProcessor::getBlendTreeNodeName(const std::string& name)
 	if (lastDivider != std::string::npos)
 	{
 		size_t secondLastDivider = name.find_last_of("|", lastDivider - 1);
-		size_t count = lastDivider - secondLastDivider - 2;
+		size_t count = lastDivider - secondLastDivider - 1;
 
 		if (secondLastDivider != std::string::npos)
 			return name.substr(secondLastDivider + 1, count);
@@ -285,7 +291,7 @@ const std::string NodeProcessor::getBlendTreeNodeName(const std::string& name)
 			return name.substr(0, lastDivider - 1);
 	}
 
-	return name;
+	return "";
 }
 
 const std::string NodeProcessor::nodeTypeAsManifestName(const MR::NodeType type)
@@ -489,6 +495,9 @@ void NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
 	collectNames = [&](MR::NodeDef* nodeDef)
 		{
 			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
+
+			if (isNodeBlendTreeOutput(nodeDef))
+				m_blendTreeNodeNames[nodeDef->getNodeID()] = getBlendTreeNodeName(nodeName);
 
 			registerNodeName(nodeDef->getNodeID(), getNodeNameFromFullPath(nodeName));
 
