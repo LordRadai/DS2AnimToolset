@@ -120,6 +120,8 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 		processNodeTransitionsInStateMachine(
 			graph->asType<NodeEditor::StateMachine>(),
 			ownerNodeDef);
+
+		setStateMachineLayout(graph->asType<NodeEditor::StateMachine>(), ownerNodeDef);
 	}
 }
 

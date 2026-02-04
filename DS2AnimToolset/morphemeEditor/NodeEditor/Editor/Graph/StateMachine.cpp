@@ -87,17 +87,17 @@ namespace NodeEditor
 	{
 		Node* defaultNode = getNode(m_defaultNodeID);
 
-		ImRect rect = ImNodes::GetNodeScreenSpaceRect(defaultNode->getID());
+		ImRect rect = ImNodes::GetNodeGridSpaceRect(defaultNode->getID());
 
-		ImVec2 arrowPoint = rect.Min;
-		ImVec2 arrowStart = ImVec2(arrowPoint.x - 30.f, arrowPoint.y);
+		ImVec2 arrowPoint = rect.Min - ImVec2(3.f, 0);
+		ImVec2 arrowStart = ImVec2(arrowPoint.x - 40.f, arrowPoint.y);
 
 		ImDrawList* drawList = ImNodes::GetCurrentContext()->CanvasDrawList;
 		drawList->AddLine(arrowStart, arrowPoint, IM_COL32(255, 255, 255, 255), 2.0f);
 		drawList->AddTriangleFilled(
-			ImVec2(arrowPoint.x, arrowPoint.y - 5.f),
-			ImVec2(arrowPoint.x, arrowPoint.y + 5.f),
-			ImVec2(arrowPoint.x + 10.f, arrowPoint.y),
+			ImVec2(arrowPoint.x - 10.f, arrowPoint.y - 5.f),
+			ImVec2(arrowPoint.x - 10.f, arrowPoint.y + 5.f),
+			ImVec2(arrowPoint.x, arrowPoint.y),
 			IM_COL32(255, 255, 255, 255)
 		);
 
