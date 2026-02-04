@@ -33,10 +33,34 @@ private:
 	bool isNodeBlendTreeOutput(MR::NodeDef* nodeDef);
 	bool isNodeInBlendTree(MR::NodeDef* nodeDef);
 
+	/*
+	* \brief Collect all container nodes (state machines and blend trees) in the network.
+	* \param netDef The network definition to process.
+	*/
 	void collectContainerNodes(MR::NetworkDef* netDef);
+
+	/*
+	* \brief Collect all blend tree nodes in the network.
+	* \param netDef The network definition to process.
+	*/
 	void collectBlendTreeNodes(MR::NetworkDef* netDef);
+
+	/*
+	* \brief Collect all child nodes for each blend tree in the network. This must be done after having collected the blend tree nodes.
+	* \param netDef The network definition to process.
+	*/
 	void collectBlendTreeChildNodes(MR::NetworkDef* netDef);
+
+	/*
+	* \brief Collect all node names in the network and register them.
+	* \param netDef The network definition to process.
+	*/
 	void collectNodeNames(MR::NetworkDef* netDef);
+
+	/*
+	* \brief Sanitize node names in the network to ensure there are no empty names. Must be done after collecting node names.
+	* \param netDef The network definition to process.
+	*/
 	void sanitizeNodeNames(MR::NetworkDef* netDef);
 
 	MR::NodeDef* getParentNodeContainer(MR::NodeDef* nodeDef);
