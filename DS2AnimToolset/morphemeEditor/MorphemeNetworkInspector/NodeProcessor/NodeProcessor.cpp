@@ -1,9 +1,31 @@
+#include <queue>
+#include <unordered_map>
+#include <algorithm>
+#include <cmath>
+
 #include "NodeProcessor.h"
 #include "RLog/RLog.h"
 #include "extern.h"
 #include "morpheme/Nodes/mrNodeStateMachine.h"
 
 #include "morpheme/mrNetworkDef.h"
+
+namespace
+{
+	enum class Direction { East, North, West, South };
+
+	inline float directionToAngle(Direction dir)
+	{
+		switch (dir)
+		{
+		case Direction::East:  return 0.0f;
+		case Direction::North: return -IM_PI * 0.5f;
+		case Direction::West:  return IM_PI;
+		case Direction::South: return IM_PI * 0.5f;
+		}
+		return 0.f;
+	}
+}
 
 bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 {
@@ -302,21 +324,121 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 
 void NodeProcessor::setStateMachineLayout(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef)
 {
-	ImVec2 defaultPos(500.f, 500.f);
-	float x = defaultPos.x;
-	float y = defaultPos.y;
+	if (!stateMachine || !nodeDef)
+		return;
 
-	for (size_t i = 0; i < nodeDef->getNumChildNodes(); i++)
+	NodeEditor::Editor* editor = stateMachine->getOwnerEditor();
+
+	// --- Step 0: Get default / starting node ---
+	NodeEditor::Node* defaultNode = stateMachine->getNode(stateMachine->getDefaultNodeID());
+
+	if (!defaultNode)
+		return;
+
+	ImVec2 centerPos(500.f, 500.f);
+	defaultNode->setPosition(centerPos.x, centerPos.y);
+
+	// --- Step 1: Build node map ---
+	struct NodeData
 	{
-		MR::NodeDef* childNodeDef = nodeDef->getChildNodeDef(i);
+		NodeEditor::Node* node = nullptr;
+		int ring = -1;           // BFS distance
+		NodeData* parent = nullptr;
+		Direction dir = Direction::North;
+	};
 
-		if (childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+	std::unordered_map<NodeEditor::Node*, NodeData> nodeMap;
+
+	for (NodeEditor::Node* node : stateMachine->getNodes())
+	{
+		if (node == defaultNode)
 			continue;
 
-		NodeEditor::Node* node = stateMachine->getNode(childNodeDef->getNodeID());
+		nodeMap[node] = { node, -1, nullptr, Direction::North };
+	}
 
-		if (node)
-			node->setPosition(x, y);
+	// --- Step 2: BFS to assign rings & parents ---
+	std::queue<NodeData*> q;
+	NodeData rootData{ defaultNode, 0, nullptr, Direction::North };
+	nodeMap[defaultNode] = rootData; // include default node for simplicity
+	q.push(&nodeMap[defaultNode]);
+
+	while (!q.empty())
+	{
+		NodeData* current = q.front(); q.pop();
+
+		std::vector<NodeEditor::Transition*> outgoing;
+		editor->getTransitionsFromNode(current->node, outgoing);
+
+		for (NodeEditor::Transition* t : outgoing)
+		{
+			NodeEditor::Node* childNode = t->getDestinationNode();
+			if (nodeMap.find(childNode) == nodeMap.end())
+				continue;
+
+			NodeData* childData = &nodeMap[childNode];
+			if (childData->ring == -1)
+			{
+				childData->ring = current->ring + 1;
+				childData->parent = current;
+				q.push(childData);
+			}
+		}
+	}
+
+	// --- Step 3: Assign cardinal directions ---
+	for (auto& [nodePtr, data] : nodeMap)
+	{
+		if (!data.parent)
+		{
+			data.dir = Direction::North; // default node
+			continue;
+		}
+
+		if (data.ring > data.parent->ring)
+			data.dir = Direction::North;
+		else if (data.ring < data.parent->ring)
+			data.dir = Direction::South;
+		else
+		{
+			std::vector<NodeEditor::Transition*> outgoing, incoming;
+			editor->getTransitionsFromNode(data.node, outgoing);
+			editor->getTransitionsToNode(data.node, incoming);
+			data.dir = (outgoing.size() >= incoming.size()) ? Direction::West : Direction::East;
+		}
+	}
+
+	// --- Step 4: Bucket nodes by ring and direction ---
+	std::unordered_map<int, std::unordered_map<Direction, std::vector<NodeData*>>> ringBuckets;
+	for (auto& [nodePtr, data] : nodeMap)
+		ringBuckets[data.ring][data.dir].push_back(&data);
+
+	// --- Step 5: Compute positions ---
+	const float ringSpacing = 200.f;  // radial distance per ring
+	const float arcSpread = IM_PI / 6.f; // 30 deg max spread per bucket
+
+	for (auto& [ring, dirMap] : ringBuckets)
+	{
+		float radius = ring * ringSpacing;
+
+		for (auto& [dir, nodes] : dirMap)
+		{
+			int n = static_cast<int>(nodes.size());
+			float baseAngle = directionToAngle(dir);
+			float spread = (n > 1) ? arcSpread : 0.f;
+
+			for (int i = 0; i < n; ++i)
+			{
+				float angle = baseAngle;
+				if (n > 1)
+					angle = baseAngle - spread / 2.f + i * (spread / (n - 1));
+
+				float x = cosf(angle) * radius + centerPos.x;
+				float y = sinf(angle) * radius + centerPos.y;
+
+				nodes[i]->node->setPosition(x, y);
+			}
+		}
 	}
 }
 
