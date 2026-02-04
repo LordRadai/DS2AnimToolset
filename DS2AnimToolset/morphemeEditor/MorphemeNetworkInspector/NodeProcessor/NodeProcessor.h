@@ -22,6 +22,7 @@ public:
 	NodeEditor::Graph* buildRootGraph(NodeEditor::Editor* editor, MR::NodeDef* rootNodeDef);
 
 	std::string getNodeName(const MR::NodeID nodeID);
+	std::string getBlendTreeNodeName(const MR::NodeID nodeID);
 private:
 	static const std::string getNodeNameFromFullPath(const std::string& name);
 	static const std::string getNodeNameWithParentFromFullPath(const std::string& name);

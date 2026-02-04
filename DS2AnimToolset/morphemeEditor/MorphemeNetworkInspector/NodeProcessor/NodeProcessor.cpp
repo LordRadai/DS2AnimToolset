@@ -117,6 +117,9 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 		{
 			const std::string childName = getNodeName(child->getNodeID());
 			NodeEditor::Node* node = processNode(graph, child, childName);
+
+			if (node->hasSubGraph() && node->getSubGraph()->isOfType<NodeEditor::BlendTree>())
+				node->setName(getBlendTreeNodeName(child->getNodeID()));
 		}
 
 		processNodeConnectionsInBlendTree(graph->asType<NodeEditor::BlendTree>(), childNodes);
@@ -133,6 +136,9 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 
 			const std::string childName = getNodeName(child->getNodeID());
 			NodeEditor::Node* node = processNode(graph, child, childName);
+
+			if (node->hasSubGraph() && node->getSubGraph()->isOfType<NodeEditor::BlendTree>())
+				node->setName(getBlendTreeNodeName(child->getNodeID()));
 		}
 
 		MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(ownerNodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
@@ -454,6 +460,18 @@ std::string NodeProcessor::getNodeName(const MR::NodeID nodeID)
 	return "";
 }
 
+std::string NodeProcessor::getBlendTreeNodeName(const MR::NodeID nodeID)
+{
+	if (nodeID == MR::INVALID_NODE_ID)
+		return "";
+
+	auto it = m_blendTreeNodeNames.find(nodeID);
+	if (it != m_blendTreeNodeNames.end())
+		return it->second;
+
+	return "";
+}
+
 const std::string NodeProcessor::getNodeNameFromFullPath(const std::string& name)
 {
 	size_t lastDivider = name.find_last_of("|");
@@ -728,7 +746,6 @@ void NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
 
 void NodeProcessor::sanitizeNodeNames(MR::NetworkDef* netDef)
 {
-
 }
 
 MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
