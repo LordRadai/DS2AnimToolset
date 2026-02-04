@@ -38,6 +38,17 @@ namespace NodeEditor
 		drawDefaultStateMarker();
 	}
 
+	void StateMachine::updateNodePositions()
+	{
+		Graph::updateNodePositions();
+
+		for (StateNode* stateNode : m_stateNodes)
+		{
+			ImVec2 stateNodePos = ImNodes::GetNodeGridSpacePos(stateNode->getID());
+			stateNode->setPosition(stateNodePos.x, stateNodePos.y);
+		}
+	}
+
 	StateNode* StateMachine::getStateNode(const std::string& name) const
 	{
 		for (StateNode* stateNode : m_stateNodes)

@@ -205,6 +205,15 @@ namespace NodeEditor
 			return m_name;
 	}
 
+	void Graph::updateNodePositions()
+	{
+		for (Node* node : m_nodes)
+		{
+			ImVec2 nodePos = ImNodes::GetNodeEditorSpacePos(node->getNodeID());
+			node->setPosition(nodePos.x, nodePos.y);
+		}
+	}
+
 	void Graph::getFreePosition(float& x, float& y)
 	{
 		float maxX = 0.f;

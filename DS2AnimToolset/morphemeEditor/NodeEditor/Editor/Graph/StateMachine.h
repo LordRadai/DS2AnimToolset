@@ -16,6 +16,7 @@ namespace NodeEditor
 		~StateMachine() override;
 
 		virtual void draw() override;
+		virtual void updateNodePositions() override;
 
 		int getDefaultNodeID() const { return m_defaultNodeID; }
 		void setDefaultNodeID(int nodeID) { m_defaultNodeID = nodeID; }

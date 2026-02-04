@@ -109,27 +109,9 @@ namespace NodeEditor
 
             currentGraph->draw();
 
-            if (currentGraph->isOfType<BlendTree>())
-				m_controlParametersNode->draw();
-
             ImNodes::EndNodeEditor();
 
-            if (currentGraph->isOfType<BlendTree>())
-            {
-                Node* cpNode = m_controlParametersNode;
-                ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(cpNode->getID());
-                cpNode->setPosition(cpNodePos.x, cpNodePos.y);
-
-                Node* outputNode = currentGraph->asType<BlendTree>()->getOutputNode();
-                ImVec2 outputNodePos = ImNodes::GetNodeGridSpacePos(outputNode->getID());
-                outputNode->setPosition(outputNodePos.x, outputNodePos.y);
-            }
-
-            for (Node* node : currentGraph->getNodes())
-            {
-                ImVec2 nodePos = ImNodes::GetNodeGridSpacePos(node->getID());
-                node->setPosition(nodePos.x, nodePos.y);
-            }
+            currentGraph->updateNodePositions();
         }
 
 		ImGui::End();
