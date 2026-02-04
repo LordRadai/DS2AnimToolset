@@ -13,7 +13,7 @@
 
 namespace NodeEditor
 {
-	Transition::Transition(NodeEditor* editor, Graph* parent, int nodeID, const std::string& typeName, Node* sourceNode, Node* destinationNode) : Node(editor, parent, nodeID, typeName, sourceNode->getName() + "_" + destinationNode->getName(), nullptr),
+	Transition::Transition(Editor* editor, Graph* parent, int nodeID, const std::string& typeName, Node* sourceNode, Node* destinationNode) : Node(editor, parent, nodeID, typeName, sourceNode->getName() + "_" + destinationNode->getName(), nullptr),
 		m_sourceNode(sourceNode), m_destinationNode(destinationNode)
 	{
 	}

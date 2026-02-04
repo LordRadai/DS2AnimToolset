@@ -1670,7 +1670,7 @@ void GuiManager::networkPreviewWindow()
 		ImGuiDockNodeFlags_None
 	);
 
-	NodeEditor::NodeEditor* nodeEditor = editorApp->getNodeEditor();
+	NodeEditor::Editor* nodeEditor = editorApp->getNodeEditor();
 
 	nodeEditor->draw();
 
@@ -1685,7 +1685,7 @@ void GuiManager::selectedNodeInfoWindow()
 
 	ImGui::Begin("EditorInfoWindow", nullptr, ImGuiWindowFlags_NoTitleBar);
 
-	NodeEditor::NodeEditor* nodeEditor = editorApp->getNodeEditor();
+	NodeEditor::Editor* nodeEditor = editorApp->getNodeEditor();
 
 	ImGui::BeginTabBar("info_tabs");
 

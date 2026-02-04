@@ -156,7 +156,7 @@ namespace NodeEditor
 			return sortedPins;
 		}
 
-		Node* MMNode::makeNode(NodeEditor* editor, Graph* parent, int id, const std::string& name)
+		Node* MMNode::makeNode(Editor* editor, Graph* parent, int id, const std::string& name)
 		{
 			Node* node = new Node(editor, parent, id, getName(), name, nullptr);
 

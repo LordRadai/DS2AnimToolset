@@ -10,7 +10,7 @@ namespace NodeEditor
 		std::vector<Transition*> m_transitions;
 
 	public:
-		StateMachine(NodeEditor* editor, Graph* parent, const std::string& name);
+		StateMachine(Editor* editor, Graph* parent, const std::string& name, int graphNodeID);
 		~StateMachine() override;
 
 		virtual void draw() override;

@@ -3,7 +3,7 @@
 
 namespace NodeEditor
 {
-	ControlParametersNode::ControlParametersNode(NodeEditor* editor, const std::string& name)
+	ControlParametersNode::ControlParametersNode(Editor* editor, const std::string& name)
 		: Node(editor, nullptr, -1, "", name, nullptr)
 	{
 	}
@@ -37,5 +37,21 @@ namespace NodeEditor
         ImNodes::PopColorStyle();
         ImNodes::PopColorStyle();
         ImNodes::PopColorStyle();
+	}
+
+    void ControlParametersNode::reset()
+    {
+        for (size_t i = 0; i < m_attributes.size(); i++)
+			delete m_attributes[i];
+
+        for (size_t i = 0; i < m_inputPins.size(); i++)
+            delete m_inputPins[i];
+
+        for (size_t i = 0; i < m_outputPins.size(); i++)
+            delete m_outputPins[i];
+
+		m_attributes.clear();
+        m_inputPins.clear();
+		m_outputPins.clear();
 	}
 }

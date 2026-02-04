@@ -3,18 +3,18 @@
 
 namespace NodeEditor
 {
-	class Request
+	class Message
 	{
-		int m_requestID;
+		int m_messageID;
 		std::string m_name;
 		std::string m_type;
 
 	public:
-		Request(int requestID, const std::string& name, const std::string& typeName) : m_requestID(requestID), m_name(name), m_type(typeName) {}
+		Message(int requestID, const std::string& name, const std::string& typeName) : m_messageID(requestID), m_name(name), m_type(typeName) {}
 
-		virtual ~Request() {}
+		virtual ~Message() {}
 
-		int getRequestID() const { return m_requestID; }
+		int getRequestID() const { return m_messageID; }
 		const std::string& getName() const { return m_name; }
 		const std::string& getType() const { return m_type; }
 	};

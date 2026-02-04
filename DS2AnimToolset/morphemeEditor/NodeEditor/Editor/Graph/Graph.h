@@ -14,12 +14,15 @@ namespace NodeEditor
 		ImNodesContext* m_context;
 		std::vector<Node*> m_nodes;
 		ImVec2 m_panning;
+		int m_graphNodeID;
 	public:
-		Graph(NodeEditor* editor, Graph* parent, const std::string& name);
+		Graph(Editor* editor, Graph* parent, const std::string& name, int graphNodeID);
 		~Graph();
 
 		virtual void draw() override;
 		virtual const std::string getFullName() const override;
+
+		int getGraphNodeID() const { return m_graphNodeID; }
 
 		Graph* getParentGraph() const { return m_parentGraph; }
 		bool isRootGraph() const { return m_parentGraph == nullptr; }
@@ -27,8 +30,10 @@ namespace NodeEditor
 		ImVec2 getPanning() const { return m_panning; }
 		void setPanning(float x, float y);
 
+		Node* getNodeAt(size_t index) const;
 		Node* getNode(int nodeID) const;
 		Node* getNode(const std::string& name) const;
+		size_t getNumNodes() const { return m_nodes.size(); }
 
 		Node* createStateMachine(int nodeID, const std::string& name = "");
 		Node* createStateMachine(int nodeID, const std::string& name, float x, float y);
@@ -37,8 +42,6 @@ namespace NodeEditor
 
 		void removeNode(Node* node);
 
-		const int getID() const { return m_id; }
-		const std::string& getName() const { return m_name; }
 		const std::vector<Node*>& getNodes() const { return m_nodes; }
 
 		void navigatorGui();

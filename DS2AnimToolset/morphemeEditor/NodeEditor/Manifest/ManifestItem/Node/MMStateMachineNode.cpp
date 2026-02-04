@@ -4,7 +4,7 @@ namespace NodeEditor
 {
 	namespace Manifest
 	{
-		StateNode* MMStateMachineNode::makeNode(NodeEditor* editor, Graph* parent, int id, const std::string& name)
+		StateNode* MMStateMachineNode::makeNode(Editor* editor, Graph* parent, int id, const std::string& name)
 		{
 			StateNode* node = new StateNode(editor, parent, id, name, nullptr);
 

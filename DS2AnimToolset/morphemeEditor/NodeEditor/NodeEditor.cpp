@@ -16,16 +16,16 @@ namespace NodeEditor
     {
     }
 
-	NodeEditor::NodeEditor(int flags) : m_flags(flags), m_showStyleEditor(false), m_registry(nullptr), m_controlParametersNode(nullptr), m_manifest(nullptr), m_rootGraph(nullptr)
+	Editor::Editor(int flags) : m_flags(flags), m_showStyleEditor(false), m_registry(nullptr), m_controlParametersNode(nullptr), m_manifest(nullptr), m_rootGraph(nullptr)
 	{
 	}
 
-	NodeEditor::~NodeEditor()
+	Editor::~Editor()
 	{
 		shutdown();
 	}
 
-	bool NodeEditor::initialise()
+	bool Editor::initialise()
 	{
 		g_appLog->debugMessage(MsgLevel_Info, "Initialising Node Editor\n");
 
@@ -46,7 +46,7 @@ namespace NodeEditor
 		return true;
 	}
 
-	void NodeEditor::shutdown()
+	void Editor::shutdown()
 	{
         for (size_t i = 0; i < m_controlParameters.size(); i++)
             delete m_controlParameters[i];
@@ -62,21 +62,67 @@ namespace NodeEditor
 		ImNodes::DestroyContext();
 	}
 
-	void NodeEditor::update(float dt)
+	void Editor::update(float dt)
 	{
+	}
+
+    void Editor::reset()
+    {
+        for (size_t i = 0; i < m_controlParameters.size(); i++)
+			delete m_controlParameters[i];
+
+        for (size_t i = 0; i < m_messages.size(); i++)
+			delete m_messages[i];
+
+		m_controlParameters.clear();
+		m_messages.clear();
+
+        while (!m_graphStack.empty())
+        {
+			Graph* graph = m_graphStack.top();
+			delete graph;
+
+            m_graphStack.pop();
+        }
+
+		m_controlParametersNode->reset();
+	}
+
+	void Editor::draw()
+	{
+		ImGui::Begin("Node Editor");
+
         Graph* currentGraph = getCurrentGraph();
 
         if (currentGraph)
         {
+            handleUserInput();
+
+            if (ImGui::Button(ICON_FA_ARROW_UP))
+                popGraph();
+
+            ImGui::SameLine();
+
+		    ImGui::Label(currentGraph->getFullName().c_str());
+
+		    ImNodes::BeginNodeEditor();
+
+            currentGraph->draw();
+
+            if (currentGraph->isOfType<BlendTree>())
+				m_controlParametersNode->draw();
+
+            ImNodes::EndNodeEditor();
+
             if (currentGraph->isOfType<BlendTree>())
             {
                 Node* cpNode = m_controlParametersNode;
                 ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(cpNode->getID());
                 cpNode->setPosition(cpNodePos.x, cpNodePos.y);
 
-				Node* outputNode = currentGraph->asType<BlendTree>()->getOutputNode();
+                Node* outputNode = currentGraph->asType<BlendTree>()->getOutputNode();
                 ImVec2 outputNodePos = ImNodes::GetNodeGridSpacePos(outputNode->getID());
-				outputNode->setPosition(outputNodePos.x, outputNodePos.y);
+                outputNode->setPosition(outputNodePos.x, outputNodePos.y);
             }
 
             for (Node* node : currentGraph->getNodes())
@@ -85,53 +131,11 @@ namespace NodeEditor
                 node->setPosition(nodePos.x, nodePos.y);
             }
         }
-	}
-
-    void NodeEditor::reset()
-    {
-        for (size_t i = 0; i < m_controlParameters.size(); i++)
-			delete m_controlParameters[i];
-
-		m_controlParameters.clear();
-
-        while (!m_graphStack.empty())
-            m_graphStack.pop();
-
-		delete m_controlParametersNode;
-		m_controlParametersNode = new ControlParametersNode(this, "ControlParameters");
-	}
-
-	void NodeEditor::draw()
-	{
-		ImGui::Begin("Node Editor");
-		
-		handleUserInput();
-
-		if (ImGui::Button(ICON_FA_ARROW_UP))
-			popGraph();
-
-		ImGui::SameLine();
-
-        Graph* currentGraph = getCurrentGraph();
-
-		ImGui::Label(currentGraph->getFullName().c_str());
-
-		ImNodes::BeginNodeEditor();
-
-        if (currentGraph)
-        {
-            currentGraph->draw();
-
-            if (currentGraph->isOfType<BlendTree>())
-				m_controlParametersNode->draw();
-        }
-
-		ImNodes::EndNodeEditor();
 
 		ImGui::End();
 	}
 
-    void NodeEditor::handleUserInput()
+    void Editor::handleUserInput()
     {
         if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_DockHierarchy))
             return;
@@ -151,7 +155,7 @@ namespace NodeEditor
         }
     }
 
-    void NodeEditor::infoGui()
+    void Editor::infoGui()
     {
         Node* selectedNode = getSelectedNode();
 
@@ -197,7 +201,7 @@ namespace NodeEditor
                 ImGui::TableSetupColumn("Type");
                 ImGui::TableHeadersRow();
 
-                for (Request* request : m_requests)
+                for (Message* request : m_messages)
                 {
                     ImGui::TableNextRow();
                     ImGui::TableNextColumn();
@@ -216,7 +220,7 @@ namespace NodeEditor
         }
     }
 
-    void NodeEditor::navigatorGui()
+    void Editor::navigatorGui()
     {
 		Graph* rootGraph = getRootGraph();
 
@@ -224,7 +228,7 @@ namespace NodeEditor
             rootGraph->navigatorGui();
 	}
 
-	ControlParameter* NodeEditor::createControlParameter(int id, const std::string& name, ControlParameter::ParameterType parameterType)
+	ControlParameter* Editor::createControlParameter(int id, const std::string& name, ControlParameter::ParameterType parameterType)
     {
         if (hasControlParameter(name))
         {
@@ -238,48 +242,59 @@ namespace NodeEditor
         return parameter;
 	}
 
-    void NodeEditor::addControlParameter(ControlParameter* parameter)
+    void Editor::addControlParameter(ControlParameter* parameter)
     {
         m_controlParameters.push_back(parameter);
         m_controlParametersNode->addOutputPin(parameter->getOutputPin());
     }
 
-    ControlParameter* NodeEditor::createControlParameterFloat(int id, const std::string& name)
+    ControlParameter* Editor::createControlParameterFloat(int id, const std::string& name)
     {
         return createControlParameter(id, name, ControlParameter::kParameterTypeFloat);
     }
 
-    ControlParameter* NodeEditor::createControlParameterInt(int id, const std::string& name)
+    ControlParameter* Editor::createControlParameterInt(int id, const std::string& name)
     {
         return createControlParameter(id, name, ControlParameter::kParameterTypeInt);
 	}
 
-    ControlParameter* NodeEditor::createControlParameterUInt(int id, const std::string& name)
+    ControlParameter* Editor::createControlParameterUInt(int id, const std::string& name)
     {
         return createControlParameter(id, name, ControlParameter::kParameterTypeUInt);
     }
 
-    ControlParameter* NodeEditor::createControlParameterBool(int id, const std::string& name)
+    ControlParameter* Editor::createControlParameterBool(int id, const std::string& name)
     {
         return createControlParameter(id, name, ControlParameter::kParameterTypeBool);
 	}
 
-    ControlParameter* NodeEditor::createControlParameterVector3(int id, const std::string& name)
+    ControlParameter* Editor::createControlParameterVector3(int id, const std::string& name)
     {
         return createControlParameter(id, name, ControlParameter::kParameterTypeVector3);
     }
 
-    ControlParameter* NodeEditor::createControlParameterVector4(int id, const std::string& name)
+    ControlParameter* Editor::createControlParameterVector4(int id, const std::string& name)
     {
         return createControlParameter(id, name, ControlParameter::kParameterTypeVector4);
     }
 
-    ControlParameter* NodeEditor::createControlParameterQuaternion(int id, const std::string& name)
+    ControlParameter* Editor::createControlParameterQuaternion(int id, const std::string& name)
     {
         return createControlParameter(id, name, ControlParameter::kParameterTypeQuaternion);
     }
 
-    ControlParameter* NodeEditor::getControlParameter(const std::string& name) const
+    ControlParameter* Editor::getControlParameter(int id) const
+    {
+        for (ControlParameter* parameter : m_controlParameters)
+        {
+            if (parameter->getControlParameterID() == id)
+                return parameter;
+        }
+
+        return nullptr;
+    }
+
+    ControlParameter* Editor::getControlParameter(const std::string& name) const
     {
         for (ControlParameter* parameter : m_controlParameters)
         {
@@ -290,7 +305,7 @@ namespace NodeEditor
         return nullptr;
 	}
 
-    bool NodeEditor::removeControlParameter(ControlParameter* parameter)
+    bool Editor::removeControlParameter(ControlParameter* parameter)
     {
         auto it = std::find(m_controlParameters.begin(), m_controlParameters.end(), parameter);
         if (it != m_controlParameters.end())
@@ -303,7 +318,7 @@ namespace NodeEditor
         return false;
 	}
 
-    bool NodeEditor::hasControlParameter(const std::string& name) const
+    bool Editor::hasControlParameter(const std::string& name) const
     {
         for (ControlParameter* parameter : m_controlParameters)
         {
@@ -314,7 +329,21 @@ namespace NodeEditor
         return false;
 	}
 
-    Request* NodeEditor::createRequest(int id, const std::string& name)
+    Message* Editor::createMessage(int id, const std::string& name, const std::string& type)
+    {
+        if (hasRequest(id) || hasRequest(name))
+        {
+            g_appLog->debugMessage(MsgLevel_Warn, "NodeEditorBase::createMessage: Message with ID '%d' or name '%s' already exists.\n", id, name.c_str());
+            return nullptr;
+        }
+
+        Message* message = new Message(id, name, type);
+        addMessage(message);
+
+        return message;
+	}
+
+    Message* Editor::createRequest(int id, const std::string& name)
     {
         if (hasRequest(id) || hasRequest(name))
         {
@@ -322,15 +351,12 @@ namespace NodeEditor
             return nullptr;
         }
 
-        Request* request = new Request(id, name, "Request");
-        m_requests.push_back(request);
-
-        return request;
+        return createMessage(id, name, "Request");
     }
 
-    Request* NodeEditor::getRequest(int id)
+    Message* Editor::getRequest(int id)
     {
-        for (Request* request : m_requests)
+        for (Message* request : m_messages)
         {
             if (request->getRequestID() == id)
                 return request;
@@ -339,9 +365,9 @@ namespace NodeEditor
         return nullptr;
     }
 
-    Request* NodeEditor::getRequest(const std::string& name) const
+    Message* Editor::getRequest(const std::string& name) const
     {
-        for (Request* request : m_requests)
+        for (Message* request : m_messages)
         {
             if (request->getName() == name)
                 return request;
@@ -349,12 +375,12 @@ namespace NodeEditor
         return nullptr;
 	}
 
-    bool NodeEditor::removeRequest(Request* request)
+    bool Editor::removeRequest(Message* request)
     {
-        auto it = std::find(m_requests.begin(), m_requests.end(), request);
-        if (it != m_requests.end())
+        auto it = std::find(m_messages.begin(), m_messages.end(), request);
+        if (it != m_messages.end())
         {
-            m_requests.erase(it);
+            m_messages.erase(it);
             delete request;
             return true;
         }
@@ -362,9 +388,9 @@ namespace NodeEditor
         return false;
     }
 
-    bool NodeEditor::hasRequest(int id) const
+    bool Editor::hasRequest(int id) const
     {
-        for (Request* request : m_requests)
+        for (Message* request : m_messages)
         {
             if (request->getRequestID() == id)
                 return true;
@@ -373,9 +399,9 @@ namespace NodeEditor
         return false;
 	}
 
-    bool NodeEditor::hasRequest(const std::string& name) const
+    bool Editor::hasRequest(const std::string& name) const
     {
-        for (Request* request : m_requests)
+        for (Message* request : m_messages)
         {
             if (request->getName() == name)
                 return true;
@@ -384,7 +410,7 @@ namespace NodeEditor
         return false;
     }
 
-    void NodeEditor::getAllNodes(std::vector<Node*>& outNodes) const
+    void Editor::getAllNodes(std::vector<Node*>& outNodes) const
     {
         for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)
         {
@@ -398,7 +424,7 @@ namespace NodeEditor
 		}
     }
 
-    void NodeEditor::getAllGraphs(std::vector<Graph*>& outGraphs) const
+    void Editor::getAllGraphs(std::vector<Graph*>& outGraphs) const
     {
         for (size_t i = 0; i < m_registry->getNumRegisteredGraphs(); i++)
         {
@@ -407,7 +433,7 @@ namespace NodeEditor
         }
     }
 
-    void NodeEditor::getAllPins(std::vector<Pin*>& outPins) const
+    void Editor::getAllPins(std::vector<Pin*>& outPins) const
     {
         for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)
         {
@@ -421,7 +447,7 @@ namespace NodeEditor
         }
 	}
 
-    void NodeEditor::getAllAttributes(std::vector<Attribute*>& outAttributes) const
+    void Editor::getAllAttributes(std::vector<Attribute*>& outAttributes) const
     {
         for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)
         {
@@ -434,7 +460,7 @@ namespace NodeEditor
         }
     }
 
-    void NodeEditor::getAllTransitions(std::vector<Transition*>& outTransitions) const
+    void Editor::getAllTransitions(std::vector<Transition*>& outTransitions) const
     {
         for (size_t i = 0; i < m_registry->getNumRegisteredEntities(); i++)
         {
@@ -447,7 +473,7 @@ namespace NodeEditor
         }
     }
 
-    Node* NodeEditor::getNode(int nodeID) const
+    Node* Editor::getNode(int nodeID) const
     {
 		std::vector<Node*> allNodes;
 		getAllNodes(allNodes);
@@ -461,7 +487,7 @@ namespace NodeEditor
         return nullptr;
 	}
 
-    Node* NodeEditor::getNode(const std::string& name) const
+    Node* Editor::getNode(const std::string& name) const
 	{
 		std::vector<Node*> allNodes;
 		getAllNodes(allNodes);
@@ -475,7 +501,7 @@ namespace NodeEditor
 		return nullptr;
 	}
 
-    Node* NodeEditor::findNodeByPath(const std::string& path) const
+    Node* Editor::findNodeByPath(const std::string& path) const
     {
         std::vector<Node*> allNodes;
         getAllNodes(allNodes);
@@ -489,7 +515,7 @@ namespace NodeEditor
         return nullptr;
     }
 
-    Graph* NodeEditor::getGraph(int graphID) const
+    Graph* Editor::getGraph(int graphID) const
     {
         for (size_t i = 0; i < m_registry->getNumRegisteredGraphs(); i++)
         {
@@ -501,7 +527,7 @@ namespace NodeEditor
         return nullptr;
     }
 
-    Graph* NodeEditor::getGraph(const std::string& name) const
+    Graph* Editor::getGraph(const std::string& name) const
     {
         for (size_t i = 0; i < m_registry->getNumRegisteredGraphs(); i++)
         {
@@ -513,7 +539,7 @@ namespace NodeEditor
         return nullptr;
 	}
 
-    Graph* NodeEditor::findGraphByPath(const std::string& path) const
+    Graph* Editor::findGraphByPath(const std::string& path) const
     {
         for (size_t i = 0; i < m_registry->getNumRegisteredGraphs(); i++)
         {
@@ -525,7 +551,7 @@ namespace NodeEditor
         return nullptr;
     }
 
-    Attribute* NodeEditor::findAttributeByPath(const std::string& path) const
+    Attribute* Editor::findAttributeByPath(const std::string& path) const
     {
 		std::vector<Attribute*> allAttributes;
 		getAllAttributes(allAttributes);
@@ -539,7 +565,7 @@ namespace NodeEditor
         return nullptr;
 	}
 
-    Pin* NodeEditor::findPinByPath(const std::string& path) const
+    Pin* Editor::findPinByPath(const std::string& path) const
     {
 		std::vector<Pin*> allPins;
 		getAllPins(allPins);
@@ -553,7 +579,7 @@ namespace NodeEditor
         return nullptr;
     }
 
-    Transition* NodeEditor::findTransitionByPath(const std::string& path) const
+    Transition* Editor::findTransitionByPath(const std::string& path) const
 	{
 		std::vector<Transition*> allTransitions;
         getAllTransitions(allTransitions);
@@ -567,7 +593,7 @@ namespace NodeEditor
 		return nullptr;
 	}
 
-    Transition* NodeEditor::getTransitionBetweenNodes(Node* sourceNode, Node* destinationNode) const
+    Transition* Editor::getTransitionBetweenNodes(Node* sourceNode, Node* destinationNode) const
     {
 		std::vector<Transition*> allTransitions;
 		getAllTransitions(allTransitions);
@@ -582,7 +608,7 @@ namespace NodeEditor
         return nullptr;
 	}
 
-    Node* NodeEditor::getSelectedNode() const
+    Node* Editor::getSelectedNode() const
     {
 		int selectedNodeID = -1;
 
@@ -594,7 +620,7 @@ namespace NodeEditor
         return dynamic_cast<Node*>(m_registry->findEntity(selectedNodeID));
     }
 
-    Transition* NodeEditor::getSelectedTransition() const
+    Transition* Editor::getSelectedTransition() const
     {
         int selectedNodeID = -1;
 
@@ -606,38 +632,38 @@ namespace NodeEditor
         return dynamic_cast<Transition*>(m_registry->findEntity(selectedNodeID));
     }
 
-    void NodeEditor::clearSelection()
+    void Editor::clearSelection()
     {
         ImNodes::ClearLinkSelection();
         ImNodes::ClearNodeSelection();
 		ImNodes::ClearTransitionSelection();
     }
 
-    BlendTree* NodeEditor::createRootBlendTree()
+    BlendTree* Editor::createRootBlendTree(int rootNodeID)
     {
         if (m_rootGraph)
             return nullptr;
 
-		BlendTree* blendTree = new BlendTree(this, nullptr, "");
+		BlendTree* blendTree = new BlendTree(this, nullptr, "", rootNodeID);
 
         pushGraph(blendTree);
 
 		return blendTree;
 	}
 
-    StateMachine* NodeEditor::createRootStateMachine()
+    StateMachine* Editor::createRootStateMachine(int rootNodeID)
     {
         if (m_rootGraph)
             return nullptr;
 
-        StateMachine* stateMachine = new StateMachine(this, nullptr, "");
+        StateMachine* stateMachine = new StateMachine(this, nullptr, "", rootNodeID);
 
 		pushGraph(stateMachine);
 
         return stateMachine;
 	}
 
-	void NodeEditor::pushGraph(Graph* graph)
+	void Editor::pushGraph(Graph* graph)
     {
         if (m_graphStack.empty())
 			m_rootGraph = graph;
@@ -647,7 +673,7 @@ namespace NodeEditor
 		clearSelection();
 	}
 
-	void NodeEditor::popGraph()
+	void Editor::popGraph()
 	{
         if (m_graphStack.size() > 1)
             m_graphStack.pop();
@@ -655,7 +681,7 @@ namespace NodeEditor
 		clearSelection();
 	}
 
-    void NodeEditor::initStyle()
+    void Editor::initStyle()
     {
         ImNodes::StyleColorsDark();
 
@@ -737,7 +763,7 @@ namespace NodeEditor
 		m_styleSettings.Colors[NodeEditorStyleCol_QuaternionDataPin] = IM_COL32(240, 240, 142, 255);
 	}
 
-    bool NodeEditor::isNodeIDAvailable(int nodeID) const
+    bool Editor::isNodeIDAvailable(int nodeID) const
     {
         for (size_t i = 0; i < m_controlParameters.size(); i++)
         {
@@ -748,7 +774,7 @@ namespace NodeEditor
         return (getNode(nodeID) == nullptr);
 	}
 
-    void NodeEditor::styleEditor()
+    void Editor::styleEditor()
     {
         ImNodesStyle& style = ImNodes::GetStyle();
 		StyleSettings& customStyle = m_styleSettings;

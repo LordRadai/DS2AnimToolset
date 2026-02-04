@@ -4,7 +4,7 @@
 
 namespace NodeEditor
 {
-	Entity::Entity(NodeEditor* editor, const std::string& name) : m_name(name), m_ownerEditor(editor)
+	Entity::Entity(Editor* editor, const std::string& name) : m_name(name), m_ownerEditor(editor)
 	{
 		Registry* registry = editor->getRegistry();
 

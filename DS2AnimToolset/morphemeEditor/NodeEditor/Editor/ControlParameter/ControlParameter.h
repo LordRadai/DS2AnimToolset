@@ -24,7 +24,7 @@ namespace NodeEditor
 		DataPin* m_output;
 		ParameterType m_parameterType;
 	public:
-		ControlParameter(NodeEditor* editor, int id, const std::string& name, ParameterType parameterType);
+		ControlParameter(Editor* editor, int id, const std::string& name, ParameterType parameterType);
 
 		virtual ~ControlParameter() override {}
 		virtual void draw() override {}

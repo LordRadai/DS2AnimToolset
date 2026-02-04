@@ -224,6 +224,9 @@
     <ClInclude Include="imgui_custom\imgui_custom_widget.h" />
     <ClInclude Include="morphemeEditor.h" />
     <ClInclude Include="MorphemeEditorApp\MorphemeEditorApp.h" />
+    <ClInclude Include="MorphemeNetworkInspector\MessageProcessor\MessageProcessor.h" />
+    <ClInclude Include="MorphemeNetworkInspector\MorphemeNetworkInspector.h" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.h" />
     <ClInclude Include="MorphemeSystem\AnimLoader\AnimLoader.h" />
     <ClInclude Include="MorphemeSystem\AssetLoader\AssetLoader.h" />
     <ClInclude Include="MorphemeSystem\CharacterController\CharacterController.h" />
@@ -352,6 +355,9 @@
     <ClCompile Include="imgui_custom\imgui_custom_widget.cpp" />
     <ClCompile Include="morphemeEditor.cpp" />
     <ClCompile Include="MorphemeEditorApp\MorphemeEditorApp.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\MessageProcessor\MessageProcessor.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\MorphemeNetworkInspector.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.cpp" />
     <ClCompile Include="MorphemeSystem\AnimLoader\AnimLoader.cpp" />
     <ClCompile Include="MorphemeSystem\AssetLoader\AssetLoader.cpp" />
     <ClCompile Include="MorphemeSystem\CharacterController\CharacterController.cpp" />

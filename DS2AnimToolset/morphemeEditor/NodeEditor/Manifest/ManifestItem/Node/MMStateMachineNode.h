@@ -14,7 +14,7 @@ namespace NodeEditor
 
 			virtual ~MMStateMachineNode() override = default;
 
-			StateNode* makeNode(NodeEditor* editor, Graph* parent, int id, const std::string& name);
+			StateNode* makeNode(Editor* editor, Graph* parent, int id, const std::string& name);
 		};
 	}
 }

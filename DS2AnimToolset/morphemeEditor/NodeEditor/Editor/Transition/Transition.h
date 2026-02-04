@@ -13,7 +13,7 @@ namespace NodeEditor
 		std::vector<Condition*> m_conditions;
 
 	public:
-		Transition(NodeEditor* editor, Graph* parent, int nodeID, const std::string& typeName, Node* sourceNode, Node* destinationNode);
+		Transition(Editor* editor, Graph* parent, int nodeID, const std::string& typeName, Node* sourceNode, Node* destinationNode);
 		virtual ~Transition() override {}
 
 		virtual void draw() override;

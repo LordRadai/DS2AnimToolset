@@ -5,7 +5,7 @@
 
 namespace NodeEditor
 {
-	ControlParameter::ControlParameter(NodeEditor* editor, int id, const std::string& name, ParameterType parameterType)
+	ControlParameter::ControlParameter(Editor* editor, int id, const std::string& name, ParameterType parameterType)
 		: Entity(editor, name), m_controlParameterID(id), m_parameterType(parameterType)
 	{
 		DataPin::DataType dataType;

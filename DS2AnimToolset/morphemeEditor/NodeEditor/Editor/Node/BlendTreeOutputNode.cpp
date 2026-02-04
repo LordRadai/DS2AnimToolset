@@ -3,7 +3,7 @@
 
 namespace NodeEditor
 {
-	BlendTreeOutputNode::BlendTreeOutputNode(NodeEditor* editor, Graph* parent)
+	BlendTreeOutputNode::BlendTreeOutputNode(Editor* editor, Graph* parent)
 		: Node(editor, parent, -1, "", "Output", nullptr)
 	{
 		createInputPin("Output");

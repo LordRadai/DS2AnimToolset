@@ -10,7 +10,7 @@ namespace NodeEditor
 		Pin* m_inputPin;
 		Pin* m_outputPin;
 	public:
-		Link(NodeEditor* editor, Pin* inputPin, Pin* outputPin);
+		Link(Editor* editor, Pin* inputPin, Pin* outputPin);
 		virtual ~Link() override {}
 
 		virtual void draw() override;

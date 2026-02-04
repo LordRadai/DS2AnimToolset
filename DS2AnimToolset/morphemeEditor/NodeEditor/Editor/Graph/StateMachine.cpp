@@ -4,7 +4,7 @@
 
 namespace NodeEditor
 {
-	StateMachine::StateMachine(NodeEditor* editor, Graph* parent, const std::string& name) : Graph(editor, parent, name)
+	StateMachine::StateMachine(Editor* editor, Graph* parent, const std::string& name, int graphNodeID) : Graph(editor, parent, name, graphNodeID)
 	{
 	}
 

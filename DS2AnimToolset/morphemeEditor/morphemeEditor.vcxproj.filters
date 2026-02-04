@@ -450,6 +450,15 @@
     <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\EnumAttribute.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\MorphemeNetworkInspector.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\MessageProcessor\MessageProcessor.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -807,6 +816,15 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\EnumAttribute.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeNetworkInspector\MorphemeNetworkInspector.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeNetworkInspector\MessageProcessor\MessageProcessor.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

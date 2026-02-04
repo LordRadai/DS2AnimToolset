@@ -6,7 +6,7 @@ namespace NodeEditor
 	class BlendTreeOutputNode : public Node
 	{
 	public:
-		BlendTreeOutputNode(NodeEditor* editor, Graph* parent);
+		BlendTreeOutputNode(Editor* editor, Graph* parent);
 
 		virtual ~BlendTreeOutputNode() override {}
 		virtual void draw() override;

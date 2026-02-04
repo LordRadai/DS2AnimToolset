@@ -6,7 +6,7 @@ namespace NodeEditor
 {
 	bool SampleNodeEditor::initialise()
 	{
-		bool bInit = NodeEditor::initialise();
+		bool bInit = Editor::initialise();
 
 		if (!bInit)
 			return false;

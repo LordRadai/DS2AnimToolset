@@ -41,7 +41,7 @@ namespace NodeEditor
 			MMFunctionalPin* findFunctionalPin(const std::string& name);
 			uint32_t getNumFunctionalPins() const { return static_cast<uint32_t>(m_functionalPins.size()); }
 
-			Node* makeNode(NodeEditor* editor, Graph* parent, int id, const std::string& name);
+			Node* makeNode(Editor* editor, Graph* parent, int id, const std::string& name);
 		};
 	}
 }

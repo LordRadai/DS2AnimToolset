@@ -13,7 +13,7 @@
 
 namespace NodeEditor
 {
-	Node::Node(NodeEditor* editor, Graph* parent, int id, const std::string typeName, const std::string& name, Graph* subGraph) : Entity(editor, name),
+	Node::Node(Editor* editor, Graph* parent, int id, const std::string typeName, const std::string& name, Graph* subGraph) : Entity(editor, name),
 		m_parentGraph(parent), m_nodeID(id), m_typeName(typeName), m_subGraph(subGraph), m_position(ImVec2(0.f, 0.f))
 	{
 	}
@@ -57,8 +57,14 @@ namespace NodeEditor
 		for (Pin* inputPin : m_inputPins)
 			inputPin->draw();
 
+		for (DataPin* inputDataPin : m_inputDataPins)
+			inputDataPin->draw();
+
 		for (Pin* outputPin : m_outputPins)
 			outputPin->draw();
+
+		for (DataPin* outputDataPin : m_outputDataPins)
+			outputDataPin->draw();
 
 		// ---- Node position ----
 		ImNodes::SetNodeGridSpacePos(m_id, m_position);
@@ -111,7 +117,7 @@ namespace NodeEditor
 	DataPin* Node::createInputDataPin(const std::string& name, DataPin::DataType dataType)
 	{
 		DataPin* pin = new DataPin(m_ownerEditor, this, name, true, dataType);
-		m_inputPins.push_back(pin);
+		m_inputDataPins.push_back(pin);
 
 		return pin;
 	}
@@ -119,7 +125,7 @@ namespace NodeEditor
 	DataPin* Node::createOutputDataPin(const std::string& name, DataPin::DataType dataType)
 	{
 		DataPin* pin = new DataPin(m_ownerEditor, this, name, false, dataType);
-		m_outputPins.push_back(pin);
+		m_outputDataPins.push_back(pin);
 
 		return pin;
 	}
@@ -159,6 +165,25 @@ namespace NodeEditor
 		return nullptr;
 	}
 
+	DataPin* Node::getInputDataPin(size_t index) const
+	{
+		if (index < m_inputDataPins.size())
+			return m_inputDataPins[index];
+
+		return nullptr;
+	}
+
+	DataPin* Node::getInputDataPin(const std::string& name) const
+	{
+		for (DataPin* pin : m_inputDataPins)
+		{
+			if (pin->getName() == name)
+				return pin;
+		}
+
+		return nullptr;
+	}
+
 	Pin* Node::getOutputPin(size_t index) const
 	{
 		if (index < m_outputPins.size())
@@ -170,6 +195,25 @@ namespace NodeEditor
 	Pin* Node::getOutputPin(const std::string& name) const
 	{
 		for (Pin* pin : m_outputPins)
+		{
+			if (pin->getName() == name)
+				return pin;
+		}
+
+		return nullptr;
+	}
+
+	DataPin* Node::getOutputDataPin(size_t index) const
+	{
+		if (index < m_outputDataPins.size())
+			return m_outputDataPins[index];
+
+		return nullptr;
+	}
+
+	DataPin* Node::getOutputDataPin(const std::string& name) const
+	{
+		for (DataPin* pin : m_outputDataPins)
 		{
 			if (pin->getName() == name)
 				return pin;

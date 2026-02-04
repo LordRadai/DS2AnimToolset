@@ -7,6 +7,7 @@
 #include "MorphemeSystem/MorphemeDecompiler/Node/NodeUtils.h"
 #include "utils/utils.h"
 #include "GuiManager/GuiManager.h"
+#include "MorphemeNetworkInspector/MorphemeNetworkInspector.h"
 #include <thread>
 
 #ifndef _DEBUG
@@ -726,7 +727,7 @@ void MorphemeEditorApp::initialise()
 	this->m_timeActEditor = TrackEditor::TimeActEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds, g_taeTemplate);
 	this->m_eventTrackEditor = TrackEditor::EventTrackEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorRenameTrack | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds);
 
-	this->m_nodeEditor = new NodeEditor::SampleNodeEditor(NodeEditor::NodeEditorFlags_ReadOnly);
+	this->m_nodeEditor = new MorphemeNetworkInspector();
 
 	this->m_eventTrackEditor->registerListener(this->m_timeActEditor);
 	this->m_timeActEditor->registerListener(this->m_eventTrackEditor);
@@ -1150,6 +1151,9 @@ void MorphemeEditorApp::loadFile()
 						if (this->m_timeActEditor)
 							this->m_timeActEditor->reset();
 
+						if (this->m_nodeEditor)
+							this->m_nodeEditor->reset();
+
 						this->m_timeActFileList.clear();
 
 						this->m_gamePath = utils::findGamePath(filepath);
@@ -1169,6 +1173,11 @@ void MorphemeEditorApp::loadFile()
 
 						this->m_camera->setOffset(Vector3::Zero);
 						this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
+
+						MorphemeNetworkInspector* inspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
+
+						if (inspector)
+							inspector->loadNetwork(this->m_character->getCharacterMotionCtrl()->getNetworkDef());
 					}
 					pItem->Release();
 				}

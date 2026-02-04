@@ -10,7 +10,7 @@ namespace NodeEditor
 		std::vector<Link*> m_links;
 		ImVec2 m_controlParamsNodePos;
 	public:
-		BlendTree(NodeEditor* editor, Graph* parent, const std::string& name);
+		BlendTree(Editor* editor, Graph* parent, const std::string& name, int graphNodeID);
 		~BlendTree() override;
 
 		virtual void draw() override;

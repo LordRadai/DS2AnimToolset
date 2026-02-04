@@ -63,7 +63,7 @@ namespace NodeEditor
 		StyleSettings();
 	};
 
-	class NodeEditor
+	class Editor
 	{
 	protected:
 		int m_flags;
@@ -71,15 +71,15 @@ namespace NodeEditor
 		Graph* m_rootGraph;
 		std::stack<Graph*> m_graphStack;
 		std::vector<ControlParameter*> m_controlParameters;
-		std::vector<Request*> m_requests;
+		std::vector<Message*> m_messages;
 		ControlParametersNode* m_controlParametersNode;
 		Registry* m_registry;
 		Manifest::Manifest* m_manifest;
 		bool m_showStyleEditor;
 
 	public:
-		NodeEditor(int flags = 0);
-		virtual ~NodeEditor();
+		Editor(int flags = 0);
+		virtual ~Editor();
 
 		virtual bool initialise();
 		virtual void shutdown();
@@ -97,17 +97,20 @@ namespace NodeEditor
 		Registry* getRegistry() const { return m_registry; }
 		Manifest::Manifest* getManifest() const { return m_manifest; }
 
+		ControlParameter* getControlParameter(int id) const;
 		ControlParameter* getControlParameter(const std::string& name) const;
 		ControlParameter* getControlParameterAtIndex(size_t index) const { return m_controlParameters[index]; }
 		size_t getNumControlParameters() const { return m_controlParameters.size(); }
 		bool removeControlParameter(ControlParameter* parameter);
 		bool hasControlParameter(const std::string& name) const;
 
-		Request* createRequest(int id, const std::string& name);
-		Request* getRequest(int id);
-		Request* getRequest(const std::string& name) const;
-		size_t getNumRequests() const { return m_requests.size(); }
-		bool removeRequest(Request* request);
+		Message* createMessage(int id, const std::string& name, const std::string& type);
+		Message* createRequest(int id, const std::string& name);
+		Message* getRequest(int id);
+		Message* getRequest(const std::string& name) const;
+		size_t getNumRequests() const { return m_messages.size(); }
+		void addMessage(Message* request) { m_messages.push_back(request); }
+		bool removeRequest(Message* request);
 		bool hasRequest(int id) const;
 		bool hasRequest(const std::string& name) const;
 
@@ -147,10 +150,10 @@ namespace NodeEditor
 		ControlParameter* createControlParameterQuaternion(int id, const std::string& name);
 
 		Graph* getRootGraph() const { return m_rootGraph; }
-		Graph* getCurrentGraph() const { return m_graphStack.top(); }
+		Graph* getCurrentGraph() const { return m_graphStack.empty() ? nullptr : m_graphStack.top(); }
 
-		BlendTree* createRootBlendTree();
-		StateMachine* createRootStateMachine();
+		BlendTree* createRootBlendTree(int rootNodeID = 0);
+		StateMachine* createRootStateMachine(int rootNodeID = 0);
 
 		void pushGraph(Graph* graph);
 		void popGraph();

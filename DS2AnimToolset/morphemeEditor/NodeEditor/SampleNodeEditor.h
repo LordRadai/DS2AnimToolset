@@ -3,10 +3,10 @@
 
 namespace NodeEditor
 {
-	class SampleNodeEditor : public NodeEditor
+	class SampleNodeEditor : public Editor
 	{
 	public:
-		SampleNodeEditor(int flags = 0) : NodeEditor(flags) {}
+		SampleNodeEditor(int flags = 0) : Editor(flags) {}
 		~SampleNodeEditor() override {}
 		
 		virtual bool initialise() override;

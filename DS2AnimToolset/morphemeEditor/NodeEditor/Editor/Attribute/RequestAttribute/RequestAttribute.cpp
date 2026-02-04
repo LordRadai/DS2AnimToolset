@@ -33,9 +33,9 @@ namespace NodeEditor
 		if (values.size() != 1)
 			throw std::runtime_error("RequestAttribute::setValue: Invalid number of values provided.");
 		
-		if (values[0].type() != typeid(Request*))
+		if (values[0].type() != typeid(Message*))
 			throw std::runtime_error("RequestAttribute::setValue: Invalid value type provided.");
 
-		m_request = std::any_cast<Request*>(values[0]);
+		m_request = std::any_cast<Message*>(values[0]);
 	}
 }

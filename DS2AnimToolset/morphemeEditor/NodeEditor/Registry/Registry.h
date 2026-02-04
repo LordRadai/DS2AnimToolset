@@ -5,14 +5,14 @@ namespace NodeEditor
 {
 	class Entity;
 	class Graph;
-	class NodeEditor;
+	class Editor;
 
 	class Registry
 	{
-		NodeEditor* m_ownerEditor;
+		Editor* m_ownerEditor;
 
 	public:
-		Registry(NodeEditor* editor) : m_nextRuntimeID(0), m_nextGraphID(0), m_ownerEditor(editor) {}
+		Registry(Editor* editor) : m_nextRuntimeID(0), m_nextGraphID(0), m_ownerEditor(editor) {}
 		~Registry();
 
 		int generateUniqueRuntimeID() { return m_nextRuntimeID++; }

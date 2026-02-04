@@ -3,23 +3,23 @@
 
 namespace NodeEditor
 {
-	class NodeEditor;
+	class Editor;
 
 	class Entity
 	{
 	protected:
-		NodeEditor* m_ownerEditor = nullptr;
+		Editor* m_ownerEditor = nullptr;
 		int m_id;
 		std::string m_name;
 	public:
-		Entity(NodeEditor* editor, const std::string& name);
+		Entity(Editor* editor, const std::string& name);
 
 		virtual ~Entity();
 		virtual void draw() {}
 		virtual bool editorGUI() { return false; }
 		virtual const std::string getFullName() const { return m_name; }
 
-		NodeEditor* getOwnerEditor() const { return m_ownerEditor; }
+		Editor* getOwnerEditor() const { return m_ownerEditor; }
 		int getID() const { return m_id; }
 
 		const std::string& getName() const { return m_name; }

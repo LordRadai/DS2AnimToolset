@@ -6,7 +6,7 @@
 
 namespace NodeEditor
 {
-	Graph::Graph(NodeEditor* editor, Graph* parent, const std::string& name) : Entity(editor, name), m_parentGraph(parent), m_context(nullptr)
+	Graph::Graph(Editor* editor, Graph* parent, const std::string& name, int graphNodeID) : Entity(editor, name), m_parentGraph(parent), m_context(nullptr), m_graphNodeID(graphNodeID), m_panning(0.0f, 0.0f)
 	{
 		Registry* registry = m_ownerEditor->getRegistry();
 
@@ -24,6 +24,14 @@ namespace NodeEditor
 
 		registry->unregisterGraph(this);
 		ImNodes::DestroyContext(m_context);
+	}
+
+	Node* Graph::getNodeAt(size_t index) const
+	{
+		if (index >= m_nodes.size())
+			return nullptr;
+
+		return m_nodes[index];
 	}
 
 	Node* Graph::getNode(int nodeID) const
@@ -92,12 +100,13 @@ namespace NodeEditor
 
 		std::string nodeName = makeNameValid(nameToUse, "BlendTree");
 
-		Node* node = new Node(m_ownerEditor, this, nodeID, "BlendTree", nodeName, new BlendTree(m_ownerEditor, this, nodeName));
+		Node* node = new Node(m_ownerEditor, this, nodeID, "BlendTree", nodeName, new BlendTree(m_ownerEditor, this, nodeName, nodeID));
 		node->setPosition(x, y);
 
 		m_nodes.push_back(node);
 
-		node->createOutputPin("Result");
+		if (isOfType<BlendTree>())
+			node->createOutputPin("Result");
 
 		return node;
 	}
@@ -129,7 +138,7 @@ namespace NodeEditor
 
 		m_nodes.push_back(node);
 
-		node->setSubGraph(new StateMachine(m_ownerEditor, this, nodeName));
+		node->setSubGraph(new StateMachine(m_ownerEditor, this, nodeName, nodeID));
 
 		if (isOfType<BlendTree>())
 			node->createOutputPin("Result");
