@@ -23,6 +23,7 @@ namespace NodeEditor
 		virtual const std::string getFullName() const override;
 		virtual void updateNodePositions();
 		virtual void onGraphOpened();
+		virtual void onGraphClosed();
 
 		int getGraphNodeID() const { return m_graphNodeID; }
 

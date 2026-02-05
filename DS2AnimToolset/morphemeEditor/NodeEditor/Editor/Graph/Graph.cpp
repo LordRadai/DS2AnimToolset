@@ -223,6 +223,13 @@ namespace NodeEditor
 		ImNodes::EditorContextResetPanning(m_panning);
 	}
 
+	void Graph::onGraphClosed()
+	{
+		m_ownerEditor->clearSelection();
+
+		m_panning = ImNodes::EditorContextGetPanning();
+	}
+
 	void Graph::getFreePosition(float& x, float& y)
 	{
 		float maxX = 0.f;

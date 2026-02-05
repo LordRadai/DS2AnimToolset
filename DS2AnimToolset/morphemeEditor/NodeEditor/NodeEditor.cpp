@@ -674,6 +674,8 @@ namespace NodeEditor
         if (m_graphStack.empty())
 			m_rootGraph = graph;
 
+		getCurrentGraph()->onGraphClosed();
+
         m_graphStack.push(graph);
 
         graph->onGraphOpened();
@@ -681,6 +683,8 @@ namespace NodeEditor
 
 	void Editor::popGraph()
 	{
+		getCurrentGraph()->onGraphClosed();
+
         if (m_graphStack.size() > 1)
             m_graphStack.pop();
 
