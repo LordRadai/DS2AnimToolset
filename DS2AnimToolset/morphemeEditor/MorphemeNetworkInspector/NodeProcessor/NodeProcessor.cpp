@@ -1,34 +1,29 @@
 #include <queue>
 #include <unordered_map>
-#include <algorithm>
 #include <cmath>
 
 #include "NodeProcessor.h"
+
 #include "RLog/RLog.h"
 #include "extern.h"
-#include "morpheme/Nodes/mrNodeStateMachine.h"
 
 #include "morpheme/mrNetworkDef.h"
+#include "morpheme/Nodes/mrNodeStateMachine.h"
 
-namespace
-{
-	enum class Direction { East, North, West, South };
+#include "NodeNamingStrategy/DefaultNodeNamingStrategy.h"
+#include "NodeNamingStrategy/ReconstructParentChildNameStrategy.h"
 
-	inline float directionToAngle(Direction dir)
-	{
-		switch (dir)
-		{
-		case Direction::East:  return 0.0f;
-		case Direction::North: return -IM_PI * 0.5f;
-		case Direction::West:  return IM_PI;
-		case Direction::South: return IM_PI * 0.5f;
-		}
-		return 0.f;
-	}
-}
+#include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
 
 bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 {
+	if (isNetworkNodeNameMapComplete(netDef))
+		m_namingStrategy = new DefaultNodeNamingStrategy();
+	else
+		m_namingStrategy = new ReconstructParentChildNameStrategy();
+
+	m_blendTreeLayouterStrategy = new BTFanLayouterStrategy();
+
 	collectContainerNodes(netDef);
 	collectBlendTreeChildNodes(netDef);
 	collectNodeNames(netDef);
@@ -46,7 +41,7 @@ NodeEditor::ControlParameter* NodeProcessor::processControlParameter(NodeEditor:
 		return nullptr;
 	}
 
-	const std::string nodeName = getNodeNameFromFullPath(name);
+	const std::string nodeName = name;
 
 	switch (nodeDef->getNodeTypeID())
 	{
@@ -76,7 +71,7 @@ NodeEditor::Node* NodeProcessor::processNode(NodeEditor::Graph* graph, MR::NodeD
 	{
 		g_appLog->debugMessage(MsgLevel_Info, "NodeProcessor::processNode: Creating state machine node for node %d.\n", nodeDef->getNodeID());
 
-		return graph->createStateMachine(nodeDef->getNodeID(), getNodeNameFromFullPath(name));
+		return graph->createStateMachine(nodeDef->getNodeID(), name);
 	}
 
 	if (!graph->isOfType<NodeEditor::BlendTree>())
@@ -84,7 +79,7 @@ NodeEditor::Node* NodeProcessor::processNode(NodeEditor::Graph* graph, MR::NodeD
 			"Non-container node '%s' inside state machine container",
 			name.c_str());
 
-	NodeEditor::Node* node = graph->asType<NodeEditor::BlendTree>()->createNode(nodeDef->getNodeID(), nodeTypeAsManifestName(nodeDef->getNodeTypeID()), getNodeNameWithParentFromFullPath(name));
+	NodeEditor::Node* node = graph->asType<NodeEditor::BlendTree>()->createNode(nodeDef->getNodeID(), nodeTypeAsManifestName(nodeDef->getNodeTypeID()), name);
 
 	// Set node attributes
 	return node;
@@ -113,6 +108,7 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 	{
 		auto& childNodes = m_blendTreeNodeMap[ownerNodeDef->getNodeID()];
 
+		// Process all child nodes
 		for (MR::NodeDef* child : childNodes)
 		{
 			const std::string childName = getNodeName(child->getNodeID());
@@ -122,11 +118,12 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 				node->setName(getBlendTreeNodeName(child->getNodeID()));
 		}
 
-		processNodeConnectionsInBlendTree(graph->asType<NodeEditor::BlendTree>(), childNodes);
-		setBlendTreeLayout(graph->asType<NodeEditor::BlendTree>(), childNodes);
+		processNodeConnectionsInBlendTree(graph->asType<NodeEditor::BlendTree>(), ownerNodeDef, childNodes);
+		setBlendTreeLayout(graph->asType<NodeEditor::BlendTree>(), ownerNodeDef, childNodes);
 	}
 	else if (graph->isOfType<NodeEditor::StateMachine>())
 	{
+		// Process all child nodes
 		for (uint32_t i = 0; i < ownerNodeDef->getNumChildNodes(); ++i)
 		{
 			MR::NodeDef* child = ownerNodeDef->getChildNodeDef(i);
@@ -141,6 +138,7 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 				node->setName(getBlendTreeNodeName(child->getNodeID()));
 		}
 
+		// Set default state
 		MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(ownerNodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
 		graph->asType<NodeEditor::StateMachine>()->setDefaultNodeID(ownerNodeDef->getChildNodeID(stateMachineDef->m_defaultStartingStateID));
@@ -150,6 +148,10 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 			ownerNodeDef);
 
 		setStateMachineLayout(graph->asType<NodeEditor::StateMachine>(), ownerNodeDef);
+	}
+	else
+	{
+		g_appLog->panicMessage("NodeProcessor::populateGraph: Unsupported graph type for graph node ID %d.", graph->getGraphNodeID());
 	}
 }
 
@@ -173,12 +175,12 @@ void NodeProcessor::populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* own
 	}
 }
 
-void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, std::vector<MR::NodeDef*>& childNodes)
+void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, MR::NodeDef* ownerNodeDef, std::vector<MR::NodeDef*>& childNodes)
 {
 	if (childNodes.size() == 0)
 		g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Invalid blend tree '%s'. No children node are present.", blendTree->getName().c_str());
 
-	MR::NetworkDef* netDef = childNodes[0]->getOwningNetworkDef();
+	MR::NetworkDef* netDef = ownerNodeDef->getOwningNetworkDef();
 	for (MR::NodeDef* childNodeDef : childNodes)
 	{
 		NodeEditor::Node* sourceNode = blendTree->getNode(childNodeDef->getNodeID());
@@ -248,108 +250,16 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 	}
 }
 
-void NodeProcessor::setBlendTreeLayout(NodeEditor::BlendTree* blendTree, std::vector<MR::NodeDef*>& childNodes)
+bool NodeProcessor::setBlendTreeLayout(NodeEditor::BlendTree* blendTree, MR::NodeDef* btNodeDef, std::vector<MR::NodeDef*>& childNodes)
 {
-	if (childNodes.empty())
-		g_appLog->panicMessage("NodeProcessor::setBlendTreeLayout: Invalid blend tree '%s'. No children nodes are present.", blendTree->getName().c_str());
-
-	NodeEditor::Node* sourceNode = nullptr;
-	MR::NodeDef* sourceNodeDef = nullptr;
-
-	for (MR::NodeDef* nodeDef : childNodes)
+	if (!m_blendTreeLayouterStrategy)
 	{
-		if (nodeDef->getNodeID() == blendTree->getGraphNodeID())
-		{
-			sourceNode = blendTree->getNode(nodeDef->getNodeID());
-			sourceNodeDef = nodeDef;
-		}
+		g_appLog->alertMessage(MsgLevel_Warn, "NodeProcessor::setBlendTreeLayout: No blend tree layouter strategy set.");
+		return false;
 	}
 
-	if (!sourceNode)
-		g_appLog->panicMessage("NodeProcessor::setBlendTreeLayout: Failed to find source node '%s' in blend tree '%s'.",
-			getNodeName(childNodes[0]->getNodeID()).c_str(), blendTree->getName().c_str());
-
-	ImVec2 startingPos(500.f, 500.f);
-	const float xOffset = 300.f;
-	const float yOffset = 100.f;
-
-	// Recursive lambda
-	std::function<void(NodeEditor::Node*, MR::NodeDef*, float, float)> layoutNode;
-	layoutNode = [&](NodeEditor::Node* node, MR::NodeDef* nodeDef, float x, float y)
-		{
-			if (!node || !nodeDef)
-				return;
-
-			MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
-
-			float xPos = x - xOffset;
-			float yPos = y - yOffset;
-
-			for (uint32_t i = 0; i < nodeDef->getNumChildNodes(); ++i)
-			{
-				NodeEditor::Node* childNode = blendTree->getNode(nodeDef->getChildNodeID(i));
-				MR::NodeDef* childNodeDef = nodeDef->getChildNodeDef(i);
-
-				if (childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-					continue;
-
-				if (!childNode)
-				{
-					g_appLog->panicMessage(
-						"NodeProcessor::setBlendTreeLayout: Failed to find child node '%s' in blend tree '%s'.",
-						getNodeName(nodeDef->getChildNodeID(i)).c_str(), blendTree->getName().c_str());
-					continue;
-				}
-
-				float vOffset = yOffset * (childNodeDef->getNumChildNodes() + 1);
-
-				childNode->setPosition(xPos, yPos);
-
-				layoutNode(childNode, childNodeDef, xPos, yPos);
-
-				yPos += vOffset;
-			}
-
-			for (uint32_t i = 0; i < nodeDef->getNumInputCPConnections(); ++i)
-			{
-				NodeEditor::Node* inputNode = blendTree->getNode(nodeDef->getInputCPConnection(i)->m_sourceNodeID);
-				MR::NodeDef* inputNodeDef = netDef->getNodeDef(nodeDef->getInputCPConnection(i)->m_sourceNodeID);
-
-				if (inputNode)
-				{
-					float vOffset = yOffset * (inputNodeDef->getNumInputCPConnections() + 1);
-
-					inputNode->setPosition(xPos, yPos);
-
-					layoutNode(inputNode, inputNodeDef, xPos, yPos);
-
-					yPos += vOffset;
-				}
-			}
-		};
-
-	sourceNode->setPosition(startingPos.x, startingPos.y);
-
-	// Start recursion from source node
-	layoutNode(sourceNode, sourceNodeDef, startingPos.x, startingPos.y);
-
-	float minX = FLT_MAX;
-	float maxY = 0.f;
-	for (NodeEditor::Node* node : blendTree->getNodes())
-	{
-		ImVec2 pos = node->getPosition();
-		if (pos.x < minX)
-			minX = pos.x;
-		if (pos.y > maxY)
-			maxY = pos.y;
-	}
-
-	const float cpNodeOffsetX = 100.f;
-	const float cpNodeOffsetY = 200.f;
-
-	blendTree->setControlParamsNodePosition(minX - cpNodeOffsetX, maxY + cpNodeOffsetY);
+	return m_blendTreeLayouterStrategy->setLayout(blendTree, btNodeDef, childNodes);
 }
-
 
 void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef)
 {
@@ -381,118 +291,32 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 	}
 }
 
-void NodeProcessor::setStateMachineLayout(NodeEditor::StateMachine* stateMachine, MR::NodeDef* ownerNodeDef)
+bool NodeProcessor::setStateMachineLayout(NodeEditor::StateMachine* stateMachine, MR::NodeDef* smNodeDef)
 {
-	if (!stateMachine || !ownerNodeDef)
-		return;
-
-	NodeEditor::Editor* editor = stateMachine->getOwnerEditor();
-
-	// --- Step 0: Default node as center ---
-	NodeEditor::Node* defaultNode = stateMachine->getDefaultNode();
-	if (!defaultNode)
-		return;
-
-	ImVec2 centerPos(500.f, 500.f);
-	defaultNode->setPosition(centerPos.x, centerPos.y);
-
-	// --- Step 1: Build node map ---
-	struct NodeData
+	if (!m_stateMachineLayouterStrategy)
 	{
-		NodeEditor::Node* node = nullptr;
-		int ring = -1;           // BFS depth
-		NodeData* parent = nullptr;
-		Direction dir = Direction::North;
-	};
-
-	std::unordered_map<NodeEditor::Node*, NodeData> nodeMap;
-
-	for (NodeEditor::Node* node : stateMachine->getNodes())
-		nodeMap[node] = { node, -1, nullptr, Direction::North };
-
-	// --- Step 2: BFS traversal assigning ring & parent ---
-	std::queue<NodeData*> q;
-	nodeMap[defaultNode].ring = 0;
-	nodeMap[defaultNode].parent = nullptr;
-	q.push(&nodeMap[defaultNode]);
-
-	while (!q.empty())
-	{
-		NodeData* current = q.front(); q.pop();
-
-		std::vector<NodeEditor::Transition*> outgoing;
-		editor->getTransitionsFromNode(current->node, outgoing);
-
-		for (NodeEditor::Transition* t : outgoing)
-		{
-			NodeEditor::Node* childNode = t->getDestinationNode();
-			if (nodeMap.find(childNode) == nodeMap.end())
-				continue;
-
-			NodeData* childData = &nodeMap[childNode];
-			if (childData->ring == -1)
-			{
-				childData->ring = current->ring + 1;
-				childData->parent = current;
-				q.push(childData);
-			}
-		}
+		g_appLog->alertMessage(MsgLevel_Warn, "NodeProcessor::setStateMachineLayout: No state machine layouter strategy set.");
+		return false;
 	}
 
-	// --- Step 3: Assign cardinal directions ---
-	for (auto& [nodePtr, data] : nodeMap)
-	{
-		if (!data.parent)
-		{
-			data.dir = Direction::North; // default node
-			continue;
-		}
+	std::vector<MR::NodeDef*> childNodes;
+	for (size_t i = 0; i < smNodeDef->getNumChildNodes(); i++)
+		childNodes.push_back(smNodeDef->getChildNodeDef(i));
 
-		if (data.ring > data.parent->ring)
-			data.dir = Direction::North; // outward nodes go UP
-		else if (data.ring < data.parent->ring)
-			data.dir = Direction::South; // return/fallback nodes go DOWN
-		else
-		{
-			std::vector<NodeEditor::Transition*> outTrans, inTrans;
-			editor->getTransitionsFromNode(data.node, outTrans);
-			editor->getTransitionsToNode(data.node, inTrans);
-			data.dir = (outTrans.size() >= inTrans.size()) ? Direction::East : Direction::West;
-		}
+	return m_stateMachineLayouterStrategy->setLayout(stateMachine, smNodeDef, childNodes);
+}
+
+bool NodeProcessor::isNetworkNodeNameMapComplete(MR::NetworkDef* netDef)
+{
+	for (uint32_t i = 0; i < netDef->getNumNodeDefs(); ++i)
+	{
+		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+
+		if (strcmp(netDef->getNodeNameFromNodeID(nodeDef->getNodeID()), "") == 0)
+			return false;
 	}
 
-	// --- Step 4: Bucket nodes per ring & direction ---
-	std::unordered_map<int, std::unordered_map<Direction, std::vector<NodeData*>>> ringBuckets;
-	for (auto& [nodePtr, data] : nodeMap)
-		ringBuckets[data.ring][data.dir].push_back(&data);
-
-	// --- Step 5: Compute positions ---
-	const float ringSpacing = 200.f;   // distance between BFS rings
-	const float arcSpread = IM_PI / 6; // 30° max spread per direction bucket
-
-	for (auto& [ring, dirMap] : ringBuckets)
-	{
-		float radius = ring * ringSpacing;
-
-		for (auto& [dir, nodes] : dirMap)
-		{
-			int n = static_cast<int>(nodes.size());
-			float baseAngle = directionToAngle(dir);
-			float spread = (n > 1) ? arcSpread : 0.f;
-
-			for (int i = 0; i < n; ++i)
-			{
-				float angle = baseAngle;
-				if (n > 1)
-					angle = baseAngle - spread / 2.f + i * (spread / (n - 1));
-
-				float x = cosf(angle) * radius + centerPos.x;
-				float y = sinf(angle) * radius + centerPos.y;
-
-				nodes[i]->node->setPosition(x, y);
-			}
-		}
-	}
+	return true;
 }
 
 std::string NodeProcessor::getNodeName(const MR::NodeID nodeID)
@@ -516,51 +340,6 @@ std::string NodeProcessor::getBlendTreeNodeName(const MR::NodeID nodeID)
 	auto it = m_blendTreeNodeNames.find(nodeID);
 	if (it != m_blendTreeNodeNames.end())
 		return it->second;
-
-	return "";
-}
-
-const std::string NodeProcessor::getNodeNameFromFullPath(const std::string& name)
-{
-	size_t lastDivider = name.find_last_of("|");
-
-	if (lastDivider != std::string::npos)
-		return name.substr(lastDivider + 1);
-
-	return name;
-}
-
-const std::string NodeProcessor::getNodeNameWithParentFromFullPath(const std::string& name)
-{
-	size_t lastDivider = name.find_last_of("|");
-
-	if (lastDivider != std::string::npos)
-	{
-		size_t secondLastDivider = name.find_last_of("|", lastDivider - 1);
-
-		if (secondLastDivider != std::string::npos)
-			return name.substr(secondLastDivider + 1);
-		else
-			return name.substr(lastDivider + 1);
-	}
-
-	return name;
-}
-
-const std::string NodeProcessor::getBlendTreeNodeName(const std::string& name)
-{
-	size_t lastDivider = name.find_last_of("|");
-
-	if (lastDivider != std::string::npos)
-	{
-		size_t secondLastDivider = name.find_last_of("|", lastDivider - 1);
-		size_t count = lastDivider - secondLastDivider - 1;
-
-		if (secondLastDivider != std::string::npos)
-			return name.substr(secondLastDivider + 1, count);
-		else
-			return name.substr(0, lastDivider - 1);
-	}
 
 	return "";
 }
@@ -756,47 +535,23 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 	}
 }
 
-void NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
+bool NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
 {
-	m_nodeNameMap.clear();
+	if (!m_namingStrategy)
+	{
+		g_appLog->alertMessage(MsgLevel_Warn, "NodeProcessor::collectNodeNames: No node naming strategy set.");
+		return false;
+	}
 
-	MR::NodeDef* rootNodeDef = netDef->getNodeDef(netDef->getRootNodeID());
-
-	std::function<void(MR::NodeDef*)> collectNames;
-	collectNames = [&](MR::NodeDef* nodeDef)
-		{
-			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
-
-			if (isNodeBlendTreeOutput(nodeDef))
-			{
-				std::string blendTreeName = getBlendTreeNodeName(nodeName);
-
-				if (blendTreeName.empty())
-					blendTreeName = "BlendTree" + std::to_string(nodeDef->getNodeID());
-
-				m_blendTreeNodeNames[nodeDef->getNodeID()] = blendTreeName;
-			}
-
-			registerNodeName(nodeDef->getNodeID(), getNodeNameFromFullPath(nodeName));
-
-			for (size_t i = 0; i < nodeDef->getNumChildNodes(); ++i)
-			{
-				const MR::NodeID childNodeID = nodeDef->getChildNodeID(i);
-
-				if (childNodeID != MR::INVALID_NODE_ID)
-				{
-					MR::NodeDef* childNode = netDef->getNodeDef(childNodeID);
-					collectNames(childNode);
-				}
-			}
-		};
-
-	collectNames(rootNodeDef);
-
-	for (const auto& nodeNamePair : m_nodeNameMap)
-		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectNodeNames: Associated node name '%s' for node ID %d.\n", nodeNamePair.second.c_str(), nodeNamePair.first);
+	if (!m_namingStrategy->collectNodeNames(netDef, m_blendTreeNodes, m_nodeNameMap, m_blendTreeNodeNames))
+	{
+		g_appLog->alertMessage(MsgLevel_Warn, "NodeProcessor::collectNodeNames: Node naming strategy failed to collect node names.");
+		return false;
+	}
 
 	sanitizeNodeNames(netDef);
+
+	return true;
 }
 
 void NodeProcessor::sanitizeNodeNames(MR::NetworkDef* netDef)
@@ -828,16 +583,4 @@ MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
 		return parentNodeDef;
 	else
 		return getParentNodeContainer(parentNodeDef);
-}
-
-void NodeProcessor::registerNodeName(MR::NodeID nodeID, const std::string& name)
-{
-	if ((m_nodeNameMap.find(nodeID) != m_nodeNameMap.end()) &&
-		!m_nodeNameMap[nodeID].empty() &&
-		(m_nodeNameMap[nodeID] != name))
-		g_appLog->alertMessage(MsgLevel_Warn, "NodeProcessor::collectNodeNames: Duplicate node name entry for node ID %d. (currentName=%s, name=%s)\n", nodeID, m_nodeNameMap[nodeID].c_str(), name.c_str());
-
-	g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectNodeNames: Registering node name '%s' for node ID %d.\n", name.c_str(), nodeID);
-
-	m_nodeNameMap[nodeID] = name;
 }

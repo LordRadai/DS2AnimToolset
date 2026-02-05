@@ -2,6 +2,8 @@
 
 #include "morpheme/mrDefines.h"
 
+#include "NodeProcessor/NodeNamingStrategy/Utils/Utils.h"
+
 #include "RLog/RLog.h"
 #include "extern.h"
 
@@ -25,7 +27,7 @@ bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* network)
 		MR::NodeDef* nodeDef = network->getNodeDef(controlParamNodeIDs[i]);
 		const char* nodeName = network->getNodeNameFromNodeID(controlParamNodeIDs[i]);
 
-		m_nodeProcessor.processControlParameter(this, nodeDef, nodeName);
+		m_nodeProcessor.processControlParameter(this, nodeDef, NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
 	}
 
 	for (uint32_t i = 0; i < network->getNumMessages(); ++i)

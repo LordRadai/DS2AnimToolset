@@ -3,17 +3,24 @@
 #include <map>
 
 #include "morpheme/mrNodeDef.h"
+#include "NodeNamingStrategy/NodeNamingStrategy.inl"
+#include "GraphLayouterStrategy/GraphLayouterStrategy.inl"
 #include "NodeEditor/NodeEditor.h"
 #include "NodeEditor/Editor/ControlParameter/ControlParameter.h"
 #include "NodeEditor/Editor/Node/Node.h"
 
 class NodeProcessor
 {
+	NodeNamingStrategy* m_namingStrategy;
+	GraphLayouterStrategy* m_blendTreeLayouterStrategy;
+	GraphLayouterStrategy* m_stateMachineLayouterStrategy;
+
 	std::map<MR::NodeID, MR::NodeDef*> m_blendTreeNodes;
 	std::map<MR::NodeID, std::string> m_blendTreeNodeNames;
 	std::map<MR::NodeID, std::vector<MR::NodeDef*>> m_blendTreeNodeMap;
 	std::map<MR::NodeID, MR::NodeDef*> m_containerNodes;
 	std::map<MR::NodeID, std::string> m_nodeNameMap;
+
 public:
 	bool preProcessNetwork(MR::NetworkDef* netDef);
 
@@ -24,10 +31,6 @@ public:
 	std::string getNodeName(const MR::NodeID nodeID);
 	std::string getBlendTreeNodeName(const MR::NodeID nodeID);
 private:
-	static const std::string getNodeNameFromFullPath(const std::string& name);
-	static const std::string getNodeNameWithParentFromFullPath(const std::string& name);
-	static const std::string getBlendTreeNodeName(const std::string& name);
-
 	static const std::string nodeTypeAsManifestName(const MR::NodeType type);
 	static const std::string transitTypeAsManifestName(const MR::NodeType type);
 
@@ -56,7 +59,7 @@ private:
 	* \brief Collect all node names in the network and register them.
 	* \param netDef The network definition to process.
 	*/
-	void collectNodeNames(MR::NetworkDef* netDef);
+	bool collectNodeNames(MR::NetworkDef* netDef);
 
 	/*
 	* \brief Sanitize node names in the network to ensure there are no empty names. Must be done after collecting node names.
@@ -66,14 +69,14 @@ private:
 
 	MR::NodeDef* getParentNodeContainer(MR::NodeDef* nodeDef);
 
-	void registerNodeName(MR::NodeID nodeID, const std::string& name);
-
 	void populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
 	void populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
 
-	void processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, std::vector<MR::NodeDef*>& childNodes);
-	void setBlendTreeLayout(NodeEditor::BlendTree* blendTree, std::vector<MR::NodeDef*>& childNodes);
+	void processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, MR::NodeDef* ownerNodeDef, std::vector<MR::NodeDef*>& childNodes);
+	bool setBlendTreeLayout(NodeEditor::BlendTree* blendTree, MR::NodeDef* btNodeDef, std::vector<MR::NodeDef*>& childNodes);
 
 	void processNodeTransitionsInStateMachine(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef);
-	void setStateMachineLayout(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef);
+	bool setStateMachineLayout(NodeEditor::StateMachine* stateMachine, MR::NodeDef* smNodeDef);
+
+	bool isNetworkNodeNameMapComplete(MR::NetworkDef* netDef);
 };

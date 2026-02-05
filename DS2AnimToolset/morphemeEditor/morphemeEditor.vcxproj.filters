@@ -459,6 +459,24 @@
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\NodeNamingStrategy.inl">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\DefaultNodeNamingStrategy.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\ReconstructParentChildNameStrategy.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\Utils\Utils.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GraphLayouterStrategy.inl">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\BTFanLayouterStrategy.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -825,6 +843,18 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\DefaultNodeNamingStrategy.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\ReconstructParentChildNameStrategy.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\Utils\Utils.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\BTFanLayouterStrategy.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
