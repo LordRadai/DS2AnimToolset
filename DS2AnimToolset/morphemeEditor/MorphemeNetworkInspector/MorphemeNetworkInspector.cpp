@@ -10,12 +10,13 @@
 bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* network)
 {
 	const int numControlParams = network->getNumControlParameterNodes();
-
+	/*
 	if (network->getNumMultiplyConnectedNodes() != numControlParams)
 	{
 		g_appLog->alertMessage(MsgLevel_Info, "MorphemeNetworkInspector::loadNetwork: Networks with multiply connected nodes are not yet supported for display.");
 		return false;
 	}
+	*/
 
 	m_nodeProcessor.preProcessNetwork(network);
 

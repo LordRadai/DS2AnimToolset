@@ -76,7 +76,7 @@ NodeEditor::Node* NodeProcessor::processNode(NodeEditor::Graph* graph, MR::NodeD
 
 	if (!graph->isOfType<NodeEditor::BlendTree>())
 		INVOKE_PANIC(
-			"Non-container node '%s' inside state machine container",
+			"Non-container node '%s' inside state machine container.\n",
 			name.c_str());
 
 	NodeEditor::Node* node = graph->asType<NodeEditor::BlendTree>()->createNode(nodeDef->getNodeID(), nodeTypeAsManifestName(nodeDef->getNodeTypeID()), name);
@@ -151,7 +151,7 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 	}
 	else
 	{
-		INVOKE_PANIC("NodeProcessor::populateGraph: Unsupported graph type for graph node ID %d.", graph->getGraphNodeID());
+		INVOKE_PANIC("NodeProcessor::populateGraph: Unsupported graph type for graph node ID %d.\n", graph->getGraphNodeID());
 	}
 }
 
@@ -178,7 +178,7 @@ void NodeProcessor::populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* own
 void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, MR::NodeDef* ownerNodeDef, std::vector<MR::NodeDef*>& childNodes)
 {
 	if (childNodes.size() == 0)
-		INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Invalid blend tree '%s'. No children node are present.", blendTree->getName().c_str());
+		INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Invalid blend tree '%s'. No children node are present.\n", blendTree->getName().c_str());
 
 	MR::NetworkDef* netDef = ownerNodeDef->getOwningNetworkDef();
 	for (MR::NodeDef* childNodeDef : childNodes)
@@ -187,7 +187,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 		if (!sourceNode)
 		{
-			INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find source node '%s' in blend tree '%s'.", getNodeName(childNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+			INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find source node '%s' in blend tree '%s'.\n", getNodeName(childNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
 			continue;
 		}
 
@@ -207,7 +207,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 			if (!targetNode)
 			{
-				INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+				INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
 				continue;
 			}
 
@@ -228,7 +228,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 				if (!targetNode)
 				{
-					INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+					INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
 					continue;
 				}
 
@@ -240,7 +240,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 				if (!controlParam)
 				{
-					INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find control parameter '%s' in blend tree '%s'.", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+					INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find control parameter '%s' in blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
 					continue;
 				}
 
@@ -287,7 +287,7 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 		NodeEditor::Transition* transition = stateMachine->createTransition(childNodeDef->getNodeID(), transitTypeAsManifestName(childNodeDef->getNodeTypeID()), sourceNode, targetNode);
 		
 		if (!transition)
-			INVOKE_PANIC("NodeProcessor::processNodeTransitionsInStateMachine: Failed to create transition '%s' in state machine '%s'.", getNodeName(childNodeDef->getNodeID()).c_str(), stateMachine->getName().c_str());
+			INVOKE_PANIC("NodeProcessor::processNodeTransitionsInStateMachine: Failed to create transition '%s' in state machine '%s'.\n", getNodeName(childNodeDef->getNodeID()).c_str(), stateMachine->getName().c_str());
 	}
 }
 
@@ -398,7 +398,7 @@ const std::string NodeProcessor::nodeTypeAsManifestName(const MR::NodeType type)
 	case NODE_TYPE_SMOOTH_TRANSFORMS:						return "SmoothTransforms";
 	}
 
-	INVOKE_PANIC("NodeProcessor::nodeTypeAsManifestName: Unsupported node type ID.");
+	INVOKE_PANIC("NodeProcessor::nodeTypeAsManifestName: Unsupported node type ID.\n");
 }
 
 const std::string NodeProcessor::transitTypeAsManifestName(const MR::NodeType type)
@@ -409,7 +409,7 @@ const std::string NodeProcessor::transitTypeAsManifestName(const MR::NodeType ty
 	case NODE_TYPE_TRANSIT_SYNC_EVENTS:		return "TransitMatchEvents";
 	}
 
-	INVOKE_PANIC("NodeProcessor::transitTypeAsManifestName: Unsupported transition type ID.");
+	INVOKE_PANIC("NodeProcessor::transitTypeAsManifestName: Unsupported transition type ID.\n");
 }
 
 bool NodeProcessor::isNodeBlendTreeOutput(MR::NodeDef* nodeDef)
@@ -494,32 +494,68 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 	m_blendTreeNodeMap.clear();
 
 	// Recursive helper
-	std::function<void(MR::NodeDef*, std::vector<MR::NodeDef*>&)> collectChildren;
-	collectChildren = [&](MR::NodeDef* node, std::vector<MR::NodeDef*>& outList)
+	std::function<void(MR::NodeDef*, std::vector<MR::NodeDef*>&, std::vector<MR::NodeDef*>&)> collectChildren;
+	collectChildren = [&](MR::NodeDef* node, std::vector<MR::NodeDef*>& outList, std::vector<MR::NodeDef*>& promotedNodes)
 		{
 			for (size_t i = 0; i < node->getNumChildNodes(); ++i)
 			{
 				MR::NodeDef* childNode = netDef->getNodeDef(node->getChildNodeID(i));
 
+				// Check if this node consumes a multiply-connected input
+				if (childNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
+				{
+					const MR::NodeID nodeID = node->getNodeID();
+
+					if (!m_blendTreeNodes.count(nodeID))
+					{
+						// Promote parent node as new blend tree root
+						m_blendTreeNodes[nodeID] = node;
+						promotedNodes.push_back(node); // will ensure traversal
+
+						g_appLog->debugMessage(
+							MsgLevel_Debug,
+							"NodeProcessor::collectBlendTreeChildNodes: Promoted node %d (name=\"%s\") to blend tree root due to multiply-connected input %d (%s).\n",
+							nodeID,
+							netDef->getNodeNameFromNodeID(nodeID),
+							childNode->getNodeID(),
+							netDef->getNodeNameFromNodeID(childNode->getNodeID()));
+					}
+
+					// Stop traversal at this branch
+					continue;
+				}
+
 				outList.push_back(childNode);
 
-				// Recurse into this child
+				// Recurse normally
 				if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
-					collectChildren(childNode, outList);
+					collectChildren(childNode, outList, promotedNodes);
 			}
 		};
 
-	// Iterate over all root blend tree nodes
-	for (const auto& blendTreeNode : m_blendTreeNodes)
+	// Work list of root nodes to process
+	std::vector<MR::NodeDef*> workList;
+	for (const auto& entry : m_blendTreeNodes)
+		workList.push_back(entry.second);
+
+	// Process each root, dynamically adding promoted nodes
+	for (size_t i = 0; i < workList.size(); ++i)
 	{
+		MR::NodeDef* rootNode = workList[i];
 		std::vector<MR::NodeDef*> childNodeList;
+		childNodeList.push_back(rootNode);
 
-		childNodeList.push_back(blendTreeNode.second);
-		collectChildren(blendTreeNode.second, childNodeList);
+		std::vector<MR::NodeDef*> promotedNodes;
+		collectChildren(rootNode, childNodeList, promotedNodes);
 
-		m_blendTreeNodeMap[blendTreeNode.first] = childNodeList;
+		// Append newly promoted nodes to work list to ensure they are processed
+		for (MR::NodeDef* newRoot : promotedNodes)
+			workList.push_back(newRoot);
+
+		m_blendTreeNodeMap[rootNode->getNodeID()] = childNodeList;
 	}
 
+	// Debug output
 	for (const auto& blendTreeNodePair : m_blendTreeNodeMap)
 	{
 		for (const auto& childNode : blendTreeNodePair.second)
