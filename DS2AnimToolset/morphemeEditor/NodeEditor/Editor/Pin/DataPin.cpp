@@ -1,4 +1,4 @@
-#include <stdexcept>
+#include "RCore.h"
 
 #include "DataPin.h"
 #include "NodeEditor/NodeEditor.h"
@@ -73,6 +73,6 @@ namespace NodeEditor
 		else if (typeStr == "uint")
 			return kDataTypeUInt;
 
-		throw std::invalid_argument("Invalid data type string: " + typeStr);
+		INVOKE_PANIC("Invalid data type string %s",	typeStr.c_str());
 	}
 }

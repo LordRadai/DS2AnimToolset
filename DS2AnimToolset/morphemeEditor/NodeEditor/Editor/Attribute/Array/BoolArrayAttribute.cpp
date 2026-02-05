@@ -1,4 +1,4 @@
-#include <stdexcept>
+#include "RCore.h"
 
 #include "NodeEditor/NodeEditor.h"
 #include "BoolArrayAttribute.h"
@@ -42,7 +42,7 @@ namespace NodeEditor
 		for (const std::any& val : values)
 		{
 			if (val.type() != typeid(bool))
-				throw std::invalid_argument("BoolArrayAttribute::setValue: Invalid type in values vector. Expected bool.");
+				INVOKE_PANIC("BoolArrayAttribute::setValue: Invalid type in values vector. Expected bool.");
 
 			m_values.push_back(std::any_cast<bool>(val));
 		}

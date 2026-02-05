@@ -1,4 +1,4 @@
-#include <stdexcept>
+#include "RCore.h"
 
 #include "ControlParameter.h"
 #include "NodeEditor/NodeEditor.h"
@@ -66,6 +66,6 @@ namespace NodeEditor
 		else if (typeStr == "vector4")		return kParameterTypeVector4;
 		else if (typeStr == "quaternion")	return kParameterTypeQuaternion;
 
-		throw std::invalid_argument("Invalid ControlParameter type string: " + typeStr);
+		INVOKE_PANIC("Invalid ControlParameter type string %s", typeStr.c_str());
 	}
 }

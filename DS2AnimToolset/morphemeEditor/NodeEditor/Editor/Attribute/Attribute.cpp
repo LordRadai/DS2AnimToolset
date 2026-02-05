@@ -1,4 +1,4 @@
-#include <stdexcept>
+#include "RCore.h"
 
 #include "Attribute.h"
 
@@ -61,6 +61,6 @@ namespace NodeEditor
 		else if (type == "enum")
 			return new EnumAttribute(owner, name);
 		else
-			INVOKE_PANIC("Attribute::createAttribute: Unknown attribute type '" + type + "'");
+			INVOKE_PANIC("Attribute::createAttribute: Unknown attribute type '%s'", type);
 	}
 }
