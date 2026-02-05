@@ -1255,6 +1255,8 @@ void ClickInteractionUpdate(ImNodesEditorContext& editor)
     break;
     case ImNodesClickInteractionType_Panning:
     {
+        ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
+
         const bool dragging = GImNodes->AltMouseDragging;
 
         if (dragging)
