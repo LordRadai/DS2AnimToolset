@@ -38,7 +38,8 @@ void layoutNode(NodeEditor::BlendTree* blendTree, NodeEditor::Node* node, MR::No
 
 		const float vOffset = yStride * (childNodeDef->getNumChildNodes() + 1);
 
-		childNode->setPosition(xPos, yPos);
+		ImVec2 nodeSize = childNode->getSize();
+		childNode->setPosition(xPos - nodeSize.x, yPos);
 
 		layoutNode(blendTree, childNode, childNodeDef, xPos, yPos);
 
@@ -54,7 +55,9 @@ void layoutNode(NodeEditor::BlendTree* blendTree, NodeEditor::Node* node, MR::No
 		{
 			const float vOffset = yStride * (inputNodeDef->getNumInputCPConnections() + 1);
 
-			inputNode->setPosition(xPos, yPos);
+			ImVec2 nodeSize = inputNode->getSize();
+
+			inputNode->setPosition(xPos - nodeSize.x, yPos);
 
 			layoutNode(blendTree, inputNode, inputNodeDef, xPos, yPos);
 
