@@ -77,16 +77,13 @@ namespace NodeEditor
 		m_controlParameters.clear();
 		m_messages.clear();
 
-        while (!m_graphStack.empty())
-        {
-			Graph* graph = m_graphStack.top();
-			delete graph;
-
-            m_graphStack.pop();
-        }
-
+        delete m_rootGraph;
 		m_rootGraph = nullptr;
+
 		m_controlParametersNode->reset();
+
+        while (!m_graphStack.empty())
+            m_graphStack.pop();
 	}
 
 	void Editor::draw()
