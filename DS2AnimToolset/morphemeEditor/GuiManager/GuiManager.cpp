@@ -865,7 +865,9 @@ void GuiManager::rootWindow()
 
 		ImGui::Separator();
 
+#ifdef _DEBUG
 		if (ImGui::MenuItem("Colors")) { editorApp->getWindowFlags()->styleEditor = true; }
+#endif
 
 		if (ImGui::BeginMenu("Timecode Format"))
 		{
@@ -1768,7 +1770,7 @@ void GuiManager::colorSettingsWindow()
 {
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 
-	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
+	ImGui::SetNextWindowSize(ImVec2(500, 700), ImGuiCond_Appearing);
 	ImGui::Begin("Color Settings", &editorApp->getWindowFlags()->styleEditor);
 
 	ImGui::BeginTabBar("color_categories");

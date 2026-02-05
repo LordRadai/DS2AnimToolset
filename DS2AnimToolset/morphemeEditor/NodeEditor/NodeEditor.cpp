@@ -821,8 +821,12 @@ namespace NodeEditor
 
             ImGui::SeparatorText("Colors");
 
+            ImGui::BeginChild("##GridColorsChild", ImVec2(0, 0), ImGuiChildFlags_Border | ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+
             ImGui::ColorEditUInt("Grid Background", &style.Colors[ImNodesCol_GridBackground]);
             ImGui::ColorEditUInt("Grid Line", &style.Colors[ImNodesCol_GridLine]);
+
+			ImGui::EndChild();
 
             ImGui::EndTabItem();
         }
@@ -844,6 +848,8 @@ namespace NodeEditor
 			ImGui::SliderFloat("State Node Outline Thickness", &customStyle.StateNodeOutlineThickness, 0.0f, 8.0f);
 
             ImGui::SeparatorText("Colors");
+
+			ImGui::BeginChild("##NodeColorsChild", ImVec2(0, 0), ImGuiChildFlags_Border | ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 
             ImGui::ColorEditUInt("Node Background", &style.Colors[ImNodesCol_NodeBackground]);
             ImGui::ColorEditUInt("Node Background Hovered", &style.Colors[ImNodesCol_NodeBackgroundHovered]);
@@ -875,6 +881,8 @@ namespace NodeEditor
 			ImGui::ColorEditUInt("State Node Outline Hovered", &customStyle.Colors[NodeEditorStyleCol_StateNodeOutlineHovered]);
 			ImGui::ColorEditUInt("State Node Outline Selected", &customStyle.Colors[NodeEditorStyleCol_StateNodeOutlineSelected]);
 
+			ImGui::EndChild();
+
             ImGui::EndTabItem();
         }
 
@@ -889,9 +897,13 @@ namespace NodeEditor
 
             ImGui::SeparatorText("Colors");
 
+			ImGui::BeginChild("##LinkColorsChild", ImVec2(0, 0), ImGuiChildFlags_Border | ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+
             ImGui::ColorEditUInt("Link", &style.Colors[ImNodesCol_Link]);
             ImGui::ColorEditUInt("Link Hovered", &style.Colors[ImNodesCol_LinkHovered]);
             ImGui::ColorEditUInt("Link Selected", &style.Colors[ImNodesCol_LinkSelected]);
+
+			ImGui::EndChild();
 
             ImGui::EndTabItem();
         }
@@ -909,6 +921,8 @@ namespace NodeEditor
 
             ImGui::SeparatorText("Colors");
 
+			ImGui::BeginChild("##PinColorsChild", ImVec2(0, 0), ImGuiChildFlags_Border | ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+
             ImGui::ColorEditUInt("Pin", &style.Colors[ImNodesCol_Pin]);
             ImGui::ColorEditUInt("Pin Hovered", &style.Colors[ImNodesCol_PinHovered]);
 
@@ -919,6 +933,8 @@ namespace NodeEditor
 			ImGui::ColorEditUInt("Vector3 Data Pin", &customStyle.Colors[NodeEditorStyleCol_Vector3DataPin]);
 			ImGui::ColorEditUInt("Vector4 Data Pin", &customStyle.Colors[NodeEditorStyleCol_Vector4DataPin]);
 			ImGui::ColorEditUInt("Quaternion Data Pin", &customStyle.Colors[NodeEditorStyleCol_QuaternionDataPin]);
+
+			ImGui::EndChild();
 
             ImGui::EndTabItem();
         }
@@ -936,9 +952,13 @@ namespace NodeEditor
 
             ImGui::SeparatorText("Colors");
 
+			ImGui::BeginChild("##TransitionColorsChild", ImVec2(0, 0), ImGuiChildFlags_Border | ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+
             ImGui::ColorEditUInt("Transition", &style.Colors[ImNodesCol_Transition]);
             ImGui::ColorEditUInt("Transition Hovered", &style.Colors[ImNodesCol_TransitionHovered]);
             ImGui::ColorEditUInt("Transition Selected", &style.Colors[ImNodesCol_TransitionSelected]);
+
+			ImGui::EndChild();
 
 			ImGui::EndTabItem();
         }
@@ -953,6 +973,8 @@ namespace NodeEditor
 
             ImGui::SeparatorText("Colors");
 
+			ImGui::BeginChild("##MiniMapColorsChild", ImVec2(0, 0), ImGuiChildFlags_Border | ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+
             ImGui::ColorEditUInt("MiniMap Background", &style.Colors[ImNodesCol_MiniMapBackground]);
             ImGui::ColorEditUInt("MiniMap Background Hovered", &style.Colors[ImNodesCol_MiniMapBackgroundHovered]);
             ImGui::ColorEditUInt("MiniMap Outline", &style.Colors[ImNodesCol_MiniMapOutline]);
@@ -965,6 +987,8 @@ namespace NodeEditor
             ImGui::ColorEditUInt("MiniMap Link Selected", &style.Colors[ImNodesCol_MiniMapLinkSelected]);
             ImGui::ColorEditUInt("MiniMap Canvas", &style.Colors[ImNodesCol_MiniMapCanvas]);
             ImGui::ColorEditUInt("MiniMap Canvas Outline", &style.Colors[ImNodesCol_MiniMapCanvasOutline]);
+
+			ImGui::EndChild();
 
             ImGui::EndTabItem();
         }
