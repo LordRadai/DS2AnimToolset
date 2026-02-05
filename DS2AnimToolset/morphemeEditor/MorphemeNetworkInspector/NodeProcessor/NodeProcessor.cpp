@@ -254,7 +254,7 @@ bool NodeProcessor::setBlendTreeLayout(NodeEditor::BlendTree* blendTree, MR::Nod
 {
 	if (!m_blendTreeLayouterStrategy)
 	{
-		g_appLog->alertMessage(MsgLevel_Warn, "NodeProcessor::setBlendTreeLayout: No blend tree layouter strategy set.");
+		g_appLog->debugMessage(MsgLevel_Warn, "NodeProcessor::setBlendTreeLayout: No blend tree layouter strategy set.");
 		return false;
 	}
 
@@ -295,7 +295,7 @@ bool NodeProcessor::setStateMachineLayout(NodeEditor::StateMachine* stateMachine
 {
 	if (!m_stateMachineLayouterStrategy)
 	{
-		g_appLog->alertMessage(MsgLevel_Warn, "NodeProcessor::setStateMachineLayout: No state machine layouter strategy set.");
+		g_appLog->debugMessage(MsgLevel_Warn, "NodeProcessor::setStateMachineLayout: No state machine layouter strategy set.");
 		return false;
 	}
 
