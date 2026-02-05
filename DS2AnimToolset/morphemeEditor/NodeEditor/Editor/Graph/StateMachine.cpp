@@ -15,6 +15,9 @@ namespace NodeEditor
 	{
 		for (Transition* transition : m_transitions)
 			delete transition;
+
+		for (StateNode* stateNode : m_stateNodes)
+			delete stateNode;
 	}
 
 	void StateMachine::draw()

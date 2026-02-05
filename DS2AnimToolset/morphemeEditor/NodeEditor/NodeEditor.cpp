@@ -85,6 +85,7 @@ namespace NodeEditor
             m_graphStack.pop();
         }
 
+		m_rootGraph = nullptr;
 		m_controlParametersNode->reset();
 	}
 

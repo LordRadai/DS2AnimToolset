@@ -16,6 +16,8 @@ namespace NodeEditor
 
 		if (it != m_registeredEntities.end())
 			m_registeredEntities.erase(it);
+
+		m_nextRuntimeID--;
 	}
 
 	Entity* Registry::findEntity(int id) const
@@ -35,6 +37,8 @@ namespace NodeEditor
 
 		if (it != m_registeredGraphs.end())
 			m_registeredGraphs.erase(it);
+
+		m_nextGraphID--;
 	}
 
 	Graph* Registry::findGraph(int id) const

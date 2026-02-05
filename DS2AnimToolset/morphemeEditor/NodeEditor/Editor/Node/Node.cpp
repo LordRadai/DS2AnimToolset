@@ -25,6 +25,21 @@ namespace NodeEditor
 
 		for (Pin* outputPin : m_outputPins)
 			delete outputPin;
+
+		for (DataPin* inputDataPin : m_inputDataPins)
+			delete inputDataPin;
+
+		for (DataPin* outputDataPin : m_outputDataPins)
+			delete outputDataPin;
+
+		for (Attribute* attribute : m_attributes)
+			delete attribute;
+
+		if (m_subGraph)
+		{
+			delete m_subGraph;
+			m_subGraph = nullptr;
+		}
 	}
 
 	void Node::draw()
