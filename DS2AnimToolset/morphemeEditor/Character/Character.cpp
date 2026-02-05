@@ -292,6 +292,7 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
     character->m_characterName = RString::toWide(RString::removeExtension(std::filesystem::path(filename).filename().string()));
 
     std::wstring gamePath = utils::findGamePath(RString::toWide(filename));
+
     MorphemeCharacterDef* characterDef = character->m_characterMotionCtrl->getMorphemeCharacterDef();
 	MR::AnimRigDef* rigDef = characterDef->getNetworkDef()->getRig(0);
 
