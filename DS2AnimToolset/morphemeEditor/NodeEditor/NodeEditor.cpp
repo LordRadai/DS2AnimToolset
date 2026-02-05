@@ -673,8 +673,8 @@ namespace NodeEditor
     {
         if (m_graphStack.empty())
 			m_rootGraph = graph;
-
-		getCurrentGraph()->onGraphClosed();
+        else
+		    getCurrentGraph()->onGraphClosed();
 
         m_graphStack.push(graph);
 
