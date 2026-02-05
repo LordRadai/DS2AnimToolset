@@ -232,43 +232,53 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 		INVOKE_PANIC("Flver model initialisation failed");
 }
 
+FlverModel::FlverModel(MR::AnimRigDef* rig)
+{
+	this->m_loaded = false;
+	this->m_meshVerticesTransforms.clear();
+	this->m_position = Matrix::Identity;
+	this->m_flver = nullptr;
+	this->m_nmRig = rig;
+	this->m_settings.drawBoneInfluences = false;
+
+	if (!this->initialise())
+		INVOKE_PANIC("Flver model initialisation failed");
+}
+
 FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 {
 	FlverModel* model = nullptr;
 
-	try
+	BND4::Bnd4* bnd = BND4::Bnd4::loadFromFile(path);
+
+	if (bnd == nullptr)
+		return nullptr;
+
+	BND4::BndFile* flverFile = bnd->getFirstFileWithExtension(".flv");
+
+	if (flverFile)
 	{
-		BND4::Bnd4* bnd = BND4::Bnd4::loadFromFile(path);
+		g_appLog->debugMessage(MsgLevel_Debug, "Loading model \"%ws\"\n", path.c_str());
 
-		if (bnd == nullptr)
-			return nullptr;
+		UMEM* umem = uopenMem((char*)flverFile->data, flverFile->uncompressedSize);
 
-		BND4::BndFile* flverFile = bnd->getFirstFileWithExtension(".flv");
-
-		if (flverFile)
-		{
-			g_appLog->debugMessage(MsgLevel_Debug, "Loading model \"%ws\"\n", path.c_str());
-
-			UMEM* umem = uopenMem((char*)flverFile->data, flverFile->uncompressedSize);
-
-			model = new FlverModel(umem, rig);
-			model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
-			model->m_fileOrigin = path + L"\\" + RString::toWide(flverFile->name.c_str());
-		}
-		else
-			g_appLog->debugMessage(MsgLevel_Error, "Could not find a .flver file inside \"%ws\"\n", path);
-
-		bnd->destroy();
-
-		delete bnd;
-
-		return model;
+		model = new FlverModel(umem, rig);
+		model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
+		model->m_fileOrigin = path + L"\\" + RString::toWide(flverFile->name.c_str());
 	}
-	catch (const std::exception& e)
-	{
-		g_appLog->alertMessage(MsgLevel_Error, "Failed to create FlverModel object from file %ws (error=%s)\n", path.c_str(), e.what());
-		return model;
-	}
+	else
+		g_appLog->debugMessage(MsgLevel_Error, "Could not find a .flver file inside \"%ws\"\n", path);
+
+	bnd->destroy();
+
+	delete bnd;
+
+	return model;
+}
+
+FlverModel* FlverModel::createFromAnimRig(MR::AnimRigDef* rig)
+{
+	return new FlverModel(rig);
 }
 
 void FlverModel::destroy()
@@ -620,7 +630,7 @@ void FlverModel::normalizeSkinVertexData(FlverModel::SkinnedVertex& skinnedVerte
 // Gets all the model vertices for all the meshes and stores them into m_verts
 bool FlverModel::initialise()
 {
-	if (this->m_flver == nullptr || this->m_nmRig == nullptr)
+	if (this->m_nmRig == nullptr)
 		return false;
 
 	computeNmRigGlobalTransforms(this->m_nmBindPoseTransforms, this->m_nmRig);
@@ -630,40 +640,43 @@ bool FlverModel::initialise()
 	for (size_t i = 0; i < this->m_nmBindPoseTransforms.size(); i++)
 		this->m_nmInverseBoneBindPoseTransforms.push_back(this->m_nmBindPoseTransforms[i].Invert());
 
-	computeFlvBonesGlobalTransform(this->m_flverBindPoseTransforms, this->m_flver);
-	this->m_flverBoneTransforms = this->m_flverBindPoseTransforms;
-
-	this->m_flverInverseBindPoseTransforms.reserve(this->m_flverBindPoseTransforms.size());
-	for (size_t i = 0; i < this->m_flverBindPoseTransforms.size(); i++)
-		this->m_flverInverseBindPoseTransforms.push_back(this->m_flverBindPoseTransforms[i].Invert());
-
-	this->m_meshVerticesTransforms.reserve(this->m_flver->header.meshCount);
-	this->m_meshVerticesBindPoseTransforms.reserve(this->m_flver->header.meshCount);
-
-	for (int i = 0; i < this->m_flver->header.meshCount; i++)
+	if (this->m_flver)
 	{
-		std::vector<Vector3> vertices = this->getFlverMeshVertices(i);
-		std::vector<Vector3> normals = this->getFlverMeshNormals(i);
-		std::vector<Vector4> boneWeights = this->getFlverMeshBoneWeights(i);
-		std::vector<std::vector<int>> boneIndices = this->getFlverMeshBoneIndices(i);
+		computeFlvBonesGlobalTransform(this->m_flverBindPoseTransforms, this->m_flver);
+		this->m_flverBoneTransforms = this->m_flverBindPoseTransforms;
 
-		std::vector<SkinnedVertex> meshSkinnedVertices;
+		this->m_flverInverseBindPoseTransforms.reserve(this->m_flverBindPoseTransforms.size());
+		for (size_t i = 0; i < this->m_flverBindPoseTransforms.size(); i++)
+			this->m_flverInverseBindPoseTransforms.push_back(this->m_flverBindPoseTransforms[i].Invert());
 
-		for (size_t i = 0; i < vertices.size(); i++)
+		this->m_meshVerticesTransforms.reserve(this->m_flver->header.meshCount);
+		this->m_meshVerticesBindPoseTransforms.reserve(this->m_flver->header.meshCount);
+
+		for (int i = 0; i < this->m_flver->header.meshCount; i++)
 		{
-			meshSkinnedVertices.push_back(SkinnedVertex(vertices[i], normals[i], (float*)&boneWeights[i], boneIndices[i].data()));
-			normalizeSkinVertexData(meshSkinnedVertices.back());
+			std::vector<Vector3> vertices = this->getFlverMeshVertices(i);
+			std::vector<Vector3> normals = this->getFlverMeshNormals(i);
+			std::vector<Vector4> boneWeights = this->getFlverMeshBoneWeights(i);
+			std::vector<std::vector<int>> boneIndices = this->getFlverMeshBoneIndices(i);
+
+			std::vector<SkinnedVertex> meshSkinnedVertices;
+
+			for (size_t i = 0; i < vertices.size(); i++)
+			{
+				meshSkinnedVertices.push_back(SkinnedVertex(vertices[i], normals[i], (float*)&boneWeights[i], boneIndices[i].data()));
+				normalizeSkinVertexData(meshSkinnedVertices.back());
+			}
+
+			this->m_meshVerticesBindPoseTransforms.push_back(meshSkinnedVertices);
 		}
 
-		this->m_meshVerticesBindPoseTransforms.push_back(meshSkinnedVertices);
+		this->m_meshVerticesTransforms = this->m_meshVerticesBindPoseTransforms;
+
+		const Vector3 modelSize = this->getBoundingBoxMax() - this->getBoundingBoxMin();
+		const float largestDirection = std::fmax(std::fmax(modelSize.x, modelSize.y), modelSize.z);
+
+		this->m_scale = std::fmin(20.f / largestDirection, 1.5f);
 	}
-
-	this->m_meshVerticesTransforms = this->m_meshVerticesBindPoseTransforms;
-
-	const Vector3 modelSize = this->getBoundingBoxMax() - this->getBoundingBoxMin();
-	const float largestDirection = std::fmax(std::fmax(modelSize.x, modelSize.y), modelSize.z);
-
-	this->m_scale = std::fmin(20.f / largestDirection, 1.5f);
 
 	if (this->m_scale < 1.5f)
 		this->m_scale = 1.5f;

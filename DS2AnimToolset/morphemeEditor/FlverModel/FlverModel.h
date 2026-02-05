@@ -58,6 +58,7 @@ public:
 	};
 
 	static FlverModel* createFromBnd(std::wstring path, MR::AnimRigDef* rig);
+	static FlverModel* createFromAnimRig(MR::AnimRigDef* rig);
 
 	void update(float dt);
 	void animate(AnimObject* anim);
@@ -139,6 +140,7 @@ public:
 private:
 	FlverModel() {}
 	FlverModel(UMEM* umem, MR::AnimRigDef* rig);
+	FlverModel(MR::AnimRigDef* rig);
 	~FlverModel() {}
 
 	/**
