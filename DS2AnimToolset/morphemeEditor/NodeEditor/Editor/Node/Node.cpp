@@ -317,4 +317,12 @@ namespace NodeEditor
 
 		return true;
 	}
+
+	void Node::setName(const std::string& name)
+	{
+		m_name = name;
+
+		if (m_subGraph)
+			m_subGraph->setName(name);
+	}
 }

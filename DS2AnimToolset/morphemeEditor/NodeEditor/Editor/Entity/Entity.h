@@ -17,13 +17,12 @@ namespace NodeEditor
 		virtual ~Entity();
 		virtual void draw() {}
 		virtual bool editorGUI() { return false; }
+		virtual const std::string& getName() const { return m_name; }
+		virtual void setName(const std::string& name) { m_name = name; }
 		virtual const std::string getFullName() const { return m_name; }
 
 		Editor* getOwnerEditor() const { return m_ownerEditor; }
 		int getID() const { return m_id; }
-
-		const std::string& getName() const { return m_name; }
-		void setName(const std::string& name) { m_name = name; }
 
 		template<typename T>
 		bool isOfType() const
