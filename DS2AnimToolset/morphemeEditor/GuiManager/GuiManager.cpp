@@ -1063,15 +1063,9 @@ void GuiManager::sceneWindow()
 
 	ImGui::InvisibleButton("viewport_preview", ImVec2(width, height));
 
-	if (ImGui::IsItemFocused() && ImGui::IsItemHovered())
+	if (/*ImGui::IsItemFocused() &&*/ ImGui::IsItemHovered())
 	{
 		camera->setInputEnabled(true);
-
-		if (ImGui::IsMouseDown(ImGuiMouseButton_Middle))
-			ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-
-		if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
-			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
 	}
 
 	camera->setResolution(width, height);

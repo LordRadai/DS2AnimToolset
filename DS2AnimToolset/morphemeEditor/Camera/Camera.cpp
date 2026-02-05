@@ -92,6 +92,8 @@ void Camera::handleInput(float delta_time)
 	{
 		if (io.MouseDown[ImGuiMouseButton_Middle])
 		{
+			ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+
 			Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
 
 			this->updateVerticalAngle(this->m_settings->rotSpeed * drag_delta.y, delta_time);
@@ -102,6 +104,8 @@ void Camera::handleInput(float delta_time)
 
 		if (io.MouseDown[ImGuiMouseButton_Right])
 		{
+			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
+
 			Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
 
 			this->updateTargetPosition(Vector3(this->m_settings->moveSpeed * drag_delta.x, this->m_settings->moveSpeed * drag_delta.y, this->m_settings->moveSpeed * drag_delta.x), delta_time);
