@@ -27,7 +27,7 @@ namespace MD
 			else if ((transformBufferFn == MR::nodeExtractJointInfoLocalQueueTransforms) || (transformBufferFn == MR::nodeExtractJointInfoLocalJointSelectQueueTransforms))
 				return false;
 			else
-				g_appLog->panicMessage("Invalid transform buffer function for ExtractJointInfo node %s (nodeID=%d)\n", MR::Manager::getInstance().getTaskQueuingFnName(transformBufferFn), nodeDef->getNodeID());
+				INVOKE_PANIC("Invalid transform buffer function for ExtractJointInfo node %s (nodeID=%d)\n", MR::Manager::getInstance().getTaskQueuingFnName(transformBufferFn), nodeDef->getNodeID());
 		}
 
 		bool NodeFreezeDecompiler::isPassThroughTransformsOnce(MR::NodeDef* nodeDef)
@@ -42,7 +42,7 @@ namespace MD
 			else if (taskQueueFn == MR::nodeFreezePassThroughLastTransforms)
 				return false;
 			else
-				g_appLog->panicMessage("Unexpected task queing function %s\n", fnName);
+				INVOKE_PANIC("Unexpected task queing function %s\n", fnName);
 
 			return false;
 		}

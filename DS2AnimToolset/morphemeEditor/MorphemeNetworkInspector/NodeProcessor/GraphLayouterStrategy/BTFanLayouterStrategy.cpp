@@ -30,7 +30,7 @@ void layoutNode(NodeEditor::BlendTree* blendTree, NodeEditor::Node* node, MR::No
 
 		if (!childNode)
 		{
-			g_appLog->panicMessage(
+			INVOKE_PANIC(
 				"NodeProcessor::setBlendTreeLayout: Failed to find child node %d in blend tree '%s'.",
 				nodeDef->getChildNodeID(i), blendTree->getName().c_str());
 			continue;
@@ -74,13 +74,13 @@ bool BTFanLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::NodeDef* gra
 	NodeEditor::BlendTree* blendTree = graph->asType<NodeEditor::BlendTree>();
 
 	if (childNodes.empty())
-		g_appLog->panicMessage("NodeProcessor::setBlendTreeLayout: Invalid blend tree '%s'. No children nodes are present.", blendTree->getName().c_str());
+		INVOKE_PANIC("NodeProcessor::setBlendTreeLayout: Invalid blend tree '%s'. No children nodes are present.", blendTree->getName().c_str());
 
 	NodeEditor::Node* sourceNode = blendTree->getNode(graphNodeDef->getNodeID());
 	MR::NodeDef* sourceNodeDef = graphNodeDef;
 
 	if (!sourceNode)
-		g_appLog->panicMessage("NodeProcessor::setBlendTreeLayout: Failed to find source node %d in blend tree '%s'.",
+		INVOKE_PANIC("NodeProcessor::setBlendTreeLayout: Failed to find source node %d in blend tree '%s'.",
 			graphNodeDef->getNodeID(), blendTree->getName().c_str());
 
 	ImVec2 startingPos(500.f, 550.f);

@@ -190,7 +190,7 @@ namespace MD
 			else if (taskQueueFn == MR::nodeBlend2QueueBlend2TransformBuffsInterpAttInterpPos)
 				blendMode = AP::kInterpQuatInterpPos;
 			else
-				g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
+				INVOKE_PANIC("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
 
 			attribDataBlock->writeInt(blendMode, "BlendMode");
 		}
@@ -359,7 +359,7 @@ namespace MD
 			const int inputCPCount = nodeDef->getNumInputCPConnections();
 
 			if (inputCPCount != sourceNodeCount)
-				g_appLog->panicMessage("Mismatch between inputCPCount and sourceNodeCount (nodeID=%d)\n", nodeDef->getNodeID());
+				INVOKE_PANIC("Mismatch between inputCPCount and sourceNodeCount (nodeID=%d)\n", nodeDef->getNodeID());
 
 			nodeDataBlock->writeInt(sourceNodeCount, "SourceNodeCount");
 
@@ -398,7 +398,7 @@ namespace MD
 			else if (taskQueueFn == MR::nodeFeatherBlend2QueueFeatherBlend2TransformBuffsInterpAttInterpPos)
 				blendMode = AP::kInterpQuatInterpPos;
 			else
-				g_appLog->panicMessage("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
+				INVOKE_PANIC("Unexpected ATTRIB_SEMANTIC_TRANSFORM_BUFFER queueing fn %s\n", fnName);
 
 			bool additiveBlendAtt = false;
 			bool additiveBlendPos = false;

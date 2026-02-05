@@ -508,7 +508,7 @@ namespace FT
 		}
 		catch (const std::exception& e)
 		{
-			g_appLog->panicMessage(e.what());
+			INVOKE_PANIC(e.what());
 		}
 
 		FbxScene* pScene = FbxScene::Create(g_pFbxManager, RString::toNarrow(character->getCharacterName()).c_str());
@@ -575,7 +575,7 @@ namespace FT
 		}
 		catch (const std::exception& e)
 		{
-			g_appLog->panicMessage(e.what());
+			INVOKE_PANIC(e.what());
 		}
 
 		FbxScene* pScene = FbxScene::Create(g_pFbxManager, animName.c_str());

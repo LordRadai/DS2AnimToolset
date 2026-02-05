@@ -229,7 +229,7 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 	this->createMorphemeToFlverBoneMap();
 
 	if (!this->initialise())
-		g_appLog->panicMessage("Flver model initialisation failed");
+		INVOKE_PANIC("Flver model initialisation failed");
 }
 
 FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)

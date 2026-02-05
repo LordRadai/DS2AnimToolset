@@ -183,7 +183,7 @@ namespace
                     for (size_t argIdx = 0; argIdx < event->getNumArguments(); argIdx++)
                     {
                         if (event->getNumArguments() != mergedEvent->getNumArguments())
-                            g_appLog->panicMessage("Arg count mismath\n");
+                            INVOKE_PANIC("Arg count mismath\n");
 
                         TimeAct::Argument* arg = event->getArgument(argIdx);
 

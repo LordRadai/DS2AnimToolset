@@ -18,7 +18,7 @@ namespace MD
 			else if (axis.z)
 				return 3;
 
-			g_appLog->panicMessage("Input vector is not a valid axis vector (%.3f, %.3f, %.3f)\n", axis.x, axis.y, axis.z);
+			INVOKE_PANIC("Input vector is not a valid axis vector (%.3f, %.3f, %.3f)\n", axis.x, axis.y, axis.z);
 		}
 
 		void writeSyncEventFlagsFromAttribData(ME::DataBlockExportXML* attribDataBlock, MR::AttribDataUInt* durationEventMatchingOpAttrib)
@@ -79,7 +79,7 @@ namespace MD
 					durationEventBlendWithinRange = true;
 					break;
 				default:
-					g_appLog->panicMessage("Invalid blend matching operation %d\n", durationEventMatchingOpAttrib->m_value);
+					INVOKE_PANIC("Invalid blend matching operation %d\n", durationEventMatchingOpAttrib->m_value);
 					break;
 				}
 			}

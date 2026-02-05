@@ -83,7 +83,7 @@ namespace MD
 			}
 
 			if ((childTransitCount + childNodeCount) != nodeDef->getNumChildNodes())
-				g_appLog->panicMessage("Total parsed node count is different from the total node children count (expected %d, got %d)\n", nodeDef->getNumChildNodes(), childTransitCount + childNodeCount);
+				INVOKE_PANIC("Total parsed node count is different from the total node children count (expected %d, got %d)\n", nodeDef->getNumChildNodes(), childTransitCount + childNodeCount);
 		}
 
 		ME::NodeExportXML* NodeStateMachineDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)

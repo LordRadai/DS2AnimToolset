@@ -1583,7 +1583,7 @@ void XM_CALLCONV DX::DrawModel(DirectX::PrimitiveBatch<DirectX::VertexPositionNo
         }
         catch (const std::exception& e)
         {
-            g_appLog->panicMessage(e.what());
+            INVOKE_PANIC(e.what());
         }
     }
 }
@@ -1632,7 +1632,7 @@ void XM_CALLCONV DX::DrawModelWireframe(DirectX::PrimitiveBatch<DirectX::VertexP
         }
         catch (const std::exception& e)
         {
-            g_appLog->panicMessage(e.what());
+            INVOKE_PANIC(e.what());
         }
     }
 }

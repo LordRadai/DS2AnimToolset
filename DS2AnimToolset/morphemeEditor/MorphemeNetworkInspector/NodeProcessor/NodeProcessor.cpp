@@ -75,7 +75,7 @@ NodeEditor::Node* NodeProcessor::processNode(NodeEditor::Graph* graph, MR::NodeD
 	}
 
 	if (!graph->isOfType<NodeEditor::BlendTree>())
-		g_appLog->panicMessage(
+		INVOKE_PANIC(
 			"Non-container node '%s' inside state machine container",
 			name.c_str());
 
@@ -151,7 +151,7 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 	}
 	else
 	{
-		g_appLog->panicMessage("NodeProcessor::populateGraph: Unsupported graph type for graph node ID %d.", graph->getGraphNodeID());
+		INVOKE_PANIC("NodeProcessor::populateGraph: Unsupported graph type for graph node ID %d.", graph->getGraphNodeID());
 	}
 }
 
@@ -178,7 +178,7 @@ void NodeProcessor::populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* own
 void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, MR::NodeDef* ownerNodeDef, std::vector<MR::NodeDef*>& childNodes)
 {
 	if (childNodes.size() == 0)
-		g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Invalid blend tree '%s'. No children node are present.", blendTree->getName().c_str());
+		INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Invalid blend tree '%s'. No children node are present.", blendTree->getName().c_str());
 
 	MR::NetworkDef* netDef = ownerNodeDef->getOwningNetworkDef();
 	for (MR::NodeDef* childNodeDef : childNodes)
@@ -187,7 +187,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 		if (!sourceNode)
 		{
-			g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find source node '%s' in blend tree '%s'.", getNodeName(childNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+			INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find source node '%s' in blend tree '%s'.", getNodeName(childNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
 			continue;
 		}
 
@@ -207,7 +207,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 			if (!targetNode)
 			{
-				g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+				INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
 				continue;
 			}
 
@@ -228,7 +228,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 				if (!targetNode)
 				{
-					g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+					INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
 					continue;
 				}
 
@@ -240,7 +240,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 				if (!controlParam)
 				{
-					g_appLog->panicMessage("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find control parameter '%s' in blend tree '%s'.", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+					INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find control parameter '%s' in blend tree '%s'.", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
 					continue;
 				}
 
@@ -287,7 +287,7 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 		NodeEditor::Transition* transition = stateMachine->createTransition(childNodeDef->getNodeID(), transitTypeAsManifestName(childNodeDef->getNodeTypeID()), sourceNode, targetNode);
 		
 		if (!transition)
-			g_appLog->panicMessage("NodeProcessor::processNodeTransitionsInStateMachine: Failed to create transition '%s' in state machine '%s'.", getNodeName(childNodeDef->getNodeID()).c_str(), stateMachine->getName().c_str());
+			INVOKE_PANIC("NodeProcessor::processNodeTransitionsInStateMachine: Failed to create transition '%s' in state machine '%s'.", getNodeName(childNodeDef->getNodeID()).c_str(), stateMachine->getName().c_str());
 	}
 }
 

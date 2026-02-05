@@ -34,7 +34,7 @@ namespace MD
 					return i;
 			}
 
-			g_appLog->panicMessage("Invalid up axis vector (%.3f, %.3f, %.3f)\n", upAxisVector[0], upAxisVector[1], upAxisVector[2]);
+			INVOKE_PANIC("Invalid up axis vector (%.3f, %.3f, %.3f)\n", upAxisVector[0], upAxisVector[1], upAxisVector[2]);
 
 			return -1;
 		}
@@ -443,7 +443,7 @@ namespace MD
 			//Sanity check because I'm not sure the struct definition for this attrib data is correct since the game uses a different version of it than the morpheme SDK
 			if ((twoBoneIKSetup->m_userControlledOrientation && 
 				(twoBoneIKSetup->m_useSpecifiedJointOrientation || (nodeDef->getInputCPConnectionSourceNodeID(1) != MR::INVALID_NODE_ID))))
-				g_appLog->panicMessage("Invalid TwoBoneIK setup attribute for node %d", nodeDef->getNodeID());
+				INVOKE_PANIC("Invalid TwoBoneIK setup attribute for node %d", nodeDef->getNodeID());
 
 			nodeDataBlock->writeBool(twoBoneIKSetup->m_assumeSimpleHierarchy, "AssumeSimpleHierarchy");
 			nodeDataBlock->writeBool(twoBoneIKSetup->m_keepEndEffOrientation, "KeepEndEffOrientation");

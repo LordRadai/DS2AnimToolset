@@ -1022,7 +1022,7 @@ void MorphemeEditorApp::loadSettings()
 
 	if (settings == nullptr)
 	{
-		g_appLog->panicMessage("Failed to read application settings\n");
+		INVOKE_PANIC("Failed to read application settings\n");
 		return;
 	}
 
@@ -1084,7 +1084,7 @@ void MorphemeEditorApp::loadPlayerModelPreset()
 	this->m_playerModelPreset = PlayerModelPreset::loadFromFile("Data\\res\\c0001.ini");
 
 	if (this->m_playerModelPreset == nullptr)
-		g_appLog->panicMessage("Failed to read player model preset at Data\\res\\c0001.ini\n");
+		INVOKE_PANIC("Failed to read player model preset at Data\\res\\c0001.ini\n");
 }
 
 void MorphemeEditorApp::savePlayerModelPreset()
@@ -1272,7 +1272,7 @@ bool MorphemeEditorApp::exportTimeAct(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1417,7 +1417,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1477,7 +1477,7 @@ bool MorphemeEditorApp::exportAll(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1528,7 +1528,7 @@ bool MorphemeEditorApp::exportAndProcess(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1558,7 +1558,7 @@ bool MorphemeEditorApp::exportAnimations(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1589,7 +1589,7 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1638,7 +1638,7 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1668,7 +1668,7 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1753,7 +1753,7 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 

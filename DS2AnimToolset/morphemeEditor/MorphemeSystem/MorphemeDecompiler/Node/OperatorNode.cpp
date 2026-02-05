@@ -22,7 +22,7 @@ namespace MD
 			else if (outputCPTask == MR::nodeOperatorSmoothFloatCriticallyDampVector)
 				return false;
 			else
-				g_appLog->panicMessage("Invalid outputCPTaskFunction %s (nodeId=%d)\n", MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), nodeDef->getNodeID());
+				INVOKE_PANIC("Invalid outputCPTaskFunction %s (nodeId=%d)\n", MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), nodeDef->getNodeID());
 
 			return false;
 		}
@@ -38,7 +38,7 @@ namespace MD
 			else if (outputCPTask == MR::nodeOperatorRateOfChangeVector)
 				return false;
 			else
-				g_appLog->panicMessage("Invalid outputCPTaskFunction %s (nodeId=%d)\n", MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), nodeDef->getNodeID());
+				INVOKE_PANIC("Invalid outputCPTaskFunction %s (nodeId=%d)\n", MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), nodeDef->getNodeID());
 
 			return false;
 		}

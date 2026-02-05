@@ -881,7 +881,7 @@ void GuiManager::rootWindow()
 			RenderManager* renderMan = RenderManager::getInstance();
 
 			if (MSAA_SETTING_COUNT > 5)
-				g_appLog->panicMessage("MSAA_SETTING_COUNT is larger than supported settings (5)\n");
+				INVOKE_PANIC("MSAA_SETTING_COUNT is larger than supported settings (5)\n");
 
 			const char* msaaQualitySettings[5] = { "Off", "2x", "4x", "8x", "16x" };
 			int selectedSetting = 0;
@@ -906,7 +906,7 @@ void GuiManager::rootWindow()
 				selectedSetting = 4;
 				break;
 			default:
-				g_appLog->panicMessage("Unsupported MSAA count %d (maximum handled is 16, recommended maximum is 8)\n", msaaCountSetting);
+				INVOKE_PANIC("Unsupported MSAA count %d (maximum handled is 16, recommended maximum is 8)\n", msaaCountSetting);
 				break;
 			}
 

@@ -32,106 +32,115 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_ LPWSTR    lpCmdLine,
     _In_ int       nCmdShow)
 {
-    g_morphemeEditorApp = MorphemeEditorApp::getInstance();
-    g_guiManager = GuiManager::getInstance();
-    g_renderManager = RenderManager::getInstance();
-    g_workerThread.store(WorkerThread::getInstance());
-
-    DX::StepTimer timer;
-    //timer.SetFixedTimeStep(true);
-    //timer.SetTargetElapsedSeconds(1.f / 60.f);
-
-    g_appLog = new RLog(MsgLevel_Debug, "morphemeEditor.log", "MorphemeEditor Console");
-
-    // Create application window
-    ImGui_ImplWin32_EnableDpiAwareness();
-    WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, hInstance, LoadIcon(hInstance, MAKEINTRESOURCE(IDC_ICON)), LoadCursor(nullptr, IDC_ARROW), nullptr, nullptr, MAKEINTRESOURCEW(IDC_ICON),  LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SMALL)) };
-    ::RegisterClassExW(&wc);
-
-    HWND hwnd = ::CreateWindowW(wc.lpszClassName, APPNAME, WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
-
-    // Show the window
-    ::ShowWindow(hwnd, SW_SHOWDEFAULT);
-    ::UpdateWindow(hwnd);
-
-    g_appLog->debugMessage(MsgLevel_Info, "Application startup\n");
-
-    g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct template\n");
-    g_taeTemplate = TimeAct::TaeTemplate::load(L"Data\\res\\TimeActTemplate.xml");
-
-    g_appLog->debugMessage(MsgLevel_Info, "Initialising application core module\n");
-    g_morphemeEditorApp->initialise();
-
-    g_appLog->debugMessage(MsgLevel_Info, "Initialising rendering module\n");
-    g_renderManager->initialise(hwnd);
-
-    g_appLog->debugMessage(MsgLevel_Info, "Initialising GUI module\n");
-    g_guiManager->initialise(hwnd, g_renderManager->getDeviceContext(), g_renderManager->getDevice());
-
-    g_appLog->debugMessage(MsgLevel_Info, "Creating FBX Manager\n");
-    g_pFbxManager = FbxManager::Create();
-
-    if (!g_pFbxManager)
-        throw std::runtime_error("Error: Unable to create FBX Manager!");
-
-    // Main loop
-    bool done = false;
-    while (!done)
+    try
     {
+        g_morphemeEditorApp = MorphemeEditorApp::getInstance();
+        g_guiManager = GuiManager::getInstance();
+        g_renderManager = RenderManager::getInstance();
+        g_workerThread.store(WorkerThread::getInstance());
+
+        DX::StepTimer timer;
+        //timer.SetFixedTimeStep(true);
+        //timer.SetTargetElapsedSeconds(1.f / 60.f);
+
+        g_appLog = new RLog(MsgLevel_Debug, "morphemeEditor.log", "MorphemeEditor Console");
+
+		RDebug::setPanicMode(PanicMode_InvokeDebugger);
+
+        // Create application window
+        ImGui_ImplWin32_EnableDpiAwareness();
+        WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, hInstance, LoadIcon(hInstance, MAKEINTRESOURCE(IDC_ICON)), LoadCursor(nullptr, IDC_ARROW), nullptr, nullptr, MAKEINTRESOURCEW(IDC_ICON),  LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SMALL)) };
+        ::RegisterClassExW(&wc);
+
+        HWND hwnd = ::CreateWindowW(wc.lpszClassName, APPNAME, WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
+
+        // Show the window
+        ::ShowWindow(hwnd, SW_SHOWDEFAULT);
+        ::UpdateWindow(hwnd);
+
+        g_appLog->debugMessage(MsgLevel_Info, "Application startup\n");
+
+        g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct template\n");
+        g_taeTemplate = TimeAct::TaeTemplate::load(L"Data\\res\\TimeActTemplate.xml");
+
+        g_appLog->debugMessage(MsgLevel_Info, "Initialising application core module\n");
+        g_morphemeEditorApp->initialise();
+
+        g_appLog->debugMessage(MsgLevel_Info, "Initialising rendering module\n");
+        g_renderManager->initialise(hwnd);
+
+        g_appLog->debugMessage(MsgLevel_Info, "Initialising GUI module\n");
+        g_guiManager->initialise(hwnd, g_renderManager->getDeviceContext(), g_renderManager->getDevice());
+
+        g_appLog->debugMessage(MsgLevel_Info, "Creating FBX Manager\n");
+        g_pFbxManager = FbxManager::Create();
+
+        if (!g_pFbxManager)
+            throw std::runtime_error("Error: Unable to create FBX Manager!");
+
+        // Main loop
+        bool done = false;
+        while (!done)
+        {
 #ifdef _CONSOLE
-        g_appLog->setConsoleVisibility(true);
+            g_appLog->setConsoleVisibility(true);
 #endif
 
-        WorkerThread::getInstance()->update();
+            WorkerThread::getInstance()->update();
 
-        timer.Tick([&]()
+            timer.Tick([&]()
+                {
+                    const float dt = float(timer.GetElapsedSeconds());
+
+                    g_renderManager->update(dt);
+                    g_guiManager->update(dt);
+                    g_morphemeEditorApp->update(dt);
+                });
+
+            // Rendering
+            if (timer.GetFrameCount() > 0)
+                g_renderManager->render();
+
+            g_renderManager->present();
+
+            // Poll and handle messages (inputs, window resize, etc.)
+            // See the WndProc() function below for our to dispatch events to the Win32 backend.
+            MSG msg;
+            while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
             {
-                const float dt = float(timer.GetElapsedSeconds());
+                ::TranslateMessage(&msg);
+                ::DispatchMessage(&msg);
 
-                g_renderManager->update(dt);
-                g_guiManager->update(dt);
-                g_morphemeEditorApp->update(dt);
-            });
-
-        // Rendering
-        if (timer.GetFrameCount() > 0)
-            g_renderManager->render();
-
-        g_renderManager->present();
-
-        // Poll and handle messages (inputs, window resize, etc.)
-        // See the WndProc() function below for our to dispatch events to the Win32 backend.
-        MSG msg;
-        while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
-        {
-            ::TranslateMessage(&msg);
-            ::DispatchMessage(&msg);
-
-            if (msg.message == WM_QUIT)
-                done = true;
+                if (msg.message == WM_QUIT)
+                    done = true;
+            }
         }
+
+        WorkerThread::getInstance()->join();
+
+        // Cleanup
+        g_appLog->debugMessage(MsgLevel_Info, "Main app module shutdown\n");
+        g_morphemeEditorApp->shutdown();
+
+        g_appLog->debugMessage(MsgLevel_Info, "Gui module shutdown\n");
+        g_guiManager->shutdown();
+
+        g_appLog->debugMessage(MsgLevel_Info, "Rendering module shutdown\n");
+        g_renderManager->shutdown();
+
+        ::DestroyWindow(hwnd);
+        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+
+        g_appLog->debugMessage(MsgLevel_Info, "Exit\n");
+        g_appLog->shutdown();
+
+        delete g_appLog;
     }
+    catch (const std::exception& e)
+    {
+        MessageBoxA(nullptr, e.what(), "Exception thrown", MB_ICONERROR);
+	}
 
-    WorkerThread::getInstance()->join();
-
-    // Cleanup
-    g_appLog->debugMessage(MsgLevel_Info, "Main app module shutdown\n");
-    g_morphemeEditorApp->shutdown();
-
-    g_appLog->debugMessage(MsgLevel_Info, "Gui module shutdown\n");
-    g_guiManager->shutdown();
-
-    g_appLog->debugMessage(MsgLevel_Info, "Rendering module shutdown\n");
-    g_renderManager->shutdown();
-
-    ::DestroyWindow(hwnd);
-    ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
-
-    g_appLog->debugMessage(MsgLevel_Info, "Exit\n");
-    g_appLog->shutdown();
-
-    delete g_appLog;
-    
     return 0;
 }
 

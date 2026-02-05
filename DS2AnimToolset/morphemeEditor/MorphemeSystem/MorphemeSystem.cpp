@@ -50,7 +50,7 @@ void MorphemeSystem::initMorpheme()
     //----------------------------
     // Dark Souls II Scholar of the First Sin registers exactly 74 ATTRIB_SEMANTICs. We must ensure that the count matches or else the output nmb will be incorrect
     if (numRegisteredAttribSemantics != NUM_EXPECTED_ATTRIB_SEMANTICS)
-        g_appLog->panicMessage("Invalid amount of registered ATTRIB_SEMANTIC (expecting %d, got %d)\n", NUM_EXPECTED_ATTRIB_SEMANTICS, numRegisteredAttribSemantics);
+        INVOKE_PANIC("Invalid amount of registered ATTRIB_SEMANTIC (expecting %d, got %d)\n", NUM_EXPECTED_ATTRIB_SEMANTICS, numRegisteredAttribSemantics);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
