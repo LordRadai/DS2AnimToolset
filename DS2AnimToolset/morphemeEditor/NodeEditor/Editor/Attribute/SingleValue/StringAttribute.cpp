@@ -30,10 +30,10 @@ namespace NodeEditor
 	void StringAttribute::setValue(const std::vector<std::any>& values)
 	{
 		if (values.size() < 1)
-			throw std::runtime_error("StringAttribute::setValue: Not enough values provided.");
+			INVOKE_PANIC("StringAttribute::setValue: Not enough values provided.");
 		
 		if (values[0].type() != typeid(std::string))
-			throw std::runtime_error("StringAttribute::setValue: Invalid type provided. Expected std::string.");
+			INVOKE_PANIC("StringAttribute::setValue: Invalid type provided. Expected std::string.");
 
 		m_value = std::any_cast<std::string>(values[0]);
 	}

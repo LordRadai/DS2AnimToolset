@@ -39,7 +39,7 @@ namespace NodeEditor
 		for (const std::any& value : values)
 		{
 			if (value.type() != typeid(int))
-				throw std::runtime_error("IntArrayAttribute::setValue: Invalid type in values vector. Expected int.");
+				INVOKE_PANIC("IntArrayAttribute::setValue: Invalid type in values vector. Expected int.");
 
 			m_values.push_back(std::any_cast<int>(value));
 		}

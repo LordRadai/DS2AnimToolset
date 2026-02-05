@@ -47,22 +47,22 @@ namespace NodeEditor
 	void AnimationTakeAttribute::setValue(const std::vector<std::any>& values)
 	{
 		if (values.size() > 3 || values.size() < 2)
-			throw std::runtime_error("AnimationTakeAttribute::setValue: Invalid number of values provided.");
+			INVOKE_PANIC("AnimationTakeAttribute::setValue: Invalid number of values provided.");
 
 		if (values[0].type() != typeid(std::string))
-			throw std::runtime_error("AnimationTakeAttribute::setValue: Invalid type for filename.");
+			INVOKE_PANIC("AnimationTakeAttribute::setValue: Invalid type for filename.");
 
 		m_filename = std::any_cast<std::string>(values[0]);
 
 		if (values[1].type() != typeid(std::string))
-			throw std::runtime_error("AnimationTakeAttribute::setValue: Invalid type for take name.");
+			INVOKE_PANIC("AnimationTakeAttribute::setValue: Invalid type for take name.");
 
 		m_takeName = std::any_cast<std::string>(values[1]);
 
 		if (values.size() == 3)
 		{
 			if (values[2].type() != typeid(std::string))
-				throw std::runtime_error("AnimationTakeAttribute::setValue: Invalid type for sync track.");
+				INVOKE_PANIC("AnimationTakeAttribute::setValue: Invalid type for sync track.");
 
 			m_syncTrack = std::any_cast<std::string>(values[2]);
 		}

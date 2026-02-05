@@ -46,7 +46,7 @@ namespace NodeEditor
 			if (index < m_attributes.size())
 				return m_attributes[index];
 
-			throw std::out_of_range("Index out of range for attributes.");
+			INVOKE_PANIC("Index out of range for attributes.");
 		}
 
 		MMAttribute* MMTransition::findAttribute(const std::string& name)
@@ -65,7 +65,7 @@ namespace NodeEditor
 			if (index < m_interfaces.size())
 				return m_interfaces[index];
 
-			throw std::out_of_range("Index out of range for interfaces.");
+			INVOKE_PANIC("Index out of range for interfaces.");
 		}
 
 		std::string MMTransition::findInterface(const std::string& name) const

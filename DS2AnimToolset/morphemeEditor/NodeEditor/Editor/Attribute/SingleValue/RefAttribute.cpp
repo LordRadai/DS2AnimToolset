@@ -31,10 +31,10 @@ namespace NodeEditor
 	void RefAttribute::setValue(const std::vector<std::any>& values)
 	{
 		if (values.size() != 1)
-			throw std::runtime_error("RefAttribute::setValue: Invalid number of values provided.");
+			INVOKE_PANIC("RefAttribute::setValue: Invalid number of values provided.");
 		
 		if (values[0].type() != typeid(Entity*))
-			throw std::runtime_error("RefAttribute::setValue: Invalid value type provided.");
+			INVOKE_PANIC("RefAttribute::setValue: Invalid value type provided.");
 
 		m_value = std::any_cast<Entity*>(values[0]);
 	}

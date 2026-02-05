@@ -37,19 +37,19 @@ namespace NodeEditor
 	void EnumAttribute::setValue(const std::vector<std::any>& values)
 	{
 		if (values.size() != 1)
-			throw std::runtime_error("EnumAttribute::setValue: Invalid number of values provided.");
+			INVOKE_PANIC("EnumAttribute::setValue: Invalid number of values provided.");
 
 		if (values[0].type() == typeid(int))
 		{
 			if (std::any_cast<int>(values[0]) >= getNumOptions())
-				throw std::runtime_error("EnumAttribute::setValue: Enum value out of range.");
+				INVOKE_PANIC("EnumAttribute::setValue: Enum value out of range.");
 
 			m_value = std::any_cast<int>(values[0]);
 		}
 		else if (values[0].type() == typeid(std::string))
 			m_value = getValueForString(std::any_cast<std::string>(values[0]));
 		else
-			throw std::runtime_error("EnumAttribute::setValue: Invalid value type provided.");
+			INVOKE_PANIC("EnumAttribute::setValue: Invalid value type provided.");
 	}
 
 	std::string EnumAttribute::getValueAsString() const

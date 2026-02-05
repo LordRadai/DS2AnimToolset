@@ -41,7 +41,7 @@ namespace NodeEditor
 		for (const std::any& value : values)
 		{
 			if (value.type() != typeid(std::string))
-				throw std::runtime_error("StringArrayAttribute::setValue: Invalid type in values vector. Expected std::string.");
+				INVOKE_PANIC("StringArrayAttribute::setValue: Invalid type in values vector. Expected std::string.");
 
 			m_values.push_back(std::any_cast<std::string>(value));
 		}

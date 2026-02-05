@@ -66,7 +66,7 @@ namespace NodeEditor
 		Manifest::MMCondition* conditionManifest = m_ownerEditor->getManifest()->findConditionManifest(typeName);
 
 		if (!conditionManifest)
-			throw std::runtime_error("Transition::createCondition: Condition type '" + typeName + "' not found in Manifest.");
+			INVOKE_PANIC("Transition::createCondition: Condition type '" + typeName + "' not found in Manifest.");
 
 		Condition* condition = conditionManifest->makeCondition(this);
 

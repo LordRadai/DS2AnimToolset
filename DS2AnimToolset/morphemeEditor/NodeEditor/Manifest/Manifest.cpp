@@ -12,7 +12,7 @@ namespace NodeEditor
 		void Manifest::registerStateMachine(std::string manifestPath)
 		{
 			if (!std::filesystem::exists(manifestPath))
-				throw std::runtime_error("Manifest file does not exist: " + manifestPath);
+				INVOKE_PANIC("Manifest file does not exist: " + manifestPath);
 
 			std::ifstream file(manifestPath);
 			nlohmann::json jsonData = nlohmann::json::parse(file);
@@ -20,7 +20,7 @@ namespace NodeEditor
 			file.close();
 
 			if (!jsonData.is_object())
-				throw std::runtime_error("Invalid JSON format for Manifest state machine registration");
+				INVOKE_PANIC("Invalid JSON format for Manifest state machine registration");
 
 			MMStateMachine* stateMachine = new MMStateMachine(jsonData);
 			stateMachine->setName(std::filesystem::path(manifestPath).filename().replace_extension("").string());
@@ -33,7 +33,7 @@ namespace NodeEditor
 		void Manifest::unregisterStateMachine(uint32_t index)
 		{
 			if (index >= m_registeredStateMachines.size())
-				throw std::out_of_range("Index out of range for registered state machines");
+				INVOKE_PANIC("Index out of range for registered state machines");
 
 			delete m_registeredStateMachines[index];
 			m_registeredStateMachines.erase(m_registeredStateMachines.begin() + index);
@@ -42,7 +42,7 @@ namespace NodeEditor
 		void Manifest::registerStateMachineNode(std::string manifestPath)
 		{
 			if (!std::filesystem::exists(manifestPath))
-				throw std::runtime_error("Manifest file does not exist: " + manifestPath);
+				INVOKE_PANIC("Manifest file does not exist: " + manifestPath);
 
 			std::ifstream file(manifestPath);
 			nlohmann::json jsonData = nlohmann::json::parse(file);
@@ -50,7 +50,7 @@ namespace NodeEditor
 			file.close();
 
 			if (!jsonData.is_object())
-				throw std::runtime_error("Invalid JSON format for Manifest state machine node registration");
+				INVOKE_PANIC("Invalid JSON format for Manifest state machine node registration");
 
 			MMStateMachineNode* stateMachineNode = new MMStateMachineNode(jsonData);
 			stateMachineNode->setName(std::filesystem::path(manifestPath).filename().replace_extension("").string());
@@ -63,7 +63,7 @@ namespace NodeEditor
 		void Manifest::unregisterStateMachineNode(uint32_t index)
 		{
 			if (index >= m_registeredStateMachineNodes.size())
-				throw std::out_of_range("Index out of range for registered state machine nodes");
+				INVOKE_PANIC("Index out of range for registered state machine nodes");
 
 			delete m_registeredStateMachineNodes[index];
 
@@ -73,7 +73,7 @@ namespace NodeEditor
 		void Manifest::registerNode(std::string manifestPath)
 		{
 			if (!std::filesystem::exists(manifestPath))
-				throw std::runtime_error("Manifest file does not exist: " + manifestPath);
+				INVOKE_PANIC("Manifest file does not exist: " + manifestPath);
 
 			std::ifstream file(manifestPath);
 			nlohmann::json jsonData = nlohmann::json::parse(file);
@@ -81,7 +81,7 @@ namespace NodeEditor
 			file.close();
 
 			if (!jsonData.is_object())
-				throw std::runtime_error("Invalid JSON format for Manifest node registration");
+				INVOKE_PANIC("Invalid JSON format for Manifest node registration");
 
 			MMNode* node = new MMNode(jsonData);
 			node->setName(std::filesystem::path(manifestPath).filename().replace_extension("").string());
@@ -94,7 +94,7 @@ namespace NodeEditor
 		void Manifest::unregisterNode(uint32_t index)
 		{
 			if (index >= m_registeredNodes.size())
-				throw std::out_of_range("Index out of range for registered nodes");
+				INVOKE_PANIC("Index out of range for registered nodes");
 
 			delete m_registeredNodes[index];
 			m_registeredNodes.erase(m_registeredNodes.begin() + index);
@@ -103,7 +103,7 @@ namespace NodeEditor
 		void Manifest::registerCondition(std::string manifestPath)
 		{
 			if (!std::filesystem::exists(manifestPath))
-				throw std::runtime_error("Manifest file does not exist: " + manifestPath);
+				INVOKE_PANIC("Manifest file does not exist: " + manifestPath);
 
 			std::ifstream file(manifestPath);
 			nlohmann::json jsonData = nlohmann::json::parse(file);
@@ -111,7 +111,7 @@ namespace NodeEditor
 			file.close();
 
 			if (!jsonData.is_object())
-				throw std::runtime_error("Invalid JSON format for Manifest condition registration");
+				INVOKE_PANIC("Invalid JSON format for Manifest condition registration");
 
 			MMCondition* condition = new MMCondition(jsonData);
 			condition->setName(std::filesystem::path(manifestPath).filename().replace_extension("").string());
@@ -124,7 +124,7 @@ namespace NodeEditor
 		void Manifest::unregisterCondition(uint32_t index)
 		{
 			if (index >= m_registeredConditions.size())
-				throw std::out_of_range("Index out of range for registered conditions");
+				INVOKE_PANIC("Index out of range for registered conditions");
 
 			delete m_registeredConditions[index];
 			m_registeredConditions.erase(m_registeredConditions.begin() + index);
@@ -133,14 +133,14 @@ namespace NodeEditor
 		void Manifest::registerTransition(std::string manifestPath)
 		{
 			if (!std::filesystem::exists(manifestPath))
-				throw std::runtime_error("Manifest file does not exist: " + manifestPath);
+				INVOKE_PANIC("Manifest file does not exist: " + manifestPath);
 
 			std::ifstream file(manifestPath);
 
 			nlohmann::json jsonData = nlohmann::json::parse(file);
 			file.close();
 			if (!jsonData.is_object())
-				throw std::runtime_error("Invalid JSON format for Manifest transition registration");
+				INVOKE_PANIC("Invalid JSON format for Manifest transition registration");
 
 			MMTransition* transition = new MMTransition(jsonData);
 			transition->setName(std::filesystem::path(manifestPath).filename().replace_extension("").string());
@@ -153,7 +153,7 @@ namespace NodeEditor
 		void Manifest::unregisterTransition(uint32_t index)
 		{
 			if (index >= m_regosteredTransitions.size())
-				throw std::out_of_range("Index out of range for registered transitions");
+				INVOKE_PANIC("Index out of range for registered transitions");
 
 			delete m_regosteredTransitions[index];
 			m_regosteredTransitions.erase(m_regosteredTransitions.begin() + index);
@@ -163,13 +163,13 @@ namespace NodeEditor
 		{
 			if (!std::filesystem::exists("Data\\manifest\\"))
 			{
-				throw std::runtime_error("Manifest directory does not exist: Data\\manifest\\");
+				INVOKE_PANIC("Manifest directory does not exist: Data\\manifest\\");
 				return false;
 			}
 
 			if (!std::filesystem::exists("Data\\manifest\\nodes\\"))
 			{
-				throw std::runtime_error("Manifest node directory does not exist: Data\\manifest\\nodes\\");
+				INVOKE_PANIC("Manifest node directory does not exist: Data\\manifest\\nodes\\");
 				return false;
 			}
 
@@ -189,7 +189,7 @@ namespace NodeEditor
 
 			if (!std::filesystem::exists("Data\\manifest\\conditions\\"))
 			{
-				throw std::runtime_error("Manifest condition directory does not exist: Data\\manifest\\conditions\\");
+				INVOKE_PANIC("Manifest condition directory does not exist: Data\\manifest\\conditions\\");
 				return false;
 			}
 
@@ -204,7 +204,7 @@ namespace NodeEditor
 
 			if (!std::filesystem::exists("Data\\manifest\\transitions"))
 			{
-				throw std::runtime_error("Manifest transition directory does not exist: Data\\manifest\\transitions\\");
+				INVOKE_PANIC("Manifest transition directory does not exist: Data\\manifest\\transitions\\");
 				return false;
 			}
 

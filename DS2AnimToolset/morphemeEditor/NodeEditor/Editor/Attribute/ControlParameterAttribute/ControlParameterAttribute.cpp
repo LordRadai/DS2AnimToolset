@@ -31,10 +31,10 @@ namespace NodeEditor
 	void ControlParameterAttribute::setValue(const std::vector<std::any>& values)
 	{
 		if (values.size() != 1)
-			throw std::runtime_error("ControlParameterAttribute::setValue: Invalid number of values provided.");
+			INVOKE_PANIC("ControlParameterAttribute::setValue: Invalid number of values provided.");
 
 		if (values[0].type() != typeid(ControlParameter*))
-			throw std::runtime_error("ControlParameterAttribute::setValue: Invalid value type provided.");
+			INVOKE_PANIC("ControlParameterAttribute::setValue: Invalid value type provided.");
 
 		m_controlParameter = std::any_cast<ControlParameter*>(values[0]);
 	}

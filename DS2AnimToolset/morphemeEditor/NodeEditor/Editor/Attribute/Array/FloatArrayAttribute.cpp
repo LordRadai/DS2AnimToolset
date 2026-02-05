@@ -39,7 +39,7 @@ namespace NodeEditor
 		for (const std::any& val : values)
 		{
 			if (val.type() != typeid(float))
-				throw std::runtime_error("FloatArrayAttribute::setValue: Invalid type in values vector. Expected float.");
+				INVOKE_PANIC("FloatArrayAttribute::setValue: Invalid type in values vector. Expected float.");
 
 			m_values.push_back(std::any_cast<float>(val));
 		}

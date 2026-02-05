@@ -237,7 +237,7 @@ namespace
 			TimeAct::TimeActEvent* event = group->addEvent(eventXML->getStartTime(), eventXML->getEndTime(), eventXML->getEventId(), g_taeTemplate);
 
 			if (eventXML->getNumArguments() != event->getNumArguments())
-				throw("Argument count mismatch\n");
+				INVOKE_PANIC("Argument count mismatch\n");
 
 			for (size_t argIdx = 0; argIdx < eventXML->getNumArguments(); argIdx++)
 			{
@@ -743,7 +743,7 @@ void MorphemeEditorApp::initialise()
 void MorphemeEditorApp::update(float dt)
 {
 	if (!this->m_initialised)
-		throw("Called MorphemeEditorApp::update without having called MorphemeEditorApp::initialise first\n");
+		INVOKE_PANIC("Called MorphemeEditorApp::update without having called MorphemeEditorApp::initialise first\n");
 
 	if (this->m_animPlayer)
 	{
@@ -1290,7 +1290,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 		std::wstring chrName = this->m_character->getCharacterName();
 
 		if (characterDef == nullptr)
-			throw("characterDef was nullptr\n");
+			INVOKE_PANIC("characterDef was nullptr\n");
 
 		g_workerThread.load()->addProcess("Export morpheme bundles", 5);
 		g_workerThread.load()->setProcessStepName("Exporting character controllers");
@@ -1847,7 +1847,7 @@ bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int 
 	CharacterMotionCtrlAnimPreview* motionCtrl = this->m_character->getCharacterMotionCtrl();
 	
 	if (motionCtrl == nullptr)
-		throw("characterMotionCtrl was nullptr\n");
+		INVOKE_PANIC("characterMotionCtrl was nullptr\n");
 
 	AnimObject* anim = motionCtrl->getAnimationById(animSetIdx, animId);
 

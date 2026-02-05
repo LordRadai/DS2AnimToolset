@@ -61,6 +61,6 @@ namespace NodeEditor
 		else if (type == "enum")
 			return new EnumAttribute(owner, name);
 		else
-			throw std::runtime_error("Attribute::createAttribute: Unknown attribute type '" + type + "'");
+			INVOKE_PANIC("Attribute::createAttribute: Unknown attribute type '" + type + "'");
 	}
 }

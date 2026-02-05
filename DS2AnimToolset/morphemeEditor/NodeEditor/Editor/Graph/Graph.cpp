@@ -4,6 +4,8 @@
 
 #include "NodeEditor/NodeEditor.h"
 
+#include "RCore.h"
+
 namespace NodeEditor
 {
 	Graph::Graph(Editor* editor, Graph* parent, const std::string& name, int graphNodeID) : Entity(editor, name), m_parentGraph(parent), m_context(nullptr), m_graphNodeID(graphNodeID), m_panning(0.0f, 0.0f)
@@ -81,7 +83,7 @@ namespace NodeEditor
 		Manifest::MMNode* manifestNode = m_ownerEditor->getManifest()->findNodeManifest(typeName);
 
 		if (!manifestNode)
-			throw std::runtime_error("Graph::createNode: Node type '" + typeName + "' not found in Manifest.");
+			INVOKE_PANIC("Graph::createNode: Node type %s not found in Manifest.", typeName);
 
 		Node* node = manifestNode->makeNode(m_ownerEditor, this, nodeID, nodeName);
 		node->setPosition(x, y);
@@ -131,7 +133,7 @@ namespace NodeEditor
 		Manifest::MMStateMachine* manifestNode = m_ownerEditor->getManifest()->findStateMachineManifest("StateMachine");
 
 		if (!manifestNode)
-			throw std::runtime_error("Graph::createStateMachine: StateMachine type 'StateMachine' not found in Manifest.");
+			INVOKE_PANIC("Graph::createStateMachine: StateMachine type 'StateMachine' not found in Manifest.");
 
 		Node* node = manifestNode->makeNode(m_ownerEditor, this, nodeID, nodeName);
 		node->setPosition(x, y);

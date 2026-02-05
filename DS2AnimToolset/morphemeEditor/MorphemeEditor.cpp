@@ -76,7 +76,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         g_pFbxManager = FbxManager::Create();
 
         if (!g_pFbxManager)
-            throw std::runtime_error("Error: Unable to create FBX Manager!");
+            INVOKE_PANIC("Unable to create FBX Manager");
 
         // Main loop
         bool done = false;

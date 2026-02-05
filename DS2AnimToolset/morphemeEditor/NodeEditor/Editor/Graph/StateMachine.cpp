@@ -115,7 +115,7 @@ namespace NodeEditor
 		Manifest::MMTransition* manifestTransition = m_ownerEditor->getManifest()->findTransitionManifest(typeName);
 		
 		if (manifestTransition == nullptr)
-			throw std::runtime_error("StateMachine::createTransition: Transition type '" + typeName + "' not found in manifest.");
+			INVOKE_PANIC("StateMachine::createTransition: Transition type '" + typeName + "' not found in manifest.");
 
 		Transition* transit = manifestTransition->makeTransition(m_ownerEditor, nodeID, sourceNode, destinationNode);
 

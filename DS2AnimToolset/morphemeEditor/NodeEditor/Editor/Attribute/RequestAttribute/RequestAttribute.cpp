@@ -31,10 +31,10 @@ namespace NodeEditor
 	void RequestAttribute::setValue(const std::vector<std::any>& values)
 	{
 		if (values.size() != 1)
-			throw std::runtime_error("RequestAttribute::setValue: Invalid number of values provided.");
+			INVOKE_PANIC("RequestAttribute::setValue: Invalid number of values provided.");
 		
 		if (values[0].type() != typeid(Message*))
-			throw std::runtime_error("RequestAttribute::setValue: Invalid value type provided.");
+			INVOKE_PANIC("RequestAttribute::setValue: Invalid value type provided.");
 
 		m_request = std::any_cast<Message*>(values[0]);
 	}

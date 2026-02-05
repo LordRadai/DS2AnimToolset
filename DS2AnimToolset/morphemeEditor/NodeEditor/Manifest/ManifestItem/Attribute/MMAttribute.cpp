@@ -1,3 +1,5 @@
+#include "RCore.h"
+
 #include "MMAttribute.h"
 
 #include "NodeEditor/Editor/Attribute/SingleValue/EnumAttribute.h"
@@ -61,7 +63,7 @@ namespace NodeEditor
 		uint32_t MMAttribute::size() const
 		{
 			if (!isArray())
-				throw std::runtime_error("MMAttribute::size() - Attribute is not an array");
+				INVOKE_PANIC("MMAttribute::size() - Attribute is not an array");
 
 			nlohmann::json value = getValue();
 
@@ -75,7 +77,7 @@ namespace NodeEditor
 		bool MMAttribute::getBoolValue() const
 		{
 			if (isArray())
-				throw std::runtime_error("MMAttribute::getBoolValue() - Attribute is an array");
+				INVOKE_PANIC("MMAttribute::getBoolValue() - Attribute is an array");
 
 			nlohmann::json value = getValue();
 
@@ -88,7 +90,7 @@ namespace NodeEditor
 		float MMAttribute::getFloatValue() const
 		{
 			if (isArray())
-				throw std::runtime_error("MMAttribute::getFloatValue() - Attribute is an array");
+				INVOKE_PANIC("MMAttribute::getFloatValue() - Attribute is an array");
 
 			nlohmann::json value = getValue();
 
@@ -101,7 +103,7 @@ namespace NodeEditor
 		int MMAttribute::getIntValue() const
 		{
 			if (isArray())
-				throw std::runtime_error("MMAttribute::getIntValue() - Attribute is an array");
+				INVOKE_PANIC("MMAttribute::getIntValue() - Attribute is an array");
 
 			nlohmann::json value = getValue();
 
@@ -114,7 +116,7 @@ namespace NodeEditor
 		std::string MMAttribute::getStringValue() const
 		{
 			if (isArray())
-				throw std::runtime_error("MMAttribute::getStringValue() - Attribute is an array");
+				INVOKE_PANIC("MMAttribute::getStringValue() - Attribute is an array");
 
 			nlohmann::json value = getValue();
 
@@ -127,12 +129,12 @@ namespace NodeEditor
 		bool MMAttribute::getBoolValue(const uint32_t index) const
 		{
 			if (!isArray())
-				throw std::runtime_error("MMAttribute::getBoolValue(index) - Attribute is not an array");
+				INVOKE_PANIC("MMAttribute::getBoolValue(index) - Attribute is not an array");
 
 			nlohmann::json value = getValue();
 
 			if (value == nullptr || index >= value.size())
-				throw std::out_of_range("MMAttribute::getBoolValue(index) - Index out of range");
+				INVOKE_PANIC("MMAttribute::getBoolValue(index) - Index out of range");
 
 			return value[index].get<bool>();
 		}
@@ -140,12 +142,12 @@ namespace NodeEditor
 		float MMAttribute::getFloatValue(const uint32_t index) const
 		{
 			if (!isArray())
-				throw std::runtime_error("MMAttribute::getFloatValue(index) - Attribute is not an array");
+				INVOKE_PANIC("MMAttribute::getFloatValue(index) - Attribute is not an array");
 
 			nlohmann::json value = getValue();
 
 			if (value == nullptr || index >= value.size())
-				throw std::out_of_range("MMAttribute::getFloatValue(index) - Index out of range");
+				INVOKE_PANIC("MMAttribute::getFloatValue(index) - Index out of range");
 
 			return value[index].get<float>();
 		}
@@ -153,12 +155,12 @@ namespace NodeEditor
 		int MMAttribute::getIntValue(const uint32_t index) const
 		{
 			if (!isArray())
-				throw std::runtime_error("MMAttribute::getIntValue(index) - Attribute is not an array");
+				INVOKE_PANIC("MMAttribute::getIntValue(index) - Attribute is not an array");
 
 			nlohmann::json value = getValue();
 
 			if (value == nullptr || index >= value.size())
-				throw std::out_of_range("MMAttribute::getIntValue(index) - Index out of range");
+				INVOKE_PANIC("MMAttribute::getIntValue(index) - Index out of range");
 
 			return value[index].get<int>();
 		}
@@ -166,12 +168,12 @@ namespace NodeEditor
 		std::string MMAttribute::getStringValue(const uint32_t index) const
 		{
 			if (!isArray())
-				throw std::runtime_error("MMAttribute::getStringValue(index) - Attribute is not an array");
+				INVOKE_PANIC("MMAttribute::getStringValue(index) - Attribute is not an array");
 
 			nlohmann::json value = getValue();
 
 			if (value == nullptr || index >= value.size())
-				throw std::out_of_range("MMAttribute::getStringValue(index) - Index out of range");
+				INVOKE_PANIC("MMAttribute::getStringValue(index) - Index out of range");
 
 			return value[index].get<std::string>();
 		}

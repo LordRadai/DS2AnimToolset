@@ -7,7 +7,7 @@ namespace NodeEditor
 		void MMFunctionalPin::fromJson(const nlohmann::json& json)
 		{
 			if (!json.contains("interfaces"))
-				throw std::runtime_error("MMFunctionalPin JSON does not contain 'interfaces' field");
+				INVOKE_PANIC("MMFunctionalPin JSON does not contain 'interfaces' field");
 
 			for (const auto& intr : json["interfaces"]["optional"])
 				m_optionalInterfaces.push_back(intr.get<std::string>());

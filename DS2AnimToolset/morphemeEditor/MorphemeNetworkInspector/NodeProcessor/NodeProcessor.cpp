@@ -398,7 +398,7 @@ const std::string NodeProcessor::nodeTypeAsManifestName(const MR::NodeType type)
 	case NODE_TYPE_SMOOTH_TRANSFORMS:						return "SmoothTransforms";
 	}
 
-	throw std::runtime_error("NodeProcessor::nodeTypeAsManifestName: Unsupported node type ID.");
+	INVOKE_PANIC("NodeProcessor::nodeTypeAsManifestName: Unsupported node type ID.");
 }
 
 const std::string NodeProcessor::transitTypeAsManifestName(const MR::NodeType type)
@@ -409,7 +409,7 @@ const std::string NodeProcessor::transitTypeAsManifestName(const MR::NodeType ty
 	case NODE_TYPE_TRANSIT_SYNC_EVENTS:		return "TransitMatchEvents";
 	}
 
-	throw std::runtime_error("NodeProcessor::transitTypeAsManifestName: Unsupported transition type ID.");
+	INVOKE_PANIC("NodeProcessor::transitTypeAsManifestName: Unsupported transition type ID.");
 }
 
 bool NodeProcessor::isNodeBlendTreeOutput(MR::NodeDef* nodeDef)

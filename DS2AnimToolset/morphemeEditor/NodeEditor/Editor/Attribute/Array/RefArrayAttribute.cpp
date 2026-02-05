@@ -42,7 +42,7 @@ namespace NodeEditor
 		for (const auto& val : values)
 		{
 			if (val.type() != typeid(Entity*))
-				throw std::runtime_error("RefArrayAttribute::setValue: Invalid type in values array. Expected Entity*.");
+				INVOKE_PANIC("RefArrayAttribute::setValue: Invalid type in values array. Expected Entity*.");
 
 			Entity* entity = std::any_cast<Entity*>(val);
 

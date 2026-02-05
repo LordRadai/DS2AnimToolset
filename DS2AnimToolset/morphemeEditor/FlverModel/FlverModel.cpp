@@ -79,7 +79,7 @@ namespace
 		{
 			const int parentIndex = rig->getParentBoneIndex(i);
 
-			if (parentIndex > i) throw std::runtime_error("Invalid bone hierarchy detected while accumulating Morpheme animation transforms.");
+			if (parentIndex > i) INVOKE_PANIC("Invalid bone hierarchy detected while accumulating Morpheme animation transforms.");
 
 			dstChannel[i] = getNmAnimBoneTransform(animHandle, i) * dstChannel[parentIndex];
 		}
@@ -95,7 +95,7 @@ namespace
 			const int parentIndex = rig->getParentBoneIndex(i);
 
 			if (parentIndex > i)
-				throw std::runtime_error("Invalid bone hierarchy detected while computing Morpheme rig transforms.");
+				INVOKE_PANIC("Invalid bone hierarchy detected while computing Morpheme rig transforms.");
 
 			dstChannel[i] = getNmRigTransform(rig, i) * dstChannel[parentIndex];
 		}
@@ -944,7 +944,7 @@ FlverModel::SkinnedVertex* FlverModel::getVertexBindPose(int meshIdx, int idx)
 Matrix FlverModel::getFlverBoneGlobalTransform(int idx)
 {
 	if (idx > this->m_flverBoneTransforms.size())
-		throw std::out_of_range("FlverModel::getFlverBoneGlobalTransform: index out of range");
+		INVOKE_PANIC("FlverModel::getFlverBoneGlobalTransform: index out of range");
 
 	return this->m_flverBoneTransforms[idx] * this->getWorldMatrix();
 }
@@ -952,7 +952,7 @@ Matrix FlverModel::getFlverBoneGlobalTransform(int idx)
 Matrix FlverModel::getFlverBoneBindPoseGlobalTransform(int idx)
 {
 	if (idx > this->m_flverBindPoseTransforms.size())
-		throw std::out_of_range("FlverModel::getFlverBoneBindPoseGlobalTransform: index out of range");
+		INVOKE_PANIC("FlverModel::getFlverBoneBindPoseGlobalTransform: index out of range");
 
 	return this->m_flverBindPoseTransforms[idx] * this->getWorldMatrix();
 }
@@ -1004,7 +1004,7 @@ Vector3 FlverModel::getBoundingBoxMax()
 Matrix FlverModel::getMorphemeBoneGlobalTransform(int idx)
 {
 	if (idx > this->m_nmBoneTransforms.size())
-		throw std::out_of_range("FlverModel::getMorphemeBoneGlobalTransform: index out of range");
+		INVOKE_PANIC("FlverModel::getMorphemeBoneGlobalTransform: index out of range");
 
 	return this->m_nmBoneTransforms[idx] * this->getWorldMatrix();
 }
@@ -1012,7 +1012,7 @@ Matrix FlverModel::getMorphemeBoneGlobalTransform(int idx)
 Matrix FlverModel::getMorphemeBoneBindPoseGlobalTransform(int idx)
 {
 	if (idx > this->m_nmBindPoseTransforms.size())
-		throw std::out_of_range("FlverModel::getMorphemeBoneBindPoseGlobalTransform: index out of range");
+		INVOKE_PANIC("FlverModel::getMorphemeBoneBindPoseGlobalTransform: index out of range");
 
 	return this->m_nmBindPoseTransforms[idx] * this->getWorldMatrix();
 }
