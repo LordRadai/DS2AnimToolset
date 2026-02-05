@@ -75,12 +75,12 @@ namespace NodeEditor
 			delete m_messages[i];
 
 		m_controlParameters.clear();
+        m_controlParametersNode->reset();
+
 		m_messages.clear();
 
         delete m_rootGraph;
 		m_rootGraph = nullptr;
-
-		m_controlParametersNode->reset();
 
         while (!m_graphStack.empty())
             m_graphStack.pop();
