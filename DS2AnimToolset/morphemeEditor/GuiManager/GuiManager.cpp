@@ -1067,10 +1067,10 @@ void GuiManager::sceneWindow()
 	{
 		camera->setInputEnabled(true);
 
-		if (ImGui::IsMouseDown(0))
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Middle))
 			ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
 
-		if (ImGui::IsMouseDown(1))
+		if (ImGui::IsMouseDown(ImGuiMouseButton_Right))
 			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
 	}
 

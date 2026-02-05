@@ -90,7 +90,7 @@ void Camera::handleInput(float delta_time)
 
 	if (this->m_cameraView == kCamViewPerspective)
 	{
-		if (io.MouseDown[0])
+		if (io.MouseDown[ImGuiMouseButton_Middle])
 		{
 			Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
 
@@ -100,7 +100,7 @@ void Camera::handleInput(float delta_time)
 			register_input = true;
 		}
 
-		if (io.MouseDown[1])
+		if (io.MouseDown[ImGuiMouseButton_Right])
 		{
 			Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
 
