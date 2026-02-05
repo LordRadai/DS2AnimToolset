@@ -1006,12 +1006,18 @@ Matrix FlverModel::getFlverTrajectoryBoneGlobalTransform()
 
 Vector3 FlverModel::getBoundingBoxMin()
 {
-	return Vector3(this->m_flver->header.boundingBoxMin.x, this->m_flver->header.boundingBoxMin.y, this->m_flver->header.boundingBoxMin.z);
+	if (this->m_flver)
+		return Vector3(this->m_flver->header.boundingBoxMin.x, this->m_flver->header.boundingBoxMin.y, this->m_flver->header.boundingBoxMin.z);
+
+	return Vector3(FLT_MIN, FLT_MIN, FLT_MIN);
 }
 
 Vector3 FlverModel::getBoundingBoxMax()
 {
-	return Vector3(this->m_flver->header.boundingBoxMax.x, this->m_flver->header.boundingBoxMax.y, this->m_flver->header.boundingBoxMax.z);
+	if (this->m_flver)
+		return Vector3(this->m_flver->header.boundingBoxMax.x, this->m_flver->header.boundingBoxMax.y, this->m_flver->header.boundingBoxMax.z);
+
+	return Vector3(FLT_MAX, FLT_MAX, FLT_MAX);
 }
 
 Matrix FlverModel::getMorphemeBoneGlobalTransform(int idx)
