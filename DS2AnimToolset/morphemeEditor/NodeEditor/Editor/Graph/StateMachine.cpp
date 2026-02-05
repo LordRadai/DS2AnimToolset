@@ -1,3 +1,5 @@
+#include "RCore.h"
+
 #include "StateMachine.h"
 
 #include "NodeEditor/imnodes/imnodes_internal.h"
@@ -115,7 +117,7 @@ namespace NodeEditor
 		Manifest::MMTransition* manifestTransition = m_ownerEditor->getManifest()->findTransitionManifest(typeName);
 		
 		if (manifestTransition == nullptr)
-			INVOKE_PANIC("StateMachine::createTransition: Transition type '" + typeName + "' not found in manifest.");
+			INVOKE_PANIC("StateMachine::createTransition: Transition type '%s' not found in manifest.", typeName.c_str());
 
 		Transition* transit = manifestTransition->makeTransition(m_ownerEditor, nodeID, sourceNode, destinationNode);
 
