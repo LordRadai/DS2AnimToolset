@@ -195,8 +195,6 @@ namespace NodeEditor
 	{
 		for (Node* node : m_nodes)
 			node->draw();
-
-		m_panning = ImNodes::EditorContextGetPanning();
 	}
 
 	const std::string Graph::getFullName() const
