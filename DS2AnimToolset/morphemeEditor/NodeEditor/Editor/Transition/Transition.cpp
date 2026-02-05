@@ -1,5 +1,4 @@
-﻿#include <cmath>
-
+﻿#include "RCore.h"
 #include "Transition.h"
 
 #include "NodeEditor/Editor/Node/Node.h"
@@ -7,9 +6,6 @@
 #include "NodeEditor/NodeEditor.h"
 
 #include "NodeEditor/imnodes/imnodes.h"
-#include "NodeEditor/imnodes/imnodes_internal.h"
-
-#include "imgui/imgui_internal.h"
 
 namespace NodeEditor
 {
@@ -66,7 +62,7 @@ namespace NodeEditor
 		Manifest::MMCondition* conditionManifest = m_ownerEditor->getManifest()->findConditionManifest(typeName);
 
 		if (!conditionManifest)
-			INVOKE_PANIC("Transition::createCondition: Condition type '" + typeName + "' not found in Manifest.");
+			INVOKE_PANIC("Transition::createCondition: Condition type '%s' not found in Manifest.", typeName.c_str());
 
 		Condition* condition = conditionManifest->makeCondition(this);
 

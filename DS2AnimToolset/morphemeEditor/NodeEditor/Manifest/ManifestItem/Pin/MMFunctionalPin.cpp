@@ -1,3 +1,5 @@
+#include "RCore.h"
+
 #include "MMFunctionalPin.h"
 
 namespace NodeEditor

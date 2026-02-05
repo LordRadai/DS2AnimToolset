@@ -1,3 +1,5 @@
+#include "RCore.h"
+
 #include "MMTransition.h"
 
 namespace NodeEditor

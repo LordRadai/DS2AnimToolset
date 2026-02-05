@@ -12,7 +12,7 @@ namespace NodeEditor
 		void Manifest::registerStateMachine(std::string manifestPath)
 		{
 			if (!std::filesystem::exists(manifestPath))
-				INVOKE_PANIC("Manifest file does not exist: " + manifestPath);
+				INVOKE_PANIC("Manifest file does not exist: %s", manifestPath.c_str());
 
 			std::ifstream file(manifestPath);
 			nlohmann::json jsonData = nlohmann::json::parse(file);
@@ -42,7 +42,7 @@ namespace NodeEditor
 		void Manifest::registerStateMachineNode(std::string manifestPath)
 		{
 			if (!std::filesystem::exists(manifestPath))
-				INVOKE_PANIC("Manifest file does not exist: " + manifestPath);
+				INVOKE_PANIC("Manifest file does not exist: %s", manifestPath.c_str());
 
 			std::ifstream file(manifestPath);
 			nlohmann::json jsonData = nlohmann::json::parse(file);
@@ -73,7 +73,7 @@ namespace NodeEditor
 		void Manifest::registerNode(std::string manifestPath)
 		{
 			if (!std::filesystem::exists(manifestPath))
-				INVOKE_PANIC("Manifest file does not exist: " + manifestPath);
+				INVOKE_PANIC("Manifest file does not exist: %s", manifestPath.c_str());
 
 			std::ifstream file(manifestPath);
 			nlohmann::json jsonData = nlohmann::json::parse(file);
@@ -103,7 +103,7 @@ namespace NodeEditor
 		void Manifest::registerCondition(std::string manifestPath)
 		{
 			if (!std::filesystem::exists(manifestPath))
-				INVOKE_PANIC("Manifest file does not exist: " + manifestPath);
+				INVOKE_PANIC("Manifest file does not exist: %s", manifestPath.c_str());
 
 			std::ifstream file(manifestPath);
 			nlohmann::json jsonData = nlohmann::json::parse(file);
@@ -133,7 +133,7 @@ namespace NodeEditor
 		void Manifest::registerTransition(std::string manifestPath)
 		{
 			if (!std::filesystem::exists(manifestPath))
-				INVOKE_PANIC("Manifest file does not exist: " + manifestPath);
+				INVOKE_PANIC("Manifest file does not exist: %s", manifestPath.c_str());
 
 			std::ifstream file(manifestPath);
 
