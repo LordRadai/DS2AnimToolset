@@ -13,7 +13,7 @@ bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* network)
 
 	if (network->getNumMultiplyConnectedNodes() != numControlParams)
 	{
-		g_appLog->debugMessage(MsgLevel_Error, "MorphemeNetworkInspector::loadNetwork: Networks with multiply connected nodes are not yet supported.");
+		g_appLog->alertMessage(MsgLevel_Info, "MorphemeNetworkInspector::loadNetwork: Networks with multiply connected nodes are not yet supported.");
 		return false;
 	}
 
