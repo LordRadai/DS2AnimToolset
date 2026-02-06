@@ -41,6 +41,19 @@ bool DefaultNodeNamingStrategy::collectNodeNames(MR::NetworkDef* netDef, const s
 					collectNames(childNode);
 				}
 			}
+
+			for (size_t i = 0; i < nodeDef->getNumInputCPConnections(); i++)
+			{
+				const MR::CPConnection* cpConnection = nodeDef->getInputCPConnection(i);
+
+				if (cpConnection->m_sourceNodeID != MR::INVALID_NODE_ID)
+				{
+					MR::NodeDef* sourceNode = netDef->getNodeDef(cpConnection->m_sourceNodeID);
+
+					if (!sourceNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+						collectNames(sourceNode);
+				}
+			}
 		};
 
 	collectNames(rootNodeDef);

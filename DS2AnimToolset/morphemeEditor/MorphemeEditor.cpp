@@ -32,8 +32,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_ LPWSTR    lpCmdLine,
     _In_ int       nCmdShow)
 {
-    try
-    {
+//    try
+//    {
         g_morphemeEditorApp = MorphemeEditorApp::getInstance();
         g_guiManager = GuiManager::getInstance();
         g_renderManager = RenderManager::getInstance();
@@ -135,11 +135,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         g_appLog->shutdown();
 
         delete g_appLog;
-    }
-    catch (const std::exception& e)
-    {
-        MessageBoxA(nullptr, e.what(), "Exception thrown", MB_ICONERROR);
-	}
+//    }
+//    catch (const std::exception& e)
+//    {
+//        MessageBoxA(nullptr, e.what(), "Exception thrown", MB_ICONERROR);
+//	}
 
     return 0;
 }

@@ -289,7 +289,7 @@ namespace NodeEditor
 
 		const float titleBarHeight = 2.f * imStyle.NodePadding.y + textSize.y;
 		const float nodeTotalMinHeight = titleBarHeight + style.NodeMinContentHeight;
-		const int totalPins = (int)(m_inputPins.size() + m_outputPins.size());
+		const int totalPins = (int)(m_inputPins.size() + m_outputPins.size() + m_inputDataPins.size() + m_outputDataPins.size());
 		const float nodeHeight = totalPins * 10.f;
 
 		width = std::fmax(style.NodeMinWidth, textSize.x);

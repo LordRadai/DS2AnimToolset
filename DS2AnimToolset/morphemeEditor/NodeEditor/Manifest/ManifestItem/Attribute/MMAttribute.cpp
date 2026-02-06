@@ -84,7 +84,7 @@ namespace NodeEditor
 			if (value == nullptr)
 				return false;
 
-			return value.get<bool>();
+			return value.get<int>();
 		}
 
 		float MMAttribute::getFloatValue() const

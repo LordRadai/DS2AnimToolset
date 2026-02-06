@@ -63,6 +63,18 @@ private:
 	bool collectNodeNames(MR::NetworkDef* netDef);
 
 	/*
+	* \brief Get the source node and graph node for a pass down connection. This is used to create the corresponding pass down pin in the editor.
+	* \param targetNode The node that is the target of the pass down connection. This is the node that will receive the pass down pin.
+	* \param graphNode The node that represents the blend tree containing the target node. Should be used as target connector.
+	* \param blendTree The blend tree containing the target node. Should be used to find the pass down pins node.
+	* \param targetNodeDef The node def for the target node. Should be used to find the input pin index for the pass down connection.
+	* \param sourceNode The node that is the source of the pass down connection. This is the node that will be connected to the pass down pin.
+	* \param inputPinIndex The index of the input pin on the source node that should be connected to the pass down pin.
+	* \param isTargetDataPin Whether the pass down connection is to a data pin on the target node. If false, the connection is to an execution pin.
+	*/
+	void getNodesForPassDownConnection(NodeEditor::Node** targetNode, NodeEditor::Node** graphNode, NodeEditor::BlendTree* blendTree, MR::NodeDef* targetNodeDef, NodeEditor::Node* sourceNode, size_t inputPinIndex, bool isTargetDataPin);
+
+	/*
 	* \brief Sanitize node names in the network to ensure there are no empty names. Must be done after collecting node names.
 	* \param netDef The network definition to process.
 	*/

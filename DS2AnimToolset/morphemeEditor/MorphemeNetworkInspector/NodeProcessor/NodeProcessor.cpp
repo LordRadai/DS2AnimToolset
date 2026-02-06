@@ -212,47 +212,10 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 			{
 				if (targetNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
 				{
-					NodeEditor::PassDownPinsNode* passDownPinsNode = blendTree->getPassDownPinsNode();
+					NodeEditor::Node* graphNode = nullptr;
+					NodeEditor::Node* targetNode = nullptr;
 
-					if (!passDownPinsNode)
-					{
-						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find pass down pins node in blend tree '%s'.\n", blendTree->getName().c_str());
-						continue;
-					}
-
-					// A blend tree with an input node means the BlendTree has a pass down pin. Create the pin first.
-					char passDownPinName[256];
-					sprintf_s(passDownPinName, "PassDown_%s", getNodeName(targetNodeDef->getNodeID()).c_str());
-
-					blendTree->addPassDownPin(passDownPinName);
-					passDownPinsNode->updatePins();
-
-					g_appLog->debugMessage(MsgLevel_Info, "NodeProcessor::processNodeConnectionsInBlendTree: Created pass down pin '%s' for blend tree node '%s' in blend tree '%s'.\n", passDownPinName, sourceNode->getName().c_str(), blendTree->getName().c_str());
-
-					passDownPinsNode->getOutputPin(passDownPinName)->connectTo(sourceNode->getInputPin(i));
-
-					NodeEditor::Graph* parentBt = blendTree->getParentGraph();
-					NodeEditor::Node* graphNode = blendTree->getGraphNode();
-
-					while (!parentBt->isOfType<NodeEditor::BlendTree>())
-					{
-						// For each layer we go up, create a pass down pin in the parent blend tree. And update the target node connection to the current graph node.
-						parentBt->addPassDownPin(passDownPinName);
-						graphNode = parentBt->getGraphNode();
-
-						parentBt = parentBt->getParentGraph();
-					}
-
-					if (!parentBt)
-						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find parent blend tree for pass down pin connection at blend tree '%s'.\n", blendTree->getName().c_str());
-
-					if (!graphNode)
-						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find graph node in parent blend tree '%s'.\n", parentBt->getName().c_str());
-
-					targetNode = parentBt->getNode(targetNodeDef->getNodeID());
-
-					if (!targetNode)
-						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in parent blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), parentBt->getName().c_str());
+					getNodesForPassDownConnection(&targetNode, &graphNode, blendTree, targetNodeDef, sourceNode, i, false);
 
 					targetNode->getOutputPin(0)->connectTo(graphNode->getInputPin(i));
 
@@ -281,8 +244,29 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 				if (!targetNode)
 				{
-					INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
-					continue;
+					MR::NodeDef::NodeFlags flags = targetNodeDef->getNodeFlags();
+
+					// I am not sure an input CP can be an output referenced. Let's have it flag for now.
+					if (flags.isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
+					{
+						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Found an input CP pin that's flagged as multiply connected.\n");
+					}
+
+					if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_OPERATOR_NODE))
+					{
+						NodeEditor::Node* graphNode = nullptr;
+						NodeEditor::Node* targetNode = nullptr;
+
+						getNodesForPassDownConnection(&targetNode, &graphNode, blendTree, targetNodeDef, sourceNode, i, true);
+
+						targetNode->getOutputDataPin(0)->connectTo(graphNode->getInputDataPin(i));
+
+						continue;
+					}
+					else
+					{
+						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+					}
 				}
 
 				targetNode->getOutputDataPin(cpConnection->m_sourcePinIndex)->connectTo(sourceNode->getInputDataPin(i));
@@ -599,6 +583,25 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 					collectChildren(childNode, outList, promotedNodes);
 			}
 
+			for (size_t i = 0; i < node->getNumInputCPConnections(); ++i)
+			{
+				const MR::CPConnection* cpConnection = node->getInputCPConnection(i);
+				if (cpConnection->m_sourceNodeID == MR::INVALID_NODE_ID)
+					continue;
+
+				MR::NodeDef* sourceNode = netDef->getNodeDef(cpConnection->m_sourceNodeID);
+
+				MR::NodeDef::NodeFlags flags = sourceNode->getNodeFlags();
+
+				if (!flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+				{
+					outList.push_back(sourceNode);
+
+					if (sourceNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+						collectChildren(sourceNode, outList, promotedNodes);
+				}
+			}
+
 			MR::NetworkDef* netDef = node->getOwningNetworkDef();
 			for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
 			{
@@ -682,6 +685,71 @@ bool NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
 	sanitizeNodeNames(netDef);
 
 	return true;
+}
+
+void NodeProcessor::getNodesForPassDownConnection(NodeEditor::Node** targetNode, NodeEditor::Node** graphNode, NodeEditor::BlendTree* blendTree, MR::NodeDef* targetNodeDef, NodeEditor::Node* sourceNode, size_t inputPinIndex, bool isTargetDataPin)
+{
+	if (!blendTree)
+		INVOKE_PANIC("createPassDownConnection: blendTree is null.\n");
+
+	// Get the pass-down pins node of this blend tree
+	NodeEditor::PassDownPinsNode* passDownPinsNode = blendTree->getPassDownPinsNode();
+	if (!passDownPinsNode)
+	{
+		INVOKE_PANIC(
+			"createPassDownConnection: Failed to find pass down pins node in blend tree '%s'.\n",
+			blendTree->getName().c_str());
+		return;
+	}
+
+	// Build the pass-down pin name
+	char passDownPinName[256];
+	sprintf_s(passDownPinName, "PassDown_%s", getNodeName(targetNodeDef->getNodeID()).c_str());
+
+	// Add the pass-down pin to this blend tree and update the pins node
+	blendTree->addPassDownPin(passDownPinName);
+	passDownPinsNode->updatePins();
+
+	g_appLog->debugMessage(
+		MsgLevel_Info,
+		"createPassDownConnection: Created pass down pin '%s' for blend tree node '%s' in blend tree '%s'.\n",
+		passDownPinName,
+		sourceNode->getName().c_str(),
+		blendTree->getName().c_str());
+
+	// Connect the pass-down pin to the source node's input pin
+	NodeEditor::Pin* targetPin = isTargetDataPin ? sourceNode->getInputDataPin(inputPinIndex) : sourceNode->getInputPin(inputPinIndex);
+
+	passDownPinsNode->getOutputPin(passDownPinName)->connectTo(targetPin);
+
+	// Traverse up the parent graphs to propagate pass-down pins
+	NodeEditor::Graph* parentGraph = blendTree->getParentGraph();
+	*graphNode = blendTree->getGraphNode();
+
+	while (parentGraph && !parentGraph->isOfType<NodeEditor::BlendTree>())
+	{
+		parentGraph->addPassDownPin(passDownPinName);
+		*graphNode = parentGraph->getGraphNode();
+		parentGraph = parentGraph->getParentGraph();
+	}
+
+	// If we didn't find a parent blend tree, stop
+	if (!parentGraph)
+		return;
+
+	if (!(*graphNode))
+		INVOKE_PANIC(
+			"createPassDownConnection: Failed to find graph node in parent blend tree '%s'.\n",
+			parentGraph->getName().c_str());
+
+	// Get the target node in the parent blend tree
+	*targetNode = parentGraph->getNode(targetNodeDef->getNodeID());
+
+	if (!(*targetNode))
+		INVOKE_PANIC(
+			"createPassDownConnection: Failed to find target node '%s' in parent blend tree '%s'.\n",
+			getNodeName(targetNodeDef->getNodeID()).c_str(),
+			parentGraph->getName().c_str());
 }
 
 void NodeProcessor::sanitizeNodeNames(MR::NetworkDef* netDef)

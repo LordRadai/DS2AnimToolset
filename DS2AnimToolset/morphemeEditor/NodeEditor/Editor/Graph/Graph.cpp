@@ -60,9 +60,9 @@ namespace NodeEditor
 
 	void Graph::addPassDownPin(const std::string& name)
 	{
-		if (isRootGraph())
+		if (isRootGraph() && isOfType<BlendTree>())
 		{
-			INVOKE_PANIC("Graph::addPassDownPin: Cannot add pass down pin to root graph.");
+			INVOKE_PANIC("Graph::addPassDownPin: Cannot add pass down pin to root blend tree.");
 			return;
 		}
 

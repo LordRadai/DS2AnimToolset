@@ -23,20 +23,24 @@ void layoutNode(NodeEditor::BlendTree* blendTree, NodeEditor::Node* node, MR::No
 	for (uint32_t i = 0; i < nodeDef->getNumChildNodes(); ++i)
 	{
 		NodeEditor::Node* childNode = blendTree->getNode(nodeDef->getChildNodeID(i));
-		MR::NodeDef* childNodeDef = nodeDef->getChildNodeDef(i);
-
-		if (childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-			continue;
 
 		if (!childNode)
 			continue;
 
-		const float vOffset = yStride * (childNodeDef->getNumChildNodes() + 1);
+		MR::NodeDef* childNodeDef = nodeDef->getChildNodeDef(i);
+
+		int numInputNodes = childNodeDef->getNumChildNodes() + 1;
+
+		if (childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+			numInputNodes = 1;
+
+		const float vOffset = yStride * numInputNodes;
 
 		ImVec2 nodeSize = childNode->getSize();
 		childNode->setPosition(xPos - nodeSize.x, yPos);
 
-		layoutNode(blendTree, childNode, childNodeDef, xPos, yPos);
+		if (!childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+			layoutNode(blendTree, childNode, childNodeDef, xPos, yPos);
 
 		yPos += vOffset;
 	}
@@ -51,8 +55,7 @@ void layoutNode(NodeEditor::BlendTree* blendTree, NodeEditor::Node* node, MR::No
 			const float vOffset = yStride * (inputNodeDef->getNumInputCPConnections() + 1);
 
 			ImVec2 nodeSize = inputNode->getSize();
-
-			inputNode->setPosition(xPos - nodeSize.x, yPos);
+			inputNode->setPosition(xPos - nodeSize.x, yPos + 100.f);
 
 			layoutNode(blendTree, inputNode, inputNodeDef, xPos, yPos);
 
@@ -98,7 +101,7 @@ bool BTFanLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::NodeDef* gra
 			maxY = pos.y;
 	}
 
-	const float cpNodeOffsetX = 100.f;
+	const float cpNodeOffsetX = 300.f;
 	const float cpNodeOffsetY = 200.f;
 
 	blendTree->setControlParamsNodePosition(minX - cpNodeOffsetX, maxY + cpNodeOffsetY);
