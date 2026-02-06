@@ -10,13 +10,12 @@
 bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* network)
 {
 	const int numControlParams = network->getNumControlParameterNodes();
-	/*
-	if (network->getNumMultiplyConnectedNodes() != numControlParams)
+
+	if (network->isPhysical())
 	{
-		g_appLog->alertMessage(MsgLevel_Info, "MorphemeNetworkInspector::loadNetwork: Networks with multiply connected nodes are not yet supported for display.");
+		g_appLog->alertMessage(MsgLevel_Info, "MorphemeNetworkInspector::loadNetwork: Physical networks are not supported.");
 		return false;
 	}
-	*/
 
 	m_nodeProcessor.preProcessNetwork(network);
 

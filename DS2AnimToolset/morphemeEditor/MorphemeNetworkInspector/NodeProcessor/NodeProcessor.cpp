@@ -236,6 +236,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 					while (!parentBt->isOfType<NodeEditor::BlendTree>())
 					{
+						// For each layer we go up, create a pass down pin in the parent blend tree. And update the target node connection to the current graph node.
 						parentBt->addPassDownPin(passDownPinName);
 						graphNode = parentBt->getGraphNode();
 
@@ -244,6 +245,9 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 					if (!parentBt)
 						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find parent blend tree for pass down pin connection at blend tree '%s'.\n", blendTree->getName().c_str());
+
+					if (!graphNode)
+						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find graph node in parent blend tree '%s'.\n", parentBt->getName().c_str());
 
 					targetNode = parentBt->getNode(targetNodeDef->getNodeID());
 
