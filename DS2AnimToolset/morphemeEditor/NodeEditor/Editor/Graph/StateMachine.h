@@ -12,7 +12,7 @@ namespace NodeEditor
 		int m_defaultNodeID;
 
 	public:
-		StateMachine(Editor* editor, Graph* parent, const std::string& name, int graphNodeID);
+		StateMachine(Editor* editor, Graph* parent, const std::string& name, Node* graphNode, int graphID);
 		~StateMachine() override;
 
 		virtual void draw() override;

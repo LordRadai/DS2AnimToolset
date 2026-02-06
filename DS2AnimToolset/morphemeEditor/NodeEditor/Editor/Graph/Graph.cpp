@@ -8,7 +8,7 @@
 
 namespace NodeEditor
 {
-	Graph::Graph(Editor* editor, Graph* parent, const std::string& name, int graphNodeID) : Entity(editor, name), m_parentGraph(parent), m_context(nullptr), m_graphNodeID(graphNodeID), m_panning(0.0f, 0.0f)
+	Graph::Graph(Editor* editor, Graph* parent, const std::string& name, Node* graphNode, int graphID) : Entity(editor, name), m_parentGraph(parent), m_context(nullptr), m_graphNode(graphNode), m_graphID(graphID), m_panning(0.0f, 0.0f)
 	{
 		Registry* registry = m_ownerEditor->getRegistry();
 
@@ -58,6 +58,39 @@ namespace NodeEditor
 		return nullptr;
 	}
 
+	void Graph::addPassDownPin(const std::string& name)
+	{
+		if (isRootGraph())
+		{
+			INVOKE_PANIC("Graph::addPassDownPin: Cannot add pass down pin to root graph.");
+			return;
+		}
+
+		m_passDownPins.push_back(name);
+
+		if (m_parentGraph->isOfType<BlendTree>())
+			m_graphNode->createInputPin(name);
+	}
+
+	const std::string& Graph::getPassDownPinAt(size_t index) const
+	{
+		if (index >= m_passDownPins.size())
+			return "";
+
+		return m_passDownPins[index];
+	}
+
+	const std::string& Graph::getPassDownPin(const std::string& name) const
+	{
+		for (const std::string& pinName : m_passDownPins)
+		{
+			if (pinName == name)
+				return pinName;
+		}
+
+		return nullptr;
+	}
+
 	void Graph::setPanning(float x, float y)
 	{
 		m_panning = ImVec2(x, y);
@@ -102,8 +135,9 @@ namespace NodeEditor
 
 		std::string nodeName = makeNameValid(nameToUse, "BlendTree");
 
-		Node* node = new Node(m_ownerEditor, this, nodeID, "BlendTree", nodeName, new BlendTree(m_ownerEditor, this, nodeName, nodeID));
+		Node* node = new Node(m_ownerEditor, this, nodeID, "BlendTree", nodeName, nullptr);
 		node->setPosition(x, y);
+		node->setSubGraph(new BlendTree(m_ownerEditor, this, nodeName, node, nodeID));
 
 		m_nodes.push_back(node);
 
@@ -140,7 +174,7 @@ namespace NodeEditor
 
 		m_nodes.push_back(node);
 
-		node->setSubGraph(new StateMachine(m_ownerEditor, this, nodeName, nodeID));
+		node->setSubGraph(new StateMachine(m_ownerEditor, this, nodeName, node, nodeID));
 
 		if (isOfType<BlendTree>())
 			node->createOutputPin("Result");

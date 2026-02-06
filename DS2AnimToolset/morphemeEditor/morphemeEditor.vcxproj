@@ -275,6 +275,7 @@
     <ClInclude Include="NodeEditor\Editor\Graph\BlendTree.h" />
     <ClInclude Include="NodeEditor\Editor\Graph\Graph.h" />
     <ClInclude Include="NodeEditor\Editor\Graph\StateMachine.h" />
+    <ClInclude Include="NodeEditor\Editor\Node\PassDownPinsNode.h" />
     <ClInclude Include="NodeEditor\Editor\Request\Request.h" />
     <ClInclude Include="NodeEditor\imnodes\imnodes.h" />
     <ClInclude Include="NodeEditor\imnodes\imnodes_internal.h" />
@@ -410,6 +411,7 @@
     <ClCompile Include="NodeEditor\Editor\Graph\BlendTree.cpp" />
     <ClCompile Include="NodeEditor\Editor\Graph\Graph.cpp" />
     <ClCompile Include="NodeEditor\Editor\Graph\StateMachine.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Node\PassDownPinsNode.cpp" />
     <ClCompile Include="NodeEditor\imnodes\imnodes.cpp" />
     <ClCompile Include="NodeEditor\Editor\Link\Link.cpp" />
     <ClCompile Include="NodeEditor\Editor\Node\Node.cpp" />

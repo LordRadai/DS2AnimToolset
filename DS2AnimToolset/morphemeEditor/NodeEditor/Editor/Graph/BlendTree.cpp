@@ -4,13 +4,17 @@
 
 namespace NodeEditor
 {
-	BlendTree::BlendTree(Editor* editor, Graph* parent, const std::string& name, int graphNodeID) : Graph(editor, parent, name, graphNodeID), m_resultNode(nullptr)
+	BlendTree::BlendTree(Editor* editor, Graph* parent, const std::string& name, Node* graphNode, int graphID) : Graph(editor, parent, name, graphNode, graphID), m_resultNode(nullptr)
 	{
 		m_resultNode = new BlendTreeOutputNode(editor, this);
 		m_resultNode->setPosition(900.0f, 500.0f);
-		m_controlParametersNode = new ControlParametersNode(editor, "ControlParameters");
-		m_controlParametersNode->setPosition(100.f, 400.f);
+
+		m_controlParametersNode = new ControlParametersNode(editor, "Control Parameters");
+		m_controlParametersNode->setPosition(100.f, 900.f);
 		m_controlParametersNode->updateOutputPins();
+
+		m_passDownPinsNode = new PassDownPinsNode(editor, this, -1, "Pass Down Pins");
+		m_passDownPinsNode->setPosition(100.f, 100.f);
 	}
 
 	BlendTree::~BlendTree()
@@ -25,6 +29,9 @@ namespace NodeEditor
 		m_resultNode->draw();
 		m_controlParametersNode->draw();
 
+		if (m_passDownPins.size() > 0)
+			m_passDownPinsNode->draw();
+
 		for (Link* link : m_links)
 			link->draw();
 	}
@@ -38,11 +45,22 @@ namespace NodeEditor
 
 		ImVec2 outputNodePos = ImNodes::GetNodeGridSpacePos(m_resultNode->getID());
 		m_resultNode->setPosition(outputNodePos.x, outputNodePos.y);
+
+		if (m_passDownPins.size() > 0)
+		{
+			ImVec2 passDownPinsNodePos = ImNodes::GetNodeGridSpacePos(m_passDownPinsNode->getID());
+			m_passDownPinsNode->setPosition(passDownPinsNodePos.x, passDownPinsNodePos.y);
+		}
 	}
 
 	void BlendTree::setControlParamsNodePosition(float x, float y)
 	{
 		m_controlParametersNode->setPosition(x, y);
+	}
+
+	void BlendTree::setPassDownPinsNodePosition(float x, float y)
+	{
+		m_passDownPinsNode->setPosition(x, y);
 	}
 
 	Node* BlendTree::createNode(int nodeID, const std::string& typeName, const std::string& name)

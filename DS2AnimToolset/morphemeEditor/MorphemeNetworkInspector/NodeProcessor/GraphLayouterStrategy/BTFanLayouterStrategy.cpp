@@ -29,12 +29,7 @@ void layoutNode(NodeEditor::BlendTree* blendTree, NodeEditor::Node* node, MR::No
 			continue;
 
 		if (!childNode)
-		{
-			INVOKE_PANIC(
-				"NodeProcessor::setBlendTreeLayout: Failed to find child node %d in blend tree '%s'.",
-				nodeDef->getChildNodeID(i), blendTree->getName().c_str());
 			continue;
-		}
 
 		const float vOffset = yStride * (childNodeDef->getNumChildNodes() + 1);
 

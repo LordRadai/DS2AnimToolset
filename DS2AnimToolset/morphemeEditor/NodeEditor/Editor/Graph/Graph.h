@@ -13,10 +13,12 @@ namespace NodeEditor
 		Graph* m_parentGraph;
 		ImNodesContext* m_context;
 		std::vector<Node*> m_nodes;
+		std::vector<std::string> m_passDownPins;
 		ImVec2 m_panning;
-		int m_graphNodeID;
+		Node* m_graphNode;
+		int m_graphID;
 	public:
-		Graph(Editor* editor, Graph* parent, const std::string& name, int graphNodeID);
+		Graph(Editor* editor, Graph* parent, const std::string& name, Node* graphNode, int graphID);
 		~Graph();
 
 		virtual void draw() override;
@@ -25,7 +27,9 @@ namespace NodeEditor
 		virtual void onGraphOpened();
 		virtual void onGraphClosed();
 
-		int getGraphNodeID() const { return m_graphNodeID; }
+		int getGraphID() const { return m_graphID; }
+
+		Node* getGraphNode() const { return m_graphNode; }
 
 		Graph* getParentGraph() const { return m_parentGraph; }
 		bool isRootGraph() const { return m_parentGraph == nullptr; }
@@ -37,6 +41,11 @@ namespace NodeEditor
 		Node* getNode(int nodeID) const;
 		Node* getNode(const std::string& name) const;
 		size_t getNumNodes() const { return m_nodes.size(); }
+
+		void addPassDownPin(const std::string& name);
+		const std::string& getPassDownPinAt(size_t index) const;
+		const std::string& getPassDownPin(const std::string& name) const;
+		size_t getNumPassDownPins() const { return m_passDownPins.size(); }
 
 		Node* createStateMachine(int nodeID, const std::string& name = "");
 		Node* createStateMachine(int nodeID, const std::string& name, float x, float y);

@@ -61,11 +61,11 @@ NodeEditor::Node* NodeProcessor::processNode(NodeEditor::Graph* graph, MR::NodeD
 {
 	g_appLog->debugMessage(MsgLevel_Info, "NodeProcessor::processNode: Processing node '%s' of ID %d.\n", name.c_str(), nodeDef->getNodeID());
 
-	if (isNodeBlendTreeOutput(nodeDef) && (nodeDef->getNodeID() != graph->getGraphNodeID()))
+	if (isNodeBlendTree(nodeDef) && (nodeDef->getNodeID() != graph->getGraphID()))
 	{
 		g_appLog->debugMessage(MsgLevel_Info, "NodeProcessor::processNode: Creating blend tree node for node %d.\n", nodeDef->getNodeID());
 
-		return graph->createBlendTree(nodeDef->getNodeID(), m_blendTreeNodeNames[graph->getGraphNodeID()]);
+		return graph->createBlendTree(nodeDef->getNodeID(), m_blendTreeNodeNames[graph->getGraphID()]);
 	}
 	else if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 	{
@@ -89,7 +89,7 @@ NodeEditor::Graph* NodeProcessor::buildRootGraph(NodeEditor::Editor* editor, MR:
 {
 	NodeEditor::Graph* rootGraph = nullptr;
 
-	if (isNodeBlendTreeOutput(rootNodeDef))
+	if (isNodeBlendTree(rootNodeDef))
 		rootGraph = editor->createRootBlendTree(rootNodeDef->getNodeID());
 	else
 		rootGraph = editor->createRootStateMachine(rootNodeDef->getNodeID());
@@ -112,6 +112,7 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 		for (MR::NodeDef* child : childNodes)
 		{
 			const std::string childName = getNodeName(child->getNodeID());
+
 			NodeEditor::Node* node = processNode(graph, child, childName);
 
 			if (node->hasSubGraph() && node->getSubGraph()->isOfType<NodeEditor::BlendTree>())
@@ -151,7 +152,7 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 	}
 	else
 	{
-		INVOKE_PANIC("NodeProcessor::populateGraph: Unsupported graph type for graph node ID %d.\n", graph->getGraphNodeID());
+		INVOKE_PANIC("NodeProcessor::populateGraph: Unsupported graph type for graph ID %d.\n", graph->getGraphID());
 	}
 }
 
@@ -191,9 +192,11 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 			continue;
 		}
 
-		if (isNodeBlendTreeOutput(childNodeDef))
+		if (isNodeBlendTreeOutput(childNodeDef, blendTree))
 			blendTree->connectToOutput(sourceNode->getOutputPin(0));
 		else if (childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+			continue;
+		else if (isNodeBlendTree(childNodeDef))
 			continue;
 
 		for (uint32_t i = 0; i < childNodeDef->getNumChildNodes(); ++i)
@@ -207,8 +210,54 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 			if (!targetNode)
 			{
-				INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
-				continue;
+				if (targetNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
+				{
+					NodeEditor::PassDownPinsNode* passDownPinsNode = blendTree->getPassDownPinsNode();
+
+					if (!passDownPinsNode)
+					{
+						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find pass down pins node in blend tree '%s'.\n", blendTree->getName().c_str());
+						continue;
+					}
+
+					// A blend tree with an input node means the BlendTree has a pass down pin. Create the pin first.
+					char passDownPinName[256];
+					sprintf_s(passDownPinName, "PassDown_%s", getNodeName(targetNodeDef->getNodeID()).c_str());
+
+					blendTree->addPassDownPin(passDownPinName);
+					passDownPinsNode->updatePins();
+
+					g_appLog->debugMessage(MsgLevel_Info, "NodeProcessor::processNodeConnectionsInBlendTree: Created pass down pin '%s' for blend tree node '%s' in blend tree '%s'.\n", passDownPinName, sourceNode->getName().c_str(), blendTree->getName().c_str());
+
+					passDownPinsNode->getOutputPin(passDownPinName)->connectTo(sourceNode->getInputPin(i));
+
+					NodeEditor::Graph* parentBt = blendTree->getParentGraph();
+					NodeEditor::Node* graphNode = blendTree->getGraphNode();
+
+					while (!parentBt->isOfType<NodeEditor::BlendTree>())
+					{
+						parentBt->addPassDownPin(passDownPinName);
+						graphNode = parentBt->getGraphNode();
+
+						parentBt = parentBt->getParentGraph();
+					}
+
+					if (!parentBt)
+						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find parent blend tree for pass down pin connection at blend tree '%s'.\n", blendTree->getName().c_str());
+
+					targetNode = parentBt->getNode(targetNodeDef->getNodeID());
+
+					if (!targetNode)
+						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in parent blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), parentBt->getName().c_str());
+
+					targetNode->getOutputPin(0)->connectTo(graphNode->getInputPin(i));
+
+					continue;
+				}
+				else
+				{
+					INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find target node '%s' in blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+				}
 			}
 
 			targetNode->getOutputPin(0)->connectTo(sourceNode->getInputPin(i));
@@ -412,7 +461,12 @@ const std::string NodeProcessor::transitTypeAsManifestName(const MR::NodeType ty
 	INVOKE_PANIC("NodeProcessor::transitTypeAsManifestName: Unsupported transition type ID.\n");
 }
 
-bool NodeProcessor::isNodeBlendTreeOutput(MR::NodeDef* nodeDef)
+bool NodeProcessor::isNodeBlendTreeOutput(MR::NodeDef* nodeDef, NodeEditor::BlendTree* bt)
+{
+	return nodeDef->getNodeID() == bt->getGraphID();
+}
+
+bool NodeProcessor::isNodeBlendTree(MR::NodeDef* nodeDef)
 {
 	return (m_blendTreeNodes.find(nodeDef->getNodeID()) != m_blendTreeNodes.end());
 }
@@ -510,7 +564,9 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 					{
 						// Promote parent node as new blend tree root
 						m_blendTreeNodes[nodeID] = node;
-						promotedNodes.push_back(node); // will ensure traversal
+
+						// Add to promoted nodes list for further processing
+						promotedNodes.push_back(node);
 
 						g_appLog->debugMessage(
 							MsgLevel_Debug,
@@ -519,9 +575,16 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 							netDef->getNodeNameFromNodeID(nodeID),
 							childNode->getNodeID(),
 							netDef->getNodeNameFromNodeID(childNode->getNodeID()));
+
+						outList.push_back(childNode);
+
+						// Recurse normally
+						if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+							collectChildren(childNode, outList, promotedNodes);
+
+						return;
 					}
 
-					// Stop traversal at this branch
 					continue;
 				}
 
@@ -530,6 +593,33 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 				// Recurse normally
 				if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
 					collectChildren(childNode, outList, promotedNodes);
+			}
+
+			MR::NetworkDef* netDef = node->getOwningNetworkDef();
+			for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
+			{
+				MR::NodeDef* otherNode = netDef->getNodeDef(i);
+
+				if (otherNode->getParentNodeID() == node->getNodeID())
+				{
+					bool alreadyAdded = false;
+					for (MR::NodeDef* existingNode : outList)
+					{
+						if (existingNode->getNodeID() == otherNode->getNodeID())
+						{
+							alreadyAdded = true;
+							break;
+						}
+					}
+
+					if (!alreadyAdded)
+					{
+						outList.push_back(otherNode);
+
+						if (otherNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+							collectChildren(otherNode, outList, promotedNodes);
+					}
+				}
 			}
 		};
 

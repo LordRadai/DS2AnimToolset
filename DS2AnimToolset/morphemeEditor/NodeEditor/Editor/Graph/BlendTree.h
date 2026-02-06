@@ -2,6 +2,7 @@
 #include "Graph.h"
 #include "NodeEditor/Editor/Node/BlendTreeOutputNode.h"
 #include "NodeEditor/Editor/Node/ControlParametersNode.h"
+#include "NodeEditor/Editor/Node/PassDownPinsNode.h"
 
 namespace NodeEditor
 {
@@ -9,9 +10,11 @@ namespace NodeEditor
 	{
 		BlendTreeOutputNode* m_resultNode;
 		ControlParametersNode* m_controlParametersNode;
+		PassDownPinsNode* m_passDownPinsNode;
+
 		std::vector<Link*> m_links;
 	public:
-		BlendTree(Editor* editor, Graph* parent, const std::string& name, int graphNodeID);
+		BlendTree(Editor* editor, Graph* parent, const std::string& name, Node* graphNode, int graphID);
 		~BlendTree() override;
 
 		virtual void draw() override;
@@ -22,6 +25,9 @@ namespace NodeEditor
 
 		void setControlParamsNodePosition(float x, float y);
 		ControlParametersNode* getControlParametersNode() const { return m_controlParametersNode; }
+
+		void setPassDownPinsNodePosition(float x, float y);
+		PassDownPinsNode* getPassDownPinsNode() const { return m_passDownPinsNode; }
 
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name = "");
 		Node* createNode(int nodeID, const std::string& typeName, const std::string& name, float x, float y);

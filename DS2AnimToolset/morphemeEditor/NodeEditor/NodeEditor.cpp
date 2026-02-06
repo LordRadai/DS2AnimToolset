@@ -642,7 +642,7 @@ namespace NodeEditor
         if (m_rootGraph)
             return nullptr;
 
-		BlendTree* blendTree = new BlendTree(this, nullptr, "", rootNodeID);
+		BlendTree* blendTree = new BlendTree(this, nullptr, "", nullptr, rootNodeID);
 
         pushGraph(blendTree);
 
@@ -654,7 +654,7 @@ namespace NodeEditor
         if (m_rootGraph)
             return nullptr;
 
-        StateMachine* stateMachine = new StateMachine(this, nullptr, "", rootNodeID);
+        StateMachine* stateMachine = new StateMachine(this, nullptr, "", nullptr, rootNodeID);
 
 		pushGraph(stateMachine);
 
