@@ -438,6 +438,7 @@ const std::string NodeProcessor::nodeTypeAsManifestName(const MR::NodeType type)
 	case NODE_TYPE_HIPS_IK:									return "HipsIK";
 	case NODE_TYPE_PLAY_SPEED_MODIFIER:						return "PlaySpeedModifier";
 	case NODE_TYPE_SCALE_TO_DURATION:						return "ScaleToDuration";
+	case NODE_TYPE_EMIT_MESSAGE_ON_DISCRETE_EVENT:			return "EmitRequestOnDiscreteEvent";
 	case NODE_TYPE_CLOSEST_ANIM:							return "ClosestAnim";
 	case NODE_TYPE_SWITCH:									return "Switch";
 	case NODE_TYPE_SEQUENCE: 								return "Sequence";
@@ -462,7 +463,7 @@ const std::string NodeProcessor::nodeTypeAsManifestName(const MR::NodeType type)
 	case NODE_TYPE_SMOOTH_TRANSFORMS:						return "SmoothTransforms";
 	}
 
-	INVOKE_PANIC("NodeProcessor::nodeTypeAsManifestName: Unsupported node type ID.\n");
+	INVOKE_PANIC("NodeProcessor::nodeTypeAsManifestName: Unsupported node type ID %d.\n", type);
 }
 
 const std::string NodeProcessor::transitTypeAsManifestName(const MR::NodeType type)
