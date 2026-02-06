@@ -19,7 +19,16 @@ for /R "%TARGET_DIR%" %%F in (*.%EXTENSION%) do (
     set "FULL=%%~fF"
     REM Remove the target folder prefix and leading backslash
     set "REL=!FULL:%TARGET_DIR%\=!"
-    echo !REL! ^| %%~zF bytes
+    
+    set "SIZE=%%~zF"
+
+    REM Display size in bytes if <1024, else in KB
+    if !SIZE! LSS 1024 (
+        echo !REL! ^| !SIZE! bytes
+    ) else (
+        set /A SIZEKB=!SIZE! / 1024
+        echo !REL! ^| !SIZEKB! KB
+    )
 )
 
 endlocal
