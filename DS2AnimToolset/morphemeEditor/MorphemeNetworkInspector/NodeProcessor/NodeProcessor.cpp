@@ -22,7 +22,13 @@ namespace
 		for (size_t i = 0; i < outList.size(); i++)
 		{
 			if (outList[i] == nodeDef)
+			{
+				MR::NodeDef::NodeFlags flags = nodeDef->getNodeFlags();
+				if (!flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) && !flags.isSet(MR::NodeDef::NODE_FLAG_IS_OPERATOR_NODE))
+					g_appLog->alertMessage(MsgLevel_Warn, "An equal that should not allow multiple connections was already registered (ID=%d)\n", nodeDef->getNodeID());
+
 				return;
+			}
 		}
 
 		outList.push_back(nodeDef);
