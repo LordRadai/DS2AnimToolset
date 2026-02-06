@@ -19,7 +19,7 @@ namespace
 	{
 		for (size_t i = 0; i < outList.size(); i++)
 		{
-			if (outList[i] == nodeDef)
+			if (outList[i]->getNodeID() == nodeDef->getNodeID())
 			{
 				MR::NodeDef::NodeFlags flags = nodeDef->getNodeFlags();
 				if (!flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) && !flags.isSet(MR::NodeDef::NODE_FLAG_IS_OPERATOR_NODE))
@@ -105,12 +105,14 @@ NodeEditor::Node* NodeProcessor::processNode(NodeEditor::Graph* graph, MR::NodeD
 
 NodeEditor::Graph* NodeProcessor::buildRootGraph(NodeEditor::Editor* editor, MR::NodeDef* rootNodeDef)
 {
-	NodeEditor::Graph* rootGraph = nullptr;
+	NodeEditor::Graph* rootGraph = editor->createRootBlendTree(rootNodeDef->getNodeID());
 
+	/*
 	if (isNodeBlendTree(rootNodeDef))
 		rootGraph = editor->createRootBlendTree(rootNodeDef->getNodeID());
 	else
 		rootGraph = editor->createRootStateMachine(rootNodeDef->getNodeID());
+	*/
 
 	populateGraph(rootGraph, rootNodeDef);
 	populateSubGraphs(rootGraph, rootNodeDef);
@@ -212,7 +214,8 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 		if (isNodeBlendTreeOutput(childNodeDef, blendTree))
 			blendTree->connectToOutput(sourceNode->getOutputPin(0));
-		else if (childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+		
+		if (childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 			continue;
 		else if (isNodeBlendTree(childNodeDef))
 			continue;
@@ -235,7 +238,8 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 					getNodesForPassDownConnection(&targetNode, &graphNode, blendTree, targetNodeDef, sourceNode, i, false);
 
-					targetNode->getOutputPin(0)->connectTo(graphNode->getInputPin(i));
+					if (graphNode && targetNode)
+						targetNode->getOutputPin(0)->connectTo(graphNode->getInputPin(i));
 
 					continue;
 				}
@@ -277,7 +281,8 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 						getNodesForPassDownConnection(&targetNode, &graphNode, blendTree, targetNodeDef, sourceNode, i, true);
 
-						targetNode->getOutputDataPin(0)->connectTo(graphNode->getInputDataPin(i));
+						if (graphNode && targetNode)
+							targetNode->getOutputDataPin(0)->connectTo(graphNode->getInputDataPin(i));
 
 						continue;
 					}
@@ -522,7 +527,7 @@ void NodeProcessor::collectBlendTreeNodes(MR::NetworkDef* netDef)
 
 	MR::NodeDef* rootNodeDef = netDef->getNodeDef(netDef->getRootNodeID());
 
-	if (rootNodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+	//if (rootNodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
 		m_blendTreeNodes[rootNodeDef->getNodeID()] = rootNodeDef;
 
 	const MR::NodeIDsArray* smArray = netDef->getStateMachineNodeIDs();
@@ -557,6 +562,9 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 	std::function<void(MR::NodeDef*, std::vector<MR::NodeDef*>&, std::vector<MR::NodeDef*>&)> collectChildren;
 	collectChildren = [&](MR::NodeDef* node, std::vector<MR::NodeDef*>& outList, std::vector<MR::NodeDef*>& promotedNodes)
 		{
+			if (node->getNodeTypeID() == NODE_TYPE_STATE_MACHINE)
+				return;
+
 			for (size_t i = 0; i < node->getNumChildNodes(); ++i)
 			{
 				MR::NodeDef* childNode = netDef->getNodeDef(node->getChildNodeID(i));
@@ -617,20 +625,6 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 					if (sourceNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
 						collectChildren(sourceNode, outList, promotedNodes);
-				}
-			}
-
-			MR::NetworkDef* netDef = node->getOwningNetworkDef();
-			for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
-			{
-				MR::NodeDef* otherNode = netDef->getNodeDef(i);
-
-				if (otherNode->getParentNodeID() == node->getNodeID())
-				{
-					addNodeToList(outList, otherNode);
-
-					if (otherNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
-						collectChildren(otherNode, outList, promotedNodes);
 				}
 			}
 		};

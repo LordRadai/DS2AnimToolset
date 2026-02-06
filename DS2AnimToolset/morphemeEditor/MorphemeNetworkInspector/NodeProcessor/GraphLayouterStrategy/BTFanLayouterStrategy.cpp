@@ -105,4 +105,6 @@ bool BTFanLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::NodeDef* gra
 	const float cpNodeOffsetY = 200.f;
 
 	blendTree->setControlParamsNodePosition(minX - cpNodeOffsetX, maxY + cpNodeOffsetY);
+
+	return true;
 }
