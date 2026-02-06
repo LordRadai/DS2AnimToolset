@@ -15,6 +15,20 @@
 
 #include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
 
+namespace
+{
+	void addNodeToList(std::vector<MR::NodeDef*>& outList, MR::NodeDef* nodeDef)
+	{
+		for (size_t i = 0; i < outList.size(); i++)
+		{
+			if (outList[i] == nodeDef)
+				return;
+		}
+
+		outList.push_back(nodeDef);
+	}
+}
+
 bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 {
 	if (isNetworkNodeNameMapComplete(netDef))
@@ -201,7 +215,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 		for (uint32_t i = 0; i < childNodeDef->getNumChildNodes(); ++i)
 		{
-			MR::NodeDef* targetNodeDef = netDef->getNodeDef(childNodeDef->getChildNodeID(i));
+			MR::NodeDef* targetNodeDef = childNodeDef->getChildNodeDef(i);
 
 			if (targetNodeDef->getNodeID() == MR::INVALID_NODE_ID)
 				continue;
@@ -564,7 +578,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 							childNode->getNodeID(),
 							netDef->getNodeNameFromNodeID(childNode->getNodeID()));
 
-						outList.push_back(childNode);
+						addNodeToList(outList, childNode);
 
 						// Recurse normally
 						if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
@@ -576,7 +590,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 					continue;
 				}
 
-				outList.push_back(childNode);
+				addNodeToList(outList, childNode);
 
 				// Recurse normally
 				if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
@@ -595,7 +609,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 				if (!flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 				{
-					outList.push_back(sourceNode);
+					addNodeToList(outList, sourceNode);
 
 					if (sourceNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
 						collectChildren(sourceNode, outList, promotedNodes);
@@ -609,23 +623,10 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 				if (otherNode->getParentNodeID() == node->getNodeID())
 				{
-					bool alreadyAdded = false;
-					for (MR::NodeDef* existingNode : outList)
-					{
-						if (existingNode->getNodeID() == otherNode->getNodeID())
-						{
-							alreadyAdded = true;
-							break;
-						}
-					}
+					addNodeToList(outList, otherNode);
 
-					if (!alreadyAdded)
-					{
-						outList.push_back(otherNode);
-
-						if (otherNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
-							collectChildren(otherNode, outList, promotedNodes);
-					}
+					if (otherNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+						collectChildren(otherNode, outList, promotedNodes);
 				}
 			}
 		};
