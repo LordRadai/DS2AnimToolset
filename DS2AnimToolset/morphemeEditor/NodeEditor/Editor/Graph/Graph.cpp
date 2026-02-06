@@ -66,10 +66,13 @@ namespace NodeEditor
 			return;
 		}
 
-		m_passDownPins.push_back(name);
+		if (getPassDownPin(name) == "")
+		{
+			m_passDownPins.push_back(name);
 
-		if (m_parentGraph->isOfType<BlendTree>())
-			m_graphNode->createInputPin(name);
+			if (m_parentGraph->isOfType<BlendTree>())
+				m_graphNode->createInputPin(name);
+		}
 	}
 
 	const std::string& Graph::getPassDownPinAt(size_t index) const
@@ -88,7 +91,7 @@ namespace NodeEditor
 				return pinName;
 		}
 
-		return nullptr;
+		return "";
 	}
 
 	void Graph::setPanning(float x, float y)
