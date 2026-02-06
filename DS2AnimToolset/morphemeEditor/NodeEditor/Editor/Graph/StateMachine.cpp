@@ -83,7 +83,7 @@ namespace NodeEditor
 
 	StateNode* StateMachine::createStateNode(const std::string& name)
 	{
-		std::string nodeName = makeNameValid(name, "ActiveState");
+		std::string nodeName = makeStateNodeNameValid(name);
 
 		Manifest::MMStateMachineNode* manifestNode = m_ownerEditor->getManifest()->findStateMachineNodeManifest("ActiveState");
 
@@ -113,6 +113,14 @@ namespace NodeEditor
 		}
 
 		return nullptr;
+	}
+
+	Transition* StateMachine::getTransitionAt(size_t index) const
+	{
+		if (index >= m_transitions.size())
+			return nullptr;
+
+		return m_transitions[index];
 	}
 
 	Transition* StateMachine::createTransition(int nodeID, const std::string& typeName, Node* sourceNode, Node* destinationNode)
@@ -148,5 +156,20 @@ namespace NodeEditor
 		);
 
 		drawList->AddCircleFilled(arrowStart, 5.f, IM_COL32(255, 255, 255, 255));
+	}
+
+	const std::string StateMachine::makeStateNodeNameValid(const std::string& desiredName)
+	{
+		const int numNodesWithName = m_stateNodes.size();
+
+		std::string splitChar = "";
+
+		if (std::isdigit(desiredName.back()))
+			splitChar = "_";
+
+		if (desiredName == "ActiveState")
+			return std::string(desiredName + splitChar + std::to_string(numNodesWithName + 1));
+
+		return desiredName;
 	}
 }

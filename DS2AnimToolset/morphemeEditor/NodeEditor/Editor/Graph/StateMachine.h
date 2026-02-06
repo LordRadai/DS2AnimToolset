@@ -31,10 +31,14 @@ namespace NodeEditor
 
 		Transition* getTransition(int nodeID) const;
 		Transition* getTransition(const std::string& name) const;
+		size_t getNumTransitions() const { return m_transitions.size(); }
+		Transition* getTransitionAt(size_t index) const;
 
 		Transition* createTransition(int nodeID, const std::string& typeName, Node* sourceNode, Node* destinationNode);
 
 	private:
 		void drawDefaultStateMarker();
+
+		const std::string makeStateNodeNameValid(const std::string& desiredName);
 	};
 }

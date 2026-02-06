@@ -331,9 +331,20 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 		// Active state transition
 		if (sourceNodeID == MR::INVALID_NODE_ID)
 		{
-			sourceNode = stateMachine->getDefaultStateNode();
+			bool existsStateToNode = false;
+			for (size_t j = 0; j < stateMachine->getNumTransitions(); j++)
+			{
+				NodeEditor::Transition* transition = stateMachine->getTransitionAt(j);
 
-			if (!sourceNode)
+				if (transition->getDestinationNode()->getNodeID() == targetNodeID)
+				{
+					existsStateToNode = true;
+					sourceNode = transition->getSourceNode();
+					break;
+				}
+			}
+
+			if (!existsStateToNode)
 				sourceNode = stateMachine->createStateNode();
 		}
 
