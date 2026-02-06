@@ -753,8 +753,24 @@ void NodeProcessor::getNodesForPassDownConnection(NodeEditor::Node** targetNode,
 	NodeEditor::Graph* parentGraph = blendTree->getParentGraph();
 	*graphNode = blendTree->getGraphNode();
 
-	while (parentGraph && !parentGraph->isOfType<NodeEditor::BlendTree>())
+	while (parentGraph && *targetNode == nullptr)
 	{
+		if (parentGraph->isOfType<NodeEditor::BlendTree>())
+		{
+			*targetNode = parentGraph->getNode(targetNodeDef->getNodeID());
+			 
+			if (*targetNode)
+			{
+				g_appLog->debugMessage(
+					MsgLevel_Info,
+					"createPassDownConnection: Found target node '%s' in parent blend tree '%s'.\n",
+					getNodeName(targetNodeDef->getNodeID()).c_str(),
+					parentGraph->getName().c_str());
+
+				break;
+			}
+		}
+		
 		if (parentGraph->getPassDownPin(passDownPinName) == "")
 			parentGraph->addPassDownPin(passDownPinName);
 
@@ -770,9 +786,6 @@ void NodeProcessor::getNodesForPassDownConnection(NodeEditor::Node** targetNode,
 		INVOKE_PANIC(
 			"createPassDownConnection: Failed to find graph node in parent blend tree '%s'.\n",
 			parentGraph->getName().c_str());
-
-	// Get the target node in the parent blend tree
-	*targetNode = parentGraph->getNode(targetNodeDef->getNodeID());
 
 	if (!(*targetNode))
 		INVOKE_PANIC(
