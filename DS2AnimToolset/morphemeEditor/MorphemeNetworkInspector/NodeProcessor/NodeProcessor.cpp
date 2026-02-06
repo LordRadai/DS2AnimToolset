@@ -668,17 +668,25 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		}
 	}
 
+	g_appLog->debugMessage(MsgLevel_Debug, "Root Node: %d (name=\"%s\")\n", netDef->getRootNodeID(), getNodeName(netDef->getRootNodeID()).c_str());
+
 	// Debug output
 	for (const auto& blendTreeNodePair : m_blendTreeNodeMap)
 	{
+		g_appLog->debugMessage(
+			MsgLevel_Debug,
+			"Blend tree node %d (name=\"%s\") has %d child nodes:\n",
+			blendTreeNodePair.first,
+			getNodeName(blendTreeNodePair.first).c_str(),
+			blendTreeNodePair.second.size());
+
 		for (const auto& childNode : blendTreeNodePair.second)
 		{
 			g_appLog->debugMessage(
 				MsgLevel_Debug,
-				"NodeProcessor::collectBlendTreeChildNodes: Blend tree node %d has child node %d (name=\"%s\").\n",
-				blendTreeNodePair.first,
+				"\tID=%d (name=\"%s\").\n",
 				childNode->getNodeID(),
-				netDef->getNodeNameFromNodeID(childNode->getNodeID())
+				getNodeName(childNode->getNodeID()).c_str()
 			);
 		}
 	}
