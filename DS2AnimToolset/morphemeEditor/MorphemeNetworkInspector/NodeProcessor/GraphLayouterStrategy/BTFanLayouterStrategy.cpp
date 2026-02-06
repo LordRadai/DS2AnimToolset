@@ -47,8 +47,13 @@ void layoutNode(NodeEditor::BlendTree* blendTree, NodeEditor::Node* node, MR::No
 
 	for (uint32_t i = 0; i < nodeDef->getNumInputCPConnections(); ++i)
 	{
-		NodeEditor::Node* inputNode = blendTree->getNode(nodeDef->getInputCPConnection(i)->m_sourceNodeID);
-		MR::NodeDef* inputNodeDef = netDef->getNodeDef(nodeDef->getInputCPConnection(i)->m_sourceNodeID);
+		const MR::CPConnection* cpConnection = nodeDef->getInputCPConnection(i);
+
+		if (cpConnection->m_sourceNodeID == MR::INVALID_NODE_ID)
+			continue;
+
+		NodeEditor::Node* inputNode = blendTree->getNode(cpConnection->m_sourceNodeID);
+		MR::NodeDef* inputNodeDef = netDef->getNodeDef(cpConnection->m_sourceNodeID);
 
 		if (inputNode)
 		{

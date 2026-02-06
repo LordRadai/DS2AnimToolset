@@ -232,7 +232,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 					getNodesForPassDownConnection(&targetNode, &graphNode, blendTree, targetNodeDef, sourceNode, i, false);
 
 					if (graphNode && targetNode)
-						targetNode->getOutputPin(0)->connectTo(graphNode->getInputPin(i));
+						targetNode->getOutputPin(0)->connectTo(graphNode->getInputPin(0));
 
 					continue;
 				}
@@ -248,10 +248,11 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 		for (uint32_t i = 0; i < childNodeDef->getNumInputCPConnections(); ++i)
 		{
 			const MR::CPConnection* cpConnection = childNodeDef->getInputCPConnection(i);
-			MR::NodeDef* targetNodeDef = netDef->getNodeDef(cpConnection->m_sourceNodeID);
 
-			if (targetNodeDef->getNodeID() == MR::INVALID_NODE_ID)
+			if (cpConnection->m_sourceNodeID == MR::INVALID_NODE_ID)
 				continue;
+
+			MR::NodeDef* targetNodeDef = netDef->getNodeDef(cpConnection->m_sourceNodeID);
 
 			if (!targetNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 			{
@@ -275,7 +276,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 						getNodesForPassDownConnection(&targetNode, &graphNode, blendTree, targetNodeDef, sourceNode, i, true);
 
 						if (graphNode && targetNode)
-							targetNode->getOutputDataPin(0)->connectTo(graphNode->getInputDataPin(i));
+							targetNode->getOutputDataPin(0)->connectTo(graphNode->getInputDataPin(0));
 
 						continue;
 					}
