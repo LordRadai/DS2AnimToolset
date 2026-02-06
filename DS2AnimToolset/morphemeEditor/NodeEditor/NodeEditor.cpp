@@ -16,7 +16,7 @@ namespace NodeEditor
     {
     }
 
-	Editor::Editor(int flags) : m_flags(flags), m_showStyleEditor(false), m_registry(nullptr), m_controlParametersNode(nullptr), m_manifest(nullptr), m_rootGraph(nullptr)
+	Editor::Editor(int flags) : m_flags(flags), m_showStyleEditor(false), m_registry(nullptr), m_manifest(nullptr), m_rootGraph(nullptr)
 	{
 	}
 
@@ -38,9 +38,6 @@ namespace NodeEditor
         if (!m_manifest->init())
 			g_appLog->alertMessage(MsgLevel_Error, "Failed to initialise Manifest.\n");
 
-        m_controlParametersNode = new ControlParametersNode(this, "ControlParameters");
-        m_controlParametersNode->setPosition(100.f, 400.f);
-
 		initStyle();
 
 		return true;
@@ -55,7 +52,6 @@ namespace NodeEditor
         
         m_manifest->shutdown();
 
-		delete m_controlParametersNode;
 		delete m_registry;
 		delete m_manifest;
 
@@ -75,7 +71,6 @@ namespace NodeEditor
 			delete m_messages[i];
 
 		m_controlParameters.clear();
-        m_controlParametersNode->reset();
 
 		m_messages.clear();
 
@@ -225,7 +220,6 @@ namespace NodeEditor
     void Editor::addControlParameter(ControlParameter* parameter)
     {
         m_controlParameters.push_back(parameter);
-        m_controlParametersNode->addOutputPin(parameter->getOutputPin());
     }
 
     ControlParameter* Editor::createControlParameterFloat(int id, const std::string& name)

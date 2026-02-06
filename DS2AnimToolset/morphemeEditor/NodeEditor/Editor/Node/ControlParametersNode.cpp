@@ -10,6 +10,8 @@ namespace NodeEditor
 
 	void ControlParametersNode::draw()
 	{
+        updateOutputPins();
+
 		StyleSettings& style = m_ownerEditor->getStyleSettings();
 
         ImNodes::PushColorStyle(ImNodesCol_NodeBackground, style.Colors[NodeEditorStyleCol_ControlParamNodeBackground]);
@@ -39,6 +41,24 @@ namespace NodeEditor
         ImNodes::PopColorStyle();
 	}
 
+    void ControlParametersNode::updateOutputPins()
+    {
+        const int numControlParams = m_ownerEditor->getNumControlParameters();
+        if (numControlParams != m_outputDataPins.size())
+        {
+            for (size_t i = 0; i < m_outputDataPins.size(); i++)
+                delete m_outputDataPins[i];
+
+			m_outputDataPins.clear();
+
+            for (size_t i = 0; i < numControlParams; i++)
+            {
+                ControlParameter* parameter = m_ownerEditor->getControlParameterAtIndex(i);
+                createOutputDataPin(parameter->getName(), parameter->getDataType());
+            }
+        }
+    }
+
     void ControlParametersNode::reset()
     {
         for (size_t i = 0; i < m_attributes.size(); i++)
@@ -50,8 +70,16 @@ namespace NodeEditor
         for (size_t i = 0; i < m_outputPins.size(); i++)
             delete m_outputPins[i];
 
+        for (size_t i = 0; i < m_inputDataPins.size(); i++)
+			delete m_inputDataPins[i];
+
+		for (size_t i = 0; i < m_outputDataPins.size(); i++)
+			delete m_outputDataPins[i];
+
 		m_attributes.clear();
         m_inputPins.clear();
 		m_outputPins.clear();
+		m_inputDataPins.clear();
+		m_outputDataPins.clear();
 	}
 }

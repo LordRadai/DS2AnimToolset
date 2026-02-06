@@ -72,7 +72,6 @@ namespace NodeEditor
 		std::stack<Graph*> m_graphStack;
 		std::vector<ControlParameter*> m_controlParameters;
 		std::vector<Message*> m_messages;
-		ControlParametersNode* m_controlParametersNode;
 		Registry* m_registry;
 		Manifest::Manifest* m_manifest;
 		bool m_showStyleEditor;
@@ -139,8 +138,6 @@ namespace NodeEditor
 		Node* getSelectedNode() const;
 		Transition* getSelectedTransition() const;
 		void clearSelection();
-
-		ControlParametersNode* getControlParametersNode() const { return m_controlParametersNode; }
 
 		void addControlParameter(ControlParameter* parameter);
 		ControlParameter* createControlParameterFloat(int id, const std::string& name);

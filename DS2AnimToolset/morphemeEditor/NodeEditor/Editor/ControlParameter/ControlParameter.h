@@ -21,7 +21,6 @@ namespace NodeEditor
 		};
 	private:
 		int m_controlParameterID;
-		DataPin* m_output;
 		ParameterType m_parameterType;
 	public:
 		ControlParameter(Editor* editor, int id, const std::string& name, ParameterType parameterType);
@@ -32,8 +31,8 @@ namespace NodeEditor
 
 		int getControlParameterID() const { return m_controlParameterID; }
 
-		DataPin* getOutputPin() const { return m_output; }
 		ParameterType getParameterType() const { return m_parameterType; }
+		DataPin::DataType getDataType() const;
 
 		static const char* parameterTypeToString(ParameterType type);
 		static ParameterType stringToParameterType(const std::string& typeStr);

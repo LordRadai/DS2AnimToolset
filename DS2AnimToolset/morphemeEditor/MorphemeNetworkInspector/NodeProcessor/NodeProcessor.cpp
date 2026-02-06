@@ -244,7 +244,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 					continue;
 				}
 
-				controlParam->getOutputPin()->connectTo(sourceNode->getInputDataPin(i));
+				blendTree->getControlParameterDataPin(controlParam->getName())->connectTo(sourceNode->getInputDataPin(i));
 			}
 		}
 	}

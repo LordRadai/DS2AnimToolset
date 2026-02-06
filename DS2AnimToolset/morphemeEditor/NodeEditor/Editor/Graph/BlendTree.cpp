@@ -8,12 +8,9 @@ namespace NodeEditor
 	{
 		m_resultNode = new BlendTreeOutputNode(editor, this);
 		m_resultNode->setPosition(900.0f, 500.0f);
-		m_controlParamsNodePos = ImVec2(100.0f, 800.0f);
-
-		ControlParametersNode* controlParamsNode = editor->getControlParametersNode();
-
-		if (controlParamsNode)
-			controlParamsNode->setPosition(m_controlParamsNodePos.x, m_controlParamsNodePos.y);
+		m_controlParametersNode = new ControlParametersNode(editor, "ControlParameters");
+		m_controlParametersNode->setPosition(100.f, 400.f);
+		m_controlParametersNode->updateOutputPins();
 	}
 
 	BlendTree::~BlendTree()
@@ -26,11 +23,7 @@ namespace NodeEditor
 		Graph::draw();
 
 		m_resultNode->draw();
-
-		ControlParametersNode* cpNode = m_ownerEditor->getControlParametersNode();
-
-		if (cpNode)
-			cpNode->draw();
+		m_controlParametersNode->draw();
 
 		for (Link* link : m_links)
 			link->draw();
@@ -40,30 +33,16 @@ namespace NodeEditor
 	{
 		Graph::updateNodePositions();
 
-		ControlParametersNode* cpNode = m_ownerEditor->getControlParametersNode();
-
-		if (cpNode)
-		{
-			ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(cpNode->getID());
-			cpNode->setPosition(cpNodePos.x, cpNodePos.y);
-			m_controlParamsNodePos = cpNodePos;
-		}
+		ImVec2 cpNodePos = ImNodes::GetNodeGridSpacePos(m_controlParametersNode->getID());
+		m_controlParametersNode->setPosition(cpNodePos.x, cpNodePos.y);
 
 		ImVec2 outputNodePos = ImNodes::GetNodeGridSpacePos(m_resultNode->getID());
 		m_resultNode->setPosition(outputNodePos.x, outputNodePos.y);
 	}
 
-	void BlendTree::onGraphOpened()
-	{
-		Graph::onGraphOpened();
-
-		ControlParametersNode* cpNode = m_ownerEditor->getControlParametersNode();
-		cpNode->setPosition(m_controlParamsNodePos.x, m_controlParamsNodePos.y);
-	}
-
 	void BlendTree::setControlParamsNodePosition(float x, float y)
 	{
-		m_controlParamsNodePos = ImVec2(x, y);
+		m_controlParametersNode->setPosition(x, y);
 	}
 
 	Node* BlendTree::createNode(int nodeID, const std::string& typeName, const std::string& name)
@@ -74,6 +53,11 @@ namespace NodeEditor
 	Node* BlendTree::createNode(int nodeID, const std::string& typeName, const std::string& name, float x, float y)
 	{
 		return Graph::createNode(nodeID, typeName, name, x, y);
+	}
+
+	DataPin* BlendTree::getControlParameterDataPin(const std::string& paramName) const
+	{
+		return m_controlParametersNode->getOutputDataPin(paramName);
 	}
 
 	bool BlendTree::connectToOutput(Pin* outputPin)

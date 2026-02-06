@@ -48,12 +48,6 @@ namespace NodeEditor
 
 		Node* blend2 = src->getSubGraph()->asType<BlendTree>()->createNode(12, "Blend2");
 
-		cp->getOutputPin()->connectTo(node1->getInputPin("Weight"));
-		node1->getOutputPin("Result")->connectTo(node2->getInputPin("Source"));
-
-		cp->getOutputPin()->connectTo(blend2->getInputPin("Weight"));
-		rootGraph->connectToOutput(node2->getOutputPin("Result"));
-
 		return true;
 	}
 }

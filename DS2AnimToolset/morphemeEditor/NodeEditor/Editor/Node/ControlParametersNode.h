@@ -12,6 +12,7 @@ namespace NodeEditor
 		virtual void draw() override;
 		virtual bool editorGUI() override { return false; }
 
+		void updateOutputPins();
 		void reset();
 	};
 }

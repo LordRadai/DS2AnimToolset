@@ -8,37 +8,21 @@ namespace NodeEditor
 	ControlParameter::ControlParameter(Editor* editor, int id, const std::string& name, ParameterType parameterType)
 		: Entity(editor, name), m_controlParameterID(id), m_parameterType(parameterType)
 	{
-		DataPin::DataType dataType;
+	}
 
-		switch (parameterType)
+	DataPin::DataType ControlParameter::getDataType() const
+	{
+		switch (m_parameterType)
 		{
-		case kParameterTypeFloat:
-			dataType = DataPin::kDataTypeFloat;
-			break;
-		case kParameterTypeInt:
-			dataType = DataPin::kDataTypeInt;
-			break;
-		case kParameterTypeUInt:
-			dataType = DataPin::kDataTypeUInt;
-			break;
-		case kParameterTypeBool:
-			dataType = DataPin::kDataTypeBool;
-			break;
-		case kParameterTypeVector3:
-			dataType = DataPin::kDataTypeVector3;
-			break;
-		case kParameterTypeVector4:
-			dataType = DataPin::kDataTypeVector4;
-			break;
-		case kParameterTypeQuaternion:
-			dataType = DataPin::kDataTypeQuaternion;
-			break;
-		default:
-			dataType = DataPin::kDataTypeFloat;
-			break;
+		case kParameterTypeFloat:			return DataPin::kDataTypeFloat;
+		case kParameterTypeInt:				return DataPin::kDataTypeInt;
+		case kParameterTypeUInt:			return DataPin::kDataTypeUInt;
+		case kParameterTypeBool:			return DataPin::kDataTypeBool;
+		case kParameterTypeVector3:			return DataPin::kDataTypeVector3;
+		case kParameterTypeVector4:			return DataPin::kDataTypeVector4;
+		case kParameterTypeQuaternion:		return DataPin::kDataTypeQuaternion;
+		default:							INVOKE_PANIC("Invalid ControlParameter type %d", m_parameterType);
 		}
-
-		m_output = new DataPin(editor, editor->getControlParametersNode(), name, false, dataType);
 	}
 
 	const char* ControlParameter::parameterTypeToString(ParameterType type)
