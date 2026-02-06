@@ -36,5 +36,7 @@ namespace NodeEditor
 		DataPin* getControlParameterDataPin(const std::string& paramName) const;
 
 		bool connectToOutput(Pin* outputPin);
+
+		bool hasConnectionBetween(Pin* outputPin, Pin* inputPin) const;
 	};
 }

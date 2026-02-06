@@ -88,4 +88,15 @@ namespace NodeEditor
 
 		return false;
 	}
+
+	bool BlendTree::hasConnectionBetween(Pin* outputPin, Pin* inputPin) const
+	{
+		for (Link* link : m_links)
+		{
+			if (link->getOutputPin() == outputPin && link->getInputPin() == inputPin)
+				return true;
+		}
+
+		return false;
+	}
 }

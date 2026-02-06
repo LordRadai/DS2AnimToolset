@@ -276,7 +276,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 						getNodesForPassDownConnection(&targetNode, &graphNode, blendTree, targetNodeDef, sourceNode, i, true);
 
 						if (graphNode && targetNode)
-							targetNode->getOutputDataPin(0)->connectTo(graphNode->getInputDataPin(0));
+							targetNode->getOutputDataPin(0)->connectTo(graphNode->getInputDataPin(i));
 
 						continue;
 					}
