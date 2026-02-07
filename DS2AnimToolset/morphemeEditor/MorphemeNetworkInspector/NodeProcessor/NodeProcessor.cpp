@@ -20,15 +20,21 @@ namespace
 		for (size_t i = 0; i < outList.size(); i++)
 		{
 			if (outList[i]->getNodeID() == nodeDef->getNodeID())
-			{
-				if (nodeDef->getNumOutputCPPins() == 0)
-					g_appLog->alertMessage(MsgLevel_Warn, "A node that should not allow multiple connections was already registered (ID=%d)\n", nodeDef->getNodeID());
-
 				return;
-			}
 		}
 
 		outList.push_back(nodeDef);
+	}
+
+	bool doesListContainNode(std::vector<MR::NodeDef*>& list, MR::NodeDef* nodeDef)
+	{
+		for (size_t i = 0; i < list.size(); i++)
+		{
+			if (list[i]->getNodeID() == nodeDef->getNodeID())
+				return true;
+		}
+
+		return false;
 	}
 
 	void getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outList, MR::NetworkDef* netDef, MR::NodeID nodeID)
@@ -468,15 +474,15 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 		}
 	}
 
-	for (size_t i = 0; i < m_cpOutputNodes.size(); i++)
+	for (size_t i = 0; i < m_multiplyConnectedCPOutputNodes.size(); i++)
 	{
-		MR::NodeDef* nodeDef = m_cpOutputNodes[i];
+		MR::NodeDef* nodeDef = m_multiplyConnectedCPOutputNodes[i];
 		const MR::NodeID nodeID = nodeDef->getNodeID();
 
 		NodeEditor::Node* multiplyConnectedNode = editor->getNode(nodeID);
 
 		std::vector<MR::NodeDef*> nodesWithThisAsInputCP;
-		getNodesWithThisAsInputCP(nodesWithThisAsInputCP, netDef, m_cpOutputNodes[i]->getNodeID());
+		getNodesWithThisAsInputCP(nodesWithThisAsInputCP, netDef, m_multiplyConnectedCPOutputNodes[i]->getNodeID());
 
 		if (nodesWithThisAsInputCP.size() == 1)
 			continue;
@@ -1064,6 +1070,8 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 	const MR::NodeID rootNodeID = netDef->getRootNodeID();
 
+	std::vector<MR::NodeDef*> cpOutputNodes;
+
 	// Add the root nodes
 	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
 	{
@@ -1074,7 +1082,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 			continue;
 
 		if (nodeDef->getNumOutputCPPins() > 0)
-			m_cpOutputNodes.push_back(nodeDef);
+			cpOutputNodes.push_back(nodeDef);
 
 		const MR::NodeID parentNodeID = nodeDef->getParentNodeID();
 
@@ -1097,7 +1105,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 	// We then must find where the output CP nodes belong. First, find all of them, then count the number of nodes that reference them as input.
 	// If there's more than one, find the common ancestor of all referencing nodes and add the output CP node as a child of the common ancestor. 
 	// If there's only one, add the output CP node as a child of the referencing node.
-	for (MR::NodeDef* cpOutputNode : m_cpOutputNodes)
+	for (MR::NodeDef* cpOutputNode : cpOutputNodes)
 	{
 		std::vector<MR::NodeDef*> referencingNodes;
 		getNodesWithThisAsInputCP(referencingNodes, netDef, cpOutputNode->getNodeID());
@@ -1117,13 +1125,28 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		if (!commonAncestor)
 		{
 			g_appLog->alertMessage(MsgLevel_Warn, "Failed to find common ancestor for control parameter output node ID %d. Defaulting to root node.\n", cpOutputNode->getNodeID());
-			commonAncestor = netDef->getNodeDef(netDef->getRootNodeID());
+			//commonAncestor = netDef->getNodeDef(netDef->getRootNodeID());
 		}
 
 		g_appLog->debugMessage(MsgLevel_Debug, "Common ancestor for CP output node ID %d is node ID %d (name=\"%s\").\n", cpOutputNode->getNodeID(), commonAncestor->getNodeID(), netDef->getNodeNameFromNodeID(commonAncestor->getNodeID()));
 
 		addNodeToList(m_blendTreeNodeMap[commonAncestor->getNodeID()], cpOutputNode);
 		collectChildren(cpOutputNode, m_blendTreeNodeMap[commonAncestor->getNodeID()]);
+
+		// Check if the ancestor contains both nodes and the output CP node. In which case the node is not a pass down node, and we don't need to add it to the list of multiply connected CP output nodes.
+		bool isNodePassDown = false;
+		
+		for (MR::NodeDef* referencingNode : referencingNodes)
+		{
+			if (!doesListContainNode(m_blendTreeNodeMap[commonAncestor->getNodeID()], referencingNode))
+			{
+				isNodePassDown = true;
+				break;
+			}
+		}
+
+		if (isNodePassDown)
+			m_multiplyConnectedCPOutputNodes.push_back(cpOutputNode);
 	}
 
 	g_appLog->debugMessage(MsgLevel_Debug, "Root Node: %d (name=\"%s\")\n", netDef->getRootNodeID(), netDef->getNodeNameFromNodeID(netDef->getRootNodeID()));
