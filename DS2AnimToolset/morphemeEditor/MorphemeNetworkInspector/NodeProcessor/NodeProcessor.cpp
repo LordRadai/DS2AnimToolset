@@ -461,6 +461,12 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 						if (multiplyConnectedNode->getParentGraph() != nodeToConnectTo->getParentGraph())
 							INVOKE_PANIC("Graph containing multiply connected node ID %d (%s) is not the same as the graph containing the node %d (%s) to connect to.\n", multiplyConnectedNode->getNodeID(), multiplyConnectedNode->getFullName().c_str(), nodeToConnectTo->getNodeID(), nodeToConnectTo->getFullName().c_str());
 
+						if (nodeToConnectTo->getTypeName() == "BlendTree")
+						{
+							if (!nodeToConnectTo->getInputPin(passDownPinName))
+								nodeToConnectTo->createInputPin(passDownPinName);
+						}
+
 						NodeEditor::Pin* multiplyConnectedNodePin = multiplyConnectedNode->getOutputPin(0);
 						NodeEditor::Pin* nodeToConnectToPin = nodeToConnectTo->getInputPin(passDownPinName);
 
@@ -606,6 +612,12 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 							multiplyConnectedNode->getFullName().c_str(),
 							nodeToConnectTo->getNodeID(),
 							nodeToConnectTo->getFullName().c_str());
+					}
+
+					if (nodeToConnectTo->getTypeName() == "BlendTree")
+					{
+						if (!nodeToConnectTo->getInputPin(passDownPinName))
+							nodeToConnectTo->createInputPin(passDownPinName);
 					}
 
 					NodeEditor::Pin* nodeToConnectToPin = nodeToConnectTo->getInputPin(passDownPinName);
@@ -1067,6 +1079,12 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 							childNode->getNodeID(),
 							netDef->getNodeNameFromNodeID(childNode->getNodeID()));
 
+						addNodeToList(outList, childNode);
+
+						// Recurse normally
+						if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+							collectChildren(childNode, outList, promotedNodes);
+
 						return;
 					}
 
@@ -1147,7 +1165,8 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		if (parentNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 			continue;
 
-		if ((nodeDef->getNodeID() != rootNodeID) && doesListContainNode(m_blendTreeNodeMap[rootNodeID], parentNodeDef) && !doesListContainNode(m_blendTreeNodeMap[rootNodeID], nodeDef))
+		if ((nodeDef->getNodeID() != rootNodeID) && 
+			(parentNodeID == 0 || (doesListContainNode(m_blendTreeNodeMap[rootNodeID], parentNodeDef) && !doesListContainNode(m_blendTreeNodeMap[rootNodeID], nodeDef))))
 		{
 			addNodeToList(m_blendTreeNodeMap[rootNodeID], nodeDef);
 
