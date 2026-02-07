@@ -107,29 +107,17 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 	std::map<MR::NodeID, std::vector<MR::NodeDef*>> containerNodeMap;
 
 	for (const auto& blendTreeNodePair : m_blendTreeNodeMap)
-		containerNodeMap[blendTreeNodePair.first] = blendTreeNodePair.second;
-
-	for (const auto& smNodePair : m_stateMachineNodeMap)
-		containerNodeMap[smNodePair.first] = smNodePair.second;
-
-	for (const auto& containerPair : containerNodeMap)
 	{
-		bool isStateMachine = netDef->getNodeDef(containerPair.first)->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE);
-
-		const char* containerTypeName = "Blend Tree";
-
-		if (isStateMachine)
-			containerTypeName = "State Machine";
+		containerNodeMap[blendTreeNodePair.first] = blendTreeNodePair.second;
 
 		g_appLog->debugMessage(
 			MsgLevel_Debug,
-			"%s node %d (name=\"%s\") has %d child nodes:\n",
-			containerTypeName,
-			containerPair.first,
-			getNodeName(containerPair.first).c_str(),
-			containerPair.second.size());
+			"Blend Tree node %d (name=\"%s\") has %d child nodes:\n",
+			blendTreeNodePair.first,
+			getNodeName(blendTreeNodePair.first).c_str(),
+			blendTreeNodePair.second.size());
 
-		for (const auto& childNode : containerPair.second)
+		for (const auto& childNode : blendTreeNodePair.second)
 		{
 			std::string nodeName = getBlendTreeNodeName(childNode->getNodeID());
 
@@ -146,26 +134,72 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 		}
 	}
 
-	int numRegisteredNodes = 0;
+	for (const auto& smNodePair : m_stateMachineNodeMap)
+	{
+		containerNodeMap[smNodePair.first] = smNodePair.second;
+
+		g_appLog->debugMessage(
+			MsgLevel_Debug,
+			"State Machine node %d (name=\"%s\") has %d child nodes:\n",
+			smNodePair.first,
+			getNodeName(smNodePair.first).c_str(),
+			smNodePair.second.size());
+
+		for (const auto& childNode : smNodePair.second)
+		{
+			std::string nodeName = getBlendTreeNodeName(childNode->getNodeID());
+
+			if (!isNodeBlendTree(childNode))
+				nodeName = getNodeName(childNode->getNodeID());
+
+			g_appLog->debugMessage(
+				MsgLevel_Debug,
+				"\tID=%d (name=\"%s\", type=\"%s\").\n",
+				childNode->getNodeID(),
+				nodeName.c_str(),
+				nodeTypeAsManifestName(childNode->getNodeTypeID()).c_str()
+			);
+		}
+	}
+
 	int numNetworkNodes = 0;
-	for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
+
+	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
 	{
 		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
-		MR::NodeDef::NodeFlags flags;
+		MR::NodeDef::NodeFlags flags = nodeDef->getNodeFlags();
 
-		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) || flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+		// Skip control params or transitions
+		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) ||
+			flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
 			continue;
 
 		numNetworkNodes++;
 
-		if (containerNodeMap.find(nodeDef->getNodeID()) != containerNodeMap.end())
-			g_appLog->debugMessage(MsgLevel_Error, "Node %d is not a child of any container.\n", nodeDef->getNodeID());
-		else
-			numRegisteredNodes++;
-	}
+		bool foundInBlendTree = false;
+		bool foundInStateMachine = false;
 
-	if (numNetworkNodes != numRegisteredNodes)
-		INVOKE_PANIC("Registered node count (%d) does not match network node count (%d).\n", numRegisteredNodes, numNetworkNodes);
+		for (const auto& [containerID, children] : m_blendTreeNodeMap)
+		{
+			if (std::find(children.begin(), children.end(), nodeDef) != children.end())
+			{
+				foundInBlendTree = true;
+				break;
+			}
+		}
+
+		for (const auto& [containerID, children] : m_stateMachineNodeMap)
+		{
+			if (std::find(children.begin(), children.end(), nodeDef) != children.end())
+			{
+				foundInStateMachine = true;
+				break;
+			}
+		}
+
+		if (!foundInBlendTree && !foundInStateMachine)
+			INVOKE_PANIC("Node %d (%s) is not a child of any blend tree or state machine container.\n", nodeDef->getNodeID(), getNodeName(nodeDef->getNodeID()).c_str());
+	}
 
 	return true;
 }
