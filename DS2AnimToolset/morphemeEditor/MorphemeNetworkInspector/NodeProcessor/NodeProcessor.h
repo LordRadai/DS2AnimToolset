@@ -38,6 +38,8 @@ private:
 	bool isNodeBlendTree(MR::NodeDef* nodeDef);
 	bool isNodeInBlendTree(MR::NodeDef* nodeDef);
 
+	MR::NodeDef* getCommonAncestor(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes);
+
 	/*
 	* \brief Collect all container nodes (state machines and blend trees) in the network.
 	* \param netDef The network definition to process.
@@ -63,18 +65,6 @@ private:
 	bool collectNodeNames(MR::NetworkDef* netDef);
 
 	/*
-	* \brief Get the source node and graph node for a pass down connection. This is used to create the corresponding pass down pin in the editor.
-	* \param targetNode The node that is the target of the pass down connection. This is the node that will receive the pass down pin.
-	* \param graphNode The node that represents the blend tree containing the target node. Should be used as target connector.
-	* \param blendTree The blend tree containing the target node. Should be used to find the pass down pins node.
-	* \param targetNodeDef The node def for the target node. Should be used to find the input pin index for the pass down connection.
-	* \param sourceNode The node that is the source of the pass down connection. This is the node that will be connected to the pass down pin.
-	* \param inputPinIndex The index of the input pin on the source node that should be connected to the pass down pin.
-	* \param isTargetDataPin Whether the pass down connection is to a data pin on the target node. If false, the connection is to an execution pin.
-	*/
-	void getNodesForPassDownConnection(NodeEditor::Node** targetNode, NodeEditor::Node** graphNode, NodeEditor::BlendTree* blendTree, MR::NodeDef* targetNodeDef, NodeEditor::Node* sourceNode, size_t inputPinIndex, bool isTargetDataPin);
-
-	/*
 	* \brief Sanitize node names in the network to ensure there are no empty names. Must be done after collecting node names.
 	* \param netDef The network definition to process.
 	*/
@@ -85,6 +75,21 @@ private:
 	void populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
 	void populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
 
+	void createPassDownConnection(NodeEditor::BlendTree* blendTree, NodeEditor::PassDownPinsNode* passDownPinNode, NodeEditor::Node* multiplyConnectedNode, NodeEditor::Node* sourceNode, MR::NodeID nodeID, int inputIdx, bool isCPConnection);
+
+	/*
+	* \brief Process nodes that are multiply connected (i.e. referenced by more than 1 parent node) in the network. This involves creating duplicate nodes for each additional reference and connecting them appropriately. Must be done after having solved all other connections.
+	* \param editor The editor to create nodes and connections in.
+	* \param netDef The network definition to process.
+	*/
+	void processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR::NetworkDef* netDef);
+
+	/*
+	* \brief Connect child nodes within a Blend Tree. Will skip pass down nodes. Must be done after populating all graphs and subgraphs.
+	* \param blendTree The blend tree to process.
+	* \param ownerNodeDef The node def owning the blend tree. This is needed to get the child nodes of the blend tree from the blend tree node map.
+	* \param childNodes The child nodes of the blend tree, to avoid having to look them up again from the map. These are needed to find the connections between child nodes and to skip pass down nodes.
+	*/
 	void processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, MR::NodeDef* ownerNodeDef, std::vector<MR::NodeDef*>& childNodes);
 	bool setBlendTreeLayout(NodeEditor::BlendTree* blendTree, MR::NodeDef* btNodeDef, std::vector<MR::NodeDef*>& childNodes);
 

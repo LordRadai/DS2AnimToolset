@@ -35,6 +35,8 @@ namespace NodeEditor
 		BlendTreeOutputNode* getOutputNode() const { return m_resultNode; }
 		DataPin* getControlParameterDataPin(const std::string& paramName) const;
 
+		Node* getNodeConnectedToOutput() const;
+
 		bool connectToOutput(Pin* outputPin);
 
 		bool hasConnectionBetween(Pin* outputPin, Pin* inputPin) const;

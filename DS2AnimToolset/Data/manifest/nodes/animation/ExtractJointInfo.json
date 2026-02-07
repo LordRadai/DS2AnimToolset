@@ -18,21 +18,35 @@
             "perAnimSet": true
         },
         {
-            "type": "bool",
+            "type": "enum",
             "name": "OutputSpace",
-            "value": "Object",
+            "value": 1,
+            "enumOptions": [
+                "Local",
+                "Object"
+            ],
             "helptext": "Change the space within which the outputs of this node are defined."
         },
         {
-            "type": "int",
+            "type": "enum",
             "name": "AngleType",
-            "value": "Total",
+            "value": 0,
+            "enumOptions": [
+                "Total",
+                "EulerX",
+                "EulerY",
+                "EulerZ"
+            ],
             "helptext": "Change the angle you want to output: total, eulerX, eulerY or eulerZ"
         },
         {
-            "type": "bool",
+            "type": "enum",
             "name": "MeasureUnit",
-            "value": "Radian",
+            "value": 1,
+            "enumOptions": [
+                "Degree",
+                "Radian"
+            ],
             "helptext": "Change the measure unit, radian or degree, of the ouput angle."
         }
     ],

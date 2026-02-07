@@ -78,6 +78,22 @@ namespace NodeEditor
 		return m_controlParametersNode->getOutputDataPin(paramName);
 	}
 
+	Node* BlendTree::getNodeConnectedToOutput() const
+	{
+		if (m_resultNode->getNumInputPins() > 0)
+		{
+			Pin* inputPin = m_resultNode->getInputPin(0);
+
+			for (Link* link : m_links)
+			{
+				if (link->getInputPin() == inputPin)
+					return link->getOutputPin()->getParentNode();
+			}
+		}
+
+		return nullptr;
+	}
+
 	bool BlendTree::connectToOutput(Pin* outputPin)
 	{
 		if (m_resultNode)
