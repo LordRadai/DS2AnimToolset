@@ -131,10 +131,10 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 
 		for (const auto& childNode : containerPair.second)
 		{
-			std::string nodeName = getNodeName(childNode->getNodeID());
+			std::string nodeName = getBlendTreeNodeName(childNode->getNodeID());
 
-			if (isNodeBlendTree(childNode))
-				nodeName = getBlendTreeNodeName(childNode->getNodeID());
+			if (!isNodeBlendTree(childNode))
+				nodeName = getNodeName(childNode->getNodeID());
 
 			g_appLog->debugMessage(
 				MsgLevel_Debug,
@@ -146,23 +146,26 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 		}
 	}
 
+	int numRegisteredNodes = 0;
 	int numNetworkNodes = 0;
-	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
+	for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
 	{
 		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+		MR::NodeDef::NodeFlags flags;
 
-		MR::NodeDef::NodeFlags flags = nodeDef->getNodeFlags();
-		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) /*||flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION) || flags.isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED)*/)
-			continue;
-
-		if (nodeDef->getNumOutputCPPins() > 0)
+		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) || flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
 			continue;
 
 		numNetworkNodes++;
+
+		if (containerNodeMap.find(nodeDef->getNodeID()) != containerNodeMap.end())
+			g_appLog->debugMessage(MsgLevel_Error, "Node %d is not a child of any container.\n", nodeDef->getNodeID());
+		else
+			numRegisteredNodes++;
 	}
 
-	if (m_nodeNameMap.size() != numNetworkNodes)
-		INVOKE_PANIC("Number of registered nodes does not match network def node count.\n");
+	if (numNetworkNodes != numRegisteredNodes)
+		INVOKE_PANIC("Registered node count (%d) does not match network node count (%d).\n", numRegisteredNodes, numNetworkNodes);
 
 	return true;
 }
@@ -430,7 +433,7 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 		NodeEditor::Node* multiplyConnectedNode = editor->getNode(nodeID);
 
 		if (!multiplyConnectedNode)
-			INVOKE_PANIC("Multiply connected node %d (%s) is not present in the editor.\n", nodeID, getNodeName(nodeID));
+			INVOKE_PANIC("Multiply connected node %d (%s) is not present in the editor.\n", nodeID, getNodeName(nodeID).c_str());
 
 		std::vector<MR::NodeDef*> nodesWithThisAsInput;
 		getNodesWithThisAsInput(nodesWithThisAsInput, netDef, nodeID);
@@ -561,7 +564,7 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 		NodeEditor::Node* multiplyConnectedNode = editor->getNode(nodeID);
 
 		if (!multiplyConnectedNode)
-			INVOKE_PANIC("Multiply connected node %d (%s) is not present in the editor.\n", nodeID, getNodeName(nodeID));
+			INVOKE_PANIC("Multiply connected node %d (%s) is not present in the editor.\n", nodeID, getNodeName(nodeID).c_str());
 
 		std::vector<MR::NodeDef*> nodesWithThisAsInputCP;
 		getNodesWithThisAsInputCP(nodesWithThisAsInputCP, netDef, m_multiplyConnectedCPOutputNodes[i]->getNodeID());
