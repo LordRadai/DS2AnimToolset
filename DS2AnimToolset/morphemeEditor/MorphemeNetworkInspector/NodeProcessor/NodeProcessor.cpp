@@ -83,6 +83,13 @@ namespace
 
 bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 {
+	m_blendTreeNodeNames.clear();
+	m_blendTreeNodes.clear();
+	m_blendTreeNodeMap.clear();
+	m_containerNodes.clear();
+	m_nodeNameMap.clear();
+	m_multiplyConnectedCPOutputNodes.clear();
+
 	if (isNetworkNodeNameMapComplete(netDef))
 		m_namingStrategy = new DefaultNodeNamingStrategy();
 	else
