@@ -18,6 +18,7 @@ class NodeProcessor
 	std::map<MR::NodeID, MR::NodeDef*> m_blendTreeNodes;
 	std::map<MR::NodeID, std::string> m_blendTreeNodeNames;
 	std::map<MR::NodeID, std::vector<MR::NodeDef*>> m_blendTreeNodeMap;
+	std::map<MR::NodeID, std::vector<MR::NodeDef*>> m_stateMachineNodeMap;
 	std::map<MR::NodeID, MR::NodeDef*> m_containerNodes;
 	std::map<MR::NodeID, std::string> m_nodeNameMap;
 	std::vector<MR::NodeDef*> m_multiplyConnectedCPOutputNodes;

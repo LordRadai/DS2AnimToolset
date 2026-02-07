@@ -12,7 +12,7 @@ namespace NodeEditor
 			MMDataPin(const std::string& name, const nlohmann::json& json) : MMPin(name, json) {};
 
 			virtual ~MMDataPin() override = default;
-			std::string getDataType() const { return m_jsonData["type"]; }
+			std::string getDataType() const;
 		};
 	}
 }

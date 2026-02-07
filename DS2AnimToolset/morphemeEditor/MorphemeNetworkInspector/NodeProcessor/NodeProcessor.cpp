@@ -86,6 +86,7 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 	m_blendTreeNodeNames.clear();
 	m_blendTreeNodes.clear();
 	m_blendTreeNodeMap.clear();
+	m_stateMachineNodeMap.clear();
 	m_containerNodes.clear();
 	m_nodeNameMap.clear();
 	m_multiplyConnectedCPOutputNodes.clear();
@@ -100,6 +101,68 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 	collectContainerNodes(netDef);
 	collectBlendTreeChildNodes(netDef);
 	collectNodeNames(netDef);
+
+	g_appLog->debugMessage(MsgLevel_Debug, "Root Node: %d (name=\"%s\")\n", netDef->getRootNodeID(), netDef->getNodeNameFromNodeID(netDef->getRootNodeID()));
+
+	std::map<MR::NodeID, std::vector<MR::NodeDef*>> containerNodeMap;
+
+	for (const auto& blendTreeNodePair : m_blendTreeNodeMap)
+		containerNodeMap[blendTreeNodePair.first] = blendTreeNodePair.second;
+
+	for (const auto& smNodePair : m_stateMachineNodeMap)
+		containerNodeMap[smNodePair.first] = smNodePair.second;
+
+	for (const auto& containerPair : containerNodeMap)
+	{
+		bool isStateMachine = netDef->getNodeDef(containerPair.first)->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE);
+
+		const char* containerTypeName = "Blend Tree";
+
+		if (isStateMachine)
+			containerTypeName = "State Machine";
+
+		g_appLog->debugMessage(
+			MsgLevel_Debug,
+			"%s node %d (name=\"%s\") has %d child nodes:\n",
+			containerTypeName,
+			containerPair.first,
+			getNodeName(containerPair.first).c_str(),
+			containerPair.second.size());
+
+		for (const auto& childNode : containerPair.second)
+		{
+			std::string nodeName = getNodeName(childNode->getNodeID());
+
+			if (isNodeBlendTree(childNode))
+				nodeName = getBlendTreeNodeName(childNode->getNodeID());
+
+			g_appLog->debugMessage(
+				MsgLevel_Debug,
+				"\tID=%d (name=\"%s\", type=\"%s\").\n",
+				childNode->getNodeID(),
+				nodeName.c_str(),
+				nodeTypeAsManifestName(childNode->getNodeTypeID()).c_str()
+			);
+		}
+	}
+
+	int numNetworkNodes = 0;
+	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
+	{
+		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+
+		MR::NodeDef::NodeFlags flags = nodeDef->getNodeFlags();
+		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) /*||flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION) || flags.isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED)*/)
+			continue;
+
+		if (nodeDef->getNumOutputCPPins() > 0)
+			continue;
+
+		numNetworkNodes++;
+	}
+
+	if (m_nodeNameMap.size() != numNetworkNodes)
+		INVOKE_PANIC("Number of registered nodes does not match network def node count.\n");
 
 	return true;
 }
@@ -366,6 +429,9 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 
 		NodeEditor::Node* multiplyConnectedNode = editor->getNode(nodeID);
 
+		if (!multiplyConnectedNode)
+			INVOKE_PANIC("Multiply connected node %d (%s) is not present in the editor.\n", nodeID, getNodeName(nodeID));
+
 		std::vector<MR::NodeDef*> nodesWithThisAsInput;
 		getNodesWithThisAsInput(nodesWithThisAsInput, netDef, nodeID);
 
@@ -493,6 +559,9 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 		const MR::NodeID nodeID = nodeDef->getNodeID();
 
 		NodeEditor::Node* multiplyConnectedNode = editor->getNode(nodeID);
+
+		if (!multiplyConnectedNode)
+			INVOKE_PANIC("Multiply connected node %d (%s) is not present in the editor.\n", nodeID, getNodeName(nodeID));
 
 		std::vector<MR::NodeDef*> nodesWithThisAsInputCP;
 		getNodesWithThisAsInputCP(nodesWithThisAsInputCP, netDef, m_multiplyConnectedCPOutputNodes[i]->getNodeID());
@@ -683,8 +752,14 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 			targetNode->getOutputPin(0)->connectTo(sourceNode->getInputPin(i));
 		}
 
+		bool hasUnusuedPins = sourceNode->getNumInputDataPins() != childNodeDef->getNumInputCPConnections();
+
+		int pinIndex = 0;
 		for (uint32_t i = 0; i < childNodeDef->getNumInputCPConnections(); ++i)
 		{
+			if (!hasUnusuedPins)
+				pinIndex = i;
+
 			const MR::CPConnection* cpConnection = childNodeDef->getInputCPConnection(i);
 
 			if (cpConnection->m_sourceNodeID == MR::INVALID_NODE_ID)
@@ -698,22 +773,24 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 				// This is a pass down pin. We will handle it later.
 				if (!targetNode)
+				{
+					pinIndex++;
 					continue;
+				}
 
-				targetNode->getOutputDataPin(cpConnection->m_sourcePinIndex)->connectTo(sourceNode->getInputDataPin(i));
+				targetNode->getOutputDataPin(cpConnection->m_sourcePinIndex)->connectTo(sourceNode->getInputDataPin(pinIndex));
 			}
 			else
 			{
 				NodeEditor::ControlParameter* controlParam = blendTree->getOwnerEditor()->getControlParameter(targetNodeDef->getNodeID());
 
 				if (!controlParam)
-				{
 					INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find control parameter '%s' in blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
-					continue;
-				}
 
-				blendTree->getControlParameterDataPin(controlParam->getName())->connectTo(sourceNode->getInputDataPin(i));
+				blendTree->getControlParameterDataPin(controlParam->getName())->connectTo(sourceNode->getInputDataPin(pinIndex));
 			}
+
+			pinIndex++;
 		}
 	}
 }
@@ -1001,6 +1078,17 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Found container node %d (name=\"%s\").\n", smNode->getNodeID(), netDef->getNodeNameFromNodeID(smNode->getNodeID()));
 
 		m_containerNodes[nodeID] = smNode;
+
+		std::vector<MR::NodeDef*> subStateNodes;
+		for (size_t j = 0; j < smNode->getNumChildNodes(); j++)
+		{
+			MR::NodeDef* childNode = smNode->getChildNodeDef(j);
+
+			if (!childNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+				subStateNodes.push_back(childNode);
+		}
+
+		m_stateMachineNodeMap[nodeID] = subStateNodes;
 	}
 
 	for (const auto& blendTreeNode : m_blendTreeNodes)
@@ -1222,29 +1310,6 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 		if (isNodePassDown)
 			m_multiplyConnectedCPOutputNodes.push_back(cpOutputNode);
-	}
-
-	g_appLog->debugMessage(MsgLevel_Debug, "Root Node: %d (name=\"%s\")\n", netDef->getRootNodeID(), netDef->getNodeNameFromNodeID(netDef->getRootNodeID()));
-
-	// Debug output
-	for (const auto& blendTreeNodePair : m_blendTreeNodeMap)
-	{
-		g_appLog->debugMessage(
-			MsgLevel_Debug,
-			"Blend tree node %d (name=\"%s\") has %d child nodes:\n",
-			blendTreeNodePair.first,
-			netDef->getNodeNameFromNodeID(blendTreeNodePair.first),
-			blendTreeNodePair.second.size());
-
-		for (const auto& childNode : blendTreeNodePair.second)
-		{
-			g_appLog->debugMessage(
-				MsgLevel_Debug,
-				"\tID=%d (name=\"%s\").\n",
-				childNode->getNodeID(),
-				netDef->getNodeNameFromNodeID(childNode->getNodeID())
-			);
-		}
 	}
 }
 
