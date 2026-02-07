@@ -1028,9 +1028,9 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 {
 	m_blendTreeNodeMap.clear();
 
-	// Recursive helper
-	std::function<void(MR::NodeDef*, std::vector<MR::NodeDef*>&)> collectChildren;
-	collectChildren = [&](MR::NodeDef* node, std::vector<MR::NodeDef*>& outList)
+		// Recursive helper
+	std::function<void(MR::NodeDef*, std::vector<MR::NodeDef*>&, std::vector<MR::NodeDef*>&)> collectChildren;
+	collectChildren = [&](MR::NodeDef* node, std::vector<MR::NodeDef*>& outList, std::vector<MR::NodeDef*>& promotedNodes)
 		{
 			if (node->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 				return;
@@ -1041,13 +1041,36 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 				// Check if this node consumes a multiply-connected input
 				if (childNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
+				{
+					const MR::NodeID nodeID = node->getNodeID();
+
+					if (!m_blendTreeNodes.count(nodeID))
+					{
+						// Promote parent node as new blend tree root
+						m_blendTreeNodes[nodeID] = node;
+
+						// Add to promoted nodes list for further processing
+						promotedNodes.push_back(node);
+
+						g_appLog->debugMessage(
+							MsgLevel_Debug,
+							"NodeProcessor::collectBlendTreeChildNodes: Promoted node %d (name=\"%s\") to blend tree root due to multiply-connected input %d (%s).\n",
+							nodeID,
+							netDef->getNodeNameFromNodeID(nodeID),
+							childNode->getNodeID(),
+							netDef->getNodeNameFromNodeID(childNode->getNodeID()));
+
+						return;
+					}
+
 					continue;
+				}
 
 				addNodeToList(outList, childNode);
 
 				// Recurse normally
 				if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
-					collectChildren(childNode, outList);
+					collectChildren(childNode, outList, promotedNodes);
 			}
 		};
 
@@ -1063,7 +1086,12 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		std::vector<MR::NodeDef*> childNodeList;
 		childNodeList.push_back(rootNode);
 
-		collectChildren(rootNode, childNodeList);
+		std::vector<MR::NodeDef*> promotedNodes;
+		collectChildren(rootNode, childNodeList, promotedNodes);
+
+		// Append newly promoted nodes to work list to ensure they are processed
+		for (MR::NodeDef* newRoot : promotedNodes)
+			workList.push_back(newRoot);
 
 		m_blendTreeNodeMap[rootNode->getNodeID()] = childNodeList;
 	}
@@ -1081,6 +1109,24 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) || flags.isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 			continue;
 
+		bool isNodeInBlendTree = false;
+
+		// Check the blend tree node child list
+		for (auto& blendTreeNodePair : m_blendTreeNodeMap)
+		{
+			if (blendTreeNodePair.first == rootNodeID)
+				continue;
+
+			if (doesListContainNode(blendTreeNodePair.second, nodeDef))
+			{
+				isNodeInBlendTree = true;
+				break;
+			}
+		}
+
+		if (isNodeInBlendTree)
+			continue;
+
 		if (nodeDef->getNumOutputCPPins() > 0)
 			cpOutputNodes.push_back(nodeDef);
 
@@ -1094,11 +1140,12 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		if (parentNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 			continue;
 
-		if ((nodeDef->getNodeID() != rootNodeID) && (parentNodeID == 0 || parentNodeID == rootNodeID))
+		if ((nodeDef->getNodeID() != rootNodeID) && doesListContainNode(m_blendTreeNodeMap[rootNodeID], parentNodeDef) && !doesListContainNode(m_blendTreeNodeMap[rootNodeID], nodeDef))
 		{
 			addNodeToList(m_blendTreeNodeMap[rootNodeID], nodeDef);
 
-			collectChildren(nodeDef, m_blendTreeNodeMap[netDef->getRootNodeID()]);
+			std::vector<MR::NodeDef*> promotedNodes;
+			collectChildren(nodeDef, m_blendTreeNodeMap[netDef->getRootNodeID()], promotedNodes);
 		}
 	}
 
@@ -1131,7 +1178,9 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		g_appLog->debugMessage(MsgLevel_Debug, "Common ancestor for CP output node ID %d is node ID %d (name=\"%s\").\n", cpOutputNode->getNodeID(), commonAncestor->getNodeID(), netDef->getNodeNameFromNodeID(commonAncestor->getNodeID()));
 
 		addNodeToList(m_blendTreeNodeMap[commonAncestor->getNodeID()], cpOutputNode);
-		collectChildren(cpOutputNode, m_blendTreeNodeMap[commonAncestor->getNodeID()]);
+
+		std::vector<MR::NodeDef*> promotedNodes;
+		collectChildren(cpOutputNode, m_blendTreeNodeMap[commonAncestor->getNodeID()], promotedNodes);
 
 		// Check if the ancestor contains both nodes and the output CP node. In which case the node is not a pass down node, and we don't need to add it to the list of multiply connected CP output nodes.
 		bool isNodePassDown = false;
