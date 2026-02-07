@@ -20,6 +20,7 @@ class NodeProcessor
 	std::map<MR::NodeID, std::vector<MR::NodeDef*>> m_blendTreeNodeMap;
 	std::map<MR::NodeID, MR::NodeDef*> m_containerNodes;
 	std::map<MR::NodeID, std::string> m_nodeNameMap;
+	std::vector<MR::NodeDef*> m_cpOutputNodes;
 
 public:
 	bool preProcessNetwork(MR::NetworkDef* netDef);

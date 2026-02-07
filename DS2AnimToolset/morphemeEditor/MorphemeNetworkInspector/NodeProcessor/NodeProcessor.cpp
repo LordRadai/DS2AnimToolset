@@ -402,8 +402,10 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 
 				if (inputIdx != -1)
 				{
+					g_appLog->debugMessage(MsgLevel_Debug, "Creating pass down connection for multiply connected node ID %d (%s) from source node ID %d (%s) to blend tree with ID %d (%s).\n", multiplyConnectedNode->getNodeID(), multiplyConnectedNode->getFullName().c_str(), sourceNode->getNodeID(), sourceNode->getFullName().c_str(), blendTree->getGraphID(), blendTree->getFullName().c_str());
+
 					char passDownPinName[256];
-					sprintf_s(passDownPinName, "PassDown_%s", getNodeName(nodeID).c_str());
+					sprintf_s(passDownPinName, "%s", getNodeName(nodeID).c_str());
 
 					if (blendTree->getPassDownPin(passDownPinName) == "")
 					{
@@ -447,7 +449,7 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 							INVOKE_PANIC("Graph containing multiply connected node ID %d (%s) is not the same as the graph containing the node %d (%s) to connect to.\n", multiplyConnectedNode->getNodeID(), multiplyConnectedNode->getFullName().c_str(), nodeToConnectTo->getNodeID(), nodeToConnectTo->getFullName().c_str());
 
 						NodeEditor::Pin* multiplyConnectedNodePin = multiplyConnectedNode->getOutputPin(0);
-						NodeEditor::Pin* nodeToConnectToPin = nodeToConnectTo->getInputPin(0);
+						NodeEditor::Pin* nodeToConnectToPin = nodeToConnectTo->getInputPin(passDownPinName);
 
 						NodeEditor::BlendTree* graphForConnection = multiplyConnectedNode->getParentGraph()->asType<NodeEditor::BlendTree>();
 
@@ -462,6 +464,155 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 
 					passDownPin->connectTo(sourceNode->getInputPin(inputIdx));
 				}
+			}
+		}
+	}
+
+	for (size_t i = 0; i < m_cpOutputNodes.size(); i++)
+	{
+		MR::NodeDef* nodeDef = m_cpOutputNodes[i];
+		const MR::NodeID nodeID = nodeDef->getNodeID();
+
+		NodeEditor::Node* multiplyConnectedNode = editor->getNode(nodeID);
+
+		std::vector<MR::NodeDef*> nodesWithThisAsInputCP;
+		getNodesWithThisAsInputCP(nodesWithThisAsInputCP, netDef, m_cpOutputNodes[i]->getNodeID());
+
+		if (nodesWithThisAsInputCP.size() == 1)
+			continue;
+
+		for (MR::NodeDef* nodeDef : nodesWithThisAsInputCP)
+		{
+			const MR::NodeID sourceNodeID = nodeDef->getNodeID();
+			NodeEditor::Node* sourceNode = editor->getNode(sourceNodeID);
+
+			if (!sourceNode)
+			{
+				g_appLog->debugMessage(MsgLevel_Warn, "Failed to find source node with ID %d for multiply connected node ID %d.\n", sourceNodeID, nodeID);
+				continue;
+			}
+
+			if (sourceNode->getTypeName() == "BlendTree")
+				sourceNode = sourceNode->getSubGraph()->asType<NodeEditor::BlendTree>()->getNodeConnectedToOutput();
+
+			if (!sourceNode->getParentGraph()->isOfType<NodeEditor::BlendTree>())
+				INVOKE_PANIC("Source node with ID %d for multiply connected node ID %d is not in a blend tree. This contradicts core assumptions.\n", sourceNodeID, nodeID);
+
+			NodeEditor::BlendTree* blendTree = sourceNode->getParentGraph()->asType<NodeEditor::BlendTree>();
+
+			NodeEditor::PassDownPinsNode* passDownPinNode = blendTree->getPassDownPinsNode();
+
+			g_appLog->debugMessage(MsgLevel_Debug, "Connecting node ID %d (%s) in blend tree %d (%s) to pass down pins node for multiply connected node ID %d (%s).\n", sourceNode->getNodeID(), sourceNode->getFullName().c_str(), blendTree->getGraphID(), blendTree->getFullName().c_str(), multiplyConnectedNode->getNodeID(), multiplyConnectedNode->getFullName().c_str());
+
+			if (!passDownPinNode)
+				INVOKE_PANIC("Blend tree with ID %d (%s) does not have a pass down pins node.\n", blendTree->getGraphID(), blendTree->getFullName().c_str());
+
+			// We must do two things:
+			// 1) Connect the source node to the pass down pin node in its owner blend tree
+			// 2) Connect the multiply connected node pin to the pass down pin of the graph containing the source node
+
+			int inputIdx = -1;
+			int inputPinIndex = -1;
+			for (size_t i = 0; i < nodeDef->getNumInputCPConnections(); i++)
+			{
+				const MR::CPConnection* cpConnection = nodeDef->getInputCPConnection(i);
+
+				if (cpConnection->m_sourceNodeID == nodeID)
+				{
+					inputIdx = i;
+					inputPinIndex = cpConnection->m_sourcePinIndex;
+					break;
+				}
+			}
+
+			if (inputIdx != -1 && inputPinIndex != -1)
+			{
+				g_appLog->debugMessage(MsgLevel_Debug, "Creating pass down connection for CP output node ID %d for source node ID %d.\n", nodeID, sourceNodeID);
+
+				NodeEditor::Pin* multiplyConnectedTargetPin = multiplyConnectedNode->getOutputDataPin(inputPinIndex);
+
+				char passDownPinName[256];
+				sprintf_s(passDownPinName, "%s.%s", getNodeName(nodeID).c_str(), multiplyConnectedTargetPin->getName().c_str());
+
+				if (blendTree->getPassDownPin(passDownPinName) == "")
+				{
+					blendTree->addPassDownPin(passDownPinName);
+					passDownPinNode->updatePins();
+
+					NodeEditor::Graph* currentGraph = blendTree;
+					NodeEditor::Node* nodeToConnectTo = nullptr;
+
+					while (currentGraph && !currentGraph->getNode(nodeID))
+					{
+						NodeEditor::Node* graphNode = currentGraph->getGraphNode();
+
+						if (!graphNode)
+						{
+							INVOKE_PANIC(
+								"Graph with ID %d (%s) does not have a graph node.\n",
+								currentGraph->getGraphID(),
+								currentGraph->getFullName().c_str());
+						}
+
+						if (currentGraph->isRootGraph())
+							break;
+
+						if (currentGraph->isOfType<NodeEditor::StateMachine>())
+							currentGraph->addPassDownPin(passDownPinName);
+
+						NodeEditor::Graph* parentGraph = currentGraph->getParentGraph();
+
+						if (parentGraph->isOfType<NodeEditor::BlendTree>())
+						{
+							auto* parentBlendTree = parentGraph->asType<NodeEditor::BlendTree>();
+
+							NodeEditor::PassDownPinsNode* parentPassDownPinNode = parentBlendTree->getPassDownPinsNode();
+							NodeEditor::Pin* parentPassDownPin = parentPassDownPinNode->getOutputPin(passDownPinName);
+
+							if (parentPassDownPin)
+								parentPassDownPin->connectTo(graphNode->getInputPin(passDownPinName));
+						}
+
+						currentGraph = parentGraph;
+						nodeToConnectTo = graphNode;
+					}
+
+					g_appLog->debugMessage(
+						MsgLevel_Debug,
+						"Node to connect to for pass down pin '%s' is %d (%s).\n",
+						passDownPinName,
+						nodeToConnectTo->getNodeID(),
+						nodeToConnectTo->getFullName().c_str());
+
+					if (multiplyConnectedNode->getParentGraph() != nodeToConnectTo->getParentGraph())
+					{
+						INVOKE_PANIC(
+							"Graph containing multiply connected node ID %d (%s) is not the same as "
+							"the graph containing the node %d (%s) to connect to.\n",
+							multiplyConnectedNode->getNodeID(),
+							multiplyConnectedNode->getFullName().c_str(),
+							nodeToConnectTo->getNodeID(),
+							nodeToConnectTo->getFullName().c_str());
+					}
+
+					NodeEditor::Pin* nodeToConnectToPin = nodeToConnectTo->getInputPin(passDownPinName);
+					NodeEditor::BlendTree* graphForConnection = multiplyConnectedNode->getParentGraph()->asType<NodeEditor::BlendTree>();
+
+					if (!graphForConnection->hasConnectionBetween(multiplyConnectedTargetPin, nodeToConnectToPin))
+						multiplyConnectedTargetPin->connectTo(nodeToConnectToPin);
+				}
+
+				NodeEditor::Pin* passDownPin = passDownPinNode->getOutputPin(passDownPinName);
+				if (!passDownPin)
+					INVOKE_PANIC(
+						"Failed to find pass down pin '%s' in blend tree with ID %d (%s) for multiply connected node ID %d (%s).\n",
+						passDownPinName,
+						blendTree->getGraphID(),
+						blendTree->getFullName().c_str(),
+						multiplyConnectedNode->getNodeID(),
+						multiplyConnectedNode->getFullName().c_str());
+
+				passDownPin->connectTo(sourceNode->getInputDataPin(inputIdx));
 			}
 		}
 	}
@@ -892,28 +1043,6 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 				if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
 					collectChildren(childNode, outList);
 			}
-
-			/*
-			for (size_t i = 0; i < node->getNumInputCPConnections(); ++i)
-			{
-				const MR::CPConnection* cpConnection = node->getInputCPConnection(i);
-
-				if (cpConnection->m_sourceNodeID == MR::INVALID_NODE_ID)
-					continue;
-
-				MR::NodeDef* sourceNode = netDef->getNodeDef(cpConnection->m_sourceNodeID);
-
-				MR::NodeDef::NodeFlags flags = sourceNode->getNodeFlags();
-
-				if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) || flags.isSet(MR::NodeDef::NODE_FLAG_IS_OPERATOR_NODE))
-					continue;
-
-				addNodeToList(outList, sourceNode);
-
-				if (sourceNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
-					collectChildren(sourceNode, outList);
-			}
-			*/
 		};
 
 	// Work list of root nodes to process
@@ -935,8 +1064,6 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 	const MR::NodeID rootNodeID = netDef->getRootNodeID();
 
-	std::vector<MR::NodeDef*> cpOutputNodeList;
-
 	// Add the root nodes
 	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
 	{
@@ -947,7 +1074,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 			continue;
 
 		if (nodeDef->getNumOutputCPPins() > 0)
-			cpOutputNodeList.push_back(nodeDef);
+			m_cpOutputNodes.push_back(nodeDef);
 
 		const MR::NodeID parentNodeID = nodeDef->getParentNodeID();
 
@@ -970,7 +1097,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 	// We then must find where the output CP nodes belong. First, find all of them, then count the number of nodes that reference them as input.
 	// If there's more than one, find the common ancestor of all referencing nodes and add the output CP node as a child of the common ancestor. 
 	// If there's only one, add the output CP node as a child of the referencing node.
-	for (MR::NodeDef* cpOutputNode : cpOutputNodeList)
+	for (MR::NodeDef* cpOutputNode : m_cpOutputNodes)
 	{
 		std::vector<MR::NodeDef*> referencingNodes;
 		getNodesWithThisAsInputCP(referencingNodes, netDef, cpOutputNode->getNodeID());
@@ -996,6 +1123,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		g_appLog->debugMessage(MsgLevel_Debug, "Common ancestor for CP output node ID %d is node ID %d (name=\"%s\").\n", cpOutputNode->getNodeID(), commonAncestor->getNodeID(), netDef->getNodeNameFromNodeID(commonAncestor->getNodeID()));
 
 		addNodeToList(m_blendTreeNodeMap[commonAncestor->getNodeID()], cpOutputNode);
+		collectChildren(cpOutputNode, m_blendTreeNodeMap[commonAncestor->getNodeID()]);
 	}
 
 	g_appLog->debugMessage(MsgLevel_Debug, "Root Node: %d (name=\"%s\")\n", netDef->getRootNodeID(), netDef->getNodeNameFromNodeID(netDef->getRootNodeID()));
