@@ -706,12 +706,15 @@ void FlverModel::update(float dt)
 		}
 	}
 
-	// Compute the bones transform relative to their bind pose transform
-	std::vector<Matrix> boneRelativeTransforms;
-	computeBoneRelativeTransforms(boneRelativeTransforms);
+	if (this->m_settings.drawMeshes)
+	{
+		// Compute the bones transform relative to their bind pose transform
+		std::vector<Matrix> boneRelativeTransforms;
+		computeBoneRelativeTransforms(boneRelativeTransforms);
 
-	for (int meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
-		transformMesh(meshIdx, boneRelativeTransforms);
+		for (int meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
+			transformMesh(meshIdx, boneRelativeTransforms);
+	}
 
 	this->m_dummyPolygons.clear();
 	this->m_dummyPolygons.reserve(this->m_flver->header.dummyCount);
