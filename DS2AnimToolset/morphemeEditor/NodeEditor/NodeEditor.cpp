@@ -668,6 +668,9 @@ namespace NodeEditor
         if (!node)
             return "";
 
+        if (node->isOfType<BlendTree>())
+            return node->getSubGraph()->getGraphNode()->getName();
+
 		return node->getName();
     }
 
@@ -677,6 +680,9 @@ namespace NodeEditor
 
         if (!node)
             return "";
+
+        if (node->isOfType<BlendTree>())
+            return node->getSubGraph()->getGraphNode()->getFullName();
 
         return node->getFullName();
 	}
