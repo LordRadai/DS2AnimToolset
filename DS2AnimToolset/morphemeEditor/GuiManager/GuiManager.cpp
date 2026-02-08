@@ -97,12 +97,15 @@ namespace
 		if (model == nullptr)
 			return;
 
+		if (!model->isFlverLoaded())
+			return;
+
 		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 
 		if (editorApp->getPreviewFlags()->selectedModel == model)
 			node_flags |= ImGuiTreeNodeFlags_Selected;
 
-		bool open = ImGui::TreeNodeEx(model->getModelName().c_str(), node_flags);
+		bool open = ImGui::TreeNodeEx(std::string("##treeNode" + model->getModelName()).c_str(), node_flags);
 
 		if (open)
 		{

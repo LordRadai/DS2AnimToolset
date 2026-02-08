@@ -83,6 +83,8 @@ public:
 
 	Settings* getSettings() { return &this->m_settings; }
 
+	bool isFlverLoaded() const { return this->m_flver != nullptr; }
+
 	SkinnedVertex* getVertex(int meshIdx, int idx);
 	SkinnedVertex* getVertexBindPose(int meshIdx, int idx);
 
