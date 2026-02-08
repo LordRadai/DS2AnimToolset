@@ -577,10 +577,10 @@ void GuiManager::initialise(HWND hwnd, ID3D11DeviceContext* pContext, ID3D11Devi
 	ImGui_ImplWin32_Init(hwnd);
 	ImGui_ImplDX11_Init(pDevice, pContext);
 
-	g_appLog->debugMessage(MsgLevel_Info, "Add ImGui fonts\n");
-	io.Fonts->AddFontDefault();
-
 	float dpiScale = g_renderManager->getDpiScale();
+
+	g_appLog->debugMessage(MsgLevel_Info, "Add ImGui fonts\n");
+	io.Fonts->AddFontFromFileTTF("Data//font//font.ttf", 16.0f * dpiScale);
 
 	float baseFontSize = 13.0f * dpiScale; // 13.0f is the size of the default font. Change to the font size you use.
 	float iconFontSize = baseFontSize * 2.0f / 3.0f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
