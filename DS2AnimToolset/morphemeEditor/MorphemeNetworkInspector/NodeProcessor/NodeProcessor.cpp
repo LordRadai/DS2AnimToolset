@@ -1191,7 +1191,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 			if (node->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 				return;
 
-			bool wasThisPromoted = false;
+			bool wasJustPromoted = false;
 			for (size_t i = 0; i < node->getNumChildNodes(); ++i)
 			{
 				MR::NodeDef* childNode = netDef->getNodeDef(node->getChildNodeID(i));
@@ -1203,7 +1203,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 					if (!m_blendTreeNodes.count(nodeID))
 					{
-						wasThisPromoted = true;
+						wasJustPromoted = true;
 
 						// Promote parent node as new blend tree root
 						m_blendTreeNodes[nodeID] = node;
@@ -1229,7 +1229,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 					}
 
 					// If this was just promoted, it means we're adding nodes to the parent blend tree, so we must add. Otherwise, it means we're visiting the newly promoted child node, and we must only collect non multiply connected nodes.
-					if (wasThisPromoted)
+					if (wasJustPromoted)
 					{
 						addNodeToList(outList, childNode);
 
@@ -1241,8 +1241,9 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 					continue;
 				}
 
-				if (wasThisPromoted)
-					return;
+				// If this was just promoted, we must only add multiply connected nodes to this graph.
+				if (wasJustPromoted)
+					continue;
 
 				addNodeToList(outList, childNode);
 
