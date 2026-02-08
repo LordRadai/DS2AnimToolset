@@ -199,7 +199,7 @@ namespace
 			}
 			else
 			{
-				tinyxml2::XMLElement* elem = root->InsertNewChildElement("SubStateNode");
+				tinyxml2::XMLElement* elem = root->InsertNewChildElement("StateMachineState");
 
 				const MR::NodeDef* parentNodeDef = netDef->getNodeDef(nodeDef->getParentNodeID());
 
