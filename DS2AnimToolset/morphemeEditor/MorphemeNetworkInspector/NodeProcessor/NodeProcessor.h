@@ -66,12 +66,6 @@ private:
 	*/
 	bool collectNodeNames(MR::NetworkDef* netDef);
 
-	/*
-	* \brief Sanitize node names in the network to ensure there are no empty names. Must be done after collecting node names.
-	* \param netDef The network definition to process.
-	*/
-	void sanitizeNodeNames(MR::NetworkDef* netDef);
-
 	MR::NodeDef* getParentNodeContainer(MR::NodeDef* nodeDef);
 
 	void populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);

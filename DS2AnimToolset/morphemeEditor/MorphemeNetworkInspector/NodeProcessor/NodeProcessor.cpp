@@ -164,6 +164,7 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 
 	int numNetworkNodes = 0;
 
+	std::vector<MR::NodeDef*> notFoundNodes;
 	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
 	{
 		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
@@ -198,7 +199,17 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 		}
 
 		if (!foundInBlendTree && !foundInStateMachine)
-			INVOKE_PANIC("Node %d (%s) is not a child of any blend tree or state machine container.\n", nodeDef->getNodeID(), getNodeName(nodeDef->getNodeID()).c_str());
+			notFoundNodes.push_back(nodeDef);
+	}
+
+	for (const auto& nodeDef : notFoundNodes)
+		g_appLog->debugMessage(MsgLevel_Warn, "NodeProcessor::preProcessNetwork: Node %d (name=\"%s\", type=\"%s\") is not referenced as a child of any blend tree or state machine node.\n", nodeDef->getNodeID(), getNodeName(nodeDef->getNodeID()).c_str(), nodeTypeAsManifestName(nodeDef->getNodeTypeID()).c_str());
+
+	if (!notFoundNodes.empty())
+	{
+		INVOKE_PANIC(
+			"%d nodes in the network are not referenced as a child of any blend tree or state machine node. This indicates an issue with the node processing logic. Please check the log for details.\n",
+			notFoundNodes.size());
 	}
 
 	return true;
@@ -1364,27 +1375,7 @@ bool NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
 		return false;
 	}
 
-	sanitizeNodeNames(netDef);
-
 	return true;
-}
-
-void NodeProcessor::sanitizeNodeNames(MR::NetworkDef* netDef)
-{
-	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
-	{
-		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
-
-		MR::NodeDef::NodeFlags flags = nodeDef->getNodeFlags();
-		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) || flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
-			continue;
-
-		char nameBuffer[256];
-		sprintf_s(nameBuffer, "%s%d", nodeTypeAsManifestName(nodeDef->getNodeTypeID()).c_str(), nodeDef->getNodeID());
-
-		if (m_nodeNameMap[nodeDef->getNodeID()].empty())
-			m_nodeNameMap[nodeDef->getNodeID()] = nameBuffer;
-	}
 }
 
 MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
