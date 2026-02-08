@@ -6,6 +6,7 @@
 
 namespace NodeNameStrategyUtils
 {
+	const std::string getStateNodeNameFromStringTable(MR::NetworkDef* netDef, MR::NodeID nodeID);
 	const std::string getNodeNameFromFullPath(const std::string& name);
 	const std::string getNodeNameWithParentFromFullPath(const std::string& name);
 	const std::string getBlendTreeNodeName(const std::string& name);
@@ -15,5 +16,13 @@ namespace NodeNameStrategyUtils
 	inline bool isNodeBlendTreeOutput(MR::NodeDef* nodeDef, const std::map<MR::NodeID, MR::NodeDef*>& blendTreeNodes)
 	{
 		return (blendTreeNodes.find(nodeDef->getNodeID()) != blendTreeNodes.end());
+	}
+
+	inline bool isNodeStateNode(MR::NodeDef* nodeDef)
+	{
+		if (nodeDef->getParentNodeDef())
+			return nodeDef->getParentNodeDef()->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE);
+
+		return false;
 	}
 }

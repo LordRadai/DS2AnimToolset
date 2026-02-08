@@ -19,17 +19,31 @@ bool DefaultNodeNamingStrategy::collectNodeNames(MR::NetworkDef* netDef, const s
 		{
 			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
-			if (NodeNameStrategyUtils::isNodeBlendTreeOutput(nodeDef, blendTreeNodes))
+			bool isStateNode = NodeNameStrategyUtils::isNodeStateNode(nodeDef);
+
+			if (!isStateNode)
 			{
-				std::string blendTreeName = NodeNameStrategyUtils::getBlendTreeNodeName(nodeName);
+				if (NodeNameStrategyUtils::isNodeBlendTreeOutput(nodeDef, blendTreeNodes))
+				{
+					std::string blendTreeName = NodeNameStrategyUtils::getBlendTreeNodeName(nodeName);
 
-				if (blendTreeName.empty())
-					blendTreeName = "BlendTree" + std::to_string(nodeDef->getNodeID());
+					if (blendTreeName.empty())
+						blendTreeName = "BlendTree" + std::to_string(nodeDef->getNodeID());
 
-				NodeNameStrategyUtils::registerNodeName(blendTreeNodeNameMap, nodeDef->getNodeID(), blendTreeName);
+					NodeNameStrategyUtils::registerNodeName(blendTreeNodeNameMap, nodeDef->getNodeID(), blendTreeName);
+				}
+
+				NodeNameStrategyUtils::registerNodeName(nodeNameMap, nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
 			}
+			else
+			{
+				std::string stateNodeName = NodeNameStrategyUtils::getStateNodeNameFromStringTable(netDef, nodeDef->getNodeID());
 
-			NodeNameStrategyUtils::registerNodeName(nodeNameMap, nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
+				if (NodeNameStrategyUtils::isNodeBlendTreeOutput(nodeDef, blendTreeNodes))
+					NodeNameStrategyUtils::registerNodeName(blendTreeNodeNameMap, nodeDef->getNodeID(), stateNodeName);
+
+				NodeNameStrategyUtils::registerNodeName(nodeNameMap, nodeDef->getNodeID(), stateNodeName);
+			}
 
 			for (size_t i = 0; i < nodeDef->getNumChildNodes(); ++i)
 			{
@@ -59,7 +73,7 @@ bool DefaultNodeNamingStrategy::collectNodeNames(MR::NetworkDef* netDef, const s
 	collectNames(rootNodeDef);
 
 	for (const auto& nodeNamePair : nodeNameMap)
-		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectNodeNames: Associated node name '%s' for node ID %d.\n", nodeNamePair.second.c_str(), nodeNamePair.first);
+		g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::collectNodeNames: Associated node name '%s' for node ID %d.\n", nodeNamePair.second.c_str(), nodeNamePair.first);
 
 	return true;
 }
