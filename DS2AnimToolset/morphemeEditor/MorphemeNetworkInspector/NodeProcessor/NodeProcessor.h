@@ -3,6 +3,8 @@
 #include <map>
 
 #include "morpheme/mrNodeDef.h"
+#include "simpleBundle/simpleAnimRuntimeIDtoFilenameLookup.h"
+
 #include "NodeNamingStrategy/NodeNamingStrategy.inl"
 #include "GraphLayouterStrategy/GraphLayouterStrategy.inl"
 #include "NodeEditor/NodeEditor.h"
@@ -27,7 +29,7 @@ public:
 	static const std::string nodeTypeAsManifestName(const MR::NodeType type);
 	static const std::string transitTypeAsManifestName(const MR::NodeType type);
 
-	bool preProcessNetwork(MR::NetworkDef* netDef);
+	bool preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable);
 
 	NodeEditor::ControlParameter* processControlParameter(NodeEditor::Editor* editor, MR::NodeDef* nodeDef, const std::string& name);
 	NodeEditor::Node* processNode(NodeEditor::Graph* graph, MR::NodeDef* nodeDef, const std::string& name);
@@ -65,6 +67,8 @@ private:
 	* \param netDef The network definition to process.
 	*/
 	bool collectNodeNames(MR::NetworkDef* netDef);
+
+	void fixupAnimNodeNames(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable);
 
 	MR::NodeDef* getParentNodeContainer(MR::NodeDef* nodeDef);
 

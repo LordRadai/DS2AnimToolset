@@ -20,6 +20,7 @@ public:
 	MR::Network* getNetwork() const { return this->m_pMorphemeCharacter->getNetwork(); }
 	MR::NetworkDef* getNetworkDef() const { return this->m_pMorphemeCharacter->getCharacterDef()->getNetworkDef(); }
 	MR::AnimRigDef* getAnimRigDef() const { return this->getNetwork()->getNetworkDef()->getRig(this->getActiveAnimSetIndex()); }
+	MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* getAnimFileLookUpTable() const { return this->getMorphemeCharacterDef()->getAnimFileLookUp(); }
 	const uint32_t getActiveAnimSetIndex() const { return this->getNetwork()->getActiveAnimSetIndex(); }
 };
 

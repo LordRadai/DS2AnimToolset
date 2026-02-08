@@ -12,7 +12,7 @@ public:
 	MorphemeNetworkInspector() : NodeEditor::Editor(NodeEditor::NodeEditorFlags_ReadOnly) {}
 	~MorphemeNetworkInspector() override {}
 
-	bool loadNetwork(MR::NetworkDef* network);
+	bool loadNetwork(MR::NetworkDef* networkDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup*);
 
 	std::string getNodeName(const MR::NodeID nodeID) { return m_nodeProcessor.getNodeName(nodeID); }
 	std::string getBlendTreeNodeName(const MR::NodeID nodeID) { return m_nodeProcessor.getBlendTreeNodeName(nodeID); }

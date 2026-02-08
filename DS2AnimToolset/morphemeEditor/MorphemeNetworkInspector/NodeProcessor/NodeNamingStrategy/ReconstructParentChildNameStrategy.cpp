@@ -32,7 +32,15 @@ bool ReconstructParentChildNameStrategy::collectNodeNames(MR::NetworkDef* netDef
 			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
 			if (NodeNameStrategyUtils::isNodeBlendTreeOutput(nodeDef, blendTreeNodes))
+			{
+				// Normal names are stripped in the DS2 nmb, so we just have to get the standard name.
+				std::string blendTreeName = NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName);
+
+				if (NodeNameStrategyUtils::isNodeStateNode(nodeDef))
+					blendTreeName = NodeNameStrategyUtils::getStateNodeNameFromStringTable(netDef, nodeDef->getNodeID());
+
 				NodeNameStrategyUtils::registerNodeName(blendTreeNodeNameMap, nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
+			}
 
 			NodeNameStrategyUtils::registerNodeName(nodeNameMap, nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
 

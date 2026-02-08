@@ -1175,9 +1175,10 @@ void MorphemeEditorApp::loadFile()
 						this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
 
 						MorphemeNetworkInspector* inspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
+						CharacterMotionCtrlBase* motionCtrl = this->m_character->getCharacterMotionCtrl();
 
 						if (inspector)
-							inspector->loadNetwork(this->m_character->getCharacterMotionCtrl()->getNetworkDef());
+							inspector->loadNetwork(motionCtrl->getNetworkDef(), motionCtrl->getAnimFileLookUpTable());
 					}
 					pItem->Release();
 				}

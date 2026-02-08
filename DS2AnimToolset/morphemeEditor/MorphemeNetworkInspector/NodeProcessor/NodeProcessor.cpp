@@ -1,4 +1,5 @@
 ﻿#include <queue>
+#include <filesystem>
 
 #include "NodeProcessor.h"
 
@@ -7,8 +8,8 @@
 
 #include "morpheme/mrNetworkDef.h"
 #include "morpheme/Nodes/mrNodeStateMachine.h"
+#include "morpheme/Nodes/mrNodeAnimSyncEvents.h"
 
-#include "NodeNamingStrategy/Utils/Utils.h"
 #include "NodeNamingStrategy/DefaultNodeNamingStrategy.h"
 #include "NodeNamingStrategy/ReconstructParentChildNameStrategy.h"
 
@@ -82,7 +83,7 @@ namespace
 	}
 }
 
-bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
+bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable)
 {
 	m_blendTreeNodeNames.clear();
 	m_blendTreeNodes.clear();
@@ -102,6 +103,7 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef)
 	collectContainerNodes(netDef);
 	collectBlendTreeChildNodes(netDef);
 	collectNodeNames(netDef);
+	fixupAnimNodeNames(netDef, animNamesTable);
 
 	g_appLog->debugMessage(MsgLevel_Debug, "Root Node: %d (name=\"%s\")\n", netDef->getRootNodeID(), netDef->getNodeNameFromNodeID(netDef->getRootNodeID()));
 
@@ -1375,6 +1377,29 @@ bool NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
 	}
 
 	return true;
+}
+
+void NodeProcessor::fixupAnimNodeNames(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable)
+{
+	for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
+	{
+		const MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+
+		if (nodeDef->getNodeTypeID() != NODE_TYPE_ANIM_EVENTS)
+			continue;
+
+		MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM));
+
+		if (!sourceAnim)
+			INVOKE_PANIC("NodeProcessor::fixupAnimNodeNames: Anim events node with ID %d does not have a source anim attribute.\n", nodeDef->getNodeID());
+
+		std::filesystem::path animSourceName = animNamesTable->getSourceFilename(sourceAnim->m_animAssetID);
+		std::string animName = animSourceName.filename().replace_extension("").string();
+
+		m_nodeNameMap[nodeDef->getNodeID()] = animName;
+
+		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::fixupAnimNodeNames: Set name of anim events node ID %d to \"%s\" based on source anim asset ID %d.\n", nodeDef->getNodeID(), animName.c_str(), sourceAnim->m_animAssetID);
+	}
 }
 
 MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
