@@ -1682,7 +1682,7 @@ void GuiManager::selectedNodeInfoWindow()
 
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
-	ImGui::Begin("Network Info", nullptr, ImGuiWindowFlags_NoTitleBar);
+	ImGui::Begin("Network Info");
 
 	NodeEditor::Editor* nodeEditor = editorApp->getNodeEditor();
 
