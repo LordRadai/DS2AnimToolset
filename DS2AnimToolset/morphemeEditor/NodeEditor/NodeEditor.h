@@ -154,6 +154,9 @@ namespace NodeEditor
 		BlendTree* createRootBlendTree(int rootNodeID = 0);
 		StateMachine* createRootStateMachine(int rootNodeID = 0);
 
+		std::string getNodeName(int nodeID);
+		std::string getNodeFullName(int nodeID);
+
 		void pushGraph(Graph* graph);
 		void popGraph();
 

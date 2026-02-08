@@ -6,7 +6,8 @@
 #include "morpheme/mrMirroredAnimMapping.h"
 #include "NMGeomUtils/NMJointLimits.h"
 #include "Node/Node.h"
-#include "Node/NodeUtils.h"
+
+#include "MorphemeEditorApp/MorphemeEditorApp.h"
 
 namespace
 {
@@ -313,6 +314,8 @@ namespace MD
 
 	ME::NetworkDefExportXML* exportNetwork(MR::NetworkDef* netDef, ME::AnimationLibraryXML* animLibraryExport, ME::MessagePresetLibraryExportXML* messagePresetLibraryExport, std::wstring chrName, std::wstring dstFileName)
 	{
+		NodeEditor::Editor* editor = MorphemeEditorApp::getInstance()->getNodeEditor();
+
 		ME::ExportFactoryXML factory;
 
 		GUID gidReference;
@@ -328,17 +331,7 @@ namespace MD
 		for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
 		{
 			MR::NodeDef* nodeDef = netDef->getNodeDef(i);
-			std::string nodeName = netDef->getNodeNameFromNodeID(i);
-
-			const MR::NodeID parentNodeID = nodeDef->getParentNodeID();
-
-			if (parentNodeID != MR::INVALID_NODE_ID)
-			{
-				std::string parentNodeName = netDef->getNodeNameFromNodeID(parentNodeID);
-
-				if (nodeName == parentNodeName)
-					nodeName = "";
-			}
+			std::string nodeName = editor->getNodeFullName(nodeDef->getNodeID());
 
 			exportNode(netDefExport, netDef, nodeDef, nodeName);
 		}

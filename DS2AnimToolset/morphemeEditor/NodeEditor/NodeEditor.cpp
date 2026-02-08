@@ -661,6 +661,26 @@ namespace NodeEditor
         return stateMachine;
 	}
 
+    std::string Editor::getNodeName(int nodeID)
+    {
+		Node* node = getNode(nodeID);
+
+        if (!node)
+            return "";
+
+		return node->getName();
+    }
+
+    std::string Editor::getNodeFullName(int nodeID)
+    {
+        Node* node = getNode(nodeID);
+
+        if (!node)
+            return "";
+
+        return node->getFullName();
+	}
+
 	void Editor::pushGraph(Graph* graph)
     {
         if (m_graphStack.empty())

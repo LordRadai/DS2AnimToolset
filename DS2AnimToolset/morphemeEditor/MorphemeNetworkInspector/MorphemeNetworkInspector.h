@@ -13,4 +13,7 @@ public:
 	~MorphemeNetworkInspector() override {}
 
 	bool loadNetwork(MR::NetworkDef* network);
+
+	std::string getNodeName(const MR::NodeID nodeID) { return m_nodeProcessor.getNodeName(nodeID); }
+	std::string getBlendTreeNodeName(const MR::NodeID nodeID) { return m_nodeProcessor.getBlendTreeNodeName(nodeID); }
 };
