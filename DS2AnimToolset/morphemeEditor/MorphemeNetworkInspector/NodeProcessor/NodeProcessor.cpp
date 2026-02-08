@@ -1183,6 +1183,7 @@ void NodeProcessor::collectBlendTreeNodes(MR::NetworkDef* netDef)
 void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 {
 	m_blendTreeNodeMap.clear();
+	m_multiplyConnectedCPOutputNodes.clear();
 
 		// Recursive helper
 	std::function<void(MR::NodeDef*, std::vector<MR::NodeDef*>&, std::vector<MR::NodeDef*>&)> collectChildren;
@@ -1350,10 +1351,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 		MR::NodeDef* commonAncestor = getCommonAncestor(netDef, referencingNodes);
 		if (!commonAncestor)
-		{
 			g_appLog->alertMessage(MsgLevel_Warn, "Failed to find common ancestor for control parameter output node ID %d. Defaulting to root node.\n", cpOutputNode->getNodeID());
-			//commonAncestor = netDef->getNodeDef(netDef->getRootNodeID());
-		}
 
 		g_appLog->debugMessage(MsgLevel_Debug, "Common ancestor for CP output node ID %d is node ID %d (name=\"%s\").\n", cpOutputNode->getNodeID(), commonAncestor->getNodeID(), netDef->getNodeNameFromNodeID(commonAncestor->getNodeID()));
 
