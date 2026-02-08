@@ -206,7 +206,7 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 	}
 
 	for (const auto& nodeDef : notFoundNodes)
-		g_appLog->debugMessage(MsgLevel_Warn, "NodeProcessor::preProcessNetwork: Node %d (name=\"%s\", type=\"%s\") is not referenced as a child of any blend tree or state machine node.\n", nodeDef->getNodeID(), getNodeName(nodeDef->getNodeID()).c_str(), nodeTypeAsManifestName(nodeDef->getNodeTypeID()).c_str());
+		g_appLog->debugMessage(MsgLevel_Error, "NodeProcessor::preProcessNetwork: Node %d (name=\"%s\", type=\"%s\") is not referenced as a child of any blend tree or state machine node.\n", nodeDef->getNodeID(), getNodeName(nodeDef->getNodeID()).c_str(), nodeTypeAsManifestName(nodeDef->getNodeTypeID()).c_str());
 
 	if (!notFoundNodes.empty())
 	{
@@ -1191,6 +1191,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 			if (node->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 				return;
 
+			bool wasThisPromoted = false;
 			for (size_t i = 0; i < node->getNumChildNodes(); ++i)
 			{
 				MR::NodeDef* childNode = netDef->getNodeDef(node->getChildNodeID(i));
@@ -1202,6 +1203,8 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 					if (!m_blendTreeNodes.count(nodeID))
 					{
+						wasThisPromoted = true;
+
 						// Promote parent node as new blend tree root
 						m_blendTreeNodes[nodeID] = node;
 
@@ -1222,11 +1225,23 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 						if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
 							collectChildren(childNode, outList, promotedNodes);
 
-						return;
+						continue;
+					}
+
+					if (wasThisPromoted)
+					{
+						addNodeToList(outList, childNode);
+
+						// Recurse normally
+						if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+							collectChildren(childNode, outList, promotedNodes);
 					}
 
 					continue;
 				}
+
+				if (wasThisPromoted)
+					return;
 
 				addNodeToList(outList, childNode);
 
