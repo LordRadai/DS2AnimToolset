@@ -876,7 +876,7 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 			{
 				NodeEditor::Transition* transition = stateMachine->getTransitionAt(j);
 
-				if (transition->getDestinationNode()->getNodeID() == targetNodeID)
+				if (transition->getDestinationNode()->getNodeID() == targetNodeID && transition->getSourceNode()->isOfType<NodeEditor::StateNode>())
 				{
 					existsStateToNode = true;
 					sourceNode = transition->getSourceNode();
