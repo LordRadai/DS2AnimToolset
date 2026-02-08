@@ -699,15 +699,19 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 
 						NodeEditor::Graph* parentGraph = currentGraph->getParentGraph();
 
-						if (parentGraph->isOfType<NodeEditor::BlendTree>())
+						if (parentGraph->isOfType<NodeEditor::BlendTree>() && multiplyConnectedNode->getParentGraph() != parentGraph)
 						{
-							auto* parentBlendTree = parentGraph->asType<NodeEditor::BlendTree>();
-
+							NodeEditor::BlendTree* parentBlendTree = parentGraph->asType<NodeEditor::BlendTree>();
 							NodeEditor::PassDownPinsNode* parentPassDownPinNode = parentBlendTree->getPassDownPinsNode();
-							NodeEditor::Pin* parentPassDownPin = parentPassDownPinNode->getOutputPin(passDownPinName);
 
-							if (parentPassDownPin)
-								parentPassDownPin->connectTo(graphNode->getInputPin(passDownPinName));
+							if (parentBlendTree->getPassDownPin(passDownPinName) == "")
+							{
+								parentBlendTree->addPassDownPin(passDownPinName);
+								parentPassDownPinNode->updatePins();
+							}
+
+							NodeEditor::Pin* parentPassDownPin = parentPassDownPinNode->getOutputPin(passDownPinName);
+							parentPassDownPin->connectTo(graphNode->getInputPin(0));
 						}
 
 						currentGraph = parentGraph;
@@ -730,12 +734,6 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 							multiplyConnectedNode->getFullName().c_str(),
 							nodeToConnectTo->getNodeID(),
 							nodeToConnectTo->getFullName().c_str());
-					}
-
-					if (nodeToConnectTo->getTypeName() == "BlendTree")
-					{
-						if (!nodeToConnectTo->getInputPin(passDownPinName))
-							nodeToConnectTo->createInputPin(passDownPinName);
 					}
 
 					NodeEditor::Pin* nodeToConnectToPin = nodeToConnectTo->getInputPin(passDownPinName);
