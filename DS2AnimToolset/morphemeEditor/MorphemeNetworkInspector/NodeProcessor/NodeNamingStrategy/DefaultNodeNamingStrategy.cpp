@@ -7,16 +7,26 @@
 #include "RLog/RLog.h"
 #include "extern.h"
 
-bool DefaultNodeNamingStrategy::collectNodeNames(MR::NetworkDef* netDef, const std::map<MR::NodeID, MR::NodeDef*>& blendTreeNodes, std::map<MR::NodeID, std::string>& nodeNameMap, std::map<MR::NodeID, std::string>& blendTreeNodeNameMap)
+bool DefaultNodeNamingStrategy::collectNodeNames(MR::NetworkDef* netDef, const std::map<MR::NodeID, std::vector<MR::NodeDef*>>& blendTreeChildren, const std::map<MR::NodeID, std::vector<MR::NodeDef*>>& smChildren, std::map<MR::NodeID, std::string>& nodeNameMap, std::map<MR::NodeID, std::string>& blendTreeNodeNameMap)
 {
 	nodeNameMap.clear();
 	blendTreeNodeNameMap.clear();
+
+	std::map<MR::NodeID, MR::NodeDef*> blendTreeNodes;
+	for (const auto& nodeContainerPair : blendTreeChildren)
+	{
+		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeContainerPair.first);
+		blendTreeNodes[nodeContainerPair.first] = nodeDef;
+	}
 
 	MR::NodeDef* rootNodeDef = netDef->getNodeDef(netDef->getRootNodeID());
 
 	std::function<void(MR::NodeDef*)> collectNames;
 	collectNames = [&](MR::NodeDef* nodeDef)
 		{
+			if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+				return;
+
 			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
 			if (NodeNameStrategyUtils::isNodeBlendTreeOutput(nodeDef, blendTreeNodes))

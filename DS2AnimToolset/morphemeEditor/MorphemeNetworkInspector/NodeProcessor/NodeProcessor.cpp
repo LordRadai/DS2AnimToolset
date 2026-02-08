@@ -8,6 +8,7 @@
 #include "morpheme/mrNetworkDef.h"
 #include "morpheme/Nodes/mrNodeStateMachine.h"
 
+#include "NodeNamingStrategy/Utils/Utils.h"
 #include "NodeNamingStrategy/DefaultNodeNamingStrategy.h"
 #include "NodeNamingStrategy/ReconstructParentChildNameStrategy.h"
 
@@ -529,13 +530,13 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 
 				if (inputIdx != -1)
 				{
-					g_appLog->debugMessage(MsgLevel_Debug, "Creating pass down connection for multiply connected node ID %d (%s) from source node ID %d (%s) to blend tree with ID %d (%s).\n", multiplyConnectedNode->getNodeID(), multiplyConnectedNode->getFullName().c_str(), sourceNode->getNodeID(), sourceNode->getFullName().c_str(), blendTree->getGraphID(), blendTree->getFullName().c_str());
-
 					char passDownPinName[256];
 					sprintf_s(passDownPinName, "%s", getNodeName(nodeID).c_str());
 
 					if (blendTree->getPassDownPin(passDownPinName) == "")
 					{
+						g_appLog->debugMessage(MsgLevel_Info, "Creating pass down connection %s for multiply connected node ID %d (%s) in blend tree %d (%s).\n", passDownPinName, multiplyConnectedNode->getNodeID(), multiplyConnectedNode->getFullName().c_str(), blendTree->getGraphID(), blendTree->getFullName().c_str());
+
 						blendTree->addPassDownPin(passDownPinName);
 						passDownPinNode->updatePins();
 
@@ -557,13 +558,19 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 
 							NodeEditor::Graph* parentGraph = currentGraph->getParentGraph();
 
-							if (parentGraph->isOfType<NodeEditor::BlendTree>())
+							if (parentGraph->isOfType<NodeEditor::BlendTree>() && multiplyConnectedNode->getParentGraph() != parentGraph)
 							{
-								NodeEditor::PassDownPinsNode* parentPassDownPinNode = parentGraph->asType<NodeEditor::BlendTree>()->getPassDownPinsNode();
+								NodeEditor::BlendTree* parentBlendTree = parentGraph->asType<NodeEditor::BlendTree>();
+								NodeEditor::PassDownPinsNode* parentPassDownPinNode = parentBlendTree->getPassDownPinsNode();
+
+								if (parentBlendTree->getPassDownPin(passDownPinName) == "")
+								{
+									parentBlendTree->addPassDownPin(passDownPinName);
+									parentPassDownPinNode->updatePins();
+								}
 
 								NodeEditor::Pin* parentPassDownPin = parentPassDownPinNode->getOutputPin(passDownPinName);
-								if (parentPassDownPin)
-									parentPassDownPin->connectTo(graphNode->getInputPin(0));
+								parentPassDownPin->connectTo(graphNode->getInputPin(0));
 							}
 
 							currentGraph = parentGraph;
@@ -574,12 +581,6 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 
 						if (multiplyConnectedNode->getParentGraph() != nodeToConnectTo->getParentGraph())
 							INVOKE_PANIC("Graph containing multiply connected node ID %d (%s) is not the same as the graph containing the node %d (%s) to connect to.\n", multiplyConnectedNode->getNodeID(), multiplyConnectedNode->getFullName().c_str(), nodeToConnectTo->getNodeID(), nodeToConnectTo->getFullName().c_str());
-
-						if (nodeToConnectTo->getTypeName() == "BlendTree")
-						{
-							if (!nodeToConnectTo->getInputPin(passDownPinName))
-								nodeToConnectTo->createInputPin(passDownPinName);
-						}
 
 						NodeEditor::Pin* multiplyConnectedNodePin = multiplyConnectedNode->getOutputPin(0);
 						NodeEditor::Pin* nodeToConnectToPin = nodeToConnectTo->getInputPin(passDownPinName);
@@ -663,8 +664,6 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 
 			if (inputIdx != -1 && inputPinIndex != -1)
 			{
-				g_appLog->debugMessage(MsgLevel_Debug, "Creating pass down connection for CP output node ID %d for source node ID %d.\n", nodeID, sourceNodeID);
-
 				NodeEditor::Pin* multiplyConnectedTargetPin = multiplyConnectedNode->getOutputDataPin(inputPinIndex);
 
 				char passDownPinName[256];
@@ -672,6 +671,8 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 
 				if (blendTree->getPassDownPin(passDownPinName) == "")
 				{
+					g_appLog->debugMessage(MsgLevel_Info, "Creating pass down connection %s for multiply connected node ID %d (%s) in blend tree %d (%s).\n", passDownPinName, multiplyConnectedNode->getNodeID(), multiplyConnectedNode->getFullName().c_str(), blendTree->getGraphID(), blendTree->getFullName().c_str());
+
 					blendTree->addPassDownPin(passDownPinName);
 					passDownPinNode->updatePins();
 
@@ -1369,7 +1370,7 @@ bool NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
 		return false;
 	}
 
-	if (!m_namingStrategy->collectNodeNames(netDef, m_blendTreeNodes, m_nodeNameMap, m_blendTreeNodeNames))
+	if (!m_namingStrategy->collectNodeNames(netDef, m_blendTreeNodeMap, m_stateMachineNodeMap, m_nodeNameMap, m_blendTreeNodeNames))
 	{
 		g_appLog->alertMessage(MsgLevel_Warn, "NodeProcessor::collectNodeNames: Node naming strategy failed to collect node names.");
 		return false;

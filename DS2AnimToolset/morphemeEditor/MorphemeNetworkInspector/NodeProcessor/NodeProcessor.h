@@ -24,6 +24,9 @@ class NodeProcessor
 	std::vector<MR::NodeDef*> m_multiplyConnectedCPOutputNodes;
 
 public:
+	static const std::string nodeTypeAsManifestName(const MR::NodeType type);
+	static const std::string transitTypeAsManifestName(const MR::NodeType type);
+
 	bool preProcessNetwork(MR::NetworkDef* netDef);
 
 	NodeEditor::ControlParameter* processControlParameter(NodeEditor::Editor* editor, MR::NodeDef* nodeDef, const std::string& name);
@@ -33,9 +36,6 @@ public:
 	std::string getNodeName(const MR::NodeID nodeID);
 	std::string getBlendTreeNodeName(const MR::NodeID nodeID);
 private:
-	static const std::string nodeTypeAsManifestName(const MR::NodeType type);
-	static const std::string transitTypeAsManifestName(const MR::NodeType type);
-
 	bool isNodeBlendTreeOutput(MR::NodeDef* nodeDef, NodeEditor::BlendTree* bt);
 	bool isNodeBlendTree(MR::NodeDef* nodeDef);
 	bool isNodeInBlendTree(MR::NodeDef* nodeDef);
