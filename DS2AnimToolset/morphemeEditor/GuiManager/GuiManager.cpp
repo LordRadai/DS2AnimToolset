@@ -1682,17 +1682,18 @@ void GuiManager::selectedNodeInfoWindow()
 
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
-	ImGui::Begin("EditorInfoWindow", nullptr, ImGuiWindowFlags_NoTitleBar);
+	ImGui::Begin("Network Info", nullptr, ImGuiWindowFlags_NoTitleBar);
 
 	NodeEditor::Editor* nodeEditor = editorApp->getNodeEditor();
 
 	ImGui::BeginTabBar("info_tabs");
 
-	if (ImGui::BeginTabItem("AttributeEditor"))
+	if (ImGui::BeginTabItem("Attribute Editor"))
 	{
 		nodeEditor->infoGui();
 		ImGui::EndTabItem();
 	}
+
 	if (ImGui::BeginTabItem("Navigator"))
 	{
 		nodeEditor->navigatorGui();
