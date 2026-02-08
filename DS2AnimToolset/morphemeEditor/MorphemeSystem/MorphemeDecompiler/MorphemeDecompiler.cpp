@@ -331,7 +331,11 @@ namespace MD
 		for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
 		{
 			MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+
 			std::string nodeName = editor->getNodeFullName(nodeDef->getNodeID());
+
+			if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+				nodeName = editor->getControlParameter(nodeDef->getNodeID())->getFullName();
 
 			exportNode(netDefExport, netDef, nodeDef, nodeName);
 		}
