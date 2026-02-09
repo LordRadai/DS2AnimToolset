@@ -113,6 +113,11 @@ public:
 	void registerSMNode(MR::NodeDef* nodeDef);
 	void registerNodeAsSMChild(const MR::NodeID smNodeID, MR::NodeDef* nodeDef);
 
+	/*
+	* \brief Get the common ancestor container node (blend tree or state machine) for a set of referencing nodes.
+	* \param netDef The network definition to search within.
+	* \param referencingNodes The nodes that reference the node in question as a child node. These are the nodes we want to find the common ancestor container for.
+	*/
 	MR::NodeDef* getCommonAncestorContainer(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes, bool excludeSelf);
 
 	/*
@@ -133,8 +138,17 @@ public:
 	*/
 	bool collectNodeNames(MR::NetworkDef* netDef);
 
+	/*
+	* \brief Fix up the names of animation nodes in the network using the provided anim names table. This should be done after collecting all node names.
+	* \param netDef The network definition to process.
+	* \param animNamesTable The table to use for looking up animation names from runtime IDs.
+	*/
 	void fixupAnimNodeNames(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable);
 
+	/*
+	* \brief Get the parent node container (blend tree or state machine) for a given node.
+	* \param nodeDef The node to find the parent container for.
+	*/
 	MR::NodeDef* getParentNodeContainer(MR::NodeDef* nodeDef);
 
 	void populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
