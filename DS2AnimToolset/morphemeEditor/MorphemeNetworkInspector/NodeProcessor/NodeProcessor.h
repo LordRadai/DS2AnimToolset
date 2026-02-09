@@ -46,16 +46,14 @@ class ContainerNodeInfo
 
 public:
 	ContainerNodeInfo() : m_outputNodeDef(nullptr) {}
-	ContainerNodeInfo(MR::NodeDef* nodeDef) : m_outputNodeDef(nodeDef) 
-	{
-		m_childNodeDefs.push_back(nodeDef);
-	}
+	ContainerNodeInfo(MR::NodeDef* nodeDef) : m_outputNodeDef(nodeDef) {}
 
 	MR::NodeDef* getOutputNodeDef() const { return m_outputNodeDef; }
 
 	void addChildNodeDef(MR::NodeDef* childNodeDef)
 	{
-		m_childNodeDefs.push_back(childNodeDef);
+		if (!hasChildNodeDef(childNodeDef))
+			m_childNodeDefs.push_back(childNodeDef);
 	}
 
 	bool hasChildNodeDef(MR::NodeDef* childNodeDef) const
@@ -113,6 +111,7 @@ public:
 	void registerNodeAsSMChild(const MR::NodeID smNodeID, MR::NodeDef* nodeDef);
 
 	MR::NodeDef* getCommonAncestor(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes);
+	MR::NodeDef* getCommonAncestorContainer(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes, bool excludeSelf);
 
 	/*
 	* \brief Collect all container nodes (state machines and blend trees) in the network.
