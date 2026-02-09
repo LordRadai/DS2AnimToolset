@@ -82,6 +82,9 @@ class NodeProcessor
 	std::map<BlendTreeID, ContainerNodeInfo> m_blendTreeNodes;
 	std::map<MR::NodeID, ContainerNodeInfo> m_stateMachineNodes;
 	std::map<MR::NodeID, std::string> m_nodeNameMap;
+	std::unordered_map<MR::NodeID, std::vector<MR::NodeDef*>> m_inputNodeLookupTable;
+	std::unordered_map<MR::NodeID, std::vector<MR::NodeDef*>> m_inputCpLookupTable;
+	std::vector<MR::NodeDef*> m_cpOutputNodes;
 	std::vector<MR::NodeDef*> m_multiplyConnectedCPOutputNodes;
 
 public:
@@ -168,4 +171,7 @@ public:
 	void registerStateMachineName(MR::NodeID nodeID, const std::string& name);
 
 	bool isNodeStateNode(MR::NodeDef* nodeDef);
+
+	void getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, MR::NodeID nodeID);
+	void getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, MR::NodeID nodeID);
 };

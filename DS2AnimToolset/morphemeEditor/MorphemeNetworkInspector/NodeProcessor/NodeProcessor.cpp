@@ -40,6 +40,7 @@ namespace
 		return false;
 	}
 
+	/*
 	void getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outList, MR::NetworkDef* netDef, MR::NodeID nodeID)
 	{
 		outList.clear();
@@ -85,6 +86,7 @@ namespace
 			}
 		}
 	}
+	*/
 }
 
 bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable)
@@ -92,6 +94,9 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 	m_blendTreeNodes.clear();
 	m_stateMachineNodes.clear();
 	m_nodeNameMap.clear();
+	m_cpOutputNodes.clear();
+	m_inputNodeLookupTable.clear();
+	m_inputCpLookupTable.clear();
 	m_multiplyConnectedCPOutputNodes.clear();
 
 	if (isNetworkNodeNameMapComplete(netDef))
@@ -101,7 +106,37 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 
 	m_blendTreeLayouterStrategy = new BTFanLayouterStrategy();
 
+	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
+	{
+		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+		MR::NodeDef::NodeFlags flags = nodeDef->getNodeFlags();
+
+		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) || flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+			continue;
+
+		if (nodeDef->getNumOutputCPPins() > 0)
+			m_cpOutputNodes.push_back(nodeDef);
+
+		for (size_t j = 0; j < nodeDef->getNumChildNodes(); ++j)
+		{
+			MR::NodeID inputID = nodeDef->getChildNodeID(j);
+
+			if (inputID != MR::INVALID_NODE_ID)
+				m_inputNodeLookupTable[inputID].push_back(nodeDef);
+		}
+
+		// Populate cpMap
+		for (size_t j = 0; j < nodeDef->getNumInputCPConnections(); ++j)
+		{
+			MR::NodeID inputID = nodeDef->getInputCPConnection(j)->m_sourceNodeID;
+
+			if (inputID != MR::INVALID_NODE_ID)
+				m_inputCpLookupTable[inputID].push_back(nodeDef);
+		}
+	}
+
 	collectContainerNodes(netDef);
+	collectBlendTreeChildNodes(netDef);
 	collectNodeNames(netDef);
 	fixupAnimNodeNames(netDef, animNamesTable);
 
@@ -1300,7 +1335,7 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 					outAncestors.insert(id);
 
 				// Recurse up the chain
-				collectAncestors(node, outAncestors, false);
+				collectAncestors(node, outAncestors, excludeSelf);
 			}
 
 			std::vector<MR::NodeDef*> referencingNodesCP;
@@ -1319,7 +1354,7 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 				}
 
 				// Recurse up the chain
-				collectAncestors(node, outAncestors, false);
+				collectAncestors(node, outAncestors, excludeSelf);
 			}
 		};
 
@@ -1391,8 +1426,10 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 		MR::NodeDef::NodeFlags flags = node->getNodeFlags();
 
 		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) ||
-			flags.isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE) ||
 			flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+			continue;
+
+		if (id != netDef->getRootNodeID() && flags.isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 			continue;
 
 		int depth = 0;
@@ -1463,7 +1500,7 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 		std::vector<MR::NodeDef*> referencingNodes;
 		getNodesWithThisAsInput(referencingNodes, netDef, nodeDef->getNodeID());
 
-		MR::NodeDef* btRoot = getCommonAncestor(netDef, referencingNodes);
+		MR::NodeDef* btRoot = getCommonAncestorContainer(netDef, referencingNodes, true);
 
 		if (!btRoot)
 		{
@@ -1528,8 +1565,6 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 
 	for (const auto& stateMachineNodePair : m_stateMachineNodes)
 		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Registered node ID %d as State Machine.\n", stateMachineNodePair.first);
-
-	collectBlendTreeChildNodes(netDef);
 }
 
 void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
@@ -1574,9 +1609,51 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 	m_multiplyConnectedCPOutputNodes.clear();
 	
-	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
+	for (size_t i = 0; i < m_cpOutputNodes.size(); i++)
 	{
-		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+		MR::NodeDef* nodeDef = m_cpOutputNodes[i];
+
+		std::vector<MR::NodeDef*> referencingNodes;
+		getNodesWithThisAsInputCP(referencingNodes, netDef, nodeDef->getNodeID());
+
+		if (referencingNodes.size() == 0)
+			continue;
+
+		MR::NodeDef* commonAncestor = getCommonAncestorContainer(netDef, referencingNodes, false);
+		if (!commonAncestor)
+			INVOKE_PANIC("Failed to find common ancestor for control parameter output node ID %d. Defaulting to root node.\n", nodeDef->getNodeID());
+
+		g_appLog->debugMessage(MsgLevel_Debug, "Common ancestor for CP output node ID %d is node ID %d (name=\"%s\").\n", nodeDef->getNodeID(), commonAncestor->getNodeID(), netDef->getNodeNameFromNodeID(commonAncestor->getNodeID()));
+
+		ContainerNodeInfo* containerInfo = getBlendTreeForNode(commonAncestor->getNodeID(), 1);
+		if (!containerInfo)
+			INVOKE_PANIC("NodeProcessor::collectBlendTreeChildNodes: Failed to find blend tree for node ID %d.\n", commonAncestor->getNodeID());
+
+		containerInfo->addChildNodeDef(nodeDef);
+
+		collectChildren(nodeDef, containerInfo->getChildNodeDefs());
+
+		// Check if the ancestor contains both nodes and the output CP node. In which case the node is not a pass down node, and we don't need to add it to the list of multiply connected CP output nodes.
+		bool isNodePassDown = false;
+
+		for (MR::NodeDef* referencingNode : referencingNodes)
+		{
+			if (!doesListContainNode(containerInfo->getChildNodeDefs(), referencingNode))
+			{
+				isNodePassDown = true;
+				break;
+			}
+		}
+
+		if (isNodePassDown)
+			m_multiplyConnectedCPOutputNodes.push_back(nodeDef);
+	}
+
+	const MR::NodeIDsArray* multiplyConnectedNodes = netDef->getMultiplyConnectedNodeIDs();
+	for (size_t i = 0; i < multiplyConnectedNodes->getNumEntries(); i++)
+	{
+		const MR::NodeID nodeID = multiplyConnectedNodes->getEntry(i);
+		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
 
 		if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 			continue;
@@ -1602,44 +1679,6 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 			containerInfo->addChildNodeDef(nodeDef);
 
 			collectChildren(nodeDef, containerInfo->getChildNodeDefs());
-		}
-
-		if (nodeDef->getNumOutputCPPins() > 0)
-		{
-			std::vector<MR::NodeDef*> referencingNodes;
-			getNodesWithThisAsInputCP(referencingNodes, netDef, nodeDef->getNodeID());
-
-			if (referencingNodes.size() == 0)
-				continue;
-
-			MR::NodeDef* commonAncestor = getCommonAncestorContainer(netDef, referencingNodes, false);
-			if (!commonAncestor)
-				INVOKE_PANIC("Failed to find common ancestor for control parameter output node ID %d. Defaulting to root node.\n", nodeDef->getNodeID());
-
-			g_appLog->debugMessage(MsgLevel_Debug, "Common ancestor for CP output node ID %d is node ID %d (name=\"%s\").\n", nodeDef->getNodeID(), commonAncestor->getNodeID(), netDef->getNodeNameFromNodeID(commonAncestor->getNodeID()));
-
-			ContainerNodeInfo* containerInfo = getBlendTreeForNode(commonAncestor->getNodeID(), 1);
-			if (!containerInfo)
-				INVOKE_PANIC("NodeProcessor::collectBlendTreeChildNodes: Failed to find blend tree for node ID %d.\n", commonAncestor->getNodeID());
-
-			containerInfo->addChildNodeDef(nodeDef);
-
-			collectChildren(nodeDef, containerInfo->getChildNodeDefs());
-
-			// Check if the ancestor contains both nodes and the output CP node. In which case the node is not a pass down node, and we don't need to add it to the list of multiply connected CP output nodes.
-			bool isNodePassDown = false;
-
-			for (MR::NodeDef* referencingNode : referencingNodes)
-			{
-				if (!doesListContainNode(containerInfo->getChildNodeDefs(), referencingNode))
-				{
-					isNodePassDown = true;
-					break;
-				}
-			}
-
-			if (isNodePassDown)
-				m_multiplyConnectedCPOutputNodes.push_back(nodeDef);
 		}
 	}
 }
@@ -1767,4 +1806,20 @@ bool NodeProcessor::isNodeStateNode(MR::NodeDef* nodeDef)
 	}
 
 	return false;
+}
+
+void NodeProcessor::getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, const MR::NodeID nodeID)
+{
+	outNodes.clear();
+
+	auto it = m_inputNodeLookupTable.find(nodeID);
+	if (it != m_inputNodeLookupTable.end()) outNodes = it->second;
+}
+
+void NodeProcessor::getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, const MR::NodeID nodeID)
+{
+	outNodes.clear();
+
+	auto it = m_inputCpLookupTable.find(nodeID);
+	if (it != m_inputCpLookupTable.end()) outNodes = it->second;
 }
