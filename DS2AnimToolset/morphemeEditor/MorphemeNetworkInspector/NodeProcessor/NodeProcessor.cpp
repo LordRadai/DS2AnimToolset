@@ -48,6 +48,9 @@ namespace
 		{
 			MR::NodeDef* currentNodeDef = netDef->getNodeDef(i);
 
+			if (currentNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+				continue;
+
 			for (size_t childIdx = 0; childIdx < currentNodeDef->getNumChildNodes(); childIdx++)
 			{
 				if (currentNodeDef->getChildNodeID(childIdx) == nodeID)
@@ -66,6 +69,9 @@ namespace
 		for (uint32_t i = 0; i < netDef->getNumNodeDefs(); i++)
 		{
 			MR::NodeDef* currentNodeDef = netDef->getNodeDef(i);
+
+			if (currentNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+				continue;
 
 			for (size_t inputCPIdx = 0; inputCPIdx < currentNodeDef->getNumInputCPConnections(); inputCPIdx++)
 			{
@@ -1280,19 +1286,18 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 			getNodesWithThisAsInput(referencingNodes, netDef, start->getNodeID());
 
 			if (!excludeSelf)
-				outAncestors.insert(start->getNodeID());
+			{
+				if (isNodeBlendTree(start) || start->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+					outAncestors.insert(start->getNodeID());
+			}
 
 			for (MR::NodeDef* node : referencingNodes)
 			{
 				MR::NodeID id = node->getNodeID();
 
-				// Skip self if needed
-				if (!excludeSelf || id != start->getNodeID())
-				{
-					// Only add blend trees or state machines
-					if (isNodeBlendTree(node) || node->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-						outAncestors.insert(id);
-				}
+				// Only add blend trees or state machines
+				if (isNodeBlendTree(node) || node->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+					outAncestors.insert(id);
 
 				// Recurse up the chain
 				collectAncestors(node, outAncestors, false);
@@ -1330,6 +1335,21 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 	{
 		std::unordered_set<MR::NodeID> ancestors;
 		collectAncestors(node, ancestors, excludeSelf);
+
+#ifdef _DEBUG
+		for (size_t i = 0; i < ancestors.size(); i++)
+		{
+			MR::NodeDef* ancestorNode = netDef->getNodeDef(*std::next(ancestors.begin(), i));
+
+			if (!isNodeBlendTree(ancestorNode) && !ancestorNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+			{
+				INVOKE_PANIC(
+					"NodeProcessor::getCommonAncestorContainer: Ancestor node with ID %d is neither a blend tree nor a state machine.\n",
+					ancestorNode->getNodeID());
+			}
+		}
+#endif
+
 		ancestorSets.push_back(std::move(ancestors));
 	}
 
