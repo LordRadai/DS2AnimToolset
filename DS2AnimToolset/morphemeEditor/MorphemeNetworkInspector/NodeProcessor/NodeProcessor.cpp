@@ -1264,7 +1264,6 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 			}
 		};
 
-
 	/* ---------------------------------------------------------------------- */
 	/* 1. Build ancestor sets for all grouped nodes                             */
 	/* ---------------------------------------------------------------------- */
