@@ -18,6 +18,14 @@
 
 namespace
 {
+	using Clock = std::chrono::steady_clock;
+	using TimePoint = Clock::time_point;
+
+	auto elapsed_us = [](TimePoint a, TimePoint b)
+		{
+			return std::chrono::duration_cast<std::chrono::microseconds>(b - a).count();
+		};
+
 	void addNodeToList(std::vector<MR::NodeDef*>& outList, MR::NodeDef* nodeDef)
 	{
 		for (size_t i = 0; i < outList.size(); i++)
@@ -1194,113 +1202,6 @@ void NodeProcessor::registerNodeAsSMChild(const MR::NodeID smNodeID, MR::NodeDef
 		INVOKE_PANIC("NodeProcessor::registerNodeAsSMChild: Failed to find state machine with ID %d.\n", smNodeID);
 }
 
-MR::NodeDef* NodeProcessor::getCommonAncestor(
-	MR::NetworkDef* netDef,
-	const std::vector<MR::NodeDef*>& nodesToGroup)
-{
-	if (nodesToGroup.empty())
-		return nullptr;
-
-	/* ---------------------------------------------------------------------- */
-	/* Local lambda: collect all ancestors of a node (including itself)        */
-	/* ---------------------------------------------------------------------- */
-
-	auto collectAncestors =
-		[&](MR::NodeDef* start, std::unordered_set<MR::NodeID>& outAncestors)
-		{
-			std::vector<MR::NodeDef*> stack;
-			stack.push_back(start);
-
-			while (!stack.empty())
-			{
-				MR::NodeDef* node = stack.back();
-				stack.pop_back();
-
-				const MR::NodeID id = node->getNodeID();
-				if (!outAncestors.insert(id).second)
-					continue;
-
-				const MR::NodeID parentID = node->getParentNodeID();
-				if (parentID != MR::INVALID_NODE_ID)
-					stack.push_back(netDef->getNodeDef(parentID));
-			}
-		};
-
-	/* ---------------------------------------------------------------------- */
-	/* 1. Build ancestor sets for all grouped nodes                             */
-	/* ---------------------------------------------------------------------- */
-
-	std::vector<std::unordered_set<MR::NodeID>> ancestorSets;
-	ancestorSets.reserve(nodesToGroup.size());
-
-	for (MR::NodeDef* node : nodesToGroup)
-	{
-		std::unordered_set<MR::NodeID> ancestors;
-		collectAncestors(node, ancestors);
-		ancestorSets.push_back(std::move(ancestors));
-	}
-
-	/* ---------------------------------------------------------------------- */
-	/* 2. Intersect ancestor sets                                               */
-	/* ---------------------------------------------------------------------- */
-
-	std::unordered_set<MR::NodeID> intersection = ancestorSets[0];
-
-	for (size_t i = 1; i < ancestorSets.size(); ++i)
-	{
-		std::unordered_set<MR::NodeID> next;
-
-		for (MR::NodeID id : intersection)
-		{
-			if (ancestorSets[i].count(id))
-				next.insert(id);
-		}
-
-		intersection.swap(next);
-
-		if (intersection.empty())
-			break;
-	}
-
-	if (intersection.empty())
-		return nullptr;
-
-	/* ---------------------------------------------------------------------- */
-	/* 3. Choose the deepest valid ancestor                                     */
-	/* ---------------------------------------------------------------------- */
-
-	MR::NodeDef* bestNode = nullptr;
-	int bestDepth = -1;
-
-	for (MR::NodeID id : intersection)
-	{
-		MR::NodeDef* node = netDef->getNodeDef(id);
-		MR::NodeDef::NodeFlags flags = node->getNodeFlags();
-
-		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) ||
-			flags.isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE) ||
-			flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
-			continue;
-
-		int depth = 0;
-		MR::NodeDef* cur = node;
-
-		while (cur->getParentNodeID() != MR::INVALID_NODE_ID)
-		{
-			++depth;
-			cur = netDef->getNodeDef(cur->getParentNodeID());
-		}
-
-		if (depth > bestDepth)
-		{
-			bestDepth = depth;
-			bestNode = node;
-		}
-	}
-
-	return bestNode;
-}
-
 MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 	MR::NetworkDef* netDef,
 	const std::vector<MR::NodeDef*>& nodesToGroup,
@@ -1313,10 +1214,15 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 	/* Local lambda: collect all ancestors of a node (including itself)        */
 	/* ---------------------------------------------------------------------- */
 
-	std::function<void(MR::NodeDef*, std::unordered_set<MR::NodeID>&, bool)> collectAncestors;
+	std::unordered_set<MR::NodeID> visited;
+
+	std::function<void(MR::NodeDef*, std::unordered_set<MR::NodeID>&, bool, std::unordered_set<MR::NodeID>&)> collectAncestors;
 	collectAncestors =
-		[&](MR::NodeDef* start, std::unordered_set<MR::NodeID>& outAncestors, bool excludeSelf = true)
+		[&](MR::NodeDef* start, std::unordered_set<MR::NodeID>& outAncestors, bool excludeSelf, std::unordered_set<MR::NodeID>& visited)
 		{
+			if (!visited.insert(start->getNodeID()).second)
+				return;
+
 			std::vector<MR::NodeDef*> referencingNodes;
 			getNodesWithThisAsInput(referencingNodes, netDef, start->getNodeID());
 
@@ -1335,7 +1241,7 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 					outAncestors.insert(id);
 
 				// Recurse up the chain
-				collectAncestors(node, outAncestors, excludeSelf);
+				collectAncestors(node, outAncestors, excludeSelf, visited);
 			}
 
 			std::vector<MR::NodeDef*> referencingNodesCP;
@@ -1354,7 +1260,7 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 				}
 
 				// Recurse up the chain
-				collectAncestors(node, outAncestors, excludeSelf);
+				collectAncestors(node, outAncestors, excludeSelf, visited);
 			}
 		};
 
@@ -1363,30 +1269,28 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 	/* 1. Build ancestor sets for all grouped nodes                             */
 	/* ---------------------------------------------------------------------- */
 
+	g_appLog->debugMessage(MsgLevel_Debug, "Finding common ancestor container for %d nodes.\n", nodesToGroup.size());
+
+	TimePoint t0 = Clock::now();
+
 	std::vector<std::unordered_set<MR::NodeID>> ancestorSets;
 	ancestorSets.reserve(nodesToGroup.size());
 
 	for (MR::NodeDef* node : nodesToGroup)
 	{
 		std::unordered_set<MR::NodeID> ancestors;
-		collectAncestors(node, ancestors, excludeSelf);
+		std::unordered_set<MR::NodeID> visited;
 
-#ifdef _DEBUG
-		for (size_t i = 0; i < ancestors.size(); i++)
-		{
-			MR::NodeDef* ancestorNode = netDef->getNodeDef(*std::next(ancestors.begin(), i));
-
-			if (!isNodeBlendTree(ancestorNode) && !ancestorNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-			{
-				INVOKE_PANIC(
-					"NodeProcessor::getCommonAncestorContainer: Ancestor node with ID %d is neither a blend tree nor a state machine.\n",
-					ancestorNode->getNodeID());
-			}
-		}
-#endif
+		collectAncestors(node, ancestors, excludeSelf, visited);
 
 		ancestorSets.push_back(std::move(ancestors));
 	}
+
+	TimePoint t1 = Clock::now();
+
+	int ancestorCollectionTime = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+
+	g_appLog->debugMessage(MsgLevel_Debug, "\tCollected ancestor sets for %d nodes in %d ms.\n", nodesToGroup.size(), ancestorCollectionTime);
 
 	/* ---------------------------------------------------------------------- */
 	/* 2. Intersect ancestor sets                                               */
@@ -1412,6 +1316,12 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 
 	if (intersection.empty())
 		return nullptr;
+
+	TimePoint t2 = Clock::now();
+
+	int intersectionTime = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+
+	g_appLog->debugMessage(MsgLevel_Debug, "\tEvaluated intersection of ancestor sets in %d ms. %d common ancestors found.\n", intersectionTime, intersection.size());
 
 	/* ---------------------------------------------------------------------- */
 	/* 3. Choose the deepest valid ancestor                                     */
@@ -1448,6 +1358,17 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 		}
 	}
 
+	TimePoint t3 = Clock::now();
+	int bestNodeSelectionTime = std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count();
+
+	int elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t0).count();
+
+	g_appLog->debugMessage(MsgLevel_Debug, "\tSelected common ancestor node in %d ms.\n", bestNodeSelectionTime);
+	g_appLog->debugMessage(MsgLevel_Debug, "\tTotal time to find common ancestor: %d ms. %.2f spent on collecting ancestors, %.2f spent on intersecting parent paths, %.2f spent finding the best node.\n", elapsedTime,
+		((float)ancestorCollectionTime / (float)elapsedTime) * 100.f,
+		((float)intersectionTime / (float)elapsedTime) * 100.f,
+		((float)bestNodeSelectionTime / (float)elapsedTime) * 100.f);
+	
 	return bestNode;
 }
 

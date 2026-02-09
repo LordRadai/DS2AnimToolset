@@ -113,7 +113,6 @@ public:
 	void registerSMNode(MR::NodeDef* nodeDef);
 	void registerNodeAsSMChild(const MR::NodeID smNodeID, MR::NodeDef* nodeDef);
 
-	MR::NodeDef* getCommonAncestor(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes);
 	MR::NodeDef* getCommonAncestorContainer(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes, bool excludeSelf);
 
 	/*
