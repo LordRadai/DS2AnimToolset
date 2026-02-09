@@ -1,5 +1,7 @@
 ﻿#include <queue>
 #include <filesystem>
+#include <vector>
+#include <unordered_set>
 
 #include "NodeProcessor.h"
 
@@ -7,11 +9,10 @@
 #include "extern.h"
 
 #include "morpheme/mrNetworkDef.h"
-#include "morpheme/Nodes/mrNodeStateMachine.h"
-#include "morpheme/Nodes/mrNodeAnimSyncEvents.h"
 
 #include "NodeNamingStrategy/DefaultNodeNamingStrategy.h"
 #include "NodeNamingStrategy/ReconstructParentChildNameStrategy.h"
+#include "NodeNamingStrategy/Utils/Utils.h"
 
 #include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
 
@@ -85,11 +86,8 @@ namespace
 
 bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable)
 {
-	m_blendTreeNodeNames.clear();
 	m_blendTreeNodes.clear();
-	m_blendTreeNodeMap.clear();
-	m_stateMachineNodeMap.clear();
-	m_containerNodes.clear();
+	m_stateMachineNodes.clear();
 	m_nodeNameMap.clear();
 	m_multiplyConnectedCPOutputNodes.clear();
 
@@ -101,76 +99,75 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 	m_blendTreeLayouterStrategy = new BTFanLayouterStrategy();
 
 	collectContainerNodes(netDef);
-	collectBlendTreeChildNodes(netDef);
 	collectNodeNames(netDef);
 	fixupAnimNodeNames(netDef, animNamesTable);
 
 	g_appLog->debugMessage(MsgLevel_Debug, "Root Node: %d (name=\"%s\")\n", netDef->getRootNodeID(), netDef->getNodeNameFromNodeID(netDef->getRootNodeID()));
 
-	std::map<MR::NodeID, std::vector<MR::NodeDef*>> containerNodeMap;
+	std::map<BlendTreeID, std::vector<MR::NodeDef*>> containerNodeMap;
 
-	for (const auto& blendTreeNodePair : m_blendTreeNodeMap)
+	for (auto& blendTreeNodePair : m_blendTreeNodes)
 	{
-		containerNodeMap[blendTreeNodePair.first] = blendTreeNodePair.second;
+		const BlendTreeID& btKey = blendTreeNodePair.first;
+		ContainerNodeInfo& containerInfo = blendTreeNodePair.second;
+
+		MR::NodeDef* outputNode = containerInfo.getOutputNodeDef();
 
 		g_appLog->debugMessage(
 			MsgLevel_Debug,
-			"Blend Tree node %d (name=\"%s\") has %d child nodes:\n",
-			blendTreeNodePair.first,
-			getNodeName(blendTreeNodePair.first).c_str(),
-			blendTreeNodePair.second.size());
+			"BlendTree node %d (layer %u, name '%s') has %zu child nodes:\n",
+			btKey.getNodeID(),
+			btKey.getLayerIndex(),
+			containerInfo.getName().c_str(),
+			containerInfo.getChildNodeDefs().size());
 
-		for (const auto& childNode : blendTreeNodePair.second)
+		for (MR::NodeDef* childNode : containerInfo.getChildNodeDefs())
 		{
-			std::string nodeName = getBlendTreeNodeName(childNode->getNodeID());
-
-			if (!isNodeBlendTree(childNode))
-				nodeName = getNodeName(childNode->getNodeID());
+			if (!childNode)
+				continue;
 
 			g_appLog->debugMessage(
 				MsgLevel_Debug,
-				"\tID=%d (name=\"%s\", type=\"%s\").\n",
+				"\t- Child node %d (%s)\n",
 				childNode->getNodeID(),
-				nodeName.c_str(),
-				nodeTypeAsManifestName(childNode->getNodeTypeID()).c_str()
-			);
+				getNodeName(childNode->getNodeID()).c_str());
 		}
 	}
 
-	for (const auto& smNodePair : m_stateMachineNodeMap)
+	for (auto& smNodePair : m_stateMachineNodes)
 	{
-		containerNodeMap[smNodePair.first] = smNodePair.second;
+		const MR::NodeID smNodeID = smNodePair.first;
+		ContainerNodeInfo& containerInfo = smNodePair.second;
 
 		g_appLog->debugMessage(
 			MsgLevel_Debug,
-			"State Machine node %d (name=\"%s\") has %d child nodes:\n",
-			smNodePair.first,
-			getNodeName(smNodePair.first).c_str(),
-			smNodePair.second.size());
+			"StateMachine node %d (%s) has %zu child nodes:\n",
+			smNodeID,
+			containerInfo.getName().c_str(),
+			containerInfo.getChildNodeDefs().size());
 
-		for (const auto& childNode : smNodePair.second)
+		for (MR::NodeDef* childNode : containerInfo.getChildNodeDefs())
 		{
-			std::string nodeName = getBlendTreeNodeName(childNode->getNodeID());
-
-			if (!isNodeBlendTree(childNode))
-				nodeName = getNodeName(childNode->getNodeID());
+			if (!childNode)
+				continue;
 
 			g_appLog->debugMessage(
 				MsgLevel_Debug,
-				"\tID=%d (name=\"%s\", type=\"%s\").\n",
+				"\t- Child node %d (%s)\n",
 				childNode->getNodeID(),
-				nodeName.c_str(),
-				nodeTypeAsManifestName(childNode->getNodeTypeID()).c_str()
-			);
+				getNodeName(childNode->getNodeID()).c_str());
 		}
 	}
 
 	int numNetworkNodes = 0;
-
 	std::vector<MR::NodeDef*> notFoundNodes;
+
 	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
 	{
 		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+		if (!nodeDef)
+			continue;
+
 		MR::NodeDef::NodeFlags flags = nodeDef->getNodeFlags();
 
 		// Skip control params or transitions
@@ -180,28 +177,35 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 
 		numNetworkNodes++;
 
-		bool foundInBlendTree = false;
-		bool foundInStateMachine = false;
+		bool found = false;
 
-		for (const auto& [containerID, children] : m_blendTreeNodeMap)
+		// 1. Check blend tree containers
+		for (const auto& pair : m_blendTreeNodes)
 		{
-			if (std::find(children.begin(), children.end(), nodeDef) != children.end())
+			const ContainerNodeInfo& containerInfo = pair.second;
+			if (containerInfo.hasChildNodeDef(nodeDef))
 			{
-				foundInBlendTree = true;
+				found = true;
 				break;
 			}
 		}
 
-		for (const auto& [containerID, children] : m_stateMachineNodeMap)
+		// 2. Check state machine containers if not found yet
+		if (!found)
 		{
-			if (std::find(children.begin(), children.end(), nodeDef) != children.end())
+			for (const auto& pair : m_stateMachineNodes)
 			{
-				foundInStateMachine = true;
-				break;
+				const ContainerNodeInfo& containerInfo = pair.second;
+				if (containerInfo.hasChildNodeDef(nodeDef))
+				{
+					found = true;
+					break;
+				}
 			}
 		}
 
-		if (!foundInBlendTree && !foundInStateMachine)
+		// 3. If still not found, store it
+		if (!found)
 			notFoundNodes.push_back(nodeDef);
 	}
 
@@ -246,6 +250,7 @@ NodeEditor::ControlParameter* NodeProcessor::processControlParameter(NodeEditor:
 
 NodeEditor::Node* NodeProcessor::processNode(NodeEditor::Graph* graph, MR::NodeDef* nodeDef, const std::string& name)
 {
+	/*
 	g_appLog->debugMessage(MsgLevel_Info, "NodeProcessor::processNode: Processing node '%s' of ID %d.\n", name.c_str(), nodeDef->getNodeID());
 
 	if (isNodeBlendTree(nodeDef) && (nodeDef->getNodeID() != graph->getGraphID()))
@@ -265,6 +270,7 @@ NodeEditor::Node* NodeProcessor::processNode(NodeEditor::Graph* graph, MR::NodeD
 		INVOKE_PANIC(
 			"Non-container node '%s' inside state machine container.\n",
 			name.c_str());
+	*/
 
 	NodeEditor::Node* node = graph->asType<NodeEditor::BlendTree>()->createNode(nodeDef->getNodeID(), nodeTypeAsManifestName(nodeDef->getNodeTypeID()), name);
 
@@ -285,6 +291,7 @@ NodeEditor::Graph* NodeProcessor::buildRootGraph(NodeEditor::Editor* editor, MR:
 
 void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef)
 {
+	/*
 	MR::NetworkDef* netDef = ownerNodeDef->getOwningNetworkDef();
 
 	if (graph->isOfType<NodeEditor::BlendTree>())
@@ -337,6 +344,7 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 	{
 		INVOKE_PANIC("NodeProcessor::populateGraph: Unsupported graph type for graph ID %d.\n", graph->getGraphID());
 	}
+	*/
 }
 
 void NodeProcessor::populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef)
@@ -939,12 +947,16 @@ std::string NodeProcessor::getNodeName(const MR::NodeID nodeID)
 
 std::string NodeProcessor::getBlendTreeNodeName(const MR::NodeID nodeID)
 {
+	/*
 	if (nodeID == MR::INVALID_NODE_ID)
 		return "";
 
-	auto it = m_blendTreeNodeNames.find(nodeID);
-	if (it != m_blendTreeNodeNames.end())
-		return it->second;
+	for (const auto& blendTreeNodePair : m_blendTreeNodeNames)
+	{
+		if (blendTreeNodePair.first.getNodeID() == nodeID)
+			return blendTreeNodePair.second;
+	}
+	*/
 
 	return "";
 }
@@ -1026,11 +1038,24 @@ bool NodeProcessor::isNodeBlendTreeOutput(MR::NodeDef* nodeDef, NodeEditor::Blen
 
 bool NodeProcessor::isNodeBlendTree(MR::NodeDef* nodeDef)
 {
-	return (m_blendTreeNodes.find(nodeDef->getNodeID()) != m_blendTreeNodes.end());
+	if (nodeDef == nullptr)
+		return false;
+
+	for (const auto& pair : m_blendTreeNodes)
+	{
+		const ContainerNodeInfo& containerInfo = pair.second;
+
+		MR::NodeDef* outputNodeDef = containerInfo.getOutputNodeDef();
+		if (outputNodeDef && outputNodeDef->getNodeID() == nodeDef->getNodeID())
+			return true;
+	}
+
+	return false;
 }
 
 bool NodeProcessor::isNodeInBlendTree(MR::NodeDef* nodeDef)
 {
+	/*
 	for (const auto& blendTreeNodePair : m_blendTreeNodeMap)
 	{
 		for (const auto& childNode : blendTreeNodePair.second)
@@ -1039,84 +1064,212 @@ bool NodeProcessor::isNodeInBlendTree(MR::NodeDef* nodeDef)
 				return true;
 		}
 	}
+	*/
 
 	return false;
 }
 
-MR::NodeDef* NodeProcessor::getCommonAncestor(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes)
+void NodeProcessor::registerBTNode(MR::NodeDef* nodeDef)
 {
-	if (referencingNodes.empty())
-		return nullptr;
+	bool existsBtWithID = false;
+	int layerIdx = 0;
 
-	auto collectBlendTreeChain = [&](MR::NodeDef* node)
-		{
-			std::vector<MR::NodeDef*> chain;
-
-			if (isNodeBlendTree(node))
-				chain.push_back(node);
-
-			MR::NodeDef* parent = getParentNodeContainer(node);
-			while (parent)
-			{
-				if (isNodeBlendTree(parent))
-					chain.push_back(parent);
-
-				parent = getParentNodeContainer(parent);
-			}
-
-			return chain;
-		};
-
-	std::vector<std::vector<MR::NodeDef*>> chains;
-	chains.reserve(referencingNodes.size());
-
-	// Build chains
-	for (MR::NodeDef* node : referencingNodes)
+	for (auto& blendTreeNodePair : m_blendTreeNodes)
 	{
-		auto chain = collectBlendTreeChain(node);
-
-		if (chain.empty())
+		if (blendTreeNodePair.first.getNodeID() == nodeDef->getNodeID())
 		{
-			INVOKE_PANIC(
-				"NodeProcessor::getCommonAncestor: Node %d (%s) has no BlendTree ancestor.\n",
-				node->getNodeID(),
-				netDef->getNodeNameFromNodeID(node->getNodeID()));
-		}
+			existsBtWithID = true;
 
-		chains.push_back(std::move(chain));
+			if (blendTreeNodePair.first.getLayerIndex() > layerIdx)
+				layerIdx = blendTreeNodePair.first.getLayerIndex();
+		}
 	}
 
-	// Intersect chains using the first as reference
-	const auto& baseChain = chains.front();
+	layerIdx++;
 
-	for (MR::NodeDef* candidate : baseChain)
+	if (existsBtWithID)
+		g_appLog->debugMessage(MsgLevel_Warn, "NodeProcessor::registerBlendTreeNode: Blend tree with ID %d has %d layers. Adding a new one.\n", nodeDef->getNodeID(), layerIdx);
+
+	BlendTreeID blendTreeID(nodeDef->getNodeID(), layerIdx);
+	m_blendTreeNodes[blendTreeID] = nodeDef;
+}
+
+void NodeProcessor::registerNodeAsBTChild(const MR::NodeID btNodeID, MR::NodeDef* nodeDef)
+{
+	ContainerNodeInfo* containerInfo = getTopLevelBlendTreeInfo(btNodeID);
+
+	if (containerInfo)
+		containerInfo->addChildNodeDef(nodeDef);
+	else
+		INVOKE_PANIC("NodeProcessor::registerNodeAsBTChild: Failed to find blend tree with ID %d.\n", btNodeID);
+}
+
+std::vector<ContainerNodeInfo*> NodeProcessor::getBlendTreesForNode(const MR::NodeID btNodeID)
+{
+	std::vector<ContainerNodeInfo*> containerNodes;
+
+	for (auto& blendTreeNodePair : m_blendTreeNodes)
 	{
-		bool isCommon = true;
+		if (blendTreeNodePair.first.getNodeID() == btNodeID)
+			containerNodes.push_back(&blendTreeNodePair.second);
+	}
 
-		for (size_t i = 1; i < chains.size(); ++i)
-		{
-			const auto& chain = chains[i];
+	return containerNodes;
+}
 
-			if (std::find(chain.begin(), chain.end(), candidate) == chain.end())
-			{
-				isCommon = false;
-				break;
-			}
-		}
-
-		if (isCommon)
-			return candidate;
+ContainerNodeInfo* NodeProcessor::getBlendTreeForNode(const MR::NodeID btNodeID, uint16_t layerIdx)
+{
+	for (auto& blendTreeNodePair : m_blendTreeNodes)
+	{
+		if (blendTreeNodePair.first.getNodeID() == btNodeID && blendTreeNodePair.first.getLayerIndex() == layerIdx)
+			return &blendTreeNodePair.second;
 	}
 
 	return nullptr;
 }
 
+ContainerNodeInfo* NodeProcessor::getTopLevelBlendTreeInfo(const MR::NodeID btNodeID)
+{
+	int16_t layerIdx = -1;
+	for (auto& blendTreeNodePair : m_blendTreeNodes)
+	{
+		if (blendTreeNodePair.first.getNodeID() == btNodeID && blendTreeNodePair.first.getLayerIndex() > layerIdx)
+			layerIdx = blendTreeNodePair.first.getLayerIndex();
+	}
+
+	return getBlendTreeForNode(btNodeID, layerIdx);
+}
+
+void NodeProcessor::registerSMNode(MR::NodeDef* nodeDef)
+{
+	m_stateMachineNodes[nodeDef->getNodeID()] = nodeDef;
+}
+
+void NodeProcessor::registerNodeAsSMChild(const MR::NodeID smNodeID, MR::NodeDef* nodeDef)
+{
+	auto it = m_stateMachineNodes.find(smNodeID);
+
+	if (it != m_stateMachineNodes.end())
+		it->second.addChildNodeDef(nodeDef);
+	else
+		INVOKE_PANIC("NodeProcessor::registerNodeAsSMChild: Failed to find state machine with ID %d.\n", smNodeID);
+}
+
+MR::NodeDef* NodeProcessor::getCommonAncestor(
+	MR::NetworkDef* netDef,
+	const std::vector<MR::NodeDef*>& nodesToGroup)
+{
+	if (nodesToGroup.empty())
+		return nullptr;
+
+	/* ---------------------------------------------------------------------- */
+	/* Local lambda: collect all ancestors of a node (including itself)        */
+	/* ---------------------------------------------------------------------- */
+
+	auto collectAncestors =
+		[&](MR::NodeDef* start, std::unordered_set<MR::NodeID>& outAncestors)
+		{
+			std::vector<MR::NodeDef*> stack;
+			stack.push_back(start);
+
+			while (!stack.empty())
+			{
+				MR::NodeDef* node = stack.back();
+				stack.pop_back();
+
+				const MR::NodeID id = node->getNodeID();
+				if (!outAncestors.insert(id).second)
+					continue;
+
+				const MR::NodeID parentID = node->getParentNodeID();
+				if (parentID != MR::INVALID_NODE_ID)
+					stack.push_back(netDef->getNodeDef(parentID));
+			}
+		};
+
+	/* ---------------------------------------------------------------------- */
+	/* 1. Build ancestor sets for all grouped nodes                             */
+	/* ---------------------------------------------------------------------- */
+
+	std::vector<std::unordered_set<MR::NodeID>> ancestorSets;
+	ancestorSets.reserve(nodesToGroup.size());
+
+	for (MR::NodeDef* node : nodesToGroup)
+	{
+		std::unordered_set<MR::NodeID> ancestors;
+		collectAncestors(node, ancestors);
+		ancestorSets.push_back(std::move(ancestors));
+	}
+
+	/* ---------------------------------------------------------------------- */
+	/* 2. Intersect ancestor sets                                               */
+	/* ---------------------------------------------------------------------- */
+
+	std::unordered_set<MR::NodeID> intersection = ancestorSets[0];
+
+	for (size_t i = 1; i < ancestorSets.size(); ++i)
+	{
+		std::unordered_set<MR::NodeID> next;
+
+		for (MR::NodeID id : intersection)
+		{
+			if (ancestorSets[i].count(id))
+				next.insert(id);
+		}
+
+		intersection.swap(next);
+
+		if (intersection.empty())
+			break;
+	}
+
+	if (intersection.empty())
+		return nullptr;
+
+	/* ---------------------------------------------------------------------- */
+	/* 3. Choose the deepest valid ancestor                                     */
+	/* ---------------------------------------------------------------------- */
+
+	MR::NodeDef* bestNode = nullptr;
+	int bestDepth = -1;
+
+	for (MR::NodeID id : intersection)
+	{
+		MR::NodeDef* node = netDef->getNodeDef(id);
+		MR::NodeDef::NodeFlags flags = node->getNodeFlags();
+
+		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) ||
+			flags.isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE) ||
+			flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+			continue;
+
+		int depth = 0;
+		MR::NodeDef* cur = node;
+
+		while (cur->getParentNodeID() != MR::INVALID_NODE_ID)
+		{
+			++depth;
+			cur = netDef->getNodeDef(cur->getParentNodeID());
+		}
+
+		if (depth > bestDepth)
+		{
+			bestDepth = depth;
+			bestNode = node;
+		}
+	}
+
+	return bestNode;
+}
 
 void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 {
-	collectBlendTreeNodes(netDef);
+	m_stateMachineNodes.clear();
+	m_blendTreeNodes.clear();
 
-	m_containerNodes.clear();
+	MR::NodeDef* rootNodeDef = netDef->getNodeDef(netDef->getRootNodeID());
+
+	registerBTNode(rootNodeDef);
 
 	const MR::NodeIDsArray* smArray = netDef->getStateMachineNodeIDs();
 	for (size_t i = 0; i < smArray->getNumEntries(); i++)
@@ -1126,246 +1279,167 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 
 		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Found container node %d (name=\"%s\").\n", smNode->getNodeID(), netDef->getNodeNameFromNodeID(smNode->getNodeID()));
 
-		m_containerNodes[nodeID] = smNode;
+		registerSMNode(smNode);
 
-		std::vector<MR::NodeDef*> subStateNodes;
 		for (size_t j = 0; j < smNode->getNumChildNodes(); j++)
 		{
 			MR::NodeDef* childNode = smNode->getChildNodeDef(j);
-
-			if (!childNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
-				subStateNodes.push_back(childNode);
-		}
-
-		m_stateMachineNodeMap[nodeID] = subStateNodes;
-	}
-
-	for (const auto& blendTreeNode : m_blendTreeNodes)
-	{
-		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Found container node %d (name=\"%s\").\n", blendTreeNode.second->getNodeID(), netDef->getNodeNameFromNodeID(blendTreeNode.second->getNodeID()));
-
-		m_containerNodes[blendTreeNode.first] = blendTreeNode.second;
-	}
-}
-
-void NodeProcessor::collectBlendTreeNodes(MR::NetworkDef* netDef)
-{
-	m_blendTreeNodes.clear();
-
-	MR::NodeDef* rootNodeDef = netDef->getNodeDef(netDef->getRootNodeID());
-
-	m_blendTreeNodes[rootNodeDef->getNodeID()] = rootNodeDef;
-
-	const MR::NodeIDsArray* smArray = netDef->getStateMachineNodeIDs();
-
-	for (size_t i = 0; i < smArray->getNumEntries(); i++)
-	{
-		const MR::NodeID nodeID = smArray->getEntry(i);
-		MR::NodeDef* smNode = netDef->getNodeDef(nodeID);
-
-		for (size_t j = 0; j < smNode->getNumChildNodes(); j++)
-		{
-			MR::NodeDef* childNode = netDef->getNodeDef(smNode->getChildNodeID(j));
-
 			MR::NodeDef::NodeFlags childNodeFlags = childNode->getNodeFlags();
 
-			// Substate nodes that are not state machines or transitions are always blend tree nodes.
-			if (!childNodeFlags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION) && !childNodeFlags.isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-			{
-				g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectBlendTreeNodes: Found blend tree node %d (name=\"%s\").\n", childNode->getNodeID(), netDef->getNodeNameFromNodeID(childNode->getNodeID()));
+			if (childNodeFlags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+				continue;
 
-				m_blendTreeNodes[childNode->getNodeID()] = childNode;
-			}
+			registerNodeAsSMChild(nodeID, childNode);
+
+			if (!childNodeFlags.isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+				registerBTNode(childNode);
 		}
 	}
+
+	collectBlendTreeChildNodes(netDef);
+
+	// Then collect all blend trees that group nodes with multiply connected inputs.
+	const MR::NodeIDsArray* multiplyConnectedNodes = netDef->getMultiplyConnectedNodeIDs();
+	for (size_t i = 0; i < multiplyConnectedNodes->getNumEntries(); i++)
+	{
+		const MR::NodeID nodeID = multiplyConnectedNodes->getEntry(i);
+		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
+
+		if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+			continue;
+
+		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Found multiply connected node %d (name=\"%s\").\n", nodeDef->getNodeID(), netDef->getNodeNameFromNodeID(nodeDef->getNodeID()));
+		
+		std::vector<MR::NodeDef*> referencingNodes;
+		getNodesWithThisAsInput(referencingNodes, netDef, nodeDef->getNodeID());
+
+		MR::NodeDef* commonAncestor = getCommonAncestor(netDef, referencingNodes);
+
+		if (!commonAncestor)
+		{
+			INVOKE_PANIC(
+				"NodeProcessor::collectContainerNodes: Failed to find common ancestor blend tree for node %d (%s) with %d referencing nodes.\n",
+				nodeDef->getNodeID(),
+				netDef->getNodeNameFromNodeID(nodeDef->getNodeID()),
+				referencingNodes.size());
+			continue;
+		}
+
+		g_appLog->debugMessage(
+			MsgLevel_Debug,
+			"NodeProcessor::collectContainerNodes: Common ancestor blend tree for node %d (%s) is node %d (%s).\n",
+			nodeDef->getNodeID(),
+			netDef->getNodeNameFromNodeID(nodeDef->getNodeID()),
+			commonAncestor->getNodeID(),
+			netDef->getNodeNameFromNodeID(commonAncestor->getNodeID()));
+
+		ContainerNodeInfo* containerNodeInfo = getTopLevelBlendTreeInfo(commonAncestor->getNodeID());
+
+		std::vector<ContainerNodeInfo*> blendTreesForNode = getBlendTreesForNode(commonAncestor->getNodeID());
+		if (blendTreesForNode.size() < 2)
+			registerBTNode(commonAncestor);
+
+		registerNodeAsBTChild(commonAncestor->getNodeID(), nodeDef);
+	}
+
+	// Print all BT nodes and SM nodes for debugging
+	for (const auto& blendTreeNodePair : m_blendTreeNodes)
+		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Registered node ID %d as Blend Tree (layer %d).\n", blendTreeNodePair.first.getNodeID(), blendTreeNodePair.first.getLayerIndex());
+
+	for (const auto& stateMachineNodePair : m_stateMachineNodes)
+		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Registered node ID %d as State Machine.\n", stateMachineNodePair.first);
 }
 
 void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 {
-	m_blendTreeNodeMap.clear();
-	m_multiplyConnectedCPOutputNodes.clear();
+	std::function<void(MR::NodeDef*, std::vector<MR::NodeDef*>&)> collectChildren;
 
-		// Recursive helper
-	std::function<void(MR::NodeDef*, std::vector<MR::NodeDef*>&, std::vector<MR::NodeDef*>&)> collectChildren;
-	collectChildren = [&](MR::NodeDef* node, std::vector<MR::NodeDef*>& outList, std::vector<MR::NodeDef*>& promotedNodes)
+	collectChildren = [&](MR::NodeDef* referenceNode, std::vector<MR::NodeDef*>& childNodeList)
 		{
-			if (node->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+			if (!referenceNode)
 				return;
 
-			bool wasJustPromoted = false;
-			for (size_t i = 0; i < node->getNumChildNodes(); ++i)
+			if (referenceNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+				return;
+
+			for (size_t i = 0; i < referenceNode->getNumChildNodes(); i++)
 			{
-				MR::NodeDef* childNode = netDef->getNodeDef(node->getChildNodeID(i));
+				MR::NodeDef* childNode = referenceNode->getChildNodeDef(i);
 
-				// Check if this node consumes a multiply-connected input
-				if (childNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
-				{
-					const MR::NodeID nodeID = node->getNodeID();
-
-					if (!m_blendTreeNodes.count(nodeID))
-					{
-						wasJustPromoted = true;
-
-						// Promote parent node as new blend tree root
-						m_blendTreeNodes[nodeID] = node;
-
-						// Add to promoted nodes list for further processing
-						promotedNodes.push_back(node);
-
-						g_appLog->debugMessage(
-							MsgLevel_Debug,
-							"NodeProcessor::collectBlendTreeChildNodes: Promoted node %d (name=\"%s\") to blend tree root due to multiply-connected input %d (%s).\n",
-							nodeID,
-							netDef->getNodeNameFromNodeID(nodeID),
-							childNode->getNodeID(),
-							netDef->getNodeNameFromNodeID(childNode->getNodeID()));
-
-						addNodeToList(outList, childNode);
-
-						// Recurse normally
-						if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
-							collectChildren(childNode, outList, promotedNodes);
-
-						continue;
-					}
-
-					// If this was just promoted, it means we're adding nodes to the parent blend tree, so we must add. Otherwise, it means we're visiting the newly promoted child node, and we must only collect non multiply connected nodes.
-					if (wasJustPromoted)
-					{
-						addNodeToList(outList, childNode);
-
-						// Recurse normally
-						if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
-							collectChildren(childNode, outList, promotedNodes);
-					}
-
-					continue;
-				}
-
-				// If this was just promoted, we must only add multiply connected nodes to this graph.
-				if (wasJustPromoted)
+				if (!childNode || childNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
 					continue;
 
-				addNodeToList(outList, childNode);
-
-				// Recurse normally
-				if (childNode->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
-					collectChildren(childNode, outList, promotedNodes);
+				childNodeList.push_back(childNode);
+				collectChildren(childNode, childNodeList);
 			}
 		};
 
-	// Work list of root nodes to process
-	std::vector<MR::NodeDef*> workList;
-	for (const auto& entry : m_blendTreeNodes)
-		workList.push_back(entry.second);
-
-	// Process each root, dynamically adding promoted nodes
-	for (size_t i = 0; i < workList.size(); ++i)
+	for (auto& blendTreeNodePair : m_blendTreeNodes)
 	{
-		MR::NodeDef* rootNode = workList[i];
-		std::vector<MR::NodeDef*> childNodeList;
-		childNodeList.push_back(rootNode);
+		MR::NodeDef* btNodeDef = blendTreeNodePair.second.getOutputNodeDef();
 
-		std::vector<MR::NodeDef*> promotedNodes;
-		collectChildren(rootNode, childNodeList, promotedNodes);
+		std::vector<MR::NodeDef*> childNodes;
+		collectChildren(btNodeDef, childNodes);
 
-		// Append newly promoted nodes to work list to ensure they are processed
-		for (MR::NodeDef* newRoot : promotedNodes)
-			workList.push_back(newRoot);
-
-		m_blendTreeNodeMap[rootNode->getNodeID()] = childNodeList;
+		for (MR::NodeDef* childNode : childNodes)
+		{
+			g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectBlendTreeChildNodes: Registering node ID %d as child of blend tree node ID %d (layer %d).\n", childNode->getNodeID(), btNodeDef->getNodeID(), blendTreeNodePair.first.getLayerIndex());
+			registerNodeAsBTChild(btNodeDef->getNodeID(), childNode);
+		}
 	}
 
-	const MR::NodeID rootNodeID = netDef->getRootNodeID();
-
-	std::vector<MR::NodeDef*> cpOutputNodes;
-
-	// Add the root nodes
-	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
+	m_multiplyConnectedCPOutputNodes.clear();
+	
+	for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
 	{
 		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
-		MR::NodeDef::NodeFlags flags = nodeDef->getNodeFlags();
 
-		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) || flags.isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+		if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 			continue;
 
-		bool isNodeInBlendTree = false;
-
-		// Check the blend tree node child list
-		for (auto& blendTreeNodePair : m_blendTreeNodeMap)
-		{
-			if (blendTreeNodePair.first == rootNodeID)
-				continue;
-
-			if (doesListContainNode(blendTreeNodePair.second, nodeDef))
-			{
-				isNodeInBlendTree = true;
-				break;
-			}
-		}
-
-		if (isNodeInBlendTree)
+		if (nodeDef->getNumOutputCPPins() == 0)
 			continue;
 
-		if (nodeDef->getNumOutputCPPins() > 0)
-			cpOutputNodes.push_back(nodeDef);
-
-		const MR::NodeID parentNodeID = nodeDef->getParentNodeID();
-
-		if (parentNodeID == MR::INVALID_NODE_ID)
-			continue;
-
-		MR::NodeDef* parentNodeDef = nodeDef->getParentNodeDef();
-
-		if (parentNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-			continue;
-
-		if ((nodeDef->getNodeID() != rootNodeID) && 
-			(parentNodeID == 0 || (doesListContainNode(m_blendTreeNodeMap[rootNodeID], parentNodeDef) && !doesListContainNode(m_blendTreeNodeMap[rootNodeID], nodeDef))))
-		{
-			addNodeToList(m_blendTreeNodeMap[rootNodeID], nodeDef);
-
-			std::vector<MR::NodeDef*> promotedNodes;
-			collectChildren(nodeDef, m_blendTreeNodeMap[netDef->getRootNodeID()], promotedNodes);
-		}
-	}
-
-	// We then must find where the output CP nodes belong. First, find all of them, then count the number of nodes that reference them as input.
-	// If there's more than one, find the common ancestor of all referencing nodes and add the output CP node as a child of the common ancestor. 
-	// If there's only one, add the output CP node as a child of the referencing node.
-	for (MR::NodeDef* cpOutputNode : cpOutputNodes)
-	{
 		std::vector<MR::NodeDef*> referencingNodes;
-		getNodesWithThisAsInputCP(referencingNodes, netDef, cpOutputNode->getNodeID());
+		getNodesWithThisAsInputCP(referencingNodes, netDef, nodeDef->getNodeID());
 
 		if (referencingNodes.size() == 0)
 			continue;
 
 		if (referencingNodes.size() == 1)
 		{
-			g_appLog->debugMessage(MsgLevel_Debug, "Control parameter output node ID %d is only referenced by one node (ID %d).\n", cpOutputNode->getNodeID(), referencingNodes[0]->getNodeID());
-			
-			addNodeToList(m_blendTreeNodeMap[referencingNodes[0]->getNodeID()], cpOutputNode);
+			g_appLog->debugMessage(MsgLevel_Debug, "Control parameter output node ID %d is only referenced by one node (ID %d).\n", nodeDef->getNodeID(), referencingNodes[0]->getNodeID());
+
+			ContainerNodeInfo* containerInfo = getTopLevelBlendTreeInfo(referencingNodes[0]->getNodeID());
+			if (!containerInfo)
+				INVOKE_PANIC("NodeProcessor::collectBlendTreeChildNodes: Failed to find blend tree for node ID %d.\n", referencingNodes[0]->getNodeID());
+
+			containerInfo->addChildNodeDef(nodeDef);
+
 			continue;
 		}
 
 		MR::NodeDef* commonAncestor = getCommonAncestor(netDef, referencingNodes);
 		if (!commonAncestor)
-			g_appLog->alertMessage(MsgLevel_Warn, "Failed to find common ancestor for control parameter output node ID %d. Defaulting to root node.\n", cpOutputNode->getNodeID());
+			INVOKE_PANIC("Failed to find common ancestor for control parameter output node ID %d. Defaulting to root node.\n", nodeDef->getNodeID());
 
-		g_appLog->debugMessage(MsgLevel_Debug, "Common ancestor for CP output node ID %d is node ID %d (name=\"%s\").\n", cpOutputNode->getNodeID(), commonAncestor->getNodeID(), netDef->getNodeNameFromNodeID(commonAncestor->getNodeID()));
+		g_appLog->debugMessage(MsgLevel_Debug, "Common ancestor for CP output node ID %d is node ID %d (name=\"%s\").\n", nodeDef->getNodeID(), commonAncestor->getNodeID(), netDef->getNodeNameFromNodeID(commonAncestor->getNodeID()));
 
-		addNodeToList(m_blendTreeNodeMap[commonAncestor->getNodeID()], cpOutputNode);
 
-		std::vector<MR::NodeDef*> promotedNodes;
-		collectChildren(cpOutputNode, m_blendTreeNodeMap[commonAncestor->getNodeID()], promotedNodes);
+		ContainerNodeInfo* containerInfo = getTopLevelBlendTreeInfo(referencingNodes[0]->getNodeID());
+		if (!containerInfo)
+			INVOKE_PANIC("NodeProcessor::collectBlendTreeChildNodes: Failed to find blend tree for node ID %d.\n", referencingNodes[0]->getNodeID());
+
+		containerInfo->addChildNodeDef(nodeDef);
+
+		collectChildren(nodeDef, containerInfo->getChildNodeDefs());
 
 		// Check if the ancestor contains both nodes and the output CP node. In which case the node is not a pass down node, and we don't need to add it to the list of multiply connected CP output nodes.
 		bool isNodePassDown = false;
-		
+
 		for (MR::NodeDef* referencingNode : referencingNodes)
 		{
-			if (!doesListContainNode(m_blendTreeNodeMap[commonAncestor->getNodeID()], referencingNode))
+			if (!doesListContainNode(containerInfo->getChildNodeDefs(), referencingNode))
 			{
 				isNodePassDown = true;
 				break;
@@ -1373,7 +1447,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		}
 
 		if (isNodePassDown)
-			m_multiplyConnectedCPOutputNodes.push_back(cpOutputNode);
+			m_multiplyConnectedCPOutputNodes.push_back(nodeDef);
 	}
 }
 
@@ -1385,7 +1459,7 @@ bool NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
 		return false;
 	}
 
-	if (!m_namingStrategy->collectNodeNames(netDef, m_blendTreeNodeMap, m_stateMachineNodeMap, m_nodeNameMap, m_blendTreeNodeNames))
+	if (!m_namingStrategy->collectNodeNames(netDef, this))
 	{
 		g_appLog->alertMessage(MsgLevel_Warn, "NodeProcessor::collectNodeNames: Node naming strategy failed to collect node names.");
 		return false;
@@ -1419,13 +1493,85 @@ void NodeProcessor::fixupAnimNodeNames(MR::NetworkDef* netDef, MR::UTILS::Simple
 
 MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
 {
-	MR::NodeDef* parentNodeDef = nodeDef->getParentNodeDef();
+	if (nodeDef == nullptr)
+		return nullptr;
 
+	MR::NodeDef* parentNodeDef = nodeDef->getParentNodeDef();
 	if (parentNodeDef == nullptr)
 		return nullptr;
 
-	if (m_containerNodes.find(parentNodeDef->getNodeID()) != m_containerNodes.end())
-		return parentNodeDef;
-	else
-		return getParentNodeContainer(parentNodeDef);
+	// 1. Search blend tree containers
+	for (auto& pair : m_blendTreeNodes)
+	{
+		const ContainerNodeInfo& containerInfo = pair.second;
+
+		if (containerInfo.hasChildNodeDef(nodeDef))
+			return containerInfo.getOutputNodeDef();
+	}
+
+	// 2. Search state machine containers
+	for (auto& pair : m_stateMachineNodes)
+	{
+		const ContainerNodeInfo& containerInfo = pair.second;
+
+		if (containerInfo.hasChildNodeDef(nodeDef))
+			return containerInfo.getOutputNodeDef();
+	}
+
+	// 3. Recurse upwards
+	return getParentNodeContainer(parentNodeDef);
+}
+
+void NodeProcessor::registerNodeName(MR::NodeID	nodeID, const std::string& name)
+{
+	if ((m_nodeNameMap.find(nodeID) != m_nodeNameMap.end()) &&
+		(name != "") &&
+		(m_nodeNameMap[nodeID] != "") &&
+		(m_nodeNameMap[nodeID] != name))
+	{
+		g_appLog->alertMessage(MsgLevel_Warn, "DefaultNodeNamingStrategy::registerNodeName: Duplicate node name entry for node ID %d. (currentName=%s, name=%s)\n", nodeID, m_nodeNameMap[nodeID].c_str(), name.c_str());
+		//return;
+	}
+
+	//g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::registerNodeName: Registering node name '%s' for node ID %d.\n", name.c_str(), nodeID);
+
+	m_nodeNameMap[nodeID] = name;
+}
+
+void NodeProcessor::registerBlendTreeName(MR::NodeID nodeID, const std::string& name)
+{
+	std::vector<ContainerNodeInfo*> blendTrees = getBlendTreesForNode(nodeID);
+
+	ContainerNodeInfo* topLevelBT = getBlendTreeForNode(nodeID, 1);
+
+	if (!topLevelBT)
+		INVOKE_PANIC("DefaultNodeNamingStrategy::registerBlendTreeName: Failed to find blend tree with node ID %d to register name '%s'.\n", nodeID, name.c_str());
+
+	topLevelBT->setName(name);
+}
+
+void NodeProcessor::registerStateMachineName(MR::NodeID nodeID, const std::string& name)
+{
+	auto it = m_stateMachineNodes.find(nodeID);
+	if (it != m_stateMachineNodes.end())
+	{
+		it->second.setName(name);
+		g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::registerStateMachineName: Registered state machine name '%s' for node ID %d.\n", name.c_str(), nodeID);
+		return;
+	}
+
+	g_appLog->alertMessage(MsgLevel_Warn, "DefaultNodeNamingStrategy::registerStateMachineName: Failed to find state machine with node ID %d to register name '%s'.\n", nodeID, name.c_str());
+}
+
+bool NodeProcessor::isNodeStateNode(MR::NodeDef* nodeDef)
+{
+	for (auto& stateMachineNodePair : m_stateMachineNodes)
+	{
+		const ContainerNodeInfo& containerInfo = stateMachineNodePair.second;
+
+		if (containerInfo.hasChildNodeDef(nodeDef))
+			return true;
+	}
+
+	return false;
 }

@@ -9,17 +9,11 @@
 
 #include "../NodeProcessor.h"
 
-bool ReconstructParentChildNameStrategy::collectNodeNames(MR::NetworkDef* netDef, const std::map<MR::NodeID, std::vector<MR::NodeDef*>>& blendTreeChildren, const std::map<MR::NodeID, std::vector<MR::NodeDef*>>& smChildren, std::map<MR::NodeID, std::string>& nodeNameMap, std::map<MR::NodeID, std::string>& blendTreeNodeNameMap)
+bool ReconstructParentChildNameStrategy::collectNodeNames(MR::NetworkDef* netDef, NodeProcessor* processor)
 {
+	/*
 	nodeNameMap.clear();
 	blendTreeNodeNameMap.clear();
-
-	std::map<MR::NodeID, MR::NodeDef*> blendTreeNodes;
-	for (const auto& nodeContainerPair : blendTreeChildren)
-	{
-		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeContainerPair.first);
-		blendTreeNodes[nodeContainerPair.first] = nodeDef;
-	}
 
 	MR::NodeDef* rootNodeDef = netDef->getNodeDef(netDef->getRootNodeID());
 
@@ -31,7 +25,7 @@ bool ReconstructParentChildNameStrategy::collectNodeNames(MR::NetworkDef* netDef
 
 			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
-			if (NodeNameStrategyUtils::isNodeBlendTreeOutput(nodeDef, blendTreeNodes))
+			if (NodeNameStrategyUtils::isNodeBlendTreeOutput(nodeDef, blendTreeMap))
 			{
 				// Normal names are stripped in the DS2 nmb, so we just have to get the standard name.
 				std::string blendTreeName = NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName);
@@ -120,6 +114,7 @@ bool ReconstructParentChildNameStrategy::collectNodeNames(MR::NetworkDef* netDef
 
 		g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::collectNodeNames: Associated blend tree node name '%s' for node ID %d.\n", blendTreeNodeNamePair.second.c_str(), blendTreeNodeNamePair.first);
 	}
+	*/
 
 	return true;
 }

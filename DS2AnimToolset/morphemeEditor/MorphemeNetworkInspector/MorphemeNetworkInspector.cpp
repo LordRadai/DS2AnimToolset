@@ -40,7 +40,7 @@ bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* networkDef, MR::UTILS
 
 	MR::NodeDef* rootNodeDef = networkDef->getNodeDef(networkDef->getRootNodeID());
 
-	NodeEditor::Graph* root = m_nodeProcessor.buildRootGraph(this, rootNodeDef);
+	//NodeEditor::Graph* root = m_nodeProcessor.buildRootGraph(this, rootNodeDef);
 
 	return true;
 }
