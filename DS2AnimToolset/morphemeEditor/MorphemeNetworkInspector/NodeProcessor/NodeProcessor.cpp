@@ -47,9 +47,6 @@ namespace
 		for (uint32_t i = 0; i < netDef->getNumNodeDefs(); i++)
 		{
 			MR::NodeDef* currentNodeDef = netDef->getNodeDef(i);
-			
-			if (currentNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-				continue;
 
 			for (size_t childIdx = 0; childIdx < currentNodeDef->getNumChildNodes(); childIdx++)
 			{
