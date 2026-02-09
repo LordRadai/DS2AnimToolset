@@ -1211,7 +1211,7 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 		return nullptr;
 
 	/* ---------------------------------------------------------------------- */
-	/* Local lambda: collect all ancestors of a node (including itself)        */
+	/* Local lambda: collect all ancestors of a node						  */
 	/* ---------------------------------------------------------------------- */
 
 	std::unordered_set<MR::NodeID> visited;
