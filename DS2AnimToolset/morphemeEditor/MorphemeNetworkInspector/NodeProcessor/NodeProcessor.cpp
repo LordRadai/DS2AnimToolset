@@ -1268,9 +1268,11 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 	/* 1. Build ancestor sets for all grouped nodes                             */
 	/* ---------------------------------------------------------------------- */
 
+#ifdef _DEBUG
 	g_appLog->debugMessage(MsgLevel_Debug, "Finding common ancestor container for %d nodes.\n", nodesToGroup.size());
 
 	TimePoint t0 = Clock::now();
+#endif
 
 	std::vector<std::unordered_set<MR::NodeID>> ancestorSets;
 	ancestorSets.reserve(nodesToGroup.size());
@@ -1285,11 +1287,13 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 		ancestorSets.push_back(std::move(ancestors));
 	}
 
+#ifdef _DEBUG
 	TimePoint t1 = Clock::now();
 
 	int ancestorCollectionTime = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
 
 	g_appLog->debugMessage(MsgLevel_Debug, "\tCollected ancestor sets for %d nodes in %d ms.\n", nodesToGroup.size(), ancestorCollectionTime);
+#endif
 
 	/* ---------------------------------------------------------------------- */
 	/* 2. Intersect ancestor sets                                               */
@@ -1316,11 +1320,13 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 	if (intersection.empty())
 		return nullptr;
 
+#ifdef _DEBUG
 	TimePoint t2 = Clock::now();
 
 	int intersectionTime = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
 	g_appLog->debugMessage(MsgLevel_Debug, "\tEvaluated intersection of ancestor sets in %d ms. %d common ancestors found.\n", intersectionTime, intersection.size());
+#endif
 
 	/* ---------------------------------------------------------------------- */
 	/* 3. Choose the deepest valid ancestor                                     */
@@ -1357,17 +1363,20 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 		}
 	}
 
+#ifdef _DEBUG
 	TimePoint t3 = Clock::now();
 	int bestNodeSelectionTime = std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count();
 
 	int elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t0).count();
 
 	g_appLog->debugMessage(MsgLevel_Debug, "\tSelected common ancestor node in %d ms.\n", bestNodeSelectionTime);
+	
 	g_appLog->debugMessage(MsgLevel_Debug, "\tTotal time to find common ancestor: %d ms. %.2f spent on collecting ancestors, %.2f spent on intersecting parent paths, %.2f spent finding the best node.\n", elapsedTime,
 		((float)ancestorCollectionTime / (float)elapsedTime) * 100.f,
 		((float)intersectionTime / (float)elapsedTime) * 100.f,
 		((float)bestNodeSelectionTime / (float)elapsedTime) * 100.f);
-	
+#endif
+
 	return bestNode;
 }
 
