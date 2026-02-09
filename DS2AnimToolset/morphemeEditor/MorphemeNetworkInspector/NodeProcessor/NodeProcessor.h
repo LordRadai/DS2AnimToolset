@@ -113,6 +113,17 @@ public:
 	void registerSMNode(MR::NodeDef* nodeDef);
 	void registerNodeAsSMChild(const MR::NodeID smNodeID, MR::NodeDef* nodeDef);
 
+	std::map<MR::NodeID, std::string>& getNodeNameMap() { return m_nodeNameMap; }
+
+	void registerNodeName(MR::NodeID nodeID, const std::string& name);
+	void registerBlendTreeName(MR::NodeID nodeID, const std::string& name);
+	void registerStateMachineName(MR::NodeID nodeID, const std::string& name);
+
+	bool isNodeStateNode(MR::NodeDef* nodeDef);
+
+	void getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, MR::NodeID nodeID);
+	void getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, MR::NodeID nodeID);
+private:
 	/*
 	* \brief Get the common ancestor container node (blend tree or state machine) for a set of referencing nodes.
 	* \param netDef The network definition to search within.
@@ -176,15 +187,4 @@ public:
 	bool setStateMachineLayout(NodeEditor::StateMachine* stateMachine, MR::NodeDef* smNodeDef);
 
 	bool isNetworkNodeNameMapComplete(MR::NetworkDef* netDef);
-
-	std::map<MR::NodeID, std::string>& getNodeNameMap() { return m_nodeNameMap; }
-
-	void registerNodeName(MR::NodeID nodeID, const std::string& name);
-	void registerBlendTreeName(MR::NodeID nodeID, const std::string& name);
-	void registerStateMachineName(MR::NodeID nodeID, const std::string& name);
-
-	bool isNodeStateNode(MR::NodeDef* nodeDef);
-
-	void getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, MR::NodeID nodeID);
-	void getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, MR::NodeID nodeID);
 };
