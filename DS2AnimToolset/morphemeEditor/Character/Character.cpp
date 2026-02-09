@@ -34,6 +34,8 @@ namespace
         if (name.substr(lastCPos + 1, 1).compare(L"c") != 0)
             return -1;
 
+        chrIdStr = name.substr(lastCPos + 2, 4);
+
         if (isNumeric(chrIdStr))
             chrId = stoi(chrIdStr);
 
