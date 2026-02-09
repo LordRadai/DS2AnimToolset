@@ -10,6 +10,20 @@
 
 namespace
 {
+    bool isNumeric(const std::string& s)
+    {
+        return !s.empty() &&
+            std::all_of(s.begin(), s.end(),
+                [](unsigned char c) { return std::isdigit(c); });
+    }
+
+    bool isNumeric(const std::wstring& s)
+    {
+        return !s.empty() &&
+            std::all_of(s.begin(), s.end(),
+                [](wchar_t c) { return iswdigit(c); });
+    }
+
     int getChrIdFromNmbFileName(std::wstring name)
     {
         std::wstring chrIdStr;
@@ -20,9 +34,8 @@ namespace
         if (name.substr(lastCPos + 1, 1).compare(L"c") != 0)
             return -1;
 
-        chrIdStr = name.substr(lastCPos + 2, 4);
-
-        chrId = stoi(chrIdStr);
+        if (isNumeric(chrIdStr))
+            chrId = stoi(chrIdStr);
 
         return chrId;
     }

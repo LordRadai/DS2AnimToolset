@@ -1275,31 +1275,52 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 	/* Local lambda: collect all ancestors of a node (including itself)        */
 	/* ---------------------------------------------------------------------- */
 
-	auto collectAncestors =
-		[&](MR::NodeDef* start, std::unordered_set<MR::NodeID>& outAncestors)
+	std::function<void(MR::NodeDef*, std::unordered_set<MR::NodeID>&, bool)> collectAncestors;
+	collectAncestors =
+		[&](MR::NodeDef* start, std::unordered_set<MR::NodeID>& outAncestors, bool excludeSelf = true)
 		{
-			const MR::NodeID startID = start->getNodeID();
+			std::vector<MR::NodeDef*> referencingNodes;
+			getNodesWithThisAsInput(referencingNodes, netDef, start->getNodeID());
 
-			MR::NodeDef* node = start;
+			if (!excludeSelf)
+				outAncestors.insert(start->getNodeID());
 
-			while (node)
+			for (MR::NodeDef* node : referencingNodes)
 			{
-				const MR::NodeID id = node->getNodeID();
+				MR::NodeID id = node->getNodeID();
 
-				if (isNodeBlendTree(node) ||
-					node->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+				// Skip self if needed
+				if (!excludeSelf || id != start->getNodeID())
 				{
-					if (id != startID || !excludeSelf)
+					// Only add blend trees or state machines
+					if (isNodeBlendTree(node) || node->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 						outAncestors.insert(id);
 				}
 
-				const MR::NodeID parentID = node->getParentNodeID();
-				if (parentID == MR::INVALID_NODE_ID)
-					break;
+				// Recurse up the chain
+				collectAncestors(node, outAncestors, false);
+			}
 
-				node = netDef->getNodeDef(parentID);
+			std::vector<MR::NodeDef*> referencingNodesCP;
+			getNodesWithThisAsInputCP(referencingNodesCP, netDef, start->getNodeID());
+
+			for (MR::NodeDef* node : referencingNodesCP)
+			{
+				MR::NodeID id = node->getNodeID();
+
+				// Skip self if needed
+				if (!excludeSelf || id != start->getNodeID())
+				{
+					// Only add blend trees or state machines
+					if (isNodeBlendTree(node) || node->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+						outAncestors.insert(id);
+				}
+
+				// Recurse up the chain
+				collectAncestors(node, outAncestors, false);
 			}
 		};
+
 
 	/* ---------------------------------------------------------------------- */
 	/* 1. Build ancestor sets for all grouped nodes                             */
@@ -1311,7 +1332,7 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 	for (MR::NodeDef* node : nodesToGroup)
 	{
 		std::unordered_set<MR::NodeID> ancestors;
-		collectAncestors(node, ancestors);
+		collectAncestors(node, ancestors, excludeSelf);
 		ancestorSets.push_back(std::move(ancestors));
 	}
 
@@ -1574,27 +1595,13 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 			if (referencingNodes.size() == 0)
 				continue;
 
-			if (referencingNodes.size() == 1)
-			{
-				g_appLog->debugMessage(MsgLevel_Debug, "Control parameter output node ID %d is only referenced by one node (ID %d).\n", nodeDef->getNodeID(), referencingNodes[0]->getNodeID());
-
-				ContainerNodeInfo* containerInfo = getTopLevelBlendTreeInfo(referencingNodes[0]->getNodeID());
-				if (!containerInfo)
-					INVOKE_PANIC("NodeProcessor::collectBlendTreeChildNodes: Failed to find blend tree for node ID %d.\n", referencingNodes[0]->getNodeID());
-
-				containerInfo->addChildNodeDef(nodeDef);
-
-				continue;
-			}
-
-			MR::NodeDef* commonAncestor = getCommonAncestorContainer(netDef, referencingNodes, true);
+			MR::NodeDef* commonAncestor = getCommonAncestorContainer(netDef, referencingNodes, false);
 			if (!commonAncestor)
 				INVOKE_PANIC("Failed to find common ancestor for control parameter output node ID %d. Defaulting to root node.\n", nodeDef->getNodeID());
 
 			g_appLog->debugMessage(MsgLevel_Debug, "Common ancestor for CP output node ID %d is node ID %d (name=\"%s\").\n", nodeDef->getNodeID(), commonAncestor->getNodeID(), netDef->getNodeNameFromNodeID(commonAncestor->getNodeID()));
 
 			ContainerNodeInfo* containerInfo = getBlendTreeForNode(commonAncestor->getNodeID(), 1);
-
 			if (!containerInfo)
 				INVOKE_PANIC("NodeProcessor::collectBlendTreeChildNodes: Failed to find blend tree for node ID %d.\n", commonAncestor->getNodeID());
 
