@@ -1433,7 +1433,7 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 			btRoot->getNodeID(),
 			netDef->getNodeNameFromNodeID(btRoot->getNodeID()));
 
-		if (!btRoot->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+		if (!btRoot->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE) || btRoot->getNodeID() == netDef->getRootNodeID())
 		{
 			if (!isNodeBlendTree(btRoot))
 			{
@@ -1674,6 +1674,11 @@ MR::NodeDef* NodeProcessor::getParentNodeContainerForLayout(MR::NodeDef* nodeDef
 {
 	if (nodeDef == nullptr)
 		return nullptr;
+
+	MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
+
+	if (nodeDef->getParentNodeID() == 0)
+		return getTopLevelBlendTreeInfo(netDef->getRootNodeID())->getOutputNodeDef();
 
 	MR::NodeDef* parentNodeDef = nodeDef->getParentNodeDef();
 	if (parentNodeDef == nullptr)
