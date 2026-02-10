@@ -1673,8 +1673,7 @@ void NodeProcessor::dumpNetworkLayout(const std::wstring& outPath, MR::NetworkDe
 			if (!childNode)
 				continue;
 
-			g_appLog->debugMessage(
-				MsgLevel_Debug,
+			outFile << std::format(
 				"\t- Child node %d (%s)\n",
 				childNode->getNodeID(),
 				getNodeName(childNode->getNodeID()).c_str());
