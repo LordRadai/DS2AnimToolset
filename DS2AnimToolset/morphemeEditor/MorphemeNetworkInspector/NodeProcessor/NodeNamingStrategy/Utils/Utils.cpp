@@ -60,21 +60,30 @@ namespace NodeNameStrategyUtils
 		return "";
 	}
 
-	const std::string getBlendTreeNodeName(const std::string& name)
+	const std::string getBlendTreeNodeNameAtLayer(const std::string& name, int layerIdx)
 	{
-		size_t lastDivider = name.find_last_of("|");
+		if (layerIdx < 0)
+			return "";
 
-		if (lastDivider != std::string::npos)
-		{
-			size_t secondLastDivider = name.find_last_of("|", lastDivider - 1);
-			size_t count = lastDivider - secondLastDivider - 1;
+		std::vector<size_t> dividerPositions;
 
-			if (secondLastDivider != std::string::npos)
-				return name.substr(secondLastDivider + 1, count);
-			else
-				return name.substr(0, lastDivider);
-		}
+		// Collect all '|' positions
+		for (size_t pos = name.find('|'); pos != std::string::npos; pos = name.find('|', pos + 1))
+			dividerPositions.push_back(pos);
 
-		return "";
+		if (dividerPositions.empty())
+			return ""; // No layers
+
+		// Number of layers = number of dividers - 1 (exclude root and leaf)
+		int numLayers = static_cast<int>(dividerPositions.size()) - 1;
+
+		if (layerIdx > numLayers - 1)
+			return ""; // Requested layer index out of bounds
+
+		// Find start and end for the layer segment
+		size_t start = dividerPositions[dividerPositions.size() - 2 - layerIdx] + 1;
+		size_t end = dividerPositions[dividerPositions.size() - 1 - layerIdx];
+
+		return name.substr(start, end - start);
 	}
 }

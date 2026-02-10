@@ -26,13 +26,16 @@ bool DefaultNodeNamingStrategy::collectNodeNames(MR::NetworkDef* netDef, NodePro
 
 			if (processor->isNodeBlendTree(nodeDef))
 			{
-				std::string blendTreeName = NodeNameStrategyUtils::getBlendTreeNodeName(nodeName);
+				std::vector<ContainerNodeInfo*> blendTreesForNode = processor->getBlendTreesForNode(nodeDef->getNodeID());
 
-				if (processor->isNodeStateNode(nodeDef))
-					blendTreeName = NodeNameStrategyUtils::getStateNodeNameFromStringTable(netDef, nodeDef->getNodeID());
+				for (size_t i = 0; i < blendTreesForNode.size(); i++)
+				{
+					std::string blendTreeName = NodeNameStrategyUtils::getBlendTreeNodeNameAtLayer(nodeName, i);
 
-				g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::collectNodeNames: Registering blend tree node %d with name '%s'.\n", nodeDef->getNodeID(), blendTreeName.c_str());
-				processor->registerBlendTreeName(nodeDef->getNodeID(), blendTreeName);
+					g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::collectNodeNames: Registering blend tree node %d with name '%s'.\n", nodeDef->getNodeID(), blendTreeName.c_str());
+					
+					blendTreesForNode[i]->setName(blendTreeName);
+				}	
 			}
 
 			g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::collectNodeNames: Registering node %d with name '%s'.\n", nodeDef->getNodeID(), nodeName.c_str());

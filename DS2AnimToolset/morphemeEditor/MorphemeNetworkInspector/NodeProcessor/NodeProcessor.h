@@ -82,8 +82,8 @@ class NodeProcessor
 	std::map<BlendTreeID, ContainerNodeInfo> m_blendTreeNodes;
 	std::map<MR::NodeID, ContainerNodeInfo> m_stateMachineNodes;
 	std::map<MR::NodeID, std::string> m_nodeNameMap;
-	std::unordered_map<MR::NodeID, std::vector<MR::NodeDef*>> m_inputNodeLookupTable;
-	std::unordered_map<MR::NodeID, std::vector<MR::NodeDef*>> m_inputCpLookupTable;
+	std::map<MR::NodeID, std::vector<MR::NodeDef*>> m_inputNodeLookupTable;
+	std::map<MR::NodeID, std::vector<MR::NodeDef*>> m_inputCpLookupTable;
 	std::vector<MR::NodeDef*> m_cpOutputNodes;
 	std::vector<MR::NodeDef*> m_multiplyConnectedCPOutputNodes;
 
@@ -145,6 +145,8 @@ private:
 	* \param referencingNodes The nodes that reference the node in question as a child node. These are the nodes we want to find the common ancestor container for.
 	*/
 	MR::NodeDef* getCommonAncestorContainer(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes, bool excludeSelf);
+
+	MR::NodeDef* getCommonAncestorForBTCreation(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes);
 
 	/*
 	* \brief Collect all container nodes (state machines and blend trees) in the network.

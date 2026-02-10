@@ -14,5 +14,5 @@ namespace NodeNameStrategyUtils
 	const std::string getNodeNameFromFullPath(const std::string& name);
 	const std::string getNodeNameWithParentFromFullPath(const std::string& name);
 	const std::string getParentNodeNameFromFullPath(const std::string& name);
-	const std::string getBlendTreeNodeName(const std::string& name);
+	const std::string getBlendTreeNodeNameAtLayer(const std::string& name, int layerIdx);
 }
