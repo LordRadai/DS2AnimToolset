@@ -888,16 +888,10 @@ std::string NodeProcessor::getNodeName(const MR::NodeID nodeID)
 
 std::string NodeProcessor::getBlendTreeNodeName(const MR::NodeID nodeID)
 {
-	/*
-	if (nodeID == MR::INVALID_NODE_ID)
-		return "";
+	ContainerNodeInfo* btInfo = getTopLevelBlendTreeInfo(nodeID);
 
-	for (const auto& blendTreeNodePair : m_blendTreeNodeNames)
-	{
-		if (blendTreeNodePair.first.getNodeID() == nodeID)
-			return blendTreeNodePair.second;
-	}
-	*/
+	if (btInfo)
+		return btInfo->getName();
 
 	return "";
 }
@@ -1095,6 +1089,16 @@ void NodeProcessor::registerNodeAsSMChild(const MR::NodeID smNodeID, MR::NodeDef
 		it->second.addChildNodeDef(nodeDef);
 	else
 		INVOKE_PANIC("NodeProcessor::registerNodeAsSMChild: Failed to find state machine with ID %d.\n", smNodeID);
+}
+
+ContainerNodeInfo* NodeProcessor::getStateMachineForNode(const MR::NodeID smNodeID)
+{
+	auto it = m_stateMachineNodes.find(smNodeID);
+
+	if (it != m_stateMachineNodes.end())
+		return &it->second;
+
+	return nullptr;
 }
 
 MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
@@ -1376,7 +1380,9 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 
 			if (!hasAllReferencingNodesAsChildren)
 			{
-				registerBTNode(btRoot);
+				if (getBlendTreesForNode(btRoot->getNodeID()).size() == 1 && btRoot->getNodeID() == netDef->getRootNodeID())
+					registerBTNode(btRoot);
+
 				for (size_t i = 0; i < referencingNodes.size(); i++)
 					registerNodeAsBTChild(existingBTInfo->getOutputNodeDef()->getNodeID(), referencingNodes[i]);
 			}
@@ -1547,7 +1553,7 @@ void NodeProcessor::fixupAnimNodeNames(MR::NetworkDef* netDef, MR::UTILS::Simple
 	}
 }
 
-MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
+MR::NodeDef* NodeProcessor::getParentNodeContainerForLayout(MR::NodeDef* nodeDef)
 {
 	if (nodeDef == nullptr)
 		return nullptr;
@@ -1575,7 +1581,33 @@ MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
 	}
 
 	// 3. Recurse upwards
-	return getParentNodeContainer(parentNodeDef);
+	return getParentNodeContainerForLayout(parentNodeDef);
+}
+
+MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
+{
+	if (nodeDef == nullptr)
+		return nullptr;
+
+	// 1. Search blend tree containers
+	for (auto& pair : m_blendTreeNodes)
+	{
+		const ContainerNodeInfo& containerInfo = pair.second;
+
+		if (containerInfo.hasChildNodeDef(nodeDef) && containerInfo.getOutputNodeDef()->getNodeID() != nodeDef->getNodeID())
+			return containerInfo.getOutputNodeDef();
+	}
+
+	// 2. Search state machine containers
+	for (auto& pair : m_stateMachineNodes)
+	{
+		const ContainerNodeInfo& containerInfo = pair.second;
+
+		if (containerInfo.hasChildNodeDef(nodeDef) && containerInfo.getOutputNodeDef()->getNodeID() != nodeDef->getNodeID())
+			return containerInfo.getOutputNodeDef();
+	}
+
+	return nullptr;
 }
 
 void NodeProcessor::registerNodeName(MR::NodeID	nodeID, const std::string& name)
@@ -1586,10 +1618,12 @@ void NodeProcessor::registerNodeName(MR::NodeID	nodeID, const std::string& name)
 		(m_nodeNameMap[nodeID] != name))
 	{
 		g_appLog->alertMessage(MsgLevel_Warn, "DefaultNodeNamingStrategy::registerNodeName: Duplicate node name entry for node ID %d. (currentName=%s, name=%s)\n", nodeID, m_nodeNameMap[nodeID].c_str(), name.c_str());
-		//return;
+		
+		m_nodeNameMap[nodeID] = name;
+		return;
 	}
 
-	//g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::registerNodeName: Registering node name '%s' for node ID %d.\n", name.c_str(), nodeID);
+	g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::registerNodeName: Registering node name '%s' for node ID %d.\n", name.c_str(), nodeID);
 
 	m_nodeNameMap[nodeID] = name;
 }
@@ -1603,6 +1637,9 @@ void NodeProcessor::registerBlendTreeName(MR::NodeID nodeID, const std::string& 
 	if (!topLevelBT)
 		INVOKE_PANIC("DefaultNodeNamingStrategy::registerBlendTreeName: Failed to find blend tree with node ID %d to register name '%s'.\n", nodeID, name.c_str());
 
+	if (topLevelBT->getName() != "" && topLevelBT->getName() != name)
+		g_appLog->alertMessage(MsgLevel_Warn, "DefaultNodeNamingStrategy::registerBlendTreeName: Duplicate blend tree name entry for node ID %d. (currentName=%s, name=%s)\n", nodeID, topLevelBT->getName().c_str(), name.c_str());
+
 	topLevelBT->setName(name);
 }
 
@@ -1611,6 +1648,9 @@ void NodeProcessor::registerStateMachineName(MR::NodeID nodeID, const std::strin
 	auto it = m_stateMachineNodes.find(nodeID);
 	if (it != m_stateMachineNodes.end())
 	{
+		if (it->second.getName() != "" && it->second.getName() != name)
+			g_appLog->alertMessage(MsgLevel_Warn, "DefaultNodeNamingStrategy::registerStateMachineName: Duplicate state machine name entry for node ID %d. (currentName=%s, name=%s)\n", nodeID, it->second.getName().c_str(), name.c_str());
+
 		it->second.setName(name);
 		g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::registerStateMachineName: Registered state machine name '%s' for node ID %d.\n", name.c_str(), nodeID);
 		return;
@@ -1650,23 +1690,28 @@ void NodeProcessor::getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNode
 
 void NodeProcessor::dumpNetworkLayout(const std::wstring& outPath, MR::NetworkDef* netDef)
 {
-	std::ofstream outFile = std::ofstream(outPath, std::ios::out);
+	std::ofstream outFile(outPath, std::ios::out);
+	if (!outFile.is_open())
+		return;
 
-	outFile << std::format("Root Node: %d (name=\"%s\")\n", netDef->getRootNodeID(), getNodeName(netDef->getRootNodeID()).c_str());
+	outFile << std::format(
+		"Root Node: {} (name=\"{}\")\n",
+		netDef->getRootNodeID(),
+		getNodeName(netDef->getRootNodeID())
+	);
 
 	for (auto& blendTreeNodePair : m_blendTreeNodes)
 	{
 		const BlendTreeID& btKey = blendTreeNodePair.first;
 		ContainerNodeInfo& containerInfo = blendTreeNodePair.second;
 
-		MR::NodeDef* outputNode = containerInfo.getOutputNodeDef();
-
 		outFile << std::format(
-			"BlendTree node %d (layer %u, name '%s') has %zu child nodes:\n",
+			"BlendTree node {} (layer {}, name '{}') has {} child nodes:\n",
 			btKey.getNodeID(),
 			btKey.getLayerIndex(),
-			containerInfo.getName().c_str(),
-			containerInfo.getChildNodeDefs().size());
+			containerInfo.getName(),
+			containerInfo.getChildNodeDefs().size()
+		);
 
 		for (MR::NodeDef* childNode : containerInfo.getChildNodeDefs())
 		{
@@ -1674,9 +1719,10 @@ void NodeProcessor::dumpNetworkLayout(const std::wstring& outPath, MR::NetworkDe
 				continue;
 
 			outFile << std::format(
-				"\t- Child node %d (%s)\n",
+				"\t- Child node {} ({})\n",
 				childNode->getNodeID(),
-				getNodeName(childNode->getNodeID()).c_str());
+				getNodeName(childNode->getNodeID())
+			);
 		}
 	}
 
@@ -1686,22 +1732,27 @@ void NodeProcessor::dumpNetworkLayout(const std::wstring& outPath, MR::NetworkDe
 		ContainerNodeInfo& containerInfo = smNodePair.second;
 
 		outFile << std::format(
-			"StateMachine node %d (%s) has %zu child nodes:\n",
+			"StateMachine node {} ({}) has {} child nodes:\n",
 			smNodeID,
-			containerInfo.getName().c_str(),
-			containerInfo.getChildNodeDefs().size());
+			containerInfo.getName(),
+			containerInfo.getChildNodeDefs().size()
+		);
 
 		for (MR::NodeDef* childNode : containerInfo.getChildNodeDefs())
 		{
 			if (!childNode)
 				continue;
 
+			std::string name = getNodeName(childNode->getNodeID());
+
+			if (isNodeBlendTree(childNode))
+				name = getBlendTreeNodeName(childNode->getNodeID());
+
 			outFile << std::format(
-				"\t- Child node %d (%s)\n",
+				"\t- Child node {} ({})\n",
 				childNode->getNodeID(),
-				getNodeName(childNode->getNodeID()).c_str());
+				name
+			);
 		}
 	}
-
-	outFile.close();
 }

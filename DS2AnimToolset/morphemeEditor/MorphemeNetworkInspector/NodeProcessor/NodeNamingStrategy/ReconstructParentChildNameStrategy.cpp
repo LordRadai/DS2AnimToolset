@@ -1,4 +1,5 @@
 #include <functional>
+#include <unordered_set>
 
 #include "ReconstructParentChildNameStrategy.h"
 
@@ -11,51 +12,65 @@
 
 bool ReconstructParentChildNameStrategy::collectNodeNames(MR::NetworkDef* netDef, NodeProcessor* processor)
 {
-	/*
+	std::map<MR::NodeID, std::string>& nodeNameMap = processor->getNodeNameMap();
 	nodeNameMap.clear();
-	blendTreeNodeNameMap.clear();
 
 	MR::NodeDef* rootNodeDef = netDef->getNodeDef(netDef->getRootNodeID());
 
 	std::function<void(MR::NodeDef*)> collectNames;
 	collectNames = [&](MR::NodeDef* nodeDef)
 		{
+			MR::NodeID id = nodeDef->getNodeID();
+
+			if (processor->getNodeName(id) != "")
+				return;
+
 			if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
 				return;
 
 			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
-			if (NodeNameStrategyUtils::isNodeBlendTreeOutput(nodeDef, blendTreeMap))
+			if (processor->isNodeBlendTree(nodeDef))
 			{
 				// Normal names are stripped in the DS2 nmb, so we just have to get the standard name.
 				std::string blendTreeName = NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName);
 
-				if (NodeNameStrategyUtils::isNodeStateNode(nodeDef))
+				if (processor->isNodeStateNode(nodeDef))
 					blendTreeName = NodeNameStrategyUtils::getStateNodeNameFromStringTable(netDef, nodeDef->getNodeID());
 
-				NodeNameStrategyUtils::registerNodeName(blendTreeNodeNameMap, nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
+				processor->registerBlendTreeName(nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
 			}
 
-			NodeNameStrategyUtils::registerNodeName(nodeNameMap, nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
+			processor->registerNodeName(nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
+
+			if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+				processor->registerStateMachineName(nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
 
 			if (!nodeName.empty())
 			{
-				MR::NodeDef* parentNodeContainer = NodeNameStrategyUtils::getParentNodeContainer(nodeDef, blendTreeChildren, smChildren);
+				MR::NodeDef* parentNodeContainer = processor->getParentNodeContainer(nodeDef);
 
 				while (parentNodeContainer && parentNodeContainer->getNodeID() != netDef->getRootNodeID())
 				{
 					const std::string parentPath = NodeNameStrategyUtils::getParentNodeNameFromFullPath(nodeName);
 					std::string nameWithoutParent = NodeNameStrategyUtils::getNodeNameFromFullPath(parentPath);
 
-					if (NodeNameStrategyUtils::isNodeBlendTreeOutput(parentNodeContainer, blendTreeNodes))
+					if (processor->isNodeBlendTree(parentNodeContainer))
 					{
-						NodeNameStrategyUtils::registerNodeName(blendTreeNodeNameMap, parentNodeContainer->getNodeID(), nameWithoutParent);
+						processor->registerBlendTreeName(parentNodeContainer->getNodeID(), nameWithoutParent);
+
+						if (parentNodeContainer->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+							processor->registerStateMachineName(parentNodeContainer->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nameWithoutParent));
+
 						nameWithoutParent = "";
 					}
 
-					NodeNameStrategyUtils::registerNodeName(nodeNameMap, parentNodeContainer->getNodeID(), nameWithoutParent);
+					processor->registerNodeName(parentNodeContainer->getNodeID(), nameWithoutParent);
 
-					parentNodeContainer = NodeNameStrategyUtils::getParentNodeContainer(parentNodeContainer, blendTreeChildren, smChildren);
+					if (parentNodeContainer->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+						processor->registerStateMachineName(parentNodeContainer->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nameWithoutParent));
+
+					parentNodeContainer = processor->getParentNodeContainer(parentNodeContainer);
 					nodeName = parentPath;
 				}
 			}
@@ -89,32 +104,37 @@ bool ReconstructParentChildNameStrategy::collectNodeNames(MR::NetworkDef* netDef
 
 	for (auto& nodeNamePair : nodeNameMap)
 	{
+		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeNamePair.first);
+
+		if (processor->isNodeBlendTree(nodeDef))
+		{
+			std::vector<ContainerNodeInfo*> blendTreesForNode = processor->getBlendTreesForNode(nodeNamePair.first);
+
+			for (size_t i = 0; i < blendTreesForNode.size(); i++)
+			{
+				if (blendTreesForNode[i]->getName() == "")
+				{
+					char nodeNameBuffer[256];
+					sprintf_s(nodeNameBuffer, "BlendTree_%d_%d", nodeNamePair.first, i);
+
+					blendTreesForNode[i]->setName(nodeNameBuffer);
+				}
+			}
+		}
+
 		if (nodeNamePair.second == "")
 		{
-			MR::NodeDef* nodeDef = netDef->getNodeDef(nodeNamePair.first);
-
 			char nodeNameBuffer[256];
 			sprintf_s(nodeNameBuffer, "%s_%d", NodeProcessor::nodeTypeAsManifestName(nodeDef->getNodeTypeID()).c_str(), nodeNamePair.first);
 
 			nodeNamePair.second = nodeNameBuffer;
+
+			if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+				processor->getStateMachineForNode(nodeNamePair.first)->setName(nodeNameBuffer);
 		}
 		
-		g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::collectNodeNames: Associated node name '%s' for node ID %d (type=%d).\n", nodeNamePair.second.c_str(), nodeNamePair.first, netDef->getNodeDef(nodeNamePair.first)->getNodeTypeID());
+		g_appLog->debugMessage(MsgLevel_Debug, "ReconstructParentChildNameStrategy::collectNodeNames: Associated node name '%s' for node ID %d (type=%d).\n", nodeNamePair.second.c_str(), nodeNamePair.first, netDef->getNodeDef(nodeNamePair.first)->getNodeTypeID());
 	}
-
-	for (auto& blendTreeNodeNamePair : blendTreeNodeNameMap)
-	{
-		if (blendTreeNodeNamePair.second == "")
-		{
-			char nodeNameBuffer[256];
-			sprintf_s(nodeNameBuffer, "BlendTree_%d", blendTreeNodeNamePair.first);
-
-			blendTreeNodeNamePair.second = nodeNameBuffer;
-		}
-
-		g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::collectNodeNames: Associated blend tree node name '%s' for node ID %d.\n", blendTreeNodeNamePair.second.c_str(), blendTreeNodeNamePair.first);
-	}
-	*/
 
 	return true;
 }

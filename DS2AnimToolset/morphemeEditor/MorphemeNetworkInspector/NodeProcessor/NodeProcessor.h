@@ -112,6 +112,7 @@ public:
 
 	void registerSMNode(MR::NodeDef* nodeDef);
 	void registerNodeAsSMChild(const MR::NodeID smNodeID, MR::NodeDef* nodeDef);
+	ContainerNodeInfo* getStateMachineForNode(const MR::NodeID smNodeID);
 
 	std::map<MR::NodeID, std::string>& getNodeNameMap() { return m_nodeNameMap; }
 
@@ -125,6 +126,18 @@ public:
 	void getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, MR::NodeID nodeID);
 
 	void dumpNetworkLayout(const std::wstring& outPath, MR::NetworkDef* netDef);
+
+	/*
+	* \brief Get the parent node container (blend tree or state machine) for a given node for layout purposes. This is used to determine which container a node should be laid out within when dumping the network layout. For nodes that are referenced by multiple parent nodes, this will attempt to find the most appropriate parent container based on the structure of the network and the referencing nodes. For nodes that are not referenced by any parent nodes, this will return the root node of the network.
+	* \param nodeDef The node to find the parent container for.
+	*/
+	MR::NodeDef* getParentNodeContainerForLayout(MR::NodeDef* nodeDef);
+
+	/*
+	* \brief Get the parent node container (blend tree or state machine) for a given node. Needs all nodes to be laid out in the approriate containers.
+	* \param nodeDef The node to find the parent container for.
+	*/
+	MR::NodeDef* getParentNodeContainer(MR::NodeDef* nodeDef);
 private:
 	/*
 	* \brief Get the common ancestor container node (blend tree or state machine) for a set of referencing nodes.
@@ -157,12 +170,6 @@ private:
 	* \param animNamesTable The table to use for looking up animation names from runtime IDs.
 	*/
 	void fixupAnimNodeNames(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable);
-
-	/*
-	* \brief Get the parent node container (blend tree or state machine) for a given node.
-	* \param nodeDef The node to find the parent container for.
-	*/
-	MR::NodeDef* getParentNodeContainer(MR::NodeDef* nodeDef);
 
 	void populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
 	void populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
