@@ -1433,7 +1433,7 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 			btRoot->getNodeID(),
 			netDef->getNodeNameFromNodeID(btRoot->getNodeID()));
 
-		if (btRoot->getParentNodeDef()->getNodeTypeID() == NODE_TYPE_STATE_MACHINE)
+		if (!btRoot->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 		{
 			if (!isNodeBlendTree(btRoot))
 			{
