@@ -1433,43 +1433,46 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 			btRoot->getNodeID(),
 			netDef->getNodeNameFromNodeID(btRoot->getNodeID()));
 
-		if (!isNodeBlendTree(btRoot))
+		if (btRoot->getParentNodeDef()->getNodeTypeID() == NODE_TYPE_STATE_MACHINE)
 		{
-			registerBTNode(btRoot);
-
-			for (size_t i = 0; i < referencingNodes.size(); i++)
-				registerNodeAsBTChild(btRoot->getNodeID(), referencingNodes[i]);
-		}
-		else
-		{
-			ContainerNodeInfo* existingBTInfo = getTopLevelBlendTreeInfo(btRoot->getNodeID());
-
-			if (!existingBTInfo)
+			if (!isNodeBlendTree(btRoot))
 			{
-				INVOKE_PANIC(
-					"NodeProcessor::collectContainerNodes: Failed to find blend tree info for node %d (%s).\n",
-					btRoot->getNodeID(),
-					netDef->getNodeNameFromNodeID(btRoot->getNodeID()));
-				continue;
+				registerBTNode(btRoot);
+
+				for (size_t i = 0; i < referencingNodes.size(); i++)
+					registerNodeAsBTChild(btRoot->getNodeID(), referencingNodes[i]);
 			}
-
-			bool hasAllReferencingNodesAsChildren = true;
-			for (MR::NodeDef* referencingNode : referencingNodes)
+			else
 			{
-				if (!existingBTInfo->hasChildNodeDef(referencingNode))
+				ContainerNodeInfo* existingBTInfo = getTopLevelBlendTreeInfo(btRoot->getNodeID());
+
+				if (!existingBTInfo)
 				{
-					hasAllReferencingNodesAsChildren = false;
-					break;
+					INVOKE_PANIC(
+						"NodeProcessor::collectContainerNodes: Failed to find blend tree info for node %d (%s).\n",
+						btRoot->getNodeID(),
+						netDef->getNodeNameFromNodeID(btRoot->getNodeID()));
+					continue;
+				}
+
+				bool hasAllReferencingNodesAsChildren = true;
+				for (MR::NodeDef* referencingNode : referencingNodes)
+				{
+					if (!existingBTInfo->hasChildNodeDef(referencingNode))
+					{
+						hasAllReferencingNodesAsChildren = false;
+						break;
+					}
+				}
+
+				if (!hasAllReferencingNodesAsChildren)
+				{
+					for (size_t i = 0; i < referencingNodes.size(); i++)
+						registerNodeAsBTChild(existingBTInfo->getOutputNodeDef()->getNodeID(), referencingNodes[i]);
 				}
 			}
-
-			if (!hasAllReferencingNodesAsChildren)
-			{
-				for (size_t i = 0; i < referencingNodes.size(); i++)
-					registerNodeAsBTChild(existingBTInfo->getOutputNodeDef()->getNodeID(), referencingNodes[i]);
-			}
 		}
-
+		
 		MR::NodeDef* multiplyConnectedOwner = getParentNodeContainerForLayout(multiplyConnectedNodeDef);
 
 		if (multiplyConnectedOwner)
