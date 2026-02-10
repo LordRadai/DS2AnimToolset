@@ -1400,6 +1400,11 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 		dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
 		dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
 		dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
+
+		MorphemeNetworkInspector* networkInspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
+
+		if (networkInspector)
+			networkInspector->dumpNetworkToFile(path + L"\\networkLayout.txt", netDef);
 #endif // EXPORT_DEBUG_NETWORK_INFO
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for %ws (%ws):\n", chrName.c_str(), networkFilename);

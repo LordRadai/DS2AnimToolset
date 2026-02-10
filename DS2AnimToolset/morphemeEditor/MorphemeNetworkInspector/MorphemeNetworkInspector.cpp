@@ -44,3 +44,8 @@ bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* networkDef, MR::UTILS
 
 	return true;
 }
+
+void MorphemeNetworkInspector::dumpNetworkToFile(const std::wstring& outPath, MR::NetworkDef* networkDef)
+{
+	m_nodeProcessor.dumpNetworkLayout(outPath, networkDef);
+}

@@ -12,6 +12,7 @@ public:
 	MorphemeNetworkInspector() : NodeEditor::Editor(NodeEditor::NodeEditorFlags_ReadOnly) {}
 	~MorphemeNetworkInspector() override {}
 
+	void dumpNetworkToFile(const std::wstring& outPath, MR::NetworkDef* networkDef);
 	bool loadNetwork(MR::NetworkDef* networkDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup*);
 
 	std::string getNodeName(const MR::NodeID nodeID) { return m_nodeProcessor.getNodeName(nodeID); }

@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <vector>
 #include <unordered_set>
+#include <fstream>
 
 #include "NodeProcessor.h"
 
@@ -12,7 +13,6 @@
 
 #include "NodeNamingStrategy/DefaultNodeNamingStrategy.h"
 #include "NodeNamingStrategy/ReconstructParentChildNameStrategy.h"
-#include "NodeNamingStrategy/Utils/Utils.h"
 
 #include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
 
@@ -47,54 +47,6 @@ namespace
 
 		return false;
 	}
-
-	/*
-	void getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outList, MR::NetworkDef* netDef, MR::NodeID nodeID)
-	{
-		outList.clear();
-
-		for (uint32_t i = 0; i < netDef->getNumNodeDefs(); i++)
-		{
-			MR::NodeDef* currentNodeDef = netDef->getNodeDef(i);
-
-			if (currentNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
-				continue;
-
-			for (size_t childIdx = 0; childIdx < currentNodeDef->getNumChildNodes(); childIdx++)
-			{
-				if (currentNodeDef->getChildNodeID(childIdx) == nodeID)
-				{
-					outList.push_back(currentNodeDef);
-					break;
-				}
-			}
-		}
-	}
-
-	void getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outList, MR::NetworkDef* netDef, MR::NodeID nodeID)
-	{
-		outList.clear();
-
-		for (uint32_t i = 0; i < netDef->getNumNodeDefs(); i++)
-		{
-			MR::NodeDef* currentNodeDef = netDef->getNodeDef(i);
-
-			if (currentNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
-				continue;
-
-			for (size_t inputCPIdx = 0; inputCPIdx < currentNodeDef->getNumInputCPConnections(); inputCPIdx++)
-			{
-				const MR::CPConnection* cpConnection = currentNodeDef->getInputCPConnection(inputCPIdx);
-
-				if (cpConnection->m_sourceNodeID == nodeID)
-				{
-					outList.push_back(currentNodeDef);
-					break;
-				}
-			}
-		}
-	}
-	*/
 }
 
 bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable)
@@ -147,63 +99,6 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 	collectBlendTreeChildNodes(netDef);
 	collectNodeNames(netDef);
 	fixupAnimNodeNames(netDef, animNamesTable);
-
-	g_appLog->debugMessage(MsgLevel_Debug, "Root Node: %d (name=\"%s\")\n", netDef->getRootNodeID(), netDef->getNodeNameFromNodeID(netDef->getRootNodeID()));
-
-	std::map<BlendTreeID, std::vector<MR::NodeDef*>> containerNodeMap;
-
-	for (auto& blendTreeNodePair : m_blendTreeNodes)
-	{
-		const BlendTreeID& btKey = blendTreeNodePair.first;
-		ContainerNodeInfo& containerInfo = blendTreeNodePair.second;
-
-		MR::NodeDef* outputNode = containerInfo.getOutputNodeDef();
-
-		g_appLog->debugMessage(
-			MsgLevel_Debug,
-			"BlendTree node %d (layer %u, name '%s') has %zu child nodes:\n",
-			btKey.getNodeID(),
-			btKey.getLayerIndex(),
-			containerInfo.getName().c_str(),
-			containerInfo.getChildNodeDefs().size());
-
-		for (MR::NodeDef* childNode : containerInfo.getChildNodeDefs())
-		{
-			if (!childNode)
-				continue;
-
-			g_appLog->debugMessage(
-				MsgLevel_Debug,
-				"\t- Child node %d (%s)\n",
-				childNode->getNodeID(),
-				getNodeName(childNode->getNodeID()).c_str());
-		}
-	}
-
-	for (auto& smNodePair : m_stateMachineNodes)
-	{
-		const MR::NodeID smNodeID = smNodePair.first;
-		ContainerNodeInfo& containerInfo = smNodePair.second;
-
-		g_appLog->debugMessage(
-			MsgLevel_Debug,
-			"StateMachine node %d (%s) has %zu child nodes:\n",
-			smNodeID,
-			containerInfo.getName().c_str(),
-			containerInfo.getChildNodeDefs().size());
-
-		for (MR::NodeDef* childNode : containerInfo.getChildNodeDefs())
-		{
-			if (!childNode)
-				continue;
-
-			g_appLog->debugMessage(
-				MsgLevel_Debug,
-				"\t- Child node %d (%s)\n",
-				childNode->getNodeID(),
-				getNodeName(childNode->getNodeID()).c_str());
-		}
-	}
 
 	int numNetworkNodes = 0;
 	std::vector<MR::NodeDef*> notFoundNodes;
@@ -1751,4 +1646,63 @@ void NodeProcessor::getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNode
 
 	auto it = m_inputCpLookupTable.find(nodeID);
 	if (it != m_inputCpLookupTable.end()) outNodes = it->second;
+}
+
+void NodeProcessor::dumpNetworkLayout(const std::wstring& outPath, MR::NetworkDef* netDef)
+{
+	std::ofstream outFile = std::ofstream(outPath, std::ios::out);
+
+	outFile << std::format("Root Node: %d (name=\"%s\")\n", netDef->getRootNodeID(), getNodeName(netDef->getRootNodeID()).c_str());
+
+	for (auto& blendTreeNodePair : m_blendTreeNodes)
+	{
+		const BlendTreeID& btKey = blendTreeNodePair.first;
+		ContainerNodeInfo& containerInfo = blendTreeNodePair.second;
+
+		MR::NodeDef* outputNode = containerInfo.getOutputNodeDef();
+
+		outFile << std::format(
+			"BlendTree node %d (layer %u, name '%s') has %zu child nodes:\n",
+			btKey.getNodeID(),
+			btKey.getLayerIndex(),
+			containerInfo.getName().c_str(),
+			containerInfo.getChildNodeDefs().size());
+
+		for (MR::NodeDef* childNode : containerInfo.getChildNodeDefs())
+		{
+			if (!childNode)
+				continue;
+
+			g_appLog->debugMessage(
+				MsgLevel_Debug,
+				"\t- Child node %d (%s)\n",
+				childNode->getNodeID(),
+				getNodeName(childNode->getNodeID()).c_str());
+		}
+	}
+
+	for (auto& smNodePair : m_stateMachineNodes)
+	{
+		const MR::NodeID smNodeID = smNodePair.first;
+		ContainerNodeInfo& containerInfo = smNodePair.second;
+
+		outFile << std::format(
+			"StateMachine node %d (%s) has %zu child nodes:\n",
+			smNodeID,
+			containerInfo.getName().c_str(),
+			containerInfo.getChildNodeDefs().size());
+
+		for (MR::NodeDef* childNode : containerInfo.getChildNodeDefs())
+		{
+			if (!childNode)
+				continue;
+
+			outFile << std::format(
+				"\t- Child node %d (%s)\n",
+				childNode->getNodeID(),
+				getNodeName(childNode->getNodeID()).c_str());
+		}
+	}
+
+	outFile.close();
 }

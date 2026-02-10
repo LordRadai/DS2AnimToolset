@@ -123,6 +123,8 @@ public:
 
 	void getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, MR::NodeID nodeID);
 	void getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, MR::NodeID nodeID);
+
+	void dumpNetworkLayout(const std::wstring& outPath, MR::NetworkDef* netDef);
 private:
 	/*
 	* \brief Get the common ancestor container node (blend tree or state machine) for a set of referencing nodes.
