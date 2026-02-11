@@ -71,7 +71,7 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
 		MR::NodeDef::NodeFlags flags = nodeDef->getNodeFlags();
 
-		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) || flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+		if (flags.isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM) || flags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION) || flags.isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 			continue;
 
 		if (nodeDef->getNumOutputCPPins() > 0)
@@ -1301,11 +1301,11 @@ MR::NodeDef* NodeProcessor::getCommonAncestorForBTCreation(
 
 			std::vector<MR::NodeDef*> consumers;
 			getNodesWithThisAsInput(consumers, netDef, node->getNodeID());
-			//getNodesWithThisAsInputCP(consumers, netDef, node->getNodeID());
 
 			for (MR::NodeDef* c : consumers)
 			{
 				outSet.insert(c->getNodeID());
+
 				collectConsumers(c, outSet, visited);
 			}
 		};
@@ -1341,12 +1341,43 @@ MR::NodeDef* NodeProcessor::getCommonAncestorForBTCreation(
 	}
 
 	// 4. Find the deepest node
-	MR::NodeDef* bestNode = nullptr;
-	int bestDepth = -1;
+	std::unordered_set<MR::NodeID> referencingIDs;
+	for (MR::NodeDef* n : referencingNodes)
+		referencingIDs.insert(n->getNodeID());
+
+	std::vector<MR::NodeID> strictConsumers;
 
 	for (MR::NodeID id : intersection)
 	{
+		if (!referencingIDs.count(id))
+			strictConsumers.push_back(id);
+	}
+
+	// If there are strict consumers, ignore self nodes
+	const std::vector<MR::NodeID>* candidates;
+
+	if (!strictConsumers.empty())
+	{
+		candidates = &strictConsumers;
+	}
+	else
+	{
+		// No real consumers → allow self
+		static std::vector<MR::NodeID> selfFallback;
+		selfFallback.clear();
+		for (MR::NodeID id : intersection)
+			selfFallback.push_back(id);
+
+		candidates = &selfFallback;
+	}
+
+	MR::NodeDef* bestNode = nullptr;
+	int bestDepth = -1;
+
+	for (MR::NodeID id : *candidates)
+	{
 		MR::NodeDef* node = netDef->getNodeDef(id);
+
 		int depth = 0;
 		MR::NodeDef* cur = node;
 		while (cur->getParentNodeID() != MR::INVALID_NODE_ID)
@@ -1409,8 +1440,15 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 		if (multiplyConnectedNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 			continue;
 
+		MR::NodeDef* multiplyConnectedOwner = getParentNodeContainerForLayout(multiplyConnectedNodeDef);
+
 		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Found multiply connected node %d (name=\"%s\").\n", multiplyConnectedNodeDef->getNodeID(), netDef->getNodeNameFromNodeID(multiplyConnectedNodeDef->getNodeID()));
 		
+		// The multiply connected parent should be a blend tree.
+
+		//if (!isNodeBlendTree(multiplyConnectedOwner))
+			//registerBTNode(multiplyConnectedOwner);
+
 		std::vector<MR::NodeDef*> referencingNodes;
 		getNodesWithThisAsInput(referencingNodes, netDef, multiplyConnectedNodeDef->getNodeID());
 
@@ -1433,75 +1471,35 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 			btRoot->getNodeID(),
 			netDef->getNodeNameFromNodeID(btRoot->getNodeID()));
 
-		if (!btRoot->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE) || btRoot->getNodeID() == netDef->getRootNodeID())
-		{
-			if (!isNodeBlendTree(btRoot))
-			{
-				registerBTNode(btRoot);
+		if (!isNodeBlendTree(btRoot) || btRoot->getNodeID() == netDef->getRootNodeID())
+			registerBTNode(btRoot);
 
-				for (size_t i = 0; i < referencingNodes.size(); i++)
-					registerNodeAsBTChild(btRoot->getNodeID(), referencingNodes[i]);
-			}
-			else
-			{
-				ContainerNodeInfo* existingBTInfo = getTopLevelBlendTreeInfo(btRoot->getNodeID());
-
-				if (!existingBTInfo)
-				{
-					INVOKE_PANIC(
-						"NodeProcessor::collectContainerNodes: Failed to find blend tree info for node %d (%s).\n",
-						btRoot->getNodeID(),
-						netDef->getNodeNameFromNodeID(btRoot->getNodeID()));
-					continue;
-				}
-
-				bool hasAllReferencingNodesAsChildren = true;
-				for (MR::NodeDef* referencingNode : referencingNodes)
-				{
-					if (!existingBTInfo->hasChildNodeDef(referencingNode))
-					{
-						hasAllReferencingNodesAsChildren = false;
-						break;
-					}
-				}
-
-				if (!hasAllReferencingNodesAsChildren)
-				{
-					for (size_t i = 0; i < referencingNodes.size(); i++)
-						registerNodeAsBTChild(existingBTInfo->getOutputNodeDef()->getNodeID(), referencingNodes[i]);
-				}
-			}
-		}
-		
-		MR::NodeDef* multiplyConnectedOwner = getParentNodeContainerForLayout(multiplyConnectedNodeDef);
-
+		// Decide where to put the multiply connected node itself.
 		if (multiplyConnectedOwner)
 		{
-			g_appLog->debugMessage(
-				MsgLevel_Debug,
-				"NodeProcessor::collectContainerNodes: Owner of the blend tree with root node %d is node %d (%s).\n",
-				btRoot->getNodeID(),
-				multiplyConnectedOwner->getNodeID(),
-				netDef->getNodeNameFromNodeID(multiplyConnectedOwner->getNodeID()));
-
 			if (isNodeBlendTree(multiplyConnectedOwner))
 			{
 				registerNodeAsBTChild(multiplyConnectedOwner->getNodeID(), multiplyConnectedNodeDef);
 			}
 			else if (multiplyConnectedOwner->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 			{
-				registerBTNode(btRoot);
+				if (isNodeBlendTree(btRoot))
+					registerBTNode(btRoot);
+
 				registerNodeAsBTChild(btRoot->getNodeID(), multiplyConnectedNodeDef);
 			}
 			else
 			{
 				INVOKE_PANIC(
-					"NodeProcessor::collectContainerNodes: Owner node %d of blend tree with root node %d is neither a blend tree nor a state machine.\n",
-					multiplyConnectedOwner->getNodeID(),
-					btRoot->getNodeID());
+					"NodeProcessor::collectContainerNodes: Owner node %d of multply connected node %d is neither a blend tree nor a state machine.\n",
+					multiplyConnectedNodeDef->getNodeID(),
+					multiplyConnectedOwner->getNodeID());
 			}
 		}
+
+		
 	}
+
 
 	// Print all BT nodes and SM nodes for debugging
 	for (const auto& blendTreeNodePair : m_blendTreeNodes)
@@ -1618,7 +1616,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		MR::NodeDef* parentContainer = getParentNodeContainer(nodeDef);
 
 		if (!parentContainer)
-			INVOKE_PANIC("Failed to find parent node container for multiply connected node ID %d. Defaulting to root node.\n", nodeDef->getNodeID());
+			INVOKE_PANIC("Failed to find parent node container for multiply connected node ID %d.\n", nodeDef->getNodeID());
 
 		g_appLog->debugMessage(MsgLevel_Debug, "Common ancestor for CP output node ID %d is node ID %d (name=\"%s\").\n", nodeDef->getNodeID(), parentContainer->getNodeID(), netDef->getNodeNameFromNodeID(parentContainer->getNodeID()));
 
