@@ -124,7 +124,7 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 		for (const auto& pair : m_blendTreeNodes)
 		{
 			const ContainerNodeInfo& containerInfo = pair.second;
-			if (containerInfo.hasChildNodeDef(nodeDef))
+			if (containerInfo.hasChildNode(nodeDef))
 			{
 				found = true;
 				break;
@@ -137,7 +137,7 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 			for (const auto& pair : m_stateMachineNodes)
 			{
 				const ContainerNodeInfo& containerInfo = pair.second;
-				if (containerInfo.hasChildNodeDef(nodeDef))
+				if (containerInfo.hasChildNode(nodeDef))
 				{
 					found = true;
 					break;
@@ -433,7 +433,7 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 			INVOKE_PANIC("Multiply connected node %d (%s) is not present in the editor.\n", nodeID, getNodeName(nodeID).c_str());
 
 		std::vector<MR::NodeDef*> nodesWithThisAsInput;
-		getNodesWithThisAsInput(nodesWithThisAsInput, netDef, nodeID);
+		getNodesWithThisAsInput(nodesWithThisAsInput, nodeID);
 
 		if (nodesWithThisAsInput.size() > 0)
 		{
@@ -564,7 +564,7 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 			INVOKE_PANIC("Multiply connected node %d (%s) is not present in the editor.\n", nodeID, getNodeName(nodeID).c_str());
 
 		std::vector<MR::NodeDef*> nodesWithThisAsInputCP;
-		getNodesWithThisAsInputCP(nodesWithThisAsInputCP, netDef, m_multiplyConnectedCPOutputNodes[i]->getNodeID());
+		getNodesWithThisAsInputCP(nodesWithThisAsInputCP, m_multiplyConnectedCPOutputNodes[i]->getNodeID());
 
 		if (nodesWithThisAsInputCP.size() == 1)
 			continue;
@@ -1129,7 +1129,7 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 			}
 
 			std::vector<MR::NodeDef*> referencingNodes;
-			getNodesWithThisAsInput(referencingNodes, netDef, start->getNodeID());
+			getNodesWithThisAsInput(referencingNodes, start->getNodeID());
 
 			for (MR::NodeDef* node : referencingNodes)
 			{
@@ -1146,7 +1146,7 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 			}
 
 			std::vector<MR::NodeDef*> referencingNodesCP;
-			getNodesWithThisAsInputCP(referencingNodesCP, netDef, start->getNodeID());
+			getNodesWithThisAsInputCP(referencingNodesCP, start->getNodeID());
 
 			for (MR::NodeDef* node : referencingNodesCP)
 			{
@@ -1283,7 +1283,8 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 
 MR::NodeDef* NodeProcessor::getCommonAncestorForBTCreation(
 	MR::NetworkDef* netDef,
-	const std::vector<MR::NodeDef*>& referencingNodes)
+	const std::vector<MR::NodeDef*>& referencingNodes,
+	bool lookInSMs)
 {
 	if (referencingNodes.empty())
 		return nullptr;
@@ -1295,12 +1296,15 @@ MR::NodeDef* NodeProcessor::getCommonAncestorForBTCreation(
 		std::unordered_set<MR::NodeID>& visited)
 		{
 			if (!visited.insert(node->getNodeID()).second)
-				return; // already processed
+				return;
 
 			outSet.insert(node->getNodeID());
 
 			std::vector<MR::NodeDef*> consumers;
-			getNodesWithThisAsInput(consumers, netDef, node->getNodeID());
+			getNodesWithThisAsInput(consumers, node->getNodeID());
+
+			if (lookInSMs)
+				getStateMachinesWithThisAsChild(consumers, node->getNodeID());
 
 			for (MR::NodeDef* c : consumers)
 			{
@@ -1444,15 +1448,13 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 
 		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Found multiply connected node %d (name=\"%s\").\n", multiplyConnectedNodeDef->getNodeID(), netDef->getNodeNameFromNodeID(multiplyConnectedNodeDef->getNodeID()));
 		
-		// The multiply connected parent should be a blend tree.
-
-		//if (!isNodeBlendTree(multiplyConnectedOwner))
-			//registerBTNode(multiplyConnectedOwner);
-
 		std::vector<MR::NodeDef*> referencingNodes;
-		getNodesWithThisAsInput(referencingNodes, netDef, multiplyConnectedNodeDef->getNodeID());
+		getNodesWithThisAsInput(referencingNodes, multiplyConnectedNodeDef->getNodeID());
 
-		MR::NodeDef* btRoot = getCommonAncestorForBTCreation(netDef, referencingNodes);
+		MR::NodeDef* btRoot = getCommonAncestorForBTCreation(netDef, referencingNodes, false);
+
+		if (!btRoot)
+			btRoot = getCommonAncestorForBTCreation(netDef, referencingNodes, true);
 
 		if (!btRoot)
 		{
@@ -1496,10 +1498,7 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 					multiplyConnectedOwner->getNodeID());
 			}
 		}
-
-		
 	}
-
 
 	// Print all BT nodes and SM nodes for debugging
 	for (const auto& blendTreeNodePair : m_blendTreeNodes)
@@ -1552,7 +1551,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 			for (ContainerNodeInfo* containerInfo : blendTreesForNode)
 			{
-				if (containerInfo->hasChildNodeDef(parentNode))
+				if (containerInfo->hasChildNode(parentNode))
 				{
 					containerInfo->addChildNodeDef(childNode);
 					break;
@@ -1568,7 +1567,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		MR::NodeDef* nodeDef = m_cpOutputNodes[i];
 
 		std::vector<MR::NodeDef*> referencingNodes;
-		getNodesWithThisAsInputCP(referencingNodes, netDef, nodeDef->getNodeID());
+		getNodesWithThisAsInputCP(referencingNodes, nodeDef->getNodeID());
 
 		if (referencingNodes.size() == 0)
 			continue;
@@ -1714,7 +1713,7 @@ MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
 	{
 		const ContainerNodeInfo& containerInfo = pair.second;
 
-		if (containerInfo.hasChildNodeDef(nodeDef) && containerInfo.getOutputNodeDef()->getNodeID() != nodeDef->getNodeID())
+		if (containerInfo.hasChildNode(nodeDef) && containerInfo.getOutputNodeDef()->getNodeID() != nodeDef->getNodeID())
 			return containerInfo.getOutputNodeDef();
 	}
 
@@ -1723,7 +1722,7 @@ MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
 	{
 		const ContainerNodeInfo& containerInfo = pair.second;
 
-		if (containerInfo.hasChildNodeDef(nodeDef) && containerInfo.getOutputNodeDef()->getNodeID() != nodeDef->getNodeID())
+		if (containerInfo.hasChildNode(nodeDef) && containerInfo.getOutputNodeDef()->getNodeID() != nodeDef->getNodeID())
 			return containerInfo.getOutputNodeDef();
 	}
 
@@ -1785,25 +1784,31 @@ bool NodeProcessor::isNodeStateNode(MR::NodeDef* nodeDef)
 	{
 		const ContainerNodeInfo& containerInfo = stateMachineNodePair.second;
 
-		if (containerInfo.hasChildNodeDef(nodeDef))
+		if (containerInfo.hasChildNode(nodeDef))
 			return true;
 	}
 
 	return false;
 }
 
-void NodeProcessor::getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, const MR::NodeID nodeID)
+void NodeProcessor::getStateMachinesWithThisAsChild(std::vector<MR::NodeDef*>& outStateMachines, const MR::NodeID nodeID)
 {
-	outNodes.clear();
+	for (auto& stateMachineNodePair : m_stateMachineNodes)
+	{
+		const ContainerNodeInfo& containerInfo = stateMachineNodePair.second;
+		if (containerInfo.hasChildNode(nodeID))
+			outStateMachines.push_back(containerInfo.getOutputNodeDef());
+	}
+}
 
+void NodeProcessor::getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outNodes, const MR::NodeID nodeID)
+{
 	auto it = m_inputNodeLookupTable.find(nodeID);
 	if (it != m_inputNodeLookupTable.end()) outNodes = it->second;
 }
 
-void NodeProcessor::getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, const MR::NodeID nodeID)
+void NodeProcessor::getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNodes, const MR::NodeID nodeID)
 {
-	outNodes.clear();
-
 	auto it = m_inputCpLookupTable.find(nodeID);
 	if (it != m_inputCpLookupTable.end()) outNodes = it->second;
 }

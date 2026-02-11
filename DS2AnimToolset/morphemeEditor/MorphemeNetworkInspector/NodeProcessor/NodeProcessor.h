@@ -52,15 +52,26 @@ public:
 
 	void addChildNodeDef(MR::NodeDef* childNodeDef)
 	{
-		if (!hasChildNodeDef(childNodeDef))
+		if (!hasChildNode(childNodeDef))
 			m_childNodeDefs.push_back(childNodeDef);
 	}
 
-	bool hasChildNodeDef(MR::NodeDef* childNodeDef) const
+	bool hasChildNode(MR::NodeDef* childNodeDef) const
 	{
 		for (size_t i = 0; i < m_childNodeDefs.size(); i++)
 		{
 			if (m_childNodeDefs[i]->getNodeID() == childNodeDef->getNodeID())
+				return true;
+		}
+
+		return false;
+	}
+
+	bool hasChildNode(const MR::NodeID nodeID) const
+	{
+		for (size_t i = 0; i < m_childNodeDefs.size(); i++)
+		{
+			if (m_childNodeDefs[i]->getNodeID() == nodeID)
 				return true;
 		}
 
@@ -122,8 +133,10 @@ public:
 
 	bool isNodeStateNode(MR::NodeDef* nodeDef);
 
-	void getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, MR::NodeID nodeID);
-	void getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNodes, MR::NetworkDef* netDef, MR::NodeID nodeID);
+	void getStateMachinesWithThisAsChild(std::vector<MR::NodeDef*>& outNodes, MR::NodeID nodeID);
+
+	void getNodesWithThisAsInput(std::vector<MR::NodeDef*>& outNodes, MR::NodeID nodeID);
+	void getNodesWithThisAsInputCP(std::vector<MR::NodeDef*>& outNodes, MR::NodeID nodeID);
 
 	void dumpNetworkLayout(const std::wstring& outPath, MR::NetworkDef* netDef);
 
@@ -146,7 +159,7 @@ private:
 	*/
 	MR::NodeDef* getCommonAncestorContainer(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes, bool excludeSelf);
 
-	MR::NodeDef* getCommonAncestorForBTCreation(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes);
+	MR::NodeDef* getCommonAncestorForBTCreation(MR::NetworkDef* netDef, const std::vector<MR::NodeDef*>& referencingNodes, bool lookInSMs);
 
 	/*
 	* \brief Collect all container nodes (state machines and blend trees) in the network.
