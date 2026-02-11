@@ -1749,9 +1749,7 @@ void NodeProcessor::registerNodeName(MR::NodeID	nodeID, const std::string& name)
 
 void NodeProcessor::registerBlendTreeName(MR::NodeID nodeID, const std::string& name)
 {
-	std::vector<ContainerNodeInfo*> blendTrees = getBlendTreesForNode(nodeID);
-
-	ContainerNodeInfo* topLevelBT = getBlendTreeForNode(nodeID, 1);
+	ContainerNodeInfo* topLevelBT = getTopLevelBlendTreeInfo(nodeID);
 
 	if (!topLevelBT)
 		INVOKE_PANIC("DefaultNodeNamingStrategy::registerBlendTreeName: Failed to find blend tree with node ID %d to register name '%s'.\n", nodeID, name.c_str());
