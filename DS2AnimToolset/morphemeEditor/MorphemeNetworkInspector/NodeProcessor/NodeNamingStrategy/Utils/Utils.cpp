@@ -23,6 +23,22 @@ namespace NodeNameStrategyUtils
 		return "";
 	}
 
+	const std::string getStateNodePathFromStringTable(MR::NetworkDef* netDef, MR::NodeID nodeID)
+	{
+		const NMP::IDMappedStringTable* nodeIDNamesTable = netDef->getNodeIDNamesTable();
+
+		// Nodes after the number of node defs in the string table are state machine states.
+		for (size_t i = netDef->getNumNodeDefs(); i < nodeIDNamesTable->getNumEntries(); i++)
+		{
+			uint32_t entryID = nodeIDNamesTable->getEntryID(i);
+
+			if (entryID == nodeID)
+				return nodeIDNamesTable->getEntryString(i);
+		}
+
+		return "";
+	}
+
 	const std::string getNodeNameFromFullPath(const std::string& name)
 	{
 		size_t lastDivider = name.find_last_of("|");

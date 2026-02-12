@@ -126,12 +126,15 @@ public:
 	ContainerNodeInfo* getStateMachineForNode(const MR::NodeID smNodeID);
 
 	std::map<MR::NodeID, std::string>& getNodeNameMap() { return m_nodeNameMap; }
+	std::map<BlendTreeID, ContainerNodeInfo>& getBlendTreeNodes() { return m_blendTreeNodes; }
+	std::map<MR::NodeID, ContainerNodeInfo>& getStateMachineNodes() { return m_stateMachineNodes; }
 
 	void registerNodeName(MR::NodeID nodeID, const std::string& name);
 	void registerBlendTreeName(MR::NodeID nodeID, const std::string& name);
 	void registerStateMachineName(MR::NodeID nodeID, const std::string& name);
 
 	bool isNodeStateNode(MR::NodeDef* nodeDef);
+	bool isStateMachineNestedInBT(MR::NodeDef* smNodeDef);
 
 	void getStateMachinesWithThisAsChild(std::vector<MR::NodeDef*>& outNodes, MR::NodeID nodeID);
 
@@ -144,13 +147,13 @@ public:
 	* \brief Get the parent node container (blend tree or state machine) for a given node for layout purposes. This is used to determine which container a node should be laid out within when dumping the network layout. For nodes that are referenced by multiple parent nodes, this will attempt to find the most appropriate parent container based on the structure of the network and the referencing nodes. For nodes that are not referenced by any parent nodes, this will return the root node of the network.
 	* \param nodeDef The node to find the parent container for.
 	*/
-	MR::NodeDef* getParentNodeContainerForLayout(MR::NodeDef* nodeDef);
+	MR::NodeDef* getParentNodeContainer(MR::NodeDef* nodeDef, uint16_t btLayer = 0);
 
 	/*
 	* \brief Get the parent node container (blend tree or state machine) for a given node. Needs all nodes to be laid out in the approriate containers.
 	* \param nodeDef The node to find the parent container for.
 	*/
-	MR::NodeDef* getParentNodeContainer(MR::NodeDef* nodeDef);
+	MR::NodeDef* getFirstContainerOfNode(MR::NodeDef* nodeDef);
 private:
 	/*
 	* \brief Get the common ancestor container node (blend tree or state machine) for a set of referencing nodes.

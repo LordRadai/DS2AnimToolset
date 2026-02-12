@@ -1,4 +1,4 @@
-#include <functional>
+﻿#include <functional>
 #include <unordered_set>
 
 #include "ReconstructParentChildNameStrategy.h"
@@ -10,131 +10,237 @@
 
 #include "../NodeProcessor.h"
 
-bool ReconstructParentChildNameStrategy::collectNodeNames(MR::NetworkDef* netDef, NodeProcessor* processor)
+bool ReconstructParentChildNameStrategy::collectNodeNames(
+    MR::NetworkDef* netDef,
+    NodeProcessor* processor)
 {
-	std::map<MR::NodeID, std::string>& nodeNameMap = processor->getNodeNameMap();
-	nodeNameMap.clear();
+    std::map<MR::NodeID, std::string>& nodeNameMap =
+        processor->getNodeNameMap();
 
-	MR::NodeDef* rootNodeDef = netDef->getNodeDef(netDef->getRootNodeID());
+    nodeNameMap.clear();
 
-	std::function<void(MR::NodeDef*)> collectNames;
-	collectNames = [&](MR::NodeDef* nodeDef)
-		{
-			MR::NodeID id = nodeDef->getNodeID();
+    MR::NodeDef* rootNodeDef =
+        netDef->getNodeDef(netDef->getRootNodeID());
 
-			if (processor->getNodeName(id) != "")
-				return;
+    std::unordered_set<MR::NodeID> visited;
 
-			if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
-				return;
+    // -------------------------------------------------------------
+    // Classification helper (single source of truth)
+    // -------------------------------------------------------------
+    auto classifyNode =
+        [&](MR::NodeDef* node, const std::string& fullPath)
+        {
+            if (!node)
+                return;
 
-			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
+            const MR::NodeID id = node->getNodeID();
 
-			if (processor->isNodeBlendTree(nodeDef))
-			{
-				// Normal names are stripped in the DS2 nmb, so we just have to get the standard name.
-				std::string blendTreeName = NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName);
+            const bool isBT =
+                processor->isNodeBlendTree(node);
 
-				if (processor->isNodeStateNode(nodeDef))
-					blendTreeName = NodeNameStrategyUtils::getStateNodeNameFromStringTable(netDef, nodeDef->getNodeID());
+            const bool isSM =
+                node->getNodeFlags().isSet(
+                    MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE);
 
-				processor->registerBlendTreeName(nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
-			}
+            const bool isSMNestedInBT =
+                processor->isStateMachineNestedInBT(node);
 
-			processor->registerNodeName(nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
+            const std::string currentName =
+                NodeNameStrategyUtils::getNodeNameFromFullPath(fullPath);
 
-			if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-				processor->registerStateMachineName(nodeDef->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
+            const std::string parentPath =
+                NodeNameStrategyUtils::getParentNodeNameFromFullPath(fullPath);
 
-			if (!nodeName.empty())
-			{
-				MR::NodeDef* parentNodeContainer = processor->getParentNodeContainer(nodeDef);
+            const std::string parentName =
+                NodeNameStrategyUtils::getNodeNameFromFullPath(parentPath);
 
-				while (parentNodeContainer && parentNodeContainer->getNodeID() != netDef->getRootNodeID())
-				{
-					const std::string parentPath = NodeNameStrategyUtils::getParentNodeNameFromFullPath(nodeName);
-					std::string nameWithoutParent = NodeNameStrategyUtils::getNodeNameFromFullPath(parentPath);
+            // -----------------------------------------------------
+            // CASE 3: State Machine nested in Blend Tree
+            // -----------------------------------------------------
+            if (isSM && isSMNestedInBT)
+            {
+                processor->registerBlendTreeName(id, parentName);
+                processor->registerStateMachineName(id, currentName);
+                processor->registerNodeName(id, currentName);
+            }
+            // -----------------------------------------------------
+            // CASE 1: Pure Blend Tree
+            // -----------------------------------------------------
+            else if (isBT)
+            {
+                processor->registerBlendTreeName(id, currentName);
+                processor->registerNodeName(id, "");
+            }
+            // -----------------------------------------------------
+            // CASE 2: Pure State Machine
+            // -----------------------------------------------------
+            else if (isSM)
+            {
+                processor->registerStateMachineName(id, currentName);
+                processor->registerNodeName(id, currentName);
+            }
+            // -----------------------------------------------------
+            // Normal Node
+            // -----------------------------------------------------
+            else
+            {
+                processor->registerNodeName(id, currentName);
+            }
+        };
 
-					if (processor->isNodeBlendTree(parentNodeContainer))
-					{
-						processor->registerBlendTreeName(parentNodeContainer->getNodeID(), nameWithoutParent);
+    // -------------------------------------------------------------
+    // Recursive traversal
+    // -------------------------------------------------------------
+    std::function<void(MR::NodeDef*)> collectNames;
+    collectNames = [&](MR::NodeDef* nodeDef)
+        {
+            if (!nodeDef)
+                return;
 
-						if (parentNodeContainer->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-							processor->registerStateMachineName(parentNodeContainer->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nameWithoutParent));
+            const MR::NodeID id = nodeDef->getNodeID();
 
-						nameWithoutParent = "";
-					}
+            // Prevent double processing
+            if (!visited.insert(id).second)
+                return;
 
-					processor->registerNodeName(parentNodeContainer->getNodeID(), nameWithoutParent);
+            if (nodeDef->getNodeFlags().isSet(
+                MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+                return;
 
-					if (parentNodeContainer->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-						processor->registerStateMachineName(parentNodeContainer->getNodeID(), NodeNameStrategyUtils::getNodeNameFromFullPath(nameWithoutParent));
+            std::string nodePath =
+                netDef->getNodeNameFromNodeID(id);
 
-					parentNodeContainer = processor->getParentNodeContainer(parentNodeContainer);
-					nodeName = parentPath;
-				}
-			}
+            // Classify this node
+            classifyNode(nodeDef, nodePath);
 
-			for (size_t i = 0; i < nodeDef->getNumChildNodes(); ++i)
-			{
-				const MR::NodeID childNodeID = nodeDef->getChildNodeID(i);
+            // Walk parent containers upward
+            MR::NodeDef* parent =
+                processor->getParentNodeContainer(nodeDef);
 
-				if (childNodeID != MR::INVALID_NODE_ID)
-				{
-					MR::NodeDef* childNode = netDef->getNodeDef(childNodeID);
-					collectNames(childNode);
-				}
-			}
+            std::string parentPath =
+                NodeNameStrategyUtils::getParentNodeNameFromFullPath(nodePath);
 
-			for (size_t i = 0; i < nodeDef->getNumInputCPConnections(); i++)
-			{
-				const MR::CPConnection* cpConnection = nodeDef->getInputCPConnection(i);
+            if (processor->isStateMachineNestedInBT(nodeDef))
+            {
+                parentPath =
+                    NodeNameStrategyUtils::getParentNodeNameFromFullPath(parentPath);
+            }
 
-				if (cpConnection->m_sourceNodeID != MR::INVALID_NODE_ID)
-				{
-					MR::NodeDef* sourceNode = netDef->getNodeDef(cpConnection->m_sourceNodeID);
+            while (parent &&
+                parent->getNodeID() != netDef->getRootNodeID())
+            {
+                classifyNode(parent, parentPath);
 
-					if (!sourceNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
-						collectNames(sourceNode);
-				}
-			}
-		};
+                parentPath =
+                    NodeNameStrategyUtils::getParentNodeNameFromFullPath(parentPath);
 
-	collectNames(rootNodeDef);
+                if (processor->isStateMachineNestedInBT(parent))
+                {
+                    parentPath =
+                        NodeNameStrategyUtils::getParentNodeNameFromFullPath(parentPath);
+                }
 
-	for (auto& nodeNamePair : nodeNameMap)
-	{
-		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeNamePair.first);
+                parent =
+                    processor->getParentNodeContainer(parent);
+            }
 
-		if (processor->isNodeBlendTree(nodeDef))
-		{
-			std::vector<ContainerNodeInfo*> blendTreesForNode = processor->getBlendTreesForNode(nodeNamePair.first);
+            // Recurse children
+            for (size_t i = 0; i < nodeDef->getNumChildNodes(); ++i)
+            {
+                const MR::NodeID childID =
+                    nodeDef->getChildNodeID(i);
 
-			for (size_t i = 0; i < blendTreesForNode.size(); i++)
-			{
-				if (blendTreesForNode[i]->getName() == "")
-				{
-					char nodeNameBuffer[256];
-					sprintf_s(nodeNameBuffer, "BlendTree_%d_%d", nodeNamePair.first, i);
+                if (childID != MR::INVALID_NODE_ID)
+                {
+                    MR::NodeDef* childNode =
+                        netDef->getNodeDef(childID);
 
-					blendTreesForNode[i]->setName(nodeNameBuffer);
-				}
-			}
-		}
+                    collectNames(childNode);
+                }
+            }
 
-		if (nodeNamePair.second == "")
-		{
-			char nodeNameBuffer[256];
-			sprintf_s(nodeNameBuffer, "%s_%d", NodeProcessor::nodeTypeAsManifestName(nodeDef->getNodeTypeID()).c_str(), nodeNamePair.first);
+            // Recurse CP sources
+            for (size_t i = 0;
+                i < nodeDef->getNumInputCPConnections();
+                ++i)
+            {
+                const MR::CPConnection* cp =
+                    nodeDef->getInputCPConnection(i);
 
-			nodeNamePair.second = nodeNameBuffer;
+                if (cp->m_sourceNodeID != MR::INVALID_NODE_ID)
+                {
+                    MR::NodeDef* sourceNode =
+                        netDef->getNodeDef(cp->m_sourceNodeID);
 
-			if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
-				processor->getStateMachineForNode(nodeNamePair.first)->setName(nodeNameBuffer);
-		}
-		
-		g_appLog->debugMessage(MsgLevel_Debug, "ReconstructParentChildNameStrategy::collectNodeNames: Associated node name '%s' for node ID %d (type=%d).\n", nodeNamePair.second.c_str(), nodeNamePair.first, netDef->getNodeDef(nodeNamePair.first)->getNodeTypeID());
-	}
+                    if (!sourceNode->getNodeFlags().isSet(
+                        MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+                    {
+                        collectNames(sourceNode);
+                    }
+                }
+            }
+        };
 
-	return true;
+    // Start traversal
+    collectNames(rootNodeDef);
+
+    // -------------------------------------------------------------
+    // Final fallback name resolution
+    // -------------------------------------------------------------
+    for (auto& pair : nodeNameMap)
+    {
+        MR::NodeDef* nodeDef =
+            netDef->getNodeDef(pair.first);
+
+        // Blend trees without names
+        if (processor->isNodeBlendTree(nodeDef))
+        {
+            std::vector<ContainerNodeInfo*> blendTrees =
+                processor->getBlendTreesForNode(pair.first);
+
+            for (size_t i = 0; i < blendTrees.size(); ++i)
+            {
+                if (blendTrees[i]->getName().empty())
+                {
+                    char buffer[256];
+                    sprintf_s(buffer,
+                        "BlendTree_%d_%d",
+                        pair.first,
+                        (int)i);
+
+                    blendTrees[i]->setName(buffer);
+                }
+            }
+        }
+
+        // Empty node names get fallback
+        if (pair.second.empty())
+        {
+            char buffer[256];
+            sprintf_s(buffer,
+                "%s_%d",
+                NodeProcessor::nodeTypeAsManifestName(
+                    nodeDef->getNodeTypeID()).c_str(),
+                pair.first);
+
+            pair.second = buffer;
+
+            if (nodeDef->getNodeFlags().isSet(
+                MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+            {
+                processor->getStateMachineForNode(pair.first)
+                    ->setName(buffer);
+            }
+        }
+
+        g_appLog->debugMessage(
+            MsgLevel_Debug,
+            "ReconstructParentChildNameStrategy::collectNodeNames: "
+            "Associated node name '%s' for node ID %d (type=%d).\n",
+            pair.second.c_str(),
+            pair.first,
+            nodeDef->getNodeTypeID());
+    }
+
+    return true;
 }

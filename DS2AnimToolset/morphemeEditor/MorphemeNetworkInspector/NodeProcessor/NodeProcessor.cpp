@@ -13,6 +13,7 @@
 
 #include "NodeNamingStrategy/DefaultNodeNamingStrategy.h"
 #include "NodeNamingStrategy/ReconstructParentChildNameStrategy.h"
+#include "NodeNamingStrategy/Utils/Utils.h"
 
 #include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
 
@@ -873,6 +874,50 @@ bool NodeProcessor::isNetworkNodeNameMapComplete(MR::NetworkDef* netDef)
 	return true;
 }
 
+bool NodeProcessor::isStateMachineNestedInBT(MR::NodeDef* smNodeDef)
+{
+	if (!smNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+		return false;
+
+	const MR::NodeID nodeID = smNodeDef->getNodeID();
+
+	MR::NetworkDef* netDef = smNodeDef->getOwningNetworkDef();
+
+	std::string smNodeName = NodeNameStrategyUtils::getParentNodeNameFromFullPath(netDef->getNodeNameFromNodeID(smNodeDef->getNodeID()));
+
+	int numLayersUpByNames = 0;
+	while (smNodeName != "")
+	{
+		numLayersUpByNames++;
+		smNodeName = NodeNameStrategyUtils::getParentNodeNameFromFullPath(smNodeName);
+	}
+
+	if (numLayersUpByNames == 0)
+		return false;
+
+	int numLayersUpByStructure = 0;
+	MR::NodeDef* parentNode = getParentNodeContainer(smNodeDef);
+	while (parentNode && parentNode->getNodeID() != netDef->getRootNodeID())
+	{
+		numLayersUpByStructure++;
+
+		if (isNodeBlendTree(parentNode) && parentNode->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+			numLayersUpByStructure++;
+
+		parentNode = getParentNodeContainer(parentNode);
+	}
+
+	if (numLayersUpByNames == numLayersUpByStructure)
+		return false;
+
+	g_appLog->debugMessage(
+		MsgLevel_Info,
+		"NodeProcessor::isStateMachineNestedInBT: State machine node ID %d is nested in a blend tree according to names.\n",
+		smNodeDef->getNodeID());
+
+	return true;
+}
+
 std::string NodeProcessor::getNodeName(const MR::NodeID nodeID)
 {
 	if (nodeID == MR::INVALID_NODE_ID)
@@ -1427,10 +1472,10 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 			if (childNodeFlags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
 				continue;
 
-			registerNodeAsSMChild(nodeID, childNode);
-
 			if (!childNodeFlags.isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 				registerBTNode(childNode);
+
+			registerNodeAsSMChild(nodeID, childNode);
 		}
 	}
 
@@ -1444,7 +1489,7 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 		if (multiplyConnectedNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 			continue;
 
-		MR::NodeDef* multiplyConnectedOwner = getParentNodeContainerForLayout(multiplyConnectedNodeDef);
+		MR::NodeDef* multiplyConnectedOwner = getParentNodeContainer(multiplyConnectedNodeDef);
 
 		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Found multiply connected node %d (name=\"%s\").\n", multiplyConnectedNodeDef->getNodeID(), netDef->getNodeNameFromNodeID(multiplyConnectedNodeDef->getNodeID()));
 		
@@ -1497,6 +1542,27 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 					multiplyConnectedNodeDef->getNodeID(),
 					multiplyConnectedOwner->getNodeID());
 			}
+		}
+	}
+
+	// Second pass to catch nested state machines in blend trees.
+	for (size_t i = 0; i < smArray->getNumEntries(); i++)
+	{
+		const MR::NodeID nodeID = smArray->getEntry(i);
+		MR::NodeDef* smNode = netDef->getNodeDef(nodeID);
+
+		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Found container node %d (name=\"%s\").\n", smNode->getNodeID(), netDef->getNodeNameFromNodeID(smNode->getNodeID()));
+
+		for (size_t j = 0; j < smNode->getNumChildNodes(); j++)
+		{
+			MR::NodeDef* childNode = smNode->getChildNodeDef(j);
+			MR::NodeDef::NodeFlags childNodeFlags = childNode->getNodeFlags();
+
+			if (childNodeFlags.isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+				continue;
+
+			if (childNodeFlags.isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE) && isStateMachineNestedInBT(childNode))
+				registerBTNode(childNode);
 		}
 	}
 
@@ -1612,7 +1678,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 			continue;
 
-		MR::NodeDef* parentContainer = getParentNodeContainer(nodeDef);
+		MR::NodeDef* parentContainer = getFirstContainerOfNode(nodeDef);
 
 		if (!parentContainer)
 			INVOKE_PANIC("Failed to find parent node container for multiply connected node ID %d.\n", nodeDef->getNodeID());
@@ -1667,7 +1733,7 @@ void NodeProcessor::fixupAnimNodeNames(MR::NetworkDef* netDef, MR::UTILS::Simple
 	}
 }
 
-MR::NodeDef* NodeProcessor::getParentNodeContainerForLayout(MR::NodeDef* nodeDef)
+MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef, uint16_t btLayer)
 {
 	if (nodeDef == nullptr)
 		return nullptr;
@@ -1676,6 +1742,26 @@ MR::NodeDef* NodeProcessor::getParentNodeContainerForLayout(MR::NodeDef* nodeDef
 
 	if (nodeDef->getParentNodeID() == 0)
 		return getTopLevelBlendTreeInfo(netDef->getRootNodeID())->getOutputNodeDef();
+
+	if (isNodeBlendTree(nodeDef) && btLayer > 0)
+	{
+		const MR::NodeID nodeID = nodeDef->getNodeID();
+
+		for (auto& pair : m_blendTreeNodes)
+		{
+			const BlendTreeID& btID = pair.first;
+			ContainerNodeInfo& info = pair.second;
+
+			if (btID.getNodeID() != nodeID)
+				continue;
+
+			if (btLayer == 0)
+				return info.getOutputNodeDef();
+
+			if (btID.getLayerIndex() >= btLayer)
+				return info.getOutputNodeDef();
+		}
+	}
 
 	MR::NodeDef* parentNodeDef = nodeDef->getParentNodeDef();
 	if (parentNodeDef == nullptr)
@@ -1690,7 +1776,6 @@ MR::NodeDef* NodeProcessor::getParentNodeContainerForLayout(MR::NodeDef* nodeDef
 			return containerInfo.getOutputNodeDef();
 	}
 
-	// 2. Search state machine containers
 	for (auto& pair : m_stateMachineNodes)
 	{
 		const ContainerNodeInfo& containerInfo = pair.second;
@@ -1700,10 +1785,10 @@ MR::NodeDef* NodeProcessor::getParentNodeContainerForLayout(MR::NodeDef* nodeDef
 	}
 
 	// 3. Recurse upwards
-	return getParentNodeContainerForLayout(parentNodeDef);
+	return getParentNodeContainer(parentNodeDef);
 }
 
-MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
+MR::NodeDef* NodeProcessor::getFirstContainerOfNode(MR::NodeDef* nodeDef)
 {
 	if (nodeDef == nullptr)
 		return nullptr;
@@ -1722,29 +1807,35 @@ MR::NodeDef* NodeProcessor::getParentNodeContainer(MR::NodeDef* nodeDef)
 	{
 		const ContainerNodeInfo& containerInfo = pair.second;
 
-		if (containerInfo.hasChildNode(nodeDef) && containerInfo.getOutputNodeDef()->getNodeID() != nodeDef->getNodeID())
+		if (containerInfo.hasChildNode(nodeDef) /*&& containerInfo.getOutputNodeDef()->getNodeID() != nodeDef->getNodeID()*/)
 			return containerInfo.getOutputNodeDef();
 	}
 
 	return nullptr;
 }
 
-void NodeProcessor::registerNodeName(MR::NodeID	nodeID, const std::string& name)
+void NodeProcessor::registerNodeName(MR::NodeID nodeID, const std::string& name)
 {
-	if ((m_nodeNameMap.find(nodeID) != m_nodeNameMap.end()) &&
-		(name != "") &&
-		(m_nodeNameMap[nodeID] != "") &&
-		(m_nodeNameMap[nodeID] != name))
-	{
-		g_appLog->alertMessage(MsgLevel_Warn, "DefaultNodeNamingStrategy::registerNodeName: Duplicate node name entry for node ID %d. (currentName=%s, name=%s)\n", nodeID, m_nodeNameMap[nodeID].c_str(), name.c_str());
-		
-		m_nodeNameMap[nodeID] = name;
+	auto it = m_nodeNameMap.find(nodeID);
+	const std::string currentName = (it != m_nodeNameMap.end()) ? it->second : "";
+
+	if (name.empty() && !currentName.empty())
 		return;
+
+	if (!currentName.empty() && currentName != name && !name.empty())
+	{
+		g_appLog->alertMessage(
+			MsgLevel_Warn,
+			"DefaultNodeNamingStrategy::registerNodeName: Duplicate node name entry for node ID %d. (currentName=%s, name=%s)\n",
+			nodeID, currentName.c_str(), name.c_str());
 	}
 
-	g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::registerNodeName: Registering node name '%s' for node ID %d.\n", name.c_str(), nodeID);
-
 	m_nodeNameMap[nodeID] = name;
+
+	g_appLog->debugMessage(
+		MsgLevel_Debug,
+		"DefaultNodeNamingStrategy::registerNodeName: Registering node name '%s' for node ID %d.\n",
+		name.c_str(), nodeID);
 }
 
 void NodeProcessor::registerBlendTreeName(MR::NodeID nodeID, const std::string& name)
@@ -1752,10 +1843,25 @@ void NodeProcessor::registerBlendTreeName(MR::NodeID nodeID, const std::string& 
 	ContainerNodeInfo* topLevelBT = getTopLevelBlendTreeInfo(nodeID);
 
 	if (!topLevelBT)
-		INVOKE_PANIC("DefaultNodeNamingStrategy::registerBlendTreeName: Failed to find blend tree with node ID %d to register name '%s'.\n", nodeID, name.c_str());
+		INVOKE_PANIC(
+			"DefaultNodeNamingStrategy::registerBlendTreeName: "
+			"Failed to find blend tree with node ID %d to register name '%s'.\n",
+			nodeID, name.c_str());
 
-	if (topLevelBT->getName() != "" && topLevelBT->getName() != name)
-		g_appLog->alertMessage(MsgLevel_Warn, "DefaultNodeNamingStrategy::registerBlendTreeName: Duplicate blend tree name entry for node ID %d. (currentName=%s, name=%s)\n", nodeID, topLevelBT->getName().c_str(), name.c_str());
+	const std::string& currentName = topLevelBT->getName();
+
+	if (name.empty() && !currentName.empty())
+		return;
+
+	if (!currentName.empty() && currentName != name && !name.empty())
+	{
+		g_appLog->alertMessage(
+			MsgLevel_Warn,
+			"DefaultNodeNamingStrategy::registerBlendTreeName: "
+			"Duplicate blend tree name entry for node ID %d. "
+			"(currentName=%s, name=%s)\n",
+			nodeID, currentName.c_str(), name.c_str());
+	}
 
 	topLevelBT->setName(name);
 }
@@ -1763,17 +1869,39 @@ void NodeProcessor::registerBlendTreeName(MR::NodeID nodeID, const std::string& 
 void NodeProcessor::registerStateMachineName(MR::NodeID nodeID, const std::string& name)
 {
 	auto it = m_stateMachineNodes.find(nodeID);
-	if (it != m_stateMachineNodes.end())
+	if (it == m_stateMachineNodes.end())
 	{
-		if (it->second.getName() != "" && it->second.getName() != name)
-			g_appLog->alertMessage(MsgLevel_Warn, "DefaultNodeNamingStrategy::registerStateMachineName: Duplicate state machine name entry for node ID %d. (currentName=%s, name=%s)\n", nodeID, it->second.getName().c_str(), name.c_str());
-
-		it->second.setName(name);
-		g_appLog->debugMessage(MsgLevel_Debug, "DefaultNodeNamingStrategy::registerStateMachineName: Registered state machine name '%s' for node ID %d.\n", name.c_str(), nodeID);
+		g_appLog->alertMessage(
+			MsgLevel_Warn,
+			"DefaultNodeNamingStrategy::registerStateMachineName: "
+			"Failed to find state machine with node ID %d to register name '%s'.\n",
+			nodeID, name.c_str());
 		return;
 	}
 
-	g_appLog->alertMessage(MsgLevel_Warn, "DefaultNodeNamingStrategy::registerStateMachineName: Failed to find state machine with node ID %d to register name '%s'.\n", nodeID, name.c_str());
+	ContainerNodeInfo& info = it->second;
+	const std::string& currentName = info.getName();
+
+	if (name.empty() && !currentName.empty())
+		return;
+
+	if (!currentName.empty() && currentName != name && !name.empty())
+	{
+		g_appLog->alertMessage(
+			MsgLevel_Warn,
+			"DefaultNodeNamingStrategy::registerStateMachineName: "
+			"Duplicate state machine name entry for node ID %d. "
+			"(currentName=%s, name=%s)\n",
+			nodeID, currentName.c_str(), name.c_str());
+	}
+
+	info.setName(name);
+
+	g_appLog->debugMessage(
+		MsgLevel_Debug,
+		"DefaultNodeNamingStrategy::registerStateMachineName: "
+		"Registered state machine name '%s' for node ID %d.\n",
+		name.c_str(), nodeID);
 }
 
 bool NodeProcessor::isNodeStateNode(MR::NodeDef* nodeDef)
