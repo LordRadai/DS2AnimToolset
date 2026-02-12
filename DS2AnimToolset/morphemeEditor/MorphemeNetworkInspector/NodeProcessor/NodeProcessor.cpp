@@ -854,8 +854,8 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 		if (!childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
 			continue;
 
-		MR::NodeID sourceNodeID = childNodeDef->getChildNodeID(0);
-		MR::NodeID targetNodeID = childNodeDef->getChildNodeID(1);
+		int sourceNodeID = childNodeDef->getChildNodeID(0);
+		int targetNodeID = childNodeDef->getChildNodeID(1);
 
 		NodeEditor::Node* sourceNode = stateMachine->getNode(sourceNodeID);
 
