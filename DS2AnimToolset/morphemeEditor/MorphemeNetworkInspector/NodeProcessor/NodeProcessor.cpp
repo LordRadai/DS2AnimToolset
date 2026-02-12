@@ -10,6 +10,7 @@
 #include "extern.h"
 
 #include "morpheme/mrNetworkDef.h"
+#include "morpheme/Nodes/mrNodeStateMachine.h"
 
 #include "NodeNamingStrategy/DefaultNodeNamingStrategy.h"
 #include "NodeNamingStrategy/ReconstructParentChildNameStrategy.h"
@@ -190,103 +191,112 @@ NodeEditor::ControlParameter* NodeProcessor::processControlParameter(NodeEditor:
 	}
 }
 
-NodeEditor::Node* NodeProcessor::processNode(NodeEditor::Graph* graph, MR::NodeDef* nodeDef, const std::string& name)
+NodeEditor::Node* NodeProcessor::processNode(NodeEditor::Graph* graph, MR::NodeDef* nodeDef, const std::string& name, const BlendTreeID* btLayer)
 {
-	/*
-	g_appLog->debugMessage(MsgLevel_Info, "NodeProcessor::processNode: Processing node '%s' of ID %d.\n", name.c_str(), nodeDef->getNodeID());
+	BlendTreeID graphBT(graph->getGraphID());
 
-	if (isNodeBlendTree(nodeDef) && (nodeDef->getNodeID() != graph->getGraphID()))
+	if (isNodeBlendTree(nodeDef) && btLayer->getLayerIndex() > 0 && (nodeDef->getNodeID() != graph->getGraphID() && btLayer->getLayerIndex() != graphBT.getLayerIndex()))
 	{
-		g_appLog->debugMessage(MsgLevel_Info, "NodeProcessor::processNode: Creating blend tree node for node %d.\n", nodeDef->getNodeID());
-
-		return graph->createBlendTree(nodeDef->getNodeID(), m_blendTreeNodeNames[graph->getGraphID()]);
+		ContainerNodeInfo* btInfo = getBlendTreeForNode(btLayer->getNodeID(), btLayer->getLayerIndex());
+		std::string btName = btInfo->getName();
+		return graph->createBlendTree(BlendTreeID(nodeDef->getNodeID(), btInfo->getLayerIndex()).getBlendTreeID(), btName);
 	}
 	else if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
 	{
-		g_appLog->debugMessage(MsgLevel_Info, "NodeProcessor::processNode: Creating state machine node for node %d.\n", nodeDef->getNodeID());
-
 		return graph->createStateMachine(nodeDef->getNodeID(), name);
 	}
 
 	if (!graph->isOfType<NodeEditor::BlendTree>())
-		INVOKE_PANIC(
-			"Non-container node '%s' inside state machine container.\n",
-			name.c_str());
-	*/
+		INVOKE_PANIC("Non-container node '%s' inside state machine container.\n", name.c_str());
 
-	NodeEditor::Node* node = graph->asType<NodeEditor::BlendTree>()->createNode(nodeDef->getNodeID(), nodeTypeAsManifestName(nodeDef->getNodeTypeID()), name);
-
-	// Set node attributes
-	return node;
+	return graph->asType<NodeEditor::BlendTree>()->createNode(nodeDef->getNodeID(), nodeTypeAsManifestName(nodeDef->getNodeTypeID()), name);
 }
+
 
 NodeEditor::Graph* NodeProcessor::buildRootGraph(NodeEditor::Editor* editor, MR::NodeDef* rootNodeDef)
 {
-	NodeEditor::Graph* rootGraph = editor->createRootBlendTree(rootNodeDef->getNodeID());
+	BlendTreeID rootBT(rootNodeDef->getNodeID(), getBlendTreesForNode(rootNodeDef->getNodeID()).size());
 
-	populateGraph(rootGraph, rootNodeDef);
-	populateSubGraphs(rootGraph, rootNodeDef);
-	processMultiplyConnectedNodes(editor, rootNodeDef->getOwningNetworkDef());
+	NodeEditor::Graph* rootGraph = editor->createRootBlendTree(rootBT.getBlendTreeID());
+
+	populateGraph(rootGraph, rootNodeDef, &rootBT);
+	//populateSubGraphs(rootGraph, rootNodeDef);
+	//processMultiplyConnectedNodes(editor, rootNodeDef->getOwningNetworkDef());
 
 	return rootGraph;
 }
 
-void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef)
+void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef, const BlendTreeID* btContext)
 {
-	/*
 	MR::NetworkDef* netDef = ownerNodeDef->getOwningNetworkDef();
 
 	if (graph->isOfType<NodeEditor::BlendTree>())
 	{
-		auto& childNodes = m_blendTreeNodeMap[ownerNodeDef->getNodeID()];
+		ContainerNodeInfo* btInfo = getBlendTreeForNode(btContext->getNodeID(), btContext->getLayerIndex());
+		// If we are in a BT, get the children for this layer
+		std::vector<MR::NodeDef*> childNodes;
+		if (btContext)
+			childNodes = btInfo->getChildNodeDefs();
 
-		// Process all child nodes
+		uint16_t btLayerIndex = btContext->getLayerIndex();
 		for (MR::NodeDef* child : childNodes)
 		{
 			const std::string childName = getNodeName(child->getNodeID());
+			BlendTreeID childBT(child->getNodeID(), getBlendTreesForNode(child->getNodeID()).size());
 
-			NodeEditor::Node* node = processNode(graph, child, childName);
+			if (child->getNodeID() == ownerNodeDef->getNodeID())
+				childBT = BlendTreeID(child->getNodeID(), --btLayerIndex);
+			
+			NodeEditor::Node* node = processNode(graph, child, childName, &childBT);
 
-			if (node->hasSubGraph() && node->getSubGraph()->isOfType<NodeEditor::BlendTree>())
-				node->setName(getBlendTreeNodeName(child->getNodeID()));
+			if (node->hasSubGraph())
+			{
+				populateGraph(node->getSubGraph(), child, &childBT);
+			}
 		}
 
-		processNodeConnectionsInBlendTree(graph->asType<NodeEditor::BlendTree>(), ownerNodeDef, childNodes);
-		setBlendTreeLayout(graph->asType<NodeEditor::BlendTree>(), ownerNodeDef, childNodes);
+		processNodeConnectionsInBlendTree(graph->asType<NodeEditor::BlendTree>(), ownerNodeDef, childNodes, btContext);
+		//setBlendTreeLayout(graph->asType<NodeEditor::BlendTree>(), ownerNodeDef, childNodes);
 	}
 	else if (graph->isOfType<NodeEditor::StateMachine>())
 	{
-		// Process all child nodes
 		for (uint32_t i = 0; i < ownerNodeDef->getNumChildNodes(); ++i)
 		{
 			MR::NodeDef* child = ownerNodeDef->getChildNodeDef(i);
-
 			if (child->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
 				continue;
 
+			uint16_t layerIndex = getBlendTreesForNode(child->getNodeID()).size();
+			BlendTreeID childBT(child->getNodeID(), layerIndex);
 			const std::string childName = getNodeName(child->getNodeID());
-			NodeEditor::Node* node = processNode(graph, child, childName);
 
-			if (node->hasSubGraph() && node->getSubGraph()->isOfType<NodeEditor::BlendTree>())
-				node->setName(getBlendTreeNodeName(child->getNodeID()));
+			NodeEditor::Node* node = processNode(graph, child, childName, &childBT);
+
+			if (node->hasSubGraph())
+			{
+				BlendTreeID childBT(child->getNodeID(), layerIndex);
+
+				populateGraph(node->getSubGraph(), child, &childBT);
+			}
 		}
 
-		// Set default state
 		MR::AttribDataStateMachineDef* stateMachineDef = static_cast<MR::AttribDataStateMachineDef*>(ownerNodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
-		graph->asType<NodeEditor::StateMachine>()->setDefaultNodeID(ownerNodeDef->getChildNodeID(stateMachineDef->m_defaultStartingStateID));
+		int defaultNodeID = ownerNodeDef->getChildNodeID(stateMachineDef->m_defaultStartingStateID);
+		MR::NodeDef* defaultNodeDef = netDef->getNodeDef(defaultNodeID);
 
-		processNodeTransitionsInStateMachine(
-			graph->asType<NodeEditor::StateMachine>(),
-			ownerNodeDef);
+		if (isNodeBlendTree(defaultNodeDef))
+			defaultNodeID = BlendTreeID(defaultNodeDef->getNodeID(), getBlendTreesForNode(defaultNodeID).size()).getBlendTreeID();
 
+		graph->asType<NodeEditor::StateMachine>()->setDefaultNodeID(defaultNodeID);
+
+		processNodeTransitionsInStateMachine(graph->asType<NodeEditor::StateMachine>(), ownerNodeDef);
 		setStateMachineLayout(graph->asType<NodeEditor::StateMachine>(), ownerNodeDef);
 	}
 	else
 	{
-		INVOKE_PANIC("NodeProcessor::populateGraph: Unsupported graph type for graph ID %d.\n", graph->getGraphID());
+		INVOKE_PANIC("Unsupported graph type for graph ID %d.\n", graph->getGraphID());
 	}
-	*/
 }
 
 void NodeProcessor::populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef)
@@ -302,10 +312,31 @@ void NodeProcessor::populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* own
 		if (!subGraph)
 			continue;
 
+		MR::NodeID childID = node->getNodeID();
+		ContainerNodeInfo* childBTInfo = nullptr;
+		uint16_t childLayer = 0;
+
+		// Find the BlendTreeID in m_blendTreeNodes
+		for (auto& pair : m_blendTreeNodes)
+		{
+			const BlendTreeID& btID = pair.first;
+			const ContainerNodeInfo& container = pair.second;
+
+			if (container.getOutputNodeDef()->getNodeID() == childID)
+			{
+				childBTInfo = const_cast<ContainerNodeInfo*>(&container);
+				childLayer = btID.getLayerIndex();
+				break;
+			}
+		}
+
 		MR::NodeDef* nodeDef = netDef->getNodeDef(node->getNodeID());
 
-		populateGraph(subGraph, nodeDef);
-		populateSubGraphs(subGraph, nodeDef);
+		if (childBTInfo)
+		{
+			BlendTreeID childBT(childID, childLayer);
+			populateGraph(node->getSubGraph(), nodeDef, &childBT);
+		}
 	}
 }
 
@@ -711,7 +742,7 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 	}
 }
 
-void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, MR::NodeDef* ownerNodeDef, std::vector<MR::NodeDef*>& childNodes)
+void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, MR::NodeDef* ownerNodeDef, std::vector<MR::NodeDef*>& childNodes, const BlendTreeID* btContext)
 {
 	if (childNodes.size() == 0)
 		INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Invalid blend tree '%s'. No children node are present.\n", blendTree->getName().c_str());
@@ -719,7 +750,12 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 	MR::NetworkDef* netDef = ownerNodeDef->getOwningNetworkDef();
 	for (MR::NodeDef* childNodeDef : childNodes)
 	{
-		NodeEditor::Node* sourceNode = blendTree->getNode(childNodeDef->getNodeID());
+		uint32_t nodeID = childNodeDef->getNodeID();
+
+		if (childNodeDef->getNodeID() == btContext->getNodeID())
+			nodeID = BlendTreeID(childNodeDef->getNodeID(), btContext->getLayerIndex() - 1).getBlendTreeID();
+
+		NodeEditor::Node* sourceNode = blendTree->getNode(nodeID);
 
 		if (!sourceNode)
 		{
@@ -727,7 +763,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 			continue;
 		}
 
-		if (isNodeBlendTreeOutput(childNodeDef, blendTree))
+		if (childNodeDef->getNodeID() == btContext->getNodeID())
 			blendTree->connectToOutput(sourceNode->getOutputPin(0));
 		else if (isNodeBlendTree(childNodeDef))
 			continue;
@@ -739,12 +775,12 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 		{
 			MR::NodeDef* targetNodeDef = childNodeDef->getChildNodeDef(i);
 
-			if (targetNodeDef->getNodeID() == MR::INVALID_NODE_ID)
+			// This is a pass down pin. We will handle it later.
+			if (targetNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
 				continue;
 
 			NodeEditor::Node* targetNode = blendTree->getNode(targetNodeDef->getNodeID());
 
-			// This is a pass down pin. We will handle it later.
 			if (!targetNode)
 				continue;
 
@@ -753,44 +789,47 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 		bool hasUnusuedPins = sourceNode->getNumInputDataPins() != childNodeDef->getNumInputCPConnections();
 
-		int pinIndex = 0;
-		for (uint32_t i = 0; i < childNodeDef->getNumInputCPConnections(); ++i)
+		if (childNodeDef->getNodeID() != btContext->getNodeID() || btContext->getLayerIndex() == 1)
 		{
-			if (!hasUnusuedPins)
-				pinIndex = i;
-
-			const MR::CPConnection* cpConnection = childNodeDef->getInputCPConnection(i);
-
-			if (cpConnection->m_sourceNodeID == MR::INVALID_NODE_ID)
-				continue;
-
-			MR::NodeDef* targetNodeDef = netDef->getNodeDef(cpConnection->m_sourceNodeID);
-
-			if (!targetNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+			int pinIndex = 0;
+			for (uint32_t i = 0; i < childNodeDef->getNumInputCPConnections(); ++i)
 			{
-				NodeEditor::Node* targetNode = blendTree->getNode(targetNodeDef->getNodeID());
+				if (!hasUnusuedPins)
+					pinIndex = i;
 
-				// This is a pass down pin. We will handle it later.
-				if (!targetNode)
-				{
-					pinIndex++;
+				const MR::CPConnection* cpConnection = childNodeDef->getInputCPConnection(i);
+
+				if (cpConnection->m_sourceNodeID == MR::INVALID_NODE_ID)
 					continue;
+
+				MR::NodeDef* targetNodeDef = netDef->getNodeDef(cpConnection->m_sourceNodeID);
+
+				if (!targetNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+				{
+					NodeEditor::Node* targetNode = blendTree->getNode(targetNodeDef->getNodeID());
+
+					// This is a pass down pin. We will handle it later.
+					if (!targetNode)
+					{
+						pinIndex++;
+						continue;
+					}
+
+					targetNode->getOutputDataPin(cpConnection->m_sourcePinIndex)->connectTo(sourceNode->getInputDataPin(pinIndex));
+				}
+				else
+				{
+					NodeEditor::ControlParameter* controlParam = blendTree->getOwnerEditor()->getControlParameter(targetNodeDef->getNodeID());
+
+					if (!controlParam)
+						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find control parameter '%s' in blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
+
+					blendTree->getControlParameterDataPin(controlParam->getName())->connectTo(sourceNode->getInputDataPin(pinIndex));
 				}
 
-				targetNode->getOutputDataPin(cpConnection->m_sourcePinIndex)->connectTo(sourceNode->getInputDataPin(pinIndex));
+				pinIndex++;
 			}
-			else
-			{
-				NodeEditor::ControlParameter* controlParam = blendTree->getOwnerEditor()->getControlParameter(targetNodeDef->getNodeID());
-
-				if (!controlParam)
-					INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find control parameter '%s' in blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
-
-				blendTree->getControlParameterDataPin(controlParam->getName())->connectTo(sourceNode->getInputDataPin(pinIndex));
-			}
-
-			pinIndex++;
-		}
+		}	
 	}
 }
 
@@ -807,17 +846,34 @@ bool NodeProcessor::setBlendTreeLayout(NodeEditor::BlendTree* blendTree, MR::Nod
 
 void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef)
 {
+	MR::NetworkDef* netDef = nodeDef->getOwningNetworkDef();
+
 	for (size_t i = 0; i < nodeDef->getNumChildNodes(); i++)
 	{
 		MR::NodeDef* childNodeDef = nodeDef->getChildNodeDef(i);
 		if (!childNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
 			continue;
 
-		const MR::NodeID sourceNodeID = childNodeDef->getChildNodeID(0);
-		const MR::NodeID targetNodeID = childNodeDef->getChildNodeID(1);
+		MR::NodeID sourceNodeID = childNodeDef->getChildNodeID(0);
+		MR::NodeID targetNodeID = childNodeDef->getChildNodeID(1);
 
 		NodeEditor::Node* sourceNode = stateMachine->getNode(sourceNodeID);
+
+		if (sourceNodeID != MR::INVALID_NODE_ID && isNodeBlendTree(netDef->getNodeDef(sourceNodeID)))
+		{
+			int numBTs = getBlendTreesForNode(sourceNodeID).size();
+			sourceNodeID = BlendTreeID(sourceNodeID, numBTs).getBlendTreeID();
+			sourceNode = stateMachine->getNode(sourceNodeID);
+		}
+
 		NodeEditor::Node* targetNode = stateMachine->getNode(targetNodeID);
+
+		if (isNodeBlendTree(netDef->getNodeDef(targetNodeID)))
+		{
+			int numBTs = getBlendTreesForNode(targetNodeID).size();
+			targetNodeID = BlendTreeID(targetNodeID, numBTs).getBlendTreeID();
+			targetNode = stateMachine->getNode(targetNodeID);
+		}
 
 		// Active state transition
 		if (sourceNodeID == MR::INVALID_NODE_ID)
@@ -1071,7 +1127,7 @@ void NodeProcessor::registerBTNode(MR::NodeDef* nodeDef)
 		g_appLog->debugMessage(MsgLevel_Warn, "NodeProcessor::registerBlendTreeNode: Blend tree with ID %d has %d layers. Adding a new one.\n", nodeDef->getNodeID(), layerIdx);
 
 	BlendTreeID blendTreeID(nodeDef->getNodeID(), layerIdx);
-	m_blendTreeNodes[blendTreeID] = nodeDef;
+	m_blendTreeNodes[blendTreeID] = ContainerNodeInfo(nodeDef, layerIdx);
 	m_blendTreeNodes[blendTreeID].addChildNodeDef(nodeDef);
 }
 
@@ -1123,7 +1179,7 @@ ContainerNodeInfo* NodeProcessor::getTopLevelBlendTreeInfo(const MR::NodeID btNo
 
 void NodeProcessor::registerSMNode(MR::NodeDef* nodeDef)
 {
-	m_stateMachineNodes[nodeDef->getNodeID()] = nodeDef;
+	m_stateMachineNodes[nodeDef->getNodeID()] = ContainerNodeInfo(nodeDef, 1);
 }
 
 void NodeProcessor::registerNodeAsSMChild(const MR::NodeID smNodeID, MR::NodeDef* nodeDef)

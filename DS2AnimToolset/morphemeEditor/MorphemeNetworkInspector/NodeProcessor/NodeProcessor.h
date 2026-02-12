@@ -25,6 +25,7 @@ union BlendTreeID
 	BlendTreeID(MR::NodeID nodeID, uint16_t layerIndex)
 		: m_nodeID(nodeID), m_layerIndex(layerIndex) {
 	}
+	BlendTreeID(uint32_t combined) : m_combined(combined) {}
 
 	// Accessors
 	MR::NodeID getNodeID() const { return m_nodeID; }
@@ -40,13 +41,14 @@ union BlendTreeID
 
 class ContainerNodeInfo
 {
+	uint16_t m_layerIndex;
 	MR::NodeDef* m_outputNodeDef;
 	std::vector<MR::NodeDef*> m_childNodeDefs;
 	std::string m_name;
 
 public:
-	ContainerNodeInfo() : m_outputNodeDef(nullptr) {}
-	ContainerNodeInfo(MR::NodeDef* nodeDef) : m_outputNodeDef(nodeDef) {}
+	ContainerNodeInfo() : m_outputNodeDef(nullptr), m_layerIndex(1) {}
+	ContainerNodeInfo(MR::NodeDef* nodeDef, uint16_t layerIdx) : m_outputNodeDef(nodeDef), m_layerIndex(layerIdx) {}
 
 	MR::NodeDef* getOutputNodeDef() const { return m_outputNodeDef; }
 
@@ -82,6 +84,8 @@ public:
 	void setName(const std::string& name) { m_name = name; }
 
 	std::vector<MR::NodeDef*>& getChildNodeDefs() { return m_childNodeDefs; }
+
+	uint16_t getLayerIndex() const { return m_layerIndex; }
 };
 
 class NodeProcessor
@@ -105,7 +109,7 @@ public:
 	bool preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable);
 
 	NodeEditor::ControlParameter* processControlParameter(NodeEditor::Editor* editor, MR::NodeDef* nodeDef, const std::string& name);
-	NodeEditor::Node* processNode(NodeEditor::Graph* graph, MR::NodeDef* nodeDef, const std::string& name);
+	NodeEditor::Node* processNode(NodeEditor::Graph* graph, MR::NodeDef* nodeDef, const std::string& name, const BlendTreeID* btLayer = nullptr);
 	NodeEditor::Graph* buildRootGraph(NodeEditor::Editor* editor, MR::NodeDef* rootNodeDef);
 
 	std::string getNodeName(const MR::NodeID nodeID);
@@ -189,7 +193,7 @@ private:
 	*/
 	void fixupAnimNodeNames(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable);
 
-	void populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
+	void populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef, const BlendTreeID* btContext = nullptr);
 	void populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
 
 	void createPassDownConnection(NodeEditor::BlendTree* blendTree, NodeEditor::PassDownPinsNode* passDownPinNode, NodeEditor::Node* multiplyConnectedNode, NodeEditor::Node* sourceNode, MR::NodeID nodeID, int inputIdx, bool isCPConnection);
@@ -207,7 +211,7 @@ private:
 	* \param ownerNodeDef The node def owning the blend tree. This is needed to get the child nodes of the blend tree from the blend tree node map.
 	* \param childNodes The child nodes of the blend tree, to avoid having to look them up again from the map. These are needed to find the connections between child nodes and to skip pass down nodes.
 	*/
-	void processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, MR::NodeDef* ownerNodeDef, std::vector<MR::NodeDef*>& childNodes);
+	void processNodeConnectionsInBlendTree(NodeEditor::BlendTree* blendTree, MR::NodeDef* ownerNodeDef, std::vector<MR::NodeDef*>& childNodes, const BlendTreeID* btContext);
 	bool setBlendTreeLayout(NodeEditor::BlendTree* blendTree, MR::NodeDef* btNodeDef, std::vector<MR::NodeDef*>& childNodes);
 
 	void processNodeTransitionsInStateMachine(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef);
