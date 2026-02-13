@@ -115,7 +115,7 @@ bool ReconstructParentChildNameStrategy::collectNodeNames(
 
             // Walk parent containers upward
             MR::NodeDef* parent =
-                processor->getParentNodeContainer(nodeDef);
+                processor->getFirstContainerOfNode(nodeDef);
 
             std::string parentPath =
                 NodeNameStrategyUtils::getParentNodeNameFromFullPath(nodePath);
@@ -141,7 +141,7 @@ bool ReconstructParentChildNameStrategy::collectNodeNames(
                 }
 
                 parent =
-                    processor->getParentNodeContainer(parent);
+                    processor->getFirstContainerOfNode(parent);
             }
 
             // Recurse children

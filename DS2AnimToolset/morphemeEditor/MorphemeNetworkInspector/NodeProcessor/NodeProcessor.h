@@ -158,6 +158,8 @@ public:
 	* \param nodeDef The node to find the parent container for.
 	*/
 	MR::NodeDef* getFirstContainerOfNode(MR::NodeDef* nodeDef);
+
+	MR::NodeDef* getFirstContainerOfParentNode(MR::NodeDef* nodeDef);
 private:
 	/*
 	* \brief Get the common ancestor container node (blend tree or state machine) for a set of referencing nodes.
