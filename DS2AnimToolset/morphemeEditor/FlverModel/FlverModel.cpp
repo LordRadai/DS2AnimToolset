@@ -153,14 +153,6 @@ namespace
 
 			siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
 		}
-
-		int childIndex = flv->bones[boneID].childIndex;
-
-		while (childIndex != -1)
-		{
-			applyTransform(buffer, flv, bindPose, transform, childIndex);
-			childIndex = flv->bones[childIndex].nextSiblingIndex;
-		}
 	}
 
 	void applyTwistTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix>& bindPose, const Matrix& transform, int boneID)
