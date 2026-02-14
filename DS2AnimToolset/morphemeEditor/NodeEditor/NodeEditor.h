@@ -157,6 +157,8 @@ namespace NodeEditor
 		std::string getNodeName(int nodeID);
 		std::string getNodeFullName(int nodeID);
 
+		bool isLoaded() const { return m_rootGraph != nullptr; }
+
 		void pushGraph(Graph* graph);
 		void popGraph();
 

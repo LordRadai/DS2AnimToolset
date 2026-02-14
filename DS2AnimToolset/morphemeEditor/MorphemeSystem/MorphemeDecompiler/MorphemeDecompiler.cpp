@@ -7,6 +7,8 @@
 #include "NMGeomUtils/NMJointLimits.h"
 #include "Node/Node.h"
 
+#include "MorphemeNetworkInspector/NodeProcessor/NodeNamingStrategy/Utils/Utils.h"
+
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
 
 namespace
@@ -332,10 +334,22 @@ namespace MD
 		{
 			MR::NodeDef* nodeDef = netDef->getNodeDef(i);
 
-			std::string nodeName = editor->getNodeFullName(nodeDef->getNodeID());
+			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
-			if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
-				nodeName = editor->getControlParameter(nodeDef->getNodeID())->getFullName();
+			if (!editor->isLoaded())
+			{
+				MR::NodeDef* parentNodeDef = nodeDef->getParentNodeDef();
+
+				if (parentNodeDef && parentNodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE && nodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+					nodeName = NodeNameStrategyUtils::getStateNodePathFromStringTable(netDef, nodeDef->getNodeID());
+			}
+			else
+			{
+				nodeName = editor->getNodeFullName(nodeDef->getNodeID());
+
+				if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+					nodeName = editor->getControlParameter(nodeDef->getNodeID())->getFullName();
+			}
 
 			exportNode(netDefExport, netDef, nodeDef, nodeName);
 		}

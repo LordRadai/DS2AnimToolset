@@ -51,6 +51,8 @@ namespace MD
 
 			if ((taskQueueFn == MR::nodeBlend2SyncEventsQueueSampledEventsBuffers) || (taskQueueFn == MR::nodeBlend2QueueSampledEventsBuffers))
 				eventBlendMode = AP::kMergeSampledEvents;
+			else if ((taskQueueFn == MR::queuePassThroughChild0) || (taskQueueFn == MR::queuePassThroughChild1))
+				eventBlendMode = AP::kAddSampledEvents;
 			else
 				INVOKE_PANIC("Unknown sampled event blend mode for node [%d] with task queuing function [%s].", nodeDef->getNodeID(), fnName ? fnName : "<unknown>");
 
