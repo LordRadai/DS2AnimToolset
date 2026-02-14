@@ -51,8 +51,8 @@ namespace MD
 
 			if ((taskQueueFn == MR::nodeBlend2SyncEventsQueueSampledEventsBuffers) || (taskQueueFn == MR::nodeBlend2QueueSampledEventsBuffers))
 				eventBlendMode = AP::kMergeSampledEvents;
-			else if ((taskQueueFn == MR::nodeBlend2SyncEventsQueueAddSampledEventsBuffers) || (taskQueueFn == MR::nodeBlend2QueueAddSampledEventsBuffers))
-				eventBlendMode = AP::kAddSampledEvents;
+			else
+				INVOKE_PANIC("Unknown sampled event blend mode for node [%d] with task queuing function [%s].", nodeDef->getNodeID(), fnName ? fnName : "<unknown>");
 
 			attribDataBlock->writeInt(eventBlendMode, "EventsBlendMode");
 		}
