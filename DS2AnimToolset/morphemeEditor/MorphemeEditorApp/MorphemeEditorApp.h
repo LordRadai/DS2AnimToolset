@@ -87,6 +87,11 @@ public:
 		bool playerPartsManager = false;
 	};
 
+	struct MorphemeNetworkFlags
+	{
+		bool simulateNetwork = false;
+	};
+
 	struct ExportSettings
 	{
 		FT::ExportFormat exportFormat = FT::kFbx;
@@ -130,6 +135,7 @@ public:
 	PreviewFlags* getPreviewFlags() { return &this->m_previewFlags; }
 	ExportSettings* getExportSettings() { return &this->m_exportSettings; }
 	CameraFlags* getCameraFlags() { return &this->m_cameraFlags; }
+	MorphemeNetworkFlags* getMorphemeNetworkFlags() { return &this->m_morphemeNetworkFlags; }
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
 	std::wstring getGamePath() const { return this->m_gamePath; }
 
@@ -179,6 +185,7 @@ private:
 	PreviewFlags m_previewFlags;
 	ExportSettings m_exportSettings;
 	CameraFlags m_cameraFlags;
+	MorphemeNetworkFlags m_morphemeNetworkFlags;
 
 	FlverResources* m_flverResources = nullptr;
 	PlayerModelPreset* m_playerModelPreset = nullptr;
