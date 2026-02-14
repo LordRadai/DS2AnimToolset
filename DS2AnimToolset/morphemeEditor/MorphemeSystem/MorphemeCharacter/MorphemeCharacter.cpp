@@ -143,7 +143,7 @@ bool MorphemeCharacter::update(float timeDelta)
     //----------------------------
     // Update the network
     execResult = m_net->update(task);
-  } while (execResult == MR::EXECUTE_RESULT_IN_PROGRESS);
+  } while (execResult != MR::EXECUTE_RESULT_COMPLETE);
 
   // Finalize post network update
   m_net->endUpdate();

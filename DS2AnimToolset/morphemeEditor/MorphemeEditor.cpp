@@ -32,6 +32,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_ LPWSTR    lpCmdLine,
     _In_ int       nCmdShow)
 {
+#ifdef _DEBUG
+        NET_LOG_ADD_PRIORITY_RANGE(NMP::LOG_MIN_PRIORITY, NMP::LOG_PRIORITY_ALWAYS);
+#endif
 //    try
 //    {
         g_morphemeEditorApp = MorphemeEditorApp::getInstance();
