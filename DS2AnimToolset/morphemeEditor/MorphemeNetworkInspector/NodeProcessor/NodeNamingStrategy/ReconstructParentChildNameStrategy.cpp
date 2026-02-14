@@ -110,6 +110,9 @@ bool ReconstructParentChildNameStrategy::collectNodeNames(
             std::string nodePath =
                 netDef->getNodeNameFromNodeID(id);
 
+            if (processor->isNodeStateNode(nodeDef) && !nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+				nodePath = NodeNameStrategyUtils::getStateNodePathFromStringTable(netDef, id);
+
             // Classify this node
             classifyNode(nodeDef, nodePath);
 
