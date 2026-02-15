@@ -9,6 +9,7 @@
 #define MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS 100
 
 Matrix g_nmToYUpAdjustMatrix = Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
+Matrix g_invertedNmToYUpAdjustMatrix = g_nmToYUpAdjustMatrix.Invert();
 Matrix g_flverToYUpAdjustMatrix = Matrix::CreateRotationY(DirectX::XM_PI);
 Matrix g_flverBoneAdjustMatrix = g_flverToYUpAdjustMatrix * Matrix::CreateReflection(Plane(Vector3::Right));
 Matrix g_flverMeshAdjustMatrix = g_flverToYUpAdjustMatrix * Matrix::CreateRotationX(DirectX::XM_PIDIV2);
@@ -723,11 +724,17 @@ void FlverModel::update(float dt)
 
 void FlverModel::setTransforms(NMP::DataBuffer* transforms)
 {
-	Matrix mConvertZUpToYUp = Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
-	Matrix mInvertZUpToYUp = mConvertZUpToYUp.Invert();
+	const int trajectoryBoneIndex = getMorphemeTrajectoryBoneIndex();
+	const int rootBoneIndex = getMorphemeRootBoneIndex();
+
+	Matrix mConvertZUpToYUp = g_nmToYUpAdjustMatrix;
+	Matrix mInvertZUpToYUp = g_invertedNmToYUpAdjustMatrix;
 
 	for (size_t i = 0; i < this->m_nmBoneTransforms.size(); i++)
 	{
+		if (i == trajectoryBoneIndex)
+			continue;
+
 		NMP::Vector3 translation = *transforms->getChannelPos(i);
 		NMP::Quat rotation = *transforms->getChannelQuat(i);
 

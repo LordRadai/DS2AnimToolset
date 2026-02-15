@@ -561,7 +561,7 @@ namespace
 		{
 			ImGui::Text("%s", paramName.c_str());
 			float value = motionCtrl->getControlParamFloat(nodeDef->getNodeID());
-			if (ImGui::InputDragFloat(std::string("##" + paramName).c_str(), &value, -100.f, 100.f))
+			if (ImGui::DragFloat(std::string("##" + paramName).c_str(), &value, 0.1f))
 				motionCtrl->setControlParamFloat(nodeDef->getNodeID(), value);
 			break;
 		}
@@ -569,7 +569,7 @@ namespace
 		{
 			ImGui::Text("%s", paramName.c_str());
 			int value = motionCtrl->getControlParamInt(nodeDef->getNodeID());
-			if (ImGui::InputDragInt(std::string("##" + paramName).c_str(), &value, -100, 100))
+			if (ImGui::DragInt(std::string("##" + paramName).c_str(), &value))
 				motionCtrl->setControlParamInt(nodeDef->getNodeID(), value);
 			break;
 		}
@@ -577,7 +577,7 @@ namespace
 		{
 			ImGui::Text("%s", paramName.c_str());
 			uint32_t value = motionCtrl->getControlParamUInt(nodeDef->getNodeID());
-			if (ImGui::InputDragUInt(std::string("##" + paramName).c_str(), &value, 0, 100))
+			if (ImGui::DragScalar(std::string("##" + paramName).c_str(), ImGuiDataType_U32, &value))
 				motionCtrl->setControlParamUInt(nodeDef->getNodeID(), value);
 			break;
 		}
@@ -594,7 +594,7 @@ namespace
 			ImGui::Text("%s", paramName.c_str());
 			NMP::Vector3 value = motionCtrl->getControlParamVector3(nodeDef->getNodeID());
 			float vec[3] = { value.x, value.y, value.z };
-			if (ImGui::InputDragVector3(std::string("##" + paramName).c_str(), vec, -100.f, 100.f))
+			if (ImGui::DragFloat3(std::string("##" + paramName).c_str(), vec, 0.1f))
 				motionCtrl->setControlParamVector3(nodeDef->getNodeID(), NMP::Vector3(vec[0], vec[1], vec[2]));
 			break;
 		}
@@ -603,7 +603,7 @@ namespace
 			ImGui::Text("%s", paramName.c_str());
 			NMP::Quat value = motionCtrl->getControlParamVector4(nodeDef->getNodeID());
 			float vec[4] = { value.x, value.y, value.z, value.w };
-			if (ImGui::InputDragVector4(std::string("##" + paramName).c_str(), vec, -100.f, 100.f))
+			if (ImGui::DragFloat4(std::string("##" + paramName).c_str(), vec, 0.1f))
 				motionCtrl->setControlParamVector4(nodeDef->getNodeID(), NMP::Quat(vec[0], vec[1], vec[2], vec[3]));
 			break;
 		}
