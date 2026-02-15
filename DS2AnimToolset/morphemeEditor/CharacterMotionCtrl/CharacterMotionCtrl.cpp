@@ -76,8 +76,8 @@ bool CharacterMotionCtrlBase::canSendMessage(uint32_t messageID) const
     if (messageID == -1)
         return false;
 
+	MR::Network* network = this->getNetwork();
 	MR::NetworkDef* networkDef = this->getNetworkDef();
-    std::vector<MR::NodeID> activeNodeIDs = getActiveNodeIDs();
 
     const MR::MessageDistributor* msgDist = networkDef->getMessageDistributor(messageID);
     const std::string messageName = networkDef->getMessageNameFromMessageID(msgDist->m_messageID);
@@ -88,11 +88,8 @@ bool CharacterMotionCtrlBase::canSendMessage(uint32_t messageID) const
     {
         const MR::NodeID nodeID = msgDist->m_nodeIDs[msgDistNodeIdx];
 
-        for (size_t activeNodeIdx = 0; activeNodeIdx < activeNodeIDs.size(); activeNodeIdx++)
-        {
-            if (nodeID == activeNodeIDs[activeNodeIdx])
-                return true;
-        }
+        if (network->nodeIsActive(nodeID))
+			return true;
     }
 
     return false;
