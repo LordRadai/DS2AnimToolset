@@ -546,8 +546,12 @@ namespace
 		character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getRightHandEquipId(), preset->isRightHandEquipShield());
 	}
 
-	void controlParamEditGUI(CharacterMotionCtrlBase* motionCtrl, MR::NodeID cpID, const std::string& paramName)
+	void controlParamEditGUI(CharacterMotionCtrlBase* motionCtrl, MR::NodeID cpID, const std::string& paramName, ImVec4 textColor)
 	{
+		ImGui::PushStyleColor(ImGuiCol_Text, textColor);
+		ImGui::Text("%s", paramName.c_str());
+		ImGui::PopStyleColor();
+
 		MR::NodeDef* nodeDef = motionCtrl->getNetworkDef()->getNodeDef(cpID);
 
 		if (!nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
@@ -559,7 +563,6 @@ namespace
 		{
 		case NODE_TYPE_CP_FLOAT:
 		{
-			ImGui::Text("%s", paramName.c_str());
 			float value = motionCtrl->getControlParamFloat(nodeDef->getNodeID());
 			if (ImGui::DragFloat(std::string("##" + paramName).c_str(), &value, 0.1f))
 				motionCtrl->setControlParamFloat(nodeDef->getNodeID(), value);
@@ -567,7 +570,6 @@ namespace
 		}
 		case NODE_TYPE_CP_INT:
 		{
-			ImGui::Text("%s", paramName.c_str());
 			int value = motionCtrl->getControlParamInt(nodeDef->getNodeID());
 			if (ImGui::DragInt(std::string("##" + paramName).c_str(), &value))
 				motionCtrl->setControlParamInt(nodeDef->getNodeID(), value);
@@ -575,7 +577,6 @@ namespace
 		}
 		case NODE_TYPE_CP_UINT:
 		{
-			ImGui::Text("%s", paramName.c_str());
 			uint32_t value = motionCtrl->getControlParamUInt(nodeDef->getNodeID());
 			if (ImGui::DragScalar(std::string("##" + paramName).c_str(), ImGuiDataType_U32, &value))
 				motionCtrl->setControlParamUInt(nodeDef->getNodeID(), value);
@@ -583,7 +584,6 @@ namespace
 		}
 		case NODE_TYPE_CP_BOOL:
 		{
-			ImGui::Text("%s", paramName.c_str());
 			bool value = motionCtrl->getControlParamBool(nodeDef->getNodeID());
 			if (ImGui::Checkbox(std::string("##" + paramName).c_str(), &value))
 				motionCtrl->setControlParamBool(nodeDef->getNodeID(), value);
@@ -591,7 +591,6 @@ namespace
 		}
 		case NODE_TYPE_CP_VECTOR3:
 		{
-			ImGui::Text("%s", paramName.c_str());
 			NMP::Vector3 value = motionCtrl->getControlParamVector3(nodeDef->getNodeID());
 			float vec[3] = { value.x, value.y, value.z };
 			if (ImGui::DragFloat3(std::string("##" + paramName).c_str(), vec, 0.1f))
@@ -600,7 +599,6 @@ namespace
 		}
 		case NODE_TYPE_CP_VECTOR4:
 		{
-			ImGui::Text("%s", paramName.c_str());
 			NMP::Quat value = motionCtrl->getControlParamVector4(nodeDef->getNodeID());
 			float vec[4] = { value.x, value.y, value.z, value.w };
 			if (ImGui::DragFloat4(std::string("##" + paramName).c_str(), vec, 0.1f))
@@ -608,7 +606,7 @@ namespace
 			break;
 		}
 		default:
-			break;
+			INVOKE_PANIC("Unhandled control parameter type %d.\n", nodeType);
 		}
 	}
 }
@@ -1798,7 +1796,25 @@ void GuiManager::selectedNodeInfoWindow()
 
 						std::string nodeName = NodeNameStrategyUtils::getNodeNameFromFullPath(networkDef->getNodeNameFromNodeID(nodeDef->getNodeID()));
 
-						controlParamEditGUI(motionCtrl, i, nodeName);
+						ImVec4 textColor = ImGui::GetStyle().Colors[ImGuiCol_Text];
+
+						for (size_t activeNodeIdx = 0; activeNodeIdx < activeNodeIDs.size(); activeNodeIdx++)
+						{
+							MR::NodeDef* activeNodeDef = networkDef->getNodeDef(activeNodeIDs[activeNodeIdx]);
+
+							for (size_t inputCPIdx = 0; inputCPIdx < activeNodeDef->getNumInputCPConnections(); inputCPIdx++)
+							{
+								const MR::CPConnection* cpConnection = activeNodeDef->getInputCPConnection(inputCPIdx);
+
+								if (cpConnection->m_sourceNodeID == nodeDef->getNodeID())
+								{
+									textColor = ImVec4(215, 150, 0, 255);
+									break;
+								}
+							}
+						}
+
+						controlParamEditGUI(motionCtrl, i, nodeName, textColor);
 					}
 
 					ImGui::EndChild();
