@@ -707,6 +707,51 @@ void CharacterModelCtrl::update(float dt)
 		this->m_faceGen.m_fgHair->update(dt);
 }
 
+void CharacterModelCtrl::setTransforms(NMP::DataBuffer* transforms)
+{
+	if (this->m_model)
+		this->m_model->setTransforms(transforms);
+
+	if (this->m_head)
+		this->m_head->setTransforms(transforms);
+
+	if (this->m_face)
+		this->m_face->setTransforms(transforms);
+
+	if (this->m_body)
+		this->m_body->setTransforms(transforms);
+
+	if (this->m_arm)
+		this->m_arm->setTransforms(transforms);
+
+	if (this->m_leg)
+		this->m_leg->setTransforms(transforms);
+
+	if (this->m_weaponRight)
+		this->m_weaponRight->setTransforms(transforms);
+
+	if (this->m_weaponLeft)
+		this->m_weaponLeft->setTransforms(transforms);
+
+	if (this->m_faceGen.m_fgFace)
+		this->m_faceGen.m_fgFace->setTransforms(transforms);
+
+	if (this->m_faceGen.m_fgHead)
+		this->m_faceGen.m_fgHead->setTransforms(transforms);
+
+	if (this->m_faceGen.m_fgEyes)
+		this->m_faceGen.m_fgEyes->setTransforms(transforms);
+
+	if (this->m_faceGen.m_fgEyeBrows)
+		this->m_faceGen.m_fgEyeBrows->setTransforms(transforms);
+
+	if (this->m_faceGen.m_fgBeard)
+		this->m_faceGen.m_fgBeard->setTransforms(transforms);
+
+	if (this->m_faceGen.m_fgHair)
+		this->m_faceGen.m_fgHair->setTransforms(transforms);
+}
+
 void CharacterModelCtrl::animate(AnimObject* anim)
 {
 	if (this->m_model)
@@ -727,13 +772,11 @@ void CharacterModelCtrl::animate(AnimObject* anim)
 	if (this->m_leg)
 		this->m_leg->animate(anim);
 
-	/*
 	if (this->m_weaponRight)
 		this->m_weaponRight->animate(anim);
 
 	if (this->m_weaponLeft)
 		this->m_weaponLeft->animate(anim);
-	*/
 
 	if (this->m_faceGen.m_fgFace)
 		this->m_faceGen.m_fgFace->animate(anim);

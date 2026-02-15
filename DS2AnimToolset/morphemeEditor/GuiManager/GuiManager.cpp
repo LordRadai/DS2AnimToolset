@@ -9,6 +9,8 @@
 #include "Camera/Camera.h"
 #include "NodeEditor/NodeEditor.h"
 
+#include "MorphemeNetworkInspector/NodeProcessor/NodeNamingStrategy/Utils/Utils.h"
+
 #define MSAA_SETTING_COUNT 3
 
 namespace
@@ -543,6 +545,72 @@ namespace
 		character->loadWeaponBnd(partsFolder, kPartsWeaponLeft, preset->getLeftHandEquipId(), preset->isLeftHandEquipShield());
 		character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getRightHandEquipId(), preset->isRightHandEquipShield());
 	}
+
+	void controlParamEditGUI(CharacterMotionCtrlBase* motionCtrl, MR::NodeID cpID, const std::string& paramName)
+	{
+		MR::NodeDef* nodeDef = motionCtrl->getNetworkDef()->getNodeDef(cpID);
+
+		if (!nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+			INVOKE_PANIC("Node %d is not a control param.\n", cpID);
+
+		MR::NodeType nodeType = nodeDef->getNodeTypeID();
+
+		switch (nodeType)
+		{
+		case NODE_TYPE_CP_FLOAT:
+		{
+			ImGui::Text("%s", paramName.c_str());
+			float value = motionCtrl->getControlParamFloat(nodeDef->getNodeID());
+			if (ImGui::InputDragFloat(std::string("##" + paramName).c_str(), &value, -100.f, 100.f))
+				motionCtrl->setControlParamFloat(nodeDef->getNodeID(), value);
+			break;
+		}
+		case NODE_TYPE_CP_INT:
+		{
+			ImGui::Text("%s", paramName.c_str());
+			int value = motionCtrl->getControlParamInt(nodeDef->getNodeID());
+			if (ImGui::InputDragInt(std::string("##" + paramName).c_str(), &value, -100, 100))
+				motionCtrl->setControlParamInt(nodeDef->getNodeID(), value);
+			break;
+		}
+		case NODE_TYPE_CP_UINT:
+		{
+			ImGui::Text("%s", paramName.c_str());
+			uint32_t value = motionCtrl->getControlParamUInt(nodeDef->getNodeID());
+			if (ImGui::InputDragUInt(std::string("##" + paramName).c_str(), &value, 0, 100))
+				motionCtrl->setControlParamUInt(nodeDef->getNodeID(), value);
+			break;
+		}
+		case NODE_TYPE_CP_BOOL:
+		{
+			ImGui::Text("%s", paramName.c_str());
+			bool value = motionCtrl->getControlParamBool(nodeDef->getNodeID());
+			if (ImGui::Checkbox(std::string("##" + paramName).c_str(), &value))
+				motionCtrl->setControlParamBool(nodeDef->getNodeID(), value);
+			break;
+		}
+		case NODE_TYPE_CP_VECTOR3:
+		{
+			ImGui::Text("%s", paramName.c_str());
+			NMP::Vector3 value = motionCtrl->getControlParamVector3(nodeDef->getNodeID());
+			float vec[3] = { value.x, value.y, value.z };
+			if (ImGui::InputDragVector3(std::string("##" + paramName).c_str(), vec, -100.f, 100.f))
+				motionCtrl->setControlParamVector3(nodeDef->getNodeID(), NMP::Vector3(vec[0], vec[1], vec[2]));
+			break;
+		}
+		case NODE_TYPE_CP_VECTOR4:
+		{
+			ImGui::Text("%s", paramName.c_str());
+			NMP::Quat value = motionCtrl->getControlParamVector4(nodeDef->getNodeID());
+			float vec[4] = { value.x, value.y, value.z, value.w };
+			if (ImGui::InputDragVector4(std::string("##" + paramName).c_str(), vec, -100.f, 100.f))
+				motionCtrl->setControlParamVector4(nodeDef->getNodeID(), NMP::Quat(vec[0], vec[1], vec[2], vec[3]));
+			break;
+		}
+		default:
+			break;
+		}
+	}
 }
 
 GuiManager::GuiManager()
@@ -849,7 +917,7 @@ void GuiManager::rootWindow()
 
 			ImGui::BeginDisabled(editorApp->getExportSettings()->useSourceSampleFrequency);
 
-			ImGui::InputDragInt("Sample frequency", &editorApp->getExportSettings()->sampleFrequency, 0.5f, 1, 120);
+			ImGui::InputDragInt("Sample frequency", &editorApp->getExportSettings()->sampleFrequency, 1, 120);
 
 			ImGui::EndDisabled();
 
@@ -950,12 +1018,18 @@ void GuiManager::rootWindow()
 		ImGui::EndMenu();
 	}
 
+	if (ImGui::BeginMenu("Network"))
+	{
+		if (ImGui::MenuItem("Run Morpheme Network", nullptr, editorApp->getMorphemeNetworkFlags()->simulateNetwork)) { editorApp->getMorphemeNetworkFlags()->simulateNetwork = !editorApp->getMorphemeNetworkFlags()->simulateNetwork; }
+	
+		ImGui::EndMenu();
+	}
+
 #ifdef _DEBUG
 	if (ImGui::BeginMenu("Debug"))
 	{
 		if (ImGui::MenuItem("ImGui Demo", nullptr, editorApp->getWindowFlags()->imGuiDemo)) { editorApp->getWindowFlags()->imGuiDemo = !editorApp->getWindowFlags()->imGuiDemo; }
 		if (ImGui::MenuItem("Create Tae Template XML")) { editorApp->getTaskFlags()->exportTaeTemplateXml = true; }
-		if (ImGui::MenuItem("Run Morpheme Network", nullptr, editorApp->getMorphemeNetworkFlags()->simulateNetwork)) { editorApp->getMorphemeNetworkFlags()->simulateNetwork = !editorApp->getMorphemeNetworkFlags()->simulateNetwork; }
 
 		//if (ImGui::MenuItem("Create Node Editor Sample Project")) { editorApp->getTaskFlags()->createTestEditorProject = true; }
 
@@ -1693,6 +1767,80 @@ void GuiManager::selectedNodeInfoWindow()
 	if (ImGui::BeginTabItem("Attribute Editor"))
 	{
 		nodeEditor->infoGui();
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("Controls"))
+	{
+		Character* character = editorApp->getCharacter();
+
+		if (character)
+		{
+			CharacterMotionCtrlBase* motionCtrl = character->getCharacterMotionCtrl();
+
+			if (motionCtrl)
+			{
+				MR::Network* network = motionCtrl->getNetwork();
+				MR::NetworkDef* networkDef = motionCtrl->getNetworkDef();
+
+				std::vector<MR::NodeID> activeNodeIDs = motionCtrl->getActiveNodeIDs();
+
+				if (ImGui::CollapsingHeader("Control Parameters", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::BeginChild("cp_list", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y / 2));
+
+					for (size_t i = 1; i < networkDef->getNumNodeDefs(); i++)
+					{
+						MR::NodeDef* nodeDef = networkDef->getNodeDef(i);
+
+						if (!nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+							continue;
+
+						std::string nodeName = NodeNameStrategyUtils::getNodeNameFromFullPath(networkDef->getNodeNameFromNodeID(nodeDef->getNodeID()));
+
+						controlParamEditGUI(motionCtrl, i, nodeName);
+					}
+
+					ImGui::EndChild();
+				}
+
+				if (ImGui::CollapsingHeader("Messages", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					const uint32_t numMessages = networkDef->getNumMessages();
+
+					if (numMessages > 0)
+					{
+						ImGui::BeginChild("message_list", ImVec2(ImGui::GetContentRegionAvail().x, 0));
+
+						for (size_t i = 0; i < numMessages; i++)
+						{
+							const MR::MessageDistributor* msgDist = networkDef->getMessageDistributor(i);
+							const std::string messageName = networkDef->getMessageNameFromMessageID(msgDist->m_messageID);
+
+							if (msgDist->m_numNodeIDs == 0)
+								continue;
+
+							bool canSendMessage = motionCtrl->canSendMessage(msgDist->m_messageID);
+
+							ImVec4 messageTextColor = ImGui::GetStyle().Colors[ImGuiCol_Text];
+
+							if (canSendMessage)
+								messageTextColor = ImVec4(215, 150, 0, 255);
+
+							ImGui::PushStyleColor(ImGuiCol_Text, messageTextColor);
+
+							if (ImGui::Button(messageName.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
+								motionCtrl->sendRequest(msgDist->m_messageID);
+
+							ImGui::PopStyleColor();
+						}
+
+						ImGui::EndChild();
+					}		
+				}
+			}
+		}
+
 		ImGui::EndTabItem();
 	}
 

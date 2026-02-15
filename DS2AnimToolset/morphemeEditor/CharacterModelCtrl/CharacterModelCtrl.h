@@ -66,6 +66,7 @@ public:
 	float getScale();
 
 	void update(float dt);
+	void setTransforms(NMP::DataBuffer* transforms);
 	void animate(AnimObject* anim);
 private:
 	FlverModel* m_model;

@@ -373,16 +373,30 @@ Character* Character::createFromTimeAct(const char* filename)
 
 void Character::update(float dt)
 {
+    NMP::DataBuffer* transforms = nullptr;
+
+    if (this->m_characterMotionCtrl)
+    {
+        this->m_characterMotionCtrl->update(dt);
+
+		MorphemeCharacter* morphemeCharacter = this->m_characterMotionCtrl->getMorphemeCharacter();
+
+        if (morphemeCharacter->getDoSimulateNetwork())
+            transforms = this->m_characterMotionCtrl->getMorphemeCharacter()->getWorldTransforms();
+    }
+
     if (this->m_characterModelCtrl)
+    {
+        if (transforms)
+            this->m_characterModelCtrl->setTransforms(transforms);
+
         this->m_characterModelCtrl->update(dt);
+    }
 
     FlverModel* model = this->m_characterModelCtrl->getModel();
 
     if (model)
         this->m_position = Vector3::Transform(Vector3::Zero, model->getWorldMatrix());
-
-    if (this->m_characterMotionCtrl)
-		this->m_characterMotionCtrl->update(dt);
 }
 
 void Character::draw(RenderManager* renderManager)

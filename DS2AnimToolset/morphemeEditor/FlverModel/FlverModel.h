@@ -61,6 +61,7 @@ public:
 	static FlverModel* createFromAnimRig(MR::AnimRigDef* rig);
 
 	void update(float dt);
+	void setTransforms(NMP::DataBuffer* transforms);
 	void animate(AnimObject* anim);
 	void draw(RenderManager* renderManager);
 	void destroy();

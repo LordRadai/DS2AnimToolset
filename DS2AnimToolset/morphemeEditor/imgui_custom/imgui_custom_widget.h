@@ -1,5 +1,3 @@
-#include <functional>
-
 #include "imgui/imgui.h"
 
 namespace ImGui
@@ -13,8 +11,11 @@ namespace ImGui
 	IMGUI_API bool          InputUShort(const char* label, ImU16* v, short step = 1, short step_fast = 100, ImGuiInputTextFlags flags = 0);
 	IMGUI_API bool          InputPtr(const char* label, unsigned long long int* v, ImGuiInputTextFlags flags = 0);
 	IMGUI_API void			CompositeProgressBar(const char* label, int step, int numSteps, const char* stepName = nullptr);
-	IMGUI_API void			InputDragFloat(const char* label, float* v, float dragSpeed = 1.f, float min = 0.f, float max = 9999.f, const char* format = "%.3f", ImGuiInputFlags flags = 0);
-	IMGUI_API void			InputDragInt(const char* label, int* v, float dragSpeed = 1.f, int min = 0, int max = 9999, const char* format = "%d", ImGuiInputFlags flags = 0);
+	IMGUI_API bool			InputDragFloat(const char* label, float* v, float min = -1E5, float max = 1E5, const char* format = "%.3f", ImGuiInputFlags flags = 0);
+	IMGUI_API bool			InputDragVector3(const char* label, float v[3], float min = -1E5, float max = 1E5, const char* format = "%.3f", ImGuiInputFlags flags = 0);
+	IMGUI_API bool			InputDragVector4(const char* label, float v[4], float min = -1E5, float max = 1E5, const char* format = "%.3f", ImGuiInputFlags flags = 0);
+	IMGUI_API bool			InputDragInt(const char* label, int* v, int min = -1E5, int max = 1E5, const char* format = "%d", ImGuiInputFlags flags = 0);
+	IMGUI_API bool			InputDragUInt(const char* label, unsigned int* v, unsigned int min = 0, unsigned int max = 1E5, const char* format = "%u", ImGuiInputFlags flags = 0);
 	IMGUI_API bool			Label(const char* labelText, ImGuiInputTextFlags flags = 0);
 	IMGUI_API bool			NamedLabel(const char* label, const char* labelText, ImGuiInputTextFlags flags = 0);
 	IMGUI_API bool			ColorEditUInt(const char* label, ImU32* color, ImGuiColorEditFlags flags = 0);

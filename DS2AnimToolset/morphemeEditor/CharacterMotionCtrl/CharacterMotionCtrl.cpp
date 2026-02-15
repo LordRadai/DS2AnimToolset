@@ -37,6 +37,247 @@ void CharacterMotionCtrlBase::update(float dt)
         this->m_pMorphemeCharacter->update(dt);
 }
 
+bool CharacterMotionCtrlBase::sendRequest(uint32_t requestID, bool status)
+{
+	MR::Network* network = this->getNetwork();
+
+    if (!network || requestID == -1)
+        return false;
+
+	MR::Message requestMessage(requestID, MESSAGE_TYPE_REQUEST, status, nullptr, 0);
+
+	return network->broadcastMessage(requestMessage) > 0;
+}
+
+std::vector<MR::NodeID> CharacterMotionCtrlBase::getActiveNodeIDs() const
+{
+    std::vector<MR::NodeID> activeNodes;
+
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return activeNodes;
+
+	const uint32_t numActiveNodes = network->getActiveNodeCount();
+	MR::NodeID* activeNodeIDs = new MR::NodeID[numActiveNodes];
+
+    network->getActiveNodes(activeNodeIDs, numActiveNodes);
+
+    for (uint32_t i = 0; i < numActiveNodes; i++)
+		activeNodes.push_back(activeNodeIDs[i]);
+
+	delete[] activeNodeIDs;
+
+    return activeNodes;
+}
+
+bool CharacterMotionCtrlBase::canSendMessage(uint32_t messageID) const
+{
+    if (messageID == -1)
+        return false;
+
+	MR::NetworkDef* networkDef = this->getNetworkDef();
+    std::vector<MR::NodeID> activeNodeIDs = getActiveNodeIDs();
+
+    const MR::MessageDistributor* msgDist = networkDef->getMessageDistributor(messageID);
+    const std::string messageName = networkDef->getMessageNameFromMessageID(msgDist->m_messageID);
+
+    bool canSendMessage = false;
+
+    for (size_t msgDistNodeIdx = 0; msgDistNodeIdx < msgDist->m_numNodeIDs; msgDistNodeIdx++)
+    {
+        const MR::NodeID nodeID = msgDist->m_nodeIDs[msgDistNodeIdx];
+
+        for (size_t activeNodeIdx = 0; activeNodeIdx < activeNodeIDs.size(); activeNodeIdx++)
+        {
+            if (nodeID == activeNodeIDs[activeNodeIdx])
+                return true;
+        }
+    }
+
+    return false;
+}
+
+void CharacterMotionCtrlBase::setControlParamFloat(MR::NodeID cpID, float value)
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return;
+
+	MR::AttribDataFloat* cpData = (MR::AttribDataFloat*)network->getControlParameter(cpID);
+
+    NMP_ASSERT(cpData);
+
+    cpData->m_value = value;
+
+	network->setControlParameter(cpID, cpData);
+}
+
+void CharacterMotionCtrlBase::setControlParamInt(MR::NodeID cpID, int value)
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return;
+
+    MR::AttribDataInt* cpData = (MR::AttribDataInt*)network->getControlParameter(cpID);
+
+    NMP_ASSERT(cpData);
+
+    cpData->m_value = value;
+
+    network->setControlParameter(cpID, cpData);
+}
+
+void CharacterMotionCtrlBase::setControlParamUInt(MR::NodeID cpID, uint32_t value)
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return;
+
+    MR::AttribDataUInt* cpData = (MR::AttribDataUInt*)network->getControlParameter(cpID);
+
+	NMP_ASSERT(cpData);
+
+    cpData->m_value = value;
+
+    network->setControlParameter(cpID, cpData);
+}
+
+void CharacterMotionCtrlBase::setControlParamBool(MR::NodeID cpID, bool value)
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return;
+
+    MR::AttribDataBool* cpData = (MR::AttribDataBool*)network->getControlParameter(cpID);
+
+    NMP_ASSERT(cpData);
+
+    cpData->m_value = value;
+
+    network->setControlParameter(cpID, cpData);
+}
+
+void CharacterMotionCtrlBase::setControlParamVector3(MR::NodeID cpID, const NMP::Vector3& value)
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return;
+
+    MR::AttribDataVector3* cpData = (MR::AttribDataVector3*)network->getControlParameter(cpID);
+
+    NMP_ASSERT(cpData);
+
+    cpData->m_value = value;
+
+    network->setControlParameter(cpID, cpData);
+}
+
+void CharacterMotionCtrlBase::setControlParamVector4(MR::NodeID cpID, const NMP::Quat& value)
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return;
+
+    MR::AttribDataVector4* cpData = (MR::AttribDataVector4*)network->getControlParameter(cpID);
+
+    NMP_ASSERT(cpData);
+
+    cpData->m_value = value;
+
+    network->setControlParameter(cpID, cpData);
+}
+
+float CharacterMotionCtrlBase::getControlParamFloat(MR::NodeID cpID) const
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return 0.0f;
+
+    MR::AttribDataFloat* cpData = (MR::AttribDataFloat*)network->getControlParameter(cpID);
+
+    NMP_ASSERT(cpData);
+
+    return cpData->m_value;
+}
+
+int CharacterMotionCtrlBase::getControlParamInt(MR::NodeID cpID) const
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return 0;
+
+    MR::AttribDataInt* cpData = (MR::AttribDataInt*)network->getControlParameter(cpID);
+
+    NMP_ASSERT(cpData);
+
+    return cpData->m_value;
+}
+
+uint32_t CharacterMotionCtrlBase::getControlParamUInt(MR::NodeID cpID) const
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return 0;
+
+    MR::AttribDataUInt* cpData = (MR::AttribDataUInt*)network->getControlParameter(cpID);
+
+    NMP_ASSERT(cpData);
+
+    return cpData->m_value;
+}
+
+bool CharacterMotionCtrlBase::getControlParamBool(MR::NodeID cpID) const
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return false;
+
+    MR::AttribDataBool* cpData = (MR::AttribDataBool*)network->getControlParameter(cpID);
+
+    NMP_ASSERT(cpData);
+
+    return cpData->m_value;
+}
+
+NMP::Vector3 CharacterMotionCtrlBase::getControlParamVector3(MR::NodeID cpID) const
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return NMP::Vector3Zero();
+
+    MR::AttribDataVector3* cpData = (MR::AttribDataVector3*)network->getControlParameter(cpID);
+
+    NMP_ASSERT(cpData);
+
+    return cpData->m_value;
+}
+
+NMP::Quat CharacterMotionCtrlBase::getControlParamVector4(MR::NodeID cpID) const
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return NMP::Quat(0.f, 0.f, 0.f, 0.f);
+
+    MR::AttribDataVector4* cpData = (MR::AttribDataVector4*)network->getControlParameter(cpID);
+
+    NMP_ASSERT(cpData);
+
+    return cpData->m_value;
+}
+
 bool CharacterMotionCtrlAnimPreview::initialize(const char* filename, bool doSimulateNetwork)
 {
     if (!CharacterMotionCtrlBase::initialize(filename, doSimulateNetwork))

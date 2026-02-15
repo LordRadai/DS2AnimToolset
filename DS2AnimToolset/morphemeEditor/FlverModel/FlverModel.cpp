@@ -692,7 +692,6 @@ void FlverModel::update(float dt)
 		{
 			const int parentMorphemeBoneID = this->m_nmRig->getParentBoneIndex(morphemeBoneID);
 			// Take the morpheme animation transform relative to the morpheme bind pose, align it to the flver bind pose, and then apply it to the flver bind pose.
-			//Matrix morphemeRelativeTransform = getNmBoneRelativeTransform(morphemeBoneID);
 
 			applyTransform(this->m_flverBoneTransforms, this->m_flver, this->m_flverBindPoseTransforms, getNmBoneRelativeTransform(morphemeBoneID), i);
 		}
@@ -720,6 +719,32 @@ void FlverModel::update(float dt)
 
 		this->m_dummyPolygons.push_back(dummyLocalTransform * this->m_flverBoneTransforms[this->m_flver->dummies[i].dummyBoneIndex]);
 	}
+}
+
+void FlverModel::setTransforms(NMP::DataBuffer* transforms)
+{
+	Matrix mConvertZUpToYUp = Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
+	Matrix mInvertZUpToYUp = mConvertZUpToYUp.Invert();
+
+	for (size_t i = 0; i < this->m_nmBoneTransforms.size(); i++)
+	{
+		NMP::Vector3 translation = *transforms->getChannelPos(i);
+		NMP::Quat rotation = *transforms->getChannelQuat(i);
+
+		Matrix transform = utils::NMDX::getTransformMatrix(rotation, translation);
+
+		this->m_nmBoneTransforms[i] = transform * mConvertZUpToYUp;
+	}
+
+	const int trajectoryBoneIndex = getMorphemeTrajectoryBoneIndex();
+
+	NMP::Vector3 trajTranslation = *transforms->getChannelPos(trajectoryBoneIndex);
+	NMP::Quat trajRotation = *transforms->getChannelQuat(trajectoryBoneIndex);
+	Matrix trajTransform = utils::NMDX::getTransformMatrix(trajRotation, trajTranslation);
+
+	Matrix adjustedTraj = mConvertZUpToYUp * trajTransform * mInvertZUpToYUp;
+
+	this->m_position = adjustedTraj;
 }
 
 //Draws the character

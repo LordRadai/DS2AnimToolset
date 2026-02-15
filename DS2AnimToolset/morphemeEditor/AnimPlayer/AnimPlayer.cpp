@@ -46,7 +46,10 @@ void AnimPlayer::update(float dt)
 	this->m_anim->setTime(this->m_time);
 
 	if (this->m_character)
-		this->m_character->getCharacterModelCtrl()->animate(this->m_anim);
+	{
+		if (!this->m_character->getCharacterMotionCtrl()->getMorphemeCharacter()->getDoSimulateNetwork())
+			this->m_character->getCharacterModelCtrl()->animate(this->m_anim);
+	}
 }
 
 void AnimPlayer::reset()

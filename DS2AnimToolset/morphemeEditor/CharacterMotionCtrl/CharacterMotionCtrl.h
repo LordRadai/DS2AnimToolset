@@ -22,6 +22,25 @@ public:
 	MR::AnimRigDef* getAnimRigDef() const { return this->getNetwork()->getNetworkDef()->getRig(this->getActiveAnimSetIndex()); }
 	MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* getAnimFileLookUpTable() const { return this->getMorphemeCharacterDef()->getAnimFileLookUp(); }
 	const uint32_t getActiveAnimSetIndex() const { return this->getNetwork()->getActiveAnimSetIndex(); }
+
+	bool sendRequest(uint32_t requestID, bool status = true);
+
+	std::vector<MR::NodeID> getActiveNodeIDs() const;
+	bool canSendMessage(uint32_t messageID) const;
+
+	void setControlParamFloat(MR::NodeID cpID, float value);
+	void setControlParamInt(MR::NodeID cpID, int value);
+	void setControlParamUInt(MR::NodeID cpID, uint32_t value);
+	void setControlParamBool(MR::NodeID cpID, bool value);
+	void setControlParamVector3(MR::NodeID cpID, const NMP::Vector3& value);
+	void setControlParamVector4(MR::NodeID cpID, const NMP::Quat& value);
+
+	float getControlParamFloat(MR::NodeID cpID) const;
+	int getControlParamInt(MR::NodeID cpID) const;
+	uint32_t getControlParamUInt(MR::NodeID cpID) const;
+	bool getControlParamBool(MR::NodeID cpID) const;
+	NMP::Vector3 getControlParamVector3(MR::NodeID cpID) const;
+	NMP::Quat getControlParamVector4(MR::NodeID cpID) const;
 };
 
 class CharacterMotionCtrlAnimPreview : public CharacterMotionCtrlBase
