@@ -1018,7 +1018,11 @@ void GuiManager::rootWindow()
 
 	if (ImGui::BeginMenu("Network"))
 	{
-		if (ImGui::MenuItem("Run Morpheme Network", nullptr, editorApp->getMorphemeNetworkFlags()->simulateNetwork)) { editorApp->getMorphemeNetworkFlags()->simulateNetwork = !editorApp->getMorphemeNetworkFlags()->simulateNetwork; }
+		if (ImGui::MenuItem("Run Morpheme Network", nullptr, editorApp->getMorphemeNetworkFlags()->simulateNetwork)) 
+		{
+			editorApp->getMorphemeNetworkFlags()->simulateNetwork = !editorApp->getMorphemeNetworkFlags()->simulateNetwork;
+			editorApp->getTaskFlags()->reloadFile = true;	//Reload file to reset network state when simulation is toggled on/off
+		}
 	
 		ImGui::EndMenu();
 	}

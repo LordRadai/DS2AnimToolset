@@ -835,6 +835,13 @@ void MorphemeEditorApp::update(float dt)
 		this->loadFile();
 	}
 
+	if (this->m_taskFlags.reloadFile)
+	{
+		this->m_taskFlags.reloadFile = false;
+
+		this->reloadFile();
+	}
+
 	if (this->m_taskFlags.saveFile)
 	{
 		this->m_taskFlags.saveFile = false;
@@ -1140,6 +1147,8 @@ void MorphemeEditorApp::loadFile()
 					{
 						std::filesystem::path filepath = std::wstring(pszFilePath);
 
+						this->m_loadedFilePath = filepath;
+
 						g_guiManager->clearSearchQueryWindow();
 
 						if (this->m_character)
@@ -1188,6 +1197,45 @@ void MorphemeEditorApp::loadFile()
 			pFileOpen->Release();
 		}
 		CoUninitialize();
+	}
+}
+
+void MorphemeEditorApp::reloadFile()
+{
+	if (this->m_character)
+	{
+		std::filesystem::path filepath = this->m_loadedFilePath;
+
+		g_guiManager->clearSearchQueryWindow();
+
+		this->m_character->destroy();
+		this->m_character = nullptr;
+
+		if (this->m_eventTrackEditor)
+			this->m_eventTrackEditor->reset();
+
+		if (this->m_timeActEditor)
+			this->m_timeActEditor->reset();
+
+		if (this->m_nodeEditor)
+			this->m_nodeEditor->reset();
+
+		this->m_timeActFileList.clear();
+
+		if (filepath.extension() == ".nmb")
+			this->m_character = Character::createFromMorphemeBundle(this->m_timeActFileList, RString::toNarrow(filepath).c_str(), m_morphemeNetworkFlags.simulateNetwork);
+		else if (filepath.extension() == ".tae")
+			this->m_character = Character::createFromTimeAct(RString::toNarrow(filepath).c_str());
+
+		this->m_animPlayer->setCharacter(this->m_character);
+		this->m_camera->setOffset(Vector3::Zero);
+		this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
+
+		MorphemeNetworkInspector* inspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
+		CharacterMotionCtrlBase* motionCtrl = this->m_character->getCharacterMotionCtrl();
+
+		//if (inspector)
+			//inspector->loadNetwork(motionCtrl->getNetworkDef(), motionCtrl->getAnimFileLookUpTable());
 	}
 }
 

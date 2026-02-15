@@ -42,6 +42,7 @@ public:
 	struct TaskFlags
 	{
 		bool loadFile = false;
+		bool reloadFile = false;
 		bool saveFile = false;
 
 		bool exportTaeTemplateXml = false;
@@ -158,6 +159,7 @@ private:
 	void savePlayerModelPreset();
 
 	void loadFile();
+	void reloadFile();
 	void saveFile();
 
 	bool exportAll(std::wstring path);
@@ -199,6 +201,7 @@ private:
 
 	std::vector<std::wstring> m_timeActFileList;
 
+	std::wstring m_loadedFilePath = L"";
 	std::wstring m_gamePath = L"";
 
 	inline static MorphemeEditorApp* _instance = nullptr;

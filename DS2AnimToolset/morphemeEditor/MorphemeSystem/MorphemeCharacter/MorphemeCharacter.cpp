@@ -63,9 +63,9 @@ MorphemeCharacter* MorphemeCharacter::create(MorphemeCharacterDef* networkDef, b
 
   if (instance->getDoSimulateNetwork())
   {
-      //----------------------
-      // Perform an initial update of the network with start time of zero
-      instance->runInitialisingUpdateStep();
+    //----------------------
+    // Perform an initial update of the network with start time of zero
+    instance->runInitialisingUpdateStep();
   }
 
   return instance;
