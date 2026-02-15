@@ -735,16 +735,6 @@ void FlverModel::setTransforms(NMP::DataBuffer* transforms)
 
 		this->m_nmBoneTransforms[i] = transform * mConvertZUpToYUp;
 	}
-
-	const int trajectoryBoneIndex = getMorphemeTrajectoryBoneIndex();
-
-	NMP::Vector3 trajTranslation = *transforms->getChannelPos(trajectoryBoneIndex);
-	NMP::Quat trajRotation = *transforms->getChannelQuat(trajectoryBoneIndex);
-	Matrix trajTransform = utils::NMDX::getTransformMatrix(trajRotation, trajTranslation);
-
-	Matrix adjustedTraj = mConvertZUpToYUp * trajTransform * mInvertZUpToYUp;
-
-	this->m_position = adjustedTraj;
 }
 
 //Draws the character
