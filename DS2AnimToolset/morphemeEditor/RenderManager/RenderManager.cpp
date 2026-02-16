@@ -312,6 +312,7 @@ void RenderManager::render()
 
         this->m_sprite->Begin();
 
+#ifdef _DEBUG
         std::string fps = "FPS: " + RString::floatToString(1.f / this->m_dt);
         std::string frametime = "Frametime: " + RString::floatToString(this->m_dt) + " ms";
 		std::string viewportSize = "Resolution: " + std::to_string(this->m_width) + "x" + std::to_string(this->m_height);
@@ -320,7 +321,6 @@ void RenderManager::render()
 		const Vector2 basePosition(0, 0);
 		Vector2 textPosition = basePosition;
 
-#ifdef _DEBUG
         DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), viewportSize.c_str(), textPosition, 0, 0.5f, Colors::White, TextFlags_Shadow);
         textPosition += textOffset;
 

@@ -1223,7 +1223,7 @@ void FlverModel::drawMorphemeBones(RenderManager* renderManager, DirectX::Primit
 			Vector3 boneA = Vector3::Transform(Vector3::Zero, getMorphemeBoneGlobalTransform(boneIdx));
 			Vector3 boneB = Vector3::Transform(Vector3::Zero, getMorphemeBoneGlobalTransform(parentIndex));
 
-			DX::DrawLine(&prim, boneB, boneA, boneMarkerColor);
+			DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, boneMarkerColor);
 		}
 	}
 
