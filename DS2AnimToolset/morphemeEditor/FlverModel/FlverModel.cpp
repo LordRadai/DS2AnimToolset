@@ -789,13 +789,13 @@ void FlverModel::draw(RenderManager* renderManager)
 		drawMorphemeBones(renderManager, prim);
 
 	if (this->m_settings.drawModelPosition)
-		DX::DrawReferenceFrame(&prim, world, 0.3f);
+		DX::DrawReferenceFrame(&prim, Matrix::Identity, 0.3f);
 
 	if (this->m_settings.drawBoundingBox)
 	{
 		Vector3 halfExtents = (this->getBoundingBoxMax() - this->getBoundingBoxMin()) / 2;
 
-		DX::DrawBoundingBox(&prim, world, Vector3::Zero, halfExtents, DirectX::Colors::DarkRed);
+		DX::DrawBoundingBox(&prim, Matrix::Identity, Vector3::Zero, halfExtents, DirectX::Colors::DarkRed);
 	}
 
 	if (this->m_settings.drawBoneInfluences && this->m_settings.drawMeshes)
@@ -805,7 +805,7 @@ void FlverModel::draw(RenderManager* renderManager)
 			for (size_t vtxIdx = 0; vtxIdx < this->m_meshVerticesTransforms[meshIdx].size(); vtxIdx++)
 			{
 				FlverModel::SkinnedVertex* skinnedVtx = this->getVertex(meshIdx, vtxIdx);
-				Vector3 vertexPos = Vector3::Transform(skinnedVtx->vertexData.position, world);
+				Vector3 vertexPos = Vector3::Transform(skinnedVtx->vertexData.position, Matrix::Identity);
 				for (size_t bi = 0; bi < 4; bi++)
 				{
 					int flverBoneIdx = skinnedVtx->boneIndices[bi];
@@ -832,10 +832,10 @@ void FlverModel::draw(RenderManager* renderManager)
 
 	if (this->m_settings.highlight)
 	{
-		renderManager->addText(this->getModelName(), world);
+		renderManager->addText(this->getModelName(), Matrix::Identity);
 
 		if (this->m_settings.displayMode != kDispWireframe)
-			DX::DrawModelWireframe(&prim, world, this, Vector4(DirectX::Colors::White));
+			DX::DrawModelWireframe(&prim, Matrix::Identity, this, Vector4(DirectX::Colors::White));
 	}
 
 	prim.End();
@@ -851,17 +851,17 @@ void FlverModel::draw(RenderManager* renderManager)
 			if (this->m_settings.displayMode == kDispXRay)
 				alpha = 0.5f;
 
-			renderManager->applyPhysicalEffect(Matrix::Identity, alpha);
+			renderManager->applyPhysicalEffect(world, alpha);
 			renderManager->setInputLayout(kPhysicalLayout);
 
 			primShaded.Begin();
-			DX::DrawModel(&primShaded, world, this);
+			DX::DrawModel(&primShaded, Matrix::Identity, this);
 			primShaded.End();
 		}
 		else
 		{
 			prim.Begin();
-			DX::DrawModelWireframe(&prim, world, this, Vector4(DirectX::Colors::White));
+			DX::DrawModelWireframe(&prim, Matrix::Identity, this, Vector4(DirectX::Colors::White));
 			prim.End();
 		}
 	}
@@ -1165,8 +1165,6 @@ void FlverModel::transformVertex(int meshIdx, int vertexIndex, const std::vector
 
 void FlverModel::drawFlverBones(RenderManager* renderManager, DirectX::PrimitiveBatch<DirectX::VertexPositionColor>& prim)
 {
-	Matrix world = this->getWorldMatrix();
-
 	const Vector4 boneMarkerColor = RMath::getFloatColor(IM_COL32(51, 102, 255, 255));
 	const Vector4 rootBoneMarkerColor = Vector4(DirectX::Colors::Orange);
 	const Vector4 trajectoryBoneMarkerColor = Vector4(DirectX::Colors::Red);
@@ -1204,8 +1202,6 @@ void FlverModel::drawFlverBones(RenderManager* renderManager, DirectX::Primitive
 
 void FlverModel::drawMorphemeBones(RenderManager* renderManager, DirectX::PrimitiveBatch<DirectX::VertexPositionColor>& prim)
 {
-	Matrix world = this->getWorldMatrix();
-
 	const Vector4 boneMarkerColor = RMath::getFloatColor(IM_COL32(251, 84, 43, 255));
 
 	const int trajectoryBoneIndex = this->m_nmRig->getTrajectoryBoneIndex();
