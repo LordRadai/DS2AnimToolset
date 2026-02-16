@@ -559,6 +559,8 @@ namespace
 
 		MR::NodeType nodeType = nodeDef->getNodeTypeID();
 
+		ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+
 		switch (nodeType)
 		{
 		case NODE_TYPE_CP_FLOAT:
@@ -608,6 +610,8 @@ namespace
 		default:
 			INVOKE_PANIC("Unhandled control parameter type %d.\n", nodeType);
 		}
+
+		ImGui::PopItemWidth();
 	}
 }
 
