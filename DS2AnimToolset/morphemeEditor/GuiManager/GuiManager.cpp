@@ -934,9 +934,33 @@ void GuiManager::rootWindow()
 
 		ImGui::Separator();
 
+		if (ImGui::BeginMenu("Settings"))
+		{
+			const char* settings[2] = { "Asset Browsing", "Network Simulation" };
+			int selectedSetting = editorApp->getMorphemeNetworkFlags()->simulateNetwork;
+
+			if (ImGui::BeginCombo("Program Mode", settings[selectedSetting]))
+			{
+				for (size_t i = 0; i < 2; i++)
+				{
+					ImGui::Selectable(settings[i]);
+
+					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+					{
+						editorApp->getMorphemeNetworkFlags()->simulateNetwork = i;
+						editorApp->getTaskFlags()->reloadFile = true;	//Reload file to reset network state when simulation is toggled on/off
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
 #ifdef _DEBUG
-		if (ImGui::MenuItem("Colors")) { editorApp->getWindowFlags()->styleEditor = true; }
+			if (ImGui::MenuItem("Colors")) { editorApp->getWindowFlags()->styleEditor = true; }
 #endif
+
+			ImGui::EndMenu();
+		}
 
 		if (ImGui::BeginMenu("Timecode Format"))
 		{
@@ -1013,17 +1037,6 @@ void GuiManager::rootWindow()
 			ImGui::EndMenu();
 		}
 
-		ImGui::EndMenu();
-	}
-
-	if (ImGui::BeginMenu("Network"))
-	{
-		if (ImGui::MenuItem("Run Morpheme Network", nullptr, editorApp->getMorphemeNetworkFlags()->simulateNetwork)) 
-		{
-			editorApp->getMorphemeNetworkFlags()->simulateNetwork = !editorApp->getMorphemeNetworkFlags()->simulateNetwork;
-			editorApp->getTaskFlags()->reloadFile = true;	//Reload file to reset network state when simulation is toggled on/off
-		}
-	
 		ImGui::EndMenu();
 	}
 

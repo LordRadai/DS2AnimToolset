@@ -88,11 +88,13 @@ bool ImGui::InputDragFloat(const char* label, float* v, float min, float max, co
         ImGui::SameLine();
     }
 
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 100);
+    ImGui::SetNextItemWidth(300.f);
 
     bool resultSlider = ImGui::SliderFloat(sliderID, v, min, max, "");
 
     ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(50.f);
 
     bool resultInput = ImGui::InputFloat(dragID, v, 0.f, 0.f, "%.3f", flags);
 
@@ -140,11 +142,13 @@ bool ImGui::InputDragInt(const char* label, int* v, int min, int max, const char
         ImGui::SameLine();
     }
 
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 100);
+	ImGui::SetNextItemWidth(300.f);
 
     bool resultSlider = ImGui::SliderInt(sliderID, v, min, max, "");
 
     ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(50.f);
 
     bool resultInput = ImGui::InputInt(dragID, v, 0, 0, flags);
 
@@ -167,11 +171,13 @@ bool ImGui::InputDragUInt(const char* label, unsigned int* v, unsigned int min, 
         ImGui::SameLine();
     }
 
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 100);
+    ImGui::SetNextItemWidth(300.f);
 
     bool resultSlide = ImGui::SliderInt(sliderID, (int*)v, (int)min, (int)max, "");
 
     ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(50.f);
 
     bool resultInput = ImGui::InputScalar(dragID, ImGuiDataType_U32, v, NULL, NULL, format, flags);
 
