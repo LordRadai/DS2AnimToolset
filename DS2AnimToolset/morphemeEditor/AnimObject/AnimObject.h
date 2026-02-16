@@ -34,6 +34,10 @@ public:
 	Vector3 getTransformPosAtTime(float time, int channelId);
 	Quaternion getTransformQuatAtTime(float time, int channelId);
 
+	Matrix getTrajectoryAtTime(float time);
+	Vector3 getTrajectoryPosAtTime(float time);
+	Quaternion getTrajectoryQuatAtTime(float time);
+
 	void setTakeList(ME::TakeListXML* takeList) { this->m_takeList = takeList; }
 
 	void setAnimTime(float time);

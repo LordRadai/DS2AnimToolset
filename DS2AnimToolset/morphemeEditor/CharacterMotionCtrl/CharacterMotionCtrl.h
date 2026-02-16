@@ -41,6 +41,9 @@ public:
 	bool getControlParamBool(MR::NodeID cpID) const;
 	NMP::Vector3 getControlParamVector3(MR::NodeID cpID) const;
 	NMP::Quat getControlParamVector4(MR::NodeID cpID) const;
+
+	NMP::Quat getRotationChange();
+	NMP::Vector3 getTranslationChange();
 };
 
 class CharacterMotionCtrlAnimPreview : public CharacterMotionCtrlBase

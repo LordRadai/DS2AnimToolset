@@ -4,7 +4,6 @@
 #include "utils/NMDX/NMDX.h"
 #include "RenderManager/RenderManager.h"
 #include "RCore.h"
-#include "morpheme/mrBlendOps.h"
 
 #define MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS 100
 
@@ -151,6 +150,11 @@ namespace
 		while (siblingIndex != -1)
 		{
 			applyTransform(buffer, flv, bindPose, transform, siblingIndex);
+
+			int childIndex = flv->bones[boneID].childIndex;
+
+			if (childIndex != -1)
+				applyTransform(buffer, flv, bindPose, transform, childIndex);
 
 			siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
 		}
@@ -724,17 +728,11 @@ void FlverModel::update(float dt)
 
 void FlverModel::setTransforms(NMP::DataBuffer* transforms)
 {
-	const int trajectoryBoneIndex = getMorphemeTrajectoryBoneIndex();
-	const int rootBoneIndex = getMorphemeRootBoneIndex();
-
 	Matrix mConvertZUpToYUp = g_nmToYUpAdjustMatrix;
 	Matrix mInvertZUpToYUp = g_invertedNmToYUpAdjustMatrix;
 
 	for (size_t i = 0; i < this->m_nmBoneTransforms.size(); i++)
 	{
-		if (i == trajectoryBoneIndex)
-			continue;
-
 		NMP::Vector3 translation = *transforms->getChannelPos(i);
 		NMP::Quat rotation = *transforms->getChannelQuat(i);
 
@@ -1103,14 +1101,7 @@ void FlverModel::animate(AnimObject* anim)
 	MR::AnimationSourceHandle* animHandle = anim->getHandle();
 
 	if (animHandle)
-	{
 		computeAnimationTransforms(animHandle);
-
-		if (this->m_settings.enableRootMotion)
-			this->m_position = getAnimTrajectoryAdjustedTransform(animHandle);
-		else
-			this->m_position = Matrix::Identity;
-	}
 }
 
 void FlverModel::resetBoneTransforms()

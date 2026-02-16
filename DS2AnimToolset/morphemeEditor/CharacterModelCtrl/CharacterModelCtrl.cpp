@@ -554,51 +554,6 @@ void CharacterModelCtrl::setDrawModelPosition(bool show)
 		this->m_faceGen.m_fgHair->getSettings()->drawModelPosition = show;
 }
 
-void CharacterModelCtrl::setEnableRootMotion(bool enable)
-{
-	if (this->m_model)
-		this->m_model->getSettings()->enableRootMotion = enable;
-
-	if (this->m_head)
-		this->m_head->getSettings()->enableRootMotion = enable;
-
-	if (this->m_face)
-		this->m_face->getSettings()->enableRootMotion = enable;
-
-	if (this->m_body)
-		this->m_body->getSettings()->enableRootMotion = enable;
-
-	if (this->m_arm)
-		this->m_arm->getSettings()->enableRootMotion = enable;
-
-	if (this->m_leg)
-		this->m_leg->getSettings()->enableRootMotion = enable;
-
-	if (this->m_weaponRight)
-		this->m_weaponRight->getSettings()->enableRootMotion = enable;
-
-	if (this->m_weaponLeft)
-		this->m_weaponLeft->getSettings()->enableRootMotion = enable;
-
-	if (this->m_faceGen.m_fgFace)
-		this->m_faceGen.m_fgFace->getSettings()->enableRootMotion = enable;
-
-	if (this->m_faceGen.m_fgHead)
-		this->m_faceGen.m_fgHead->getSettings()->enableRootMotion = enable;
-
-	if (this->m_faceGen.m_fgEyes)
-		this->m_faceGen.m_fgEyes->getSettings()->enableRootMotion = enable;
-
-	if (this->m_faceGen.m_fgEyeBrows)
-		this->m_faceGen.m_fgEyeBrows->getSettings()->enableRootMotion = enable;
-
-	if (this->m_faceGen.m_fgBeard)
-		this->m_faceGen.m_fgBeard->getSettings()->enableRootMotion = enable;
-
-	if (this->m_faceGen.m_fgHair)
-		this->m_faceGen.m_fgHair->getSettings()->enableRootMotion = enable;
-}
-
 void CharacterModelCtrl::setScale(float scale)
 {
 	if (this->m_model)
@@ -642,6 +597,51 @@ void CharacterModelCtrl::setScale(float scale)
 
 	if (this->m_faceGen.m_fgHair)
 		this->m_faceGen.m_fgHair->setScale(scale);
+}
+
+void CharacterModelCtrl::setPosition(const Matrix& position)
+{
+	if (this->m_model)
+		this->m_model->setPosition(position);
+
+	if (this->m_head)
+		this->m_head->setPosition(position);
+
+	if (this->m_face)
+		this->m_face->setPosition(position);
+
+	if (this->m_body)
+		this->m_body->setPosition(position);
+
+	if (this->m_arm)
+		this->m_arm->setPosition(position);
+
+	if (this->m_leg)
+		this->m_leg->setPosition(position);
+
+	if (this->m_weaponRight)
+		this->m_weaponRight->setPosition(position);
+
+	if (this->m_weaponLeft)
+		this->m_weaponLeft->setPosition(position);
+
+	if (this->m_faceGen.m_fgFace)
+		this->m_faceGen.m_fgFace->setPosition(position);
+
+	if (this->m_faceGen.m_fgHead)
+		this->m_faceGen.m_fgHead->setPosition(position);
+
+	if (this->m_faceGen.m_fgEyes)
+		this->m_faceGen.m_fgEyes->setPosition(position);
+
+	if (this->m_faceGen.m_fgEyeBrows)
+		this->m_faceGen.m_fgEyeBrows->setPosition(position);
+
+	if (this->m_faceGen.m_fgBeard)
+		this->m_faceGen.m_fgBeard->setPosition(position);
+
+	if (this->m_faceGen.m_fgHair)
+		this->m_faceGen.m_fgHair->setPosition(position);
 }
 
 float CharacterModelCtrl::getScale()

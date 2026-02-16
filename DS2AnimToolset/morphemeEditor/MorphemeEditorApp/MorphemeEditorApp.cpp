@@ -774,6 +774,8 @@ void MorphemeEditorApp::update(float dt)
 	{
 		const float playbackSpeed = m_animPlayer->getPlaySpeed();
 		
+		this->m_character->setEnableRootMotion(this->m_previewFlags.enableRootMotion);
+
 		this->m_character->update(dt * playbackSpeed);
 		
 		CharacterModelCtrl* modelCtrl = this->m_character->getCharacterModelCtrl();
@@ -787,7 +789,6 @@ void MorphemeEditorApp::update(float dt)
 			modelCtrl->setDrawMorphemeBones(this->m_previewFlags.drawMorphemeBones);
 			modelCtrl->setDrawBoundingBox(this->m_previewFlags.drawBoundingBoxes);
 			modelCtrl->setDrawModelPosition(this->m_previewFlags.drawModelPosition);
-			modelCtrl->setEnableRootMotion(this->m_previewFlags.enableRootMotion);
 		}
 	}
 

@@ -275,6 +275,26 @@ NMP::Quat CharacterMotionCtrlBase::getControlParamVector4(MR::NodeID cpID) const
     return cpData->m_value;
 }
 
+NMP::Quat CharacterMotionCtrlBase::getRotationChange()
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return NMP::QuatIdentity();
+
+    return network->getOrientationChange();
+}
+
+NMP::Vector3 CharacterMotionCtrlBase::getTranslationChange()
+{
+    MR::Network* network = this->getNetwork();
+
+    if (!network)
+        return NMP::Vector3Zero();
+
+    return network->getTranslationChange();
+}
+
 bool CharacterMotionCtrlAnimPreview::initialize(const char* filename, bool doSimulateNetwork)
 {
     if (!CharacterMotionCtrlBase::initialize(filename, doSimulateNetwork))

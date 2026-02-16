@@ -7,6 +7,7 @@
 #include "RenderManager/RenderManager.h"
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h>
+#include "utils/NMDX/NMDX.h"
 
 namespace
 {
@@ -104,7 +105,7 @@ namespace
         const Vector3 vertexB = vertexA + Vector3(0, ccDef->getHeight() - ccDef->getRadius(), 0);
         const NMP::Colour color = ccDef->getColour();
 
-        DX::DrawCapsule(&prim, Matrix::CreateScale(character->getCharacterModelCtrl()->getScale()) * Matrix::CreateTranslation(character->getPosition()), vertexA, vertexB, ccDef->getRadius(), RMath::getFloatColor(color.getR(), color.getG(), color.getB(), color.getA()), true);
+        DX::DrawCapsule(&prim, Matrix::CreateScale(character->getCharacterModelCtrl()->getScale()) * character->getPosition(), vertexA, vertexB, ccDef->getRadius(), RMath::getFloatColor(color.getR(), color.getG(), color.getB(), color.getA()), true);
         
         prim.End();
     }
@@ -382,7 +383,27 @@ void Character::update(float dt)
 		MorphemeCharacter* morphemeCharacter = this->m_characterMotionCtrl->getMorphemeCharacter();
 
         if (morphemeCharacter->getDoSimulateNetwork())
+        {
             transforms = this->m_characterMotionCtrl->getMorphemeCharacter()->getWorldTransforms();
+
+            if (this->m_enableRootMotion)
+            {
+                NMP::Quat rotationDelta = m_characterMotionCtrl->getRotationChange();
+                NMP::Vector3 translationDelta = m_characterMotionCtrl->getTranslationChange();
+                Matrix trajDelta = utils::NMDX::getTransformMatrix(rotationDelta, translationDelta);
+
+                static Matrix conv = Matrix::CreateRotationX(DirectX::XM_PIDIV2);
+                static Matrix invConv = conv.Invert();
+
+                Matrix adjustedTrajDelta = (conv * trajDelta * invConv);
+
+                this->m_position = this->m_position * adjustedTrajDelta;
+            }
+        }
+        else
+        {
+			this->m_position = Matrix::Identity;
+        }
     }
 
     if (this->m_characterModelCtrl)
@@ -391,12 +412,8 @@ void Character::update(float dt)
             this->m_characterModelCtrl->setTransforms(transforms);
 
         this->m_characterModelCtrl->update(dt);
+		this->m_characterModelCtrl->setPosition(this->m_position);
     }
-
-    FlverModel* model = this->m_characterModelCtrl->getModel();
-
-    if (model)
-        this->m_position = Vector3::Transform(Vector3::Zero, model->getWorldMatrix());
 }
 
 void Character::draw(RenderManager* renderManager)

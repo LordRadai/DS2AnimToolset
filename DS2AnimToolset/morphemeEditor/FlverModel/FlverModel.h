@@ -52,7 +52,6 @@ public:
 		bool highlight = false;
 		bool drawBoneInfluences = false;
 		bool drawModelPosition = false;
-		bool enableRootMotion = true;
 		int selectedBone = -1;
 		int selectedDummy = -1;
 	};

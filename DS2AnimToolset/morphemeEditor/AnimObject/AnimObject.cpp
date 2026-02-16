@@ -137,6 +137,45 @@ Quaternion AnimObject::getTransformQuatAtTime(float time, int channelId)
     return utils::NMDX::getDxQuat(animHandle->getChannelData()[channelId].m_quat);
 }
 
+Matrix AnimObject::getTrajectoryAtTime(float time)
+{
+    this->setAnimTime(time);
+
+    MR::AnimationSourceHandle* animHandle = this->m_animHandle;
+
+    NMP::Vector3 trajPos;
+    NMP::Quat trajRot;
+    animHandle->getTrajectory(trajRot, trajPos);
+
+    return utils::NMDX::getTransformMatrix(trajRot, trajPos);
+}
+
+Vector3 AnimObject::getTrajectoryPosAtTime(float time)
+{
+    this->setAnimTime(time);
+
+    MR::AnimationSourceHandle* animHandle = this->m_animHandle;
+
+    NMP::Vector3 trajPos;
+    NMP::Quat trajRot;
+    animHandle->getTrajectory(trajRot, trajPos);
+
+    return utils::NMDX::getDxVector(trajPos);
+}
+
+Quaternion AnimObject::getTrajectoryQuatAtTime(float time)
+{
+    this->setAnimTime(time);
+
+    MR::AnimationSourceHandle* animHandle = this->m_animHandle;
+
+    NMP::Vector3 trajPos;
+    NMP::Quat trajRot;
+    animHandle->getTrajectory(trajRot, trajPos);
+
+    return utils::NMDX::getDxQuat(trajRot);
+}
+
 void AnimObject::setAnimTime(float time)
 {
     if (this->m_animHandle)

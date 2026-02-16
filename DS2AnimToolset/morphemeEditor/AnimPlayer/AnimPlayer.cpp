@@ -48,7 +48,21 @@ void AnimPlayer::update(float dt)
 	if (this->m_character)
 	{
 		if (!this->m_character->getCharacterMotionCtrl()->getMorphemeCharacter()->getDoSimulateNetwork())
+		{
 			this->m_character->getCharacterModelCtrl()->animate(this->m_anim);
+
+			if (this->m_character->getEnableRootMotion())
+			{
+				Matrix trajPos = this->m_anim->getTrajectoryAtTime(this->m_time);
+
+				static Matrix conv = Matrix::CreateRotationX(DirectX::XM_PIDIV2);
+				static Matrix invConv = conv.Invert();
+
+				trajPos = (conv * trajPos * invConv);
+
+				this->m_character->setPosition(trajPos);
+			}		
+		}
 	}
 }
 

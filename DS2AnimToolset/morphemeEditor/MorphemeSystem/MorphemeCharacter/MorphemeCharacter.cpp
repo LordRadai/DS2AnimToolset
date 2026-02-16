@@ -161,7 +161,7 @@ bool MorphemeCharacter::update(float timeDelta)
 
   //----------------------------
   // Accumulate the transforms after the update
-  updateWorldTransforms(m_net->getCharacterPropertiesWorldRootTransform());
+  updateWorldTransforms(NMP::Matrix34Identity());
 
   return true;
 }
