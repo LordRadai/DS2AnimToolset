@@ -400,10 +400,6 @@ void Character::update(float dt)
                 this->m_position = this->m_position * adjustedTrajDelta;
             }
         }
-        else
-        {
-			this->m_position = Matrix::Identity;
-        }
     }
 
     if (this->m_characterModelCtrl)
