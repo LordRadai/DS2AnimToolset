@@ -772,7 +772,9 @@ void MorphemeEditorApp::update(float dt)
 
 	if (this->m_character)
 	{
-		this->m_character->update(dt);
+		const float playbackSpeed = m_animPlayer->getPlaySpeed();
+		
+		this->m_character->update(dt * playbackSpeed);
 		
 		CharacterModelCtrl* modelCtrl = this->m_character->getCharacterModelCtrl();
 
