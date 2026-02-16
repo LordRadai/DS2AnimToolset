@@ -559,7 +559,7 @@ namespace
 
 		MR::NodeType nodeType = nodeDef->getNodeTypeID();
 
-		ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+		ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 5.f);
 
 		switch (nodeType)
 		{
@@ -1797,7 +1797,7 @@ void GuiManager::selectedNodeInfoWindow()
 		{
 			CharacterMotionCtrlBase* motionCtrl = character->getCharacterMotionCtrl();
 
-			if (motionCtrl)
+			if (motionCtrl && motionCtrl->getMorphemeCharacter()->getDoSimulateNetwork())
 			{
 				MR::Network* network = motionCtrl->getNetwork();
 				MR::NetworkDef* networkDef = motionCtrl->getNetworkDef();
