@@ -45,13 +45,13 @@
     </EventGroupTemplate>
     <EventGroupTemplate id="300" name="AiCtrl">
         <EventTemplate id="300" name="InvokeChrAiSound">
-            <ArgTemplate name="Intensity" type="byte" hidden="false"/>
-            <ArgTemplate name="State" type="bool" hidden="false"/>
+            <ArgTemplate name="Category" type="byte" hidden="false"/>
+            <ArgTemplate name="bAlwaysCreate" type="bool" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="301" name="InvokeAiSound">
-            <ArgTemplate name="Intensity" type="byte" hidden="false"/>
-            <ArgTemplate name="State" type="bool" hidden="false"/>
-            <ArgTemplate name="Unk04" type="float" hidden="false"/>
+            <ArgTemplate name="Category" type="byte" hidden="false"/>
+            <ArgTemplate name="bAlwaysCreate" type="bool" hidden="false"/>
+            <ArgTemplate name="Intensity" type="float" hidden="false"/>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="1100" name="DamageCtrl">
