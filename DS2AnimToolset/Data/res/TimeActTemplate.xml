@@ -45,11 +45,17 @@
     </EventGroupTemplate>
     <EventGroupTemplate id="300" name="AiCtrl">
         <EventTemplate id="300" name="InvokeChrAiSound">
-            <ArgTemplate name="Intensity" type="byte" hidden="false"/>
+            <ArgTemplate name="Priority Category" type="byte" hidden="false">
+                <Enum value="0" name="0: Tiny"/>
+                <Enum value="1" name="1: Small"/>
+                <Enum value="2" name="2: Default"/>
+                <Enum value="3" name="3: Large"/>
+                <Enum value="4" name="4: Extra Large"/>
+            </ArgTemplate>
             <ArgTemplate name="bAlwaysCreate" type="bool" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="301" name="InvokeAiSound">
-            <ArgTemplate name="Intensity" type="byte" hidden="false"/>
+            <ArgTemplate name="Priority" type="byte" hidden="false"/>
             <ArgTemplate name="bAlwaysCreate" type="bool" hidden="false"/>
             <ArgTemplate name="Radius" type="float" hidden="false"/>
         </EventTemplate>
