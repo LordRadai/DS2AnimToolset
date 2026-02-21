@@ -1196,8 +1196,8 @@ void MorphemeEditorApp::loadFile()
 						}
 						catch (const std::exception& e)
 						{
-							g_appLog->alertMessage(MsgLevel_Info, "Failed to load morpheme network: %s\n", e.what());
-						}	
+							g_appLog->alertMessage(MsgLevel_Error, "Failed to load morpheme network: %s\n", e.what());
+						}
 					}
 					pItem->Release();
 				}
