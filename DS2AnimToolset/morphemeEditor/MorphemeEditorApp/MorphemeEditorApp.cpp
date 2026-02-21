@@ -1189,8 +1189,15 @@ void MorphemeEditorApp::loadFile()
 						MorphemeNetworkInspector* inspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
 						CharacterMotionCtrlBase* motionCtrl = this->m_character->getCharacterMotionCtrl();
 
-						if (inspector)
-							inspector->loadNetwork(motionCtrl->getNetworkDef(), motionCtrl->getAnimFileLookUpTable());
+						try
+						{
+							if (inspector)
+								inspector->loadNetwork(motionCtrl->getNetworkDef(), motionCtrl->getAnimFileLookUpTable());
+						}
+						catch (const std::exception& e)
+						{
+							g_appLog->alertMessage(MsgLevel_Info, "Failed to load morpheme network: %s\n", e.what());
+						}	
 					}
 					pItem->Release();
 				}
