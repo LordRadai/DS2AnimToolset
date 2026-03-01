@@ -221,7 +221,7 @@ NodeEditor::Graph* NodeProcessor::buildRootGraph(NodeEditor::Editor* editor, MR:
 
 	populateGraph(rootGraph, rootNodeDef, &rootBT);
 	//populateSubGraphs(rootGraph, rootNodeDef);
-	//processMultiplyConnectedNodes(editor, rootNodeDef->getOwningNetworkDef());
+	processMultiplyConnectedNodes(editor, rootNodeDef->getOwningNetworkDef());
 
 	return rootGraph;
 }
@@ -1579,7 +1579,7 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 			btRoot->getNodeID(),
 			netDef->getNodeNameFromNodeID(btRoot->getNodeID()));
 
-		if (!isNodeBlendTree(btRoot) || btRoot->getNodeID() == netDef->getRootNodeID())
+		if (!isNodeBlendTree(btRoot) || (btRoot->getNodeID() == netDef->getRootNodeID() /*&& getBlendTreesForNode(btRoot->getNodeID()).size() == 1 && !btRoot->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE)*/))
 			registerBTNode(btRoot);
 
 		// Decide where to put the multiply connected node itself.
@@ -1587,6 +1587,9 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 		{
 			if (isNodeBlendTree(multiplyConnectedOwner))
 			{
+				if (multiplyConnectedOwner->getNodeID() == btRoot->getNodeID() && getBlendTreesForNode(btRoot->getNodeID()).size() == 1 /* && btRoot->getNodeID() != rootNodeDef->getNodeID()*/)
+					registerBTNode(btRoot);
+
 				registerNodeAsBTChild(multiplyConnectedOwner->getNodeID(), multiplyConnectedNodeDef);
 			}
 			else if (multiplyConnectedOwner->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
