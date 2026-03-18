@@ -156,11 +156,11 @@
         <EventTemplate id="100" name="Unusued_100"/>
         <EventTemplate id="2400" name="DisableFootEffect"/>
         <EventTemplate id="2401" name="InvokeChrFootEffect">
-            <ArgTemplate name="ID" type="int" hidden="false"/>
+            <ArgTemplate name="ID" type="byte" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="2402" name="InvokeFootEffect">
-            <ArgTemplate name="ID" type="int" hidden="false"/>
-            <ArgTemplate name="FootEffectSize" type="int" hidden="false"/>
+            <ArgTemplate name="ID" type="byte" hidden="false"/>
+            <ArgTemplate name="Weight" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="2403" name="ChrFootEffectCtrl_2403">
             <ArgTemplate name="Unk00" type="byte" hidden="false"/>
