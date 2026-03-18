@@ -270,11 +270,13 @@
         <EventTemplate id="260006" name="ChrModelCtrl_260006"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="270000" name="ChrPartsCtrl">
-        <EventTemplate id="270000" name="DisablePartsCollision">
-            <ArgTemplate name="Parts ID" type="int" hidden="false"/>
+        <EventTemplate id="270000" name="DisablePartCollision">
+            <ArgTemplate name="Part ID" type="byte" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="270001" name="InvokeDismemberment"/>
-        <EventTemplate id="270002" name="ChrPartsCtrl_270002"/>
+        <EventTemplate id="270002" name="RegeneratePart">
+            <ArgTemplate name="Part ID" type="byte" hidden="false"/>
+        </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="280000" name="ChrMoveCtrl">
         <EventTemplate id="280000" name="DisableJumpPhysics"/>
