@@ -246,7 +246,7 @@
         <EventTemplate id="230001" name="InvokeUnknownChrGenerateBehaviour"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="240000" name="DeadCtrl">
-        <EventTemplate id="240000" name="KillCharacter"/>
+        <EventTemplate id="240000" name="EnableAltDeadType"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="250000" name="ObjGenerateCtrl">
         <EventTemplate id="250000" name="ChrObjGenerateCtrl"/>
