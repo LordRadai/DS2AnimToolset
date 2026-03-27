@@ -240,10 +240,10 @@
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="230000" name="ChrGenerateCtrl">
-        <EventTemplate id="230000" name="GenerateCharacter">
-            <ArgTemplate name="Index" type="byte" hidden="false"/>
+        <EventTemplate id="230000" name="SetChrGenerateFlags">
+            <ArgTemplate name="Flags" type="byte" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="230001" name="InvokeUnknownChrGenerateBehaviour"/>
+        <EventTemplate id="230001" name="GenerateChr"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="240000" name="DeadCtrl">
         <EventTemplate id="240000" name="EnableAltDeadType"/>
