@@ -188,7 +188,7 @@
         <EventTemplate id="101100" name="DisableStaminaRegen"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="110000" name="DamageActionCtrl">
-        <EventTemplate id="110000" name="InvokeDefaultDamageActionState"/>
+        <EventTemplate id="110000" name="InvokeChrParamDamageActionState"/>
         <EventTemplate id="110100" name="InvokeInvincibility"/>
         <EventTemplate id="110200" name="Unusued_110200"/>
         <EventTemplate id="110210" name="InvokeSuperArmor"/>
