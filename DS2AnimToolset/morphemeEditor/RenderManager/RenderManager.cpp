@@ -314,7 +314,7 @@ void RenderManager::render()
 
 #ifdef _DEBUG
         std::string fps = "FPS: " + RString::floatToString(1.f / this->m_dt);
-        std::string frametime = "Frametime: " + RString::floatToString(this->m_dt) + " ms";
+        std::string frametime = "Frametime: " + RString::floatToString(this->m_dt * 1000.f) + " ms";
 		std::string viewportSize = "Resolution: " + std::to_string(this->m_width) + "x" + std::to_string(this->m_height);
 
 		const Vector2 textOffset = Vector2(0, 15);

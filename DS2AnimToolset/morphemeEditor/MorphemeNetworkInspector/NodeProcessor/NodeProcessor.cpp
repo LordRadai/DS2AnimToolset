@@ -18,7 +18,7 @@
 
 #include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
 
-#define EXPORT_MULTIPLY_CONNECTED_NODES
+//#define EXPORT_MULTIPLY_CONNECTED_NODES
 
 namespace
 {
@@ -1549,7 +1549,6 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 		}
 	}
 
-#ifdef EXPORT_MULTIPLY_CONNECTED_NODES
 	// Then collect all blend trees that group nodes with multiply connected inputs.
 	const MR::NodeIDsArray* multiplyConnectedNodes = netDef->getMultiplyConnectedNodeIDs();
 	for (int i = multiplyConnectedNodes->getNumEntries() - 1; i >= 0; --i)
@@ -1616,7 +1615,6 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 			}
 		}
 	}
-#endif
 
 	// Second pass to catch nested state machines in blend trees.
 	for (size_t i = 0; i < smArray->getNumEntries(); i++)
