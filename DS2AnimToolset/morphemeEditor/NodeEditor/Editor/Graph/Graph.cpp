@@ -219,7 +219,12 @@ namespace NodeEditor
 				Node* node = m_nodes[i];
 
 				if (!node->hasSubGraph())
-					ImGui::TreeNodeEx(node->getName().c_str(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_SpanFullWidth);
+				{
+					if (ImGui::TreeNodeEx(node->getName().c_str(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_SpanFullWidth) && ImGui::IsMouseDoubleClicked(0))
+					{
+						//this->m_ownerEditor->pushGraph(node->getParentGraph());
+					}
+				}
 				else
 					node->getSubGraph()->navigatorGui();
 			}

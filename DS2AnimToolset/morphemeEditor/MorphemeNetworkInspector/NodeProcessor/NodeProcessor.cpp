@@ -147,12 +147,7 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 					break;
 				}
 			}
-		}		
-
-#ifndef EXPORT_MULTIPLY_CONNECTED_NODES
-		if (nodeDef->getNodeFlags() | MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED)
-			continue;
-#endif
+		}
 
 		// 3. If still not found, store it
 		if (!found)
