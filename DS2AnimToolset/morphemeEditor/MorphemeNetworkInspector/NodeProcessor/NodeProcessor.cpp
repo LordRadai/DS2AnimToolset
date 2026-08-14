@@ -18,7 +18,7 @@
 
 #include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
 
-//#define EXPORT_MULTIPLY_CONNECTED_NODES
+#define EXPORT_MULTIPLY_CONNECTED_NODES
 
 namespace
 {
