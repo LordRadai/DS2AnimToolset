@@ -18,7 +18,7 @@
 
 #include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
 
-#define NODE_MULTIPLY_CONNECTED_EXPORT
+#define EXPORT_MULTIPLY_CONNECTED_NODES
 
 namespace
 {
@@ -223,7 +223,9 @@ NodeEditor::Graph* NodeProcessor::buildRootGraph(NodeEditor::Editor* editor, MR:
 
 	populateGraph(rootGraph, rootNodeDef, &rootBT);
 	//populateSubGraphs(rootGraph, rootNodeDef);
+#ifdef EXPORT_MULTIPLY_CONNECTED_NODES
 	processMultiplyConnectedNodes(editor, rootNodeDef->getOwningNetworkDef());
+#endif
 
 	return rootGraph;
 }
@@ -1542,7 +1544,7 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 		}
 	}
 
-#ifdef NODE_MULTIPLY_CONNECTED_EXPORT
+#ifdef EXPORT_MULTIPLY_CONNECTED_NODES
 	// Then collect all blend trees that group nodes with multiply connected inputs.
 	const MR::NodeIDsArray* multiplyConnectedNodes = netDef->getMultiplyConnectedNodeIDs();
 	for (int i = multiplyConnectedNodes->getNumEntries() - 1; i >= 0; --i)
