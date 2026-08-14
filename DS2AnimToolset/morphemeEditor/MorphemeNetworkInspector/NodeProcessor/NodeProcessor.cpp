@@ -18,7 +18,7 @@
 
 #include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
 
-#define EXPORT_MULTIPLY_CONNECTED_NODES
+//#define EXPORT_MULTIPLY_CONNECTED_NODES
 
 namespace
 {
@@ -1736,6 +1736,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 			m_multiplyConnectedCPOutputNodes.push_back(nodeDef);
 	}
 
+#ifdef EXPORT_MULTIPLY_CONNECTED_NODES
 	// Add all multiply connected child nodes to the graph containing the multiply connected node.
 	const MR::NodeIDsArray* multiplyConnectedNodes = netDef->getMultiplyConnectedNodeIDs();
 	for (int i = multiplyConnectedNodes->getNumEntries() - 1; i >= 0; --i)
@@ -1759,6 +1760,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 		collectChildren(nodeDef, containerInfo->getChildNodeDefs());
 	}
+#endif
 }
 
 bool NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
