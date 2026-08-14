@@ -20,6 +20,7 @@ namespace NodeEditor
 		virtual const std::string& getName() const { return m_name; }
 		virtual void setName(const std::string& name) { m_name = name; }
 		virtual const std::string getFullName() const { return m_name; }
+		virtual std::string exportLua() { return ""; }
 
 		Editor* getOwnerEditor() const { return m_ownerEditor; }
 		int getID() const { return m_id; }
