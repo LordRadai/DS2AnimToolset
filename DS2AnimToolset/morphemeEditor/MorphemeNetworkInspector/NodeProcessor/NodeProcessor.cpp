@@ -18,6 +18,8 @@
 
 #include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
 
+#define NODE_MULTIPLY_CONNECTED_EXPORT
+
 namespace
 {
 	using Clock = std::chrono::steady_clock;
