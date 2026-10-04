@@ -1186,7 +1186,6 @@ void MorphemeEditorApp::loadFile()
 						this->m_camera->setOffset(Vector3::Zero);
 						this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
 
-						/*
 						MorphemeNetworkInspector* inspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
 						CharacterMotionCtrlBase* motionCtrl = this->m_character->getCharacterMotionCtrl();
 
@@ -1197,9 +1196,8 @@ void MorphemeEditorApp::loadFile()
 						}
 						catch (const std::exception& e)
 						{
-							g_appLog->alertMessage(MsgLevel_Error, "Failed to load morpheme network: %s\n", e.what());
+							//g_appLog->alertMessage(MsgLevel_Error, "Failed to load morpheme network: %s\n", e.what());
 						}
-						*/
 					}
 					pItem->Release();
 				}
