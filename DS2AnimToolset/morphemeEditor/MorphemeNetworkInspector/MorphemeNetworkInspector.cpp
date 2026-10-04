@@ -17,7 +17,7 @@ bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* networkDef, MR::UTILS
 		return false;
 	}
 
-	m_nodeProcessor.preProcessNetwork(networkDef, animFileLookupTable);
+	//m_nodeProcessor.preProcessNetwork(networkDef, animFileLookupTable);
 
 	std::vector<MR::NodeID> controlParamNodeIDs(numControlParams);
 	networkDef->getControlParameterNodeIDs(controlParamNodeIDs.data(), numControlParams);
