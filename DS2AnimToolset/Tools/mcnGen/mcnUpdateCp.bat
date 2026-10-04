@@ -40,7 +40,7 @@ if "%CLEAN%"=="1" (
 )
 
 echo --- 1/5 generating scripts
-"%PYTHON%" "%TOOLS%xml2mcn.py" "%INPUT_XML%" %CPARG% --cp-template
+"%PYTHON%" "%TOOLS%xml2mcn.py" "%INPUT_XML%" %CPARG% --cp-template --cp-only
 if errorlevel 1 (echo xml2mcn failed & exit /b 1)
 if not exist "%BUILD%\%NAME%_rebuild.lua" (echo xml2mcn wrote no scripts & exit /b 1)
 
