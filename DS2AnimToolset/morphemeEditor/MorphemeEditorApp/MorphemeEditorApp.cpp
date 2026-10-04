@@ -30,6 +30,23 @@ namespace
 		return std::filesystem::path(filePath).parent_path().string();
 	}
 
+	// Absolute so it doesn't depend on whatever the process working directory currently is
+	std::wstring getCharacterExportPath(const std::wstring& chrName)
+	{
+		return (std::filesystem::path(getExeRootDir()) / L"Export" / chrName).wstring();
+	}
+
+	// Sets the process working directory and restores the exe root dir on scope exit, including early returns and exceptions
+	class ScopedCurrentPath
+	{
+	public:
+		explicit ScopedCurrentPath(const std::filesystem::path& path) { std::filesystem::current_path(path); }
+		~ScopedCurrentPath() { std::error_code ec; std::filesystem::current_path(getExeRootDir(), ec); }
+
+		ScopedCurrentPath(const ScopedCurrentPath&) = delete;
+		ScopedCurrentPath& operator=(const ScopedCurrentPath&) = delete;
+	};
+
 	float calcTimeActEditorCurrentTime(TrackEditor::EventTrackEditor* eventTrackEditor, float timeActTrackLenght, float fallbackTimeVal)
 	{
 		TrackEditor::Track* timeActTrack = nullptr;
@@ -902,36 +919,33 @@ void MorphemeEditorApp::update(float dt)
 	{
 		this->m_taskFlags.exportAll = false;
 
-		wchar_t exportPath[256];
-		swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->startThread("Export All", &MorphemeEditorApp::exportAll, this, std::wstring(exportPath));
+		g_workerThread.load()->startThread("Export All", &MorphemeEditorApp::exportAll, this, exportPath);
 	}
 
 	if (this->m_taskFlags.exportAndProcess)
 	{
 		this->m_taskFlags.exportAndProcess = false;
 
-		wchar_t exportPath[256];
-		swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->startThread("Export and Process", &MorphemeEditorApp::exportAndProcess, this, std::wstring(exportPath));
+		g_workerThread.load()->startThread("Export and Process", &MorphemeEditorApp::exportAndProcess, this, exportPath);
 	}
 
 	if (this->m_taskFlags.exportTae)
 	{
 		this->m_taskFlags.exportTae = false;
 
-		wchar_t exportPath[256];
-		swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->startThread("Export TimeAct", &MorphemeEditorApp::exportAndCompileTae, this, std::wstring(exportPath));
+		g_workerThread.load()->startThread("Export TimeAct", &MorphemeEditorApp::exportAndCompileTae, this, exportPath);
 	}
 
 	if (this->m_taskFlags.exportModel)
@@ -940,12 +954,11 @@ void MorphemeEditorApp::update(float dt)
 
 		if (this->m_character != nullptr)
 		{
-			wchar_t exportPath[256];
-			swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
+			std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 			std::filesystem::create_directories(exportPath);
 
-			g_workerThread.load()->startThread("Export Model" ,&MorphemeEditorApp::exportModel, this, std::wstring(exportPath));
+			g_workerThread.load()->startThread("Export Model" ,&MorphemeEditorApp::exportModel, this, exportPath);
 		}
 		else
 		{
@@ -959,12 +972,11 @@ void MorphemeEditorApp::update(float dt)
 
 		if (this->m_character != nullptr)
 		{
-			wchar_t exportPath[256];
-			swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
+			std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 			std::filesystem::create_directories(exportPath);
 
-			g_workerThread.load()->startThread("Export Network", &MorphemeEditorApp::exportNetwork, this, std::wstring(exportPath));
+			g_workerThread.load()->startThread("Export Network", &MorphemeEditorApp::exportNetwork, this, exportPath);
 		}
 		else
 		{
@@ -978,12 +990,11 @@ void MorphemeEditorApp::update(float dt)
 
 		if (this->m_character != nullptr && this->m_character->getCharacterMotionCtrl()->getMorphemeCharacter() != nullptr)
 		{
-			wchar_t exportPath[256];
-			swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
+			std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 			
 			std::filesystem::create_directories(exportPath);
 
-			g_workerThread.load()->startThread("Export Animations", &MorphemeEditorApp::exportAnimationsAndMarkups, this, std::wstring(exportPath));
+			g_workerThread.load()->startThread("Export Animations", &MorphemeEditorApp::exportAnimationsAndMarkups, this, exportPath);
 		}
 		else
 		{
@@ -995,24 +1006,22 @@ void MorphemeEditorApp::update(float dt)
 	{
 		this->m_taskFlags.compileNetwork = false;
 
-		wchar_t exportPath[256];
-		swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->startThread("Compile Morpheme Assets", &MorphemeEditorApp::compileMorphemeAssets, this, std::wstring(exportPath));
+		g_workerThread.load()->startThread("Compile Morpheme Assets", &MorphemeEditorApp::compileMorphemeAssets, this, exportPath);
 	}
 
 	if (this->m_taskFlags.compileTaes)
 	{
 		this->m_taskFlags.compileTaes = false;
 
-		wchar_t exportPath[256];
-		swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->startThread("Compile TimeAct", &MorphemeEditorApp::compileTimeActFiles, this, std::wstring(exportPath));
+		g_workerThread.load()->startThread("Compile TimeAct", &MorphemeEditorApp::compileTimeActFiles, this, exportPath);
 	}
 
 #ifdef DEBUG
@@ -1365,7 +1374,7 @@ bool MorphemeEditorApp::exportTimeAct(std::wstring path)
 		if (this->m_character == nullptr)
 			return false;
 
-		std::filesystem::current_path(path);
+		ScopedCurrentPath scopedPath(path);
 
 		TimeAct::TaeExport::TimeActExportXML* tae = this->m_character->getTimeAct();
 
@@ -1377,8 +1386,6 @@ bool MorphemeEditorApp::exportTimeAct(std::wstring path)
 
 		tae->setDstFileName(RString::toNarrow(filename));
 		tae->save();
-
-		std::filesystem::current_path(getExeRootDir());
 
 		return true;
 	}
@@ -1397,7 +1404,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 		if (characterDef == nullptr)
 			return false;
 
-		std::filesystem::current_path(path);
+		ScopedCurrentPath scopedPath(path);
 
 		std::wstring chrName = this->m_character->getCharacterName();
 
@@ -1528,8 +1535,6 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 		g_workerThread.load()->increaseProgressStep();
 		g_workerThread.load()->increaseProgressStep();
-
-		std::filesystem::current_path(getExeRootDir());
 
 		return true;
 	}
@@ -1715,7 +1720,7 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 {
 	try
 	{
-		std::filesystem::current_path(path);
+		ScopedCurrentPath scopedPath(path);
 
 		g_workerThread.load()->addProcess("Export animations", 2);
 
@@ -1751,8 +1756,6 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 		this->exportAnimations(animExportPath);
 
 		g_workerThread.load()->increaseProgressStep();
-
-		std::filesystem::current_path(getExeRootDir());
 	}
 	catch (const std::exception& e)
 	{
@@ -1771,16 +1774,14 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 
 		g_workerThread.load()->addProcess("Exporting model", 1);
 
-		std::filesystem::current_path(path);
+		ScopedCurrentPath scopedPath(path);
 
-		exportFlverToMorphemeBoneMap(model, path + L"morpheme_bone_map.txt");
+		exportFlverToMorphemeBoneMap(model, (std::filesystem::path(path) / L"morpheme_bone_map.txt").wstring());
 
 		FT::FileTranslator fileTranslator;
 		fileTranslator.exportModel(this->m_character, this->m_exportSettings.exportFormat);
 
 		g_workerThread.load()->increaseProgressStep();
-
-		std::filesystem::current_path(getExeRootDir());
 
 		return true;
 	}
@@ -1808,7 +1809,7 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 		GetModuleFileNameA(NULL, exePath, MAX_PATH);
 		std::string exeParentPath = std::filesystem::path(exePath).parent_path().string();
 
-		std::string fullPath = exeParentPath + std::string("\\") + RString::toNarrow(path);
+		std::string fullPath = (std::filesystem::path(exeParentPath) / path).string();
 
 		wchar_t rbName[MAX_PATH];
 		swprintf_s(rbName, L"%s_runtimeBinary", this->m_character->getCharacterName().c_str());
@@ -1896,7 +1897,7 @@ bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
 		return false;
 	}
 
-	std::filesystem::current_path(path);
+	ScopedCurrentPath scopedPath(path);
 
 	g_workerThread.load()->addProcess("Compiling TimeAct files", 3);
 
@@ -1949,8 +1950,6 @@ bool MorphemeEditorApp::compileTimeActFiles(std::wstring path)
 	g_workerThread.load()->setProcessStepName("snd");
 	taeSnd->save(taeName + L"_snd.tae");
 	g_workerThread.load()->increaseProgressStep();
-
-	std::filesystem::current_path(getExeRootDir());
 
 	return true;
 }
