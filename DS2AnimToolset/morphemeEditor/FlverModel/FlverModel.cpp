@@ -1151,6 +1151,8 @@ void FlverModel::transformVertex(int meshIdx, int vertexIndex, const std::vector
         const float weight = constWeights[wt];
         if (weight == 0.f) continue;
 
+		if (boneID >= boneRelativeTransforms.size()) continue;
+
         hasInfluence = true;
         newPos += Vector3::Transform(bindVertex.vertexData.position, boneRelativeTransforms[boneID]) * weight;
         newNorm += Vector3::Transform(bindVertex.vertexData.normal, boneRelativeTransforms[boneID]) * weight;
