@@ -266,9 +266,9 @@ namespace MD
 			nodeDataBlock->writeBool(smoothFloatOperation->m_smoothVel, "SmoothVelocity");
 
 			nodeDataBlock->writeFloat(smoothFloatOperation->m_floatRate, "SmoothTime");
-			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueX, "InitValue_X");
-			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueY, "InitValue_Y");
-			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueZ, "InitValue_Z");
+			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueX, "InitValueX");
+			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueY, "InitValueY");
+			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueZ, "InitValueZ");
 			nodeDataBlock->writeBool(smoothFloatOperation->m_useInitValOnInit, "UseInitValueOnInit");
 
 			return nodeExportXML;

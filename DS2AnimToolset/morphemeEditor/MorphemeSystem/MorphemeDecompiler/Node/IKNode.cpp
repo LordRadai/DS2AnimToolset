@@ -482,9 +482,9 @@ namespace MD
 
 				sprintf_s(paramName, "MidJointReferenceAxisX_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointReferenceAxis.x, paramName);
-				sprintf_s(paramName, "MidJointReferenceAxisX_%d", animSetIndex + 1);
+				sprintf_s(paramName, "MidJointReferenceAxisY_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointReferenceAxis.y, paramName);
-				sprintf_s(paramName, "MidJointReferenceAxisX_%d", animSetIndex + 1);
+				sprintf_s(paramName, "MidJointReferenceAxisZ_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointReferenceAxis.z, paramName);
 
 				sprintf_s(paramName, "EndJointIndex_%d", animSetIndex + 1);
