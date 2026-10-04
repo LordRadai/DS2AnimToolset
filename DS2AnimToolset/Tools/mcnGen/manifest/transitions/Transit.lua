@@ -189,12 +189,10 @@ registerTransition("Transit",
       Stream:writeBool(freezeSource, "FreezeSource")
       Stream:writeBool(freezeDest, "FreezeDest")
 
-      local destinationStartSyncEvent = 0.0
-      if useDestinationStartSyncEventIndex then
-        destinationStartSyncEvent = destinationStartSyncEvent + math.floor(destinationStartSyncEventIndex)
-      end
-      if useDestinationStartSyncEventFraction then
-        destinationStartSyncEvent = destinationStartSyncEvent + destinationStartSyncEventFraction
+      local destinationStartSyncEvent = destinationStartSyncEventIndex
+      
+      if useDestinationStartSyncEventFraction and not useDestinationStartSyncEventIndex then
+        destinationStartSyncEvent = destinationStartSyncEventFraction
       end
 
       if sourceNodeRuntimeID ~= nil then
