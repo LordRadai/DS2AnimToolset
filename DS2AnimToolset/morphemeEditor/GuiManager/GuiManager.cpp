@@ -767,8 +767,8 @@ void GuiManager::update(float dt)
 	this->assetsWindow();
 	this->sceneWindow();
 	this->trackEditorWindow();
-	this->networkPreviewWindow();
-	this->selectedNodeInfoWindow();
+	//this->networkPreviewWindow();
+	//this->selectedNodeInfoWindow();
 
 	this->eventTrackEditorWindow();
 	this->timeActEditorWindow();

@@ -1189,6 +1189,7 @@ void MorphemeEditorApp::loadFile()
 						MorphemeNetworkInspector* inspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
 						CharacterMotionCtrlBase* motionCtrl = this->m_character->getCharacterMotionCtrl();
 
+						/*
 						try
 						{
 							if (inspector)
@@ -1198,6 +1199,7 @@ void MorphemeEditorApp::loadFile()
 						{
 							g_appLog->alertMessage(MsgLevel_Error, "Failed to load morpheme network: %s\n", e.what());
 						}
+						*/
 					}
 					pItem->Release();
 				}
