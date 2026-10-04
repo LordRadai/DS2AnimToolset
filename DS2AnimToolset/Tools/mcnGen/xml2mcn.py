@@ -755,8 +755,21 @@ class Converter:
         with open(lua, 'w', newline='\r\n') as f: f.write('\n'.join(self.lines) + '\n')
         return lua
 
+    def report_missing_cp_config(self):
+        """<name>_cp_config_missing.log: control parameters with no entry in the CP settings file."""
+        missing = [n for n in self.cps if n.name.split('|')[-1] not in self.cp_config]
+        path = os.path.join(self.out_dir, self.name + '_cp_config_missing.log')
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write('# %d of %d control parameters have no entry in the CP settings file; export defaults used\n' % (len(missing), len(self.cps)))
+            for n in missing:
+                d = [float(v) for v in self.xml_default(n)]
+                f.write('%s\t%s\tdefault=%s\n' % (n.name.split('|')[-1], CP_TYPES[n.type], d if len(d) > 1 else d[0]))
+        self.missing_cp = len(missing)
+        return path
+
     def run(self):
         self.analyse(); self.plan_transitions(); self.connections()
+        self.report_missing_cp_config()
         self.lines = []
         self.prologue('_rebuild.log'); self.setup(); self.anim_set_options(); self.requests(); self.control_params()
         self.graph(); self.emit_pins_and_edges(); self.transitions(False); self.default_states()
@@ -928,6 +941,7 @@ class Converter:
         return n
 
     def cp_only(self):
+        self.report_missing_cp_config()
         self.lines = []
         self.prologue('_cparams.log')
         self.emit('TRY("mcn.open", function() return mcn.open(ROOT .. "\\\\" .. NAME .. ".mcn") end)')
@@ -1043,6 +1057,7 @@ def main():
     for u in c.unsupported: print('UNSUPPORTED:', u)
     for u in sorted(c.unmapped): print('UNMAPPED FIELD:', u)
     if cp_config: print('CP config: %d entries, %d used by this network' % (len(cp_config), len(c.cp_used)))
+    print('%d control parameters without a CP config entry -> %s_cp_config_missing.log' % (c.missing_cp, c.name))
 
 
 if __name__ == '__main__':
