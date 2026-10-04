@@ -54,6 +54,7 @@ def lua_val(v):
 class Library:
     def __init__(self, path):
         self.sets = []  # [(name, {index: entry})]
+        self.event_mirrors, self.track_mirrors = [], []   # per set
         if not path or not os.path.exists(path): return
         r = ET.parse(path).getroot()
         for s in r.findall('AnimationSet'):
@@ -64,6 +65,9 @@ class Library:
                     synctrack=e.findtext('syncTrack') or '', format=e.get('format') or 'nsa',
                     options=e.get('options') or '')
             self.sets.append((s.get('name'), entries))
+            # left/right event userdata pairs MirrorTransforms swaps
+            self.event_mirrors.append([(int(m.get('first')), int(m.get('second'))) for m in s.findall('EventMirrorMapping')])
+            self.track_mirrors.append([(m.get('first'), m.get('second')) for m in s.findall('EventTrackMirrorMapping')])
 
 
 def load_rig_joints(path):
@@ -430,7 +434,116 @@ class Converter:
         self.emit('SETS = %s' % lua_val(self.set_names))
         self.emit('TRY("setSelectedAnimSet", function() return setSelectedAnimSet(SET) end)')
         self.emit('LOG("animsets=" .. TS(listAnimSets()) .. " rig=" .. TS(anim.getRigPath(SET)))')
+        self.mirror_mappings()
+        self.joint_limits()
+        # mirror mappings and joint limits live in the rig scene: save them into the .mcarig so later sessions
+        # (stage 2 / 3, which export) load them too
+        for sn in self.set_names:
+            self.call('saveRig %s' % sn, 'anim.saveRig(%s)' % lua_str(sn))
         self.emit()
+
+    def joint_limits(self):
+        """Kinematic joint limits from each set's .mrarig (HeadLook / GunAimIK with ApplyJointLimits use them).
+        anim.createRig makes a rig without limits; they are created with Connect's "Create Joint Limit" command and
+        set to the exported values: TwistLow/High -> TwistAngle (+ TwistOffset), Swing1/2 -> Swing1/2Angle,
+        Orientation -> the limit transform's rotation, OffsetOrientation -> RotationOffset."""
+        sets = []
+        for sn, (sj, sr) in zip(self.set_names, self.set_rigs):
+            if sr is None: continue
+            lims = []
+            for jl in sr.findall('JointLimit'):
+                joint = sj.get(int(jl.get('JointIndex')))
+                if joint is None: continue
+                if (jl.get('JointType') or 'BallSocket') != 'BallSocket':
+                    self.unsupported.append('rig %s: %s joint limit on %s (only BallSocket / twist-swing is rebuilt)' % (sn, jl.get('JointType'), joint))
+                    continue
+                lo, hi = float(jl.get('TwistLow')), float(jl.get('TwistHigh'))
+                q = lambda tag: [float(v) for v in (jl.findtext(tag) or '0, 0, 0, 1').replace(',', ' ').split()]
+                lims.append({'joint': joint, 'twist': hi - lo, 'offset': (hi + lo) / 2,
+                             'swing1': float(jl.get('Swing1')), 'swing2': float(jl.get('Swing2')),
+                             'rot': q('Orientation'), 'off': q('OffsetOrientation')})
+            if lims: sets.append((sn, lims))
+        if not sets: return
+        self.emit('-- joint limits (from each set .mrarig)')
+        self.emit('function JOINTLIMITS(set, wanted)')
+        self.emit('  local app = nmx.Application.new()')
+        self.emit('  local scene = app:getSceneByName("AssetManager")')
+        self.emit('  local root = anim.getRigDataRoot(scene, set)')
+        self.emit('  local function scan()')
+        self.emit('    local joints, limits = {}, {}')
+        self.emit('    local function walk(o)')
+        self.emit('      local c = o:getFirstChild()')
+        self.emit('      while c do')
+        self.emit('        if c:is(nmx.JointNode.ClassTypeId()) then joints[c:getName()] = c end')
+        self.emit('        if c:is(nmx.JointLimitNode.ClassTypeId()) then limits[c:getName()] = c end')
+        self.emit('        walk(c); c = c:getNextSibling()')
+        self.emit('      end')
+        self.emit('    end')
+        self.emit('    walk(root)')
+        self.emit('    return joints, limits')
+        self.emit('  end')
+        self.emit('  local joints, limits = scan()')
+        self.emit('  for i, w in ipairs(wanted) do')
+        self.emit('    local j = joints[w.joint]')
+        self.emit('    if j and not limits[w.joint .. "Limit"] then')
+        self.emit('      local sel = nmx.SelectionList.new()')
+        self.emit('      local inst = j:getFirstInstance()')
+        self.emit('      sel:add(inst and inst:getParent() or j)')
+        self.emit('      app:runCommand("Core", "Create Joint Limit", scene, sel, "Twist Swing")')
+        self.emit('    elseif not j then LOG("FAIL  joint limit: joint " .. w.joint .. " not in rig " .. set); NFAIL = NFAIL + 1 end')
+        self.emit('  end')
+        self.emit('  joints, limits = scan()')
+        self.emit('  local cs, cb = scene:beginChangeBlock(getCurrentFileAndLine())')
+        self.emit('  local done = 0')
+        self.emit('  for i, w in ipairs(wanted) do')
+        self.emit('    local l = limits[w.joint .. "Limit"]')
+        self.emit('    if l then')
+        self.emit('      l:findAttribute("TwistAngle"):setFloat(w.twist)')
+        self.emit('      l:findAttribute("TwistOffset"):setFloat(w.offset)')
+        self.emit('      l:findAttribute("Swing1Angle"):setFloat(w.swing1)')
+        self.emit('      l:findAttribute("Swing2Angle"):setFloat(w.swing2)')
+        self.emit('      l:findAttribute("RotationOffset"):setQuat(nmx.Quat.new(w.off[1], w.off[2], w.off[3], w.off[4]))')
+        self.emit('      l:getParent():setRotation(nmx.Quat.new(w.rot[1], w.rot[2], w.rot[3], w.rot[4]))')
+        self.emit('      done = done + 1')
+        self.emit('    else LOG("FAIL  joint limit on " .. w.joint .. " was not created"); NFAIL = NFAIL + 1 end')
+        self.emit('  end')
+        self.emit('  scene:endChangeBlock(cb, changeBlockInfo("mcnGen joint limits"))')
+        self.emit('  LOG("joint limits " .. set .. ": " .. done .. " of " .. table.getn(wanted))')
+        self.emit('  return done == table.getn(wanted)')
+        self.emit('end')
+        for sn, lims in sets:
+            self.call('joint limits %s' % sn, 'JOINTLIMITS(%s, %s)' % (lua_str(sn), lua_val(lims)))
+
+    def mirror_mappings(self):
+        """Joint and event mirror mappings: anim.createRig makes a rig without them, so MirrorTransforms would
+        mirror every joint in place instead of swapping left and right."""
+        self.emit('-- mirror mappings (joints from each set .mrarig, events from the library)')
+        self.emit('function ADDMIRRORS(set, kind, wanted)')
+        self.emit('  local have = {}')
+        self.emit('  local ok, cur = pcall(anim["listAnimSet" .. kind .. "MirrorMappings"], set)')
+        self.emit('  if ok and type(cur) == "table" then for i, mp in ipairs(cur) do have[tostring(mp.first) .. "|" .. tostring(mp.second)] = true end end')
+        self.emit('  local add = {}')
+        self.emit('  for i, mp in ipairs(wanted) do if not have[tostring(mp.first) .. "|" .. tostring(mp.second)] then table.insert(add, mp) end end')
+        self.emit('  if table.getn(add) == 0 then return true end')
+        self.emit('  return anim["addAnimSet" .. kind .. "MirrorMappings"](set, add)')
+        self.emit('end')
+        for k, (sn, (sj, sr)) in enumerate(zip(self.set_names, self.set_rigs)):
+            if sr is not None and sr.findtext('mirrorPlane') is not None:
+                # 0 = YZ, 1 = ZX, 2 = XY (MirroredAnimMapping::m_axis); a new Connect rig defaults to XY, which
+                # mirrors up/down instead of left/right
+                plane = {0: 'YZ', 1: 'XZ', 2: 'XY'}.get(int(sr.findtext('mirrorPlane')), 'YZ')
+                self.call('mirror plane %s' % sn, 'anim.setAnimSetJointMirrorPlane(%s, %s)' % (lua_str(sn), lua_str(plane)))
+            if sr is not None:
+                pairs = [(sj.get(int(mp.get('first'))), sj.get(int(mp.get('second')))) for mp in sr.findall('JointMirrorMapping')]
+                pairs = [{'first': a, 'second': b} for a, b in pairs if a and b]
+                if pairs:
+                    self.call('joint mirror mappings %s' % sn, 'ADDMIRRORS(%s, "Joint", %s)' % (lua_str(sn), lua_val(pairs)))
+            if k < len(self.lib.event_mirrors) and self.lib.event_mirrors[k]:
+                ev = [{'first': a, 'second': b} for a, b in self.lib.event_mirrors[k]]
+                self.call('event mirror mappings %s' % sn, 'ADDMIRRORS(%s, "EventUserdata", %s)' % (lua_str(sn), lua_val(ev)))
+            if k < len(self.lib.track_mirrors) and self.lib.track_mirrors[k]:
+                tr = [{'first': a, 'second': b} for a, b in self.lib.track_mirrors[k]]
+                self.call('event track mirror mappings %s' % sn, 'ADDMIRRORS(%s, "EventTrack", %s)' % (lua_str(sn), lua_val(tr)))
 
     def requests(self):
         self.emit('-- 2. requests (runtime ids preserved)')
@@ -453,7 +566,7 @@ class Converter:
         cfg = self.cp_config.get(nm, {})
         rng = {k: cfg[k] for k in ('min', 'max') if cfg.get(k) is not None}
         # setRange refuses vector CPs, so their ranges are written into the .mcn by --inject (inject_cp_ranges)
-        if rng and n.type not in VECTOR_CP_TYPES:
+        if rng and n.type in (20, 24, 25):   # bool CPs have no range
             self.call('setRange %s' % nm, 'setRange(%s, %s)' % (key, lua_val({k: float(v) for k, v in rng.items()})))
         vals = self.xml_default(n)   # defaults always come from the export; a 'default' in the CP file is ignored
         if force or any(v != 0 for v in vals):

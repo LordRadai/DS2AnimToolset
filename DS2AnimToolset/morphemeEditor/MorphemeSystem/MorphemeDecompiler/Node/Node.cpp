@@ -101,8 +101,21 @@ namespace MD
 
 				char paramName[256];
 
+				// The markup take written for this animation gets its clip range from the first node that plays it
+				// (exportAnimMarkup). A node whose clip matches that is a marker range (1); any other node must be a
+				// custom range (3), or the asset compiler would give it the take's clip instead of its own.
+				int clipRangeMode = 1;
+				MR::NodeDef* markupNode = MorphemeUtils::getAnimNodeByAnimID(netDef, sourceAnim->m_animAssetID);
+				if (markupNode && markupNode != nodeDef)
+				{
+					MR::AttribDataSourceAnim* markupAnim = static_cast<MR::AttribDataSourceAnim*>(markupNode->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM));
+					if (markupAnim && (markupAnim->m_clipStartFraction != sourceAnim->m_clipStartFraction ||
+						markupAnim->m_clipEndFraction != sourceAnim->m_clipEndFraction))
+						clipRangeMode = 3;
+				}
+
 				sprintf_s(paramName, "ClipRangeMode_%d", setIndex + 1);
-				nodeDataBlock->writeInt(1, paramName);
+				nodeDataBlock->writeInt(clipRangeMode, paramName);
 
 				sprintf_s(paramName, "ClipStartFraction_%d", setIndex + 1);
 				nodeDataBlock->writeFloat(sourceAnim->m_clipStartFraction, paramName);

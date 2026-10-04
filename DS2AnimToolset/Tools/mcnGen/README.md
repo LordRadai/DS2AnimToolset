@@ -75,6 +75,18 @@ It runs `mcnGen.bat` on each `cXXXX` subfolder (`c` and four digits) that has a 
 when one fails, and ends with a count of built / failed / skipped characters and the names of the
 failed ones.
 
+### A clean Connect project: `mcnPack.bat`
+
+```bat
+mcnPack.bat E:\Export\c0001                  :: -> E:\Export\c0001_project
+mcnPack.bat E:\Export\c0001 D:\Projects\c0001
+```
+
+Copies only what morphemeConnect needs out of a built character folder: `<chr>.mcn`, `<chr>.mcp`, the
+`.mcarig` and `.mcskin` of every animation set, and `motion_xmd`, `model_xmd`, `morphemeMarkup`. The export
+XMLs, rigs (`.mrarig`), names table and `build\` stay behind. Paths in the project are `$(RootDir)`-relative,
+so the folder can live anywhere. It stops if any of those files is missing.
+
 ### Step by step
 
 If a network needs no stage 2 (no ActiveStates and no state pass-down pins), step 1 writes only
