@@ -1,7 +1,7 @@
 """Read node/condition/transition attribute definitions from morphemeConnect's Lua manifests."""
 import glob, os, re
 
-MANIFEST_DIR = r'C:\Program Files (x86)\NaturalMotion\morphemeConnect 3.6.2\scripts\manifest'
+MANIFEST_DIR = r'manifest'
 
 
 def _attributes_block(body):
