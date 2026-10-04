@@ -124,12 +124,12 @@ int main(int argc, char* argv[])
 	std::filesystem::path filepath = argv[1];
 
 	g_appLog->debugMessage(MsgLevel_Info, "Input: %s\n", filepath.string().c_str());
-	std::string projectName = filepath.filename().string();
+	std::wstring projectName = filepath.filename().wstring();
 
 	wchar_t rbPath[256];
-	swprintf(rbPath, 256, L"%ws_runtimeBinary", projectName.c_str());
+	swprintf(rbPath, 256, L"%s_runtimeBinary", projectName.c_str());
 
-	std::filesystem::path runtimeBinary = filepath.wstring() + rbPath;
+	std::filesystem::path runtimeBinary = filepath.wstring() + L"\\" + rbPath;
 
 	if (!std::filesystem::exists(runtimeBinary))
 	{
