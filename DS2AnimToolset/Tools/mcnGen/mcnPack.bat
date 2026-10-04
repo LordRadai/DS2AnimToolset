@@ -36,7 +36,8 @@ for %%D in (motion_xmd model_xmd morphemeMarkup) do (
     if errorlevel 8 goto :copyfail
 )
 
-for /f %%N in ('dir /b "%DST%\*.mcarig" ^| find /c /v ""') do set "RIGS=%%N"
+set /a RIGS=0
+for %%R in ("%DST%\*.mcarig") do set /a RIGS+=1
 echo copied %NAME%.mcn, %NAME%.mcp, %RIGS% rig(s) with skins, motion_xmd, model_xmd, morphemeMarkup
 exit /b 0
 
