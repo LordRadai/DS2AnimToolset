@@ -201,13 +201,11 @@ The report has these sections:
   `HipIndex`/`KneeIndex`/`FootPivotResistance`, HipsIK ankle indices, TwoBoneIK extras, AnimWithEvents
   `ClipRangeMode`.
 
-Known remaining differences on c1020 (58):
-
-* `DestinationStartSyncEvent`: transitions where DS2 exported 1.0 or 2.0 with every sync flag off. Vanilla
-  always writes 0 in that case. The value is unused at runtime.
-* Two runtime parents (SM_BasicMove, FilterTransforms_944): matching them would need SM_BasicMove one level
-  deeper, which would change its name.
-* CP defaults taken from `ds2_control_parameters.json`.
+Remaining differences (c0001 21, c1020 2, c3010 1) are all control parameter defaults: `cp_config.json`
+overrides the export's default, so these change runtime behaviour unless the file's value is intended.
+Structure, attributes, transitions and conditions match the game exactly, given DS2's manifest changes
+(`TransitBase.lua` destination sub states, `Transit.lua` DestinationStartSyncEvent, False condition,
+TwoBoneIK flags).
 
 ---
 

@@ -83,7 +83,8 @@ class Hierarchy:
         for n in nodes.values():
             if n.attrs.get('downstreamMultiplyConnected') != 'true' or n.type in CP_TYPES or n.type in DATA_TYPES: continue
             p = nodes.get(n.parent)
-            if p is None or p.type == SM or n.id in self.state_owner or n.id in named: continue   # named nodes stay put
+            # named nodes are members too: build() moves one back beside its requester when its path says so
+            if p is None or p.type == SM or n.id in self.state_owner: continue
             groups[n.parent].append(n.id)
         for P, members in groups.items():
             mset = set(members)
@@ -166,7 +167,17 @@ class Hierarchy:
                 if nodes[i].type not in CP_TYPES and nodes[i].type not in TRANSITS and nodes[i].type != NETWORK:
                     self.graph(i)
             if self.state_nesting(): continue
-            # names are the ground truth: drop nested blend trees that a named path shows were not there
+            # names are the ground truth: a named member of a nesting chain whose path puts it beside its
+            # requester stays there (the rest of the chain keeps its blend trees) ...
+            unnest = self.contradicted_members(named)
+            if unnest:
+                for i in sorted(unnest):
+                    key = self.override[i][1:3]
+                    self.log.append('named node %d kept beside requester %d (its path has no nesting level)' % (i, key[0]))
+                    del self.override[i]
+                    self.compact_nesting(key)
+                continue
+            # ... and nested blend trees that a named path shows were not there at all are dropped
             drop = self.contradicted_nesting(named, state_names or {})
             if not drop: break
             for key in sorted(drop):
@@ -252,6 +263,27 @@ class Hierarchy:
             self.override[R] = ('nbt', P, R, 1)
             self.log.append('state %d of %d: nested blend tree for multiply connected %r' % (R, P, sorted(keep)))
         return bool(outside)
+
+    def contradicted_members(self, named):
+        """Named nodes nested by nested_containers() whose path matches the level beside their requester."""
+        out = set()
+        for i, name in named.items():
+            g = self.override.get(i)
+            if not g or g[0] != 'nbt' or i == g[2]: continue
+            P = g[1]
+            beside = ROOT if self.nodes[P].type == NETWORK else self.graph(P)
+            if len(self.chain_of_graph(beside)) + 1 == len(name.split('|')):
+                out.add(i)
+        return out
+
+    def compact_nesting(self, key):
+        """Renumber a nesting chain's levels after members left it, so no level is an empty wrapper."""
+        P, R = key
+        levels = sorted({g[3] for g in self.override.values() if g and g[0] == 'nbt' and g[1:3] == key})
+        remap = {l: k + 1 for k, l in enumerate(levels)}
+        for m, g in list(self.override.items()):
+            if g and g[0] == 'nbt' and g[1:3] == key: self.override[m] = ('nbt', P, R, remap[g[3]])
+        self.nbt_depth[key] = len(levels)
 
     def contradicted_nesting(self, named, state_names):
         """(requester, input) nesting groups on the chain of a named node or state entry whose path has exactly
