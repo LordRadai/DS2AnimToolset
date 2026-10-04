@@ -28,6 +28,7 @@ Put the decompiler output for one character in a folder:
 ```
 c1020\
   c1020.xml             network export (required)
+  NodeIDNamesTable.xml  node names and state names (the only source of names, see below)
   c1020_Library.xml     animation library: AnimIndex -> anim file, take, sync track, format, options
   c1020_Preset.xml
   c1020_0.mrarig        exported rig: joint index -> name, hip / trajectory joints
@@ -52,39 +53,16 @@ Edit `tools\rebuild_config.ini`:
 INPUT_XML=E:\Claude\c1020\c1020.xml
 CONNECT=C:\Program Files (x86)\NaturalMotion\morphemeConnect 3.6.2\bin\morphemeConnect.exe
 PYTHON=python
-CP_CONFIG=          ; empty = tools\ds2_control_parameters.json
+CP_CONFIG=          ; empty = tools\cp_config.json
 CLEAN=1             ; 1 = delete the previous .mcn / paths first
 ```
 
-Then run `tools\rebuild.bat`, or `tools\rebuild.bat other_config.ini` to use another config, for example
+Then run `tools\mcnGen.bat`, or `tools\mcnGen.bat other_config.ini` to use another config, for example
 one per character. It refuses to start if Connect is open. It runs all five steps below (skipping 3 and 4
 when not needed), prints the result of each stage and the diff summary, writes `build\diff_full.txt`, and
 runs the layout check.
 
 ### Step by step
-
-Run from `E:\Claude`, with `CONNECT` set to
-`"C:\Program Files (x86)\NaturalMotion\morphemeConnect 3.6.2\bin\morphemeConnect.exe"`:
-
-```bat
-:: 1. generate the project and the scripts
-python tools\xml2mcn.py c1020\c1020.xml
-
-:: 2. stage 1: rig, requests, control parameters, the whole graph, attributes, connections,
-::    state-to-state transitions; saves c1020.mcn and build\c1020_paths.lua
-%CONNECT% -nogui -script E:\Claude\c1020\build\c1020_rebuild.lua
-
-:: 3. patch c1020.mcn: ActiveState nodes, pass-down pins on states, transitions to self, CP groups
-python tools\xml2mcn.py c1020\c1020.xml --inject
-
-:: 4. stage 2: connections through state pins, transitions from ActiveStates, weights, layout;
-::    saves c1020.mcn and re-exports it to build\roundtrip\c1020.xml
-%CONNECT% -nogui -script E:\Claude\c1020\build\c1020_stage2.lua
-
-:: 5. check the round trip
-python tools\xmldiff.py c1020\c1020.xml c1020\build\roundtrip\c1020.xml --paths c1020\build\c1020_paths.lua > c1020\build\diff_full.txt
-python tools\layoutcheck.py c1020\c1020.mcn
-```
 
 If a network needs no stage 2 (no ActiveStates and no state pass-down pins), step 1 writes only
 `_rebuild.lua`, which exports at the end. Skip steps 3 and 4.
@@ -150,7 +128,13 @@ you can add them (`--cp-template` adds them for you, with `null` ranges).
 
 Every Connect export name is a path (`SM_Main|BT_BaseAct|SM_BasicMove`), so the path *is* the hierarchy.
 
-* **Named nodes** (names stored in the NMB) keep their exact names. This matters because DS2 looks nodes up
+* **Names come only from `NodeIDNamesTable.xml`** next to the export; the names inside the export XML are
+  ignored. Its `Node` entries give node names (empty = unnamed). Its `StateNode` entries name the
+  container holding a state's root node: for a BlendTree state that is the state itself (`...|BT_Idle`,
+  which the compiled network has flattened away), for a state machine state it is the owning state
+  machine, or the BlendTree wrapping it when the path has one more level. Without the table, the export's
+  own names are used as before.
+* **Named nodes** keep their exact names. This matters because DS2 looks nodes up
   by name. Node 0 is always `mainNetwork`.
 * **When the export has names for every node** (older decompiler output), those paths are used as given.
 * **When most nodes are unnamed**, `hierarchy.py` rebuilds the tree from the runtime data:
@@ -162,7 +146,8 @@ Every Connect export name is a path (`SM_Main|BT_BaseAct|SM_BasicMove`), so the 
     nests one blend tree per link. In both cases the consumers are reached through one-to-many pass-down
     pins, which is how Connect stores multi-connections.
   * Operators go to the lowest graph above all their consumers.
-  * Container names come from named paths wherever these pass through them (`SubAct`, `BT_MoveJump`, ...).
+  * Container names come from named node paths and `StateNode` paths wherever these pass through them
+    (`SubAct`, `BT_MoveJump`, `BT_Idle`, ...).
     Otherwise they get generated names: `StateMachine_<id>`, `BlendTree_<root id>_<n>`, `<Type>_<id>`.
   * **AnimWithEvents nodes are named after their animation file.** Transitions are named
     `<source state>_<destination state>`, or `ActiveState_<destination>`.

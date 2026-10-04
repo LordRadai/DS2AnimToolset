@@ -31,12 +31,13 @@ tasklist /FI "IMAGENAME eq morphemeConnect.exe" 2>nul | find /I "morphemeConnect
 if not errorlevel 1 (echo morphemeConnect is running - close it and run again. & exit /b 1)
 
 if "%CLEAN%"=="1" (
-    del /q "%DIR%\%NAME%.mcn" "%BUILD%\%NAME%_paths.lua" "%BUILD%\%NAME%_stage2.lua" 2>nul
+    del /q "%DIR%\%NAME%.mcn" "%BUILD%\%NAME%_paths.lua" "%BUILD%\%NAME%_rebuild.lua" "%BUILD%\%NAME%_stage2.lua" 2>nul
 )
 
 echo --- 1/5 generating scripts
 "%PYTHON%" "%TOOLS%xml2mcn.py" "%INPUT_XML%" %CPARG%
 if errorlevel 1 (echo xml2mcn failed & exit /b 1)
+if not exist "%BUILD%\%NAME%_rebuild.lua" (echo xml2mcn wrote no scripts & exit /b 1)
 
 echo --- 2/5 Connect stage 1
 "%CONNECT%" -nogui -script "%BUILD%\%NAME%_rebuild.lua"

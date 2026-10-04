@@ -79,6 +79,16 @@ class Converter:
         self.cp_config, self.cp_used = cp_config or {}, set()
         self.root, self.nodes, self.msgs = mcnxml.load(xml_path)
         self.name = self.root.get('name') or os.path.splitext(os.path.basename(xml_path))[0]
+        # node names come only from NodeIDNamesTable.xml next to the export (the export's own names are ignored)
+        self.state_names = {}   # (state machine id, state root id) -> path of the container holding the root
+        tbl = os.path.join(os.path.dirname(os.path.abspath(xml_path)), 'NodeIDNamesTable.xml')
+        if os.path.exists(tbl):
+            t = ET.parse(tbl).getroot()
+            names = {int(e.get('NodeID')): e.get('Name') or '' for e in t.findall('Node')}
+            for n in self.nodes.values(): n.name = names.get(n.id, '')
+            for e in t.findall('StateNode'):
+                if e.get('Name'):
+                    for pe in e.findall('ParentNode'): self.state_names[(int(pe.get('NodeID')), int(e.get('NodeID')))] = e.get('Name')
         self.lib, self.joints, self.rig_root, self.out_dir, self.model = lib, joints, rig_root, out_dir, model
         # generation-only files (scripts, logs, paths, round-trip export) stay out of the project folder
         self.build_dir = os.path.join(out_dir, 'build')
@@ -187,7 +197,7 @@ class Converter:
             return os.path.splitext(re.split(r'[\\/]', e['filename'])[-1])[0] if e else None
         named = {i: n.name for i, n in self.nodes.items() if n.name and n.type not in CP_TYPES and n.type != NETWORK_TYPE}
         h = hierarchy.Hierarchy(self.nodes, self.root_id, self.spec, anim_name)
-        paths = h.build(named)
+        paths = h.build(named, self.state_names)
         for i, p in paths.items():
             if i in named and named[i] != p: self.unsupported.append('named node %d %s placed as %s' % (i, named[i], p))
             self.nodes[i].name = named.get(i, p)
@@ -1022,7 +1032,7 @@ def main():
     ap.add_argument('--inject', action='store_true', help='add ActiveStates, state pass-down pins and CP groups to the stage-1 .mcn')
     ap.add_argument('--cp-config', default=DEFAULT_CP_CONFIG,
                     help='JSON of control parameter settings by name: {"Name": {"group": g, "min": x, "max": y, "default": z or [x, y, z]}}')
-    ap.add_argument('--cp-template', action='store_true', help='add the CPs of this network to --cp-config')
+    ap.add_argument('--cp-template', action='store_true', help='add the CPs of this network to --cp-config, then run as usual')
     ap.add_argument('--cp-only', action='store_true', help='write <name>_cparams.lua (and CP groups) for the existing .mcn')
     a = ap.parse_args()
     cp_config = {}
@@ -1045,9 +1055,11 @@ def main():
         model = dst if os.path.exists(dst) else None
     c = Converter(a.xml, lib, joints, rig_root, os.path.abspath(a.out_dir or base), model, cp_config)
     if a.cp_template:
+        # add this network's CPs to the settings file, then carry on with the normal run using it
         c.analyse()
         print('%s now lists %d control parameters' % (a.cp_config, c.write_cp_template(a.cp_config)))
-        return
+        cp_config = {k: v for k, v in json.load(open(a.cp_config, encoding='utf-8')).items() if not k.startswith('_')}
+        c = Converter(a.xml, lib, joints, rig_root, os.path.abspath(a.out_dir or base), model, cp_config)
     luas = c.run()
     mcn = os.path.join(c.out_dir, c.name + '.mcn')
     if a.cp_only:

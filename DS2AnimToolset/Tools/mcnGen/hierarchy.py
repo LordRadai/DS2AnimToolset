@@ -153,8 +153,9 @@ class Hierarchy:
         return common[0] if common else ROOT
 
     # ---------------------------------------------------------------- naming
-    def build(self, named):
-        """named: {node id: export name} from the NMB.  Returns {node id: path}."""
+    def build(self, named, state_names=None):
+        """named: {node id: export name}; state_names: {(sm id, state root id): path of the container holding
+        the root} (NodeIDNamesTable StateNode entries).  Returns {node id: path}."""
         nodes = self.nodes
         self.nested_containers(set(named))
         for i in nodes:
@@ -176,12 +177,23 @@ class Hierarchy:
                 if len(comps) != len(chain):
                     self.log.append('named node %d %s: %d path components but %d structural levels %r' % (nid, name, len(comps), len(chain), chain))
                     continue
-            for ent, comp in zip(chain, comps):
-                tgt = self.sm_name if ent[0] == 'sm' else self.state_name
-                key = ent[1] if ent[0] == 'sm' else (ent[1], ent[2])
-                if tgt.get(key, comp) != comp:
-                    self.log.append('conflicting names for %r: %s vs %s' % (ent, tgt[key], comp))
-                tgt[key] = comp
+            self.assign(chain, comps)
+        # state entries name the container holding the state's root: the BlendTree state itself, or for a
+        # state machine state the SM that owns it (or, one level deeper, the BlendTree wrapping it)
+        for (sm, r), name in sorted((state_names or {}).items()):
+            if sm not in self.sms or self.state_owner.get(r) != sm:
+                self.log.append('state entry %d in %d: not a state of that state machine' % (r, sm)); continue
+            comps = name.split('|')
+            if r in self.sms:
+                base = self.chain(sm)
+                if len(comps) == len(base) + 1: self.wrapped.add(r)
+                chain = base if len(comps) == len(base) else self.chain_of_graph(('state', sm, r))
+            else:
+                chain = self.chain_of_graph(('state', sm, r))
+            if len(comps) != len(chain):
+                self.log.append('state entry %d %s: %d path components but %d structural levels' % (r, name, len(comps), len(chain)))
+                continue
+            self.assign(chain, comps)
         paths = {i: self.path(i) for i in nodes if nodes[i].type not in CP_TYPES + TRANSITS and nodes[i].type != NETWORK}
         for t in nodes.values():                 # transitions: '<source state>_<destination state>' in their SM
             if t.type not in TRANSITS: continue
@@ -191,6 +203,15 @@ class Hierarchy:
             dname = self.state_path(sm, dst).split('|')[-1] if dst in self.state_owner else 'Unknown'
             paths[t.id] = '%s|%s_%s' % (self.path(sm), sname, dname)
         return paths
+
+    def assign(self, chain, comps):
+        for ent, comp in zip(chain, comps):
+            if ent[0] not in ('sm', 'state'): continue
+            tgt = self.sm_name if ent[0] == 'sm' else self.state_name
+            key = ent[1] if ent[0] == 'sm' else (ent[1], ent[2])
+            if tgt.get(key, comp) != comp:
+                self.log.append('conflicting names for %r: %s vs %s' % (ent, tgt[key], comp))
+            tgt[key] = comp
 
     def state_path(self, sm, rid):
         if rid in self.sms and rid not in self.wrapped: return self.path(rid)

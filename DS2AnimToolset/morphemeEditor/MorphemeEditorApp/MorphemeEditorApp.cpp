@@ -199,7 +199,7 @@ namespace
 			}
 			else
 			{
-				tinyxml2::XMLElement* elem = root->InsertNewChildElement("StateMachineState");
+				tinyxml2::XMLElement* elem = root->InsertNewChildElement("StateNode");
 
 				const MR::NodeDef* parentNodeDef = netDef->getNodeDef(nodeDef->getParentNodeID());
 
@@ -212,6 +212,52 @@ namespace
 				parentData->SetAttribute("NodeID", nodeDef->getParentNodeID());
 				parentData->SetAttribute("NodeTypeID", parentNodeDef->getNodeTypeID());
 				parentData->SetAttribute("Name", nodeIDNamesTable->getStringForID(nodeDef->getParentNodeID()));
+			}
+		}
+
+		xmlDoc.InsertEndChild(root);
+		xmlDoc.SaveFile(RString::toNarrow(path).c_str());
+	}
+
+	void dumpControlParametersUsageData(MR::NetworkDef* netDef, std::wstring path)
+	{
+		tinyxml2::XMLDocument xmlDoc;
+		tinyxml2::XMLElement* root = xmlDoc.NewElement("ControlParamUsage");
+
+		const NMP::IDMappedStringTable* nodeIDNamesTable = netDef->getNodeIDNamesTable();
+
+		for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
+		{
+			const MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+
+			if (nodeDef->getNodeFlags() & MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM)
+				continue;
+
+			std::vector<const MR::NodeDef*> connectedCPs;
+			for (size_t j = 0; j < nodeDef->getNumInputCPConnections(); j++)
+			{
+				const MR::NodeID cpNodeID = nodeDef->getInputCPConnectionSourceNodeID(j);
+
+				if (cpNodeID != MR::INVALID_NODE_ID)
+					connectedCPs.push_back(netDef->getNodeDef(cpNodeID));
+			}
+
+			tinyxml2::XMLElement* nodeElem = root->InsertNewChildElement("Node");
+
+			if (connectedCPs.size())
+			{
+				nodeElem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(i));
+				nodeElem->SetAttribute("NodeTypeID", nodeDef->getNodeTypeID());
+				nodeElem->SetAttribute("Name", nodeIDNamesTable->getEntryString(i));
+			}
+
+			for (size_t j = 0; j < connectedCPs.size(); j++)
+			{
+				tinyxml2::XMLElement* elem = nodeElem->InsertNewChildElement("InputCP");
+
+				elem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(connectedCPs[j]->getNodeID()));
+				elem->SetAttribute("NodeTypeID", connectedCPs[j]->getNodeTypeID());
+				elem->SetAttribute("Name", nodeIDNamesTable->getEntryString(connectedCPs[j]->getNodeID()));
 			}
 		}
 
@@ -1461,8 +1507,9 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 		MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
-#ifdef EXPORT_DEBUG_NETWORK_INFO
 		dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
+		dumpControlParametersUsageData(netDef, L"CPConnections.xml");
+#ifdef EXPORT_DEBUG_NETWORK_INFO
 		dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
 		dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
 

@@ -2,8 +2,8 @@
   "StartupType": {
     "type": "Int",
     "group": null,
-    "min": null,
-    "max": null,
+    "min": -1,
+    "max": 99999999,
     "default": -1.0
   },
   "FB_Speed": {
@@ -101,14 +101,14 @@
     "type": "Float",
     "group": "Attack",
     "min": 0,
-    "max": 9999999999,
+    "max": 99999999,
     "default": 0.0
   },
   "AttackCategory_Ene": {
     "type": "Float",
     "group": "Attack",
     "min": 0,
-    "max": 9999999999,
+    "max": 99999999,
     "default": 0.0
   },
   "IsBladeDash": {
@@ -393,7 +393,7 @@
     "type": "Int",
     "group": "Move",
     "min": 0,
-    "max": 999999999,
+    "max": 99999999,
     "default": 0.0
   },
   "IsFloating": {
@@ -862,5 +862,112 @@
     "min": -180,
     "max": 180,
     "default": 0.0
+  },
+  "PitchAnim": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1,
+    "default": 0.0
+  },
+  "PitchAnim_Speed": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 100,
+    "default": 0.0
+  },
+  "RollAnim": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1,
+    "default": 0.0
+  },
+  "RollAnim_Speed": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 100,
+    "default": 0.0
+  },
+  "Head": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null,
+    "default": 1.0
+  },
+  "MoveHit_Position": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000,
+    "default": [
+      0.0,
+      -0.10000000149011612,
+      -0.15000000596046448
+    ]
+  },
+  "MoveHit_Rotation": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000,
+    "default": [
+      5.0,
+      15.0,
+      -15.0
+    ]
+  },
+  "MoveHit_Weight": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1,
+    "default": 0.0
+  },
+  "Dmg_Position": {
+    "type": "vector3",
+    "group": "Damage",
+    "min": -1000,
+    "max": 1000,
+    "default": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "Dmg_Rotation": {
+    "type": "vector3",
+    "group": "Damage",
+    "min": -1000,
+    "max": 1000,
+    "default": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "ParryStance": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1,
+    "default": 0.0
+  },
+  "UnevenTerrain_Prediction": {
+    "type": "bool",
+    "group": null,
+    "min": 0,
+    "max": 1,
+    "default": 0.0
+  },
+  "WepHandWeight": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1,
+    "default": 1.0
   }
 }
