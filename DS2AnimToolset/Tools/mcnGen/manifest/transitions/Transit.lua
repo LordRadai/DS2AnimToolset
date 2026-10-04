@@ -56,7 +56,7 @@ registerTransition("Transit",
         helptext = ""
       },
       {
-        name = "DestinationStartSyncEventIndex", type = "float", value = 0.0, min = 0.0,
+        name = "DestinationStartSyncEvent", type = "float", value = 0.0, min = 0.0,
         helptext = ""
       },
       {
@@ -175,7 +175,7 @@ registerTransition("Transit",
       local sphericalTrajPos = getAttribute(transition, "SphericallyInterpolateTrajectoryPosition")
       local deadblendBreakoutToSource = getAttribute(transition, "DeadblendBreakoutToSource")
       local destinationStartFraction = getAttribute(transition, "DestinationStartFraction")
-      local destinationStartSyncEventIndex = getAttribute(transition, "DestinationStartSyncEventIndex")
+      local destinationStartSyncEventIndex = getAttribute(transition, "DestinationStartSyncEvent")
       local destinationStartSyncEventFraction = getAttribute(transition, "DestinationStartSyncEventFraction")
       local useDestinationStartFraction = getAttribute(transition, "UseDestinationStartFraction")
       local useDestinationStartSyncEventIndex = getAttribute(transition, "UseDestinationStartSyncEventIndex")
@@ -298,7 +298,7 @@ registerTransition("Transit",
             local deprecated = string.format("%s.%s", transition, attribute)
 
             local deprecatedValue = getAttribute(deprecated)
-            setAttribute(string.format("%s.DestinationStartSyncEventIndex", transition), math.floor(deprecatedValue))
+            setAttribute(string.format("%s.DestinationStartSyncEvent", transition), math.floor(deprecatedValue))
             setAttribute(string.format("%s.DestinationStartSyncEventFraction", transition), deprecatedValue - math.floor(deprecatedValue))
 
             table.insert(deprecatedAttributes, attribute)
@@ -340,7 +340,7 @@ if not mcn.inCommandLineMode() then
         title = "Destination Start Point",
         usedAttributes = {
           "DestinationStartFraction",
-          "DestinationStartSyncEventIndex",
+          "DestinationStartSyncEvent",
           "DestinationStartSyncEventFraction",
           "UseDestinationStartFraction",
           "UseDestinationStartSyncEventIndex",

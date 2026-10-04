@@ -65,59 +65,36 @@ validateDestinationSubState = buildValidateDestinationSubState()
 -- serialize the destination sub state of a transition
 local function buildSerializeDestinationSubState()
   local serializeDestinationSubState = function(transition, stream)
-    local runtimeIds = { }
+    -- State machines nested in blend trees add no pair of their own.
+    local parents, states = { }, { }
 
     local destNodesTable = listConnections{ Object= transition, Upstream = false, Downstream = true, ResolveReferences = true }
     local destNodeName = destNodesTable[1]
-    local destNodeRuntimeID = getRuntimeID(destNodeName)
 
     local destinationSubState = getAttribute(transition, "DestinationSubState")
-    if destinationSubState then
-      if type(destinationSubState) == "string" and string.len(destinationSubState) > 0 then
-        while destinationSubState ~= destNodeName do
-          local parent = getParent(destinationSubState)
-          local parentType, parentManifestType = getType(parent)
-          local _, manifestType = getType(destinationSubState)
-          local parentIsBlendTree = kBlendTreeTypes[parentType] == true
-          local parentGraphIsStateMachine = parentIsBlendTree and (kStateMachineManifestTypes[parentManifestType] == true)
-          local graphIsStateMachine = parentIsBlendTree and (kStateMachineManifestTypes[manifestType] == true)
-          if (not parentIsBlendTree) or parentGraphIsStateMachine then
-            table.insert(runtimeIds, 1, getRuntimeID(destinationSubState))
-          elseif graphIsStateMachine then
-            table.insert(runtimeIds, 1, getRuntimeID(destinationSubState))
-          end
-          destinationSubState = parent
+    if type(destinationSubState) == "string" and string.len(destinationSubState) > 0 then
+      while destinationSubState ~= destNodeName do
+        local parent = getParent(destinationSubState)
+        local parentType, parentManifestType = getType(parent)
+        local parentIsBlendTree = kBlendTreeTypes[parentType] == true
+        local parentGraphIsStateMachine = parentIsBlendTree and (kStateMachineManifestTypes[parentManifestType] == true)
+        if (not parentIsBlendTree) or parentGraphIsStateMachine then
+          table.insert(parents, 1, getRuntimeID(parent))
+          table.insert(states, 1, getRuntimeID(destinationSubState))
         end
+        destinationSubState = parent
       end
     end
 
-    local count = table.getn(runtimeIds)
-    if count == 0 then
-      stream:writeInt(0, "DestinationSubStateCount")
-    else
-      local destNodeType = getType(destNodeName)
-      local isBlendTree = kBlendTreeTypes[destNodeType] == true
-      
-      -- if the root is not a blend tree then we add it as the last parent
-      if not isBlendTree then
-        table.insert(runtimeIds, 1, destNodeRuntimeID)
-        count = count + 1
-      end
-      
-      count = count - 1
-      stream:writeInt(count, "DestinationSubStateCount")
-      if count > 0 then
-        for i = 1, count do
-          -- If the substate that we are trying to transit to is in a referenced network and does not have weight pins
-          -- correctly connected the runtimeId's become nil and would cause a lua error
-          if runtimeIds[i] and runtimeIds[i + 1] then
-            stream:writeNetworkNodeId(runtimeIds[i], string.format("DestinationSubStateParentID_%d", i - 1))
-            stream:writeNetworkNodeId(runtimeIds[i + 1], string.format("DestinationSubStateID_%d", i - 1))
-          end
-        end
+    local count = table.getn(states)
+    stream:writeInt(count, "DestinationSubStateCount")
+    for i = 1, count do
+      -- a sub state in a referenced network without connected weight pins has no runtime ids
+      if parents[i] and states[i] then
+        stream:writeNetworkNodeId(parents[i], string.format("DestinationSubStateParentID_%d", i - 1))
+        stream:writeNetworkNodeId(states[i], string.format("DestinationSubStateID_%d", i - 1))
       end
     end
-    
   end
   return serializeDestinationSubState
 end

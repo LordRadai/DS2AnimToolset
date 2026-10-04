@@ -686,11 +686,10 @@ class Converter:
             self.set_attr(me, 'DurationInTime', float(g('DurationInTime', 0.0)))
             self.set_attr(me, 'DestinationStartFraction', float(g('DestinationStartFraction', 0.0)))
             ev = float(g('DestinationStartSyncEvent', 0.0))
-            # export = (index if UseIndex) + (fraction if UseFraction)
-            if g('UseDestinationStartSyncEventIndex'): idx, frac = math.floor(ev), ev - math.floor(ev)
-            else: idx, frac = 0.0, ev
-            self.set_attr(me, 'DestinationStartSyncEventIndex', float(idx))
-            self.set_attr(me, 'DestinationStartSyncEventFraction', float(frac))
+            # DS2's Transit.lua keeps the whole value (index + fraction) in DestinationStartSyncEvent; the fraction
+            # attribute still feeds the fraction-only mode
+            self.set_attr(me, 'DestinationStartSyncEvent', ev)
+            self.set_attr(me, 'DestinationStartSyncEventFraction', float(ev - math.floor(ev)) if g('UseDestinationStartSyncEventIndex') else ev)
         else:
             self.set_attr(me, 'DurationInEvents', float(g('DurationInEvents', 0.0)))
             for a in ('DestEventSequenceOffset', 'DestStartEventIndex'):
