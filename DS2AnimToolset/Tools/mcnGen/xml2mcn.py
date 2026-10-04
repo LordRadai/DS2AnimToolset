@@ -453,7 +453,7 @@ class Converter:
         cfg = self.cp_config.get(nm, {})
         rng = {k: cfg[k] for k in ('min', 'max') if cfg.get(k) is not None}
         # setRange refuses vector CPs, so their ranges are written into the .mcn by --inject (inject_cp_ranges)
-        if rng and n.type not in VECTOR_CP_TYPES:
+        if rng and n.type in (20, 24, 25):   # bool CPs have no range
             self.call('setRange %s' % nm, 'setRange(%s, %s)' % (key, lua_val({k: float(v) for k, v in rng.items()})))
         vals = self.xml_default(n)   # defaults always come from the export; a 'default' in the CP file is ignored
         if force or any(v != 0 for v in vals):
