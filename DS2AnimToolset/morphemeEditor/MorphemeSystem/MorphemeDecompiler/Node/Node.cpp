@@ -101,11 +101,8 @@ namespace MD
 
 				char paramName[256];
 
-				sprintf_s(paramName, "DefaultClip_%d", setIndex + 1);
-				nodeDataBlock->writeBool(true, paramName);
-
 				sprintf_s(paramName, "ClipRangeMode_%d", setIndex + 1);
-				nodeDataBlock->writeInt(3, paramName);
+				nodeDataBlock->writeInt(1, paramName);
 
 				sprintf_s(paramName, "ClipStartFraction_%d", setIndex + 1);
 				nodeDataBlock->writeFloat(sourceAnim->m_clipStartFraction, paramName);

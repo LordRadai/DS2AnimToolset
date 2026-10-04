@@ -198,8 +198,7 @@ The report has these sections:
 * `differences by kind`: value differences.
 * `fields written by only one side`: fields that DS2's Connect build and vanilla 3.6.2 serialize
   differently. These are not errors. Examples: Blend2 `Loop`/`StartEventIndex`, LockFoot
-  `HipIndex`/`KneeIndex`/`FootPivotResistance`, HipsIK ankle indices, TwoBoneIK extras, AnimWithEvents
-  `ClipRangeMode`.
+  `HipIndex`/`KneeIndex`/`FootPivotResistance`, HipsIK ankle indices.
 
 Structure, attributes, transitions and conditions match the game exactly, given DS2's manifest changes
 (`TransitBase.lua` destination sub states, `Transit.lua` DestinationStartSyncEvent, False condition,

@@ -14,7 +14,7 @@ DUR_FLAGS = ('DurationEventBlendPassThrough', 'DurationEventBlendSameUserData',
              'DurationEventBlendOnOverlap', 'DurationEventBlendWithinRange')
 IGNORE_ALWAYS = {'NumAnimSets', 'WorldUpAxisX', 'WorldUpAxisY', 'WorldUpAxisZ', 'UpAxisIndex',
                  'AssumeSimpleHierarchy', 'NodeEmitsMessages', 'NumMessageSlots', 'SourceNodeCount',
-                 'ConnectedPinCount', 'ClipRangeMode_1'}
+                 'ConnectedPinCount'}
 SOURCE_FIELDS = {'InputNodeID': 'Source', 'SourceNodeID': 'Source', 'NodeConnectedTo': 'Source'}
 
 
@@ -161,7 +161,8 @@ def spec_AnimWithEvents(ctx, node):
     else: ctx.unmapped.add('AnimWithEvents anim index %r not in library' % (idx,))
     for a in ('Loop', 'PlayBackwards', 'GenerateAnimationDeltas', 'PreComputeSyncEventTracks'):
         attrs.append((a, bool(node.get(a, False)), False))
-    attrs += [('DefaultClip', bool(node.get('DefaultClip_1', True)), True),
+    # DS2's AnimWithEvents has ClipRangeMode (1 marker range, 2 entire range, 3 custom range) instead of DefaultClip
+    attrs += [('ClipRangeMode', int(node.get('ClipRangeMode_1', 1)), True),
               ('ClipStartFraction', float(node.get('ClipStartFraction_1', 0.0)), True),
               ('ClipEndFraction', float(node.get('ClipEndFraction_1', 1.0)), True),
               ('StartEventIndex', int(node.get('StartEventIndex_1', 0)), True)]
