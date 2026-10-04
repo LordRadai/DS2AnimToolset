@@ -1,7 +1,8 @@
 """Read node/condition/transition attribute definitions from morphemeConnect's Lua manifests."""
 import glob, os, re
 
-MANIFEST_DIR = r'manifest'
+# the manifest copy next to this script (not the working directory, so it works from any folder)
+MANIFEST_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'manifest')
 
 
 def _attributes_block(body):

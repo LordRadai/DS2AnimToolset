@@ -1,11 +1,15 @@
 @echo off
-rem rebuild.bat - run the whole xml -> mcn rebuild for one network.
-rem Usage: rebuild.bat [config.ini]      (default: rebuild_config.ini next to this file)
+rem mcnGen.bat - run the whole xml -> mcn rebuild for one network.
+rem Usage: mcnGen.bat [input.xml] [config.ini]
+rem   input.xml   network export to rebuild (default: INPUT_XML from the config)
+rem   config.ini  settings file (default: rebuild_config.ini next to this file)
 setlocal EnableExtensions EnableDelayedExpansion
 
 set "TOOLS=%~dp0"
-set "CFG=%~1"
-if "%CFG%"=="" set "CFG=%TOOLS%rebuild_config.ini"
+set "ARG_XML=%~f1"
+if "%~1"=="" set "ARG_XML="
+set "CFG=%~2"
+if "%CFG%"=="" set "CFG=%TOOLS%config.ini"
 if not exist "%CFG%" (echo Config file not found: "%CFG%" & exit /b 1)
 
 rem ---- read key=value pairs (lines starting with ; are comments)
@@ -13,7 +17,8 @@ set "INPUT_XML=" & set "CONNECT=" & set "PYTHON=python" & set "CP_CONFIG=" & set
 for /f "usebackq eol=; tokens=1,* delims==" %%A in ("%CFG%") do (
     if not "%%A"=="" set "%%A=%%B"
 )
-if "%INPUT_XML%"=="" (echo INPUT_XML is not set in "%CFG%" & exit /b 1)
+if not "%ARG_XML%"=="" set "INPUT_XML=%ARG_XML%"
+if "%INPUT_XML%"=="" (echo No input: pass the .xml as the first argument or set INPUT_XML in "%CFG%" & exit /b 1)
 if not exist "%INPUT_XML%" (echo Input not found: "%INPUT_XML%" & exit /b 1)
 if not exist "%CONNECT%" (echo morphemeConnect not found: "%CONNECT%" & exit /b 1)
 
@@ -31,7 +36,7 @@ tasklist /FI "IMAGENAME eq morphemeConnect.exe" 2>nul | find /I "morphemeConnect
 if not errorlevel 1 (echo morphemeConnect is running - close it and run again. & exit /b 1)
 
 if "%CLEAN%"=="1" (
-    del /q "%DIR%\%NAME%.mcn" "%BUILD%\%NAME%_paths.lua" "%BUILD%\%NAME%_rebuild.lua" "%BUILD%\%NAME%_stage2.lua" 2>nul
+    del /q "%DIR%\%NAME%.mcn" "%BUILD%\%NAME%_paths.lua" "%BUILD%\%NAME%_rebuild.lua" "%BUILD%\%NAME%_stage2.lua" "%BUILD%\roundtrip\%NAME%.xml" 2>nul
 )
 
 echo --- 1/5 generating scripts

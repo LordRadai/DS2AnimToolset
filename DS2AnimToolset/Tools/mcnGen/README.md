@@ -41,22 +41,39 @@ The finished Connect project lives in the same folder. `$(RootDir)` is that fold
 
 ## Rebuilding a network
 
-### One click: `rebuild.bat`
+### One click: `mcnGen.bat`
 
-Edit `tools\rebuild_config.ini`:
+Edit `rebuild_config.ini` next to the script:
 
 ```ini
-INPUT_XML=E:\Claude\c1020\c1020.xml
 CONNECT=C:\Program Files (x86)\NaturalMotion\morphemeConnect 3.6.2\bin\morphemeConnect.exe
 PYTHON=python
-CP_CONFIG=          ; empty = tools\cp_config.json
-CLEAN=1             ; 1 = delete the previous .mcn / paths first
+CP_CONFIG=          ; empty = cp_config.json next to the script
+CLEAN=1             ; 1 = delete the previous .mcn / paths / round-trip export first
 ```
 
-Then run `tools\mcnGen.bat`, or `tools\mcnGen.bat other_config.ini` to use another config, for example
-one per character. It refuses to start if Connect is open. It runs all five steps below (skipping 3 and 4
-when not needed), prints the result of each stage and the diff summary, writes `build\diff_full.txt`, and
-runs the layout check.
+Then run:
+
+```bat
+mcnGen.bat                                  :: INPUT_XML from rebuild_config.ini
+mcnGen.bat E:\Export\c1020\c1020.xml         :: this network
+mcnGen.bat E:\Export\c1020\c1020.xml my.ini  :: this network, another config
+```
+
+It refuses to start if Connect is open. It runs all five steps below (skipping 3 and 4 when not needed),
+prints the result of each stage and the diff summary, writes `build\diff_full.txt`, and runs the layout
+check. It exits with an error code if a step fails.
+
+### Every character in a folder: `mcnGenAll.bat`
+
+```bat
+mcnGenAll.bat E:\Export            :: every E:\Export\cXXXX\cXXXX.xml
+mcnGenAll.bat E:\Export my.ini     :: same, with another config
+```
+
+It runs `mcnGen.bat` on each `cXXXX` subfolder (`c` and four digits) that has a `cXXXX.xml`, keeps going
+when one fails, and ends with a count of built / failed / skipped characters and the names of the
+failed ones.
 
 ### Step by step
 
