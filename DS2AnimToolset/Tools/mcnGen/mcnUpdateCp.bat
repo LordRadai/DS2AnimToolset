@@ -57,7 +57,9 @@ if exist "%BUILD%\%NAME%_stage2.lua" (
     "%CONNECT%" -nogui -script "%BUILD%\%NAME%_stage2.lua"
     call :lastline "%BUILD%\%NAME%_stage2.log"
 ) else (
-    echo --- 3/5 and 4/5 not needed for this network
+    echo --- 3/5 patching the .mcn ^(CP groups and vector ranges^); 4/5 not needed for this network
+    "%PYTHON%" "%TOOLS%xml2mcn.py" "%INPUT_XML%" --inject %CPARG%
+    if errorlevel 1 (echo --inject failed & exit /b 1)
 )
 
 if exist "%BUILD%\%NAME%_stage3.lua" (
