@@ -336,6 +336,7 @@ namespace MD
 
 			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
 
+			/*
 			if (!editor->isLoaded())
 			{
 				MR::NodeDef* parentNodeDef = nodeDef->getParentNodeDef();
@@ -350,6 +351,7 @@ namespace MD
 				if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 					nodeName = editor->getControlParameter(nodeDef->getNodeID())->getFullName();
 			}
+			*/
 
 			exportNode(netDefExport, netDef, nodeDef, nodeName);
 		}
