@@ -22,7 +22,6 @@ You can export animations and models to FBX or XMD using the Export menu under F
 
 # TODO
 * Rewrite the FLVER lib. Current one causes memory corruption in some cases, and fails to handle specific .flver files.
-* Export MCN project for editing in morphemeConnect 3.6.2.
 
 # Build Requirements
 If you want to compile this project, you need the following things:
