@@ -186,9 +186,6 @@ registerTransition("Transit",
       local freezeSource = getAttribute(transition, "FreezeSource")
       local freezeDest = getAttribute(transition, "FreezeDest")
 
-      Stream:writeBool(freezeSource, "FreezeSource")
-      Stream:writeBool(freezeDest, "FreezeDest")
-
       local destinationStartSyncEvent = destinationStartSyncEventIndex
       
       if useDestinationStartSyncEventFraction and not useDestinationStartSyncEventIndex then
