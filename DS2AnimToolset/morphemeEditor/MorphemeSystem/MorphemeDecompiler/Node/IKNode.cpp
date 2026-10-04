@@ -41,12 +41,20 @@ namespace MD
 
 		float NodeIKDecompilerBase::getBias(NMRU::IKJointParams* jointParams, int numJointParams)
 		{
+			// The asset compiler sets the weights with PointIK::Params::setLinearBiasCurve:
+			//   w_j = k * (2 * bias * j / (n - 1) + 1 - bias), j = 0 .. n-1, k a normalisation factor
+			// so w_0 = k * (1 - bias) and w_(n-1) = k * (1 + bias), and the ratio gives the bias back
+			// whatever the normalisation (disabled joints, initial weights).
 			if (numJointParams <= 1)
-				return 1.f;
+				return 0.f;
 
-			const float ratio = 1.f / float(numJointParams - 1);
+			const float first = jointParams[0].weight;
+			const float last = jointParams[numJointParams - 1].weight;
 
-			return jointParams[1].weight * (numJointParams / (2 * ratio));
+			if (first + last <= 0.f)
+				return 0.f;
+
+			return NMP::clampValue((last - first) / (last + first), -1.f, 1.f);
 		}
 
 		ME::NodeExportXML* NodeHeadLookDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
