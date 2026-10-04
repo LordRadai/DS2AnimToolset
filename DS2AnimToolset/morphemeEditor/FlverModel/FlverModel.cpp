@@ -621,7 +621,7 @@ void FlverModel::normalizeSkinVertexData(FlverModel::SkinnedVertex& skinnedVerte
 	}
 
 	if (!bValid)
-		g_appLog->debugMessage(MsgLevel_Error, "Warning: Vertex with no valid bone influences detected!\n");
+		g_appLog->debugMessage(MsgLevel_Warn, "Warning: Vertex with no valid bone influences detected!\n");
 }
 
 // Gets all the model vertices for all the meshes and stores them into m_verts
