@@ -108,8 +108,7 @@ class Hierarchy:
             if len(roots) > 1:
                 self.log.append('requester %d: members reach several inputs %r' % (P, sorted(roots)))
             R = min(roots)
-            if R in named:
-                self.log.append('requester %d: input %d is a named node, nesting skipped' % (P, R)); continue
+            # a named input is nested too: its path decides (build() drops nesting that names contradict)
             level = {}
             def lev(m, stack=()):
                 if m in level: return level[m]
@@ -131,7 +130,9 @@ class Hierarchy:
         if g[0] == 'nbt':
             _, P, R, l = g
             if l > 1: return ('nbt', P, R, l - 1)
-            return ROOT if self.nodes[P].type == NETWORK else self.graph(P)
+            if self.nodes[P].type == NETWORK: return ROOT
+            if self.nodes[P].type == SM: return ('state', P, R)   # state_nesting(): inside the state rooted at R
+            return self.graph(P)
         s = g[1]
         if s in self.state_owner:                      # the SM is itself a state root
             return ('state', self.state_owner[s], s)  # (wrapper or not, its state graph is the parent level)
@@ -158,13 +159,26 @@ class Hierarchy:
         the root} (NodeIDNamesTable StateNode entries).  Returns {node id: path}."""
         nodes = self.nodes
         self.nested_containers(set(named))
-        for i in nodes:
-            if nodes[i].type not in CP_TYPES and nodes[i].type not in TRANSITS and nodes[i].type != NETWORK:
-                self.graph(i)
+        self.wrapped, self.no_nest = set(), set()
+        for _ in range(8):
+            self.G = {}
+            for i in nodes:
+                if nodes[i].type not in CP_TYPES and nodes[i].type not in TRANSITS and nodes[i].type != NETWORK:
+                    self.graph(i)
+            if self.state_nesting(): continue
+            # names are the ground truth: drop nested blend trees that a named path shows were not there
+            drop = self.contradicted_nesting(named, state_names or {})
+            if not drop: break
+            for key in sorted(drop):
+                self.log.append('nesting for requester %d / input %d dropped: named paths have no level for it' % key)
+                self.nbt_depth.pop(key, None)
+                self.no_nest.add(key)
+                for m in [m for m, g in self.override.items() if g and g[0] == 'nbt' and (g[1], g[2]) == key]:
+                    del self.override[m]
         # wrappers: SM state roots with other nodes in their state graph
         occupied = collections.Counter(g for i, g in self.G.items() if not (g[0] == 'state' and g[2] == i))
         self.wrapped = {r for r in self.state_owner if r in self.sms and occupied[('state', self.state_owner[r], r)]}
-        self.sm_name, self.state_name = {}, {}
+        self.sm_name, self.state_name, self.nbt_name = {}, {}, {}
         # names along named paths
         for nid, name in named.items():
             if nid not in nodes or nodes[nid].type in CP_TYPES: continue
@@ -204,11 +218,62 @@ class Hierarchy:
             paths[t.id] = '%s|%s_%s' % (self.path(sm), sname, dname)
         return paths
 
+    def state_nesting(self):
+        """A multiply connected node N whose requester is state machine P, living in P's state S, that feeds a
+        node of S directly as well as something deeper (a state machine of S, through its pass-down pin).
+        Connect's outputs are one-to-one, so the original had the rest of S in a blend tree nested in S
+        (its result is S's result, which makes P the requester) fed through a one-to-many pass-down pin.
+        Moves everything of S except such nodes and their private upstream into ('nbt', P, root of S, 1)."""
+        outside = collections.defaultdict(set)
+        for n in self.nodes.values():
+            if n.attrs.get('downstreamMultiplyConnected') != 'true' or n.type in CP_TYPES + DATA_TYPES: continue
+            p = self.nodes.get(n.parent)
+            g = self.G.get(n.id)
+            if p is None or p.type != SM or n.id in self.state_owner or not g or g[0] != 'state' or g[1] != p.id: continue
+            if (p.id, g[2]) in self.nbt_depth or (p.id, g[2]) in self.no_nest or g[2] in self.sms: continue
+            cons = self.consumers.get(n.id, [])
+            if len(cons) > 1 and any(self.G.get(c) == g for c in cons) and any(self.G.get(c) != g for c in cons):
+                outside[g].add(n.id)
+        for g, keep in outside.items():
+            # private upstream of the kept nodes stays beside them
+            todo = list(keep)
+            while todo:
+                m = todo.pop()
+                for field, pin in self.spec.get(m, (0, 0, []))[2]:
+                    u = self.nodes[m].get(field)
+                    if u in self.nodes and u not in keep and self.G.get(u) == g and u != g[2] and \
+                            all(c in keep for c in self.consumers.get(u, [])):
+                        keep.add(u); todo.append(u)
+            _, P, R = g
+            self.nbt_depth[(P, R)] = 1
+            for i, gi in self.G.items():
+                if gi == g and i not in keep and self.nodes[i].type not in DATA_TYPES:
+                    self.override[i] = ('nbt', P, R, 1)
+            self.override[R] = ('nbt', P, R, 1)
+            self.log.append('state %d of %d: nested blend tree for multiply connected %r' % (R, P, sorted(keep)))
+        return bool(outside)
+
+    def contradicted_nesting(self, named, state_names):
+        """(requester, input) nesting groups on the chain of a named node or state entry whose path has exactly
+        as many levels as the chain without them."""
+        drop = set()
+        checks = [(self.chain(i), name) for i, name in named.items()
+                  if i in self.nodes and self.nodes[i].type not in CP_TYPES + TRANSITS and self.nodes[i].type != NETWORK]
+        for (sm, r), name in state_names.items():
+            if sm in self.sms and self.state_owner.get(r) == sm and r not in self.sms:
+                checks.append((self.chain_of_graph(('state', sm, r)), name))
+        for chain, name in checks:
+            n = len(name.split('|'))
+            nbts = [e for e in chain if e[0] == 'nbt']
+            if nbts and len(chain) > n and len(chain) - len(nbts) == n:
+                drop |= {(e[1], e[2]) for e in nbts}
+        return drop
+
     def assign(self, chain, comps):
         for ent, comp in zip(chain, comps):
-            if ent[0] not in ('sm', 'state'): continue
-            tgt = self.sm_name if ent[0] == 'sm' else self.state_name
-            key = ent[1] if ent[0] == 'sm' else (ent[1], ent[2])
+            if ent[0] not in ('sm', 'state', 'nbt'): continue
+            tgt = self.sm_name if ent[0] == 'sm' else self.nbt_name if ent[0] == 'nbt' else self.state_name
+            key = ent[1] if ent[0] == 'sm' else ent[1:] if ent[0] == 'nbt' else (ent[1], ent[2])
             if tgt.get(key, comp) != comp:
                 self.log.append('conflicting names for %r: %s vs %s' % (ent, tgt[key], comp))
             tgt[key] = comp
@@ -218,7 +283,9 @@ class Hierarchy:
         return '|'.join(self.part(e) for e in self.chain_of_graph(('state', sm, rid)))
 
     def part(self, ent):
-        if ent[0] == 'nbt': return 'BlendTree_%d_%d' % (ent[2], self.nbt_depth[(ent[1], ent[2])] - ent[3])
+        if ent[0] == 'nbt':
+            n = self.nbt_depth[(ent[1], ent[2])] - ent[3] + (1 if self.nodes[ent[1]].type == SM else 0)
+            return self.nbt_name.get(ent[1:], 'BlendTree_%d_%d' % (ent[2], n))
         if ent[0] == 'sm': return self.sm_leaf(ent[1])
         if ent[0] == 'state': return self.state_leaf(ent[1], ent[2])
         return self.leaf(ent[1])

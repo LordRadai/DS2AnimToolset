@@ -61,6 +61,54 @@ def generic(ctx, node, mtype, skip=(), rename=None):
     return attrs, inputs
 
 
+# node types whose numbered fields are not per animation set (blend weights, CP defaults, SM children, transits)
+NONSET_TYPES = {9, 10, 20, 21, 22, 23, 24, 25, 108, 131, 400, 402, 403}
+
+
+def set_field(node, d, K, descs):
+    """(name as animation set 1 would spell it, set index) for a per-set field of a K-set export, else None."""
+    if node.type in NONSET_TYPES: return None
+    m = re.fullmatch(r'Id_(\d+)_(\d+)', d)                    # channel lists: Id_<set>_<i>
+    if m and node.type in (105, 135):
+        return 'Id_1_' + m.group(2), int(m.group(1))
+    m = re.fullmatch(r'(.+_Set_)(\d+)', d)                     # SmoothingStrengths_<i>_Set_<set>
+    if m: return m.group(1) + '1', int(m.group(2))
+    m = re.fullmatch(r'(.+)_(\d+)', d)
+    if m:
+        base, k = m.group(1), int(m.group(2))
+        if 1 <= k <= K and all('%s_%d' % (base, j) in descs for j in range(1, K + 1)) and '%s_%d' % (base, K + 1) not in descs:
+            return base + '_1', k
+    return None
+
+
+class SetView:
+    """The node as animation set k sees it: set k's fields renamed to the set 1 spelling, other sets' dropped,
+    so the single-set spec functions work unchanged."""
+    def __init__(self, node, k, K):
+        self._node = node
+        descs = {d for d, t, v, a in node.elems}
+        count = {}
+        for d, t, v, a in node.elems: count[d] = count.get(d, 0) + 1
+        seen = {}
+        self.elems = []
+        for d, t, v, a in node.elems:
+            sf = set_field(node, d, K, descs)
+            if sf is None:
+                # a plain field written once per set (MirrorTransforms EventOffset): the k-th copy is set k's
+                seen[d] = seen.get(d, 0) + 1
+                if count[d] == K and node.type not in NONSET_TYPES and seen[d] != k: continue
+                self.elems.append((d, t, v, a))
+            elif sf[1] == k: self.elems.append((sf[0], t, v, a))
+    def __getattr__(self, name): return getattr(self._node, name)
+    def get(self, desc, default=None, nth=0):
+        i = 0
+        for d, t, v, a in self.elems:
+            if d == desc:
+                if i == nth: return v
+                i += 1
+        return default
+
+
 def dur_events(node, attrs):
     for f in DUR_FLAGS:
         if node.get(f) is not None: attrs.append((f, bool(node.get(f)), False))
@@ -139,13 +187,18 @@ def spec_TwoBoneIK(ctx, node):
     return 'TwoBoneIK', attrs, inputs
 
 
-def spec_PredictiveUnevenTerrain(ctx, node):
+def spec_PredictiveUnevenTerrain(ctx, node, mtype='PredictiveUnevenTerrain'):
+    # hip and knee are derived from the ankle by Connect, so only ankle / ball / toe names are attributes
     skip = tuple('%s%sIndex_1' % (s, j) for s in ('Left', 'Right') for j in ('Hip', 'Knee'))
-    attrs, inputs = generic(ctx, node, 'PredictiveUnevenTerrain', skip=skip)
+    attrs, inputs = generic(ctx, node, mtype, skip=skip)
     for s in ('Left', 'Right'):
         if node.get('%sBallIndex_1' % s) not in (None, 0xFFFFFFFF): attrs.append(('BallJointEnable', True, True))
         if node.get('%sToeIndex_1' % s) not in (None, 0xFFFFFFFF): attrs.append(('ToeJointEnable', True, True))
-    return 'PredictiveUnevenTerrain', attrs, inputs
+    return mtype, attrs, inputs
+
+
+def spec_BasicUnevenTerrain(ctx, node):
+    return spec_PredictiveUnevenTerrain(ctx, node, 'BasicUnevenTerrain')
 
 
 def spec_HipsIK(ctx, node):
@@ -271,6 +324,8 @@ SPECS = {
     107: simple('Blend2'), 114: simple('FeatherBlend2'), 170: simple('SubtractiveBlend'),
     108: simple('BlendN'), 131: simple('Switch'), 134: simple('PassThrough'), 125: simple('PlaySpeedModifier'),
     133: simple('Sequence'), 144: simple('OperatorFloatsToVector3'),
+    109: simple('SingleFrame'), 119: simple('ApplyGlobalTime'), 151: simple('ScaleToDuration'),
+    150: simple('GunAimIK', skip=('WorldUpAxisX', 'WorldUpAxisY', 'WorldUpAxisZ')), 136: spec_BasicUnevenTerrain,
 }
 
 
@@ -297,6 +352,8 @@ def cond_spec(ctx, c):
                                     ('TriggerValue', float(g('TestValue')), False), ('Comparison', cmp, False)]
     if t == 617:
         return 'InSubState', [('Node', ('#node', g('NodeID')), False)]
+    if t == 607:
+        return 'False', []   # TRANSCOND_FALSE: needs the DS2 False.lua condition manifest
     if t in (610, 618):
         mtype = 'FractionThroughDurationEvent' if t == 610 else 'InDurationEvent'
         attrs = [(d, (bool(v) if ty == 'bool' else float(v) if ty == 'float' else int(v)), False) for d, ty, v, a in c.elems]

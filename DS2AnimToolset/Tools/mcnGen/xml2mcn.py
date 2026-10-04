@@ -94,6 +94,12 @@ class Converter:
         self.build_dir = os.path.join(out_dir, 'build')
         os.makedirs(self.build_dir, exist_ok=True)
         self.set_name = lib.sets[0][0] if lib.sets else 'AnimSet'
+        self.set_names = [s[0] for s in lib.sets] or [self.set_name]
+        # each animation set has its own <set>.mrarig next to the export (DS2 sets share one skeleton)
+        self.set_rigs = []
+        for sn in self.set_names:
+            sj, sr = load_rig_joints(os.path.join(os.path.dirname(os.path.abspath(xml_path)), sn + '.mrarig'))
+            self.set_rigs.append((sj, sr) if sr is not None else (joints, rig_root))
         self.lines, self.unsupported, self.unmapped = [], [], set()
         self.manifest = manifest_info.load()
         self.nchannels = len(joints)
@@ -120,8 +126,19 @@ class Converter:
         self.root_id = int(self.root.findtext('rootNodeNetworkID'))
         # spec every graph node once
         self.spec = {}
+        self.spec_sets = {}   # node id -> {set index >= 2: per-set attrs of that animation set}
+        K = len(self.set_names)
+        joints0 = self.joints
         for n in self.gnodes:
-            mtype, attrs, inputs = nodespecs.SPECS[n.type](self, n)
+            if K == 1:
+                mtype, attrs, inputs = nodespecs.SPECS[n.type](self, n)
+            else:
+                for k in range(1, K + 1):
+                    self.joints = self.set_rigs[k - 1][0] or joints0
+                    mk, ak, ik = nodespecs.SPECS[n.type](self, nodespecs.SetView(n, k, K))
+                    if k == 1: mtype, attrs, inputs = mk, ak, ik
+                    else: self.spec_sets.setdefault(n.id, {})[k] = [x for x in ak if x[2]]
+                self.joints = joints0
             self.spec[n.id] = (mtype, attrs, inputs)
         self.renames = {}   # node id -> original export name, for nodes the decompiler placed where Connect can't wire them
         if any(not n.name for n in nodes.values() if n.type not in CP_TYPES and n.type != NETWORK_TYPE):
@@ -390,25 +407,26 @@ class Converter:
         self.emit()
 
     def setup(self):
-        rig_rel = '%s.mcarig' % self.set_name
-        hip = traj = None
-        if self.rig_root is not None:
-            hip = self.joints.get(int(self.rig_root.findtext('hipIndex') or -1))
-            traj = self.joints.get(int(self.rig_root.findtext('trajectoryIndex') or -1))
-        self.emit('-- 1. animation rig + project')
-        self.emit('local RIG = ROOT .. %s' % lua_str('\\' + rig_rel))
-        self.emit('local fh = io.open(RIG, "r")')
-        self.emit('if fh then fh:close() else')
-        if self.model:
-            self.emit('  TRY("anim.createRig", function() return anim.createRig(ROOT .. %s, RIG, %s, %s) end)' % (
-                lua_str('\\model_xmd\\' + os.path.basename(self.model)), lua_val(hip or ''), lua_val(traj or '')))
-        self.emit('end')
-        if hip and traj:
-            # anim.createRig ignores its hip/trajectory arguments and tags the first joint for both, so retag the rig file
-            self.emit('TRY("tagRigJoints", function() return TAGRIG(RIG, %s, %s) end)' % (lua_str(traj), lua_str(hip)))
+        self.emit('-- 1. animation rigs (one per animation set) + project')
+        for sn, (sj, sr) in zip(self.set_names, self.set_rigs):
+            hip = traj = None
+            if sr is not None:
+                hip = sj.get(int(sr.findtext('hipIndex') or -1))
+                traj = sj.get(int(sr.findtext('trajectoryIndex') or -1))
+            self.emit('RIG = ROOT .. %s' % lua_str('\\' + sn + '.mcarig'))
+            self.emit('local fh = io.open(RIG, "r")')
+            self.emit('if fh then fh:close() else')
+            if self.model:
+                self.emit('  TRY("anim.createRig %s", function() return anim.createRig(ROOT .. %s, RIG, %s, %s) end)' % (
+                    sn, lua_str('\\model_xmd\\' + os.path.basename(self.model)), lua_val(hip or ''), lua_val(traj or '')))
+            self.emit('end')
+            if hip and traj:
+                # anim.createRig ignores its hip/trajectory arguments and tags the first joint for both, so retag the rig file
+                self.emit('TRY("tagRigJoints %s", function() return TAGRIG(RIG, %s, %s) end)' % (sn, lua_str(traj), lua_str(hip)))
         self.emit('TRY("project.open", function() return project.open(ROOT .. "\\\\" .. NAME .. ".mcp") end)')
         self.emit('TRY("mcn.new", function() return mcn.new() end)')
         self.emit('SET = %s' % lua_str(self.set_name))
+        self.emit('SETS = %s' % lua_val(self.set_names))
         self.emit('TRY("setSelectedAnimSet", function() return setSelectedAnimSet(SET) end)')
         self.emit('LOG("animsets=" .. TS(listAnimSets()) .. " rig=" .. TS(anim.getRigPath(SET)))')
         self.emit()
@@ -481,6 +499,10 @@ class Converter:
             for a, v, per in attrs:
                 if a in LATE_ATTRS: continue
                 self.set_attr(self.ref(n.id), a, v, per, '%s #%d .%s' % (mtype, n.id, a))
+            for k, ak in sorted(self.spec_sets.get(n.id, {}).items()):
+                for a, v, per in ak:
+                    if a in LATE_ATTRS: continue
+                    self.set_attr(self.ref(n.id), a, v, per, '%s #%d .%s set %d' % (mtype, n.id, a, k), 'SETS[%d]' % k)
         self.emit()
 
     def late_attributes(self):
@@ -489,6 +511,9 @@ class Converter:
             mtype, attrs, inputs = self.spec[n.id]
             for a, v, per in attrs:
                 if a in LATE_ATTRS: self.set_attr(self.ref(n.id), a, v, per, '%s #%d .%s' % (mtype, n.id, a))
+            for k, ak in sorted(self.spec_sets.get(n.id, {}).items()):
+                for a, v, per in ak:
+                    if a in LATE_ATTRS: self.set_attr(self.ref(n.id), a, v, per, '%s #%d .%s set %d' % (mtype, n.id, a, k), 'SETS[%d]' % k)
         self.emit()
 
     def value_expr(self, v):
@@ -500,8 +525,8 @@ class Converter:
             return self.ref(st) if st else 'nil'
         return lua_val(v)
 
-    def set_attr(self, me, attr, val, per_set=False, desc=None):
-        self.call(desc or 'setAttribute .%s' % attr, 'setAttribute(%s .. ".%s", %s%s)' % (me, attr, self.value_expr(val), ', SET' if per_set else ''))
+    def set_attr(self, me, attr, val, per_set=False, desc=None, set_var='SET'):
+        self.call(desc or 'setAttribute .%s' % attr, 'setAttribute(%s .. ".%s", %s%s)' % (me, attr, self.value_expr(val), (', ' + set_var) if per_set else ''))
 
     def state_of_root(self, nid):
         """State path whose runtime node is nid (InSubState / DestinationSubState references)."""
@@ -684,10 +709,13 @@ class Converter:
         cnt = int(g('DestinationSubStateCount', 0) or 0)
         if cnt > 0:
             st = self.state_of_root(g('DestinationSubStateID_%d' % (cnt - 1)))
-            expr = ('DestinationSubState #%d' % t.id, 'setAttribute(%s .. ".DestinationSubState", %s)' % (me, self.ref(st)))
-            if st and t.id in self.self_transits: self.deferred.append(expr)   # only valid once retargeted to self
-            elif st: self.call(*expr)
-            else: self.unsupported.append('transition %s destination sub state' % t.name)
+            if not st:
+                self.unsupported.append('transition #%d %s: destination sub state %r is not a state root' % (
+                    t.id, t.name, g('DestinationSubStateID_%d' % (cnt - 1))))
+            else:
+                expr = ('DestinationSubState #%d' % t.id, 'setAttribute(%s .. ".DestinationSubState", %s)' % (me, self.ref(st)))
+                if t.id in self.self_transits: self.deferred.append(expr)   # only valid once retargeted to self
+                else: self.call(*expr)
 
     def condition(self, c, tkey, label):
         mtype, attrs = nodespecs.cond_spec(self, c)
@@ -795,9 +823,10 @@ class Converter:
         self.emit('LOGF:close()')
 
     def anim_set_options(self):
-        opts = {e['options'] for e in (self.lib.sets[0][1].values() if self.lib.sets else [])}
-        if len(opts) == 1 and list(opts)[0]:
-            self.call('anim.setAnimSetOptions', 'anim.setAnimSetOptions(SET, %s)' % lua_str(list(opts)[0]))
+        for k, (sn, entries) in enumerate(self.lib.sets):
+            opts = {e['options'] for e in entries.values()}
+            if len(opts) == 1 and list(opts)[0]:
+                self.call('anim.setAnimSetOptions %s' % sn, 'anim.setAnimSetOptions(%s, %s)' % (lua_str(sn), lua_str(list(opts)[0])))
 
     def write_lua(self, suffix):
         lua = os.path.join(self.build_dir, self.name + suffix)
@@ -831,6 +860,7 @@ class Converter:
             self.prologue('_stage2.log')
             self.emit('TRY("mcn.open", function() return mcn.open(ROOT .. "\\\\" .. NAME .. ".mcn") end)')
             self.emit('SET = %s' % lua_str(self.set_name))
+            self.emit('SETS = %s' % lua_val(self.set_names))
             self.emit('TRY("setSelectedAnimSet", function() return setSelectedAnimSet(SET) end)')
             self.emit('dofile(BUILD .. "\\\\" .. NAME .. "_paths.lua")   -- paths + connections that failed in stage 1')
             for (smname, as_name) in self.active_states:
@@ -848,7 +878,22 @@ class Converter:
             self.save_paths()
             self.epilogue()
             out.append(self.write_lua('_stage2.lua'))
+        if self.needs_stage3():
+            # ActiveStates listing transitions that start at an ActiveState: those only exist after stage 2
+            self.lines = []
+            self.prologue('_stage3.log')
+            self.emit('TRY("mcn.open", function() return mcn.open(ROOT .. "\\\\" .. NAME .. ".mcn") end)')
+            self.epilogue()
+            out.append(self.write_lua('_stage3.lua'))
         return out
+
+    def late_members(self):
+        """ActiveState members that are transitions from an ActiveState (created in stage 2)."""
+        late = set(t.id for t, src, dst, h, fa in self.tplan if fa)
+        return {k: [st for st in states if st in late] for k, (allst, states) in self.active_states.items() if not allst}
+
+    def needs_stage3(self):
+        return self.needs_stage2() and any(self.late_members().values())
 
     def needs_stage2(self):
         return bool(self.active_states) or bool(self.edges2)
@@ -947,6 +992,30 @@ class Converter:
         self._save(tree, mcn_path)
         return added, pins, groups
 
+    def inject_late(self, mcn_path):
+        """Add the stage-2 transitions to the ActiveStates that list them (after stage 2 saved the .mcn)."""
+        tree, net = self._mcn(mcn_path)
+        P = self.real_paths()
+        added = 0
+        for (smname, as_name), members in sorted(self.late_members().items()):
+            if not members: continue
+            sm_el, g, gptr = self.locate(net, P.get(smname, smname), P)
+            n = g.find('StateMachineNodes/*[@name="%s"]' % as_name)
+            ra = n.find('Attributes/RefArrayAttribute[@name="States"]') if n is not None else None
+            if ra is None: self.unsupported.append('ActiveState %s not found after stage 2' % as_name); continue
+            v = ra.find('Value')
+            if v is None: v = ET.SubElement(ra, 'Value', type='attributeArray', size='0', elemType='pointer')
+            have = {e.text for e in v}
+            for tid in members:
+                if tid not in P: self.unsupported.append('ActiveState %s member transition #%d not created' % (as_name, tid)); continue
+                ref = '%s.TransitionEdges.%s' % (gptr, P[tid].split('|')[-1])
+                if ref in have: continue
+                ET.SubElement(v, 'elem', type='pointer').text = ref
+                added += 1
+            v.set('size', str(len(v)))
+        self._save(tree, mcn_path)
+        return added
+
     def inject_cp_groups(self, net):
         wanted = {}
         for n in self.cps:
@@ -1014,7 +1083,11 @@ class Converter:
         return len(data)
 
     def write_project(self):
-        set_name = self.set_name
+        sets = ''.join(f'''			<Node name="{sn}" type="AnimationSet" module="mcc">
+				<String name="AnimationRig" val="$(RootDir)\\{sn}.mcarig"/>
+				<String name="Format" val="nsa"/>
+			</Node>
+''' for sn in self.set_names)
         mcp = f'''<?xml version="1.0" encoding="UTF-8"?>
 <NaturalMotion loaderVersion="2" typeString="ConnectProject" productVersion="3.5" library="NMDatabase2">
 	<Modules>
@@ -1039,11 +1112,7 @@ class Converter:
 				<String name="SourceDirectory" val="$(RootDir)\\motion_xmd"/>
 				<String name="MarkupDirectory" val="$(RootDir)\\morphemeMarkup"/>
 			</Node>
-			<Node name="{set_name}" type="AnimationSet" module="mcc">
-				<String name="AnimationRig" val="$(RootDir)\\{set_name}.mcarig"/>
-				<String name="Format" val="nsa"/>
-			</Node>
-		</Node>
+{sets}		</Node>
 	</Node>
 	<Node name="EuphoriaSettings" type="EuphoriaProjectSettingsNode" module="mcc">
 		<Bool name="Renameable" val="0"/>
@@ -1062,6 +1131,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('xml')
     ap.add_argument('--library'); ap.add_argument('--rig'); ap.add_argument('--model'); ap.add_argument('--out-dir')
+    ap.add_argument('--inject-late', action='store_true', help='add stage-2 transitions to the ActiveStates of the stage-2 .mcn')
     ap.add_argument('--inject', action='store_true', help='add ActiveStates, state pass-down pins and CP groups to the stage-1 .mcn')
     ap.add_argument('--cp-config', default=DEFAULT_CP_CONFIG,
                     help='JSON of control parameter settings by name: {"Name": {"group": g, "min": x, "max": y, "default": z or [x, y, z]}}')
@@ -1098,6 +1168,11 @@ def main():
     if a.cp_only:
         print('wrote %d CP groups into %s' % (c.inject_groups_only(mcn), mcn))
         print('wrote', c.cp_only()); return
+    if a.inject_late:
+        print('added %d stage-2 transitions to ActiveStates in %s' % (c.inject_late(mcn), mcn))
+        for u in c.unsupported:
+            if 'ActiveState' in u: print('UNSUPPORTED:', u)
+        return
     if a.inject:
         n_as, n_pins, n_grp = c.inject(mcn)
         print('injected %d ActiveStates, %d state pass-down pins, %d CP groups into %s' % (n_as, n_pins, n_grp, mcn))

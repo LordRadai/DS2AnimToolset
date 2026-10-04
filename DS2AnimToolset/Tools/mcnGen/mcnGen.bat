@@ -36,7 +36,7 @@ tasklist /FI "IMAGENAME eq morphemeConnect.exe" 2>nul | find /I "morphemeConnect
 if not errorlevel 1 (echo morphemeConnect is running - close it and run again. & exit /b 1)
 
 if "%CLEAN%"=="1" (
-    del /q "%DIR%\%NAME%.mcn" "%BUILD%\%NAME%_paths.lua" "%BUILD%\%NAME%_rebuild.lua" "%BUILD%\%NAME%_stage2.lua" "%BUILD%\roundtrip\%NAME%.xml" 2>nul
+    del /q "%DIR%\%NAME%.mcn" "%BUILD%\%NAME%_paths.lua" "%BUILD%\%NAME%_rebuild.lua" "%BUILD%\%NAME%_stage2.lua" "%BUILD%\%NAME%_stage3.lua" "%BUILD%\roundtrip\%NAME%.xml" 2>nul
 )
 
 echo --- 1/5 generating scripts
@@ -58,6 +58,14 @@ if exist "%BUILD%\%NAME%_stage2.lua" (
     call :lastline "%BUILD%\%NAME%_stage2.log"
 ) else (
     echo --- 3/5 and 4/5 not needed for this network
+)
+
+if exist "%BUILD%\%NAME%_stage3.lua" (
+    echo --- 4b/5 ActiveStates that list transitions from ActiveStates, then re-export
+    "%PYTHON%" "%TOOLS%xml2mcn.py" "%INPUT_XML%" --inject-late
+    if errorlevel 1 (echo --inject-late failed & exit /b 1)
+    "%CONNECT%" -nogui -script "%BUILD%\%NAME%_stage3.lua"
+    call :lastline "%BUILD%\%NAME%_stage3.log"
 )
 
 echo --- 5/5 checking

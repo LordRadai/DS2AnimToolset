@@ -28,7 +28,7 @@ c1020\
   c1020_Library.xml     animation library: AnimIndex -> anim file, take, sync track, format, options
   c1020_Preset.xml
   c1020_0.mrarig        exported rig: joint index -> name, hip / trajectory joints
-  c1020_0.mrctrl
+  c1020_0.mrctrl        (one .mrarig / .mrctrl per animation set: c0001 has _0 and _1)
   c1020.xmd             character model (moved to model_xmd\ automatically)
   motion_xmd\*.xmd      animations
   morphemeMarkup\*.xml  animation markup
@@ -91,9 +91,9 @@ logs, paths, the round-trip export, the diff) goes to `<project>\build\`, which 
 
 | file | written by | contents |
 |---|---|---|
-| `<chr>.mcp` | step 1 | project: Z up, metres, anim set `<chr>_0`, rig `$(RootDir)\<chr>_0.mcarig`, sources `motion_xmd`, markup `morphemeMarkup` |
+| `<chr>.mcp` | step 1 | project: Z up, metres, one anim set per library set (`<chr>_0`, `<chr>_1`, ...) each with rig `$(RootDir)\<set>.mcarig`, sources `motion_xmd`, markup `morphemeMarkup` |
 | `build\<chr>_rebuild.lua`, `build\<chr>_stage2.lua` | step 1 | the Connect scripts |
-| `<chr>_0.mcarig`, `<chr>_0.mcskin` | stage 1 | rig and skin built from `model_xmd\<chr>.xmd` (hip / trajectory joints from the `.mrarig`); only built if missing |
+| `<set>.mcarig`, `<set>.mcskin` | stage 1 | per animation set, rig and skin built from `model_xmd\<chr>.xmd` (hip / trajectory joints from that set's `.mrarig`); only built if missing |
 | `build\<chr>_rebuild.log`, `build\<chr>_stage2.log` | stages | every failed API call (`FAIL` / `NIL`), connect rounds, `DONE failures=N` |
 | `build\<chr>_paths.lua` | stages | node id / container -> the path Connect really gave it (duplicate names get `_1` suffixes) |
 | `<chr>.mcn` | stages | the project |
@@ -158,6 +158,9 @@ Every Connect export name is a path (`SM_Main|BT_BaseAct|SM_BasicMove`), so the 
     BlendTree wrapping the inner state machine. A chain of multiply connected nodes sharing one requester
     nests one blend tree per link. In both cases the consumers are reached through one-to-many pass-down
     pins, which is how Connect stores multi-connections.
+  * Names win over these rules: a nesting level that a named node's or state entry's path has no
+    component for is dropped (logged as `nesting ... dropped`), and a nested blend tree that a path does
+    name takes that name (`MoveAttack_Ref`).
   * Operators go to the lowest graph above all their consumers.
   * Container names come from named node paths and `StateNode` paths wherever these pass through them
     (`SubAct`, `BT_MoveJump`, `BT_Idle`, ...).
@@ -226,15 +229,21 @@ Known remaining differences on c1020 (58):
 
 Nodes: AnimWithEvents, Blend2, BlendN, FeatherBlend2, SubtractiveBlend, Switch, Sequence, PassThrough,
 PlaySpeedModifier, Freeze / LastFramesTransforms, FilterTransforms, MirrorTransforms, SmoothTransforms,
-HeadLook, TwoBoneIK, LockFoot, HipsIK, PredictiveUnevenTerrain, EmitRequestOnDiscreteEvent,
+HeadLook, TwoBoneIK, LockFoot, HipsIK, PredictiveUnevenTerrain, BasicUnevenTerrain, GunAimIK,
+SingleFrame, ScaleToDuration, ApplyGlobalTime, EmitRequestOnDiscreteEvent,
 OperatorFunction, OperatorOneInputArithmetic / OperatorReRange, OperatorSmoothFloat / Vector3,
 OperatorFloatsToVector3, OperatorRandomFloat, state machines, all CP types.
+
+Animation sets: any number. Per-set export fields (`X_1`, `X_2`, ..., channel lists `Id_<set>_<i>`,
+`SmoothingStrengths_<i>_Set_<set>`) are read once per set and written with `setAttribute(..., SETS[k])`;
+each spec function only ever sees the set 1 spelling (`nodespecs.SetView`).
 
 Transitions: Transit, TransitMatchEvents (with ActiveState sources, transitions to self, destination
 sub-states).
 
 Conditions: MessageCondition, ControlParamInRange, ControlParamTest, FractionThroughSource, InEventRange,
-InDurationEvent, FractionThroughDurationEvent, UserDataEvent, InSubState.
+InDurationEvent, FractionThroughDurationEvent, UserDataEvent, InSubState, False (DS2's always-false
+condition, id 607; needs `manifest\conditions\False.lua` in Connect).
 
 To add a node type, write a `spec_<Type>` in `nodespecs.py`, or use `simple('<ManifestName>')` when the
 fields are named like the manifest's attributes, then add it to `SPECS`. Read the manifest's `serialize()`
