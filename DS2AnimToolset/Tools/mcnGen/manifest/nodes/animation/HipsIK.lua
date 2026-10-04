@@ -408,9 +408,6 @@ registerNode("HipsIK",
         stream:writeNetworkNodeId(nodeInfo.id, "Weight", nodeInfo.pinIndex)
       end
 
-      local footTurnWeight = getAttribute(node, "FootTurnWeight")
-      stream:writeFloat(footTurnWeight, "FootTurnWeight")
-
       local keepWorldFootOrientation = getAttribute(node, "KeepWorldFootOrientation")
       stream:writeBool(keepWorldFootOrientation, "KeepWorldFootOrientation")
 

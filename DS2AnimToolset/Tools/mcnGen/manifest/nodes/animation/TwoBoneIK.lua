@@ -102,7 +102,10 @@ registerNode("TwoBoneIK",
         name = "EndJointName", type = "rigChannelName", value = "", perAnimSet = true,
         helptext = "Specifies the end joint and, by association through the rig, the root and middle joints."
       },
-
+      {
+        name = "TargetJointName", type = "rigChannelName", value = "", perAnimSet = true,
+        helptext = "Specifies the target joint for the IK solver."
+      },
       -- Don't actually create attributes for mid and root - currently we are only allowed to use
       -- sequential IK chains, where the mid and root joints are the direct parent and grandparent
       -- of the end joint
@@ -189,6 +192,20 @@ registerNode("TwoBoneIK",
 
           index = anim.getParentBoneIndex(index, asVal)
         end
+
+        name = getAttribute(node, "TargetJointName", asVal)
+        index = nil
+        if name ~= nil then
+          index = anim.getRigChannelIndex(name, asVal)
+        end
+
+        for i = 1, 3 do
+          if index == nil or index <= 0 or index >= rigSize then
+            return nil, ("TwoBoneIK node " .. node .. " (animset " .. asVal .. ") requires a valid TargetJointName with a valid parent and grandparent")
+          end
+
+          index = anim.getParentBoneIndex(index, asVal)
+        end
       end
 
       local effectorTargetPin = string.format("%s.EffectorTarget", node)
@@ -260,40 +277,30 @@ registerNode("TwoBoneIK",
       if isConnected{ SourcePin = effectorTargetPin, ResolveReferences = true } then
         effectorTargetNodeInfo = getConnectedNodeInfo(effectorTargetPin)
         Stream:writeNetworkNodeId(effectorTargetNodeInfo.id, "EffectorTarget", effectorTargetNodeInfo.pinIndex)
-      else
-        Stream:writeNetworkNodeId(-1, "EffectorTarget", 0)
       end
 
       local targetOrientationPin = string.format("%s.TargetOrientation", node)
       if isConnected{ SourcePin = targetOrientationPin, ResolveReferences = true } then
         targetOrientationNodeInfo = getConnectedNodeInfo(targetOrientationPin)
         Stream:writeNetworkNodeId(targetOrientationNodeInfo.id, "TargetOrientation", targetOrientationNodeInfo.pinIndex)
-      else
-        Stream:writeNetworkNodeId(-1, "TargetOrientation", 0)
       end
 
       local swivelAnglePin = string.format("%s.SwivelAngle", node)
       if isConnected{ SourcePin = swivelAnglePin, ResolveReferences = true } then
         swivelAngleNodeInfo = getConnectedNodeInfo(swivelAnglePin)
         Stream:writeNetworkNodeId(swivelAngleNodeInfo.id, "SwivelAngle", swivelAngleNodeInfo.pinIndex)
-      else
-        Stream:writeNetworkNodeId(-1, "SwivelAngle", 0)
       end
 
       local blendWeightPin = string.format("%s.IkFkBlendWeight", node)
       if isConnected{ SourcePin = blendWeightPin, ResolveReferences = true } then
         iKFkBlendWeightNodeInfo = getConnectedNodeInfo(blendWeightPin)
         Stream:writeNetworkNodeId(iKFkBlendWeightNodeInfo.id, "IkFkBlendWeight", iKFkBlendWeightNodeInfo.pinIndex)
-      else
-        Stream:writeNetworkNodeId(-1, "IkFkBlendWeight", 0)
       end
 
       local swivelContributionToOrientationPin = string.format("%s.SwivelContributionToOrientation", node)
       if isConnected{ SourcePin = swivelContributionToOrientationPin, ResolveReferences = true } then
         swivelContributionToOrientationNodeInfo = getConnectedNodeInfo(swivelContributionToOrientationPin)
         Stream:writeNetworkNodeId(swivelContributionToOrientationNodeInfo.id, "SwivelContributionToOrientation", swivelContributionToOrientationNodeInfo.pinIndex)
-      else
-        Stream:writeNetworkNodeId(-1, "SwivelContributionToOrientation", 0)
       end
 
       local assumeSimpleHierarchy = true --getAttribute(node, "AssumeSimpleHierarchy")
@@ -351,6 +358,10 @@ registerNode("TwoBoneIK",
         local endJointName = getAttribute(node, "EndJointName", asVal)
         local endJointIndex = anim.getRigChannelIndex(endJointName, asVal)
         Stream:writeUInt(endJointIndex, "EndJointIndex_"..asIdx)
+
+        local targetJointName = getAttribute(node, "TargetJointName", asVal)
+        local targetJointIndex = anim.getRigChannelIndex(targetJointName, asVal)
+        Stream:writeUInt(targetJointIndex, "TargetJointIndex_"..asIdx)
 
         -- Don't actually retrieve values for mid and root - currently we are only allowed to use
         -- sequential IK chains, where the mid and root joints are the direct parent and grandparent

@@ -376,15 +376,6 @@ registerNode("LockFoot",
 
       local animSets = listAnimSets()
       for asIdx, asVal in animSets do
-        -- Don't actually retrieve values for hip and knee - currently we are only allowed to use
-        -- sequential IK chains, where the knee and hip joints are the direct parent and grandparent
-        -- of the ankle joint
-        local hipIndex = -1 -- = getAttribute(node, "HipIndex", asVal)
-        Stream:writeUInt(hipIndex, "HipIndex_"..asIdx)
-
-        local kneeIndex = -1 --getAttribute(node, "KneeIndex", asVal)
-        Stream:writeUInt(kneeIndex, "KneeIndex_"..asIdx)
-
         local ankleName = getAttribute(node, "AnkleName", asVal)
         local ankleIndex = anim.getRigChannelIndex(ankleName, asVal)
         if ankleIndex == nil then
