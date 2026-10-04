@@ -453,10 +453,8 @@ class Converter:
         rng = {k: cfg[k] for k in ('min', 'max') if cfg.get(k) is not None}
         if rng:
             self.call('setRange %s' % nm, 'setRange(%s, %s)' % (key, lua_val({k: float(v) for k, v in rng.items()})))
-        vals = cfg.get('default')
-        if vals is None: vals = self.xml_default(n)
-        elif not isinstance(vals, list): vals = [vals]
-        if force or 'default' in cfg or any(v != 0 for v in vals):
+        vals = self.xml_default(n)   # defaults always come from the export; a 'default' in the CP file is ignored
+        if force or any(v != 0 for v in vals):
             if n.type == 23:
                 self.call('setDefaultValue %s' % nm, 'setDefaultValue(%s, %s)' % (key, lua_val(bool(vals[0]))))
             else:
@@ -1076,8 +1074,7 @@ class Converter:
             nm = n.name.split('|')[-1]
             if nm in data:
                 data[nm].setdefault('group', None); continue
-            d = [float(v) for v in self.xml_default(n)]
-            data[nm] = {'type': CP_TYPES[n.type], 'group': None, 'min': None, 'max': None, 'default': d if len(d) > 1 else d[0]}
+            data[nm] = {'type': CP_TYPES[n.type], 'group': None, 'min': None, 'max': None}
         with open(path, 'w', encoding='utf-8') as f: json.dump(data, f, indent=2)
         return len(data)
 
@@ -1133,7 +1130,7 @@ def main():
     ap.add_argument('--inject-late', action='store_true', help='add stage-2 transitions to the ActiveStates of the stage-2 .mcn')
     ap.add_argument('--inject', action='store_true', help='add ActiveStates, state pass-down pins and CP groups to the stage-1 .mcn')
     ap.add_argument('--cp-config', default=DEFAULT_CP_CONFIG,
-                    help='JSON of control parameter settings by name: {"Name": {"group": g, "min": x, "max": y, "default": z or [x, y, z]}}')
+                    help='JSON of control parameter settings by name: {"Name": {"group": g, "min": x, "max": y}} (defaults come from the export)')
     ap.add_argument('--cp-template', action='store_true', help='add the CPs of this network to --cp-config, then run as usual')
     ap.add_argument('--cp-only', action='store_true', help='write <name>_cparams.lua (and CP groups) for the existing .mcn')
     a = ap.parse_args()

@@ -107,16 +107,16 @@ understood, before you trust a result.
 
 ## Control parameter settings
 
-The export only has each CP's default value. `tools\cp_settings.json` adds range, default and
+The export has each CP's default value, and that is always the one used. `cp_config.json` adds range and
 group by CP name. DS2 shares one CP set across characters, so one file serves all of them:
 
 ```json
-"FB_Speed":     { "type": "float",   "group": "Locomotion", "min": -1.0, "max": 2.0, "default": 0.0 },
-"LookAtTarget": { "type": "vector3", "group": "HeadLook",   "min": null, "max": null, "default": [0.0, -10.0, 0.95] }
+"FB_Speed":     { "type": "float",   "group": "Locomotion", "min": -1.0, "max": 2.0 },
+"LookAtTarget": { "type": "vector3", "group": "HeadLook",   "min": null, "max": null }
 ```
 
 * `min` / `max`: `setRange`. `null` means not set.
-* `default`: overrides the export's default (a list for vector CPs).
+* `default`: ignored if present; the default always comes from the export.
 * `group`: the CP goes into that ControlParameterGroup. Groups are written into the `.mcn` by `--inject`,
   because there is no Lua API for them; a CP belongs to one group only.
 
@@ -201,8 +201,6 @@ The report has these sections:
   `HipIndex`/`KneeIndex`/`FootPivotResistance`, HipsIK ankle indices, TwoBoneIK extras, AnimWithEvents
   `ClipRangeMode`.
 
-Remaining differences (c0001 21, c1020 2, c3010 1) are all control parameter defaults: `cp_config.json`
-overrides the export's default, so these change runtime behaviour unless the file's value is intended.
 Structure, attributes, transitions and conditions match the game exactly, given DS2's manifest changes
 (`TransitBase.lua` destination sub states, `Transit.lua` DestinationStartSyncEvent, False condition,
 TwoBoneIK flags).
@@ -221,7 +219,7 @@ TwoBoneIK flags).
 | `mcnxml.py` | export XML parser (`python mcnxml.py X.xml [ids...]` dumps decoded nodes) |
 | `xmldiff.py` | semantic round-trip diff |
 | `layoutcheck.py` | layout rule checker for a saved `.mcn` |
-| `ds2_control_parameters.json` | CP ranges / defaults / groups |
+| `cp_config.json` | CP ranges / groups |
 
 ### Supported types
 
