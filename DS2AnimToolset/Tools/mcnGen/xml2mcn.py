@@ -435,7 +435,84 @@ class Converter:
         self.emit('TRY("setSelectedAnimSet", function() return setSelectedAnimSet(SET) end)')
         self.emit('LOG("animsets=" .. TS(listAnimSets()) .. " rig=" .. TS(anim.getRigPath(SET)))')
         self.mirror_mappings()
+        self.joint_limits()
+        # mirror mappings and joint limits live in the rig scene: save them into the .mcarig so later sessions
+        # (stage 2 / 3, which export) load them too
+        for sn in self.set_names:
+            self.call('saveRig %s' % sn, 'anim.saveRig(%s)' % lua_str(sn))
         self.emit()
+
+    def joint_limits(self):
+        """Kinematic joint limits from each set's .mrarig (HeadLook / GunAimIK with ApplyJointLimits use them).
+        anim.createRig makes a rig without limits; they are created with Connect's "Create Joint Limit" command and
+        set to the exported values: TwistLow/High -> TwistAngle (+ TwistOffset), Swing1/2 -> Swing1/2Angle,
+        Orientation -> the limit transform's rotation, OffsetOrientation -> RotationOffset."""
+        sets = []
+        for sn, (sj, sr) in zip(self.set_names, self.set_rigs):
+            if sr is None: continue
+            lims = []
+            for jl in sr.findall('JointLimit'):
+                joint = sj.get(int(jl.get('JointIndex')))
+                if joint is None: continue
+                if (jl.get('JointType') or 'BallSocket') != 'BallSocket':
+                    self.unsupported.append('rig %s: %s joint limit on %s (only BallSocket / twist-swing is rebuilt)' % (sn, jl.get('JointType'), joint))
+                    continue
+                lo, hi = float(jl.get('TwistLow')), float(jl.get('TwistHigh'))
+                q = lambda tag: [float(v) for v in (jl.findtext(tag) or '0, 0, 0, 1').replace(',', ' ').split()]
+                lims.append({'joint': joint, 'twist': hi - lo, 'offset': (hi + lo) / 2,
+                             'swing1': float(jl.get('Swing1')), 'swing2': float(jl.get('Swing2')),
+                             'rot': q('Orientation'), 'off': q('OffsetOrientation')})
+            if lims: sets.append((sn, lims))
+        if not sets: return
+        self.emit('-- joint limits (from each set .mrarig)')
+        self.emit('function JOINTLIMITS(set, wanted)')
+        self.emit('  local app = nmx.Application.new()')
+        self.emit('  local scene = app:getSceneByName("AssetManager")')
+        self.emit('  local root = anim.getRigDataRoot(scene, set)')
+        self.emit('  local function scan()')
+        self.emit('    local joints, limits = {}, {}')
+        self.emit('    local function walk(o)')
+        self.emit('      local c = o:getFirstChild()')
+        self.emit('      while c do')
+        self.emit('        if c:is(nmx.JointNode.ClassTypeId()) then joints[c:getName()] = c end')
+        self.emit('        if c:is(nmx.JointLimitNode.ClassTypeId()) then limits[c:getName()] = c end')
+        self.emit('        walk(c); c = c:getNextSibling()')
+        self.emit('      end')
+        self.emit('    end')
+        self.emit('    walk(root)')
+        self.emit('    return joints, limits')
+        self.emit('  end')
+        self.emit('  local joints, limits = scan()')
+        self.emit('  for i, w in ipairs(wanted) do')
+        self.emit('    local j = joints[w.joint]')
+        self.emit('    if j and not limits[w.joint .. "Limit"] then')
+        self.emit('      local sel = nmx.SelectionList.new()')
+        self.emit('      local inst = j:getFirstInstance()')
+        self.emit('      sel:add(inst and inst:getParent() or j)')
+        self.emit('      app:runCommand("Core", "Create Joint Limit", scene, sel, "Twist Swing")')
+        self.emit('    elseif not j then LOG("FAIL  joint limit: joint " .. w.joint .. " not in rig " .. set); NFAIL = NFAIL + 1 end')
+        self.emit('  end')
+        self.emit('  joints, limits = scan()')
+        self.emit('  local cs, cb = scene:beginChangeBlock(getCurrentFileAndLine())')
+        self.emit('  local done = 0')
+        self.emit('  for i, w in ipairs(wanted) do')
+        self.emit('    local l = limits[w.joint .. "Limit"]')
+        self.emit('    if l then')
+        self.emit('      l:findAttribute("TwistAngle"):setFloat(w.twist)')
+        self.emit('      l:findAttribute("TwistOffset"):setFloat(w.offset)')
+        self.emit('      l:findAttribute("Swing1Angle"):setFloat(w.swing1)')
+        self.emit('      l:findAttribute("Swing2Angle"):setFloat(w.swing2)')
+        self.emit('      l:findAttribute("RotationOffset"):setQuat(nmx.Quat.new(w.off[1], w.off[2], w.off[3], w.off[4]))')
+        self.emit('      l:getParent():setRotation(nmx.Quat.new(w.rot[1], w.rot[2], w.rot[3], w.rot[4]))')
+        self.emit('      done = done + 1')
+        self.emit('    else LOG("FAIL  joint limit on " .. w.joint .. " was not created"); NFAIL = NFAIL + 1 end')
+        self.emit('  end')
+        self.emit('  scene:endChangeBlock(cb, changeBlockInfo("mcnGen joint limits"))')
+        self.emit('  LOG("joint limits " .. set .. ": " .. done .. " of " .. table.getn(wanted))')
+        self.emit('  return done == table.getn(wanted)')
+        self.emit('end')
+        for sn, lims in sets:
+            self.call('joint limits %s' % sn, 'JOINTLIMITS(%s, %s)' % (lua_str(sn), lua_val(lims)))
 
     def mirror_mappings(self):
         """Joint and event mirror mappings: anim.createRig makes a rig without them, so MirrorTransforms would
