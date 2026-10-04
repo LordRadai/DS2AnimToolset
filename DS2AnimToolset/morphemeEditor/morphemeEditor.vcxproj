@@ -152,7 +152,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);Comctl32.lib;xinput9_1_0.lib;d3d11.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;gameManagement_NoPhysics.lib;morphemeComms2.lib;morphemeCore.lib;morphemeSimpleBundle.lib;NMPlatform.lib;NMRuntimeUtils.lib;morphemeExport.lib;NMTinyXML.lib;NMTL.lib;XMD.lib;RCore.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);Comctl32.lib;xinput9_1_0.lib;d3d11.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;gameManagement_NoPhysics.lib;morphemeComms2.lib;morphemeCore.lib;morphemeSimpleBundle.lib;NMPlatform.lib;NMRuntimeUtils.lib;morphemeExport.lib;NMTinyXML.lib;NMTL.lib;XMD.lib;RCore.lib;zlib.lib</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
