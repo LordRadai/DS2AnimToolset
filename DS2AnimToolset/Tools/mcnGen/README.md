@@ -13,13 +13,9 @@ earlier version of the converter.
 ## Requirements
 
 * Python 3.8+ (standard library only).
-* morphemeConnect 3.6.2 at `C:\Program Files (x86)\NaturalMotion\morphemeConnect 3.6.2`.
+* morphemeConnect 3.6.2.
 * **Connect must be closed** while a script runs: `morphemeConnect.exe` is single instance, so a second,
   headless copy quits immediately.
-* Patched `scripts\manifest\nodes\animation\LockFoot.lua`: DS2's LockFoot has no
-  `SwivelContributionToOrientation` input, while vanilla 3.6.2 requires one. The required-connection check is
-  commented out; the original is saved next to it as `LockFoot.lua.bak`. Without the patch, Connect silently
-  drops every state that contains a LockFoot.
 
 ## Input folder
 
@@ -94,7 +90,7 @@ understood, before you trust a result.
 
 ## Control parameter settings
 
-The export only has each CP's default value. `tools\ds2_control_parameters.json` adds range, default and
+The export only has each CP's default value. `tools\cp_settings.json` adds range, default and
 group by CP name. DS2 shares one CP set across characters, so one file serves all of them:
 
 ```json

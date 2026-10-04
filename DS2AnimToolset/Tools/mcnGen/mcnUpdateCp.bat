@@ -22,7 +22,7 @@ set "DIR=%DIR:~0,-1%"
 rem generation-only files (scripts, logs, diff, round-trip export) go to <project>\build
 set "BUILD=%DIR%\build"
 set "CPARG="
-if not "%CP_CONFIG%"=="" set CPARG=--cp-config "%CP_CONFIG%" --cp-template
+if not "%CP_CONFIG%"=="" set CPARG=--cp-config "%CP_CONFIG%" --cp-only --cp-template
 
 echo === %NAME%  (%DIR%)
 
