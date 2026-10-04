@@ -4,7 +4,7 @@
 void ProgressIndicator::setStep(int step)
 {
 	if (!this->m_busy)
-		g_appLog->panicMessage("Forgot to call startProcessing before setting current step\n");
+		INVOKE_PANIC("Forgot to call startProcessing before setting current step\n");
 
 	this->m_step = step;
 

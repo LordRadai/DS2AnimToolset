@@ -1,4 +1,5 @@
 #include "imgui_custom_widget.h"
+#include "imgui/imgui_internal.h"
 #include <stdio.h>
 
 bool ImGui::InputInt64(const char* label, ImS64* v, int step, int step_fast, ImGuiInputTextFlags flags)
@@ -71,28 +72,214 @@ void ImGui::CompositeProgressBar(const char* label, int step, int numSteps, cons
     ImGui::ProgressBar(progress, ImVec2(0, 0), buf);
 }
 
-void ImGui::InputDragFloat(const char* label, float* v, float dragSpeed, float min, float max, const char* format, ImGuiInputFlags flags)
+bool ImGui::InputDragFloat(const char* label, float* v, float min, float max, const char* format, ImGuiInputFlags flags)
 {
     char dragID[256];
     sprintf(dragID, "##%sDragFloat", label);
 
-    ImGui::SetNextItemWidth(50);
-    ImGui::DragFloat(dragID, v, dragSpeed, min, max, format, flags);
+	char sliderID[256];
+	sprintf(sliderID, "##%sSlider", label);
+
+    const char* label_end = ImGui::FindRenderedTextEnd(label);
+
+    if (label_end > label)
+    {
+        ImGui::TextUnformatted(label, label_end);
+        ImGui::SameLine();
+    }
+
+    ImGui::SetNextItemWidth(300.f);
+
+    bool resultSlider = ImGui::SliderFloat(sliderID, v, min, max, "");
 
     ImGui::SameLine();
 
-    ImGui::SliderFloat(label, v, min, max, "");
+    ImGui::SetNextItemWidth(50.f);
+
+    bool resultInput = ImGui::InputFloat(dragID, v, 0.f, 0.f, "%.3f", flags);
+
+	return resultInput || resultSlider;
 }
 
-void ImGui::InputDragInt(const char* label, int* v, float dragSpeed, int min, int max, const char* format, ImGuiInputFlags flags)
+bool ImGui::InputDragVector3(const char* label, float v[3], float min, float max, const char* format, ImGuiInputFlags flags)
+{
+    char dragID[256];
+    sprintf(dragID, "##%sDragVector3", label);
+
+	bool resultX = ImGui::InputDragFloat("X", &v[0], min, max, format, flags);
+    bool resultY = ImGui::InputDragFloat("Y", &v[1], min, max, format, flags);
+    bool resultZ = ImGui::InputDragFloat("Z", &v[2], min, max, format, flags);
+
+	return resultX || resultY || resultZ;
+}
+
+bool ImGui::InputDragVector4(const char* label, float v[4], float min, float max, const char* format, ImGuiInputFlags flags)
+{
+    char dragID[256];
+    sprintf(dragID, "##%sDragVector4", label);
+
+    bool resultX = ImGui::InputDragFloat("X", &v[0], min, max, format, flags);
+    bool resultY = ImGui::InputDragFloat("Y", &v[1], min, max, format, flags);
+    bool resultZ = ImGui::InputDragFloat("Z", &v[2], min, max, format, flags);
+    bool resultW = ImGui::InputDragFloat("W", &v[3], min, max, format, flags);
+
+	return resultX || resultY || resultZ || resultW;
+}
+
+bool ImGui::InputDragInt(const char* label, int* v, int min, int max, const char* format, ImGuiInputFlags flags)
 {
     char dragID[256];
     sprintf(dragID, "##%sDragInt", label);
 
-    ImGui::SetNextItemWidth(50);
-    ImGui::DragInt(dragID, v, dragSpeed, min, max, format, flags);
+    char sliderID[256];
+    sprintf(sliderID, "##%sSlider", label);
+
+    const char* label_end = ImGui::FindRenderedTextEnd(label);
+
+    if (label_end > label)
+    {
+        ImGui::TextUnformatted(label, label_end);
+        ImGui::SameLine();
+    }
+
+	ImGui::SetNextItemWidth(300.f);
+
+    bool resultSlider = ImGui::SliderInt(sliderID, v, min, max, "");
 
     ImGui::SameLine();
 
-    ImGui::SliderInt(label, v, min, max, "");
+    ImGui::SetNextItemWidth(50.f);
+
+    bool resultInput = ImGui::InputInt(dragID, v, 0, 0, flags);
+
+	return resultInput || resultSlider;
+}
+
+bool ImGui::InputDragUInt(const char* label, unsigned int* v, unsigned int min, unsigned int max, const char* format, ImGuiInputFlags flags)
+{
+    char dragID[256];
+    sprintf(dragID, "##%sDragUInt", label);
+
+    char sliderID[256];
+    sprintf(sliderID, "##%sSlider", label);
+
+    const char* label_end = ImGui::FindRenderedTextEnd(label);
+
+    if (label_end > label)
+    {
+        ImGui::TextUnformatted(label, label_end);
+        ImGui::SameLine();
+    }
+
+    ImGui::SetNextItemWidth(300.f);
+
+    bool resultSlide = ImGui::SliderInt(sliderID, (int*)v, (int)min, (int)max, "");
+
+    ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(50.f);
+
+    bool resultInput = ImGui::InputScalar(dragID, ImGuiDataType_U32, v, NULL, NULL, format, flags);
+
+	return resultInput || resultSlide;
+}
+
+bool ImGui::Label(const char* labelText, ImGuiInputTextFlags flags)
+{
+	char textID[256];
+	sprintf_s(textID, "##%sLabel", labelText);
+
+    char label[256];
+	sprintf_s(label, "%s", labelText);
+
+	ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+	return ImGui::InputText(textID, label, 256, flags);
+}
+
+bool ImGui::NamedLabel(const char* label, const char* labelText, ImGuiInputTextFlags flags)
+{
+    char textID[256];
+    sprintf_s(textID, "##%sLabel", label);
+    char labelBuffer[256];
+    sprintf_s(labelBuffer, "%s", labelText);
+
+	ImGui::TextUnformatted(label);
+
+	ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+    return Label(labelText, flags);
+}
+
+bool ImGui::ColorEditUInt(const char* label, ImU32* color, ImGuiColorEditFlags flags)
+{
+    if (!color)
+        return false;
+
+    ImVec4 col = ImGui::ColorConvertU32ToFloat4(*color);
+
+    bool changed = ImGui::ColorEdit4(label, &col.x, flags);
+
+    if (changed)
+        *color = ImGui::ColorConvertFloat4ToU32(col);
+
+    return changed;
+}
+
+bool ImGui::RightAlignedCheckbox(const char* label, bool* v)
+{
+	ImGui::TextUnformatted(label);
+
+    ImGui::SameLine();
+
+    char nameBuffer[256];
+    sprintf_s(nameBuffer, "##%sCheckbox", label);
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+    return ImGui::Checkbox(nameBuffer, v);
+}
+
+bool ImGui::RightAlignedInputFloat(const char* label, float* v, const char* format, ImGuiInputFlags flags)
+{
+    ImGui::TextUnformatted(label);
+
+    ImGui::SameLine();
+
+    char nameBuffer[256];
+    sprintf_s(nameBuffer, "##%sInputFloat", label);
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+    return ImGui::InputFloat(nameBuffer, v, 0.f, 0.f, format, flags);
+}
+
+bool ImGui::RightAlignedInputInt(const char* label, int* v, ImGuiInputFlags flags)
+{
+    ImGui::TextUnformatted(label);
+
+    ImGui::SameLine();
+
+	char nameBuffer[256];
+	sprintf_s(nameBuffer, "##%sInputInt", label);
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+    return ImGui::InputInt(nameBuffer, v, 0, 0, flags);
+}
+
+bool ImGui::RightAlignedCombo(const char* label, int* current_item, const char* const items[], int items_count, ImGuiComboFlags flags)
+{
+    ImGui::TextUnformatted(label);
+
+    ImGui::SameLine();
+
+    char nameBuffer[256];
+    sprintf_s(nameBuffer, "##%sCombo", label);
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+    return ImGui::Combo(nameBuffer, current_item, items, items_count, flags);
 }

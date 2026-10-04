@@ -1,0 +1,328 @@
+#include <cmath>
+
+#include "Node.h"
+#include "NodeEditor/NodeEditor.h"
+#include "NodeEditor/Editor/Graph/Graph.h"
+#include "NodeEditor/Editor/Graph/BlendTree.h"
+#include "NodeEditor/imnodes/imnodes.h"
+#include "NodeEditor/NodeEditor.h"
+#include "imgui_custom/imgui_custom_widget.h"
+
+#include "extern.h"
+#include "RLog/RLog.h"
+
+namespace NodeEditor
+{
+	Node::Node(Editor* editor, Graph* parent, int id, const std::string typeName, const std::string& name, Graph* subGraph) : Entity(editor, name),
+		m_parentGraph(parent), m_nodeID(id), m_typeName(typeName), m_subGraph(subGraph), m_position(ImVec2(0.f, 0.f))
+	{
+	}
+
+	Node::~Node()
+	{
+		for (Pin* inputPin : m_inputPins)
+			delete inputPin;
+
+		for (Pin* outputPin : m_outputPins)
+			delete outputPin;
+
+		for (DataPin* inputDataPin : m_inputDataPins)
+			delete inputDataPin;
+
+		for (DataPin* outputDataPin : m_outputDataPins)
+			delete outputDataPin;
+
+		for (Attribute* attribute : m_attributes)
+			delete attribute;
+
+		if (m_subGraph)
+		{
+			delete m_subGraph;
+			m_subGraph = nullptr;
+		}
+	}
+
+	void Node::draw()
+	{
+		ImNodes::BeginNode(m_id);
+
+		ImVec2 textSize = ImGui::CalcTextSize(m_name.c_str());
+
+		float nodeWidth, nodeHeight;
+		calcNodeSize(nodeWidth, nodeHeight);
+
+		// ---- Title bar ----
+		ImNodes::BeginNodeTitleBar();
+		ImGui::TextUnformatted(m_name.c_str());
+		ImNodes::EndNodeTitleBar();
+
+		// ---- Content area ----
+		StyleSettings& style = m_ownerEditor->getStyleSettings();
+
+		int totalPins = (int)(m_inputPins.size() + m_outputPins.size());
+		float pinAreaHeight = totalPins * 10.f;
+
+		float dummyHeight = style.NodeMinContentHeight - pinAreaHeight;
+		if (dummyHeight < 0.0f) dummyHeight = 0.0f;
+
+		// Add a dummy to enforce minimum node height
+		ImGui::Dummy(ImVec2(nodeWidth, dummyHeight));
+
+		// ---- Draw pins ----
+		for (Pin* inputPin : m_inputPins)
+			inputPin->draw();
+
+		for (DataPin* inputDataPin : m_inputDataPins)
+			inputDataPin->draw();
+
+		for (Pin* outputPin : m_outputPins)
+			outputPin->draw();
+
+		for (DataPin* outputDataPin : m_outputDataPins)
+			outputDataPin->draw();
+
+		// ---- Node position ----
+		ImNodes::SetNodeGridSpacePos(m_id, m_position);
+
+		ImNodes::EndNode();
+	}
+
+	ImVec2 Node::getSize() const
+	{
+		float width, height;
+		calcNodeSize(width, height);
+
+		return ImVec2(width, height);
+	}
+
+	ImVec2 Node::getCenter() const
+	{
+		float width, height;
+		calcNodeSize(width, height);
+
+		return ImVec2(m_position.x + width * 0.5f, m_position.y + height * 0.5f);
+	}
+
+	Attribute* Node::createAttribute(const std::string& name, const std::string& type)
+	{
+		Attribute* attribute = new Attribute(this, name, type);
+		m_attributes.push_back(attribute);
+		return attribute;
+	}
+
+	Attribute* Node::getAttribute(size_t index) const
+	{
+		if (index < m_attributes.size())
+			return m_attributes[index];
+
+		return nullptr;
+	}
+
+	Attribute* Node::getAttribute(const std::string& name) const
+	{
+		for (Attribute* attribute : m_attributes)
+		{
+			if (attribute->getName() == name)
+				return attribute;
+		}
+
+		return nullptr;
+	}
+
+	DataPin* Node::createInputDataPin(const std::string& name, DataPin::DataType dataType)
+	{
+		DataPin* pin = new DataPin(m_ownerEditor, this, name, true, dataType);
+		m_inputDataPins.push_back(pin);
+
+		return pin;
+	}
+
+	DataPin* Node::createOutputDataPin(const std::string& name, DataPin::DataType dataType)
+	{
+		DataPin* pin = new DataPin(m_ownerEditor, this, name, false, dataType);
+		m_outputDataPins.push_back(pin);
+
+		return pin;
+	}
+
+	Pin* Node::createInputPin(const std::string& name)
+	{
+		Pin* pin = new Pin(m_ownerEditor, this, name, true);
+		m_inputPins.push_back(pin);
+
+		return pin;
+	}
+
+	Pin* Node::createOutputPin(const std::string& name)
+	{
+		Pin* pin = new Pin(m_ownerEditor, this, name, false);
+		m_outputPins.push_back(pin);
+
+		return pin;
+	}
+
+	Pin* Node::getInputPin(size_t index) const
+	{
+		if (index < m_inputPins.size())
+			return m_inputPins[index];
+
+		return nullptr;
+	}
+
+	Pin* Node::getInputPin(const std::string& name) const
+	{
+		for (Pin* pin : m_inputPins)
+		{
+			if (pin->getName() == name)
+				return pin;
+		}
+
+		return nullptr;
+	}
+
+	DataPin* Node::getInputDataPin(size_t index) const
+	{
+		if (index < m_inputDataPins.size())
+			return m_inputDataPins[index];
+
+		return nullptr;
+	}
+
+	DataPin* Node::getInputDataPin(const std::string& name) const
+	{
+		for (DataPin* pin : m_inputDataPins)
+		{
+			if (pin->getName() == name)
+				return pin;
+		}
+
+		return nullptr;
+	}
+
+	Pin* Node::getOutputPin(size_t index) const
+	{
+		if (index < m_outputPins.size())
+			return m_outputPins[index];
+
+		return nullptr;
+	}
+
+	Pin* Node::getOutputPin(const std::string& name) const
+	{
+		for (Pin* pin : m_outputPins)
+		{
+			if (pin->getName() == name)
+				return pin;
+		}
+
+		return nullptr;
+	}
+
+	DataPin* Node::getOutputDataPin(size_t index) const
+	{
+		if (index < m_outputDataPins.size())
+			return m_outputDataPins[index];
+
+		return nullptr;
+	}
+
+	DataPin* Node::getOutputDataPin(const std::string& name) const
+	{
+		for (DataPin* pin : m_outputDataPins)
+		{
+			if (pin->getName() == name)
+				return pin;
+		}
+
+		return nullptr;
+	}
+
+	void Node::setPosition(float x, float y)
+	{
+		m_position = ImVec2(x, y);
+	}
+
+	bool Node::setAttribute(const std::string& name, const std::vector<std::any>& values)
+	{
+		Attribute* attribute = getAttribute(name);
+
+		if (attribute)
+		{
+			attribute->setValue(values);
+			return true;
+		}
+
+		g_appLog->debugMessage(MsgLevel_Warn, "Node::setAttribute: Attribute '%s' not found in node '%s'\n", name.c_str(), m_name.c_str());
+
+		return false;
+	}
+
+	bool Node::setAttribute(const std::string& name, const std::any& value)
+	{
+		Attribute* attribute = getAttribute(name);
+
+		if (attribute)
+		{
+			attribute->setValue({ value });
+			return true;
+		}
+
+		g_appLog->debugMessage(MsgLevel_Warn, "Node::setAttribute: Attribute '%s' not found in node '%s'\n", name.c_str(), m_name.c_str());
+
+		return false;
+	}
+
+	const std::string Node::getFullName() const
+	{
+		if (m_parentGraph && !m_parentGraph->isRootGraph())
+			return m_parentGraph->getFullName() + "|" + m_name;
+
+		return m_name;
+	}
+
+	void Node::calcNodeSize(float& width, float& height) const
+	{
+		ImNodesStyle& imStyle = ImNodes::GetStyle();
+
+		StyleSettings& style = m_ownerEditor->getStyleSettings();
+		ImVec2 textSize = ImGui::CalcTextSize(m_name.c_str());
+
+		const float titleBarHeight = 2.f * imStyle.NodePadding.y + textSize.y;
+		const float nodeTotalMinHeight = titleBarHeight + style.NodeMinContentHeight;
+		const int totalPins = (int)(m_inputPins.size() + m_outputPins.size() + m_inputDataPins.size() + m_outputDataPins.size());
+		const float nodeHeight = totalPins * 10.f;
+
+		width = std::fmax(style.NodeMinWidth, textSize.x);
+		height = std::fmax(nodeTotalMinHeight, nodeHeight);
+	}
+
+	bool Node::editorGUI()
+	{
+		ImGui::TextUnformatted(m_typeName.c_str());
+
+		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
+		bool readOnly = false;
+		if (m_ownerEditor->getFlags() & NodeEditorFlags_ReadOnly)
+			readOnly = true;
+
+		ImGui::BeginDisabled(readOnly);
+
+		ImGui::Label(m_name.c_str());
+
+		ImGui::EndDisabled();
+
+		for (Attribute* attribute : m_attributes)
+			attribute->editorGUI();
+
+		return true;
+	}
+
+	void Node::setName(const std::string& name)
+	{
+		m_name = name;
+
+		if (m_subGraph)
+			m_subGraph->setName(name);
+	}
+}

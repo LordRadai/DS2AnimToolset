@@ -50,7 +50,7 @@ public:
 	struct Settings
 	{
 		DirectX::SimpleMath::Vector4 clearColor = DirectX::SimpleMath::Vector4(0.06f, 0.06f, 0.06f, 1.f);
-		float gridScale = 100.f;
+		float gridScale = 1000.f;
 		int msaaCount = 4;
 		int msaaQuality = 0;
 	};
@@ -97,10 +97,15 @@ public:
 	int getHeight() const { return this->m_height; }
 	Settings* getSettings() { return &this->m_settings; }
 
+	Vector3 getUpAxis() const { return this->m_upAxis; }
+
 	void applyDebugEffect(DirectX::SimpleMath::Matrix world);
 	void applyPhysicalEffect(DirectX::SimpleMath::Matrix world, float alpha);
 	void setInputLayout(InputLayoutType type);
 
+	float getDpiScale() const;
+
+	void getPhysicalResolution(UINT& width, UINT& height) const;
 private:
 	void loadSettings();
 	void saveSettings();
@@ -140,6 +145,8 @@ private:
 	DirectX::SimpleMath::Matrix m_proj;
 
 	std::vector<TextItem> m_texts;
+
+	Vector3 m_upAxis = Vector3::UnitY;
 
 	RenderManager();
 

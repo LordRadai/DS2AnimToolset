@@ -22,7 +22,7 @@ namespace MD
 			else if (outputCPTask == MR::nodeOperatorSmoothFloatCriticallyDampVector)
 				return false;
 			else
-				g_appLog->panicMessage("Invalid outputCPTaskFunction %s (nodeId=%d)\n", MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), nodeDef->getNodeID());
+				INVOKE_PANIC("Invalid outputCPTaskFunction %s (nodeId=%d)\n", MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), nodeDef->getNodeID());
 
 			return false;
 		}
@@ -38,7 +38,7 @@ namespace MD
 			else if (outputCPTask == MR::nodeOperatorRateOfChangeVector)
 				return false;
 			else
-				g_appLog->panicMessage("Invalid outputCPTaskFunction %s (nodeId=%d)\n", MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), nodeDef->getNodeID());
+				INVOKE_PANIC("Invalid outputCPTaskFunction %s (nodeId=%d)\n", MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), MR::Manager::getInstance().getOutputCPTaskName(outputCPTask), nodeDef->getNodeID());
 
 			return false;
 		}
@@ -266,9 +266,9 @@ namespace MD
 			nodeDataBlock->writeBool(smoothFloatOperation->m_smoothVel, "SmoothVelocity");
 
 			nodeDataBlock->writeFloat(smoothFloatOperation->m_floatRate, "SmoothTime");
-			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueX, "InitValue_X");
-			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueY, "InitValue_Y");
-			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueZ, "InitValue_Z");
+			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueX, "InitValueX");
+			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueY, "InitValueY");
+			nodeDataBlock->writeFloat(smoothFloatOperation->m_initialValueZ, "InitValueZ");
 			nodeDataBlock->writeBool(smoothFloatOperation->m_useInitValOnInit, "UseInitValueOnInit");
 
 			return nodeExportXML;
@@ -340,6 +340,8 @@ namespace MD
 			nodeDataBlock->writeInt(functionOpCode->m_operation, "OperationCode");
 			nodeDataBlock->writeFloat(functionOpCode->m_constValue, "ConstantValue");
 			nodeDataBlock->writeFloat(functionOpCode->m_constVector.x, "ConstantValueX");
+			nodeDataBlock->writeFloat(functionOpCode->m_constVector.y, "ConstantValueY");
+			nodeDataBlock->writeFloat(functionOpCode->m_constVector.z, "ConstantValueZ");
 
 			return nodeExportXML;
 		}

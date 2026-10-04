@@ -1583,7 +1583,7 @@ void XM_CALLCONV DX::DrawModel(DirectX::PrimitiveBatch<DirectX::VertexPositionNo
         }
         catch (const std::exception& e)
         {
-            g_appLog->panicMessage(e.what());
+            INVOKE_PANIC(e.what());
         }
     }
 }
@@ -1632,26 +1632,26 @@ void XM_CALLCONV DX::DrawModelWireframe(DirectX::PrimitiveBatch<DirectX::VertexP
         }
         catch (const std::exception& e)
         {
-            g_appLog->panicMessage(e.what());
+            INVOKE_PANIC(e.what());
         }
     }
 }
 
 void XM_CALLCONV DX::DrawReferenceFrame(DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* batch,
-    DirectX::XMMATRIX world)
+    DirectX::XMMATRIX world, float axisLenght)
 {
     Vector3 up_start, up_end;
     Vector3 forward_start, forward_end;
     Vector3 right_start, right_end;
 
     up_start = Vector3::Zero;
-    up_end = Vector3::Up / 10.f;
+    up_end = up_start + Vector3(0, axisLenght, 0);
 
     forward_start = Vector3::Zero;
-    forward_end = Vector3::Forward / 10.f;
+    forward_end = forward_start + Vector3(axisLenght, 0, 0);
 
     right_start = Vector3::Zero;
-    right_end = Vector3::Right / 10.f;
+    right_end = right_start + Vector3(0, 0, axisLenght);
 
     DX::DrawLine(batch, Vector3::Transform(up_start, world), Vector3::Transform(up_end, world), Colors::Green);
     DX::DrawLine(batch, Vector3::Transform(forward_start, world), Vector3::Transform(forward_end, world), Colors::Blue);
@@ -1694,17 +1694,12 @@ void XM_CALLCONV DX::AddOverlayText(DirectX::SpriteBatch* sprite, DirectX::Sprit
 
 void XM_CALLCONV DX::AddWorldSpaceText(DirectX::SpriteBatch* sprite, DirectX::SpriteFont* font, std::string text, DirectX::SimpleMath::Vector3 position, DirectX::XMMATRIX world, Camera* cam, DirectX::XMVECTORF32 color)
 {
-    DirectX::SimpleMath::Vector3 text_world(position);
+	Vector3 textWorld = Vector3::Transform(position, world);
 
-    DirectX::XMVECTOR transformed_pos = DirectX::XMVector3Transform(text_world, world);
-    DirectX::XMStoreFloat3(&text_world, transformed_pos);
-
-    auto clip = DirectX::XMVector3Project(text_world, 0, 0, cam->getWidth(), cam->getHeight(), cam->getNearZ(), cam->getFarZ(), cam->getProjectionMatrix(), cam->getViewMatrix(), Matrix::Identity);
+    auto clip = DirectX::XMVector3Project(textWorld, 0, 0, cam->getWidth(), cam->getHeight(), cam->getNearZ(), cam->getFarZ(), cam->getProjectionMatrix(), cam->getViewMatrix(), Matrix::Identity);
 
     float baseDistance = 5.f;
-
-    float distance = Vector3::Distance(cam->getPosition(), Vector3::Transform(position, world));
-
+    float distance = Vector3::Distance(cam->getPosition(), textWorld);
     float scale = std::fmax(std::fmin(baseDistance / distance, 1.f), 0.5f);
 
     AddOverlayText(sprite, font, text, clip, 0.01f, scale, color, TextFlags_Shadow);

@@ -24,31 +24,32 @@
     <ProjectGuid>{ebc383bc-0add-4009-acf3-0f9b1d5191ff}</ProjectGuid>
     <RootNamespace>morphemeEditor</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+	<VcpkgEnabled>false</VcpkgEnabled>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -117,16 +118,17 @@
     <ClCompile>
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_USRDLL;_WIN64;_WINDLL;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CONSOLE;WIN32;_USRDLL;_WIN64;_WINDLL;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;TASK_QUEUE_DEBUGGING;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)Morpheme4\common\NMRuntimeUtils\include;$(SolutionDir)RCore\RCore\src;$(SolutionDir)Morpheme4\common\NMTL\include;$(SolutionDir)Morpheme4\common\tinyxml;$(SolutionDir)Morpheme4\common\XMD\include;$(SolutionDir)Morpheme4\morpheme\SDK\export\include;$(ProjectDir)\include\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);xinput9_1_0.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics_debug.lib;morphemeComms2_debug.lib;morphemeCore_debug.lib;morphemeSimpleBundle_debug.lib;NMPlatform_debug.lib;NMRuntimeUtils_debug.lib;d3d11.lib;morphemeExport_debug.lib;NMTinyXML_debug.lib;NMTL_debug.lib;XMD_debug.lib;RCore_debug.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);Comctl32.lib;xinput9_1_0.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;gameManagement_NoPhysics_debug.lib;morphemeComms2_debug.lib;morphemeCore_debug.lib;morphemeSimpleBundle_debug.lib;NMPlatform_debug.lib;NMRuntimeUtils_debug.lib;d3d11.lib;morphemeExport_debug.lib;NMTinyXML_debug.lib;NMTL_debug.lib;XMD_debug.lib;RCore_debug.lib;zlib.lib</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -138,18 +140,20 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_USRDLL;_WIN64;_WINDLL;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_USRDLL;_WIN64;_WINDLL;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;MR_DISABLE_OUTPUT_DEBUGGING;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Morpheme4\morpheme\utils\comms2\include\;$(SolutionDir)Morpheme4\morpheme\utils\simpleBundle\include\;$(SolutionDir)Morpheme4\morpheme\SDK\core\include\;$(SolutionDir)Morpheme4\morpheme\SDK\;$(SolutionDir)Morpheme4\common\NMPlatform\include\;$(SolutionDir)Morpheme4\common\NMPlatform\include\NMPlatform\win32\;$(SolutionDir)Morpheme4\common\NMRuntimeUtils\include;$(SolutionDir)RCore\RCore\src;$(SolutionDir)Morpheme4\common\XMD\include;$(SolutionDir)Morpheme4\common\NMTL\include;$(SolutionDir)Morpheme4\common\tinyxml;$(SolutionDir)Morpheme4\morpheme\SDK\export\include;$(ProjectDir)\include\;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <Optimization>MaxSpeed</Optimization>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);xinput9_1_0.lib;d3d11.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;zlib.lib;gameManagement_NoPhysics.lib;morphemeComms2.lib;morphemeCore.lib;morphemeSimpleBundle.lib;NMPlatform.lib;NMRuntimeUtils.lib;morphemeExport.lib;NMTinyXML.lib;NMTL.lib;XMD.lib;RCore.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);Comctl32.lib;xinput9_1_0.lib;d3d11.lib;libfbxsdk-md.lib;shlwapi.lib;libxml2-md.lib;gameManagement_NoPhysics.lib;morphemeComms2.lib;morphemeCore.lib;morphemeSimpleBundle.lib;NMPlatform.lib;NMRuntimeUtils.lib;morphemeExport.lib;NMTinyXML.lib;NMTL.lib;XMD.lib;RCore.lib;zlib.lib</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -161,6 +165,7 @@
     <ClInclude Include="Application\Application.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="CharacterModelCtrl\CharacterModelCtrl.h" />
+    <ClInclude Include="CharacterMotionCtrl\CharacterMotionCtrl.h" />
     <ClInclude Include="Character\Character.h" />
     <ClInclude Include="DebugDraw\DebugDraw.h" />
     <ClInclude Include="extern.h" />
@@ -220,6 +225,15 @@
     <ClInclude Include="imgui_custom\imgui_custom_widget.h" />
     <ClInclude Include="morphemeEditor.h" />
     <ClInclude Include="MorphemeEditorApp\MorphemeEditorApp.h" />
+    <ClInclude Include="MorphemeNetworkInspector\MessageProcessor\MessageProcessor.h" />
+    <ClInclude Include="MorphemeNetworkInspector\MorphemeNetworkInspector.h" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\BTFanLayouterStrategy.h" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GraphLayouterStrategy.inl" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\DefaultNodeNamingStrategy.h" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\NodeNamingStrategy.inl" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\ReconstructParentChildNameStrategy.h" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\Utils\Utils.h" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.h" />
     <ClInclude Include="MorphemeSystem\AnimLoader\AnimLoader.h" />
     <ClInclude Include="MorphemeSystem\AssetLoader\AssetLoader.h" />
     <ClInclude Include="MorphemeSystem\CharacterController\CharacterController.h" />
@@ -239,6 +253,53 @@
     <ClInclude Include="MorphemeSystem\MorphemeSystem.h" />
     <ClInclude Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.h" />
     <ClInclude Include="MorphemeSystem\XMDUtils\XMDUtils.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\AnimationTakeAttribute\AnimationTakeAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\Attribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\Array\BoolArrayAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\RequestAttribute\RequestAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\BoolAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\ControlParameterAttribute\ControlParameterAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\Array\FloatArrayAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\EnumAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\FloatAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\Array\IntArrayAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\IntAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\Array\RefArrayAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\RefAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\Array\StringArrayAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Attribute\SingleValue\StringAttribute.h" />
+    <ClInclude Include="NodeEditor\Editor\Condition\Condition.h" />
+    <ClInclude Include="NodeEditor\Editor\Node\BlendTreeOutputNode.h" />
+    <ClInclude Include="NodeEditor\Editor\Node\ControlParametersNode.h" />
+    <ClInclude Include="NodeEditor\Editor\ControlParameter\ControlParameter.h" />
+    <ClInclude Include="NodeEditor\Editor\Entity\Entity.h" />
+    <ClInclude Include="NodeEditor\Editor\Graph\BlendTree.h" />
+    <ClInclude Include="NodeEditor\Editor\Graph\Graph.h" />
+    <ClInclude Include="NodeEditor\Editor\Graph\StateMachine.h" />
+    <ClInclude Include="NodeEditor\Editor\Node\PassDownPinsNode.h" />
+    <ClInclude Include="NodeEditor\Editor\Request\Request.h" />
+    <ClInclude Include="NodeEditor\imnodes\imnodes.h" />
+    <ClInclude Include="NodeEditor\imnodes\imnodes_internal.h" />
+    <ClInclude Include="NodeEditor\Editor\Link\Link.h" />
+    <ClInclude Include="NodeEditor\Editor\Node\Node.h" />
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Attribute\MMAttribute.h" />
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Condition\MMCondition.h" />
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\ManifestItemBase.h" />
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Node\MMNode.h" />
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Pin\MMDataPin.h" />
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Pin\MMFunctionalPin.h" />
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Pin\MMPin.h" />
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Node\MMStateMachine.h" />
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Node\MMStateMachineNode.h" />
+    <ClInclude Include="NodeEditor\Manifest\ManifestItem\Transition\MMTransition.h" />
+    <ClInclude Include="NodeEditor\Manifest\Manifest.h" />
+    <ClInclude Include="NodeEditor\NodeEditor.h" />
+    <ClInclude Include="NodeEditor\Editor\Pin\DataPin.h" />
+    <ClInclude Include="NodeEditor\Editor\Pin\Pin.h" />
+    <ClInclude Include="NodeEditor\Registry\Registry.h" />
+    <ClInclude Include="NodeEditor\SampleNodeEditor.h" />
+    <ClInclude Include="NodeEditor\Editor\Node\StateNode.h" />
+    <ClInclude Include="NodeEditor\Editor\Transition\Transition.h" />
     <ClInclude Include="PlayerModelPreset\PlayerModelPreset.h" />
     <ClInclude Include="RenderManager\DebugDraw\DebugDraw.h" />
     <ClInclude Include="RenderManager\RenderManager.h" />
@@ -260,6 +321,7 @@
     <ClCompile Include="AnimObject\AnimObject.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="CharacterModelCtrl\CharacterModelCtrl.cpp" />
+    <ClCompile Include="CharacterMotionCtrl\CharacterMotionCtrl.cpp" />
     <ClCompile Include="Character\Character.cpp" />
     <ClCompile Include="DebugDraw\DebugDraw.cpp" />
     <ClCompile Include="FileIDNamesTable\FileIDNamesTable.cpp" />
@@ -301,6 +363,13 @@
     <ClCompile Include="imgui_custom\imgui_custom_widget.cpp" />
     <ClCompile Include="morphemeEditor.cpp" />
     <ClCompile Include="MorphemeEditorApp\MorphemeEditorApp.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\MessageProcessor\MessageProcessor.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\MorphemeNetworkInspector.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\BTFanLayouterStrategy.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\DefaultNodeNamingStrategy.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\ReconstructParentChildNameStrategy.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\Utils\Utils.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.cpp" />
     <ClCompile Include="MorphemeSystem\AnimLoader\AnimLoader.cpp" />
     <ClCompile Include="MorphemeSystem\AssetLoader\AssetLoader.cpp" />
     <ClCompile Include="MorphemeSystem\CharacterController\CharacterController.cpp" />
@@ -320,6 +389,50 @@
     <ClCompile Include="MorphemeSystem\MorphemeSystem.cpp" />
     <ClCompile Include="MorphemeSystem\MorphemeUtils\MorphemeUtils.cpp" />
     <ClCompile Include="MorphemeSystem\XMDUtils\XMDUtils.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\AnimationTakeAttribute\AnimationTakeAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\Attribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\Array\BoolArrayAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\RequestAttribute\RequestAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\BoolAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\ControlParameterAttribute\ControlParameterAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\Array\FloatArrayAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\EnumAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\FloatAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\Array\IntArrayAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\IntAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\Array\RefArrayAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\RefAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\Array\StringArrayAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Attribute\SingleValue\StringAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Condition\Condition.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Node\BlendTreeOutputNode.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Node\ControlParametersNode.cpp" />
+    <ClCompile Include="NodeEditor\Editor\ControlParameter\ControlParameter.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Entity\Entity.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Graph\BlendTree.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Graph\Graph.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Graph\StateMachine.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Node\PassDownPinsNode.cpp" />
+    <ClCompile Include="NodeEditor\imnodes\imnodes.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Link\Link.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Node\Node.cpp" />
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Attribute\MMAttribute.cpp" />
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Condition\MMCondition.cpp" />
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Node\MMNode.cpp" />
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Node\MMStateMachine.cpp" />
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Pin\MMDataPin.cpp" />
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Pin\MMFunctionalPin.cpp" />
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Pin\MMPin.cpp" />
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Node\MMStateMachineNode.cpp" />
+    <ClCompile Include="NodeEditor\Manifest\ManifestItem\Transition\MMTransition.cpp" />
+    <ClCompile Include="NodeEditor\Manifest\Manifest.cpp" />
+    <ClCompile Include="NodeEditor\NodeEditor.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Pin\DataPin.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Pin\Pin.cpp" />
+    <ClCompile Include="NodeEditor\Registry\Registry.cpp" />
+    <ClCompile Include="NodeEditor\SampleNodeEditor.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Node\StateNode.cpp" />
+    <ClCompile Include="NodeEditor\Editor\Transition\Transition.cpp" />
     <ClCompile Include="PlayerModelPreset\PlayerModelPreset.cpp" />
     <ClCompile Include="RenderManager\RenderManager.cpp" />
     <ClCompile Include="TrackEditor\EventTrackEditor.cpp" />
@@ -340,18 +453,17 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="fromloader\src\util\stringio\simple_sjis_table.bin" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\directxtk_uwp.2024.10.29.1\build\native\directxtk_uwp.targets" Condition="Exists('..\packages\directxtk_uwp.2024.10.29.1\build\native\directxtk_uwp.targets')" />
+    <Import Project="..\packages\directxtk_uwp.2026.5.8.1\build\native\directxtk_uwp.targets" Condition="Exists('..\packages\directxtk_uwp.2026.5.8.1\build\native\directxtk_uwp.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\directxtk_uwp.2024.10.29.1\build\native\directxtk_uwp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk_uwp.2024.10.29.1\build\native\directxtk_uwp.targets'))" />
+    <Error Condition="!Exists('..\packages\directxtk_uwp.2026.5.8.1\build\native\directxtk_uwp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtk_uwp.2026.5.8.1\build\native\directxtk_uwp.targets'))" />
   </Target>
 </Project>

@@ -34,11 +34,14 @@ public:
 
   //----------------------------
   // Static function to create an instance of a morpheme network (GameCharacter)
-  static MorphemeCharacter* create(MorphemeCharacterDef* gameCharacterDef);
+  static MorphemeCharacter* create(MorphemeCharacterDef* gameCharacterDef, bool doSimulateNetwork);
 
   //----------------------------
   // Static function to release an instance of Character
   static void destroy(MorphemeCharacter* character);  
+
+  bool getDoSimulateNetwork() const { return this->m_simulateNetwork; }
+  void setDoSimulateNetwork(bool simulate) { this->m_simulateNetwork = simulate; }
 
   //----------------------------
   // Update the world transforms from the network transforms. Root position and root rotation are just taken from the
@@ -97,6 +100,7 @@ protected:
   NMP::MemoryAllocator*     m_persistentMemoryAllocator;
 
   NMP::Memory::Resource   m_bufferMemory;
+  bool m_simulateNetwork = true;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

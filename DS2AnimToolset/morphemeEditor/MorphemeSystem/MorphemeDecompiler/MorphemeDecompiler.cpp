@@ -6,15 +6,24 @@
 #include "morpheme/mrMirroredAnimMapping.h"
 #include "NMGeomUtils/NMJointLimits.h"
 #include "Node/Node.h"
-#include "Node/StateMachineNode.h"
-#include "Node/ControlParamNode.h"
-#include "Node/BlendNode.h"
-#include "Node/TransitNode.h"
-#include "Node/IKNode.h"
-#include "Node/OperatorNode.h"
+
+#include "MorphemeNetworkInspector/NodeProcessor/NodeNamingStrategy/Utils/Utils.h"
+
+#include "MorphemeEditorApp/MorphemeEditorApp.h"
 
 namespace
 {
+	ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
+	{
+		MR::NodeType nodeTypeID = nodeDef->getNodeTypeID();
+
+		g_appLog->debugMessage(MsgLevel_Info, "\tExporting node %d (name=\"%s\", typeId=%d)\n", nodeDef->getNodeID(), nodeName.c_str(), nodeTypeID);
+
+		MD::Node::NodeDecompiler nodeDecompiler;
+
+		return nodeDecompiler.exportNode(netDefExport, netDef, nodeDef, nodeName);
+	}
+
 	ME::NodeExportXML* exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, int nodeId, std::string nodeName)
 	{
 		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeId);
@@ -65,7 +74,7 @@ namespace MD
 
 			std::string guid = RString::guidToString(gidReference);
 
-			ME::DiscreteEventTrackExportXML* trackXML = (ME::DiscreteEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
+			ME::DiscreteEventTrackExportXML* trackXML = dynamic_cast<ME::DiscreteEventTrackExportXML*>(take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DISCRETE, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData()));
 
 			for (size_t j = 0; j < track->getNumEvents(); j++)
 				trackXML->createEvent(j, track->getEvent(j)->getStartTime(), track->getEvent(j)->getUserData());
@@ -80,7 +89,7 @@ namespace MD
 
 			std::string guid = RString::guidToString(gidReference);
 
-			ME::CurveEventTrackExportXML* trackXML = (ME::CurveEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_CURVE, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
+			ME::CurveEventTrackExportXML* trackXML = dynamic_cast<ME::CurveEventTrackExportXML*>(take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_CURVE, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData()));
 
 			for (size_t j = 0; j < track->getNumEvents(); j++)
 				trackXML->createEvent(j, track->getEvent(j)->getTime(), track->getEvent(j)->getValue(), track->getEvent(j)->getUserData());
@@ -95,7 +104,7 @@ namespace MD
 
 			std::string guid = RString::guidToString(gidReference);
 
-			ME::DurationEventTrackExportXML* trackXML = (ME::DurationEventTrackExportXML*)take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DURATION, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData());
+			ME::DurationEventTrackExportXML* trackXML = dynamic_cast<ME::DurationEventTrackExportXML*>(take->createEventTrack(ME::EventTrackExport::EVENT_TRACK_TYPE_DURATION, guid.c_str(), RString::toWide(track->getTrackName()).c_str(), track->getTrackID(), track->getUserData()));
 
 			for (size_t j = 0; j < track->getNumEvents(); j++)
 				trackXML->createEvent(j, track->getEvent(j)->getStartTime(), track->getEvent(j)->getDuration(), track->getEvent(j)->getUserData());
@@ -307,6 +316,8 @@ namespace MD
 
 	ME::NetworkDefExportXML* exportNetwork(MR::NetworkDef* netDef, ME::AnimationLibraryXML* animLibraryExport, ME::MessagePresetLibraryExportXML* messagePresetLibraryExport, std::wstring chrName, std::wstring dstFileName)
 	{
+		NodeEditor::Editor* editor = MorphemeEditorApp::getInstance()->getNodeEditor();
+
 		ME::ExportFactoryXML factory;
 
 		GUID gidReference;
@@ -320,7 +331,30 @@ namespace MD
 		netDefExport->setNetworkWorldOrientation(NMP::Vector3YAxis(), NMP::Vector3XAxis(), NMP::Vector3ZAxis());
 
 		for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
-			exportNode(netDefExport, netDef, i, netDef->getNodeNameFromNodeID(i));
+		{
+			MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+
+			std::string nodeName = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
+
+			/*
+			if (!editor->isLoaded())
+			{
+				MR::NodeDef* parentNodeDef = nodeDef->getParentNodeDef();
+
+				if (parentNodeDef && parentNodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE && nodeDef->getNodeTypeID() != NODE_TYPE_STATE_MACHINE)
+					nodeName = NodeNameStrategyUtils::getStateNodePathFromStringTable(netDef, nodeDef->getNodeID());
+			}
+			else
+			{
+				nodeName = editor->getNodeFullName(nodeDef->getNodeID());
+
+				if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+					nodeName = editor->getControlParameter(nodeDef->getNodeID())->getFullName();
+			}
+			*/
+
+			exportNode(netDefExport, netDef, nodeDef, nodeName);
+		}
 
 		const NMP::IDMappedStringTable* messageTable = netDef->getMessageIDNamesTable();
 

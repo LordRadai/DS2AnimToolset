@@ -56,14 +56,18 @@ public:
 	void setDisplayMode(DisplayMode mode);
 	void setDrawDummies(bool show);
 	void setDrawBones(bool show);
+	void setDrawMorphemeBones(bool show);
 	void setDrawMeshes(bool show);
 	void setDrawBoundingBox(bool show);
+	void setDrawModelPosition(bool show);
 	void setScale(float scale);
+	void setPosition(const Matrix& position);
 
 	float getScale();
 
 	void update(float dt);
-	void animate(MR::AnimationSourceHandle* animHandle);
+	void setTransforms(NMP::DataBuffer* transforms);
+	void animate(AnimObject* anim);
 private:
 	FlverModel* m_model;
 

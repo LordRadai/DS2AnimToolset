@@ -1,5 +1,5 @@
 #pragma once
-#include "MorphemeSystem/MorphemeCharacter/MorphemeCharacter.h"
+#include "CharacterMotionCtrl/CharacterMotionCtrl.h"
 #include "CharacterModelCtrl/CharacterModelCtrl.h"
 #include "FromSoftware/TimeAct/TaeExport/TaeExport.h"
 #include "RCore.h"
@@ -15,17 +15,19 @@ enum TimeActSlot
 class Character
 {
 public:
-	static Character* createFromNmb(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork);
+	static Character* createFromMorphemeBundle(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork);
 	static Character* createFromTimeAct(const char* filename);
 
 	CharacterModelCtrl* getCharacterModelCtrl() const { return this->m_characterModelCtrl; }
-	MorphemeCharacter* getMorphemeCharacter() const { return this->m_morphemeCharacter; }
-	MorphemeCharacterDef* getMorphemeCharacterDef() const { return this->m_morphemeCharacter->getCharacterDef(); }
-	MR::Network* getMorphemeNetwork() const { return this->m_morphemeCharacter->getNetwork(); }
-	MR::AnimRigDef* getRig(int idx) const { return this->getMorphemeCharacterDef()->getNetworkDef()->getRig(idx); }
+	CharacterMotionCtrlAnimPreview* getCharacterMotionCtrl() const { return this->m_characterMotionCtrl; }
+
 	int getCharacterId() const { return this->m_chrId; }
 	std::wstring getCharacterName() const { return this->m_characterName; }
-	Vector3 getPosition() const { return this->m_position; }
+	Matrix getPosition() const { return this->m_position; }
+	void setPosition(const Matrix& position) { this->m_position = position; }
+
+	bool getEnableRootMotion() const { return this->m_enableRootMotion; }
+	void setEnableRootMotion(bool enable) { this->m_enableRootMotion = enable; }
 
 	TimeAct::TaeExport::TimeActExportXML* getTimeAct() const { return this->m_timeAct; }
 
@@ -44,8 +46,9 @@ private:
 
 	int m_chrId = -1;
 	std::wstring m_characterName = L"";
-	MorphemeCharacter* m_morphemeCharacter = nullptr;
+	CharacterMotionCtrlAnimPreview* m_characterMotionCtrl = nullptr;
 	CharacterModelCtrl* m_characterModelCtrl = nullptr;
-	Vector3 m_position = Vector3::Zero;
+	Matrix m_position = Matrix::Identity;
 	TimeAct::TaeExport::TimeActExportXML* m_timeAct = nullptr;
+	bool m_enableRootMotion = true;
 };

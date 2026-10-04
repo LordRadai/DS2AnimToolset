@@ -60,10 +60,10 @@ namespace MD
 			bool downstreamMultiplyConnected = false;
 
 			if ((nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK) || (nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE) ||
-				NodeUtils::isNodeControlParameter(nodeDef))
+				nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 				persistent = true;
 
-			if (NodeUtils::isNodeControlParameter(nodeDef) || (nodeDef->getNodeFlags() & MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
+			if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
 				downstreamMultiplyConnected = true;
 
 			ME::NodeExportXML* nodeExportXML = static_cast<ME::NodeExportXML*>(netDefExport->createNode(nodeDef->getNodeID(), nodeDef->getNodeTypeID(), nodeDef->getParentNodeID(), downstreamMultiplyConnected, nodeName.c_str(), persistent));

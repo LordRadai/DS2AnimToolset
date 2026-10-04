@@ -1,0 +1,26 @@
+{
+    "group": "Utilities",
+    "id": 126,
+    "image": "LastFramesTransforms.png",
+    "version": 1,
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    
+                ],
+                "required": [
+                    "Transforms",
+                    "Time",
+                    "Events"
+                ]
+            }
+        }
+    },
+    "attributes": [
+        
+    ],
+    "helptext": "Outputs the last transformation state of the system"
+}

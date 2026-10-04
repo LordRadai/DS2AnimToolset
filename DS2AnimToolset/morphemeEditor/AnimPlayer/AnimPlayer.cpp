@@ -24,12 +24,7 @@ void AnimPlayer::clear()
 
 void AnimPlayer::update(float dt)
 {
-	MR::AnimationSourceHandle* animHandle = nullptr;
-
-	if (this->m_anim)
-		animHandle = this->m_anim->getHandle();
-
-	if (animHandle == nullptr)
+	if (this->m_anim == nullptr)
 	{
 		this->m_pause = true;
 		return;
@@ -39,19 +34,36 @@ void AnimPlayer::update(float dt)
 	{
 		this->m_time += (this->m_playSpeed * dt);
 
-		if (this->m_time > animHandle->getDuration())
+		if (this->m_time > this->m_anim->getAnimLenght())
 		{
 			if (this->m_loop)
 				this->m_time = 0.f;
 			else
-				this->m_time = animHandle->getDuration();
+				this->m_time = this->m_anim->getAnimLenght();
 		}
 	}
 
-	animHandle->setTime(this->m_time);
+	this->m_anim->setTime(this->m_time);
 
 	if (this->m_character)
-		this->m_character->getCharacterModelCtrl()->animate(animHandle);
+	{
+		if (!this->m_character->getCharacterMotionCtrl()->getMorphemeCharacter()->getDoSimulateNetwork())
+		{
+			this->m_character->getCharacterModelCtrl()->animate(this->m_anim);
+
+			if (this->m_character->getEnableRootMotion())
+			{
+				Matrix trajPos = this->m_anim->getTrajectoryAtTime(this->m_time);
+
+				static Matrix conv = Matrix::CreateRotationX(DirectX::XM_PIDIV2);
+				static Matrix invConv = conv.Invert();
+
+				trajPos = (conv * trajPos * invConv);
+
+				this->m_character->setPosition(trajPos);
+			}		
+		}
+	}
 }
 
 void AnimPlayer::reset()

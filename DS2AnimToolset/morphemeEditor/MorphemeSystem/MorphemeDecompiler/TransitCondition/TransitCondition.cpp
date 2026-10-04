@@ -1,7 +1,7 @@
 #include "TransitCondition.h"
 #include "extern.h"
 #include "RCore.h"
-#define THROW_NODE_TRANSIT_TYPE_MISMATCH(transitDef, type) if (transitDef->getType() != type) { g_appLog->panicMessage("Expecting node type %d (got %d)\n", type, transitDef->getType()); }
+#define THROW_NODE_TRANSIT_TYPE_MISMATCH(transitDef, type) if (transitDef->getType() != type) { INVOKE_PANIC("Expecting node type %d (got %d)\n", type, transitDef->getType()); }
 
 namespace MD
 {
@@ -342,7 +342,7 @@ namespace MD
 				transitCondDecompiler = new TransitConditionCPBoolSetDecompiler;
 				break;
 			default:
-				g_appLog->panicMessage("Unknown TransitConditType %d", transitCondDef->getType());
+				INVOKE_PANIC("Unknown TransitConditType %d", transitCondDef->getType());
 				return false;
 			}
 

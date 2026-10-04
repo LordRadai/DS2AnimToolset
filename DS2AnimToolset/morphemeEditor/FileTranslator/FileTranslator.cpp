@@ -18,7 +18,7 @@ namespace FT
 			fileTranslator = new GltfFileTranslator();
 			break;
 		default:
-			throw std::runtime_error("Invalid export format");
+			INVOKE_PANIC("Invalid export format");
 		}
 
 		bool status = fileTranslator->exportModel(character);
@@ -44,7 +44,7 @@ namespace FT
 			fileTranslator = new GltfFileTranslator();
 			break;
 		default:
-			throw std::runtime_error("Invalid export format");
+			INVOKE_PANIC("Invalid export format");
 		}
 
 		bool status = fileTranslator->exportAnimation(character, path, animSetIdx, animIdx, fps, includeMeshes);

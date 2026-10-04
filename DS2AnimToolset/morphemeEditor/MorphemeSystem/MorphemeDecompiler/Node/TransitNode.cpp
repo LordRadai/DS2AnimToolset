@@ -27,7 +27,7 @@ namespace MD
 		ME::NodeExportXML* NodeTransitDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			if ((nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT) && (nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_PHYSICS))
-				g_appLog->panicMessage("Expecting node type %d or %d (got %d)\n", NODE_TYPE_TRANSIT, NODE_TYPE_TRANSIT_PHYSICS, nodeDef->getNodeTypeID());
+				INVOKE_PANIC("Expecting node type %d or %d (got %d)\n", NODE_TYPE_TRANSIT, NODE_TYPE_TRANSIT_PHYSICS, nodeDef->getNodeTypeID());
 
 			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -65,7 +65,7 @@ namespace MD
 				useDestinationStartSyncEventFraction = true;
 				break;
 			default:
-				g_appLog->panicMessage("Invalid DestinationInitMethod %d\n", transitDef->m_destinationInitMethod);
+				INVOKE_PANIC("Invalid DestinationInitMethod %d\n", transitDef->m_destinationInitMethod);
 				break;
 			}
 
@@ -104,7 +104,7 @@ namespace MD
 				additiveBlendPos = true;
 				break;
 			default:
-				g_appLog->panicMessage("Invalid BlendMode %d\n", transitDef->m_blendMode);
+				INVOKE_PANIC("Invalid BlendMode %d\n", transitDef->m_blendMode);
 				break;
 			}
 
@@ -153,7 +153,7 @@ namespace MD
 		ME::NodeExportXML* NodeTransitSyncEventsDecompiler::exportNode(ME::NetworkDefExportXML* netDefExport, MR::NetworkDef* netDef, MR::NodeDef* nodeDef, std::string nodeName)
 		{
 			if ((nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_SYNC_EVENTS) && (nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS))
-				g_appLog->panicMessage("Expecting node type %d or %d (got %d)\n", NODE_TYPE_TRANSIT_SYNC_EVENTS, NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS, nodeDef->getNodeTypeID());
+				INVOKE_PANIC("Expecting node type %d or %d (got %d)\n", NODE_TYPE_TRANSIT_SYNC_EVENTS, NODE_TYPE_TRANSIT_SYNC_EVENTS_PHYSICS, nodeDef->getNodeTypeID());
 
 			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
@@ -198,7 +198,7 @@ namespace MD
 				additiveBlendPos = true;
 				break;
 			default:
-				g_appLog->panicMessage("Invalid BlendMode %d\n", transitDef->m_blendMode);
+				INVOKE_PANIC("Invalid BlendMode %d\n", transitDef->m_blendMode);
 				break;
 			}
 

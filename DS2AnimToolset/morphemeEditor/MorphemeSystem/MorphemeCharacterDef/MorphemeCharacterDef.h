@@ -17,9 +17,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 #include "morpheme/mrDispatcher.h"
 #include "simpleBundle/simpleAnimRuntimeIDtoFilenameLookup.h"
-#include <vector>
 #include <filesystem>
-#include "AnimObject/AnimObject.h"
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -66,18 +64,11 @@ public:
   MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* getAnimFileLookUp() const { return m_metadata.m_animFileLookUp; }
   const char* getBundleFilepath() const { return m_metadata.m_bundleDir; }
   const char* getFilename() const { return m_filename; }
-  bool getDoSimulateNetwork() const { return this->m_simulateNetwork; }
-  void setDoSimulateNetwork(bool simulate) { this->m_simulateNetwork = simulate; }
   int getNumRigToAnimMaps() { return this->m_rigToAnimMaps.size(); }
   int getNumCharacterControllers() { return this->m_characterControllerDefs.size(); }
-  int getNumAnims(int animSetIdx) { return this->m_anims[animSetIdx].size(); }
 
   MR::RigToAnimMap* getRigToAnimMap(int idx);
   MR::CharacterControllerDef* getCharacterController(int idx);
-  AnimObject* getAnimation(int animSetIdx, int idx);
-  AnimObject* getAnimationById(int animSetIdx, int id);
-  void addAnimation(const char* filename, int animSetIdx = 0);
-  void sortAnimations();
 
 protected:
 
@@ -115,9 +106,6 @@ protected:
 
   AnimData m_metadata;
   char m_filename[256];
-
-  bool m_simulateNetwork = true;
-  std::vector<std::vector<AnimObject*>> m_anims;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

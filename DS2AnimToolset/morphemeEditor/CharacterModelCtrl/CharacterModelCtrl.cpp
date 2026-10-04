@@ -374,6 +374,51 @@ void CharacterModelCtrl::setDrawBones(bool show)
 		this->m_faceGen.m_fgHair->getSettings()->drawBones = false;
 }
 
+void CharacterModelCtrl::setDrawMorphemeBones(bool show)
+{
+	if (this->m_model)
+		this->m_model->getSettings()->drawMorphemeBones = show;
+
+	if (this->m_head)
+		this->m_head->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_face)
+		this->m_face->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_body)
+		this->m_body->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_arm)
+		this->m_arm->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_leg)
+		this->m_leg->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_weaponRight)
+		this->m_weaponRight->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_weaponLeft)
+		this->m_weaponLeft->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_faceGen.m_fgFace)
+		this->m_faceGen.m_fgFace->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_faceGen.m_fgHead)
+		this->m_faceGen.m_fgHead->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_faceGen.m_fgEyes)
+		this->m_faceGen.m_fgEyes->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_faceGen.m_fgEyeBrows)
+		this->m_faceGen.m_fgEyeBrows->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_faceGen.m_fgBeard)
+		this->m_faceGen.m_fgBeard->getSettings()->drawMorphemeBones = false;
+
+	if (this->m_faceGen.m_fgHair)
+		this->m_faceGen.m_fgHair->getSettings()->drawMorphemeBones = false;
+}
+
 void CharacterModelCtrl::setDrawMeshes(bool show)
 {
 	if (this->m_model)
@@ -464,6 +509,51 @@ void CharacterModelCtrl::setDrawBoundingBox(bool show)
 		this->m_faceGen.m_fgHair->getSettings()->drawBoundingBox = false;
 }
 
+void CharacterModelCtrl::setDrawModelPosition(bool show)
+{
+	if (this->m_model)
+		this->m_model->getSettings()->drawModelPosition = show;
+
+	if (this->m_head)
+		this->m_head->getSettings()->drawModelPosition = show;
+
+	if (this->m_face)
+		this->m_face->getSettings()->drawModelPosition = show;
+
+	if (this->m_body)
+		this->m_body->getSettings()->drawModelPosition = show;
+
+	if (this->m_arm)
+		this->m_arm->getSettings()->drawModelPosition = show;
+
+	if (this->m_leg)
+		this->m_leg->getSettings()->drawModelPosition = show;
+
+	if (this->m_weaponRight)
+		this->m_weaponRight->getSettings()->drawModelPosition = show;
+
+	if (this->m_weaponLeft)
+		this->m_weaponLeft->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgFace)
+		this->m_faceGen.m_fgFace->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgHead)
+		this->m_faceGen.m_fgHead->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgEyes)
+		this->m_faceGen.m_fgEyes->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgEyeBrows)
+		this->m_faceGen.m_fgEyeBrows->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgBeard)
+		this->m_faceGen.m_fgBeard->getSettings()->drawModelPosition = show;
+
+	if (this->m_faceGen.m_fgHair)
+		this->m_faceGen.m_fgHair->getSettings()->drawModelPosition = show;
+}
+
 void CharacterModelCtrl::setScale(float scale)
 {
 	if (this->m_model)
@@ -507,6 +597,51 @@ void CharacterModelCtrl::setScale(float scale)
 
 	if (this->m_faceGen.m_fgHair)
 		this->m_faceGen.m_fgHair->setScale(scale);
+}
+
+void CharacterModelCtrl::setPosition(const Matrix& position)
+{
+	if (this->m_model)
+		this->m_model->setPosition(position);
+
+	if (this->m_head)
+		this->m_head->setPosition(position);
+
+	if (this->m_face)
+		this->m_face->setPosition(position);
+
+	if (this->m_body)
+		this->m_body->setPosition(position);
+
+	if (this->m_arm)
+		this->m_arm->setPosition(position);
+
+	if (this->m_leg)
+		this->m_leg->setPosition(position);
+
+	if (this->m_weaponRight)
+		this->m_weaponRight->setPosition(position);
+
+	if (this->m_weaponLeft)
+		this->m_weaponLeft->setPosition(position);
+
+	if (this->m_faceGen.m_fgFace)
+		this->m_faceGen.m_fgFace->setPosition(position);
+
+	if (this->m_faceGen.m_fgHead)
+		this->m_faceGen.m_fgHead->setPosition(position);
+
+	if (this->m_faceGen.m_fgEyes)
+		this->m_faceGen.m_fgEyes->setPosition(position);
+
+	if (this->m_faceGen.m_fgEyeBrows)
+		this->m_faceGen.m_fgEyeBrows->setPosition(position);
+
+	if (this->m_faceGen.m_fgBeard)
+		this->m_faceGen.m_fgBeard->setPosition(position);
+
+	if (this->m_faceGen.m_fgHair)
+		this->m_faceGen.m_fgHair->setPosition(position);
 }
 
 float CharacterModelCtrl::getScale()
@@ -572,49 +707,92 @@ void CharacterModelCtrl::update(float dt)
 		this->m_faceGen.m_fgHair->update(dt);
 }
 
-void CharacterModelCtrl::animate(MR::AnimationSourceHandle* animHandle)
+void CharacterModelCtrl::setTransforms(NMP::DataBuffer* transforms)
 {
 	if (this->m_model)
-		this->m_model->animate(animHandle);
+		this->m_model->setTransforms(transforms);
 
 	if (this->m_head)
-		this->m_head->animate(animHandle);
+		this->m_head->setTransforms(transforms);
 
 	if (this->m_face)
-		this->m_face->animate(animHandle);
+		this->m_face->setTransforms(transforms);
 
 	if (this->m_body)
-		this->m_body->animate(animHandle);
+		this->m_body->setTransforms(transforms);
 
 	if (this->m_arm)
-		this->m_arm->animate(animHandle);
+		this->m_arm->setTransforms(transforms);
 
 	if (this->m_leg)
-		this->m_leg->animate(animHandle);
+		this->m_leg->setTransforms(transforms);
 
-	/*
 	if (this->m_weaponRight)
-		this->m_weaponRight->animate(animHandle);
+		this->m_weaponRight->setTransforms(transforms);
 
 	if (this->m_weaponLeft)
-		this->m_weaponLeft->animate(animHandle);
-	*/
+		this->m_weaponLeft->setTransforms(transforms);
 
 	if (this->m_faceGen.m_fgFace)
-		this->m_faceGen.m_fgFace->animate(animHandle);
+		this->m_faceGen.m_fgFace->setTransforms(transforms);
 
 	if (this->m_faceGen.m_fgHead)
-		this->m_faceGen.m_fgHead->animate(animHandle);
+		this->m_faceGen.m_fgHead->setTransforms(transforms);
 
 	if (this->m_faceGen.m_fgEyes)
-		this->m_faceGen.m_fgEyes->animate(animHandle);
+		this->m_faceGen.m_fgEyes->setTransforms(transforms);
 
 	if (this->m_faceGen.m_fgEyeBrows)
-		this->m_faceGen.m_fgEyeBrows->animate(animHandle);
+		this->m_faceGen.m_fgEyeBrows->setTransforms(transforms);
 
 	if (this->m_faceGen.m_fgBeard)
-		this->m_faceGen.m_fgBeard->animate(animHandle);
+		this->m_faceGen.m_fgBeard->setTransforms(transforms);
 
 	if (this->m_faceGen.m_fgHair)
-		this->m_faceGen.m_fgHair->animate(animHandle);
+		this->m_faceGen.m_fgHair->setTransforms(transforms);
+}
+
+void CharacterModelCtrl::animate(AnimObject* anim)
+{
+	if (this->m_model)
+		this->m_model->animate(anim);
+
+	if (this->m_head)
+		this->m_head->animate(anim);
+
+	if (this->m_face)
+		this->m_face->animate(anim);
+
+	if (this->m_body)
+		this->m_body->animate(anim);
+
+	if (this->m_arm)
+		this->m_arm->animate(anim);
+
+	if (this->m_leg)
+		this->m_leg->animate(anim);
+
+	if (this->m_weaponRight)
+		this->m_weaponRight->animate(anim);
+
+	if (this->m_weaponLeft)
+		this->m_weaponLeft->animate(anim);
+
+	if (this->m_faceGen.m_fgFace)
+		this->m_faceGen.m_fgFace->animate(anim);
+
+	if (this->m_faceGen.m_fgHead)
+		this->m_faceGen.m_fgHead->animate(anim);
+
+	if (this->m_faceGen.m_fgEyes)
+		this->m_faceGen.m_fgEyes->animate(anim);
+
+	if (this->m_faceGen.m_fgEyeBrows)
+		this->m_faceGen.m_fgEyeBrows->animate(anim);
+
+	if (this->m_faceGen.m_fgBeard)
+		this->m_faceGen.m_fgBeard->animate(anim);
+
+	if (this->m_faceGen.m_fgHair)
+		this->m_faceGen.m_fgHair->animate(anim);
 }

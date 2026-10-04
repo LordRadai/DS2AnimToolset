@@ -257,6 +257,25 @@ namespace
 
         return zoomLevel;
     }
+
+    void formatTimeCodeString(char buf[], TrackEditor::TimeCodeFormat timeCodeFormat, int frame, int fps)
+    {
+        switch (timeCodeFormat)
+        {
+        case TrackEditor::kSeconds:
+            ImFormatString(buf, IM_ARRAYSIZE(buf), "%.3f", RMath::frameToTime(frame, fps));
+            break;
+        case TrackEditor::kMilliseconds:
+            ImFormatString(buf, IM_ARRAYSIZE(buf), "%.3f", RMath::frameToTime(frame, fps) * 1000.f);
+            break;
+        case TrackEditor::kFrames:
+            ImFormatString(buf, IM_ARRAYSIZE(buf), "%.1f", RMath::frameToTime(frame, fps) * 30);
+            break;
+        default:
+            throw("Unhandled TimeCode format (%d)", timeCodeFormat);
+            break;
+        }
+    }
 }
 
 namespace TrackEditor
@@ -289,6 +308,18 @@ namespace TrackEditor
             return this->m_tracks[this->m_selectedTrack]->events[this->m_selectedEvent];
 
         return nullptr;
+    }
+
+    void TrackEditorBase::styleEditor()
+    {
+        ImGui::ColorEdit4("Track", (float*)&m_colors.m_trackColor);
+        ImGui::ColorEdit4("Track Inactive", (float*)&m_colors.m_trackColorInactive);
+        ImGui::ColorEdit4("Track Active", (float*)&m_colors.m_trackColorActive);
+        ImGui::ColorEdit4("Track Bounding Box", (float*)&m_colors.m_trackBoundingBox);
+        ImGui::ColorEdit4("Track Bounding Box Active", (float*)&m_colors.m_trackBoundingBoxActive);
+        ImGui::ColorEdit4("Highlight", (float*)&m_colors.m_highlight);
+        ImGui::ColorEdit4("Track Text Color", (float*)&m_colors.m_trackTextColor);
+        ImGui::ColorEdit4("Cursor Color", (float*)&m_colors.m_cursorColor);
     }
 
     void TrackEditorBase::loadColorsFromXML(const char* filename)
@@ -478,14 +509,9 @@ namespace TrackEditor
         if (this->m_panningView && !io.MouseDown[2])
             this->m_panningView = false;
 
-        framePixelWidthTarget = ImClamp(framePixelWidthTarget, 0.1f, 50.f);
-
-        framePixelWidth = ImLerp(framePixelWidth, framePixelWidthTarget, 0.33f);
-
         if (visibleFrameCount >= frameCount)
             this->m_firstFrame = this->m_frameMin;
 
-        // --
         if (!this->m_expanded)
         {
             ImGui::InvisibleButton("canvas", ImVec2(availableSpace.x - canvas_pos.x, (float)ItemHeight));
@@ -496,7 +522,7 @@ namespace TrackEditor
         }
         else
         {
-            bool hasScrollBar(false);
+            bool hasScrollBar = false;
 
             // test scroll area
             ImVec2 headerSize(availableSpace.x, (float)ItemHeight);
@@ -510,12 +536,13 @@ namespace TrackEditor
 
             ImGui::BeginChild("trackEditorCanvas", childFrameSize);
             ImGui::InvisibleButton("contentBar", ImVec2(availableSpace.x, float(controlHeight)));
+
             const ImVec2 contentMin = ImGui::GetItemRectMin();
             const ImVec2 contentMax = ImGui::GetItemRectMax();
             const ImRect contentRect(contentMin, contentMax);
             const float contentHeight = contentMax.y - contentMin.y;
 
-            const int editorCanvasStart = contentMin.x + this->m_legendWidth;
+            const int editorCanvasStart = contentMin.x + this->m_legendWidth + 5;
 
             // full background
             draw_list->AddRectFilled(canvas_pos, canvas_pos + availableSpace, 0xFF242424, 0);
@@ -575,77 +602,45 @@ namespace TrackEditor
 
             //header frame number and lines
             int modFrameCount = frameCount * 4;
-            int frameStep = 1;
-            while ((modFrameCount * framePixelWidth) < 150)
-            {
-                modFrameCount *= 2;
-                frameStep *= 2;
-            };
+            int frameStep = this->m_fps / 30; // We draw a line so that each represents a single frame in 30 fps
+
             int halfModFrameCount = modFrameCount / 2;
 
             auto drawLine = [&](int i, int regionHeight) {
-                bool baseIndex = ((i % modFrameCount) == 0) || (i == this->getFrameMax() || i == this->getFrameMin());
+                bool baseIndex = ((i % modFrameCount) == 0) || ((i == this->getFrameMax()) || (i == this->getFrameMin()));
                 bool halfIndex = (i % halfModFrameCount) == 0;
                 ImVec2 pos = ImVec2(editorCanvasStart - firstFrameUsed * framePixelWidth, contentMin.y + ItemHeight * i + 1);
                 float px = pos.x + i * framePixelWidth - 1;
-                //int px = (int)canvas_pos.x + int(i * framePixelWidth) + this->m_legendWidth + int(firstFrameUsed * framePixelWidth) + 3;
                 int tiretStart = baseIndex ? 4 : (halfIndex ? 10 : 14);
                 int tiretEnd = baseIndex ? regionHeight : ItemHeight;
 
                 if (px <= (availableSpace.x + canvas_pos.x) && px >= (canvas_pos.x + this->m_legendWidth))
                 {
                     draw_list->AddLine(ImVec2((float)px, canvas_pos.y + (float)tiretStart), ImVec2((float)px, canvas_pos.y + (float)tiretEnd - 1), 0xFF606060, 1);
-
                     draw_list->AddLine(ImVec2((float)px, canvas_pos.y + (float)ItemHeight), ImVec2((float)px, canvas_pos.y + (float)regionHeight - 1), 0x30606060, 1);
                 }
 
-                if (baseIndex && px > (canvas_pos.x + this->m_legendWidth))
+                if (baseIndex)
                 {
                     char tmps[512];
-
-                    switch (this->getTimeCodeFormat())
-                    {
-                    case TrackEditor::kSeconds:
-                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::frameToTime(i, this->getFps()));
-                        break;
-                    case TrackEditor::kMilliseconds:
-                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", RMath::frameToTime(i, this->getFps()) * 1000.f);
-                        break;
-                    case TrackEditor::kFrames:
-                        ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%d", i);
-                        break;
-                    default:
-                        throw("Unhandled TimeCode format (%d)", this->getTimeCodeFormat());
-                        break;
-                    }
+                    formatTimeCodeString(tmps, this->getTimeCodeFormat(), i, this->getFps());
 
                     draw_list->AddText(ImVec2((float)(px + 6), canvas_pos.y), 0xFFFFFFFF, tmps);
                 }
             };
 
-            auto drawLineContent = [&](int i, int /*regionHeight*/) {
-                //int px = (int)canvas_pos.x + int(i * framePixelWidth) + this->m_legendWidth + int(firstFrameUsed * framePixelWidth) + 3;
+            auto drawLineContent = [&](int i) {
                 ImVec2 pos = ImVec2(editorCanvasStart - firstFrameUsed * framePixelWidth, contentMin.y + ItemHeight * i + 1);
                 float px = pos.x + i * framePixelWidth - 1;
                 int tiretStart = int(contentMin.y);
                 int tiretEnd = int(contentMax.y);
 
                 if (px <= (availableSpace.x + canvas_pos.x) && px >= (canvas_pos.x + this->m_legendWidth))
-                {
-                    //draw_list->AddLine(ImVec2((float)px, canvas_pos.y + (float)tiretStart), ImVec2((float)px, canvas_pos.y + (float)tiretEnd - 1), 0xFF606060, 1);
-
                     draw_list->AddLine(ImVec2(float(px), float(tiretStart)), ImVec2(float(px), float(tiretEnd)), 0x30606060, 1);
-                }
             };
-
-            for (int i = this->m_frameMin + 1; i <= this->m_frameMax; i += frameStep)
-                drawLine(i, ItemHeight);
 
             drawLine(this->m_frameMin, ItemHeight);
             drawLine(this->m_frameMax, ItemHeight);
-
-            for (int i = this->m_frameMax + 1; i <= 500; i += frameStep)
-                drawLine(i, ItemHeight);
 
             // clip content
             draw_list->PushClipRect(childFramePos, childFramePos + childFrameSize, true);
@@ -699,6 +694,8 @@ namespace TrackEditor
                     {
                         if (io.MouseReleased[1])
                         {
+                            this->m_selectedTrack = i;
+                            this->m_selectedEvent = -1;
                             renameTrack = true;
                         }
                     }
@@ -769,15 +766,11 @@ namespace TrackEditor
 
                 draw_list->PushClipRect(childFramePos + ImVec2(float(this->m_legendWidth - 5), 0.f), childFramePos + childFrameSize, true);
 
+                const int numFramesToDraw = max(2 * this->m_frameMax, 60);
+
                 // vertical frame lines in content area
-                for (int i = this->m_frameMin + 1; i <= this->m_frameMax; i += frameStep)
-                    drawLineContent(i, int(contentHeight));
-
-                drawLineContent(this->m_frameMin, int(contentHeight));
-                drawLineContent(this->m_frameMax, int(contentHeight));
-
-                for (int i = this->m_frameMax + 1; i <= 500; i += frameStep)
-                    drawLineContent(i, ItemHeight);
+                for (int i = this->m_frameMin; i < numFramesToDraw; i += frameStep)
+                    drawLineContent(i);
 
                 draw_list->AddRectFilled(ImVec2(editorCanvasStart - firstFrameUsed * framePixelWidth + this->m_frameMax * framePixelWidth, canvas_pos.y), canvas_pos + availableSpace, 0x40000000, 0);
 
@@ -945,20 +938,7 @@ namespace TrackEditor
                         draw_list->PopClipRect();
                         draw_list->PopClipRect();
 
-                        switch (this->m_timeCodeFormat)
-                        {
-                        case TrackEditor::kSeconds:
-                            ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", this->getCurrentTime());
-                            break;
-                        case TrackEditor::kMilliseconds:
-                            ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%.3f", this->getCurrentTime() * 1000.f);
-                            break;
-                        case TrackEditor::kFrames:
-                            ImFormatString(tmps, IM_ARRAYSIZE(tmps), "%d", this->m_currentFrame);
-                            break;
-                        default:
-                            break;
-                        }
+                        formatTimeCodeString(tmps, this->getTimeCodeFormat(), RMath::timeToFrame(this->getCurrentTime(), this->getFps()), this->getFps());
 
                         draw_list->AddText(ImVec2(cursorOffset, canvas_pos.y), 0xFFFFFFFF, tmps);
 

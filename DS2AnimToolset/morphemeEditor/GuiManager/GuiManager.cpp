@@ -7,23 +7,14 @@
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
 #include "WorkerThread/WorkerThread.h"
 #include "Camera/Camera.h"
+#include "NodeEditor/NodeEditor.h"
 
-#define MSAA_SETTING_COUNT 4
+#include "MorphemeNetworkInspector/NodeProcessor/NodeNamingStrategy/Utils/Utils.h"
+
+#define MSAA_SETTING_COUNT 3
 
 namespace
 {
-	void trackEditorColorSelector(TrackEditor::TrackEditorBase* trackEditor)
-	{
-		ImGui::ColorEdit4("Track", (float*)&trackEditor->getColors()->m_trackColor);
-		ImGui::ColorEdit4("Track Inactive", (float*)&trackEditor->getColors()->m_trackColorInactive);
-		ImGui::ColorEdit4("Track Active", (float*)&trackEditor->getColors()->m_trackColorActive);
-		ImGui::ColorEdit4("Track Bounding Box", (float*)&trackEditor->getColors()->m_trackBoundingBox);
-		ImGui::ColorEdit4("Track Bounding Box Active", (float*)&trackEditor->getColors()->m_trackBoundingBoxActive);
-		ImGui::ColorEdit4("Highlight", (float*)&trackEditor->getColors()->m_highlight);
-		ImGui::ColorEdit4("Track Text Color", (float*)&trackEditor->getColors()->m_trackTextColor);
-		ImGui::ColorEdit4("Cursor Color", (float*)&trackEditor->getColors()->m_cursorColor);
-	}
-
 	TimeAct::TaeExport::TimeActTrackExportXML* getTimeActTrackForAnimation(AnimObject* animObj)
 	{
 		MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
@@ -108,12 +99,15 @@ namespace
 		if (model == nullptr)
 			return;
 
+		if (!model->isFlverLoaded())
+			return;
+
 		ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 
 		if (editorApp->getPreviewFlags()->selectedModel == model)
 			node_flags |= ImGuiTreeNodeFlags_Selected;
 
-		bool open = ImGui::TreeNodeEx(model->getModelName().c_str(), node_flags);
+		bool open = ImGui::TreeNodeEx(std::string("##treeNode" + model->getModelName()).c_str(), node_flags);
 
 		if (open)
 		{
@@ -444,7 +438,7 @@ namespace
 							character->getCharacterModelCtrl()->setModelPart(type, nullptr);
 						else
 						{
-							FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getRig(0));
+							FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getCharacterMotionCtrl()->getAnimRigDef());
 
 							character->getCharacterModelCtrl()->setModelPart(type, model);
 						}
@@ -482,7 +476,7 @@ namespace
 						character->getCharacterModelCtrl()->setModelPart(type, nullptr);
 					else
 					{
-						FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getRig(0));
+						FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getCharacterMotionCtrl()->getAnimRigDef());
 
 						character->getCharacterModelCtrl()->setModelPart(type, model);
 					}
@@ -519,7 +513,7 @@ namespace
 						character->getCharacterModelCtrl()->setModelFg(type, nullptr);
 					else
 					{
-						FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getRig(0));
+						FlverModel* model = FlverModel::createFromBnd(list.getPath(i).c_str(), character->getCharacterMotionCtrl()->getAnimRigDef());
 
 						character->getCharacterModelCtrl()->setModelFg(type, model);
 					}
@@ -550,6 +544,74 @@ namespace
 
 		character->loadWeaponBnd(partsFolder, kPartsWeaponLeft, preset->getLeftHandEquipId(), preset->isLeftHandEquipShield());
 		character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getRightHandEquipId(), preset->isRightHandEquipShield());
+	}
+
+	void controlParamEditGUI(CharacterMotionCtrlBase* motionCtrl, MR::NodeID cpID, const std::string& paramName, ImVec4 textColor)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, textColor);
+		ImGui::Text("%s", paramName.c_str());
+		ImGui::PopStyleColor();
+
+		MR::NodeDef* nodeDef = motionCtrl->getNetworkDef()->getNodeDef(cpID);
+
+		if (!nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+			INVOKE_PANIC("Node %d is not a control param.\n", cpID);
+
+		MR::NodeType nodeType = nodeDef->getNodeTypeID();
+
+		ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - 5.f);
+
+		switch (nodeType)
+		{
+		case NODE_TYPE_CP_FLOAT:
+		{
+			float value = motionCtrl->getControlParamFloat(nodeDef->getNodeID());
+			if (ImGui::DragFloat(std::string("##" + paramName).c_str(), &value, 0.1f))
+				motionCtrl->setControlParamFloat(nodeDef->getNodeID(), value);
+			break;
+		}
+		case NODE_TYPE_CP_INT:
+		{
+			int value = motionCtrl->getControlParamInt(nodeDef->getNodeID());
+			if (ImGui::DragInt(std::string("##" + paramName).c_str(), &value))
+				motionCtrl->setControlParamInt(nodeDef->getNodeID(), value);
+			break;
+		}
+		case NODE_TYPE_CP_UINT:
+		{
+			uint32_t value = motionCtrl->getControlParamUInt(nodeDef->getNodeID());
+			if (ImGui::DragScalar(std::string("##" + paramName).c_str(), ImGuiDataType_U32, &value))
+				motionCtrl->setControlParamUInt(nodeDef->getNodeID(), value);
+			break;
+		}
+		case NODE_TYPE_CP_BOOL:
+		{
+			bool value = motionCtrl->getControlParamBool(nodeDef->getNodeID());
+			if (ImGui::Checkbox(std::string("##" + paramName).c_str(), &value))
+				motionCtrl->setControlParamBool(nodeDef->getNodeID(), value);
+			break;
+		}
+		case NODE_TYPE_CP_VECTOR3:
+		{
+			NMP::Vector3 value = motionCtrl->getControlParamVector3(nodeDef->getNodeID());
+			float vec[3] = { value.x, value.y, value.z };
+			if (ImGui::DragFloat3(std::string("##" + paramName).c_str(), vec, 0.1f))
+				motionCtrl->setControlParamVector3(nodeDef->getNodeID(), NMP::Vector3(vec[0], vec[1], vec[2]));
+			break;
+		}
+		case NODE_TYPE_CP_VECTOR4:
+		{
+			NMP::Quat value = motionCtrl->getControlParamVector4(nodeDef->getNodeID());
+			float vec[4] = { value.x, value.y, value.z, value.w };
+			if (ImGui::DragFloat4(std::string("##" + paramName).c_str(), vec, 0.1f))
+				motionCtrl->setControlParamVector4(nodeDef->getNodeID(), NMP::Quat(vec[0], vec[1], vec[2], vec[3]));
+			break;
+		}
+		default:
+			INVOKE_PANIC("Unhandled control parameter type %d.\n", nodeType);
+		}
+
+		ImGui::PopItemWidth();
 	}
 }
 
@@ -588,10 +650,12 @@ void GuiManager::initialise(HWND hwnd, ID3D11DeviceContext* pContext, ID3D11Devi
 	ImGui_ImplWin32_Init(hwnd);
 	ImGui_ImplDX11_Init(pDevice, pContext);
 
-	g_appLog->debugMessage(MsgLevel_Info, "Add ImGui fonts\n");
-	io.Fonts->AddFontDefault();
+	float dpiScale = g_renderManager->getDpiScale();
 
-	float baseFontSize = 13.0f; // 13.0f is the size of the default font. Change to the font size you use.
+	g_appLog->debugMessage(MsgLevel_Info, "Add ImGui fonts\n");
+	io.Fonts->AddFontFromFileTTF("Data//font//font.ttf", 16.0f * dpiScale);
+
+	float baseFontSize = 13.0f * dpiScale; // 13.0f is the size of the default font. Change to the font size you use.
 	float iconFontSize = baseFontSize * 2.0f / 3.0f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
 
 	// merge in icons from Font Awesome
@@ -603,6 +667,8 @@ void GuiManager::initialise(HWND hwnd, ID3D11DeviceContext* pContext, ID3D11Devi
 	io.Fonts->AddFontFromFileTTF("Data//font//" FONT_ICON_FILE_NAME_FAS, iconFontSize, &icons_config, icons_ranges);
 	// use FONT_ICON_FILE_NAME_FAR if you want regular instead of solid
 
+	ImGui::GetStyle().ScaleAllSizes(dpiScale);
+
 	this->initGuiStyle();
 
 	this->m_initialised = true;
@@ -612,14 +678,15 @@ void GuiManager::initGuiStyle()
 {
 	ImGuiStyle* style = &ImGui::GetStyle();
 	style->WindowBorderSize = 1;
-	style->FrameBorderSize = 0;
+	style->FrameBorderSize = 1;
 	style->PopupBorderSize = 1;
-	style->FrameBorderSize = 0;
-	style->TabBorderSize = 0;
+	style->FrameBorderSize = 1;
+	style->TabBorderSize = 1;
+	style->TabBarBorderSize = 1;
 
 	style->WindowRounding = 0;
 	style->ChildRounding = 0;
-	style->FrameRounding = 0;
+	style->FrameRounding = 1;
 	style->PopupRounding = 0;
 	style->ScrollbarRounding = 12;
 	style->GrabRounding = 0;
@@ -663,10 +730,10 @@ void GuiManager::initGuiStyle()
 	colors[ImGuiCol_TabHovered] = ImVec4(0.27f, 0.27f, 0.27f, 1.00f);
 	colors[ImGuiCol_Tab] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
 	colors[ImGuiCol_TabSelected] = ImVec4(0.27f, 0.27f, 0.27f, 1.00f);
-	colors[ImGuiCol_TabSelectedOverline] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
+	colors[ImGuiCol_TabSelectedOverline] = ImVec4(0.17f, 0.53f, 0.87f, 1.00f);
 	colors[ImGuiCol_TabDimmed] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
 	colors[ImGuiCol_TabDimmedSelected] = ImVec4(0.27f, 0.27f, 0.27f, 1.00f);
-	colors[ImGuiCol_TabDimmedSelectedOverline] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+	colors[ImGuiCol_TabDimmedSelectedOverline] = ImVec4(0.17f, 0.53f, 0.87f, 1.00f);
 	colors[ImGuiCol_DockingPreview] = ImVec4(0.26f, 0.59f, 0.98f, 0.70f);
 	colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
 	colors[ImGuiCol_PlotLines] = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
@@ -698,7 +765,11 @@ void GuiManager::update(float dt)
 
 	this->rootWindow();
 	this->assetsWindow();
-	this->modelViewerWindow();
+	this->sceneWindow();
+	this->trackEditorWindow();
+	this->networkPreviewWindow();
+	this->selectedNodeInfoWindow();
+
 	this->eventTrackEditorWindow();
 	this->timeActEditorWindow();
 	this->eventTrackInfoWindow();
@@ -848,7 +919,7 @@ void GuiManager::rootWindow()
 
 			ImGui::BeginDisabled(editorApp->getExportSettings()->useSourceSampleFrequency);
 
-			ImGui::InputDragInt("Sample frequency", &editorApp->getExportSettings()->sampleFrequency, 0.5f, 0, 120);
+			ImGui::InputDragInt("Sample frequency", &editorApp->getExportSettings()->sampleFrequency, 1, 120);
 
 			ImGui::EndDisabled();
 
@@ -867,7 +938,33 @@ void GuiManager::rootWindow()
 
 		ImGui::Separator();
 
-		if (ImGui::MenuItem("Colors")) { editorApp->getWindowFlags()->styleEditor = true; }
+		if (ImGui::BeginMenu("Settings"))
+		{
+			const char* settings[2] = { "Asset Browsing", "Network Simulation" };
+			int selectedSetting = editorApp->getMorphemeNetworkFlags()->simulateNetwork;
+
+			if (ImGui::BeginCombo("Program Mode", settings[selectedSetting]))
+			{
+				for (size_t i = 0; i < 2; i++)
+				{
+					ImGui::Selectable(settings[i]);
+
+					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
+					{
+						editorApp->getMorphemeNetworkFlags()->simulateNetwork = i;
+						editorApp->getTaskFlags()->reloadFile = true;	//Reload file to reset network state when simulation is toggled on/off
+					}
+				}
+
+				ImGui::EndCombo();
+			}
+
+#ifdef _DEBUG
+			if (ImGui::MenuItem("Colors")) { editorApp->getWindowFlags()->styleEditor = true; }
+#endif
+
+			ImGui::EndMenu();
+		}
 
 		if (ImGui::BeginMenu("Timecode Format"))
 		{
@@ -881,6 +978,9 @@ void GuiManager::rootWindow()
 		if (ImGui::BeginMenu("Graphics"))
 		{
 			RenderManager* renderMan = RenderManager::getInstance();
+
+			if (MSAA_SETTING_COUNT > 5)
+				INVOKE_PANIC("MSAA_SETTING_COUNT is larger than supported settings (5)\n");
 
 			const char* msaaQualitySettings[5] = { "Off", "2x", "4x", "8x", "16x" };
 			int selectedSetting = 0;
@@ -905,7 +1005,7 @@ void GuiManager::rootWindow()
 				selectedSetting = 4;
 				break;
 			default:
-				g_appLog->panicMessage("Unsupported MSAA count %d (maximum handled is 16, recommended maximum is 8)\n", msaaCountSetting);
+				INVOKE_PANIC("Unsupported MSAA count %d (maximum handled is 16, recommended maximum is 8)\n", msaaCountSetting);
 				break;
 			}
 
@@ -950,6 +1050,8 @@ void GuiManager::rootWindow()
 		if (ImGui::MenuItem("ImGui Demo", nullptr, editorApp->getWindowFlags()->imGuiDemo)) { editorApp->getWindowFlags()->imGuiDemo = !editorApp->getWindowFlags()->imGuiDemo; }
 		if (ImGui::MenuItem("Create Tae Template XML")) { editorApp->getTaskFlags()->exportTaeTemplateXml = true; }
 
+		//if (ImGui::MenuItem("Create Node Editor Sample Project")) { editorApp->getTaskFlags()->createTestEditorProject = true; }
+
 		ImGui::EndMenu();
 	}
 #endif
@@ -961,7 +1063,7 @@ void GuiManager::rootWindow()
 	ImGui::End();
 }
 
-void GuiManager::modelViewerWindow()
+void GuiManager::sceneWindow()
 {
 	const bool isWindowFocused = this->isApplicationFocused();
 
@@ -971,20 +1073,31 @@ void GuiManager::modelViewerWindow()
 
 	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
 
-	ImGui::Begin("Model Viewer", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar);
+	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar);
 
 	MorphemeEditorApp::WindowFlags* windowStates = editorApp->getWindowFlags();
 	MorphemeEditorApp::PreviewFlags* previewFlags = editorApp->getPreviewFlags();
 	MorphemeEditorApp::TaskFlags* taskFlags = editorApp->getTaskFlags();
+	MorphemeEditorApp::CameraFlags* cameraFlags = editorApp->getCameraFlags();
 
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("View"))
 		{
-			if (ImGui::MenuItem("Reset Camera")) { taskFlags->resetCamera = true; }
+			if (ImGui::MenuItem("Perspective", nullptr, camera->getCameraView() == Camera::kCamViewPerspective)) { camera->setCameraView(Camera::kCamViewPerspective); }
+			if (ImGui::MenuItem("Front", nullptr, camera->getCameraView() == Camera::kCamViewFront)) { camera->setCameraView(Camera::kCamViewFront); }
+			if (ImGui::MenuItem("Side", nullptr, camera->getCameraView() == Camera::kCamViewSide)) { camera->setCameraView(Camera::kCamViewSide); }
+			if (ImGui::MenuItem("Top", nullptr, camera->getCameraView() == Camera::kCamViewTop)) { camera->setCameraView(Camera::kCamViewTop); }
 
-			ImGui::SeparatorText("Display Mode");
+			ImGui::Separator();
 
+			if (ImGui::MenuItem("Reset Camera")) { cameraFlags->resetCamera = true; }
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Display"))
+		{
 			if (ImGui::MenuItem("Normal", nullptr, previewFlags->displayMode == kDispNormal)) { previewFlags->displayMode = kDispNormal; }
 			if (ImGui::MenuItem("X-Ray", nullptr, previewFlags->displayMode == kDispXRay)) { previewFlags->displayMode = kDispXRay; }
 			if (ImGui::MenuItem("Wireframe", nullptr, previewFlags->displayMode == kDispWireframe)) { previewFlags->displayMode = kDispWireframe; }
@@ -992,12 +1105,21 @@ void GuiManager::modelViewerWindow()
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("Model"))
+		if (ImGui::BeginMenu("Show"))
 		{
-			if (ImGui::MenuItem("Draw Meshes", nullptr, previewFlags->drawMeshes)) { previewFlags->drawMeshes = !previewFlags->drawMeshes; }
-			if (ImGui::MenuItem("Draw Bones", nullptr, previewFlags->drawBones)) { previewFlags->drawBones = !previewFlags->drawBones; }
-			if (ImGui::MenuItem("Draw Dummies", nullptr, previewFlags->drawDummies)) { previewFlags->drawDummies = !previewFlags->drawDummies; }
-			if (ImGui::MenuItem("Draw Bounding Boxes", nullptr, previewFlags->drawBoundingBoxes)) { previewFlags->drawBoundingBoxes = !previewFlags->drawBoundingBoxes; }
+			if (ImGui::MenuItem("Meshes", nullptr, previewFlags->drawMeshes)) { previewFlags->drawMeshes = !previewFlags->drawMeshes; }
+			if (ImGui::MenuItem("Flver Joints", nullptr, previewFlags->drawBones)) { previewFlags->drawBones = !previewFlags->drawBones; }
+			if (ImGui::MenuItem("Morpheme Joints", nullptr, previewFlags->drawMorphemeBones)) { previewFlags->drawMorphemeBones = !previewFlags->drawMorphemeBones; }
+			if (ImGui::MenuItem("Dummies", nullptr, previewFlags->drawDummies)) { previewFlags->drawDummies = !previewFlags->drawDummies; }
+			if (ImGui::MenuItem("Bounding Boxes", nullptr, previewFlags->drawBoundingBoxes)) { previewFlags->drawBoundingBoxes = !previewFlags->drawBoundingBoxes; }
+			if (ImGui::MenuItem("Model Position", nullptr, previewFlags->drawModelPosition)) { previewFlags->drawModelPosition = !previewFlags->drawModelPosition	; }
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Settings"))
+		{
+			if (ImGui::MenuItem("Enable Root Motion", nullptr, previewFlags->enableRootMotion)) { previewFlags->enableRootMotion = !previewFlags->enableRootMotion; }
 
 			ImGui::Separator();
 
@@ -1028,91 +1150,88 @@ void GuiManager::modelViewerWindow()
 			ImGui::EndMenu();
 		}
 
-		ImGui::Separator();
-
-		AnimPlayer* animPlayer = editorApp->getAnimPlayer();
-
-		TrackEditor::EventTrackEditor* eventTrackEditor = editorApp->getEventTrackEditor();
-		TrackEditor::TimeActEditor* timeActEditor = editorApp->getTimeActEditor();
-
-		if (ImGui::Button(ICON_FA_BACKWARD_FAST))
-		{
-			animPlayer->setTime(RMath::frameToTime(eventTrackEditor->getClipStart()));
-			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_BACKWARD_STEP) || ((GetAsyncKeyState(0x51) & 1) && isWindowFocused))
-		{
-			animPlayer->stepPlay(-1.f / 30.f);
-			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
-		}
-
-		ImGui::SameLine();
-
-		if (!animPlayer->isPaused())
-		{
-			if (ImGui::Button(ICON_FA_PAUSE) || ((GetAsyncKeyState(VK_SPACE) & 1) && isWindowFocused))
-				animPlayer->setPause(true);
-		}
-		else
-		{
-			if (ImGui::Button(ICON_FA_PLAY) || ((GetAsyncKeyState(VK_SPACE) & 1) && isWindowFocused))
-				animPlayer->setPause(false);
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_FORWARD_STEP) || ((GetAsyncKeyState(0x45) & 1) && isWindowFocused))
-		{
-			animPlayer->stepPlay(1.f / 30.f);
-			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_FORWARD_FAST))
-		{
-			animPlayer->setTime(RMath::timeToFrame(eventTrackEditor->getClipEnd()));
-			eventTrackEditor->setCurrentTime(animPlayer->getTime());
-			timeActEditor->setCurrentTime(animPlayer->getTime());
-		}
-
-		ImGui::Separator();
-
-		ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 10);
-
-		static float playSpeed = 1.f;
-		ImGui::SliderFloat(ICON_FA_CLOCK, &playSpeed, 0.1f, 1.f);
-
-		animPlayer->setPlaySpeed(playSpeed);
-
 		ImGui::EndMenuBar();
 	}
 
-	ImVec2 pos = ImGui::GetWindowPos();
+	const int controlHeight = ImGui::CalcTextSize(ICON_FA_CLOCK).y + ImGui::GetStyle().FramePadding.y * 2.f;
 
-	int	width = ImGui::GetWindowSize().x;
-	int	height = ImGui::GetWindowSize().y;
+	ImGui::BeginChild("viewport_container", ImVec2(0, ImGui::GetContentRegionAvail().y - controlHeight), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+	ImVec2 pos = ImGui::GetWindowPos();
+	int	width = ImGui::GetContentRegionAvail().x;
+	int	height = ImGui::GetContentRegionAvail().y;
 
 	ImGui::InvisibleButton("viewport_preview", ImVec2(width, height));
 
-	if (ImGui::IsItemFocused() && ImGui::IsItemHovered())
+	if (/*ImGui::IsItemFocused() &&*/ ImGui::IsItemHovered())
 	{
 		camera->setInputEnabled(true);
-
-		if (ImGui::IsMouseDown(0))
-			ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-
-		if (ImGui::IsMouseDown(1))
-			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
 	}
 
 	camera->setResolution(width, height);
 	RenderManager::getInstance()->setResolution(width, height);
 
 	ImGui::GetWindowDrawList()->AddImage(RenderManager::getInstance()->getShaderResourceViewport(), pos, ImVec2(pos.x + width, pos.y + height));
+
+	ImGui::EndChild();
+
+	AnimPlayer* animPlayer = editorApp->getAnimPlayer();
+
+	TrackEditor::EventTrackEditor* eventTrackEditor = editorApp->getEventTrackEditor();
+	TrackEditor::TimeActEditor* timeActEditor = editorApp->getTimeActEditor();
+
+	if (ImGui::Button(ICON_FA_BACKWARD_FAST))
+	{
+		animPlayer->setTime(RMath::frameToTime(eventTrackEditor->getClipStart()));
+		eventTrackEditor->setCurrentTime(animPlayer->getTime());
+		timeActEditor->setCurrentTime(animPlayer->getTime());
+	}
+
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_BACKWARD_STEP) || ((GetAsyncKeyState(0x51) & 1) && isWindowFocused))
+	{
+		animPlayer->stepPlay(-1.f / 30.f);
+		eventTrackEditor->setCurrentTime(animPlayer->getTime());
+		timeActEditor->setCurrentTime(animPlayer->getTime());
+	}
+
+	ImGui::SameLine();
+
+	if (!animPlayer->isPaused())
+	{
+		if (ImGui::Button(ICON_FA_PAUSE) || ((GetAsyncKeyState(VK_SPACE) & 1) && isWindowFocused))
+			animPlayer->setPause(true);
+	}
+	else
+	{
+		if (ImGui::Button(ICON_FA_PLAY) || ((GetAsyncKeyState(VK_SPACE) & 1) && isWindowFocused))
+			animPlayer->setPause(false);
+	}
+
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_FORWARD_STEP) || ((GetAsyncKeyState(0x45) & 1) && isWindowFocused))
+	{
+		animPlayer->stepPlay(1.f / 30.f);
+		eventTrackEditor->setCurrentTime(animPlayer->getTime());
+		timeActEditor->setCurrentTime(animPlayer->getTime());
+	}
+
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_FORWARD_FAST))
+	{
+		animPlayer->setTime(RMath::timeToFrame(eventTrackEditor->getClipEnd()));
+		eventTrackEditor->setCurrentTime(animPlayer->getTime());
+		timeActEditor->setCurrentTime(animPlayer->getTime());
+	}
+
+	ImGui::SameLine();
+
+	ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - 10);
+
+	static float playSpeed = 1.f;
+	ImGui::SliderFloat(ICON_FA_CLOCK, &playSpeed, 0.1f, 1.f);
+
+	animPlayer->setPlaySpeed(playSpeed);
 
 	ImGui::End();
 }
@@ -1187,11 +1306,11 @@ void GuiManager::assetsWindow()
 
 			if (character)
 			{
-				MorphemeCharacter* morphemeCharacter = character->getMorphemeCharacter();
+				CharacterMotionCtrlAnimPreview* motionCtrl = character->getCharacterMotionCtrl();
 
-				if (morphemeCharacter)
+				if (motionCtrl)
 				{
-					MorphemeCharacterDef* characterDef = morphemeCharacter->getCharacterDef();
+					MorphemeCharacterDef* characterDef = motionCtrl->getMorphemeCharacterDef();
 
 					if (characterDef->isLoaded())
 						ImGui::Text(characterDef->getFilename());
@@ -1208,16 +1327,16 @@ void GuiManager::assetsWindow()
 						ImGui::BeginChild("anim_list");
 						{
 							const int numAnims = characterDef->getAnimFileLookUp()->getNumAnims();
-							const int animSetIdx = character->getMorphemeNetwork()->getActiveAnimSetIndex();
+							const uint32_t animSetIdx = motionCtrl->getActiveAnimSetIndex();
 
-							for (int i = 0; i < numAnims; i++)
+							for (uint32_t i = 0; i < numAnims; i++)
 							{
 								std::string anim_name = "";
 
 								//if (eventTrackEditor->isEdited())
 									//anim_name += "*";
 
-								AnimObject* currentAnim = characterDef->getAnimation(animSetIdx, i);
+								AnimObject* currentAnim = motionCtrl->getAnimation(animSetIdx, i);
 
 								anim_name += RString::removeExtension(characterDef->getAnimFileLookUp()->getSourceFilename(currentAnim->getAnimID()));
 
@@ -1379,7 +1498,7 @@ void GuiManager::eventTrackEditorWindow()
 	TrackEditor::EventTrackEditor* eventTrackEditor = editorApp->getEventTrackEditor();
 
 	if (eventTrackEditor->getSource() != nullptr)
-		ImGui::Text(RString::removeExtension(editorApp->getCharacter()->getMorphemeCharacterDef()->getAnimFileLookUp()->getSourceFilename(eventTrackEditor->getSource()->getAnimID())).c_str());
+		ImGui::Text(RString::removeExtension(editorApp->getCharacter()->getCharacterMotionCtrl()->getMorphemeCharacterDef()->getAnimFileLookUp()->getSourceFilename(eventTrackEditor->getSource()->getAnimID())).c_str());
 
 	if (ImGui::Button("Load"))
 		eventTrackEditor->setReload(true);
@@ -1453,7 +1572,7 @@ void GuiManager::eventTrackInfoWindow()
 			case TrackEditor::kSeconds:
 				{
 					float fps = eventTrackEditor->getFps();
-					float step = 1.f / fps;
+					float step = 0;
 
 					float startTime = RMath::frameToTime(selectedEvent->frameStart, fps);
 					float endTime = RMath::frameToTime(selectedEvent->frameEnd, fps);
@@ -1470,7 +1589,7 @@ void GuiManager::eventTrackInfoWindow()
 			case TrackEditor::kMilliseconds:
 				{
 					float fps = eventTrackEditor->getFps();
-					float step = (1.f / fps) * 1000.f;
+					float step = 0;
 
 					float startTime = RMath::frameToTime(selectedEvent->frameStart, fps) * 1000.f;
 					float endTime = RMath::frameToTime(selectedEvent->frameEnd, fps) * 1000.f;
@@ -1487,17 +1606,18 @@ void GuiManager::eventTrackInfoWindow()
 			case TrackEditor::kFrames:
 				{
 					float fps = eventTrackEditor->getFps();
+					float step = 0;
 
-					int startFrame = selectedEvent->frameStart;
-					int endFrame = selectedEvent->frameEnd;
+					float startFrame = RMath::frameToTime(selectedEvent->frameStart, fps) * 30;
+					float endFrame = RMath::frameToTime(selectedEvent->frameEnd, fps) * 30;
 
-					ImGui::InputInt("Start Frame", &startFrame);
+					ImGui::InputFloat("Start Frame", &startFrame, step);
 
 					if (!selectedTrack->discrete)
-						ImGui::InputInt("End Frame", &endFrame);
+						ImGui::InputFloat("End Frame", &endFrame, step);
 
-					selectedEvent->frameStart = startFrame;
-					selectedEvent->frameEnd = endFrame;
+					selectedEvent->frameStart = RMath::timeToFrame(startFrame / 30, fps);
+					selectedEvent->frameEnd = RMath::timeToFrame(endFrame / 30, fps);;
 				}
 				break;
 			default:
@@ -1551,6 +1671,15 @@ void GuiManager::timeActInfoWindow()
 
 		if (selectedEvent != nullptr)
 		{
+			ImGui::InputInt("Event ID", &selectedEvent->userData, 0, 0, ImGuiInputTextFlags_ReadOnly);
+
+			if (ImGui::IsItemHovered())
+			{
+				ImGui::PushTextWrapPos(ImGui::GetWindowContentWidth());
+				ImGui::Text(getTimeActEventTooltip(selectedEvent->userData).c_str());
+				ImGui::PopTextWrapPos();
+			}
+
 			switch (timeActEditor->getTimeCodeFormat())
 			{
 			case TrackEditor::kSeconds:
@@ -1590,14 +1719,15 @@ void GuiManager::timeActInfoWindow()
 			case TrackEditor::kFrames:
 			{
 				float fps = timeActEditor->getFps();
+				int step = 1;
 
 				int startFrame = selectedEvent->frameStart;
 				int endFrame = selectedEvent->frameEnd;
 
-				ImGui::InputInt("Start Frame", &startFrame);
+				ImGui::InputInt("Start Frame", &startFrame, step);
 
 				if (!selectedTrack->discrete)
-					ImGui::InputInt("End Frame", &endFrame);
+					ImGui::InputInt("End Frame", &endFrame, step);
 
 				selectedEvent->frameStart = startFrame;
 				selectedEvent->frameEnd = endFrame;
@@ -1615,6 +1745,164 @@ void GuiManager::timeActInfoWindow()
 			}
 		}
 	}
+
+	ImGui::End();
+}
+
+void GuiManager::networkPreviewWindow()
+{
+	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
+
+	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
+
+	ImGui::Begin("Network Preview", nullptr, ImGuiWindowFlags_MenuBar);
+
+	ImGuiID dockspace_id = ImGui::GetID("NetworkPreviewDockspace");
+	ImGui::DockSpace(
+		dockspace_id,
+		ImVec2(0.0f, 0.0f),
+		ImGuiDockNodeFlags_None
+	);
+
+	NodeEditor::Editor* nodeEditor = editorApp->getNodeEditor();
+
+	nodeEditor->draw();
+
+	ImGui::End();
+}
+
+void GuiManager::selectedNodeInfoWindow()
+{
+	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
+
+	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
+
+	ImGui::Begin("Network Info");
+
+	NodeEditor::Editor* nodeEditor = editorApp->getNodeEditor();
+
+	ImGui::BeginTabBar("info_tabs");
+
+	if (ImGui::BeginTabItem("Attribute Editor"))
+	{
+		nodeEditor->infoGui();
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("Controls"))
+	{
+		Character* character = editorApp->getCharacter();
+
+		if (character)
+		{
+			CharacterMotionCtrlBase* motionCtrl = character->getCharacterMotionCtrl();
+
+			if (motionCtrl && motionCtrl->getMorphemeCharacter()->getDoSimulateNetwork())
+			{
+				MR::Network* network = motionCtrl->getNetwork();
+				MR::NetworkDef* networkDef = motionCtrl->getNetworkDef();
+
+				std::vector<MR::NodeID> activeNodeIDs = motionCtrl->getActiveNodeIDs();
+
+				if (ImGui::CollapsingHeader("Control Parameters", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::BeginChild("cp_list", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y / 2));
+
+					for (size_t i = 1; i < networkDef->getNumNodeDefs(); i++)
+					{
+						MR::NodeDef* nodeDef = networkDef->getNodeDef(i);
+
+						if (!nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
+							continue;
+
+						std::string nodeName = NodeNameStrategyUtils::getNodeNameFromFullPath(networkDef->getNodeNameFromNodeID(nodeDef->getNodeID()));
+
+						ImVec4 textColor = ImGui::GetStyle().Colors[ImGuiCol_Text];
+
+						for (size_t activeNodeIdx = 0; activeNodeIdx < activeNodeIDs.size(); activeNodeIdx++)
+						{
+							MR::NodeDef* activeNodeDef = networkDef->getNodeDef(activeNodeIDs[activeNodeIdx]);
+
+							for (size_t inputCPIdx = 0; inputCPIdx < activeNodeDef->getNumInputCPConnections(); inputCPIdx++)
+							{
+								const MR::CPConnection* cpConnection = activeNodeDef->getInputCPConnection(inputCPIdx);
+
+								if (cpConnection->m_sourceNodeID == nodeDef->getNodeID())
+								{
+									textColor = ImVec4(215, 150, 0, 255);
+									break;
+								}
+							}
+						}
+
+						controlParamEditGUI(motionCtrl, i, nodeName, textColor);
+					}
+
+					ImGui::EndChild();
+				}
+
+				if (ImGui::CollapsingHeader("Messages", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					const uint32_t numMessages = networkDef->getNumMessages();
+
+					if (numMessages > 0)
+					{
+						ImGui::BeginChild("message_list", ImVec2(ImGui::GetContentRegionAvail().x, 0));
+
+						for (size_t i = 0; i < numMessages; i++)
+						{
+							const MR::MessageDistributor* msgDist = networkDef->getMessageDistributor(i);
+							const std::string messageName = networkDef->getMessageNameFromMessageID(msgDist->m_messageID);
+
+							if (msgDist->m_numNodeIDs == 0)
+								continue;
+
+							bool canSendMessage = motionCtrl->canSendMessage(msgDist->m_messageID);
+
+							ImVec4 messageTextColor = ImGui::GetStyle().Colors[ImGuiCol_Text];
+
+							if (canSendMessage)
+								messageTextColor = ImVec4(215, 150, 0, 255);
+
+							ImGui::PushStyleColor(ImGuiCol_Text, messageTextColor);
+
+							if (ImGui::Button(messageName.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0)))
+								motionCtrl->sendRequest(msgDist->m_messageID);
+
+							ImGui::PopStyleColor();
+						}
+
+						ImGui::EndChild();
+					}		
+				}
+			}
+		}
+
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("Navigator"))
+	{
+		nodeEditor->navigatorGui();
+		ImGui::EndTabItem();
+	}
+
+	ImGui::EndTabBar();
+
+	ImGui::End();
+}
+
+void GuiManager::trackEditorWindow()
+{
+	ImGui::Begin("Track Editor");
+	ImGui::SetNextWindowSize(ImVec2(200, 500), ImGuiCond_Appearing);
+
+	ImGuiID dockspace_id = ImGui::GetID("TrackEditorDockSpace");
+	ImGui::DockSpace(
+		dockspace_id,
+		ImVec2(0.0f, 0.0f),
+		ImGuiDockNodeFlags_None
+	);
 
 	ImGui::End();
 }
@@ -1673,30 +1961,35 @@ void GuiManager::colorSettingsWindow()
 {
 	MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
 
-	ImGui::SetNextWindowSize(ImVec2(400, 500), ImGuiCond_Appearing);
+	ImGui::SetNextWindowSize(ImVec2(500, 700), ImGuiCond_Appearing);
 	ImGui::Begin("Color Settings", &editorApp->getWindowFlags()->styleEditor);
 
 	ImGui::BeginTabBar("color_categories");
 
-#ifdef _DEBUG
 	if (ImGui::BeginTabItem("ImGui"))
 	{
 		ImGui::ShowStyleEditor();
 
 		ImGui::EndTabItem();
 	}
-#endif
 
-	if (ImGui::BeginTabItem("EventTrack Editor"))
+	if (ImGui::BeginTabItem("Node Editor"))
 	{
-		trackEditorColorSelector(editorApp->getEventTrackEditor());
+		editorApp->getNodeEditor()->styleEditor();
 
 		ImGui::EndTabItem();
 	}
 
-	if (ImGui::BeginTabItem("TimeAct Editor"))
+	if (ImGui::BeginTabItem("Event Track Editor"))
 	{
-		trackEditorColorSelector(editorApp->getTimeActEditor());
+		editorApp->getEventTrackEditor()->styleEditor();
+
+		ImGui::EndTabItem();
+	}
+
+	if (ImGui::BeginTabItem("Time Act Editor"))
+	{
+		editorApp->getTimeActEditor()->styleEditor();
 
 		ImGui::EndTabItem();
 	}
@@ -1742,9 +2035,6 @@ void GuiManager::sceneExplorerWindow()
 	modelTreeNode(editorApp, model);
 
 	model = editorApp->getCharacter()->getCharacterModelCtrl()->getModelFg(kFgHead);
-	modelTreeNode(editorApp, model);
-
-	model = editorApp->getCharacter()->getCharacterModelCtrl()->getModelFg(kFgEyeBrows);
 	modelTreeNode(editorApp, model);
 
 	model = editorApp->getCharacter()->getCharacterModelCtrl()->getModelFg(kFgEyeBrows);
@@ -1929,13 +2219,12 @@ void GuiManager::searchQueryWindow()
 
 	static int selectedRow = -1;
 	static int targetValue = 0;
-	static std::vector<TimeAct::TaeExport::TimeActEventExportXML*> queryResult;
 
 	if (ImGui::IsWindowAppearing())
 	{
 		selectedRow = -1;
 		targetValue = 0;
-		queryResult.clear();
+		this->m_queryResult.clear();
 	}
 
 	constexpr int rowCount = 50;
@@ -1945,10 +2234,10 @@ void GuiManager::searchQueryWindow()
 
 	if (ImGui::Button("Search"))
 	{
-		timeAct->findEventsWithId(queryResult, targetValue);
+		timeAct->findEventsWithId(this->m_queryResult, targetValue);
 		selectedRow = -1;
 
-		if (queryResult.size() == 0)
+		if (this->m_queryResult.size() == 0)
 			g_appLog->alertMessage(MsgLevel_Info, "Could not find any event with the specified ID\n");
 	}
 
@@ -1963,13 +2252,13 @@ void GuiManager::searchQueryWindow()
 		ImGui::TableSetupColumn("Event Name", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableHeadersRow();
 
-		if (queryResult.size())
+		if (this->m_queryResult.size())
 		{
-			for (size_t row = 0; row < queryResult.size(); row++)
+			for (size_t row = 0; row < this->m_queryResult.size(); row++)
 			{
 				ImGui::TableNextRow(ImGuiTableRowFlags_None, 20.f);
 
-				TimeAct::TaeExport::TimeActEventExportXML* result = queryResult[row];
+				TimeAct::TaeExport::TimeActEventExportXML* result = this->m_queryResult[row];
 
 				int groupId = result->getOwner()->getGroupId();
 				int eventId = result->getEventId();
@@ -2040,12 +2329,8 @@ void GuiManager::searchQueryWindow()
 			{
 				ImGui::TableNextRow(ImGuiTableRowFlags_None, 20.f);
 
-				TimeAct::TaeExport::TimeActEventExportXML* result = queryResult[row];
-
 				for (size_t column = 0; column < columnCount; column++)
-				{
 					ImGui::TableSetColumnIndex(column);
-				}
 			}
 		}
 
@@ -2053,6 +2338,11 @@ void GuiManager::searchQueryWindow()
 	}
 
 	ImGui::End();
+}
+
+void GuiManager::clearSearchQueryWindow()
+{
+	m_queryResult.clear();
 }
 
 void GuiManager::progressIndicatorPopup()

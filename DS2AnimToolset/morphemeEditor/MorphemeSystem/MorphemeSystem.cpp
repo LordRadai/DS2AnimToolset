@@ -1,27 +1,28 @@
 #include "MorphemeSystem.h"
-#include "AssetLoader/AssetLoader.h"
-#include "simpleBundle/simpleBundle.h"
-#include "NMPlatform/NMFile.h"
-#include "morpheme/Nodes/mrNodes.h"
-#include "morpheme/Nodes/mrNodeAnimSyncEvents.h"
 #include "AnimLoader/AnimLoader.h"
 #include "XMD/Model.h"
 
 #include "extern.h"
 #include "RCore.h"
 
-//----------------------------------------------------------------------------------------------------------------------
+#define NUM_EXPECTED_ATTRIB_SEMANTICS 74
+
 void MorphemeSystem::initMorpheme()
 {
+    g_appLog->debugMessage(MsgLevel_Info, "Initialising Morpheme System\n");
+
+	g_appLog->debugMessage(MsgLevel_Info, "Initialising Memory module\n");
     NMP::Memory::init();
 
     //----------------------------
     // Initialise morpheme library
-    g_appLog->debugMessage(MsgLevel_Info, "Initialising Morpheme\n");
+    g_appLog->debugMessage(MsgLevel_Info, "Initialising Morpheme lib\n");
     MR::Manager::initMorphemeLib();
 
     //----------------------------
     // Dispatcher initialisation
+
+	g_appLog->debugMessage(MsgLevel_Info, "Initialising Dispatcher\n");
     MR::Dispatcher* dispatcher = MR::DispatcherBasic::createAndInit();
 
     //----------------------------
@@ -41,14 +42,15 @@ void MorphemeSystem::initMorpheme()
         AnimLoader::requestAnim,
         AnimLoader::releaseAnim);
 
+	g_appLog->debugMessage(MsgLevel_Info, "Initialising XMD\n");
     XMD::XMDInit();
 
     const int numRegisteredAttribSemantics = MR::Manager::getInstance().getNumRegisteredAttribSemantics();
 
-    // Dark Souls II registers exactly 74 ATTRIB_SEMANTICs. We must ensure that the count matches or else the output nmb will be incorrect
-    if (numRegisteredAttribSemantics != 74)
-        g_appLog->panicMessage("Invalid amount of registered ATTRIB_SEMANTIC (expecting 74, got %d)\n", numRegisteredAttribSemantics);
-
+    //----------------------------
+    // Dark Souls II Scholar of the First Sin registers exactly 74 ATTRIB_SEMANTICs. We must ensure that the count matches or else the output nmb will be incorrect
+    if (numRegisteredAttribSemantics != NUM_EXPECTED_ATTRIB_SEMANTICS)
+        INVOKE_PANIC("Invalid amount of registered ATTRIB_SEMANTIC (expecting %d, got %d)\n", NUM_EXPECTED_ATTRIB_SEMANTICS, numRegisteredAttribSemantics);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -63,32 +65,35 @@ void MorphemeSystem::initMorpheme()
 // details.
 void MorphemeSystem::termMorpheme()
 {
-    g_appLog->debugMessage(MsgLevel_Info, "Terminating Morpheme\n");
+    g_appLog->debugMessage(MsgLevel_Info, "Terminating Morpheme System\n");
 
     //----------------------------
     // Terminate morpheme library
+	g_appLog->debugMessage(MsgLevel_Info, "Cleaning up XMD\n");
     XMD::XMDCleanup();
-    MR::DispatcherBasic::term();
-    MR::Manager::termMorphemeLib();
-    NMP::Memory::shutdown();
 
-    g_appLog->debugMessage(MsgLevel_Info, "Morpheme shutdown\n");
+	g_appLog->debugMessage(MsgLevel_Info, "Terminating Dispatcher\n");
+    MR::DispatcherBasic::term();
+
+	g_appLog->debugMessage(MsgLevel_Info, "Terminating Morpheme lib\n");
+    MR::Manager::termMorphemeLib();
+
+	g_appLog->debugMessage(MsgLevel_Info, "Shutting down Memory module\n");
+    NMP::Memory::shutdown();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 // Creates a CharacterDef and registers it with the manager.
-MorphemeCharacterDef* MorphemeSystem::createCharacterDef(const char* filename, bool simulateNetwork)
+MorphemeCharacterDef* MorphemeSystem::createCharacterDef(const char* filename)
 {
     g_appLog->debugMessage(MsgLevel_Info, "Creating CharacterDef from file \"%s\"\n", filename);
 
-    MorphemeCharacterDef* gameCharacterDef = MorphemeCharacterDef::create(filename);
-    if (!gameCharacterDef || !gameCharacterDef->isLoaded())
+    MorphemeCharacterDef* characterDef = MorphemeCharacterDef::create(filename);
+    if (!characterDef || !characterDef->isLoaded())
     {
         NMP_ASSERT_FAIL();
         return NULL;
     }
 
-    gameCharacterDef->setDoSimulateNetwork(simulateNetwork);
-
-    return gameCharacterDef;
+    return characterDef;
 }

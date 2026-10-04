@@ -11,6 +11,7 @@
 #include "Character/Character.h"
 #include "AnimPlayer/AnimPlayer.h"
 #include "Camera/Camera.h"
+#include "NodeEditor/NodeEditor.h"
 #include "TrackEditor/TimeActEditor.h"
 #include "TrackEditor/EventTrackEditor.h"
 #include "FileIDNamesTable/FileIDNamesTable.h"
@@ -40,9 +41,8 @@ class MorphemeEditorApp : public Application
 public:
 	struct TaskFlags
 	{
-		bool resetCamera = false;
-
 		bool loadFile = false;
+		bool reloadFile = false;
 		bool saveFile = false;
 
 		bool exportTaeTemplateXml = false;
@@ -55,14 +55,24 @@ public:
 
 		bool compileNetwork = false;
 		bool compileTaes = false;
+
+		bool createTestEditorProject = false;
+	};
+
+	struct CameraFlags
+	{ 
+		bool resetCamera = false;
 	};
 
 	struct PreviewFlags
 	{
 		bool drawMeshes = true;
 		bool drawBones = true;
+		bool drawMorphemeBones = false;
 		bool drawDummies = false;
 		bool drawBoundingBoxes = false;
+		bool drawModelPosition = false;
+		bool enableRootMotion = true;
 		DisplayMode displayMode = kDispNormal;
 
 		FlverModel* selectedModel = nullptr;
@@ -76,6 +86,11 @@ public:
 		bool imGuiDemo = false;
 		bool sceneExplorer = false;
 		bool playerPartsManager = false;
+	};
+
+	struct MorphemeNetworkFlags
+	{
+		bool simulateNetwork = false;
 	};
 
 	struct ExportSettings
@@ -114,11 +129,14 @@ public:
 	TrackEditor::EventTrackEditor* getEventTrackEditor() const { return this->m_eventTrackEditor; }
 	FlverResources* getFlverResources() const { return this->m_flverResources; }
 	PlayerModelPreset* getPlayerModelPreset() const { return this->m_playerModelPreset; }
+	NodeEditor::Editor* getNodeEditor() const { return this->m_nodeEditor; }
 
 	WindowFlags* getWindowFlags() { return &this->m_windowFlags; }
 	TaskFlags* getTaskFlags() { return &this->m_taskFlags; }
 	PreviewFlags* getPreviewFlags() { return &this->m_previewFlags; }
 	ExportSettings* getExportSettings() { return &this->m_exportSettings; }
+	CameraFlags* getCameraFlags() { return &this->m_cameraFlags; }
+	MorphemeNetworkFlags* getMorphemeNetworkFlags() { return &this->m_morphemeNetworkFlags; }
 	std::vector<std::wstring> getTimeActFileList() const { return this->m_timeActFileList; }
 	std::wstring getGamePath() const { return this->m_gamePath; }
 
@@ -141,6 +159,7 @@ private:
 	void savePlayerModelPreset();
 
 	void loadFile();
+	void reloadFile();
 	void saveFile();
 
 	bool exportAll(std::wstring path);
@@ -161,11 +180,14 @@ private:
 	bool exportAnimMarkup(std::wstring path, int animSetIdx, int animId, std::vector<ME::EventTrackExport*>& exportedTracks);
 
 	void exportTaeTemplateXML();
+	void createTestEditorProject();
 
 	WindowFlags m_windowFlags;
 	TaskFlags m_taskFlags;
 	PreviewFlags m_previewFlags;
 	ExportSettings m_exportSettings;
+	CameraFlags m_cameraFlags;
+	MorphemeNetworkFlags m_morphemeNetworkFlags;
 
 	FlverResources* m_flverResources = nullptr;
 	PlayerModelPreset* m_playerModelPreset = nullptr;
@@ -175,9 +197,11 @@ private:
 
 	TrackEditor::TimeActEditor* m_timeActEditor = nullptr;
 	TrackEditor::EventTrackEditor* m_eventTrackEditor = nullptr;
+	NodeEditor::Editor* m_nodeEditor = nullptr;
 
 	std::vector<std::wstring> m_timeActFileList;
 
+	std::wstring m_loadedFilePath = L"";
 	std::wstring m_gamePath = L"";
 
 	inline static MorphemeEditorApp* _instance = nullptr;

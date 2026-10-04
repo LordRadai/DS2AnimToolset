@@ -6,6 +6,8 @@
 #include "FromSoftware/TimeAct/TaeTemplate/TaeTemplateXML/TaeTemplateXML.h"
 #include "MorphemeSystem/MorphemeDecompiler/Node/NodeUtils.h"
 #include "utils/utils.h"
+#include "GuiManager/GuiManager.h"
+#include "MorphemeNetworkInspector/MorphemeNetworkInspector.h"
 #include <thread>
 
 #ifndef _DEBUG
@@ -66,6 +68,9 @@ namespace
 
 	float calculateOptimalCameraDistance(Camera* camera, Character* character)
 	{
+		if (character == nullptr)
+			return 5.f;
+
 		FlverModel* model = character->getCharacterModelCtrl()->getModel();
 
 		if (model == nullptr)
@@ -171,254 +176,6 @@ namespace
 		file << lineBuf;
 	}
 
-	tinyxml2::XMLElement* createNodeXML(MR::NodeDef* nodeDef, tinyxml2::XMLElement* parent, std::string nodeName, bool activeState)
-	{
-		tinyxml2::XMLElement* nodeXML = parent->InsertNewChildElement("Node");
-
-		if (nodeDef != nullptr)
-		{
-			nodeXML->SetAttribute("Name", nodeName.c_str());
-			nodeXML->SetAttribute("NodeID", nodeDef->getNodeID());
-			nodeXML->SetAttribute("NodeFlags", nodeDef->getNodeFlags());
-			nodeXML->SetAttribute("TypeID", nodeDef->getNodeTypeID());
-			nodeXML->SetAttribute("ParentID", nodeDef->getParentNodeID());
-
-			return nodeXML;
-		}
-
-		if (activeState)
-		{
-			nodeXML->SetAttribute("Name", "ActiveState");
-			nodeXML->SetAttribute("NodeID", -1);
-			nodeXML->SetAttribute("NodeFlags", 0);
-			nodeXML->SetAttribute("TypeID", 0);
-			nodeXML->SetAttribute("ParentID", 0);
-
-			return nodeXML;
-		}
-
-		nodeXML->SetAttribute("Name", "None");
-		nodeXML->SetAttribute("NodeID", -1);
-		nodeXML->SetAttribute("NodeFlags", 0);
-		nodeXML->SetAttribute("TypeID", 0);
-		nodeXML->SetAttribute("ParentID", 0);
-
-		return nodeXML;
-	}
-
-	void addNodeToXML(MR::NetworkDef* netDef, MR::NodeID nodeID, ME::AnimationLibraryExport* animLibrary, tinyxml2::XMLElement* parent, bool isInput)
-	{
-		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
-
-		const bool isContainer = ((nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE) || (nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK));
-
-		std::string nodeName = MD::NodeUtils::buildNodeName(netDef, nodeDef, animLibrary);
-
-		tinyxml2::XMLElement* nodeXML = createNodeXML(nodeDef, parent, nodeName, false);
-
-		if (!isContainer)
-		{
-			const int numChildNodes = nodeDef->getNumChildNodes();
-			const int numInputCPs = nodeDef->getNumInputCPConnections();
-
-			if (numChildNodes > 0)
-			{
-				tinyxml2::XMLElement* inputNodes = nodeXML->InsertNewChildElement("InputNodes");
-
-				for (int i = 0; i < numChildNodes; i++)
-				{
-					if (nodeDef->getChildNodeID(i) != MR::INVALID_NODE_ID)
-					{
-						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
-						createNodeXML(nodeDef->getChildNodeDef(i), inputNodes, name, false);
-					}
-					else
-					{
-						if ((nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT) || (nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT_SYNC_EVENTS))
-							createNodeXML(nullptr, inputNodes, "", true);
-						else
-							createNodeXML(nullptr, inputNodes, "", false);
-					}
-				}
-			}
-
-			if (numInputCPs > 0)
-			{
-				tinyxml2::XMLElement* inputCPs = nodeXML->InsertNewChildElement("InputCPs");
-
-				for (int i = 0; i < numInputCPs; i++)
-				{
-					if (nodeDef->getInputCPConnectionSourceNodeID(i) != MR::INVALID_NODE_ID)
-					{
-						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getInputCPConnectionSourceNodeDef(i), animLibrary);
-						createNodeXML(nodeDef->getInputCPConnectionSourceNodeDef(i), inputCPs, name, false);
-					}
-					else
-					{
-						createNodeXML(nullptr, inputCPs, "", false);
-					}
-				}
-			}
-		}
-		else
-		{
-			const int numChildNodes = nodeDef->getNumChildNodes();
-
-			if (numChildNodes > 0)
-			{
-				tinyxml2::XMLElement* childNodes = nodeXML->InsertNewChildElement("Children");
-
-				for (int i = 0; i < numChildNodes; i++)
-				{
-					if (nodeDef->getChildNodeID(i) != MR::INVALID_NODE_ID)
-					{
-						std::string name = MD::NodeUtils::buildNodeName(netDef, nodeDef->getChildNodeDef(i), animLibrary);
-						createNodeXML(nodeDef->getChildNodeDef(i), childNodes, name, false);
-					}
-					else
-					{
-						createNodeXML(nullptr, childNodes, "", false);
-					}
-				}
-			}
-		}
-	}
-
-	void addNamedNodeToXML(MR::NetworkDef* netDef, MR::NodeID nodeID, ME::AnimationLibraryExport* animLibrary, tinyxml2::XMLElement* parent, std::vector<MR::NodeID>& processedNodes)
-	{
-		for (size_t i = 0; i < processedNodes.size(); i++)
-		{
-			if (nodeID == processedNodes[i])
-				return;
-		}
-
-		processedNodes.push_back(nodeID);
-
-		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
-
-		std::string nodeName = netDef->getNodeNameFromNodeID(nodeID);
-
-		if (nodeName == "")
-			return;
-
-		tinyxml2::XMLElement* nodeXML = createNodeXML(nodeDef, parent, netDef->getNodeNameFromNodeID(nodeID), false);
-
-		const int numChildNodes = nodeDef->getNumChildNodes();
-		const int numInputCPs = nodeDef->getNumInputCPConnections();
-
-		if (numChildNodes > 0)
-		{
-			for (int i = 0; i < numChildNodes; i++)
-			{
-				if (nodeDef->getChildNodeID(i) != MR::INVALID_NODE_ID)
-					addNamedNodeToXML(netDef, nodeDef->getChildNodeID(i), animLibrary, nodeXML, processedNodes);
-			}
-		}
-	}
-
-	void printNode(MR::NetworkDef* netDef, MR::NodeID nodeID, ME::AnimationLibraryExport* animLibrary, std::ofstream& file, int numIndents, std::unordered_map<MR::NodeID, std::string>& nodeMap, bool isInput)
-	{
-		MR::NodeDef* nodeDef = netDef->getNodeDef(nodeID);
-
-		std::string indendationString = "";
-
-		for (size_t i = 0; i < numIndents; i++)
-			indendationString += "\t";
-
-		bool alreadyExported = false;
-
-		if (nodeMap.find(nodeID) != nodeMap.end())
-		{
-			alreadyExported = true;
-
-			if (!isInput)
-				file << indendationString + nodeMap[nodeID];
-			else
-				file << indendationString + "-" + nodeMap[nodeID];
-		}
-
-		const bool isContainer = ((nodeDef->getNodeTypeID() == NODE_TYPE_STATE_MACHINE) || (nodeDef->getNodeTypeID() == NODE_TYPE_NETWORK));
-
-		if (!alreadyExported)
-		{
-			std::string nodeName = MD::NodeUtils::buildNodeName(netDef, nodeDef, animLibrary);
-
-			char nodeBuf[256];
-
-			if ((nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT) || (nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT_SYNC_EVENTS))
-			{
-				sprintf_s(nodeBuf, "%s\"%s\" (src=%d, dst=%d)\n", indendationString.c_str(), nodeName.c_str(), nodeDef->getChildNodeID(0), nodeDef->getChildNodeID(1));
-				file << nodeBuf;
-
-				return;
-			}
-
-			if (!isInput)
-				sprintf_s(nodeBuf, "\"%s\" (parentNode=%d, typeID=%d)\n", nodeName.c_str(), nodeDef->getParentNodeID(), nodeDef->getNodeTypeID());
-			else
-				sprintf_s(nodeBuf, "\"%s\" (parentNode=%d, typeID=%d)\n", nodeName.c_str(), nodeDef->getParentNodeID(), nodeDef->getNodeTypeID());
-
-			nodeMap.insert(std::make_pair(nodeID, std::string(nodeBuf)));
-
-			if (!isInput)
-				file << indendationString + nodeBuf;
-			else
-				file << indendationString + "-" + nodeBuf;
-		}
-		
-		if (isContainer)
-			file << indendationString + "{\n";
-
-		for (uint32_t i = 0; i < nodeDef->getNumChildNodes(); i++)
-		{
-			if (isContainer)
-				printNode(netDef, nodeDef->getChildNodeID(i), animLibrary, file, numIndents + 1, nodeMap, false);
-			else
-				printNode(netDef, nodeDef->getChildNodeID(i), animLibrary, file, numIndents + 1, nodeMap, true);
-		}
-
-		for (uint32_t i = 0; i < nodeDef->getNumInputCPConnections(); i++)
-			printNode(netDef, nodeDef->getInputCPConnectionSourceNodeID(i), animLibrary, file, numIndents + 1, nodeMap, true);
-
-		if (isContainer)
-			file << indendationString + "}\n";
-	}
-
-	void dumpNetworkNodes(MR::NetworkDef* netDef, ME::AnimationLibraryExport* animLibrary, std::wstring path)
-	{
-		std::ofstream nodeDumpExt(L"nodeFnTables.txt", std::ios::out);
-
-		tinyxml2::XMLDocument xmlDoc;
-		tinyxml2::XMLElement* root = xmlDoc.NewElement("Nodes");
-
-		const int numNodes = netDef->getNumNodeDefs();
-
-		for (int i = 0; i < numNodes; i++)
-		{
-			addNodeToXML(netDef, i, animLibrary, root, false);
-			printNodeFnTables(netDef, i, nodeDumpExt);
-		}
-
-		xmlDoc.InsertEndChild(root);
-		xmlDoc.SaveFile(RString::toNarrow(path).c_str());
-	}
-
-	void dumpNamedNodes(MR::NetworkDef* netDef, ME::AnimationLibraryExport* animLibrary, std::wstring path)
-	{
-		tinyxml2::XMLDocument xmlDoc;
-		tinyxml2::XMLElement* root = xmlDoc.NewElement("Nodes");
-
-		const int numNodes = netDef->getNumNodeDefs();
-
-		std::vector<MR::NodeID> processedNodes;
-
-		for (int i = 0; i < numNodes; i++)
-			addNamedNodeToXML(netDef, i, animLibrary, root, processedNodes);
-
-		xmlDoc.InsertEndChild(root);
-		xmlDoc.SaveFile(RString::toNarrow(path).c_str());
-	}
-
 	void dumpNodeIDNamesTable(MR::NetworkDef* netDef, ME::AnimationLibraryExport* animLibrary, std::wstring path)
 	{
 		tinyxml2::XMLDocument xmlDoc;
@@ -432,10 +189,76 @@ namespace
 		{
 			const MR::NodeDef* nodeDef = netDef->getNodeDef(nodeIDNamesTable->getEntryID(i));
 
-			tinyxml2::XMLElement* elem = root->InsertNewChildElement("Entry");
-			elem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(i));
-			elem->SetAttribute("NodeTypeID", nodeDef->getNodeTypeID());
-			elem->SetAttribute("Name", nodeIDNamesTable->getEntryString(i));
+			if (i < netDef->getNumNodeDefs())
+			{
+				tinyxml2::XMLElement* elem = root->InsertNewChildElement("Node");
+
+				elem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(i));
+				elem->SetAttribute("NodeTypeID", nodeDef->getNodeTypeID());
+				elem->SetAttribute("Name", nodeIDNamesTable->getEntryString(i));
+			}
+			else
+			{
+				tinyxml2::XMLElement* elem = root->InsertNewChildElement("StateNode");
+
+				const MR::NodeDef* parentNodeDef = netDef->getNodeDef(nodeDef->getParentNodeID());
+
+				elem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(i));
+				elem->SetAttribute("NodeTypeID", nodeDef->getNodeTypeID());
+				elem->SetAttribute("Name", nodeIDNamesTable->getEntryString(i));
+
+				tinyxml2::XMLElement* parentData = elem->InsertNewChildElement("ParentNode");
+
+				parentData->SetAttribute("NodeID", nodeDef->getParentNodeID());
+				parentData->SetAttribute("NodeTypeID", parentNodeDef->getNodeTypeID());
+				parentData->SetAttribute("Name", nodeIDNamesTable->getStringForID(nodeDef->getParentNodeID()));
+			}
+		}
+
+		xmlDoc.InsertEndChild(root);
+		xmlDoc.SaveFile(RString::toNarrow(path).c_str());
+	}
+
+	void dumpControlParametersUsageData(MR::NetworkDef* netDef, std::wstring path)
+	{
+		tinyxml2::XMLDocument xmlDoc;
+		tinyxml2::XMLElement* root = xmlDoc.NewElement("ControlParamUsage");
+
+		const NMP::IDMappedStringTable* nodeIDNamesTable = netDef->getNodeIDNamesTable();
+
+		for (size_t i = 0; i < netDef->getNumNodeDefs(); i++)
+		{
+			const MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+
+			if (nodeDef->getNodeFlags() & MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM)
+				continue;
+
+			std::vector<const MR::NodeDef*> connectedCPs;
+			for (size_t j = 0; j < nodeDef->getNumInputCPConnections(); j++)
+			{
+				const MR::NodeID cpNodeID = nodeDef->getInputCPConnectionSourceNodeID(j);
+
+				if (cpNodeID != MR::INVALID_NODE_ID)
+					connectedCPs.push_back(netDef->getNodeDef(cpNodeID));
+			}
+
+			tinyxml2::XMLElement* nodeElem = root->InsertNewChildElement("Node");
+
+			if (connectedCPs.size())
+			{
+				nodeElem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(i));
+				nodeElem->SetAttribute("NodeTypeID", nodeDef->getNodeTypeID());
+				nodeElem->SetAttribute("Name", nodeIDNamesTable->getEntryString(i));
+			}
+
+			for (size_t j = 0; j < connectedCPs.size(); j++)
+			{
+				tinyxml2::XMLElement* elem = nodeElem->InsertNewChildElement("InputCP");
+
+				elem->SetAttribute("NodeID", nodeIDNamesTable->getEntryID(connectedCPs[j]->getNodeID()));
+				elem->SetAttribute("NodeTypeID", connectedCPs[j]->getNodeTypeID());
+				elem->SetAttribute("Name", nodeIDNamesTable->getEntryString(connectedCPs[j]->getNodeID()));
+			}
 		}
 
 		xmlDoc.InsertEndChild(root);
@@ -460,7 +283,7 @@ namespace
 			TimeAct::TimeActEvent* event = group->addEvent(eventXML->getStartTime(), eventXML->getEndTime(), eventXML->getEventId(), g_taeTemplate);
 
 			if (eventXML->getNumArguments() != event->getNumArguments())
-				throw("Argument count mismatch\n");
+				INVOKE_PANIC("Argument count mismatch\n");
 
 			for (size_t argIdx = 0; argIdx < eventXML->getNumArguments(); argIdx++)
 			{
@@ -950,8 +773,12 @@ void MorphemeEditorApp::initialise()
 	this->m_timeActEditor = TrackEditor::TimeActEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds, g_taeTemplate);
 	this->m_eventTrackEditor = TrackEditor::EventTrackEditor::create(TrackEditor::kEditorEditAll | TrackEditor::kEditorRenameTrack | TrackEditor::kEditorChangeFrame | TrackEditor::kEditorMarkActiveEvents | TrackEditor::kEditorHighlightSelectedEvent, TrackEditor::kSeconds);
 
+	this->m_nodeEditor = new MorphemeNetworkInspector();
+
 	this->m_eventTrackEditor->registerListener(this->m_timeActEditor);
 	this->m_timeActEditor->registerListener(this->m_eventTrackEditor);
+
+	this->m_nodeEditor->initialise();
 
 	this->loadSettings();
 	this->loadPlayerModelPreset();
@@ -962,7 +789,7 @@ void MorphemeEditorApp::initialise()
 void MorphemeEditorApp::update(float dt)
 {
 	if (!this->m_initialised)
-		throw("Called update() without calling initialise() first\n");
+		INVOKE_PANIC("Called MorphemeEditorApp::update without having called MorphemeEditorApp::initialise first\n");
 
 	if (this->m_animPlayer)
 	{
@@ -991,7 +818,11 @@ void MorphemeEditorApp::update(float dt)
 
 	if (this->m_character)
 	{
-		this->m_character->update(dt);
+		const float playbackSpeed = m_animPlayer->getPlaySpeed();
+		
+		this->m_character->setEnableRootMotion(this->m_previewFlags.enableRootMotion);
+
+		this->m_character->update(dt * playbackSpeed);
 		
 		CharacterModelCtrl* modelCtrl = this->m_character->getCharacterModelCtrl();
 
@@ -1001,7 +832,9 @@ void MorphemeEditorApp::update(float dt)
 			modelCtrl->setDrawDummies(this->m_previewFlags.drawDummies);
 			modelCtrl->setDrawMeshes(this->m_previewFlags.drawMeshes);
 			modelCtrl->setDrawBones(this->m_previewFlags.drawBones);
+			modelCtrl->setDrawMorphemeBones(this->m_previewFlags.drawMorphemeBones);
 			modelCtrl->setDrawBoundingBox(this->m_previewFlags.drawBoundingBoxes);
+			modelCtrl->setDrawModelPosition(this->m_previewFlags.drawModelPosition);
 		}
 	}
 
@@ -1010,7 +843,15 @@ void MorphemeEditorApp::update(float dt)
 		const int width = RenderManager::getInstance()->getWidth();
 		const int height = RenderManager::getInstance()->getHeight();
 
-		this->m_camera->update(float(width), float(height), dt);
+		if (this->m_cameraFlags.resetCamera)
+		{
+			this->m_cameraFlags.resetCamera = false;
+
+			this->m_camera->setCameraView(Camera::kCamViewPerspective);
+			this->m_camera->setAngles(Vector3(DirectX::XM_PI / 3, 0.4f, 0));
+			this->m_camera->setOffset(Vector3::Zero);
+			this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
+		}
 
 		if (this->m_character)
 		{
@@ -1018,19 +859,13 @@ void MorphemeEditorApp::update(float dt)
 
 			if (model != nullptr)
 			{
-				Matrix characterRoot = (*model->getFlverRootBoneGlobalTransform()) * model->getWorldMatrix();
+				Matrix followJoint = model->getMorphemeRootBoneGlobalTransform();
 
-				this->m_camera->setTarget(Vector3::Transform(Vector3::Zero, characterRoot));
-			} 
+				this->m_camera->setTarget(Vector3::Transform(Vector3::Zero, followJoint));
+			}
 		}
 
-		if (this->m_taskFlags.resetCamera)
-		{
-			this->m_taskFlags.resetCamera = false;
-
-			this->m_camera->setOffset(Vector3::Zero);
-			this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
-		}
+		this->m_camera->update(float(width), float(height), dt);
 	}
 
 	if (this->m_timeActEditor)
@@ -1039,11 +874,21 @@ void MorphemeEditorApp::update(float dt)
 	if (this->m_eventTrackEditor)
 		this->m_eventTrackEditor->update(dt);
 
+	if (this->m_nodeEditor)
+		this->m_nodeEditor->update(dt);
+
 	if (this->m_taskFlags.loadFile)
 	{
 		this->m_taskFlags.loadFile = false;
 
 		this->loadFile();
+	}
+
+	if (this->m_taskFlags.reloadFile)
+	{
+		this->m_taskFlags.reloadFile = false;
+
+		this->reloadFile();
 	}
 
 	if (this->m_taskFlags.saveFile)
@@ -1131,7 +976,7 @@ void MorphemeEditorApp::update(float dt)
 	{
 		this->m_taskFlags.exportAnimations = false;
 
-		if (this->m_character != nullptr && this->m_character->getMorphemeCharacter() != nullptr)
+		if (this->m_character != nullptr && this->m_character->getCharacterMotionCtrl()->getMorphemeCharacter() != nullptr)
 		{
 			wchar_t exportPath[256];
 			swprintf_s(exportPath, L"Export\\%ws", this->m_character->getCharacterName().c_str());
@@ -1175,7 +1020,14 @@ void MorphemeEditorApp::update(float dt)
 	{
 		this->m_taskFlags.exportTaeTemplateXml = false;
 
-		g_workerThread.load()->startThread("Export TimeAct Template", &MorphemeEditorApp::exportTaeTemplateXML, this);
+		exportTaeTemplateXML();
+	}
+
+	if (this->m_taskFlags.createTestEditorProject)
+	{
+		this->m_taskFlags.createTestEditorProject = false;
+
+		createTestEditorProject();
 	}
 #endif
 }
@@ -1184,8 +1036,6 @@ void MorphemeEditorApp::shutdown()
 {
 	this->saveSettings();
 	this->savePlayerModelPreset();
-
-	MorphemeSystem::termMorpheme();
 
 	if (this->m_flverResources)
 	{
@@ -1211,29 +1061,40 @@ void MorphemeEditorApp::shutdown()
 	if (this->m_eventTrackEditor)
 		this->m_eventTrackEditor->destroy();
 
+	if (this->m_nodeEditor)
+		delete this->m_nodeEditor;
+
 	if (this->_instance)
 		delete this->_instance;
+
+	MorphemeSystem::termMorpheme();
 }
 
 void MorphemeEditorApp::loadSettings()
 {
 	RINI* settings = RINI::open("Data\\res\\settings.ini");
 
+	g_appLog->debugMessage(MsgLevel_Info, "Loading application settings\n");
+
 	if (settings == nullptr)
 	{
-		throw("Failed to open settings.ini");
+		INVOKE_PANIC("Failed to read application settings\n");
 		return;
 	}
 
 	this->m_exportSettings.exportFormat = static_cast<FT::ExportFormat>(settings->getInt("Export", "export_format", 0));
 	this->m_exportSettings.compressionFormat = settings->getInt("Export", "compression_format", 2);
 	this->m_exportSettings.useSourceSampleFrequency = settings->getBool("Export", "compression_use_source_sample_frequency", true);
-	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "compression_sample_frequency", 30);
+	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "compression_sample_frequency", 20);
 
-	this->m_previewFlags.drawDummies = settings->getBool("ModelViewer", "draw_dummies", false);
-	this->m_previewFlags.drawMeshes = settings->getBool("ModelViewer", "draw_meshes", true);
-	this->m_previewFlags.drawBones = settings->getBool("ModelViewer", "draw_bones", true);
-	this->m_previewFlags.displayMode = (DisplayMode)settings->getInt("ModelViewer", "model_disp_mode", 0);
+	this->m_previewFlags.drawDummies = settings->getBool("Scene", "draw_dummies", false);
+	this->m_previewFlags.drawMeshes = settings->getBool("Scene", "draw_meshes", true);
+	this->m_previewFlags.drawBones = settings->getBool("Scene", "draw_bones", true);
+	this->m_previewFlags.drawMorphemeBones = settings->getBool("Scene", "draw_morpheme_bones", false);
+	this->m_previewFlags.drawBoundingBoxes = settings->getBool("Scene", "draw_bounding_boxes", false);
+	this->m_previewFlags.drawModelPosition = settings->getBool("Scene", "draw_model_position", false);
+	this->m_previewFlags.enableRootMotion = settings->getBool("Scene", "enable_root_motion", true);
+	this->m_previewFlags.displayMode = (DisplayMode)settings->getInt("Scene", "model_disp_mode", 0);
 
 	this->m_timeActEditor->setTimeCodeFormat((TrackEditor::TimeCodeFormat)settings->getInt("TimeActEditor", "time_code_format", 0));
 	this->m_eventTrackEditor->setTimeCodeFormat((TrackEditor::TimeCodeFormat)settings->getInt("EventTrackEditor", "time_code_format", 0));
@@ -1243,6 +1104,8 @@ void MorphemeEditorApp::loadSettings()
 
 void MorphemeEditorApp::saveSettings()
 {
+	g_appLog->debugMessage(MsgLevel_Info, "Saving application settings\n");
+
 	RINI* settings = RINI::open("Data\\res\\settings.ini");
 
 	if (settings == nullptr)
@@ -1253,10 +1116,14 @@ void MorphemeEditorApp::saveSettings()
 	settings->setBool("Export", "compression_use_source_sample_frequency", this->m_exportSettings.useSourceSampleFrequency);
 	settings->setInt("Export", "compression_sample_frequency", this->m_exportSettings.sampleFrequency);
 
-	settings->setBool("ModelViewer", "draw_dummies", this->m_previewFlags.drawDummies);
-	settings->setBool("ModelViewer", "draw_meshes", this->m_previewFlags.drawMeshes);
-	settings->setBool("ModelViewer", "draw_bones", this->m_previewFlags.drawBones);
-	settings->setInt("ModelViewer", "model_disp_mode", this->m_previewFlags.displayMode);
+	settings->setBool("Scene", "draw_dummies", this->m_previewFlags.drawDummies);
+	settings->setBool("Scene", "draw_meshes", this->m_previewFlags.drawMeshes);
+	settings->setBool("Scene", "draw_bones", this->m_previewFlags.drawBones);
+	settings->setBool("Scene", "draw_morpheme_bones", this->m_previewFlags.drawMorphemeBones);
+	settings->setBool("Scene", "draw_bounding_boxes", this->m_previewFlags.drawBoundingBoxes);
+	settings->setBool("Scene", "draw_model_position", this->m_previewFlags.drawModelPosition);
+	settings->setBool("Scene", "enable_root_motion", this->m_previewFlags.enableRootMotion);
+	settings->setInt("Scene", "model_disp_mode", this->m_previewFlags.displayMode);
 
 	settings->setInt("TimeActEditor", "time_code_format", this->m_timeActEditor->getTimeCodeFormat());
 	settings->setInt("EventTrackEditor", "time_code_format", this->m_eventTrackEditor->getTimeCodeFormat());
@@ -1268,10 +1135,12 @@ void MorphemeEditorApp::saveSettings()
 
 void MorphemeEditorApp::loadPlayerModelPreset()
 {
+	g_appLog->debugMessage(MsgLevel_Info, "Loading player model preset\n");
+
 	this->m_playerModelPreset = PlayerModelPreset::loadFromFile("Data\\res\\c0001.ini");
 
 	if (this->m_playerModelPreset == nullptr)
-		g_appLog->panicMessage("Failed to read player model preset at Data\\res\\c0001.ini\n");
+		INVOKE_PANIC("Failed to read player model preset at Data\\res\\c0001.ini\n");
 }
 
 void MorphemeEditorApp::savePlayerModelPreset()
@@ -1327,6 +1196,10 @@ void MorphemeEditorApp::loadFile()
 					{
 						std::filesystem::path filepath = std::wstring(pszFilePath);
 
+						this->m_loadedFilePath = filepath;
+
+						g_guiManager->clearSearchQueryWindow();
+
 						if (this->m_character)
 							this->m_character->destroy();
 
@@ -1336,12 +1209,15 @@ void MorphemeEditorApp::loadFile()
 						if (this->m_timeActEditor)
 							this->m_timeActEditor->reset();
 
+						if (this->m_nodeEditor)
+							this->m_nodeEditor->reset();
+
 						this->m_timeActFileList.clear();
 
 						this->m_gamePath = utils::findGamePath(filepath);
 
 						if (filepath.extension() == ".nmb")
-							this->m_character = Character::createFromNmb(this->m_timeActFileList, RString::toNarrow(filepath).c_str(), false);
+							this->m_character = Character::createFromMorphemeBundle(this->m_timeActFileList, RString::toNarrow(filepath).c_str(), m_morphemeNetworkFlags.simulateNetwork);
 						else if (filepath.extension() == ".tae")
 							this->m_character = Character::createFromTimeAct(RString::toNarrow(filepath).c_str());
 
@@ -1355,6 +1231,19 @@ void MorphemeEditorApp::loadFile()
 
 						this->m_camera->setOffset(Vector3::Zero);
 						this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
+
+						MorphemeNetworkInspector* inspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
+						CharacterMotionCtrlBase* motionCtrl = this->m_character->getCharacterMotionCtrl();
+
+						try
+						{
+							if (inspector)
+								inspector->loadNetwork(motionCtrl->getNetworkDef(), motionCtrl->getAnimFileLookUpTable());
+						}
+						catch (const std::exception& e)
+						{
+							//g_appLog->alertMessage(MsgLevel_Error, "Failed to load morpheme network: %s\n", e.what());
+						}
 					}
 					pItem->Release();
 				}
@@ -1364,6 +1253,52 @@ void MorphemeEditorApp::loadFile()
 			pFileOpen->Release();
 		}
 		CoUninitialize();
+	}
+}
+
+void MorphemeEditorApp::reloadFile()
+{
+	if (this->m_character)
+	{
+		std::filesystem::path filepath = this->m_loadedFilePath;
+
+		g_guiManager->clearSearchQueryWindow();
+
+		this->m_character->destroy();
+		this->m_character = nullptr;
+
+		if (this->m_eventTrackEditor)
+			this->m_eventTrackEditor->reset();
+
+		if (this->m_timeActEditor)
+			this->m_timeActEditor->reset();
+
+		if (this->m_nodeEditor)
+			this->m_nodeEditor->reset();
+
+		this->m_timeActFileList.clear();
+
+		if (filepath.extension() == ".nmb")
+			this->m_character = Character::createFromMorphemeBundle(this->m_timeActFileList, RString::toNarrow(filepath).c_str(), m_morphemeNetworkFlags.simulateNetwork);
+		else if (filepath.extension() == ".tae")
+			this->m_character = Character::createFromTimeAct(RString::toNarrow(filepath).c_str());
+
+		this->m_animPlayer->setCharacter(this->m_character);
+		this->m_camera->setOffset(Vector3::Zero);
+		this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
+
+		MorphemeNetworkInspector* inspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
+		CharacterMotionCtrlBase* motionCtrl = this->m_character->getCharacterMotionCtrl();
+
+		try
+		{
+			if (inspector)
+				inspector->loadNetwork(motionCtrl->getNetworkDef(), motionCtrl->getAnimFileLookUpTable());
+		}
+		catch (const std::exception& e)
+		{
+			g_appLog->alertMessage(MsgLevel_Error, "Failed to load morpheme network: %s\n", e.what());
+		}
 	}
 }
 
@@ -1449,7 +1384,7 @@ bool MorphemeEditorApp::exportTimeAct(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1457,16 +1392,17 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 {
 	try
 	{
-		if (this->m_character->getMorphemeCharacter() == nullptr)
+		MorphemeCharacterDef* characterDef = this->m_character->getCharacterMotionCtrl()->getMorphemeCharacterDef();
+
+		if (characterDef == nullptr)
 			return false;
 
 		std::filesystem::current_path(path);
 
-		MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
 		std::wstring chrName = this->m_character->getCharacterName();
 
 		if (characterDef == nullptr)
-			throw("characterDef was nullptr\n");
+			INVOKE_PANIC("characterDef was nullptr\n");
 
 		g_workerThread.load()->addProcess("Export morpheme bundles", 5);
 		g_workerThread.load()->setProcessStepName("Exporting character controllers");
@@ -1571,11 +1507,16 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 
 		MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
-#ifdef EXPORT_DEBUG_NETWORK_INFO
 		dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
-		dumpNetworkNodes(netDef, animLibraryExport, L"nodes.xml");
+#ifdef EXPORT_DEBUG_NETWORK_INFO
+		dumpControlParametersUsageData(netDef, L"CPConnections.xml");
 		dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
 		dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
+
+		MorphemeNetworkInspector* networkInspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
+
+		if (networkInspector)
+			networkInspector->dumpNetworkToFile(L"network.layout", netDef);
 #endif // EXPORT_DEBUG_NETWORK_INFO
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for %ws (%ws):\n", chrName.c_str(), networkFilename);
@@ -1594,7 +1535,7 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1654,7 +1595,7 @@ bool MorphemeEditorApp::exportAll(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1705,7 +1646,7 @@ bool MorphemeEditorApp::exportAndProcess(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1713,17 +1654,17 @@ bool MorphemeEditorApp::exportAnimations(std::wstring path)
 {
 	try
 	{
-		MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
+		CharacterMotionCtrlAnimPreview* motionCtrl = this->m_character->getCharacterMotionCtrl();
 
-		const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
-		const int numAnims = characterDef->getNumAnims(animSetIdx);
+		const int animSetIdx = motionCtrl->getNetwork()->getActiveAnimSetIndex();
+		const int numAnims = motionCtrl->getNumAnimsInAnimSet(animSetIdx);
 
 		g_workerThread.load()->addProcess("Exporting animations", numAnims);
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting animations:\n");
 
 		for (size_t i = 0; i < numAnims; i++)
 		{
-			std::string animName = RString::removeExtension(characterDef->getAnimationById(animSetIdx, i)->getAnimName());
+			std::string animName = RString::removeExtension(motionCtrl->getAnimationById(animSetIdx, i)->getAnimName());
 			g_workerThread.load()->setProcessStepName(animName);
 
 			this->exportAnimation(path, animSetIdx, i);
@@ -1735,7 +1676,7 @@ bool MorphemeEditorApp::exportAnimations(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1743,10 +1684,10 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 {
 	try
 	{
-		MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
+		CharacterMotionCtrlAnimPreview* motionCtrl = this->m_character->getCharacterMotionCtrl();
 
-		const int animSetIdx = this->m_character->getMorphemeNetwork()->getActiveAnimSetIndex();
-		const int numAnims = characterDef->getNumAnims(animSetIdx);
+		const int animSetIdx = motionCtrl->getNetwork()->getActiveAnimSetIndex();
+		const int numAnims = motionCtrl->getNumAnimsInAnimSet(animSetIdx);
 
 		g_workerThread.load()->addProcess("Exporting anim markup", numAnims);
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting animation markups:\n");
@@ -1754,7 +1695,7 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 		std::vector<ME::EventTrackExport*> exportedTracks;
 		for (size_t i = 0; i < numAnims; i++)
 		{
-			std::string animName = RString::removeExtension(characterDef->getAnimationById(animSetIdx, i)->getAnimName());
+			std::string animName = RString::removeExtension(motionCtrl->getAnimationById(animSetIdx, i)->getAnimName());
 			g_workerThread.load()->setProcessStepName(animName);
 
 			this->exportAnimMarkup(path, animSetIdx, i, exportedTracks);
@@ -1766,7 +1707,7 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1815,7 +1756,7 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1845,7 +1786,7 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -1885,7 +1826,9 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 
 		std::string assetCompilerCommand = assetCompilerName + " " + "-successCode 1 -failureCode -1" + " " + assetPath + " " + baseDir + " " + cacheDir + " " + outputDir + " " + logFile + " " + errFile;
 
+#ifdef DEBUG
 		exportAssetCompilerCommand(assetCompilerCommand.c_str(), path + L"\\assetCompilerCommand.txt");
+#endif
 
 		g_appLog->debugMessage(MsgLevel_Info, "Invoking asset compiler with command %s\n", assetCompilerCommand.c_str());
 
@@ -1928,7 +1871,7 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 	}
 	catch (const std::exception& e)
 	{
-		g_appLog->panicMessage(e.what());
+		INVOKE_PANIC(e.what());
 	}
 }
 
@@ -2019,12 +1962,12 @@ bool MorphemeEditorApp::exportAnimation(std::wstring path, int animSetIdx, int a
 
 bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int animId, std::vector<ME::EventTrackExport*>& exportedTracks)
 {
-	MorphemeCharacterDef* characterDef = this->m_character->getMorphemeCharacterDef();
+	CharacterMotionCtrlAnimPreview* motionCtrl = this->m_character->getCharacterMotionCtrl();
 	
-	if (characterDef == nullptr)
-		throw("characterDef was nullptr\n");
+	if (motionCtrl == nullptr)
+		INVOKE_PANIC("characterMotionCtrl was nullptr\n");
 
-	AnimObject* anim = characterDef->getAnimationById(animSetIdx, animId);
+	AnimObject* anim = motionCtrl->getAnimationById(animSetIdx, animId);
 
 	ME::TakeListXML* takeListXML = anim->getTakeList();
 	std::string animName = RString::removeExtension(anim->getAnimName());
@@ -2091,4 +2034,8 @@ void MorphemeEditorApp::exportTaeTemplateXML()
 
 	templateXML->setDstFileName("Export\\TimeActTemplate.xml");
 	templateXML->save();
+}
+
+void MorphemeEditorApp::createTestEditorProject()
+{
 }

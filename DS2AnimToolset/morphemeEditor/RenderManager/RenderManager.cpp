@@ -15,9 +15,12 @@ RenderManager::RenderManager()
     this->m_device = nullptr;
     this->m_deviceContext = nullptr;
     this->m_renderTargetView = nullptr;
+	this->m_upAxis = Vector3::UnitY;
 
     this->m_height = 1920;
     this->m_width = 1080;
+
+	this->m_settings.gridScale = 1000.f;
 }
 
 RenderManager::~RenderManager()
@@ -77,34 +80,20 @@ void RenderManager::initialise(HWND hwnd)
     m_physicalEffect->SetVertexColorEnabled(true);
     m_physicalEffect->SetLightingEnabled(true);
 
+    m_physicalEffect->EnableDefaultLighting();
+
     m_physicalEffect->SetAmbientLightColor(Colors::White);
 
-    m_physicalEffect->SetDiffuseColor(Vector4(0.5f, 0.5f, 0.5f, 1.f));
-    m_physicalEffect->SetSpecularColor(Vector4(0.04f, 0.04f, 0.04f, 1.f));
-    m_physicalEffect->SetSpecularPower(32.f);
-
-    m_physicalEffect->SetLightEnabled(0, true);
-    m_physicalEffect->SetLightDirection(0, Vector3(0.577f, -0.577f, -0.577f));
-    m_physicalEffect->SetLightDiffuseColor(0, Colors::White);
-    m_physicalEffect->SetLightSpecularColor(0, Colors::White);
-
-    m_physicalEffect->SetLightEnabled(1, true);
-    m_physicalEffect->SetLightDirection(1, Vector3(-0.577f, -0.577f, 0.577f));
-    m_physicalEffect->SetLightDiffuseColor(1, Colors::Gray);
-    m_physicalEffect->SetLightSpecularColor(1, Colors::Gray);
-
-    m_physicalEffect->SetLightEnabled(2, true);
-    m_physicalEffect->SetLightDirection(2, Vector3(0.0f, 0.577f, -0.577f));
-    m_physicalEffect->SetLightDiffuseColor(2, Colors::White);
-    m_physicalEffect->SetLightSpecularColor(2, Colors::White);
-
+    m_physicalEffect->SetDiffuseColor(Colors::Gray);
+	m_physicalEffect->SetSpecularColor(Colors::Gray);
+    
     DX::ThrowIfFailed(
         CreateInputLayoutFromEffect<VertexPositionNormalColor>(this->m_device, m_physicalEffect.get(),
             m_physicalInputLayout.ReleaseAndGetAddressOf())
     );
 
     m_view = Matrix::CreateLookAt(Vector3(2.f, 2.f, 2.f),
-        Vector3::Zero, Vector3::UnitY);
+        Vector3::Zero, m_upAxis);
     m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f,
         float(this->m_width) / float(this->m_height), 0.1f, 10.f);
     m_origin = Matrix::Identity;
@@ -193,8 +182,8 @@ void RenderManager::createResources()
     const DXGI_FORMAT textureFmt = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
     D3D11_TEXTURE2D_DESC textureDescOffscren;
-    textureDescOffscren.Width = m_width;
-    textureDescOffscren.Height = m_height;
+    textureDescOffscren.Width = this->m_width;
+    textureDescOffscren.Height = this->m_height;
     textureDescOffscren.MipLevels = 1;
     textureDescOffscren.ArraySize = 1;
     textureDescOffscren.Format = textureFmt;
@@ -208,12 +197,13 @@ void RenderManager::createResources()
     m_device->CreateTexture2D(&textureDescOffscren, nullptr, &this->m_offScreenRenderTarget);
 
     D3D11_TEXTURE2D_DESC textureDesc;
-    textureDesc.Width = m_width;
-    textureDesc.Height = m_height;
+    textureDesc.Width = this->m_width;
+    textureDesc.Height = this->m_height;
     textureDesc.MipLevels = 1;
     textureDesc.ArraySize = 1;
     textureDesc.Format = textureFmt;
-    textureDesc.SampleDesc.Count = 1;
+    textureDesc.SampleDesc.Count = msaaCount;
+    textureDesc.SampleDesc.Quality = msaaQuality;
     textureDesc.Usage = D3D11_USAGE_DEFAULT;
     textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
     textureDesc.CPUAccessFlags = 0;
@@ -258,14 +248,9 @@ void RenderManager::createResources()
 void RenderManager::update(float dt)
 {
     if (!this->m_initialised)
-        throw("Called update() without calling initialise() first\n");
+        throw("Called RenderManager::update() without calling RenderManager::initialise() first\n");
 
     this->m_dt = dt;
-
-    Camera* camera = MorphemeEditorApp::getInstance()->getCamera();
-
-    this->m_view = camera->getViewMatrix();
-    this->m_proj = camera->getProjectionMatrix();
 
     this->m_texts.clear();
 
@@ -289,6 +274,11 @@ void RenderManager::clear()
 
 void RenderManager::render()
 {
+    Camera* camera = MorphemeEditorApp::getInstance()->getCamera();
+
+    this->m_view = camera->getViewMatrix();
+    this->m_proj = camera->getProjectionMatrix();
+
     this->clear();
 
     if (this->m_renderTargetView)
@@ -308,7 +298,9 @@ void RenderManager::render()
         DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(this->m_deviceContext);
         prim.Begin();
 
-        DX::DrawGrid(&prim, this->m_settings.gridScale * Vector3::UnitX, this->m_settings.gridScale * Vector3::UnitZ, Vector3::Zero, 100, 100, Colors::Gray);
+		Vector3 gridPosition = Vector3::Zero;
+
+        DX::DrawGrid(&prim, this->m_settings.gridScale * Vector3::UnitX, this->m_settings.gridScale * Vector3::UnitZ, Vector3::Zero, this->m_settings.gridScale, this->m_settings.gridScale, Colors::Gray);
         DX::DrawOriginMarker(&prim, Matrix::Identity, 0.5f, Colors::DarkCyan);
 
         prim.End();
@@ -320,8 +312,24 @@ void RenderManager::render()
 
         this->m_sprite->Begin();
 
-        std::string frametime = RString::floatToString(this->m_dt) + " ms";
-        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), frametime.c_str(), Vector2(10, 40), 0, 0.5f, Colors::White, TextFlags_Shadow);
+#ifdef _DEBUG
+        std::string fps = "FPS: " + RString::floatToString(1.f / this->m_dt);
+        std::string frametime = "Frametime: " + RString::floatToString(this->m_dt * 1000.f) + " ms";
+		std::string viewportSize = "Resolution: " + std::to_string(this->m_width) + "x" + std::to_string(this->m_height);
+
+		const Vector2 textOffset = Vector2(0, 15);
+		const Vector2 basePosition(0, 0);
+		Vector2 textPosition = basePosition;
+
+        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), viewportSize.c_str(), textPosition, 0, 0.5f, Colors::White, TextFlags_Shadow);
+        textPosition += textOffset;
+
+        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), fps.c_str(), textPosition, 0, 0.5f, Colors::White, TextFlags_Shadow);
+		textPosition += textOffset;
+
+        DX::AddOverlayText(this->m_sprite.get(), this->m_font.get(), frametime.c_str(), textPosition, 0, 0.5f, Colors::White, TextFlags_Shadow);
+		textPosition += textOffset;
+#endif
 
         Camera* camera = MorphemeEditorApp::getInstance()->getCamera();
 
@@ -389,6 +397,7 @@ bool RenderManager::createD3DDevice()
     sd.BufferDesc.Width = 0;
     sd.BufferDesc.Height = 0;
     sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
     sd.BufferDesc.RefreshRate.Numerator = 60;
     sd.BufferDesc.RefreshRate.Denominator = 1;
     sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
@@ -434,7 +443,10 @@ void RenderManager::createGuiRenderTarget()
 void RenderManager::clearGuiRenderTarget()
 {
     if (this->m_guiRenderTargetView)
-        this->m_guiRenderTargetView->Release(); this->m_guiRenderTargetView = nullptr;
+    {
+        this->m_guiRenderTargetView->Release(); 
+        this->m_guiRenderTargetView = nullptr;
+    }
 }
 
 void RenderManager::applyDebugEffect(DirectX::SimpleMath::Matrix world)
@@ -466,6 +478,19 @@ void RenderManager::setInputLayout(InputLayoutType type)
     default:
         break;
     }
+}
+
+float RenderManager::getDpiScale() const
+{
+	UINT dpi = GetDpiForWindow(this->m_window);
+	return static_cast<float>(dpi) / 96.f;
+}
+
+void RenderManager::getPhysicalResolution(UINT& width, UINT& height) const
+{
+	const float dpiScale = this->getDpiScale();
+	width = static_cast<UINT>(this->m_width * dpiScale);
+	height = static_cast<UINT>(this->m_height * dpiScale);
 }
 
 void RenderManager::loadSettings()

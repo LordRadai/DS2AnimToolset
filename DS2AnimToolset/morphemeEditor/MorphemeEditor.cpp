@@ -10,10 +10,11 @@
 #include "WorkerThread/WorkerThread.h"
 #include "RCore.h"
 
-static UINT g_ResizeWidth = 0, g_ResizeHeight = 0;
-
 // Forward declarations of helper functions
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+// Forward declare message handler from imgui_impl_win32.cpp
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 std::atomic<WorkerThread*> g_workerThread;
 MsgLevel g_logLevel = MsgLevel_Debug;
@@ -21,120 +22,75 @@ TimeAct::TaeTemplate* g_taeTemplate = nullptr;
 fbxsdk::FbxManager* g_pFbxManager = nullptr;
 RLog* g_appLog;
 
+MorphemeEditorApp* g_morphemeEditorApp;
+GuiManager* g_guiManager;
+RenderManager* g_renderManager;
+
 // Main code
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
     _In_ LPWSTR    lpCmdLine,
     _In_ int       nCmdShow)
 {
-    MorphemeEditorApp* morphemeEditorApp = MorphemeEditorApp::getInstance();
-    GuiManager* guiManager = GuiManager::getInstance();
-    RenderManager* renderManager = RenderManager::getInstance();
-    g_workerThread.store(WorkerThread::getInstance());
-
-    DX::StepTimer timer;
-    //timer.SetFixedTimeStep(true);
-    //timer.SetTargetElapsedSeconds(1.f / 60.f);
-
-    g_appLog = new RLog(MsgLevel_Debug, "morphemeEditor.log", APPNAME_A);
-
-    // Create application window
-    //ImGui_ImplWin32_EnableDpiAwareness();
-    WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, hInstance, LoadIcon(hInstance, MAKEINTRESOURCE(IDC_ICON)), LoadCursor(nullptr, IDC_ARROW), nullptr, nullptr, MAKEINTRESOURCEW(IDC_ICON),  LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SMALL)) };
-    ::RegisterClassExW(&wc);
-
-    HWND hwnd = ::CreateWindowW(wc.lpszClassName, APPNAME_W, WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
-
-#ifdef _CONSOLE
-    AllocConsole();
-
-    FILE* fDummy;
-    freopen_s(&fDummy, "CONOUT$", "w", stdout);
-    freopen_s(&fDummy, "CONOUT$", "w", stderr);
-    freopen_s(&fDummy, "CONIN$", "r", stdin);
-    std::cout.clear();
-    std::clog.clear();
-    std::cerr.clear();
-    std::cin.clear();
+#ifdef _DEBUG
+        NET_LOG_ADD_PRIORITY_RANGE(NMP::LOG_MIN_PRIORITY, NMP::LOG_PRIORITY_ALWAYS);
 #endif
+//    try
+//    {
+        g_morphemeEditorApp = MorphemeEditorApp::getInstance();
+        g_guiManager = GuiManager::getInstance();
+        g_renderManager = RenderManager::getInstance();
+        g_workerThread.store(WorkerThread::getInstance());
 
-    // Show the window
-    ::ShowWindow(hwnd, SW_SHOWDEFAULT);
-    ::UpdateWindow(hwnd);
+        DX::StepTimer timer;
+        //timer.SetFixedTimeStep(true);
+        //timer.SetTargetElapsedSeconds(1.f / 60.f);
 
-    g_appLog->debugMessage(MsgLevel_Info, "Application startup\n");
+        g_appLog = new RLog(MsgLevel_Debug, "morphemeEditor.log", "MorphemeEditor Console");
 
-    try
-    {
+#ifdef _DEBUG
+		RDebug::setPanicMode(PanicMode_InvokeDebugger);
+#else
+		RDebug::setPanicMode(PanicMode_Throw);
+#endif
+        // Create application window
+        ImGui_ImplWin32_EnableDpiAwareness();
+        WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, hInstance, LoadIcon(hInstance, MAKEINTRESOURCE(IDC_ICON)), LoadCursor(nullptr, IDC_ARROW), nullptr, nullptr, MAKEINTRESOURCEW(IDC_ICON),  LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SMALL)) };
+        ::RegisterClassExW(&wc);
+
+        HWND hwnd = ::CreateWindowW(wc.lpszClassName, APPNAME, WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
+
+        // Show the window
+        ::ShowWindow(hwnd, SW_SHOWDEFAULT);
+        ::UpdateWindow(hwnd);
+
+        g_appLog->debugMessage(MsgLevel_Info, "Application startup\n");
+
         g_appLog->debugMessage(MsgLevel_Info, "Loading TimeAct template\n");
-
         g_taeTemplate = TimeAct::TaeTemplate::load(L"Data\\res\\TimeActTemplate.xml");
-    }
-    catch (const std::exception& e)
-    {
-        g_appLog->alertMessage(MsgLevel_Error, e.what());
-    }
 
-    try
-    {
         g_appLog->debugMessage(MsgLevel_Info, "Initialising application core module\n");
-        morphemeEditorApp->initialise();
-    }
-    catch (const std::exception& e)
-    {
-        morphemeEditorApp->shutdown();
-        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+        g_morphemeEditorApp->initialise();
 
-        g_appLog->panicMessage(e.what());
-
-        return 1;
-    }
-
-    try
-    {
         g_appLog->debugMessage(MsgLevel_Info, "Initialising rendering module\n");
+        g_renderManager->initialise(hwnd);
 
-        renderManager->initialise(hwnd);
-    }
-    catch (const std::exception& e)
-    {
-        renderManager->shutdown();
-        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
-
-        g_appLog->panicMessage(e.what());
-
-        return 1;
-    }
-
-    try
-    {
         g_appLog->debugMessage(MsgLevel_Info, "Initialising GUI module\n");
-        guiManager->initialise(hwnd, renderManager->getDeviceContext(), renderManager->getDevice());
-    }
-    catch (const std::exception& e)
-    {
-        ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
+        g_guiManager->initialise(hwnd, g_renderManager->getDeviceContext(), g_renderManager->getDevice());
 
-        g_appLog->panicMessage(e.what());
+        g_appLog->debugMessage(MsgLevel_Info, "Creating FBX Manager\n");
+        g_pFbxManager = FbxManager::Create();
 
-        return 1;
-    }
+        if (!g_pFbxManager)
+            INVOKE_PANIC("Unable to create FBX Manager");
 
-    g_appLog->debugMessage(MsgLevel_Info, "Creating FBX Manager\n");
-    g_pFbxManager = FbxManager::Create();
-
-    // Main loop
-    bool done = false;
-    while (!done)
-    {
-        try
+        // Main loop
+        bool done = false;
+        while (!done)
         {
-            // Handle window resize (we don't resize directly in the WM_SIZE handler)
-            if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
-            {
-                renderManager->resize(g_ResizeWidth, g_ResizeHeight);
-                g_ResizeWidth = g_ResizeHeight = 0;
-            }
+#ifdef _CONSOLE
+            g_appLog->setConsoleVisibility(true);
+#endif
 
             WorkerThread::getInstance()->update();
 
@@ -142,16 +98,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 {
                     const float dt = float(timer.GetElapsedSeconds());
 
-                    renderManager->update(dt);
-                    guiManager->update(dt);
-                    morphemeEditorApp->update(dt);
+                    g_renderManager->update(dt);
+                    g_guiManager->update(dt);
+                    g_morphemeEditorApp->update(dt);
                 });
 
             // Rendering
             if (timer.GetFrameCount() > 0)
-                renderManager->render();
+                g_renderManager->render();
 
-            renderManager->present();
+            g_renderManager->present();
 
             // Poll and handle messages (inputs, window resize, etc.)
             // See the WndProc() function below for our to dispatch events to the Win32 backend.
@@ -165,47 +121,34 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                     done = true;
             }
         }
-        catch (const std::exception& e)
-        {
-            g_appLog->panicMessage(e.what());
-        }
-    }
 
-    try
-    {
         WorkerThread::getInstance()->join();
 
         // Cleanup
         g_appLog->debugMessage(MsgLevel_Info, "Main app module shutdown\n");
-        morphemeEditorApp->shutdown();
+        g_morphemeEditorApp->shutdown();
 
         g_appLog->debugMessage(MsgLevel_Info, "Gui module shutdown\n");
-        guiManager->shutdown();
+        g_guiManager->shutdown();
 
         g_appLog->debugMessage(MsgLevel_Info, "Rendering module shutdown\n");
-        renderManager->shutdown();
+        g_renderManager->shutdown();
 
         ::DestroyWindow(hwnd);
         ::UnregisterClassW(wc.lpszClassName, wc.hInstance);
 
         g_appLog->debugMessage(MsgLevel_Info, "Exit\n");
-
         g_appLog->shutdown();
 
         delete g_appLog;
-    }
-    catch (const std::exception& e)
-    {
-        g_appLog->panicMessage(e.what());
+//    }
+//    catch (const std::exception& e)
+//    {
+//        MessageBoxA(nullptr, e.what(), "Exception thrown", MB_ICONERROR);
+//	}
 
-        return 1;
-    }
-    
     return 0;
 }
-
-// Forward declare message handler from imgui_impl_win32.cpp
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // Win32 message handler
 // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -219,12 +162,46 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
     switch (msg)
     {
+    case WM_DPICHANGED:
+    {
+        const RECT* const newWindowRect = reinterpret_cast<RECT*>(lParam);
+        SetWindowPos(hWnd, NULL,
+            newWindowRect->left,
+            newWindowRect->top,
+            newWindowRect->right - newWindowRect->left,
+            newWindowRect->bottom - newWindowRect->top,
+            SWP_NOZORDER | SWP_NOACTIVATE);
+
+        UINT dpi = HIWORD(wParam);
+        float dpiScale = dpi / 96.0f;
+
+        RECT rc;
+        GetClientRect(hWnd, &rc);
+        UINT logicalWidth = rc.right - rc.left;
+        UINT logicalHeight = rc.bottom - rc.top;
+
+        if (g_renderManager->isInitialised())
+            g_renderManager->resize(logicalWidth, logicalHeight);
+
+        return 0;
+    }
     case WM_SIZE:
+    {
         if (wParam == SIZE_MINIMIZED)
             return 0;
-        g_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
-        g_ResizeHeight = (UINT)HIWORD(lParam);
+
+        UINT resizeWidth = (UINT)LOWORD(lParam);
+        UINT resizeHeight = (UINT)HIWORD(lParam);
+
+		UINT physicalWidth;
+		UINT physicalHeight;
+		g_renderManager->getPhysicalResolution(physicalWidth, physicalHeight);
+
+        if (g_renderManager->isInitialised())
+            g_renderManager->resize(resizeWidth, resizeHeight);
+
         return 0;
+    }
     case WM_SYSCOMMAND:
         if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
             return 0;

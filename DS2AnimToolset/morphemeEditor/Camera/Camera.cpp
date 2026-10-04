@@ -1,7 +1,8 @@
-#include "Camera.h"
+﻿#include "Camera.h"
 #include "framework.h"
 #include "extern.h"
 #include "imgui/imgui.h"
+#include "RenderManager/RenderManager.h"
 
 using namespace DirectX;
 using namespace SimpleMath;
@@ -19,7 +20,9 @@ Camera::Camera()
 
 	this->m_angles = Vector3(XM_PI / 3, 0.4f, 0);
 	this->m_position = m_targetPos + Vector3(m_radius * cosf(m_angles.y) * cosf(m_angles.x), m_radius * sinf(m_angles.y), m_radius * cosf(m_angles.y) * sinf(m_angles.x));
-	this->m_lookAt = Vector3::UnitY;
+	this->m_upAxis = RenderManager::getInstance()->getUpAxis();
+
+	this->m_cameraView = kCamViewPerspective;
 
 	this->m_nearZ = 0.1f;
 	this->m_farZ = 5000.f;
@@ -31,33 +34,12 @@ Camera::Camera()
 
 	this->m_aspectRatio = this->m_width / this->m_height;
 
-	this->m_view = Matrix::CreateLookAt(this->m_position, this->m_targetPos, this->m_lookAt);
+	this->m_view = Matrix::CreateLookAt(this->m_position, this->m_targetPos, this->m_upAxis);
 	this->m_proj = Matrix::CreatePerspectiveFieldOfView(this->m_fov, this->m_aspectRatio, this->m_nearZ, this->m_farZ);
 }
 
 Camera::~Camera()
 {
-	this->m_registerInput = false;
-
-	this->m_targetPos = Vector3::Zero;
-	this->m_radius = 0;
-
-	this->m_angles = Vector3::Zero;
-	this->m_position = Vector3::Zero;
-	this->m_lookAt = Vector3::UnitY;
-
-	this->m_nearZ = 0;
-	this->m_farZ = 0;
-
-	this->m_fov = 0;
-
-	this->m_width = 0;
-	this->m_height = 0;
-
-	this->m_aspectRatio = this->m_width / this->m_height;
-
-	this->m_view = Matrix::Identity;
-	this->m_proj = Matrix::Identity;
 }
 
 void Camera::update(float width, float height, float delta_time)
@@ -66,12 +48,30 @@ void Camera::update(float width, float height, float delta_time)
 	this->m_height = height;
 	this->m_aspectRatio = this->m_width / this->m_height;
 
+	switch (this->m_cameraView)
+	{
+	case kCamViewFront:
+		this->m_angles = Vector3(XM_PIDIV2, 0.f, 0.f);
+		this->m_offset = Vector3::Zero;
+		break;
+	case kCamViewTop:
+		this->m_angles = Vector3(0.f, XM_PIDIV2, 0.f);
+		this->m_offset = Vector3::Zero;
+		break;
+	case kCamViewSide:
+		this->m_angles = Vector3(0.f, 0.f, 0.f);
+		this->m_offset = Vector3::Zero;
+		break;
+	default:
+		break;
+	}
+
 	this->handleInput(delta_time);
 
 	this->m_focus = this->m_targetPos + this->m_offset;
 	this->m_position = this->m_focus + Vector3(m_radius * cosf(m_angles.y) * cosf(m_angles.x), m_radius * sinf(m_angles.y), m_radius * cosf(m_angles.y) * sinf(m_angles.x));
 
-	this->m_view = Matrix::CreateLookAt(this->m_position, this->m_focus, this->m_lookAt);
+	this->m_view = Matrix::CreateLookAt(this->m_position, this->m_focus, this->m_upAxis);
 	this->m_proj = Matrix::CreatePerspectiveFieldOfView(this->m_fov, this->m_aspectRatio, this->m_nearZ, this->m_farZ);
 }
 
@@ -88,28 +88,41 @@ void Camera::handleInput(float delta_time)
 
 	ImGuiIO& io = ImGui::GetIO();
 
-	if (io.MouseDown[0])
+	if (this->m_cameraView == kCamViewPerspective)
 	{
-		Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
+		if (io.MouseDown[ImGuiMouseButton_Middle])
+		{
+			ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
 
-		this->updateTargetAngleXZ(this->m_settings->dragSpeed * drag_delta.y, delta_time);
-		this->updateTargetAngleY(this->m_settings->dragSpeed * drag_delta.x, delta_time);
+			Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
 
-		register_input = true;
-	}
+			this->updateVerticalAngle(this->m_settings->rotSpeed * drag_delta.y, delta_time);
+			this->updatePlaneAngle(this->m_settings->rotSpeed * drag_delta.x, delta_time);
 
-	if (io.MouseDown[1])
-	{
-		Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
+			register_input = true;
+		}
 
-		this->updateTargetPosition(Vector3(this->m_settings->dragSpeed * drag_delta.x, this->m_settings->dragSpeed * drag_delta.y, this->m_settings->dragSpeed * drag_delta.x), delta_time);
+		if (io.MouseDown[ImGuiMouseButton_Right])
+		{
+			ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
 
-		register_input = true;
+			Vector2 drag_delta(ImGui::GetMousePos().x - old_mouse_pos.x, ImGui::GetMousePos().y - old_mouse_pos.y);
+
+			this->updateTargetPosition(Vector3(this->m_settings->moveSpeed * drag_delta.x, this->m_settings->moveSpeed * drag_delta.y, this->m_settings->moveSpeed * drag_delta.x), delta_time);
+
+			register_input = true;
+		}
 	}
 
 	if ((io.MouseWheel > FLT_EPSILON) || (io.MouseWheel < -FLT_EPSILON))
 	{
-		this->updateRadius(-io.MouseWheel * this->m_settings->zoomSpeed, delta_time);
+		float zoomSpeed = this->m_settings->zoomSpeed;
+		float fastZoomSpeed = this->m_settings->zoomSpeed * 5.f;
+
+		if (io.KeyShift)
+			zoomSpeed = fastZoomSpeed;
+
+		this->updateRadius(-io.MouseWheel * zoomSpeed, delta_time);
 
 		register_input = true;
 	}
@@ -130,32 +143,52 @@ void Camera::updateRadius(float speed, float delta_time)
 		this->m_radius = maxRadius;
 }
 
-void Camera::updateTargetAngleXZ(float omega, float delta_time)
+void Camera::updateVerticalAngle(float omega, float delta_time)
 {
+	float deltaPitch = omega * delta_time;
+
 	if (this->m_settings->rotInvertY)
-		this->m_angles.y += -omega * delta_time;
-	else
-		this->m_angles.y += omega * delta_time;
+		deltaPitch = -deltaPitch;
 
-	if (this->m_angles.y > XM_PIDIV2)
-		this->m_angles.y = XM_PIDIV2 - FLT_EPSILON;
+	Vector3 offset = m_position - m_targetPos;
+	Quaternion pitchRot = Quaternion::CreateFromAxisAngle(m_upAxis, deltaPitch);
 
-	if (this->m_angles.y < -XM_PIDIV2)
-		this->m_angles.y = -XM_PIDIV2 + FLT_EPSILON;
+	offset = Vector3::Transform(offset, pitchRot);
+
+	m_position = m_targetPos + offset;
+
+	m_angles.y += deltaPitch;
+	float maxPitch = XM_PIDIV2 - FLT_EPSILON;
+
+	if (m_angles.y > maxPitch)
+		m_angles.y = maxPitch;
+
+	if (m_angles.y < -maxPitch)
+		m_angles.y = -maxPitch;
 }
 
-void Camera::updateTargetAngleY(float omega, float delta_time)
+void Camera::updatePlaneAngle(float omega, float delta_time)
 {
-	if (this->m_settings->rotInvertX)
-		this->m_angles.x += -omega * delta_time;
-	else
-		this->m_angles.x += omega * delta_time;
+	float deltaYaw = omega * delta_time;
 
-	if (this->m_angles.x > XM_2PI)
-		this->m_angles.x -= XM_2PI;
+	if (m_settings->rotInvertX)
+		deltaYaw = -deltaYaw;
 
-	if (this->m_angles.x < 0)
-		this->m_angles.x += XM_2PI;
+	Vector3 offset = m_position - m_targetPos;
+
+	Quaternion yawRot = Quaternion::CreateFromAxisAngle(m_upAxis, deltaYaw);
+
+	offset = Vector3::Transform(offset, yawRot);
+
+	m_position = m_targetPos + offset;
+
+	m_angles.x += deltaYaw;
+
+	if (m_angles.x > XM_2PI)
+		m_angles.x -= XM_2PI;
+
+	if (m_angles.x < 0)
+		m_angles.x += XM_2PI;
 }
 
 void Camera::updatePosition(DirectX::SimpleMath::Vector3 speed, float delta_time)

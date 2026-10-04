@@ -1,0 +1,40 @@
+#pragma once
+#include "NodeEditor/Editor/Entity/Entity.h"
+#include "NodeEditor/Editor/Pin/DataPin.h"
+
+namespace NodeEditor
+{
+	class ControlParameter : public Entity
+	{
+	public:
+		enum ParameterType
+		{
+			kParameterTypeFloat,
+			kParameterTypeInt,
+			kParameterTypeUInt,
+			kParameterTypeBool,
+			kParameterTypeVector3,
+			kParameterTypeVector4,
+			kParameterTypeQuaternion,
+
+			kNumParameterTypes
+		};
+	private:
+		int m_controlParameterID;
+		ParameterType m_parameterType;
+	public:
+		ControlParameter(Editor* editor, int id, const std::string& name, ParameterType parameterType);
+
+		virtual ~ControlParameter() override {}
+		virtual void draw() override {}
+		virtual const std::string getFullName() const override { return "ControlParameters|" + m_name; }
+
+		int getControlParameterID() const { return m_controlParameterID; }
+
+		ParameterType getParameterType() const { return m_parameterType; }
+		DataPin::DataType getDataType() const;
+
+		static const char* parameterTypeToString(ParameterType type);
+		static ParameterType stringToParameterType(const std::string& typeStr);
+	};
+}

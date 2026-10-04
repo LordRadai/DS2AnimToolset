@@ -34,7 +34,7 @@ namespace MD
 					return i;
 			}
 
-			g_appLog->panicMessage("Invalid up axis vector (%.3f, %.3f, %.3f)\n", upAxisVector[0], upAxisVector[1], upAxisVector[2]);
+			INVOKE_PANIC("Invalid up axis vector (%.3f, %.3f, %.3f)\n", upAxisVector[0], upAxisVector[1], upAxisVector[2]);
 
 			return -1;
 		}
@@ -159,27 +159,17 @@ namespace MD
 				sprintf_s(paramName, "UseBallJoints_%d", animSetIdx + 1);
 				nodeDataBlock->writeBool(hipsIKAnimSetDef->m_useBallJoints, paramName);
 
-				if (hipsIKAnimSetDef->m_useBallJoints)
-				{
-					sprintf_s(paramName, "LeftBallIndex_%d", animSetIdx + 1);
-					nodeDataBlock->writeInt(hipsIKAnimSetDef->m_leftLegIndex[3], paramName);
-				}
-				else
-				{
-					sprintf_s(paramName, "LeftAnkleIndex_%d", animSetIdx + 1);
-					nodeDataBlock->writeInt(hipsIKAnimSetDef->m_leftLegIndex[2], paramName);
-				}
+				sprintf_s(paramName, "LeftBallIndex_%d", animSetIdx + 1);
+				nodeDataBlock->writeInt(hipsIKAnimSetDef->m_leftLegIndex[3], paramName);
 
-				if (hipsIKAnimSetDef->m_useBallJoints)
-				{
-					sprintf_s(paramName, "RightBallIndex_%d", animSetIdx + 1);
-					nodeDataBlock->writeInt(hipsIKAnimSetDef->m_rightLegIndex[3], paramName);
-				}
-				else
-				{
-					sprintf_s(paramName, "RightAnkleIndex_%d", animSetIdx + 1);
-					nodeDataBlock->writeInt(hipsIKAnimSetDef->m_rightLegIndex[2], paramName);
-				}
+				sprintf_s(paramName, "LeftAnkleIndex_%d", animSetIdx + 1);
+				nodeDataBlock->writeInt(hipsIKAnimSetDef->m_leftLegIndex[2], paramName);
+
+				sprintf_s(paramName, "RightBallIndex_%d", animSetIdx + 1);
+				nodeDataBlock->writeInt(hipsIKAnimSetDef->m_rightLegIndex[3], paramName);
+
+				sprintf_s(paramName, "RightAnkleIndex_%d", animSetIdx + 1);
+				nodeDataBlock->writeInt(hipsIKAnimSetDef->m_rightLegIndex[2], paramName);
 			}
 
 			return nodeExportXML;
@@ -268,6 +258,18 @@ namespace MD
 
 				sprintf_s(paramName, "SnapToSourceDistance_%d", animSetIdx + 1);
 				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_snapToSourceDistance, paramName);
+
+				// Inverse of the asset compiler's conversion (NodeLockFootBuilder):
+				//   threshold = 1 + ln(1 - resistance) / 40, or 0 when resistance >= 1 - 1e-6
+				//   => resistance = 1 - exp((threshold - 1) * 40)
+				const float rescaleFactor = 40.0f;
+				const float threshold = hipsIKAnimSetDef->m_footPivotOffsetThreshold;
+				float footPivotResistance = 1.0f;
+				if (threshold > 0.0f)
+					footPivotResistance = NMP::clampValue(1.0f - expf((threshold - 1.0f) * rescaleFactor), 0.0f, 1.0f);
+
+				sprintf_s(paramName, "FootPivotResistance_%d", animSetIdx + 1);
+				nodeDataBlock->writeFloat(footPivotResistance, paramName);
 
 				sprintf_s(paramName, "AnkleLowerHeightBound_%d", animSetIdx + 1);
 				nodeDataBlock->writeFloat(hipsIKAnimSetDef->m_ankleLowerHeightBound, paramName);
@@ -443,13 +445,14 @@ namespace MD
 			//Sanity check because I'm not sure the struct definition for this attrib data is correct since the game uses a different version of it than the morpheme SDK
 			if ((twoBoneIKSetup->m_userControlledOrientation && 
 				(twoBoneIKSetup->m_useSpecifiedJointOrientation || (nodeDef->getInputCPConnectionSourceNodeID(1) != MR::INVALID_NODE_ID))))
-				g_appLog->panicMessage("Invalid TwoBoneIK setup attribute for node %d", nodeDef->getNodeID());
+				INVOKE_PANIC("Invalid TwoBoneIK setup attribute for node %d", nodeDef->getNodeID());
 
 			nodeDataBlock->writeBool(twoBoneIKSetup->m_assumeSimpleHierarchy, "AssumeSimpleHierarchy");
 			nodeDataBlock->writeBool(twoBoneIKSetup->m_keepEndEffOrientation, "KeepEndEffOrientation");
 			nodeDataBlock->writeBool(twoBoneIKSetup->m_updateTargetByDeltas, "UpdateTargetByDeltas");
 			nodeDataBlock->writeBool(twoBoneIKSetup->m_useSpecifiedJointAsTarget, "UseSpecifiedJointAsTarget");
 			nodeDataBlock->writeBool(twoBoneIKSetup->m_useSpecifiedJointOrientation, "UseSpecifiedJointOrientation");
+			nodeDataBlock->writeBool(twoBoneIKSetup->m_worldSpaceTarget, "WorldSpaceTarget");
 
 			CHAR paramName[256];
 			for (uint32_t animSetIndex = 0; animSetIndex < numAnimSets; animSetIndex++)
@@ -482,9 +485,9 @@ namespace MD
 
 				sprintf_s(paramName, "MidJointReferenceAxisX_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointReferenceAxis.x, paramName);
-				sprintf_s(paramName, "MidJointReferenceAxisX_%d", animSetIndex + 1);
+				sprintf_s(paramName, "MidJointReferenceAxisY_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointReferenceAxis.y, paramName);
-				sprintf_s(paramName, "MidJointReferenceAxisX_%d", animSetIndex + 1);
+				sprintf_s(paramName, "MidJointReferenceAxisZ_%d", animSetIndex + 1);
 				nodeDataBlock->writeFloat(twoBoneIKChain->m_midJointReferenceAxis.z, paramName);
 
 				sprintf_s(paramName, "EndJointIndex_%d", animSetIndex + 1);

@@ -5,6 +5,14 @@
 #include "RenderManager/RenderManager.h"
 #include "RCore.h"
 
+#define MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS 100
+
+Matrix g_nmToYUpAdjustMatrix = Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
+Matrix g_invertedNmToYUpAdjustMatrix = g_nmToYUpAdjustMatrix.Invert();
+Matrix g_flverToYUpAdjustMatrix = Matrix::CreateRotationY(DirectX::XM_PI);
+Matrix g_flverBoneAdjustMatrix = g_flverToYUpAdjustMatrix * Matrix::CreateReflection(Plane(Vector3::Right));
+Matrix g_flverMeshAdjustMatrix = g_flverToYUpAdjustMatrix * Matrix::CreateRotationX(DirectX::XM_PIDIV2);
+
 namespace
 {
 	int getMorphemeRigBoneIndexByFlverBoneIndex(MR::AnimRigDef* pRig, FlverModel* pFlverModel, int boneId)
@@ -24,69 +32,80 @@ namespace
 		return pFlverModel->getFlverBoneIndexByName(boneName.c_str());
 	}
 
-	Matrix getNmTrajectoryTransform(MR::AnimationSourceHandle* animHandle)
+	Matrix getAnimTrajectoryTransform(const MR::AnimationSourceHandle* animHandle)
 	{
-		NMP::Vector3 pos;
-		NMP::Quat rot;
+		NMP::Vector3 translation;
+		NMP::Quat rotation;
 
-		animHandle->getTrajectory(rot, pos);
+		animHandle->getTrajectory(rotation, translation);
 
-		float tmp = pos.z;
-		pos.z = pos.y;
-		pos.y = tmp;
-		pos.x = -pos.x;
-
-		Matrix translation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateTranslation(utils::NMDX::getDxVector(pos));
-		Matrix rotation = Matrix::CreateRotationX(-DirectX::XM_PIDIV2) * Matrix::CreateFromQuaternion(utils::NMDX::getDxQuat(rot));
-
-		return rotation * translation;
+		return utils::NMDX::getTransformMatrix(rotation, translation);
 	}
 
-	Matrix getAnimBoneTranform(const MR::AnimationSourceHandle* animHandle, int channelId)
+	Matrix getAnimTrajectoryAdjustedTransform(const MR::AnimationSourceHandle* animHandle)
 	{
-		return utils::NMDX::getTransformMatrix(animHandle->getChannelData()[channelId].m_quat, animHandle->getChannelData()[channelId].m_pos);
+		Matrix trajZUp = getAnimTrajectoryTransform(animHandle);
+		Matrix mConvertZUpToYUp = Matrix::CreateRotationX(DirectX::XM_PIDIV2);
+
+		return mConvertZUpToYUp * trajZUp * mConvertZUpToYUp.Invert();
 	}
 
-	Matrix computeNmAnimGlobalTransform(const MR::AnimationSourceHandle* animHandle, int channelId)
+	Matrix getNmRigTransform(const MR::AnimRigDef* rig, int idx)
+	{
+		return utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(idx), *rig->getBindPoseBonePos(idx));
+	}
+
+	Matrix getNmAnimBoneTransform(const MR::AnimationSourceHandle* animHandle, int idx)
+	{
+		return utils::NMDX::getTransformMatrix(animHandle->getChannelData()[idx].m_quat, animHandle->getChannelData()[idx].m_pos);
+	}
+
+	Vector3 getCfrVector3(cfr::cfr_vec3& vec3)
+	{
+		return Vector3(vec3.x, vec3.y, vec3.z);
+	}
+
+	void accumulateNmTransforms(std::vector<Matrix>& dstChannel, const MR::AnimationSourceHandle* animHandle, bool applyRootMotion)
 	{
 		const MR::AnimRigDef* rig = animHandle->getRig();
+		dstChannel.resize(rig->getNumBones());
 
-		DirectX::XMMATRIX boneLocalTransform = getAnimBoneTranform(animHandle, channelId);
-		int parentID = rig->getParentBoneIndex(channelId);
+		dstChannel[0] = g_nmToYUpAdjustMatrix;
 
-		while (parentID != -1)
+		if (applyRootMotion)
+			dstChannel[0] = getAnimTrajectoryTransform(animHandle) * g_nmToYUpAdjustMatrix;
+
+		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
-			boneLocalTransform *= getAnimBoneTranform(animHandle, parentID);
+			const int parentIndex = rig->getParentBoneIndex(i);
 
-			parentID = rig->getParentBoneIndex(parentID);
+			if (parentIndex > i) INVOKE_PANIC("Invalid bone hierarchy detected while accumulating Morpheme animation transforms.");
+
+			dstChannel[i] = getNmAnimBoneTransform(animHandle, i) * dstChannel[parentIndex];
 		}
-
-		boneLocalTransform *= Matrix::CreateRotationZ(DirectX::XM_PI);
-		boneLocalTransform *= Matrix::CreateRotationX(DirectX::XM_PIDIV2);
-
-		return boneLocalTransform;
 	}
 
-	Matrix computeNmBoneGlobalTransform(const MR::AnimRigDef* rig, int channelId)
+	void computeNmRigGlobalTransforms(std::vector<Matrix>& dstChannel, const MR::AnimRigDef* rig)
 	{
-		DirectX::XMMATRIX boneLocalTransform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(channelId), *rig->getBindPoseBonePos(channelId));
-		int parentIdx = rig->getParentBoneIndex(channelId);
+		dstChannel.resize(rig->getNumBones());
+		dstChannel[0] = getNmRigTransform(rig, 0) * g_nmToYUpAdjustMatrix;
 
-		while (parentIdx != -1)
+		for (size_t i = 1; i < rig->getNumBones(); i++)
 		{
-			boneLocalTransform *= utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(parentIdx), *rig->getBindPoseBonePos(parentIdx));
+			const int parentIndex = rig->getParentBoneIndex(i);
 
-			parentIdx = rig->getParentBoneIndex(parentIdx);
+			if (parentIndex > i)
+				INVOKE_PANIC("Invalid bone hierarchy detected while computing Morpheme rig transforms.");
+
+			dstChannel[i] = getNmRigTransform(rig, i) * dstChannel[parentIndex];
 		}
-
-		boneLocalTransform *= Matrix::CreateRotationZ(DirectX::XM_PI);
-		boneLocalTransform *= Matrix::CreateRotationX(DirectX::XM_PIDIV2);
-
-		return boneLocalTransform;
 	}
 
 	Matrix getFlverBoneTransform(cfr::FLVER2* flver, int bone_id)
 	{
+		if (bone_id >= flver->header.boneCount)
+			return Matrix::Identity;
+
 		Matrix transform = Matrix::CreateScale(flver->bones[bone_id].scale.x, flver->bones[bone_id].scale.y, flver->bones[bone_id].scale.z);
 		transform *= Matrix::CreateRotationX(flver->bones[bone_id].rot.x);
 		transform *= Matrix::CreateRotationZ(flver->bones[bone_id].rot.z);
@@ -96,116 +115,75 @@ namespace
 		return transform;
 	}
 
-	Matrix computeFlvBoneGlobalTransform(FLVER2* flv, int channelId)
+	void computeFlvBonesGlobalTransform(std::vector<Matrix>& dstPose, FLVER2* flv)
 	{
-		Matrix localTransform = getFlverBoneTransform(flv, channelId);
-
-		int parentIdx = flv->bones[channelId].parentIndex;
-
-		while (parentIdx != -1)
-		{
-			Matrix parentBoneTransform = getFlverBoneTransform(flv, parentIdx);
-
-			localTransform *= parentBoneTransform;
-
-			parentIdx = flv->bones[parentIdx].parentIndex;
-		}
-
-		localTransform *= Matrix::CreateRotationY(DirectX::XM_PI);
-		localTransform *= Matrix::CreateReflection(Plane(Vector3::Right));
-
-		return localTransform;
-	}
-
-	Matrix applyTransformToFlverBone(std::vector<Matrix> transforms, FLVER2* flv, int channelId)
-	{
-		Matrix localTransform = transforms[channelId] * getFlverBoneTransform(flv, channelId);
-
-		int parentIdx = flv->bones[channelId].parentIndex;
-
-		while (parentIdx != -1)
-		{
-			Matrix parentBoneTransform = transforms[parentIdx] * getFlverBoneTransform(flv, parentIdx);
-
-			localTransform *= parentBoneTransform;
-
-			parentIdx = flv->bones[parentIdx].parentIndex;
-		}
-
-		localTransform *= Matrix::CreateRotationY(DirectX::XM_PI);
-
-		return localTransform;
-	}
-
-	std::vector<Matrix> computeGlobalFlverRigTransforms(FLVER2* flver)
-	{
-		std::vector<Matrix> boneTransforms;
-		boneTransforms.reserve(flver->header.boneCount);
-
-		for (size_t i = 0; i < flver->header.boneCount; i++)
-			boneTransforms.push_back(computeFlvBoneGlobalTransform(flver, i));
-
-		return boneTransforms;
-	}
-
-	std::vector<Matrix> computeGlobalMorphemeRigTransforms(MR::AnimRigDef* rig)
-	{
-		std::vector<Matrix> boneTransforms;
-		boneTransforms.reserve(rig->getNumBones());
-
-		for (size_t i = 0; i < rig->getNumBones(); i++)
-			boneTransforms.push_back(computeNmBoneGlobalTransform(rig, i));
-
-		return boneTransforms;
-	}
-
-	std::vector<Matrix> computeGlobalTransforms(std::vector<Matrix> relativeTransforms, FLVER2* flv)
-	{
-		std::vector<Matrix> globalTransformedPos;
-		globalTransformedPos.reserve(flv->header.boneCount);
+		dstPose.resize(flv->header.boneCount);
 
 		for (size_t i = 0; i < flv->header.boneCount; i++)
-			globalTransformedPos.push_back(applyTransformToFlverBone(relativeTransforms, flv, i));
+		{
+			FLVER2::Bone& bone = flv->bones[i];
+			Matrix localTransform = getFlverBoneTransform(flv, i);
+			int parentIdx = bone.parentIndex;
 
-		return globalTransformedPos;
+			while (parentIdx != -1)
+			{
+				Matrix parentBoneTransform = getFlverBoneTransform(flv, parentIdx);
+				localTransform *= parentBoneTransform;
+
+				parentIdx = flv->bones[parentIdx].parentIndex;
+			}
+
+			dstPose[i] = localTransform * g_flverBoneAdjustMatrix;
+		}
 	}
 
-	Matrix getNmRelativeBindPose(const MR::AnimRigDef* rig, int idx)
+	void applyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix>& bindPose, const Matrix& transform, int boneID)
 	{
-		Matrix transform = utils::NMDX::getTransformMatrix(*rig->getBindPoseBoneQuat(idx), *rig->getBindPoseBonePos(idx));
-		transform *= Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
-		transform *= Matrix::CreateReflection(Plane(Vector3::Up));
+		// Compute this bone’s world transform relative to parent
+		Matrix local = bindPose[boneID];
+		Matrix world = local * transform;
 
-		return transform;
+		buffer[boneID] = world;
+
+		int siblingIndex = flv->bones[boneID].nextSiblingIndex;
+
+		while (siblingIndex != -1)
+		{
+			applyTransform(buffer, flv, bindPose, transform, siblingIndex);
+
+			int childIndex = flv->bones[boneID].childIndex;
+
+			if (childIndex != -1)
+				applyTransform(buffer, flv, bindPose, transform, childIndex);
+
+			siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
+		}
 	}
 
-	Matrix getNmRelativeTransform(MR::AnimationSourceHandle* animHandle, int idx)
+	void applyTwistTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix>& bindPose, const Matrix& transform, int boneID)
 	{
-		Matrix transform = utils::NMDX::getTransformMatrix(animHandle->getChannelData()[idx].m_quat, animHandle->getChannelData()[idx].m_pos);
-		transform *= Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
-		transform *= Matrix::CreateReflection(Plane(Vector3::Up));
+		// Compute this bone’s world transform relative to parent
+		Matrix local = bindPose[boneID];
+		Matrix world = local * transform;
 
-		return transform;
-	}
+		buffer[boneID] = world;
 
-	void applyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix> bindPose, Matrix transform, int boneID)
-	{
-		// Transform the bone
-		buffer[boneID] = bindPose[boneID] * transform;
-
-		// Transforms all the children of the current bone
 		int childIndex = flv->bones[boneID].childIndex;
 
-		if (childIndex != -1)
+		while (childIndex != -1)
 		{
-			buffer[childIndex] = bindPose[childIndex] * transform;
+			applyTwistTransform(buffer, flv, bindPose, transform, childIndex);
+
 			int siblingIndex = flv->bones[childIndex].nextSiblingIndex;
 
 			while (siblingIndex != -1)
 			{
-				buffer[siblingIndex] = bindPose[siblingIndex] * transform;
+				applyTwistTransform(buffer, flv, bindPose, transform, siblingIndex);
+
 				siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
 			}
+
+			childIndex = flv->bones[childIndex].nextSiblingIndex;
 		}
 	}
 }
@@ -229,6 +207,7 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 	this->m_meshVerticesTransforms.clear();
 
 	this->m_position = Matrix::Identity;
+
 	this->m_flver = new FLVER2(umem);
 
 	float focus_y = (this->m_flver->header.boundingBoxMax.y + this->m_flver->header.boundingBoxMin.y) / 2;
@@ -239,13 +218,28 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 
 	this->m_nmRig = rig;
 
+	this->m_settings.drawBoneInfluences = false;
+
 	g_appLog->debugMessage(MsgLevel_Info, "Creating bone maps:\n");
 
 	this->createFlverToMorphemeBoneMap();
 	this->createMorphemeToFlverBoneMap();
 
 	if (!this->initialise())
-		g_appLog->panicMessage("Flver model initialisation failed");
+		INVOKE_PANIC("Flver model initialisation failed");
+}
+
+FlverModel::FlverModel(MR::AnimRigDef* rig)
+{
+	this->m_loaded = false;
+	this->m_meshVerticesTransforms.clear();
+	this->m_position = Matrix::Identity;
+	this->m_flver = nullptr;
+	this->m_nmRig = rig;
+	this->m_settings.drawBoneInfluences = false;
+
+	if (!this->initialise())
+		INVOKE_PANIC("Flver model initialisation failed");
 }
 
 FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
@@ -257,35 +251,31 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 	if (bnd == nullptr)
 		return nullptr;
 
-	bool found = false;
+	BND4::BndFile* flverFile = bnd->getFirstFileWithExtension(".flv");
 
-	for (size_t i = 0; i < bnd->getNumFiles(); i++)
+	if (flverFile)
 	{
-		std::filesystem::path name = bnd->getFile(i)->name;
+		g_appLog->debugMessage(MsgLevel_Debug, "Loading model \"%ws\"\n", path.c_str());
 
-		if (name.extension().compare(".flv") == 0)
-		{
-			g_appLog->debugMessage(MsgLevel_Debug, "Loading model \"%ws\"\n", path.c_str());
+		UMEM* umem = uopenMem((char*)flverFile->data, flverFile->uncompressedSize);
 
-			UMEM* umem = uopenMem((char*)bnd->getFile(i)->data, bnd->getFile(i)->uncompressedSize);
-
-			model = new FlverModel(umem, rig);
-			model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
-			model->m_fileOrigin = path + L"\\" + name.c_str();
-
-			found = true;
-			break;
-		}
+		model = new FlverModel(umem, rig);
+		model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
+		model->m_fileOrigin = path + L"\\" + RString::toWide(flverFile->name.c_str());
 	}
-
-	if (!found)
-		g_appLog->debugMessage(MsgLevel_Error, "Could not find model %ws\n", path);
+	else
+		g_appLog->debugMessage(MsgLevel_Error, "Could not find a .flver file inside \"%ws\"\n", path);
 
 	bnd->destroy();
 
 	delete bnd;
 
 	return model;
+}
+
+FlverModel* FlverModel::createFromAnimRig(MR::AnimRigDef* rig)
+{
+	return new FlverModel(rig);
 }
 
 void FlverModel::destroy()
@@ -297,7 +287,7 @@ void FlverModel::destroy()
 }
 
 // Gets the vertices for the FLVER mesh at index idx 
-std::vector<Vector3> FlverModel::getFlverMeshVertices(int idx, bool flip)
+std::vector<Vector3> FlverModel::getFlverMeshVertices(int idx)
 {
 	std::vector<Vector3> vertices;
 
@@ -337,17 +327,10 @@ std::vector<Vector3> FlverModel::getFlverMeshVertices(int idx, bool flip)
 			int vertexIndex = facesetp->triList[j];
 
 			float x = mesh->vertexData->positions[(vertexIndex * 3) + 0];
-			float y = mesh->vertexData->positions[(vertexIndex * 3) + 2];
-			float z = mesh->vertexData->positions[(vertexIndex * 3) + 1];
+			float y = mesh->vertexData->positions[(vertexIndex * 3) + 1];
+			float z = mesh->vertexData->positions[(vertexIndex * 3) + 2];
 
-			Vector3 pos(x, y, z);
-
-			pos = Vector3::Transform(pos, Matrix::CreateRotationX(DirectX::XM_PIDIV2) * Matrix::CreateRotationY(DirectX::XM_PI));
-
-			if (!flip)
-				vertices.push_back(Vector3(pos.x, pos.y, pos.z));
-			else
-				vertices.push_back(Vector3(pos.x, pos.y, -pos.z));
+			vertices.push_back(Vector3::Transform(Vector3(x, y, z), g_flverMeshAdjustMatrix));
 		}
 	}
 
@@ -355,7 +338,7 @@ std::vector<Vector3> FlverModel::getFlverMeshVertices(int idx, bool flip)
 }
 
 // Gets the normals for the FLVER mesh at index idx 
-std::vector<Vector3> FlverModel::getFlverMeshNormals(int idx, bool flip)
+std::vector<Vector3> FlverModel::getFlverMeshNormals(int idx)
 {
 	std::vector<Vector3> normals;
 
@@ -395,13 +378,10 @@ std::vector<Vector3> FlverModel::getFlverMeshNormals(int idx, bool flip)
 			int vertexIndex = facesetp->triList[i];
 
 			float x = mesh->vertexData->normals[(vertexIndex * 3) + 0];
-			float y = mesh->vertexData->normals[(vertexIndex * 3) + 2];
-			float z = mesh->vertexData->normals[(vertexIndex * 3) + 1];
+			float y = mesh->vertexData->normals[(vertexIndex * 3) + 1];
+			float z = mesh->vertexData->normals[(vertexIndex * 3) + 2];
 
-			if (!flip)
-				normals.push_back(Vector3(x, y, z));
-			else
-				normals.push_back(Vector3(x, y, -z));
+			normals.push_back(Vector3::Transform(Vector3(x, y, z), g_flverMeshAdjustMatrix));
 		}
 	}
 
@@ -410,7 +390,7 @@ std::vector<Vector3> FlverModel::getFlverMeshNormals(int idx, bool flip)
 
 // Gets the tangents for the FLVER mesh at index idx 
 // WARNING! This data seems to be wrong, I do not advise you to inclide these when exporting)
-std::vector<Vector3> FlverModel::getFlverMeshTangents(int idx, bool flip)
+std::vector<Vector3> FlverModel::getFlverMeshTangents(int idx)
 {
 	std::vector<Vector3> tangents;
 
@@ -450,13 +430,10 @@ std::vector<Vector3> FlverModel::getFlverMeshTangents(int idx, bool flip)
 			int vertexIndex = facesetp->triList[i];
 
 			float x = mesh->vertexData->tangents[(vertexIndex * 3) + 0];
-			float y = mesh->vertexData->tangents[(vertexIndex * 3) + 2];
-			float z = mesh->vertexData->tangents[(vertexIndex * 3) + 1];
+			float y = mesh->vertexData->tangents[(vertexIndex * 3) + 1];
+			float z = mesh->vertexData->tangents[(vertexIndex * 3) + 2];
 
-			if (!flip)
-				tangents.push_back(Vector3(x, y, z));
-			else
-				tangents.push_back(Vector3(x, y, -z));
+			tangents.push_back(Vector3::Transform(Vector3(x, y, z), g_flverMeshAdjustMatrix));
 		}
 	}
 
@@ -465,7 +442,7 @@ std::vector<Vector3> FlverModel::getFlverMeshTangents(int idx, bool flip)
 
 // Gets the bitangents for the FLVER mesh at index idx 
 // WARNING! This data seems to be wrong, I do not advise you to inclide these when exporting)
-std::vector<Vector3> FlverModel::getFlverMeshBiTangents(int idx, bool flip)
+std::vector<Vector3> FlverModel::getFlverMeshBiTangents(int idx)
 {
 	std::vector<Vector3> bitangents;
 
@@ -505,13 +482,10 @@ std::vector<Vector3> FlverModel::getFlverMeshBiTangents(int idx, bool flip)
 			int vertexIndex = facesetp->triList[i];
 
 			float x = mesh->vertexData->bitangents[(vertexIndex * 3) + 0];
-			float y = mesh->vertexData->bitangents[(vertexIndex * 3) + 2];
-			float z = mesh->vertexData->bitangents[(vertexIndex * 3) + 1];
+			float y = mesh->vertexData->bitangents[(vertexIndex * 3) + 1];
+			float z = mesh->vertexData->bitangents[(vertexIndex * 3) + 2];
 
-			if (!flip)
-				bitangents.push_back(Vector3(x, y, z));
-			else
-				bitangents.push_back(Vector3(x, y, -z));
+			bitangents.push_back(Vector3::Transform(Vector3(x, y, z), g_flverMeshAdjustMatrix));
 		}
 	}
 
@@ -630,174 +604,79 @@ std::vector<FlverModel::SkinnedVertex> FlverModel::getBindPoseSkinnedVertices(in
 	return this->m_meshVerticesBindPoseTransforms[idx];
 }
 
-void FlverModel::validateSkinnedVertexData(FlverModel::SkinnedVertex& skinnedVertex)
+void FlverModel::normalizeSkinVertexData(FlverModel::SkinnedVertex& skinnedVertex)
 {
 	float totalWeight = 0.f;
-	for (size_t wt = 0; wt < 4; wt++)
-	{
-		const uint32_t morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(skinnedVertex.boneIndices[wt]);
+	for (size_t wt = 0; wt < 4; ++wt)
+		totalWeight += skinnedVertex.boneWeights[wt];
 
-		// Only factor in the bones that are present in the morpheme rig
-		if (morphemeBoneID != -1)
-			totalWeight += skinnedVertex.boneWeights[wt];
-		else
-		{
-			//skinnedVertex.boneWeights[wt] = 0.f;
-			//skinnedVertex.boneIndices[wt] = -1;
-		}
+	bool bValid = false;
+
+	for (size_t wt = 0; wt < 4; ++wt)
+	{
+		skinnedVertex.boneWeights[wt] /= totalWeight;
+
+		if (skinnedVertex.boneIndices[wt] && skinnedVertex.boneWeights[wt] > 0.f)
+			bValid = true;
 	}
 
-	if (totalWeight != 0.f)
-	{
-		if (totalWeight != 1.f)
-		{
-			for (size_t wt = 0; wt < 4; wt++)
-				skinnedVertex.boneWeights[wt] /= totalWeight;
-		}
-	}
-	else
-	{
-		for (size_t wt = 0; wt < 4; wt++)
-		{
-			const int boneID = skinnedVertex.boneIndices[wt];
-			int parentID = this->m_flver->bones[boneID].previousSiblingIndex;
-
-			while (parentID != -1)
-			{
-				int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(parentID);
-
-				if (morphemeBoneID != -1)
-				{
-					skinnedVertex.boneIndices[wt] = parentID;
-
-					break;
-				}
-
-				parentID = this->m_flver->bones[parentID].previousSiblingIndex;
-			}
-		}
-
-		validateSkinnedVertexData(skinnedVertex);
-	}
+	if (!bValid)
+		g_appLog->alertMessage(MsgLevel_Error, "Warning: Vertex with no valid bone influences detected!\n");
 }
 
 // Gets all the model vertices for all the meshes and stores them into m_verts
 bool FlverModel::initialise()
 {
-	if (this->m_flver == nullptr)
+	if (this->m_nmRig == nullptr)
 		return false;
 
-	this->m_boneBindPoseTransforms = computeGlobalFlverRigTransforms(this->m_flver);
-	this->m_boneTransforms = this->m_boneBindPoseTransforms;
+	computeNmRigGlobalTransforms(this->m_nmBindPoseTransforms, this->m_nmRig);
+	this->m_nmBoneTransforms = this->m_nmBindPoseTransforms;
 
-	this->m_boneInverseBindPoseTransforms.reserve(this->m_boneBindPoseTransforms.size());
-	for (size_t i = 0; i < this->m_boneBindPoseTransforms.size(); i++)
-		this->m_boneInverseBindPoseTransforms.push_back(this->m_boneBindPoseTransforms[i].Invert());
+	this->m_nmInverseBoneBindPoseTransforms.reserve(this->m_nmBindPoseTransforms.size());
+	for (size_t i = 0; i < this->m_nmBindPoseTransforms.size(); i++)
+		this->m_nmInverseBoneBindPoseTransforms.push_back(this->m_nmBindPoseTransforms[i].Invert());
 
-	if (this->m_nmRig)
+	if (this->m_flver)
 	{
-		this->m_morphemeBoneBindPoseTransforms = computeGlobalMorphemeRigTransforms(this->m_nmRig);
-		this->m_morphemeBoneTransforms = this->m_morphemeBoneBindPoseTransforms;
+		computeFlvBonesGlobalTransform(this->m_flverBindPoseTransforms, this->m_flver);
+		this->m_flverBoneTransforms = this->m_flverBindPoseTransforms;
 
-		this->m_morphemeInverseBoneBindPoseTransforms.reserve(this->m_morphemeBoneBindPoseTransforms.size());
-		for (size_t i = 0; i < this->m_morphemeBoneBindPoseTransforms.size(); i++)
-			this->m_morphemeInverseBoneBindPoseTransforms.push_back(this->m_morphemeBoneBindPoseTransforms[i].Invert());
+		this->m_flverInverseBindPoseTransforms.reserve(this->m_flverBindPoseTransforms.size());
+		for (size_t i = 0; i < this->m_flverBindPoseTransforms.size(); i++)
+			this->m_flverInverseBindPoseTransforms.push_back(this->m_flverBindPoseTransforms[i].Invert());
+
+		this->m_meshVerticesTransforms.reserve(this->m_flver->header.meshCount);
+		this->m_meshVerticesBindPoseTransforms.reserve(this->m_flver->header.meshCount);
+
+		for (int i = 0; i < this->m_flver->header.meshCount; i++)
+		{
+			std::vector<Vector3> vertices = this->getFlverMeshVertices(i);
+			std::vector<Vector3> normals = this->getFlverMeshNormals(i);
+			std::vector<Vector4> boneWeights = this->getFlverMeshBoneWeights(i);
+			std::vector<std::vector<int>> boneIndices = this->getFlverMeshBoneIndices(i);
+
+			std::vector<SkinnedVertex> meshSkinnedVertices;
+
+			for (size_t i = 0; i < vertices.size(); i++)
+			{
+				meshSkinnedVertices.push_back(SkinnedVertex(vertices[i], normals[i], (float*)&boneWeights[i], boneIndices[i].data()));
+				normalizeSkinVertexData(meshSkinnedVertices.back());
+			}
+
+			this->m_meshVerticesBindPoseTransforms.push_back(meshSkinnedVertices);
+		}
+
+		this->m_meshVerticesTransforms = this->m_meshVerticesBindPoseTransforms;
+
+		const Vector3 modelSize = this->getBoundingBoxMax() - this->getBoundingBoxMin();
+		const float largestDirection = std::fmax(std::fmax(modelSize.x, modelSize.y), modelSize.z);
+
+		this->m_scale = std::fmin(20.f / largestDirection, 1.5f);
 	}
 
-	this->m_meshVerticesTransforms.reserve(this->m_flver->header.meshCount);
-	this->m_meshVerticesBindPoseTransforms.reserve(this->m_flver->header.meshCount);
-
-	for (int i = 0; i < this->m_flver->header.meshCount; i++)
-	{
-		std::vector<Vector3> vertices = this->getFlverMeshVertices(i, false);
-		std::vector<Vector3> normals = this->getFlverMeshNormals(i, false);
-		std::vector<Vector4> boneWeights = this->getFlverMeshBoneWeights(i);
-		std::vector<std::vector<int>> boneIndices = this->getFlverMeshBoneIndices(i);
-
-		cfr::FLVER2::Mesh* mesh = &this->m_flver->meshes[i];
-
-		int vertexCount = 0;
-
-		for (int vbi = 0; vbi < mesh->header.vertexBufferCount; vbi++)
-		{
-			int vb_index = this->m_flver->meshes[i].vertexBufferIndices[vbi];
-			vertexCount += this->m_flver->vertexBuffers[vb_index].header.vertexCount;
-		}
-
-		int uvCount = 0;
-		int colorCount = 0;
-		int tanCount = 0;
-
-		this->m_flver->getVertexData(i, &uvCount, &colorCount, &tanCount);
-
-		uint64_t lowest_flags = LLONG_MAX;
-		cfr::FLVER2::Faceset* facesetp = nullptr;
-
-		for (int mfsi = 0; mfsi < mesh->header.facesetCount; mfsi++)
-		{
-			int fsindex = mesh->facesetIndices[mfsi];
-			if (this->m_flver->facesets[fsindex].header.flags < lowest_flags)
-			{
-				facesetp = &this->m_flver->facesets[fsindex];
-				lowest_flags = facesetp->header.flags;
-			}
-		}
-
-		facesetp->triangulate();
-
-		std::vector<SkinnedVertex> meshSkinnedVertices;
-
-		if (facesetp)
-		{
-			meshSkinnedVertices.reserve(facesetp->triCount);
-
-			for (int j = 0; j < facesetp->triCount; j++)
-			{
-				int vertexIndex = facesetp->triList[j];
-
-				float weights[4];
-
-				weights[0] = mesh->vertexData->bone_weights[(vertexIndex * 4) + 0];
-				weights[1] = mesh->vertexData->bone_weights[(vertexIndex * 4) + 1];
-				weights[2] = mesh->vertexData->bone_weights[(vertexIndex * 4) + 2];
-				weights[3] = mesh->vertexData->bone_weights[(vertexIndex * 4) + 3];
-
-				int indices[4];
-
-				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 0] < mesh->header.boneCount)
-					indices[0] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 0]];
-
-				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 1] < mesh->header.boneCount)
-					indices[1] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 1]];
-
-				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 2] < mesh->header.boneCount)
-					indices[2] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 2]];
-
-				if (mesh->vertexData->bone_indices[(vertexIndex * 4) + 3] < mesh->header.boneCount)
-					indices[3] = mesh->boneIndices[mesh->vertexData->bone_indices[(vertexIndex * 4) + 3]];
-
-				float x = mesh->vertexData->positions[(vertexIndex * 3) + 0];
-				float y = mesh->vertexData->positions[(vertexIndex * 3) + 2];
-				float z = mesh->vertexData->positions[(vertexIndex * 3) + 1];
-
-				Vector3 pos = Vector3::Transform(Vector3(x, y, z), Matrix::CreateReflection(Plane(Vector3::Right)));
-
-				float norm_x = mesh->vertexData->normals[(vertexIndex * 3) + 0];
-				float norm_y = mesh->vertexData->normals[(vertexIndex * 3) + 2];
-				float norm_z = mesh->vertexData->normals[(vertexIndex * 3) + 1];
-
-				Vector3 normal = Vector3::Transform(Vector3(norm_x, norm_y, norm_z), Matrix::CreateReflection(Plane(Vector3::Right)));
-				normal.Normalize();
-
-				meshSkinnedVertices.push_back(SkinnedVertex(pos, normal, weights, indices));
-				validateSkinnedVertexData(meshSkinnedVertices.back());
-			}
-		}
-
-		this->m_meshVerticesBindPoseTransforms.push_back(meshSkinnedVertices);
-	}
-
-	this->m_meshVerticesTransforms = this->m_meshVerticesBindPoseTransforms;
+	if (this->m_scale < 1.5f)
+		this->m_scale = 1.5f;
 
 	return true;
 }
@@ -807,7 +686,31 @@ void FlverModel::update(float dt)
 	if (this->m_flver == nullptr)
 		return;
 
-	this->m_focusPoint = Vector3::Transform(Vector3::Zero, this->m_position * Matrix::CreateScale(this->m_scale));
+	this->m_focusPoint = Vector3::Transform(Vector3::Zero, this->getWorldMatrix());
+
+	// Apply the morpheme rig transforms to the flver skeleton
+	for (uint32_t i = 0; i < this->m_flver->header.boneCount; i++)
+	{
+		const int morphemeBoneID = this->m_flverToMorphemeBoneMap[i];
+
+		if (morphemeBoneID != -1)
+		{
+			const int parentMorphemeBoneID = this->m_nmRig->getParentBoneIndex(morphemeBoneID);
+			// Take the morpheme animation transform relative to the morpheme bind pose, align it to the flver bind pose, and then apply it to the flver bind pose.
+
+			applyTransform(this->m_flverBoneTransforms, this->m_flver, this->m_flverBindPoseTransforms, getNmBoneRelativeTransform(morphemeBoneID), i);
+		}
+	}
+
+	if (this->m_settings.drawMeshes)
+	{
+		// Compute the bones transform relative to their bind pose transform
+		std::vector<Matrix> boneRelativeTransforms;
+		computeBoneRelativeTransforms(boneRelativeTransforms);
+
+		for (int meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
+			transformMesh(meshIdx, boneRelativeTransforms);
+	}
 
 	this->m_dummyPolygons.clear();
 	this->m_dummyPolygons.reserve(this->m_flver->header.dummyCount);
@@ -819,32 +722,46 @@ void FlverModel::update(float dt)
 
 		Matrix dummyLocalTransform = Matrix::CreateWorld(dummyPos, dummyUp, dummyForward);
 
-		this->m_dummyPolygons.push_back(dummyLocalTransform * this->m_boneTransforms[this->m_flver->dummies[i].dummyBoneIndex]);
+		this->m_dummyPolygons.push_back(dummyLocalTransform * this->m_flverBoneTransforms[this->m_flver->dummies[i].dummyBoneIndex]);
+	}
+}
+
+void FlverModel::setTransforms(NMP::DataBuffer* transforms)
+{
+	Matrix mConvertZUpToYUp = g_nmToYUpAdjustMatrix;
+	Matrix mInvertZUpToYUp = g_invertedNmToYUpAdjustMatrix;
+
+	for (size_t i = 0; i < this->m_nmBoneTransforms.size(); i++)
+	{
+		NMP::Vector3 translation = *transforms->getChannelPos(i);
+		NMP::Quat rotation = *transforms->getChannelQuat(i);
+
+		Matrix transform = utils::NMDX::getTransformMatrix(rotation, translation);
+
+		this->m_nmBoneTransforms[i] = transform * mConvertZUpToYUp;
 	}
 }
 
 //Draws the character
 void FlverModel::draw(RenderManager* renderManager)
 {
-	const Vector4 boneMarkerColor = RMath::getFloatColor(IM_COL32(51, 102, 255, 255));
-
 	Matrix world = this->getWorldMatrix();
 
-	renderManager->applyDebugEffect(world);
+	renderManager->applyDebugEffect(Matrix::Identity);
 	renderManager->setInputLayout(kDebugLayout);
 
 	DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(renderManager->getDeviceContext(), UINT16_MAX * 3, UINT16_MAX);
 	prim.Begin();
 
-	int boneCount = this->m_boneTransforms.size();
+	int boneCount = this->m_flverBoneTransforms.size();
 
-	int trajectoryBoneIndex = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getTrajectoryBoneIndex());
-	int characterRootBoneIdx = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getCharacterRootBoneIndex());
+	int trajectoryBoneIndex = getFlverTrajectoryBoneIndex();
+	int characterRootBoneIdx = getFlverRootBoneIndex();
 
 	if (this->m_settings.selectedBone != -1)
 	{
-		DX::DrawReferenceFrame(&prim, this->m_boneTransforms[this->m_settings.selectedBone]);
-		renderManager->addText(RString::toNarrow(this->m_flver->bones[this->m_settings.selectedBone].name).c_str(), this->m_boneTransforms[this->m_settings.selectedBone] * world);
+		DX::DrawReferenceFrame(&prim, getFlverBoneGlobalTransform(this->m_settings.selectedBone), 0.1f);
+		renderManager->addText(RString::toNarrow(this->m_flver->bones[this->m_settings.selectedBone].name).c_str(), getFlverBoneGlobalTransform(this->m_settings.selectedBone));
 	}
 
 	if (this->m_settings.drawDummyPolygons && this->m_flver)
@@ -853,55 +770,69 @@ void FlverModel::draw(RenderManager* renderManager)
 		{
 			std::string dummy_name = "Dmy_" + std::to_string(this->m_flver->dummies[i].referenceID);
 
-			DX::DrawReferenceFrame(&prim, this->m_dummyPolygons[i]);
-			renderManager->addText(dummy_name.c_str(), this->m_dummyPolygons[i] * world);
+			DX::DrawReferenceFrame(&prim, getDummyPolygonTransform(i), 0.1f);
+			renderManager->addText(dummy_name.c_str(), getDummyPolygonTransform(i));
 		}
 	}
 	else if (this->m_settings.selectedDummy != -1)
 	{
 		std::string dummy_name = "Dmy_" + std::to_string(this->m_flver->dummies[this->m_settings.selectedDummy].referenceID);
 
-		DX::DrawReferenceFrame(&prim, this->m_dummyPolygons[this->m_settings.selectedDummy]);
-		renderManager->addText(dummy_name.c_str(), this->m_dummyPolygons[this->m_settings.selectedDummy] * world);
+		DX::DrawReferenceFrame(&prim, getDummyPolygonTransform(this->m_settings.selectedDummy), 0.1f);
+		renderManager->addText(dummy_name.c_str(), getDummyPolygonTransform(this->m_settings.selectedDummy));
 	}
 
 	if (this->m_settings.drawBones && this->m_flver)
-	{
-		for (size_t i = 0; i < boneCount; i++)
-		{
-			int morphemeBoneIdx = this->getMorphemeBoneIdByFlverBoneId(i);
+		drawFlverBones(renderManager, prim);
 
-			if ((morphemeBoneIdx == -1) || (i == trajectoryBoneIndex) || (i == characterRootBoneIdx))
-				continue;
+	if (this->m_settings.drawMorphemeBones && this->m_nmRig)
+		drawMorphemeBones(renderManager, prim);
 
-			int parentIndex = this->m_flver->bones[i].parentIndex;
-
-			if (parentIndex != -1)
-			{
-				Vector3 boneA = Vector3::Transform(Vector3::Zero, this->m_boneTransforms[i]);
-				Vector3 boneB = Vector3::Transform(Vector3::Zero, this->m_boneTransforms[parentIndex]);
-
-				DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, boneMarkerColor);
-
-				if (this->m_flver->bones[i].childIndex == -1)
-					DX::Draw(&prim, DirectX::BoundingSphere(boneA, 0.03f), boneMarkerColor);
-			}
-		}
-
-		DX::DrawSphere(&prim, *this->getFlverRootBoneGlobalTransform(), 0.03f, DirectX::Colors::MediumBlue);
-		DX::DrawReferenceFrame(&prim, *this->getFlverTrajectoryBoneGlobalTransform());
-	}
+	if (this->m_settings.drawModelPosition)
+		DX::DrawReferenceFrame(&prim, Matrix::Identity, 0.3f);
 
 	if (this->m_settings.drawBoundingBox)
 	{
 		Vector3 halfExtents = (this->getBoundingBoxMax() - this->getBoundingBoxMin()) / 2;
 
-		DX::DrawBoundingBox(&prim, world, Vector3::Zero, halfExtents, DirectX::Colors::DarkRed);
+		DX::DrawBoundingBox(&prim, Matrix::Identity, Vector3::Zero, halfExtents, DirectX::Colors::DarkRed);
+	}
+
+	if (this->m_settings.drawBoneInfluences && this->m_settings.drawMeshes)
+	{
+		for (int meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
+		{
+			for (size_t vtxIdx = 0; vtxIdx < this->m_meshVerticesTransforms[meshIdx].size(); vtxIdx++)
+			{
+				FlverModel::SkinnedVertex* skinnedVtx = this->getVertex(meshIdx, vtxIdx);
+				Vector3 vertexPos = Vector3::Transform(skinnedVtx->vertexData.position, Matrix::Identity);
+				for (size_t bi = 0; bi < 4; bi++)
+				{
+					int flverBoneIdx = skinnedVtx->boneIndices[bi];
+					float weight = skinnedVtx->boneWeights[bi];
+
+					if (weight > 0.f && flverBoneIdx >= 0 && flverBoneIdx < boneCount)
+					{
+						Vector3 bonePos = Vector3::Transform(Vector3::Zero, getFlverBoneGlobalTransform(flverBoneIdx));
+						Vector4 color = Vector4(DirectX::Colors::LimeGreen);
+
+						if (flverBoneIdx == trajectoryBoneIndex)
+							color = DirectX::Colors::Yellow;
+						else if (flverBoneIdx == characterRootBoneIdx)
+							color = DirectX::Colors::Cyan;
+
+						color.w *= weight;
+
+						DX::DrawLine(&prim, vertexPos, bonePos, color);
+					}
+				}
+			}
+		}
 	}
 
 	if (this->m_settings.highlight)
 	{
-		renderManager->addText(this->getModelName(), world);
+		renderManager->addText(this->getModelName(), Matrix::Identity);
 
 		if (this->m_settings.displayMode != kDispWireframe)
 			DX::DrawModelWireframe(&prim, Matrix::Identity, this, Vector4(DirectX::Colors::White));
@@ -1012,18 +943,20 @@ Matrix FlverModel::getDummyPolygonTransform(int id)
 	for (size_t i = 0; i < this->m_flver->header.dummyCount; i++)
 	{
 		if (this->m_flver->dummies[i].referenceID == id)
-			return this->m_dummyPolygons[i] * this->m_position;
+			return this->m_dummyPolygons[i] * this->getWorldMatrix();
 	}
 
 	g_appLog->debugMessage(MsgLevel_Error, "Could not find dummy polygon %d (%s)\n", id, this->m_name);
 
-	return Matrix::Identity;
+	return this->getWorldMatrix();
 }
 
 FlverModel::SkinnedVertex* FlverModel::getVertex(int meshIdx, int idx)
 {
-	if (meshIdx > this->m_meshVerticesTransforms.size() || idx > this->m_meshVerticesTransforms[meshIdx].size())
-		return nullptr;
+	if (meshIdx < 0) return nullptr;
+	if (static_cast<size_t>(meshIdx) >= this->m_meshVerticesTransforms.size()) return nullptr;
+	if (idx < 0) return nullptr;
+	if (static_cast<size_t>(idx) >= this->m_meshVerticesTransforms[meshIdx].size()) return nullptr;
 
 	return &this->m_meshVerticesTransforms[meshIdx][idx];
 }
@@ -1036,70 +969,112 @@ FlverModel::SkinnedVertex* FlverModel::getVertexBindPose(int meshIdx, int idx)
 	return &this->m_meshVerticesBindPoseTransforms[meshIdx][idx];
 }
 
-Matrix* FlverModel::getFlverBoneGlobalTransform(int idx)
+Matrix FlverModel::getFlverBoneGlobalTransform(int idx)
 {
-	if (idx > this->m_boneTransforms.size())
-		return nullptr;
+	if (idx > this->m_flverBoneTransforms.size())
+		INVOKE_PANIC("FlverModel::getFlverBoneGlobalTransform: index out of range");
 
-	return &this->m_boneTransforms[idx];
+	return this->m_flverBoneTransforms[idx] * this->getWorldMatrix();
 }
 
-Matrix* FlverModel::getFlverBoneBindPoseGlobalTransform(int idx)
+Matrix FlverModel::getFlverBoneBindPoseGlobalTransform(int idx)
 {
-	if (idx > this->m_boneBindPoseTransforms.size())
-		return nullptr;
+	if (idx > this->m_flverBindPoseTransforms.size())
+		INVOKE_PANIC("FlverModel::getFlverBoneBindPoseGlobalTransform: index out of range");
 
-	return &this->m_boneBindPoseTransforms[idx];
+	return this->m_flverBindPoseTransforms[idx] * this->getWorldMatrix();
 }
 
-Matrix* FlverModel::getFlverRootBoneGlobalTransform()
+int FlverModel::getMorphemeTrajectoryBoneIndex()
 {
-	int flverBoneIdx = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getCharacterRootBoneIndex());
+	return this->m_nmRig->getTrajectoryBoneIndex();
+}
+
+int FlverModel::getMorphemeRootBoneIndex()
+{
+	return this->m_nmRig->getCharacterRootBoneIndex();
+}
+
+int FlverModel::getFlverTrajectoryBoneIndex()
+{
+	return this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getTrajectoryBoneIndex());
+}
+
+int FlverModel::getFlverRootBoneIndex()
+{
+	return this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getCharacterRootBoneIndex());
+}
+
+Matrix FlverModel::getFlverRootBoneGlobalTransform()
+{
+	const int flverBoneIdx = getFlverRootBoneIndex();
 
 	return this->getFlverBoneGlobalTransform(flverBoneIdx);
 }
 
-Matrix* FlverModel::getFlverTrajectoryBoneGlobalTransform()
+Matrix FlverModel::getFlverTrajectoryBoneGlobalTransform()
 {
-	int flverBoneIdx = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getTrajectoryBoneIndex());
+	const int flverBoneIdx = getFlverTrajectoryBoneIndex();
 
 	return this->getFlverBoneGlobalTransform(flverBoneIdx);
 }
 
 Vector3 FlverModel::getBoundingBoxMin()
 {
-	return Vector3(this->m_flver->header.boundingBoxMin.x, this->m_flver->header.boundingBoxMin.y, this->m_flver->header.boundingBoxMin.z);
+	if (this->m_flver)
+		return Vector3(this->m_flver->header.boundingBoxMin.x, this->m_flver->header.boundingBoxMin.y, this->m_flver->header.boundingBoxMin.z);
+
+	return Vector3(FLT_MIN, FLT_MIN, FLT_MIN);
 }
 
 Vector3 FlverModel::getBoundingBoxMax()
 {
-	return Vector3(this->m_flver->header.boundingBoxMax.x, this->m_flver->header.boundingBoxMax.y, this->m_flver->header.boundingBoxMax.z);
+	if (this->m_flver)
+		return Vector3(this->m_flver->header.boundingBoxMax.x, this->m_flver->header.boundingBoxMax.y, this->m_flver->header.boundingBoxMax.z);
+
+	return Vector3(FLT_MAX, FLT_MAX, FLT_MAX);
 }
 
-Matrix* FlverModel::getMorphemeBoneGlobalTransform(int idx)
+Matrix FlverModel::getMorphemeBoneGlobalTransform(int idx)
 {
-	if (idx > this->m_morphemeBoneTransforms.size())
-		return nullptr;
+	if (idx > this->m_nmBoneTransforms.size())
+		INVOKE_PANIC("FlverModel::getMorphemeBoneGlobalTransform: index out of range");
 
-	return &this->m_morphemeBoneBindPoseTransforms[idx];
+	return this->m_nmBoneTransforms[idx] * this->getWorldMatrix();
 }
 
-Matrix* FlverModel::getMorphemeBoneBindPoseGlobalTransform(int idx)
+Matrix FlverModel::getMorphemeBoneBindPoseGlobalTransform(int idx)
 {
-	if (idx > this->m_morphemeBoneBindPoseTransforms.size())
-		return nullptr;
+	if (idx > this->m_nmBindPoseTransforms.size())
+		INVOKE_PANIC("FlverModel::getMorphemeBoneBindPoseGlobalTransform: index out of range");
 
-	return &this->m_morphemeBoneBindPoseTransforms[idx];
+	return this->m_nmBindPoseTransforms[idx] * this->getWorldMatrix();
 }
 
-Matrix* FlverModel::getMorphemeRootBoneGlobalTransform()
+Matrix FlverModel::getMorphemeRootBoneGlobalTransform()
 {
 	return this->getMorphemeBoneGlobalTransform(this->m_nmRig->getCharacterRootBoneIndex());
 }
 
-Matrix* FlverModel::getMorphemeTrajectoryBoneGlobalTransform()
+Matrix FlverModel::getMorphemeTrajectoryBoneGlobalTransform()
 {
 	return this->getMorphemeBoneGlobalTransform(this->m_nmRig->getTrajectoryBoneIndex());
+}
+
+Matrix FlverModel::getNmBoneRelativeTransform(int idx)
+{
+	if (idx < this->m_nmBoneTransforms.size())
+		return this->m_nmInverseBoneBindPoseTransforms[idx] * this->m_nmBoneTransforms[idx];
+
+	return Matrix::Identity;
+}
+
+Matrix FlverModel::getFlverBoneRelativeTransform(int idx)
+{
+	if (idx < this->m_flverBoneTransforms.size())
+		return this->m_flverInverseBindPoseTransforms[idx] * this->m_flverBoneTransforms[idx];
+
+	return Matrix::Identity;
 }
 
 std::string FlverModel::getMorphemeBoneName(int idx)
@@ -1118,83 +1093,136 @@ std::string FlverModel::getFlverBoneName(int idx)
 	return "";
 }
 
-void FlverModel::animate(MR::AnimationSourceHandle* animHandle)
+void FlverModel::animate(AnimObject* anim)
 {
-	//We initialise the final transforms to the flver bind pose so we can skip bones unhandled by morpheme in the next loop
-	this->m_boneTransforms = this->m_boneBindPoseTransforms;
-	this->m_morphemeBoneTransforms = this->m_morphemeBoneBindPoseTransforms;
-	this->m_meshVerticesTransforms = this->m_meshVerticesBindPoseTransforms;
+	if (anim == nullptr)
+		return;
+
+	MR::AnimationSourceHandle* animHandle = anim->getHandle();
 
 	if (animHandle)
+		computeAnimationTransforms(animHandle);
+}
+
+void FlverModel::resetBoneTransforms()
+{
+	this->m_flverBoneTransforms = this->m_flverBindPoseTransforms;
+	this->m_nmBoneTransforms = this->m_nmBindPoseTransforms;
+	this->m_meshVerticesTransforms = this->m_meshVerticesBindPoseTransforms;
+}
+
+void FlverModel::computeAnimationTransforms(MR::AnimationSourceHandle* animHandle)
+{
+	accumulateNmTransforms(this->m_nmBoneTransforms, animHandle, false);
+}
+
+void FlverModel::computeBoneRelativeTransforms(std::vector<Matrix>& out)
+{
+	out.clear();
+	out.reserve(this->m_flverBoneTransforms.size());
+
+	for (int i = 0; i < this->m_flverBoneTransforms.size(); i++)
+		out.push_back(getFlverBoneRelativeTransform(i));
+}
+
+void FlverModel::transformMesh(int meshIdx, const std::vector<Matrix>& boneRelativeTransforms)
+{
+	for (int vertexIndex = 0; vertexIndex < this->m_meshVerticesBindPoseTransforms[meshIdx].size(); vertexIndex++)
+		transformVertex(meshIdx, vertexIndex, boneRelativeTransforms);
+}
+
+void FlverModel::transformVertex(int meshIdx, int vertexIndex, const std::vector<Matrix>& boneRelativeTransforms)
+{
+    const auto& bindVertex = this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex];
+    int constIndices[4];
+    float constWeights[4];
+    std::copy(std::begin(bindVertex.boneIndices), std::end(bindVertex.boneIndices), std::begin(constIndices));
+    std::copy(std::begin(bindVertex.boneWeights), std::end(bindVertex.boneWeights), std::begin(constWeights));
+
+    Vector3 newPos = Vector3::Zero;
+    Vector3 newNorm = Vector3::Zero;
+    bool hasInfluence = false;
+
+    for (int wt = 0; wt < 4; ++wt)
+    {
+        const int boneID = constIndices[wt];
+        if (boneID == -1) continue;
+
+        const float weight = constWeights[wt];
+        if (weight == 0.f) continue;
+
+        hasInfluence = true;
+        newPos += Vector3::Transform(bindVertex.vertexData.position, boneRelativeTransforms[boneID]) * weight;
+        newNorm += Vector3::Transform(bindVertex.vertexData.normal, boneRelativeTransforms[boneID]) * weight;
+    }
+
+    if (!hasInfluence)
+        g_appLog->debugMessage(MsgLevel_Debug, "Vertex %d of mesh %d has an invalid influence\n", vertexIndex, meshIdx);
+
+    this->m_meshVerticesTransforms[meshIdx][vertexIndex].vertexData.position = newPos;
+    this->m_meshVerticesTransforms[meshIdx][vertexIndex].vertexData.normal = newNorm;
+}
+
+void FlverModel::drawFlverBones(RenderManager* renderManager, DirectX::PrimitiveBatch<DirectX::VertexPositionColor>& prim)
+{
+	const Vector4 boneMarkerColor = RMath::getFloatColor(IM_COL32(51, 102, 255, 255));
+	const Vector4 rootBoneMarkerColor = Vector4(DirectX::Colors::Orange);
+	const Vector4 trajectoryBoneMarkerColor = Vector4(DirectX::Colors::Red);
+
+	const int trajectoryBoneIndex = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getTrajectoryBoneIndex());
+	const int characterRootBoneIdx = this->getFlverBoneIndexByMorphemeBoneIndex(this->m_nmRig->getCharacterRootBoneIndex());
+
+	for (int boneIdx = 0; boneIdx < this->m_flver->header.boneCount; boneIdx++)
 	{
-		// Compute animation global transforms
-		for (uint32_t i = 0; i < this->m_nmRig->getNumBones(); i++)
-			this->m_morphemeBoneTransforms[i] = computeNmAnimGlobalTransform(animHandle, i);
+		if ((boneIdx == trajectoryBoneIndex) || (boneIdx == characterRootBoneIdx))
+			continue;
 
-		// Apply root motion
-		this->m_position = getNmTrajectoryTransform(animHandle) * Matrix::CreateRotationY(DirectX::XM_PI);
+		int parentIndex = this->m_flver->bones[boneIdx].parentIndex;
 
-		// Apply the morpheme rig transforms to the flver skeleton
-		for (uint32_t i = 0; i < this->m_flver->header.boneCount; i++)
+		if (parentIndex != -1)
 		{
-			const int morphemeBoneID = this->m_flverToMorphemeBoneMap[i];
+			Vector3 boneA = Vector3::Transform(Vector3::Zero, getFlverBoneGlobalTransform(boneIdx));
+			Vector3 boneB = Vector3::Transform(Vector3::Zero, getFlverBoneGlobalTransform(parentIndex));
 
-			if (morphemeBoneID != -1)
-			{
-				// Take the morpheme animation transform relative to the morpheme bind pose, align it to the flver bind pose, and then apply it to the flver bind pose.
-				Matrix morphemeRelativeTransform = (this->m_morphemeInverseBoneBindPoseTransforms[morphemeBoneID] * this->m_morphemeBoneTransforms[morphemeBoneID]);
+			Vector4 jointColor = boneMarkerColor;
 
-				applyTransform(this->m_boneTransforms, this->m_flver, this->m_boneBindPoseTransforms, (Matrix::CreateReflection(Plane(Vector3::Right)) * Matrix::CreateReflection(Plane(Vector3::Up)) * morphemeRelativeTransform), i);
-			}
+			if (parentIndex == getFlverRootBoneIndex())
+				jointColor = rootBoneMarkerColor;
+
+			DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, jointColor);
+
+			if (this->m_flver->bones[boneIdx].childIndex == -1)
+				DX::Draw(&prim, DirectX::BoundingSphere(boneA, 0.03f), jointColor);
 		}
 	}
 
-	// Compute the bone transform relative to it's bind pose transform
-	std::vector<Matrix> boneRelativeTransforms;
-	boneRelativeTransforms.reserve(this->m_boneTransforms.size());
+	DX::Draw(&prim, DirectX::BoundingSphere(Vector3::Transform(Vector3::Zero, getFlverRootBoneGlobalTransform()), 0.03f), rootBoneMarkerColor);
+	DX::Draw(&prim, DirectX::BoundingSphere(Vector3::Transform(Vector3::Zero, getFlverTrajectoryBoneGlobalTransform()), 0.03f), trajectoryBoneMarkerColor);
+}
 
-	for (int i = 0; i < this->m_boneTransforms.size(); i++)
-		boneRelativeTransforms.push_back(this->m_boneInverseBindPoseTransforms[i] * this->m_boneTransforms[i]);
+void FlverModel::drawMorphemeBones(RenderManager* renderManager, DirectX::PrimitiveBatch<DirectX::VertexPositionColor>& prim)
+{
+	const Vector4 boneMarkerColor = RMath::getFloatColor(IM_COL32(251, 84, 43, 255));
 
-	for (int meshIdx = 0; meshIdx < this->m_flver->header.meshCount; meshIdx++)
+	const int trajectoryBoneIndex = this->m_nmRig->getTrajectoryBoneIndex();
+	const int characterRootBoneIdx = this->m_nmRig->getCharacterRootBoneIndex();
+
+	for (int boneIdx = 0; boneIdx < this->m_nmRig->getNumBones(); boneIdx++)
 	{
-		for (int vertexIndex = 0; vertexIndex < this->m_meshVerticesBindPoseTransforms[meshIdx].size(); vertexIndex++)
+		if ((boneIdx == trajectoryBoneIndex) || (boneIdx == characterRootBoneIdx))
+			continue;
+
+		int parentIndex = this->m_nmRig->getParentBoneIndex(boneIdx);
+
+		if (parentIndex != -1)
 		{
-			int* indices = this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].boneIndices;
-			float* weights = this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].boneWeights;
+			Vector3 boneA = Vector3::Transform(Vector3::Zero, getMorphemeBoneGlobalTransform(boneIdx));
+			Vector3 boneB = Vector3::Transform(Vector3::Zero, getMorphemeBoneGlobalTransform(parentIndex));
 
-			Vector3 newPos = Vector3::Zero;
-			Vector3 newNorm = Vector3::Zero;
-			bool hasInfluence = false;
-
-			for (int wt = 0; wt < 4; wt++)
-			{
-				const int boneID = indices[wt];
-
-				if (boneID != -1)
-				{
-					const int morphemeBoneID = this->getMorphemeBoneIdByFlverBoneId(boneID);
-					const float weight = weights[wt];
-
-					if ((morphemeBoneID != -1) && (weight != 0.f))
-					{
-						hasInfluence = true;
-						newPos += Vector3::Transform(this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].vertexData.position, boneRelativeTransforms[boneID]) * weight;
-						newNorm += Vector3::Transform(this->m_meshVerticesBindPoseTransforms[meshIdx][vertexIndex].vertexData.normal, boneRelativeTransforms[boneID]) * weight;
-					}
-				}
-			}
-
-			if (!hasInfluence)
-			{
-				g_appLog->debugMessage(MsgLevel_Debug, "Vertex %d of mesh %d has an invalid influence:\n", vertexIndex, meshIdx);
-				g_appLog->debugMessage(MsgLevel_Debug, "\tIndices: (%d, %d, %d, %d)\n", indices[0], indices[1], indices[2], indices[3]);
-				g_appLog->debugMessage(MsgLevel_Debug, "\tWeights: (%.3f, %.3f, %.3f, %.3f)\n", weights[0], weights[1], weights[2], weights[3]);
-				g_appLog->panicMessage("Invalid bone influence data for %s (meshIdx=%d, vertexIdx=%d)\n", this->m_name.c_str(), meshIdx, vertexIndex);
-			}
-
-			this->m_meshVerticesTransforms[meshIdx][vertexIndex].vertexData.position = newPos;
-			this->m_meshVerticesTransforms[meshIdx][vertexIndex].vertexData.normal = newNorm;
+			DX::DrawJoint(&prim, Matrix::Identity, boneB, boneA, boneMarkerColor);
 		}
 	}
+
+	DX::Draw(&prim, DirectX::BoundingSphere(Vector3::Transform(Vector3::Zero, getMorphemeRootBoneGlobalTransform()), 0.03f), DirectX::Colors::Orange);
+	DX::Draw(&prim, DirectX::BoundingSphere(Vector3::Transform(Vector3::Zero, getMorphemeTrajectoryBoneGlobalTransform()), 0.03f), DirectX::Colors::Red);
 }

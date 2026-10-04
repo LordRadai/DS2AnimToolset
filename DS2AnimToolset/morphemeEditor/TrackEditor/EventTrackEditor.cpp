@@ -11,7 +11,8 @@ namespace TrackEditor
 	{
 		EventTrackEditor* editor = new EventTrackEditor;
 
-		editor->m_fps = 1000;
+		editor->m_fps = 3000;
+		editor->m_frameMax = editor->m_fps;
 		editor->m_editorOptions = (TrackEditorOptions)options;
 		editor->m_timeCodeFormat = timeCodeFormat;
 		editor->m_eventLabelAlignment = kCenter;
@@ -24,8 +25,6 @@ namespace TrackEditor
 	void EventTrackEditor::update(float dt)
 	{
 		TrackEditorBase::update(dt);
-
-		this->m_timeCodeFormat = kSeconds;
 
 		if (this->m_reload)
 			this->reload();
@@ -261,7 +260,7 @@ namespace TrackEditor
 
 			this->notifyListeners();
 
-			ImGui::InputInt("Event ID", &this->eventBuffer->userData);
+			ImGui::InputInt("User Data", &this->eventBuffer->userData);
 
 			if (ImGui::Button("Add Event") || RInput::isKeyStateChanged(VK_RETURN))
 			{

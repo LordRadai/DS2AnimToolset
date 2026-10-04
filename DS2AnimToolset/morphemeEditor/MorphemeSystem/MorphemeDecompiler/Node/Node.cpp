@@ -27,7 +27,7 @@ namespace MD
 			else if ((transformBufferFn == MR::nodeExtractJointInfoLocalQueueTransforms) || (transformBufferFn == MR::nodeExtractJointInfoLocalJointSelectQueueTransforms))
 				return false;
 			else
-				g_appLog->panicMessage("Invalid transform buffer function for ExtractJointInfo node %s (nodeID=%d)\n", MR::Manager::getInstance().getTaskQueuingFnName(transformBufferFn), nodeDef->getNodeID());
+				INVOKE_PANIC("Invalid transform buffer function for ExtractJointInfo node %s (nodeID=%d)\n", MR::Manager::getInstance().getTaskQueuingFnName(transformBufferFn), nodeDef->getNodeID());
 		}
 
 		bool NodeFreezeDecompiler::isPassThroughTransformsOnce(MR::NodeDef* nodeDef)
@@ -42,7 +42,7 @@ namespace MD
 			else if (taskQueueFn == MR::nodeFreezePassThroughLastTransforms)
 				return false;
 			else
-				g_appLog->panicMessage("Unexpected task queing function %s\n", fnName);
+				INVOKE_PANIC("Unexpected task queing function %s\n", fnName);
 
 			return false;
 		}
@@ -101,11 +101,8 @@ namespace MD
 
 				char paramName[256];
 
-				sprintf_s(paramName, "DefaultClip_%d", setIndex + 1);
-				nodeDataBlock->writeBool(true, paramName);
-
 				sprintf_s(paramName, "ClipRangeMode_%d", setIndex + 1);
-				nodeDataBlock->writeInt(3, paramName);
+				nodeDataBlock->writeInt(1, paramName);
 
 				sprintf_s(paramName, "ClipStartFraction_%d", setIndex + 1);
 				nodeDataBlock->writeFloat(sourceAnim->m_clipStartFraction, paramName);
@@ -147,15 +144,15 @@ namespace MD
 					sprintf_s(paramName, "Id_%d_%d", animSetIndex + 1, k + 1);
 					nodeDataBlock->writeUInt(unfilteredBonesArray->m_values[k], paramName);
 				}
-
-				MR::AttribDataInt* attribDataEventOffset = static_cast<MR::AttribDataInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SYNC_EVENT_OFFSET, animSetIndex));
-				
-				int eventOffset = 0;
-				if (attribDataEventOffset != nullptr)
-					eventOffset = attribDataEventOffset->m_value;
-
-				nodeDataBlock->writeUInt(eventOffset, "EventOffset");
 			}
+
+			MR::AttribDataInt* attribDataEventOffset = static_cast<MR::AttribDataInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SYNC_EVENT_OFFSET));
+
+			int eventOffset = 0;
+			if (attribDataEventOffset != nullptr)
+				eventOffset = attribDataEventOffset->m_value;
+
+			nodeDataBlock->writeUInt(eventOffset, "EventOffset");
 
 			bool eventPassThrough = true;
 
@@ -384,6 +381,10 @@ namespace MD
 
 			bool wrapWeights = (childNodeWeights->m_numValues == (childNodeCount + 1));
 			nodeDataBlock->writeBool(wrapWeights, "WrapWeights");
+
+			if (wrapWeights)
+				nodeDataBlock->writeFloat(childNodeWeights->m_values[childNodeCount], "WrapWeight");
+
 			nodeDataBlock->writeUInt(switchDef->m_evalMode, "EvaluationMethod");
 			nodeDataBlock->writeUInt(switchDef->m_inputSelectionMethod, "InputSelectionMethod");
 

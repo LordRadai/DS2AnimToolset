@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
-MorphemeCharacter* MorphemeCharacter::create(MorphemeCharacterDef* networkDef)
+MorphemeCharacter* MorphemeCharacter::create(MorphemeCharacterDef* networkDef, bool doSimulateNetwork)
 {
   //----------------------------
   // Make sure the networkDef and charCtrl have been initialised
@@ -29,6 +29,8 @@ MorphemeCharacter* MorphemeCharacter::create(MorphemeCharacterDef* networkDef)
   // Create and initialise an instance of our character
   MorphemeCharacter* const instance = static_cast<MorphemeCharacter*>(NMPMemoryAlloc(sizeof(MorphemeCharacter)));
   new(instance) MorphemeCharacter(networkDef);
+
+  instance->setDoSimulateNetwork(doSimulateNetwork);
 
   //----------------------------
   // Initialise Game Character, allocate memory etc
@@ -59,11 +61,11 @@ MorphemeCharacter* MorphemeCharacter::create(MorphemeCharacterDef* networkDef)
   // Set the default active anim set - here we only have 1 to choose.
   instance->m_net->setActiveAnimSetIndex(0);
 
-  if (instance->m_characterDef->getDoSimulateNetwork())
+  if (instance->getDoSimulateNetwork())
   {
-      //----------------------
-      // Perform an initial update of the network with start time of zero
-      instance->runInitialisingUpdateStep();
+    //----------------------
+    // Perform an initial update of the network with start time of zero
+    instance->runInitialisingUpdateStep();
   }
 
   return instance;
@@ -129,7 +131,7 @@ void MorphemeCharacter::runInitialisingUpdateStep()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// Update the morpheme network (this GameCharacter instance)
+// Update the morpheme network
 bool MorphemeCharacter::update(float timeDelta)
 {
   m_net->startUpdate(timeDelta);
@@ -141,7 +143,7 @@ bool MorphemeCharacter::update(float timeDelta)
     //----------------------------
     // Update the network
     execResult = m_net->update(task);
-  } while (execResult == MR::EXECUTE_RESULT_IN_PROGRESS);
+  } while (execResult != MR::EXECUTE_RESULT_COMPLETE);
 
   // Finalize post network update
   m_net->endUpdate();
@@ -159,7 +161,7 @@ bool MorphemeCharacter::update(float timeDelta)
 
   //----------------------------
   // Accumulate the transforms after the update
-  updateWorldTransforms(m_net->getCharacterPropertiesWorldRootTransform());
+  updateWorldTransforms(NMP::Matrix34Identity());
 
   return true;
 }

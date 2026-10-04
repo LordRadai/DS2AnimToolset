@@ -18,8 +18,7 @@ namespace MD
 			else if (axis.z)
 				return 3;
 
-			g_appLog->panicMessage("Input vector is not a valid axis vector (%.3f, %.3f, %.3f)\n", axis.x, axis.y, axis.z);
-			return 0;
+			INVOKE_PANIC("Input vector is not a valid axis vector (%.3f, %.3f, %.3f)\n", axis.x, axis.y, axis.z);
 		}
 
 		void writeSyncEventFlagsFromAttribData(ME::DataBlockExportXML* attribDataBlock, MR::AttribDataUInt* durationEventMatchingOpAttrib)
@@ -80,7 +79,7 @@ namespace MD
 					durationEventBlendWithinRange = true;
 					break;
 				default:
-					g_appLog->panicMessage("Invalid blend matching operation %d\n", durationEventMatchingOpAttrib->m_value);
+					INVOKE_PANIC("Invalid blend matching operation %d\n", durationEventMatchingOpAttrib->m_value);
 					break;
 				}
 			}
@@ -91,80 +90,13 @@ namespace MD
 			attribDataBlock->writeBool(durationEventBlendOnOverlap, "DurationEventBlendOnOverlap");
 			attribDataBlock->writeBool(durationEventBlendWithinRange, "DurationEventBlendWithinRange");
 		}
-	
+
 		void writeInputCPConnection(ME::DataBlockExportXML* nodeDataBlock, const char* name, const MR::CPConnection* cpConnection, bool optional)
 		{
 			if (!optional)
 				nodeDataBlock->writeNetworkNodeIdWithPinIndex(cpConnection->m_sourceNodeID, cpConnection->m_sourcePinIndex, name);
 			else if ((cpConnection->m_sourceNodeID != MR::INVALID_NODE_ID) && (cpConnection->m_sourcePinIndex != MR::INVALID_PIN_INDEX))
 				nodeDataBlock->writeNetworkNodeIdWithPinIndex(cpConnection->m_sourceNodeID, cpConnection->m_sourcePinIndex, name);
-		}
-
-		bool isNodeControlParameter(MR::NodeDef* nodeDef)
-		{
-			if ((nodeDef->getNodeTypeID() >= 20) && (nodeDef->getNodeTypeID() <= 26))
-				return true;
-
-			return false;
-		}
-
-		std::string buildNodeName(MR::NetworkDef* netDef, MR::NodeDef* nodeDef, ME::AnimationLibraryExport* animLibrary)
-		{
-			if (isNodeControlParameter(nodeDef))
-				return netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
-
-			std::string name = netDef->getNodeNameFromNodeID(nodeDef->getNodeID());
-
-			/*
-			if ((nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT) && (nodeDef->getNodeTypeID() != NODE_TYPE_TRANSIT_SYNC_EVENTS))
-			{
-				for (size_t i = 0; i < nodeDef->getNumChildNodes(); i++)
-				{
-					MR::NodeDef* childNode = nodeDef->getChildNodeDef(i);
-
-					if (childNode->getNodeTypeID() == NODE_TYPE_STATE_MACHINE)
-						name = netDef->getNodeNameFromNodeID(childNode->getNodeID());
-
-					if (name != "")
-						break;
-				}
-			}
-			*/
-
-			if (name == "")
-			{
-				if (nodeDef->getNodeTypeID() == NODE_TYPE_ANIM_EVENTS)
-				{
-					MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM));
-
-					assert(sourceAnim != nullptr);
-
-					return RString::removeExtension(animLibrary->getAnimationSet(0)->getAnimationEntry(sourceAnim->m_animAssetID)->getAnimationFilename()) + "_" + std::to_string(nodeDef->getNodeID());
-				}
-				else if ((nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT) || (nodeDef->getNodeTypeID() == NODE_TYPE_TRANSIT_SYNC_EVENTS))
-				{
-					std::string srcName = "ActiveState";
-
-					if (nodeDef->getChildNodeID(0) != MR::INVALID_NODE_ID)
-						srcName = buildNodeName(netDef, nodeDef->getChildNodeDef(0), animLibrary);
-
-					std::string dstName = "ActiveState";
-
-					if (nodeDef->getChildNodeID(1) != MR::INVALID_NODE_ID)
-						dstName = buildNodeName(netDef, nodeDef->getChildNodeDef(1), animLibrary);
-										
-					return srcName + "_" + dstName;
-				}
-
-				const char* typeName = MorphemeUtils::getNodeTypeName(nodeDef->getNodeTypeID());
-
-				char nodeName[256];
-				sprintf_s(nodeName, "%s_%d", typeName, nodeDef->getNodeID());
-
-				name = nodeName;
-			}
-
-			return name;
 		}
 	}
 }

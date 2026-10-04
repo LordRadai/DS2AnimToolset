@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "id": 601,
+    "helptext": "Requires that a message with the given name is sent to the network before the transition is started.  These message are typically sent by the game directly, but they can also be sent from connect by pressing a button that will appear when the network is run.",
+    "attributes": {
+        "Message": {
+            "value": "",
+            "type": "request",
+            "helptext": "This is a text identification of a request."
+        },
+        "OnNotSet": {
+            "value": false,
+            "type": "bool",
+            "helptext": "This request condition resolves as true when it is not set."
+        }
+    }
+}

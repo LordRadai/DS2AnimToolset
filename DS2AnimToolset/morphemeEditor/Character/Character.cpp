@@ -7,9 +7,24 @@
 #include "RenderManager/RenderManager.h"
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h>
+#include "utils/NMDX/NMDX.h"
 
 namespace
 {
+    bool isNumeric(const std::string& s)
+    {
+        return !s.empty() &&
+            std::all_of(s.begin(), s.end(),
+                [](unsigned char c) { return std::isdigit(c); });
+    }
+
+    bool isNumeric(const std::wstring& s)
+    {
+        return !s.empty() &&
+            std::all_of(s.begin(), s.end(),
+                [](wchar_t c) { return iswdigit(c); });
+    }
+
     int getChrIdFromNmbFileName(std::wstring name)
     {
         std::wstring chrIdStr;
@@ -22,7 +37,8 @@ namespace
 
         chrIdStr = name.substr(lastCPos + 2, 4);
 
-        chrId = stoi(chrIdStr);
+        if (isNumeric(chrIdStr))
+            chrId = stoi(chrIdStr);
 
         return chrId;
     }
@@ -81,7 +97,7 @@ namespace
         renderManager->applyDebugEffect(world);
         renderManager->setInputLayout(kDebugLayout);
 
-        MR::CharacterControllerDef* ccDef = character->getMorphemeNetwork()->getActiveCharacterControllerDef();
+        MR::CharacterControllerDef* ccDef = character->getCharacterMotionCtrl()->getNetwork()->getActiveCharacterControllerDef();
         DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(renderManager->getDeviceContext());
         prim.Begin();
 
@@ -89,7 +105,7 @@ namespace
         const Vector3 vertexB = vertexA + Vector3(0, ccDef->getHeight() - ccDef->getRadius(), 0);
         const NMP::Colour color = ccDef->getColour();
 
-        DX::DrawCapsule(&prim, Matrix::CreateScale(character->getCharacterModelCtrl()->getScale()) * Matrix::CreateTranslation(character->getPosition()), vertexA, vertexB, ccDef->getRadius(), RMath::getFloatColor(color.getR(), color.getG(), color.getB(), color.getA()), true);
+        DX::DrawCapsule(&prim, Matrix::CreateScale(character->getCharacterModelCtrl()->getScale()) * character->getPosition(), vertexA, vertexB, ccDef->getRadius(), RMath::getFloatColor(color.getR(), color.getG(), color.getB(), color.getA()), true);
         
         prim.End();
     }
@@ -183,7 +199,7 @@ namespace
                     for (size_t argIdx = 0; argIdx < event->getNumArguments(); argIdx++)
                     {
                         if (event->getNumArguments() != mergedEvent->getNumArguments())
-                            g_appLog->panicMessage("Arg count mismath\n");
+                            INVOKE_PANIC("Arg count mismath\n");
 
                         TimeAct::Argument* arg = event->getArgument(argIdx);
 
@@ -278,44 +294,23 @@ namespace
     }
 }
 
-Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork)
+Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork)
 {
     Character* character = new Character();
 
     character->m_characterModelCtrl = new CharacterModelCtrl();
+	character->m_characterMotionCtrl = new CharacterMotionCtrlAnimPreview();
 
-    MorphemeCharacterDef* characterDef = MorphemeSystem::createCharacterDef(filename, doSimulateNetwork);
-
-    if (!characterDef)
-        throw("Failed to create MorphemeCharacterDef instance (%s)", filename);
-
-    character->m_morphemeCharacter = MorphemeCharacter::create(characterDef);
-
-    if (!character->m_morphemeCharacter)
-        throw("Failed to create MorphemeCharacter instance (%s)", filename);
-
-    std::wstring animFolder = std::filesystem::path(filename).parent_path().c_str();
-    const int animCount = characterDef->getAnimFileLookUp()->getNumAnims();
-
-    for (uint32_t animSetIdx = 0; animSetIdx < characterDef->getNetworkDef()->getNumAnimSets(); animSetIdx++)
-    {
-        g_appLog->debugMessage(MsgLevel_Debug, "\Adding animations for animSet %d:\n", animSetIdx);
-
-        for (uint32_t i = 0; i < animCount; i++)
-        {
-            std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
-            std::wstring animFilePath = animFolder + L"\\" + animFileName;
-
-            characterDef->addAnimation(RString::toNarrow(animFilePath).c_str(), animSetIdx);
-        }
-    }
-
-    characterDef->sortAnimations();
+    if (character->m_characterMotionCtrl)
+		character->m_characterMotionCtrl->initialize(filename, doSimulateNetwork);
 
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
-    character->m_characterName = generateCharacterName(character->m_chrId);
+    character->m_characterName = RString::toWide(RString::removeExtension(std::filesystem::path(filename).filename().string()));
 
     std::wstring gamePath = utils::findGamePath(RString::toWide(filename));
+
+    MorphemeCharacterDef* characterDef = character->m_characterMotionCtrl->getMorphemeCharacterDef();
+	MR::AnimRigDef* rigDef = characterDef->getNetworkDef()->getRig(0);
 
     if (gamePath != L"")
     {
@@ -326,7 +321,7 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
         wchar_t modelName[256];
         swprintf_s(modelName, L"%ws\%ws.bnd", chrFolder.c_str(), character->m_characterName.c_str());
 
-        character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, characterDef->getNetworkDef()->getRig(0)));
+        character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, rigDef));
         
         fileList = utils::getTaeFileListFromChrId(timeActFolder + L"\\chr\\", character->m_chrId);
 
@@ -358,6 +353,8 @@ Character* Character::createFromNmb(std::vector<std::wstring>& fileList, const c
     }
     else
     {
+		character->m_characterModelCtrl->setModel(FlverModel::createFromAnimRig(rigDef));
+
         g_appLog->alertMessage(MsgLevel_Info, "Failed to find Game path. No models or TimeAct files will be loaded\n");
     }
 
@@ -377,16 +374,42 @@ Character* Character::createFromTimeAct(const char* filename)
 
 void Character::update(float dt)
 {
+    NMP::DataBuffer* transforms = nullptr;
+
+    if (this->m_characterMotionCtrl)
+    {
+        this->m_characterMotionCtrl->update(dt);
+
+		MorphemeCharacter* morphemeCharacter = this->m_characterMotionCtrl->getMorphemeCharacter();
+
+        if (morphemeCharacter->getDoSimulateNetwork())
+        {
+            transforms = this->m_characterMotionCtrl->getMorphemeCharacter()->getWorldTransforms();
+
+            if (this->m_enableRootMotion)
+            {
+                NMP::Quat rotationDelta = m_characterMotionCtrl->getRotationChange();
+                NMP::Vector3 translationDelta = m_characterMotionCtrl->getTranslationChange();
+                Matrix trajDelta = utils::NMDX::getTransformMatrix(rotationDelta, translationDelta);
+
+                static Matrix conv = Matrix::CreateRotationX(DirectX::XM_PIDIV2);
+                static Matrix invConv = conv.Invert();
+
+                Matrix adjustedTrajDelta = (conv * trajDelta * invConv);
+
+                this->m_position = this->m_position * adjustedTrajDelta;
+            }
+        }
+    }
+
     if (this->m_characterModelCtrl)
+    {
+        if (transforms)
+            this->m_characterModelCtrl->setTransforms(transforms);
+
         this->m_characterModelCtrl->update(dt);
-
-    FlverModel* model = this->m_characterModelCtrl->getModel();
-
-    if (model)
-        this->m_position = Vector3::Transform(Vector3::Zero, model->getWorldMatrix());
-
-    if (this->m_morphemeCharacter && this->m_morphemeCharacter->getCharacterDef()->getDoSimulateNetwork())
-        this->m_morphemeCharacter->update(dt);
+		this->m_characterModelCtrl->setPosition(this->m_position);
+    }
 }
 
 void Character::draw(RenderManager* renderManager)
@@ -415,6 +438,9 @@ void Character::destroy()
 {
     if (this->m_characterModelCtrl)
         this->m_characterModelCtrl->destroy();
+
+    if (this->m_characterMotionCtrl)
+        this->m_characterMotionCtrl->destroy();
 
     if (this->m_timeAct)
         this->m_timeAct->destroy();
@@ -510,7 +536,7 @@ void Character::loadPartsFaceGenBnd(std::wstring root, FgPartType type, int id, 
 
     filepath += modelName;
 
-    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_morphemeCharacter->getNetwork()->getRig(0));
+    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_characterMotionCtrl->getMorphemeCharacter()->getNetwork()->getRig(0));
 
     this->m_characterModelCtrl->setModelFg(type, model);
 }
@@ -527,7 +553,7 @@ void Character::loadWeaponBnd(std::wstring root, PartType type, int id, bool shi
 
     filepath += modelName;
 
-    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_morphemeCharacter->getNetwork()->getRig(0));
+    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_characterMotionCtrl->getMorphemeCharacter()->getNetwork()->getRig(0));
 
     if (model)
         this->m_characterModelCtrl->setModelPart(type, model);
@@ -576,7 +602,7 @@ void Character::loadPartsBnd(std::wstring root, PartType type, int id, bool fema
 
     filepath += modelName;
 
-    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_morphemeCharacter->getNetwork()->getRig(0));
+    FlverModel* model = FlverModel::createFromBnd(filepath, this->m_characterMotionCtrl->getMorphemeCharacter()->getNetwork()->getRig(0));
 
     this->m_characterModelCtrl->setModelPart(type, model);
 }

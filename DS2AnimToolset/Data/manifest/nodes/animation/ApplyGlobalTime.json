@@ -1,0 +1,43 @@
+{
+    "group": "Utilities",
+    "id": 119,
+    "displayName": "Apply Global Time",
+    "pinOrder": [
+        "Source",
+        "Result"
+    ],
+    "image": "ApplyGlobalTime.png",
+    "version": 2,
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    
+                ],
+                "required": [
+                    "Time"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    
+                ],
+                "required": [
+                    "Time"
+                ]
+            }
+        }
+    },
+    "attributes": [
+        
+    ],
+    "helptext": "Overrides source time with the global network time"
+}
