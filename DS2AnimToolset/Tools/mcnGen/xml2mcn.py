@@ -54,6 +54,7 @@ def lua_val(v):
 class Library:
     def __init__(self, path):
         self.sets = []  # [(name, {index: entry})]
+        self.event_mirrors, self.track_mirrors = [], []   # per set
         if not path or not os.path.exists(path): return
         r = ET.parse(path).getroot()
         for s in r.findall('AnimationSet'):
@@ -64,6 +65,9 @@ class Library:
                     synctrack=e.findtext('syncTrack') or '', format=e.get('format') or 'nsa',
                     options=e.get('options') or '')
             self.sets.append((s.get('name'), entries))
+            # left/right event userdata pairs MirrorTransforms swaps
+            self.event_mirrors.append([(int(m.get('first')), int(m.get('second'))) for m in s.findall('EventMirrorMapping')])
+            self.track_mirrors.append([(m.get('first'), m.get('second')) for m in s.findall('EventTrackMirrorMapping')])
 
 
 def load_rig_joints(path):
@@ -430,7 +434,34 @@ class Converter:
         self.emit('SETS = %s' % lua_val(self.set_names))
         self.emit('TRY("setSelectedAnimSet", function() return setSelectedAnimSet(SET) end)')
         self.emit('LOG("animsets=" .. TS(listAnimSets()) .. " rig=" .. TS(anim.getRigPath(SET)))')
+        self.mirror_mappings()
         self.emit()
+
+    def mirror_mappings(self):
+        """Joint and event mirror mappings: anim.createRig makes a rig without them, so MirrorTransforms would
+        mirror every joint in place instead of swapping left and right."""
+        self.emit('-- mirror mappings (joints from each set .mrarig, events from the library)')
+        self.emit('function ADDMIRRORS(set, kind, wanted)')
+        self.emit('  local have = {}')
+        self.emit('  local ok, cur = pcall(anim["listAnimSet" .. kind .. "MirrorMappings"], set)')
+        self.emit('  if ok and type(cur) == "table" then for i, mp in ipairs(cur) do have[tostring(mp.first) .. "|" .. tostring(mp.second)] = true end end')
+        self.emit('  local add = {}')
+        self.emit('  for i, mp in ipairs(wanted) do if not have[tostring(mp.first) .. "|" .. tostring(mp.second)] then table.insert(add, mp) end end')
+        self.emit('  if table.getn(add) == 0 then return true end')
+        self.emit('  return anim["addAnimSet" .. kind .. "MirrorMappings"](set, add)')
+        self.emit('end')
+        for k, (sn, (sj, sr)) in enumerate(zip(self.set_names, self.set_rigs)):
+            if sr is not None:
+                pairs = [(sj.get(int(mp.get('first'))), sj.get(int(mp.get('second')))) for mp in sr.findall('JointMirrorMapping')]
+                pairs = [{'first': a, 'second': b} for a, b in pairs if a and b]
+                if pairs:
+                    self.call('joint mirror mappings %s' % sn, 'ADDMIRRORS(%s, "Joint", %s)' % (lua_str(sn), lua_val(pairs)))
+            if k < len(self.lib.event_mirrors) and self.lib.event_mirrors[k]:
+                ev = [{'first': a, 'second': b} for a, b in self.lib.event_mirrors[k]]
+                self.call('event mirror mappings %s' % sn, 'ADDMIRRORS(%s, "EventUserdata", %s)' % (lua_str(sn), lua_val(ev)))
+            if k < len(self.lib.track_mirrors) and self.lib.track_mirrors[k]:
+                tr = [{'first': a, 'second': b} for a, b in self.lib.track_mirrors[k]]
+                self.call('event track mirror mappings %s' % sn, 'ADDMIRRORS(%s, "EventTrack", %s)' % (lua_str(sn), lua_val(tr)))
 
     def requests(self):
         self.emit('-- 2. requests (runtime ids preserved)')
