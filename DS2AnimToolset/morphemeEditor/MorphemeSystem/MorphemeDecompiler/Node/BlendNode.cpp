@@ -35,11 +35,15 @@ namespace MD
 
 			if (loop)
 				attribDataBlock->writeBool(loop->m_value, "Loop");
+			else
+				attribDataBlock->writeBool(false, "Loop");
 
 			NodeUtils::writeSyncEventFlagsFromAttribData(attribDataBlock, durationEventMatchingOpAttrib);
 
 			if (startSyncEventIndex)
 				attribDataBlock->writeInt(startSyncEventIndex->m_value, "StartEventIndex");
+			else
+				attribDataBlock->writeInt(0, "StartEventIndex");
 		}
 
 		void NodeBlendDecompilerBase::writeEventBlendMode(MR::NodeDef* nodeDef, ME::DataBlockExportXML* attribDataBlock)
