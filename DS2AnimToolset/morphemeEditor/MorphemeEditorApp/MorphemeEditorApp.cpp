@@ -1810,6 +1810,9 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 
 		std::string fullPath = exeParentPath + std::string("\\") + RString::toNarrow(path);
 
+		wchar_t rbName[MAX_PATH];
+		swprintf_s(rbName, L"%s_runtimeBinary", this->m_character->getCharacterName().c_str());
+
 		const int successCode = 1;
 		const int failureCode = -1;
 
@@ -1817,7 +1820,7 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 		std::string assetPath = "-asset " + std::string("\"") + fullPath + "\\" + std::string(networkFileName) + std::string("\"");
 		std::string baseDir = "-basedir " + std::string("\"") + fullPath + std::string("\"");
 		std::string cacheDir = "-cacheDir " + std::string("\"") + fullPath + "\\cache" + std::string("\"");
-		std::string outputDir = "-outputdir " + std::string("\"") + fullPath + "\\runtimeBinary" + std::string("\"");
+		std::string outputDir = "-outputdir " + std::string("\"") + fullPath + "\\" + RString::toNarrow(rbName) + std::string("\"");
 		std::string logFile = "-logFile " + std::string("\"") + fullPath + "\\assetCompiler.log" + std::string("\"");
 		std::string errFile = "-errFile " + std::string("\"") + fullPath + "\\assetCompilerError.log" + std::string("\"");
 
