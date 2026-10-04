@@ -384,6 +384,10 @@ namespace MD
 
 			bool wrapWeights = (childNodeWeights->m_numValues == (childNodeCount + 1));
 			nodeDataBlock->writeBool(wrapWeights, "WrapWeights");
+
+			if (wrapWeights)
+				nodeDataBlock->writeFloat(childNodeWeights->m_values[childNodeCount], "WrapWeight");
+
 			nodeDataBlock->writeUInt(switchDef->m_evalMode, "EvaluationMethod");
 			nodeDataBlock->writeUInt(switchDef->m_inputSelectionMethod, "InputSelectionMethod");
 

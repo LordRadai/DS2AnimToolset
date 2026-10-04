@@ -452,6 +452,7 @@ namespace MD
 			nodeDataBlock->writeBool(twoBoneIKSetup->m_updateTargetByDeltas, "UpdateTargetByDeltas");
 			nodeDataBlock->writeBool(twoBoneIKSetup->m_useSpecifiedJointAsTarget, "UseSpecifiedJointAsTarget");
 			nodeDataBlock->writeBool(twoBoneIKSetup->m_useSpecifiedJointOrientation, "UseSpecifiedJointOrientation");
+			nodeDataBlock->writeBool(twoBoneIKSetup->m_worldSpaceTarget, "WorldSpaceTarget");
 
 			CHAR paramName[256];
 			for (uint32_t animSetIndex = 0; animSetIndex < numAnimSets; animSetIndex++)
