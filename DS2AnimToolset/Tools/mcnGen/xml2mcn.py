@@ -27,6 +27,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import mcnxml, nodespecs, manifest_info
 
 CP_TYPES = {20: 'float', 21: 'vector3', 22: 'vector4', 23: 'bool', 24: 'int', 25: 'uint'}
+VECTOR_CP_TYPES = (21, 22)
 SM_TYPE, NETWORK_TYPE = 10, 9
 TRANSIT_TYPES = {402: 'Transit', 400: 'TransitMatchEvents'}
 DEFAULT_CP_CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cp_config.json')
@@ -451,7 +452,8 @@ class Converter:
         nm = n.name.split('|')[-1]
         cfg = self.cp_config.get(nm, {})
         rng = {k: cfg[k] for k in ('min', 'max') if cfg.get(k) is not None}
-        if rng:
+        # setRange refuses vector CPs, so their ranges are written into the .mcn by --inject (inject_cp_ranges)
+        if rng and n.type not in VECTOR_CP_TYPES:
             self.call('setRange %s' % nm, 'setRange(%s, %s)' % (key, lua_val({k: float(v) for k, v in rng.items()})))
         vals = self.xml_default(n)   # defaults always come from the export; a 'default' in the CP file is ignored
         if force or any(v != 0 for v in vals):
@@ -986,6 +988,7 @@ class Converter:
             if edge is None: self.unsupported.append('self transition %s not found in .mcn' % tp); continue
             edge.find('To').text = edge.find('From').text
         groups = self.inject_cp_groups(net)
+        self.inject_cp_ranges(net)
         self._save(tree, mcn_path)
         return added, pins, groups
 
@@ -1052,8 +1055,31 @@ class Converter:
     def inject_groups_only(self, mcn_path):
         tree, net = self._mcn(mcn_path)
         n = self.inject_cp_groups(net)
-        if n: self._save(tree, mcn_path)
+        if n or self.inject_cp_ranges(net): self._save(tree, mcn_path)
         return n
+
+    def inject_cp_ranges(self, net):
+        """Min / Max of vector CPs, stored like a float CP's: <Min type="float">x</Min> after DataPinEntry."""
+        arr = net.find('ControlParametersNode/ControlParameterArray')
+        if arr is None: return 0
+        els = {c.get('name'): c for c in arr.findall('ControlParameter')}
+        done = 0
+        for n in self.cps:
+            if n.type not in VECTOR_CP_TYPES: continue
+            nm = n.name.split('|')[-1]
+            cfg = self.cp_config.get(nm, {})
+            el = els.get(nm)
+            if el is None or all(cfg.get(k) is None for k in ('min', 'max')): continue
+            pos = list(el).index(el.find('DataPinEntry')) + 1 if el.find('DataPinEntry') is not None else 0
+            for tag, key in (('Min', 'min'), ('Max', 'max')):
+                old = el.find(tag)
+                if old is not None: el.remove(old)
+                if cfg.get(key) is None: continue
+                e = ET.Element(tag, type='float')
+                e.text = repr(float(cfg[key])).rstrip('0').rstrip('.') if float(cfg[key]) != int(float(cfg[key])) else str(int(float(cfg[key])))
+                el.insert(pos, e); pos += 1
+            done += 1
+        return done
 
     def cp_only(self):
         self.report_missing_cp_config()
