@@ -1508,8 +1508,8 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 		MR::NetworkDef* netDef = characterDef->getNetworkDef();
 
 		dumpNodeIDNamesTable(netDef, animLibraryExport, L"NodeIDNamesTable.xml");
-		dumpControlParametersUsageData(netDef, L"CPConnections.xml");
 #ifdef EXPORT_DEBUG_NETWORK_INFO
+		dumpControlParametersUsageData(netDef, L"CPConnections.xml");
 		dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
 		dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
 
