@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import mcnxml
 
 ID_TYPES = ('NetworkNodeId',)
-IGNORE = {'ClipRangeMode_1'}
+IGNORE = set()
 EQUIV = {('DeltaTrajSource', 0): 3}
 TRANSITS = (400, 402, 403, 440, 441)
 CPS = (20, 21, 22, 23, 24, 25)
