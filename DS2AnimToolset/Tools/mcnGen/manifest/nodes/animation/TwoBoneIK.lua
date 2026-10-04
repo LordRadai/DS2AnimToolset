@@ -192,20 +192,6 @@ registerNode("TwoBoneIK",
 
           index = anim.getParentBoneIndex(index, asVal)
         end
-
-        name = getAttribute(node, "TargetJointName", asVal)
-        index = nil
-        if name ~= nil then
-          index = anim.getRigChannelIndex(name, asVal)
-        end
-
-        for i = 1, 3 do
-          if index == nil or index <= 0 or index >= rigSize then
-            return nil, ("TwoBoneIK node " .. node .. " (animset " .. asVal .. ") requires a valid TargetJointName with a valid parent and grandparent")
-          end
-
-          index = anim.getParentBoneIndex(index, asVal)
-        end
       end
 
       local effectorTargetPin = string.format("%s.EffectorTarget", node)
@@ -360,8 +346,11 @@ registerNode("TwoBoneIK",
         Stream:writeUInt(endJointIndex, "EndJointIndex_"..asIdx)
 
         local targetJointName = getAttribute(node, "TargetJointName", asVal)
-        local targetJointIndex = anim.getRigChannelIndex(targetJointName, asVal)
-        Stream:writeUInt(targetJointIndex, "TargetJointIndex_"..asIdx)
+
+        if targetJointName ~= nil and targetJointName ~= "" then
+          local targetJointIndex = anim.getRigChannelIndex(targetJointName, asVal)
+          Stream:writeUInt(targetJointIndex, "TargetJointIndex_"..asIdx)
+        end
 
         -- Don't actually retrieve values for mid and root - currently we are only allowed to use
         -- sequential IK chains, where the mid and root joints are the direct parent and grandparent
@@ -459,8 +448,18 @@ attributeEditor.registerDisplayInfo(
     "TwoBoneIK",
     {
       {
+        title = "Use Target Joint",
+        usedAttributes = { "UseSpecifiedJointAsTarget" },
+        displayFunc = function(...) safefunc(attributeEditor.standardDisplayInfoSection, unpack(arg)) end
+      },
+      {
         title = "End Effector",
         usedAttributes = { "EndJointName" },
+        displayFunc = function(...) safefunc(attributeEditor.animSetDisplayInfoSection, unpack(arg)) end
+      },
+      {
+        title = "Target Joint",
+        usedAttributes = { "TargetJointName" },
         displayFunc = function(...) safefunc(attributeEditor.animSetDisplayInfoSection, unpack(arg)) end
       },
       {
