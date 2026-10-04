@@ -20,11 +20,14 @@ def node_size(leaf, npins):
 
 
 def blend_tree(items, edges, size, root=None):
-    """items: ids; edges: (src, dst) inside the graph; size(item) -> (w, h).
+    """items: ids; edges: (src, dst, input slot) inside the graph; size(item) -> (w, h).
     Returns ({item: (x, y)}, output (x, y), cp (x, y))."""
     consumers = {i: [] for i in items}
-    for s, d in edges:
-        if s in consumers and d in consumers and s != d: consumers[s].append(d)
+    slot = {}
+    for s, d, k in edges:
+        if s in consumers and d in consumers and s != d:
+            consumers[s].append(d)
+            slot[(s, d)] = min(k, slot.get((s, d), k))
     col = {}
     def depth(i, guard=()):
         if i in col: return col[i]
@@ -43,7 +46,8 @@ def blend_tree(items, edges, size, root=None):
     pos, ypos = {}, {}
     for c in range(1, maxcol + 1):
         members = [i for i in items if col[i] == c]
-        members.sort(key=lambda i: (min([ypos.get(d, 0) for d in consumers[i]] or [0]), str(i)))
+        # top-down: by the consumer's row, then by input slot (input 1 above input 2)
+        members.sort(key=lambda i: min([(ypos.get(d, 0), slot[(i, d)]) for d in consumers[i]] or [(0, 0)]) + (str(i),))
         y = 0
         for i in members:
             pos[i] = (colx[c], y)

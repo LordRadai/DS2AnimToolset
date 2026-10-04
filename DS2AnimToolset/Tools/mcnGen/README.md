@@ -44,6 +44,25 @@ The finished Connect project lives in the same folder. `$(RootDir)` is that fold
 
 ## Rebuilding a network
 
+### One click: `rebuild.bat`
+
+Edit `tools\rebuild_config.ini`:
+
+```ini
+INPUT_XML=E:\Claude\c1020\c1020.xml
+CONNECT=C:\Program Files (x86)\NaturalMotion\morphemeConnect 3.6.2\bin\morphemeConnect.exe
+PYTHON=python
+CP_CONFIG=          ; empty = tools\ds2_control_parameters.json
+CLEAN=1             ; 1 = delete the previous .mcn / paths first
+```
+
+Then run `tools\rebuild.bat`, or `tools\rebuild.bat other_config.ini` to use another config, for example
+one per character. It refuses to start if Connect is open. It runs all five steps below (skipping 3 and 4
+when not needed), prints the result of each stage and the diff summary, writes `build\diff_full.txt`, and
+runs the layout check.
+
+### Step by step
+
 Run from `E:\Claude`, with `CONNECT` set to
 `"C:\Program Files (x86)\NaturalMotion\morphemeConnect 3.6.2\bin\morphemeConnect.exe"`:
 
@@ -52,38 +71,42 @@ Run from `E:\Claude`, with `CONNECT` set to
 python tools\xml2mcn.py c1020\c1020.xml
 
 :: 2. stage 1: rig, requests, control parameters, the whole graph, attributes, connections,
-::    state-to-state transitions; saves c1020.mcn and c1020_paths.lua
-%CONNECT% -nogui -script E:\Claude\c1020\c1020_rebuild.lua
+::    state-to-state transitions; saves c1020.mcn and build\c1020_paths.lua
+%CONNECT% -nogui -script E:\Claude\c1020\build\c1020_rebuild.lua
 
 :: 3. patch c1020.mcn: ActiveState nodes, pass-down pins on states, transitions to self, CP groups
 python tools\xml2mcn.py c1020\c1020.xml --inject
 
 :: 4. stage 2: connections through state pins, transitions from ActiveStates, weights, layout;
-::    saves c1020.mcn and re-exports it to roundtrip\c1020.xml
-%CONNECT% -nogui -script E:\Claude\c1020\c1020_stage2.lua
+::    saves c1020.mcn and re-exports it to build\roundtrip\c1020.xml
+%CONNECT% -nogui -script E:\Claude\c1020\build\c1020_stage2.lua
 
 :: 5. check the round trip
-python tools\xmldiff.py c1020\c1020.xml c1020\roundtrip\c1020.xml --paths c1020\c1020_paths.lua > c1020\diff_full.txt
+python tools\xmldiff.py c1020\c1020.xml c1020\build\roundtrip\c1020.xml --paths c1020\build\c1020_paths.lua > c1020\build\diff_full.txt
 python tools\layoutcheck.py c1020\c1020.mcn
 ```
 
 If a network needs no stage 2 (no ActiveStates and no state pass-down pins), step 1 writes only
 `_rebuild.lua`, which exports at the end. Skip steps 3 and 4.
 
-Always start stage 1 from a clean state. Delete `c1020.mcn` and `c1020_paths.lua` before re-running it,
+Always start stage 1 from a clean state. Delete `c1020.mcn` and `build\c1020_paths.lua` before re-running it,
 because `--inject` and stage 2 rely on the paths that stage 1 recorded.
 
 ### What each step prints / writes
 
+The project folder keeps only what the project uses (`.mcn`, `.mcp`, rig, skin, `model_xmd`,
+`motion_xmd`, `morphemeMarkup`). Everything that exists only to generate or check the `.mcn` (scripts,
+logs, paths, the round-trip export, the diff) goes to `<project>\build\`, which you can delete at any time.
+
 | file | written by | contents |
 |---|---|---|
 | `<chr>.mcp` | step 1 | project: Z up, metres, anim set `<chr>_0`, rig `$(RootDir)\<chr>_0.mcarig`, sources `motion_xmd`, markup `morphemeMarkup` |
-| `<chr>_rebuild.lua`, `<chr>_stage2.lua` | step 1 | the Connect scripts |
+| `build\<chr>_rebuild.lua`, `build\<chr>_stage2.lua` | step 1 | the Connect scripts |
 | `<chr>_0.mcarig`, `<chr>_0.mcskin` | stage 1 | rig and skin built from `model_xmd\<chr>.xmd` (hip / trajectory joints from the `.mrarig`); only built if missing |
-| `<chr>_rebuild.log`, `<chr>_stage2.log` | stages | every failed API call (`FAIL` / `NIL`), connect rounds, `DONE failures=N` |
-| `<chr>_paths.lua` | stages | node id / container -> the path Connect really gave it (duplicate names get `_1` suffixes) |
+| `build\<chr>_rebuild.log`, `build\<chr>_stage2.log` | stages | every failed API call (`FAIL` / `NIL`), connect rounds, `DONE failures=N` |
+| `build\<chr>_paths.lua` | stages | node id / container -> the path Connect really gave it (duplicate names get `_1` suffixes) |
 | `<chr>.mcn` | stages | the project |
-| `roundtrip\<chr>.xml` | stage 2 | Connect's re-export of the rebuilt project |
+| `build\roundtrip\<chr>.xml` | stage 2 | Connect's re-export of the rebuilt project |
 
 Step 1 also lists `UNSUPPORTED` items (node or condition types with no mapping, hierarchy decisions it could
 not make) and `UNMAPPED FIELD`s (export fields it does not know). Both should be empty, or at least
@@ -110,14 +133,14 @@ group by CP name. DS2 shares one CP set across characters, so one file serves al
 :: add every CP of a network to the file (existing entries are kept)
 python tools\xml2mcn.py c1020\c1020.xml --cp-template
 
-:: apply the file to an existing .mcn without rebuilding: writes groups + <chr>_cparams.lua
+:: apply the file to an existing .mcn without rebuilding: writes groups + build\<chr>_cparams.lua
 python tools\xml2mcn.py c1020\c1020.xml --cp-only
-%CONNECT% -nogui -script E:\Claude\c1020\c1020_cparams.lua
+%CONNECT% -nogui -script E:\Claude\c1020\build\c1020_cparams.lua
 ```
 
 `--cp-config <file>` uses a different settings file.
 
-Every run (the normal one and `--cp-only`) writes `<chr>_cp_config_missing.log`. It lists the control
+Every run (the normal one and `--cp-only`) writes `build\<chr>_cp_config_missing.log`. It lists the control
 parameters that have no entry in the settings file, one per line with name, type and export default, so
 you can add them (`--cp-template` adds them for you, with `null` ranges).
 
@@ -149,7 +172,9 @@ Every Connect export name is a path (`SM_Main|BT_BaseAct|SM_BasicMove`), so the 
 Original editor positions are not in the export, so the layout is generated (`layout.py`):
 
 * **Blend trees**: the Output pin is on the right. Each node's column is its longest path to the output,
-  so every input sits left of the node it feeds. The ControlParameters node goes before the last
+  so every input sits left of the node it feeds. Within a column, inputs keep their pin order: the node
+  wired to input 1 of a consumer sits above the one wired to input 2 (pin order comes from the node's
+  manifest `pinOrder`). The ControlParameters node goes before the last
   (leftmost) node.
 * **State machines**: states sit on a grid sized from the largest state, so nothing overlaps. The cell
   assignment is optimised against transition crossings, transitions through other states, and length.
@@ -157,7 +182,7 @@ Original editor positions are not in the export, so the layout is generated (`la
 
 Headless Connect does not measure nodes, so sizes are estimated (width from the title, height from the
 pins). `layoutcheck.py` reports overlaps, inputs not left of their consumer, nodes past the Output pin,
-CP node placement, transition crossings, and transitions through states.
+inputs out of pin order, CP node placement, transition crossings, and transitions through states.
 
 ---
 
@@ -224,5 +249,5 @@ in `scripts\manifest\...` to see which attribute each field comes from.
 * **`export ok=true result=false`**: some node failed validation, and Connect does not say which. Open the
   `.mcn` in the GUI and export there to see the validation report. Missing manifest patches (like LockFoot)
   are the usual cause.
-* **A whole state is missing from `roundtrip\`**: Connect drops invalid states silently. Same cause as above.
+* **A whole state is missing from `build\roundtrip\`**: Connect drops invalid states silently. Same cause as above.
 * **`Too many instructions`**: Connect's Lua aborts long loops. Keep heavy computation in Python.

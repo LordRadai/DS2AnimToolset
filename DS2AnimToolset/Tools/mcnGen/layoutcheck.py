@@ -57,6 +57,19 @@ def main(path):
                     stats['edges'] += 1
                     if boxes[m1.group(1)][0] >= boxes[m2.group(1)][0]: stats['inputs not left of consumer'] += 1
                 if 'ControlParameters.ControlParameterArray' in fr and m2 and m2.group(1) in boxes: readers.append(boxes[m2.group(1)][0])
+            ins = collections.defaultdict(list)   # consumer -> [(slot, source y)] for SourceN pins
+            for fe in g.findall('FlowEdges/FlowEdge'):
+                fr, to = fe.findtext('From') or '', fe.findtext('To') or ''
+                m1 = re.search(r'BlendTreeNodes\.([^.]+)\.Pins\.[^.]+$', fr)
+                m2 = re.search(r'BlendTreeNodes\.([^.]+)\.Pins\.(Source(\d*))$', to)
+                if m1 and m2 and m1.group(1) in boxes and m2.group(1) in boxes:
+                    ins[m2.group(1)].append((int(m2.group(3) or 0), boxes[m1.group(1)][1], boxes[m1.group(1)][0]))
+            for c, lst in ins.items():
+                lst.sort()
+                for (k1, y1, x1), (k2, y2, x2) in zip(lst, lst[1:]):
+                    stats['input pairs compared'] += 1
+                    if x1 == x2 and y1 > y2: stats['inputs out of order (same column)'] += 1
+                    elif y1 > y2: stats['inputs out of order (different column)'] += 1
             if readers and cpx is not None:
                 stats['graphs reading CPs'] += 1
                 if float(cpx.text) >= min(b[0] for b in boxes.values()): stats['CP node not left of the last node'] += 1

@@ -19,6 +19,8 @@ if not exist "%CONNECT%" (echo morphemeConnect not found: "%CONNECT%" & exit /b 
 
 for %%F in ("%INPUT_XML%") do (set "DIR=%%~dpF" & set "NAME=%%~nF")
 set "DIR=%DIR:~0,-1%"
+rem generation-only files (scripts, logs, diff, round-trip export) go to <project>\build
+set "BUILD=%DIR%\build"
 set "CPARG="
 if not "%CP_CONFIG%"=="" set CPARG=--cp-config "%CP_CONFIG%"
 
@@ -29,7 +31,7 @@ tasklist /FI "IMAGENAME eq morphemeConnect.exe" 2>nul | find /I "morphemeConnect
 if not errorlevel 1 (echo morphemeConnect is running - close it and run again. & exit /b 1)
 
 if "%CLEAN%"=="1" (
-    del /q "%DIR%\%NAME%.mcn" "%DIR%\%NAME%_paths.lua" "%DIR%\%NAME%_stage2.lua" 2>nul
+    del /q "%DIR%\%NAME%.mcn" "%BUILD%\%NAME%_paths.lua" "%BUILD%\%NAME%_stage2.lua" 2>nul
 )
 
 echo --- 1/5 generating scripts
@@ -37,25 +39,25 @@ echo --- 1/5 generating scripts
 if errorlevel 1 (echo xml2mcn failed & exit /b 1)
 
 echo --- 2/5 Connect stage 1
-"%CONNECT%" -nogui -script "%DIR%\%NAME%_rebuild.lua"
-call :lastline "%DIR%\%NAME%_rebuild.log"
-if not exist "%DIR%\%NAME%.mcn" (echo Stage 1 did not save %NAME%.mcn - see %NAME%_rebuild.log & exit /b 1)
+"%CONNECT%" -nogui -script "%BUILD%\%NAME%_rebuild.lua"
+call :lastline "%BUILD%\%NAME%_rebuild.log"
+if not exist "%DIR%\%NAME%.mcn" (echo Stage 1 did not save %NAME%.mcn - see build\%NAME%_rebuild.log & exit /b 1)
 
-if exist "%DIR%\%NAME%_stage2.lua" (
+if exist "%BUILD%\%NAME%_stage2.lua" (
     echo --- 3/5 patching the .mcn
     "%PYTHON%" "%TOOLS%xml2mcn.py" "%INPUT_XML%" --inject %CPARG%
     if errorlevel 1 (echo --inject failed & exit /b 1)
     echo --- 4/5 Connect stage 2
-    "%CONNECT%" -nogui -script "%DIR%\%NAME%_stage2.lua"
-    call :lastline "%DIR%\%NAME%_stage2.log"
+    "%CONNECT%" -nogui -script "%BUILD%\%NAME%_stage2.lua"
+    call :lastline "%BUILD%\%NAME%_stage2.log"
 ) else (
     echo --- 3/5 and 4/5 not needed for this network
 )
 
 echo --- 5/5 checking
-if exist "%DIR%\roundtrip\%NAME%.xml" (
-    "%PYTHON%" "%TOOLS%xmldiff.py" "%INPUT_XML%" "%DIR%\roundtrip\%NAME%.xml" --paths "%DIR%\%NAME%_paths.lua" --max 5000 > "%DIR%\diff_full.txt"
-    "%PYTHON%" "%TOOLS%xmldiff.py" "%INPUT_XML%" "%DIR%\roundtrip\%NAME%.xml" --paths "%DIR%\%NAME%_paths.lua" --max 0
+if exist "%BUILD%\roundtrip\%NAME%.xml" (
+    "%PYTHON%" "%TOOLS%xmldiff.py" "%INPUT_XML%" "%BUILD%\roundtrip\%NAME%.xml" --paths "%BUILD%\%NAME%_paths.lua" --max 5000 > "%BUILD%\diff_full.txt"
+    "%PYTHON%" "%TOOLS%xmldiff.py" "%INPUT_XML%" "%BUILD%\roundtrip\%NAME%.xml" --paths "%BUILD%\%NAME%_paths.lua" --max 0
 ) else (
     echo No round-trip export was written - Connect's export failed, see the stage logs.
 )
@@ -63,8 +65,8 @@ if exist "%DIR%\roundtrip\%NAME%.xml" (
 
 echo.
 echo Project:  %DIR%\%NAME%.mcn
-echo Diff:     %DIR%\diff_full.txt
-echo Missing CP config entries: %DIR%\%NAME%_cp_config_missing.log
+echo Diff:     %BUILD%\diff_full.txt
+echo Missing CP config entries: %BUILD%\%NAME%_cp_config_missing.log
 exit /b 0
 
 :lastline

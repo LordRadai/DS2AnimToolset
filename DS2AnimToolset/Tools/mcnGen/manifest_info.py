@@ -52,7 +52,9 @@ def load(manifest_dir=MANIFEST_DIR):
                                       'perAnimSet': bool(pas and pas.group(1) == 'true') or (ty and ty.group(1) == 'animationTake'),
                                       'value': val.group(1).strip() if val else None}
             ids = [int(x) for x in re.findall(r'generateNamespacedId\(idNamespaces\.NaturalMotion,\s*(\d+)\)', body[:3000])]
-            info[name] = {'kind': kind, 'file': f, 'ids': ids, 'attrs': attrs}
+            po = re.search(r'pinOrder\s*=\s*\{([^}]*)\}', body)
+            pin_order = re.findall(r'"(\w+)"', po.group(1)) if po else []
+            info[name] = {'kind': kind, 'file': f, 'ids': ids, 'attrs': attrs, 'pinOrder': pin_order}
     return info
 
 
