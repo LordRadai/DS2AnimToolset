@@ -1835,9 +1835,9 @@ bool MorphemeEditorApp::compileMorphemeAssets(std::wstring path)
 
 		g_appLog->debugMessage(MsgLevel_Info, "Invoking asset compiler with command %s\n", assetCompilerCommand.c_str());
 
-		//If it exists, delete any previous output in this folder toa void cluttering
-		if (std::filesystem::exists(fullPath + "\\runtimeBinary"))
-			std::filesystem::remove_all(fullPath + "\\runtimeBinary");
+		//If it exists, delete any previous output in this folder to avoid cluttering
+		if (std::filesystem::exists(fullPath + "\\" + RString::toNarrow(rbName)))
+			std::filesystem::remove_all(fullPath + "\\" + RString::toNarrow(rbName));
 
 		STARTUPINFO si;
 		PROCESS_INFORMATION pi;
