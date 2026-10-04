@@ -130,7 +130,9 @@ def spec_HeadLook(ctx, node):
 
 def spec_TwoBoneIK(ctx, node):
     ref = ['MidJointReferenceAxis%s_1' % c for c in 'XYZ']
-    attrs, inputs = generic(ctx, node, 'TwoBoneIK', skip=tuple(ref) + ('MidJointIndex_1', 'RootJointIndex_1'))
+    # runtime-only options with no Connect 3.6.2 attribute; false is the runtime default, so only report them when set
+    rt_only = tuple(f for f in ('UseSpecifiedJointAsTarget', 'UseSpecifiedJointOrientation') if not node.get(f))
+    attrs, inputs = generic(ctx, node, 'TwoBoneIK', skip=tuple(ref) + ('MidJointIndex_1', 'RootJointIndex_1') + rt_only)
     vals = [float(node.get(f, 0.0)) for f in ref]
     use = any(abs(v) > 0 for v in vals)
     attrs.append(('UseReferenceAxis', use, True))
