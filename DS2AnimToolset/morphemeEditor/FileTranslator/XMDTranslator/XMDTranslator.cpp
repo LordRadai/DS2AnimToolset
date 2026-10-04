@@ -2,8 +2,10 @@
 #include "RCore.h"
 #include "extern.h"
 #include "morphemeEditor.h"
-#include <SimpleMath.h>
 #include "morpheme/AnimSource/mrAnimSourceNSA.h"
+#include "utils/utils.h"
+#include <algorithm>
+#include <SimpleMath.h>
 
 namespace
 {
@@ -34,6 +36,8 @@ namespace
 			if (name.compare(boneList[i]->GetName()) == 0)
 				return boneList[i];
 		}
+
+		return nullptr;
 	}
 
 	XMD::XBone::XBoneList getChildJoints(XMD::XBoneList bones, MR::AnimRigDef* rig, int id)
@@ -58,7 +62,7 @@ namespace
 
 		return children;
 	}
-	
+
 	XMD::XVector3Array getVertices(FlverModel* model, int meshIdx)
 	{
 		std::vector<FlverModel::SkinnedVertex> skinnedVertices = model->getBindPoseSkinnedVertices(meshIdx);
@@ -85,25 +89,56 @@ namespace
 		return normalList;
 	}
 
-	Matrix getBoneTransformAtTime(AnimObject* animObj, float time, int boneId)
+	//The asset compiler extracts the trajectory into a separate source and rewrites the trajectory and hip channels relative to it
+	//(see TrajectorySourceUncompressed::computeTrajectorySource). Only bones with no other overridden bone above them are rewritten.
+	bool isTrajectoryOverriddenBone(const MR::AnimRigDef* rig, int boneId)
 	{
-		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
-		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
-		Matrix transform = animObj->getTransformAtTime(time, boneId);
+		const int trajectoryBoneID = rig->getTrajectoryBoneIndex();
+		const int rootBoneID = rig->getCharacterRootBoneIndex();
+
+		if (boneId == trajectoryBoneID)
+			return (trajectoryBoneID == rootBoneID) || !rig->getHierarchy()->isParentOf(rootBoneID, trajectoryBoneID);
 
 		if (boneId == rootBoneID)
-		{
-			const int parentIdx = animObj->getHandle()->getRig()->getParentBoneIndex(rootBoneID);
-			transform *= animObj->getTransformAtTime(time, parentIdx) * animObj->getTransformAtTime(time, trajectoryBoneID);
-		}
+			return !rig->getHierarchy()->isParentOf(trajectoryBoneID, rootBoneID);
 
-		return transform;
+		return false;
+	}
+
+	Matrix getChannelTransform(const MR::AnimationSourceHandle* animHandle, int boneId)
+	{
+		return utils::NMDX::getTransformMatrix(animHandle->getChannelData()[boneId].m_quat, animHandle->getChannelData()[boneId].m_pos);
+	}
+
+	//Returns the local transform of boneId at the given time, with the trajectory motion put back into the trajectory and hip bones.
+	//Using row vectors (local * parent), the compiler stores an overridden bone as L = W * T^-1 * B * P^-1 (W: bone world transform,
+	//T: trajectory world transform, B: blend frame, P: parent world transform) and the trajectory source as D = B^-1 * T * T0^-1 * B.
+	//The first frame trajectory T0 is lost on compile, so we take it as identity: T = B * D * B^-1, which gives W = L * P * D * B^-1
+	//and a local transform of W * P^-1.
+	Matrix getBoneTransformAtTime(AnimObject* animObj, float time, int boneId)
+	{
+		animObj->setAnimTime(time);
+
+		const MR::AnimationSourceHandle* animHandle = animObj->getHandle();
+		const MR::AnimRigDef* rig = animHandle->getRig();
+
+		Matrix local = getChannelTransform(animHandle, boneId);
+
+		if (!isTrajectoryOverriddenBone(rig, boneId))
+			return local;
+
+		Matrix parentWorld = Matrix::Identity;
+		for (int parentIdx = rig->getParentBoneIndex(boneId); parentIdx != -1; parentIdx = rig->getParentBoneIndex(parentIdx))
+			parentWorld *= getChannelTransform(animHandle, parentIdx);
+
+		const Matrix deltaTrajectory = animObj->getTrajectoryAtTime(time);
+		const Matrix blendFrame = utils::NMDX::getTransformMatrix(*rig->getBlendFrameOrientation(), *rig->getBlendFrameTranslation());
+
+		return local * parentWorld * deltaTrajectory * blendFrame.Invert() * parentWorld.Invert();
 	}
 
 	XM2::XQuaternion getBoneTransformQuatAtTime(AnimObject* animObj, float time, int boneId)
 	{
-		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
-		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
 		Matrix transform = getBoneTransformAtTime(animObj, time, boneId);
 
 		Vector3 position;
@@ -117,8 +152,6 @@ namespace
 
 	XM2::XVector3 getBoneTransformPosAtTime(AnimObject* animObj, float time, int boneId)
 	{
-		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
-		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
 		Matrix transform = getBoneTransformAtTime(animObj, time, boneId);
 
 		Vector3 position;
@@ -132,8 +165,6 @@ namespace
 
 	XM2::XVector3 getBoneTransformScaleAtTime(AnimObject* animObj, float time, int boneId)
 	{
-		const int trajectoryBoneID = animObj->getHandle()->getRig()->getTrajectoryBoneIndex();
-		const int rootBoneID = animObj->getHandle()->getRig()->getCharacterRootBoneIndex();
 		Matrix transform = getBoneTransformAtTime(animObj, time, boneId);
 
 		Vector3 position;
@@ -503,7 +534,9 @@ namespace FT
 		if (rigToAnimMap && (rigToAnimMap->getRigToAnimMapType() == MR::RigToAnimMap::AnimToRig))
 		{
 			const MR::AnimToRigTableMap* animToRigMap = (MR::AnimToRigTableMap*)rigToAnimMap->getRigToAnimMapData();
+			const MR::AnimRigDef* animRigDef = animObj->getHandle()->getRig();
 
+			std::vector<int> channelIDs;
 			for (uint32_t i = 0; i < animToRigMap->getNumAnimChannels(); i++)
 			{
 				const int channelID = animToRigMap->getAnimToRigMapEntry(i);
@@ -512,6 +545,19 @@ namespace FT
 				if (channelID == 0)
 					INVOKE_PANIC("Incorrect rigToAnimMap data. CharacterWorldSpaceTM should not be animated! (anim=%s)\n", animObj->getAnimName());
 
+				channelIDs.push_back(channelID);
+			}
+
+			//The trajectory and hip bones carry the root motion, so they must be keyed even if the animation has no channel for them
+			const int rootMotionBoneIDs[] = { animRigDef->getTrajectoryBoneIndex(), animRigDef->getCharacterRootBoneIndex() };
+			for (const int boneID : rootMotionBoneIDs)
+			{
+				if ((boneID > 0) && (std::find(channelIDs.begin(), channelIDs.end(), boneID) == channelIDs.end()))
+					channelIDs.push_back(boneID);
+			}
+
+			for (const int channelID : channelIDs)
+			{
 				XMD::XSampledKeys* sampleKeys = animCycle->AddSampledKeys(channelID);
 				sampleKeys->SetSize(animLenFrames);
 
@@ -539,7 +585,7 @@ namespace FT
 
 				for (size_t j = 0; j < animLenFrames; j++)
 				{
-					float time = RMath::frameToTime(j, 30);
+					float time = RMath::frameToTime(j, fps);
 
 					sampleKeys->TranslationKeys()[j] = getBoneTransformPosAtTime(animObj, time, channelID);
 					sampleKeys->RotationKeys()[j] = getBoneTransformQuatAtTime(animObj, time, channelID);
