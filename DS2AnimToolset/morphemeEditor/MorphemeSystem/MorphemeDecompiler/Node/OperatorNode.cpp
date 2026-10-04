@@ -340,6 +340,8 @@ namespace MD
 			nodeDataBlock->writeInt(functionOpCode->m_operation, "OperationCode");
 			nodeDataBlock->writeFloat(functionOpCode->m_constValue, "ConstantValue");
 			nodeDataBlock->writeFloat(functionOpCode->m_constVector.x, "ConstantValueX");
+			nodeDataBlock->writeFloat(functionOpCode->m_constVector.y, "ConstantValueY");
+			nodeDataBlock->writeFloat(functionOpCode->m_constVector.z, "ConstantValueZ");
 
 			return nodeExportXML;
 		}
