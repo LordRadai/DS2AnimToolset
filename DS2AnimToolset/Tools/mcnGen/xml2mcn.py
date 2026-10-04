@@ -528,6 +528,11 @@ class Converter:
         self.emit('  return anim["addAnimSet" .. kind .. "MirrorMappings"](set, add)')
         self.emit('end')
         for k, (sn, (sj, sr)) in enumerate(zip(self.set_names, self.set_rigs)):
+            if sr is not None and sr.findtext('mirrorPlane') is not None:
+                # 0 = YZ, 1 = ZX, 2 = XY (MirroredAnimMapping::m_axis); a new Connect rig defaults to XY, which
+                # mirrors up/down instead of left/right
+                plane = {0: 'YZ', 1: 'XZ', 2: 'XY'}.get(int(sr.findtext('mirrorPlane')), 'YZ')
+                self.call('mirror plane %s' % sn, 'anim.setAnimSetJointMirrorPlane(%s, %s)' % (lua_str(sn), lua_str(plane)))
             if sr is not None:
                 pairs = [(sj.get(int(mp.get('first'))), sj.get(int(mp.get('second')))) for mp in sr.findall('JointMirrorMapping')]
                 pairs = [{'first': a, 'second': b} for a, b in pairs if a and b]

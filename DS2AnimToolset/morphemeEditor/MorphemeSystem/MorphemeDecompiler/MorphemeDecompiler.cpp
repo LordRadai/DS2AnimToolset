@@ -245,7 +245,10 @@ namespace MD
 		rigExport->setBlendFrameOrientationQuat(blendFrameOrientation->x, blendFrameOrientation->y, blendFrameOrientation->z, blendFrameOrientation->w);
 
 		rigExport->setRigRetargetScale(1.f);
-		rigExport->setMirrorPlane(0);
+
+		// The mirror plane is compiled into the mirrored anim mapping (0 = YZ, 1 = ZX, 2 = XY); MirrorTransforms
+		// mirrors across it, so a wrong plane flips limbs (e.g. a forearm pointing up instead of down).
+		rigExport->setMirrorPlane(mirroredMappingAttrib != nullptr ? mirroredMappingAttrib->m_axis : 0);
 		
 		return rigExport;
 	}
