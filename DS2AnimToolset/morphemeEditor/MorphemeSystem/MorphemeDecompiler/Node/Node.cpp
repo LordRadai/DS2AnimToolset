@@ -147,15 +147,15 @@ namespace MD
 					sprintf_s(paramName, "Id_%d_%d", animSetIndex + 1, k + 1);
 					nodeDataBlock->writeUInt(unfilteredBonesArray->m_values[k], paramName);
 				}
-
-				MR::AttribDataInt* attribDataEventOffset = static_cast<MR::AttribDataInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SYNC_EVENT_OFFSET, animSetIndex));
-				
-				int eventOffset = 0;
-				if (attribDataEventOffset != nullptr)
-					eventOffset = attribDataEventOffset->m_value;
-
-				nodeDataBlock->writeUInt(eventOffset, "EventOffset");
 			}
+
+			MR::AttribDataInt* attribDataEventOffset = static_cast<MR::AttribDataInt*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SYNC_EVENT_OFFSET, animSetIndex));
+
+			int eventOffset = 0;
+			if (attribDataEventOffset != nullptr)
+				eventOffset = attribDataEventOffset->m_value;
+
+			nodeDataBlock->writeUInt(eventOffset, "EventOffset");
 
 			bool eventPassThrough = true;
 
