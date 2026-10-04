@@ -23,8 +23,7 @@ union BlendTreeID
 	// Constructors
 	BlendTreeID() : m_combined(0) {}
 	BlendTreeID(MR::NodeID nodeID, uint16_t layerIndex)
-		: m_nodeID(nodeID), m_layerIndex(layerIndex) {
-	}
+		: m_nodeID(nodeID), m_layerIndex(layerIndex) {}
 	BlendTreeID(uint32_t combined) : m_combined(combined) {}
 
 	// Accessors

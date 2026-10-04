@@ -18,8 +18,6 @@
 
 #include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
 
-//#define EXPORT_MULTIPLY_CONNECTED_NODES
-
 namespace
 {
 	using Clock = std::chrono::steady_clock;
@@ -223,9 +221,7 @@ NodeEditor::Graph* NodeProcessor::buildRootGraph(NodeEditor::Editor* editor, MR:
 
 	populateGraph(rootGraph, rootNodeDef, &rootBT);
 	//populateSubGraphs(rootGraph, rootNodeDef);
-#ifdef EXPORT_MULTIPLY_CONNECTED_NODES
 	processMultiplyConnectedNodes(editor, rootNodeDef->getOwningNetworkDef());
-#endif
 
 	return rootGraph;
 }
@@ -250,7 +246,7 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 
 			if (child->getNodeID() == ownerNodeDef->getNodeID())
 				childBT = BlendTreeID(child->getNodeID(), --btLayerIndex);
-			
+
 			NodeEditor::Node* node = processNode(graph, child, childName, &childBT);
 
 			if (node->hasSubGraph())
@@ -497,7 +493,7 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 				NodeEditor::PassDownPinsNode* passDownPinNode = blendTree->getPassDownPinsNode();
 
 				g_appLog->debugMessage(MsgLevel_Debug, "Connecting node ID %d (%s) in blend tree %d (%s) to pass down pins node for multiply connected node ID %d (%s).\n", sourceNode->getNodeID(), sourceNode->getFullName().c_str(), blendTree->getGraphID(), blendTree->getFullName().c_str(), multiplyConnectedNode->getNodeID(), multiplyConnectedNode->getFullName().c_str());
-			
+
 				if (!passDownPinNode)
 					INVOKE_PANIC("Blend tree with ID %d (%s) does not have a pass down pins node.\n", blendTree->getGraphID(), blendTree->getFullName().c_str());
 
@@ -835,7 +831,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 
 				pinIndex++;
 			}
-		}	
+		}
 	}
 }
 
@@ -902,7 +898,7 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 		}
 
 		NodeEditor::Transition* transition = stateMachine->createTransition(childNodeDef->getNodeID(), transitTypeAsManifestName(childNodeDef->getNodeTypeID()), sourceNode, targetNode);
-		
+
 		if (!transition)
 			INVOKE_PANIC("NodeProcessor::processNodeTransitionsInStateMachine: Failed to create transition '%s' in state machine '%s'.\n", getNodeName(childNodeDef->getNodeID()).c_str(), stateMachine->getName().c_str());
 	}
@@ -1378,7 +1374,7 @@ MR::NodeDef* NodeProcessor::getCommonAncestorContainer(
 	int elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t0).count();
 
 	g_appLog->debugMessage(MsgLevel_Debug, "\tSelected common ancestor node in %d ms.\n", bestNodeSelectionTime);
-	
+
 	g_appLog->debugMessage(MsgLevel_Debug, "\tTotal time to find common ancestor: %d ms. %.2f spent on collecting ancestors, %.2f spent on intersecting parent paths, %.2f spent finding the best node.\n", elapsedTime,
 		((float)ancestorCollectionTime / (float)elapsedTime) * 100.f,
 		((float)intersectionTime / (float)elapsedTime) * 100.f,
@@ -1557,7 +1553,7 @@ void NodeProcessor::collectContainerNodes(MR::NetworkDef* netDef)
 		MR::NodeDef* multiplyConnectedOwner = getParentNodeContainer(multiplyConnectedNodeDef);
 
 		g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectContainerNodes: Found multiply connected node %d (name=\"%s\").\n", multiplyConnectedNodeDef->getNodeID(), netDef->getNodeNameFromNodeID(multiplyConnectedNodeDef->getNodeID()));
-		
+
 		std::vector<MR::NodeDef*> referencingNodes;
 		getNodesWithThisAsInput(referencingNodes, multiplyConnectedNodeDef->getNodeID());
 
@@ -1676,7 +1672,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 		for (MR::NodeDef* childNode : childNodes)
 		{
 			g_appLog->debugMessage(MsgLevel_Debug, "NodeProcessor::collectBlendTreeChildNodes: Registering node ID %d as child of blend tree node ID %d (layer %d).\n", childNode->getNodeID(), btNodeDef->getNodeID(), blendTreeNodePair.first.getLayerIndex());
-			
+
 			std::vector<ContainerNodeInfo*> blendTreesForNode = getBlendTreesForNode(btNodeDef->getNodeID());
 
 			MR::NodeDef* parentNode = childNode->getParentNodeDef();
@@ -1693,7 +1689,7 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 	}
 
 	m_multiplyConnectedCPOutputNodes.clear();
-	
+
 	for (size_t i = 0; i < m_cpOutputNodes.size(); i++)
 	{
 		MR::NodeDef* nodeDef = m_cpOutputNodes[i];
@@ -1734,7 +1730,6 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 			m_multiplyConnectedCPOutputNodes.push_back(nodeDef);
 	}
 
-#ifdef EXPORT_MULTIPLY_CONNECTED_NODES
 	// Add all multiply connected child nodes to the graph containing the multiply connected node.
 	const MR::NodeIDsArray* multiplyConnectedNodes = netDef->getMultiplyConnectedNodeIDs();
 	for (int i = multiplyConnectedNodes->getNumEntries() - 1; i >= 0; --i)
@@ -1758,7 +1753,6 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 
 		collectChildren(nodeDef, containerInfo->getChildNodeDefs());
 	}
-#endif
 }
 
 bool NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
