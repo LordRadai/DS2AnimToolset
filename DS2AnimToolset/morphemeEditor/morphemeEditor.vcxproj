@@ -24,6 +24,8 @@
     <ProjectGuid>{ebc383bc-0add-4009-acf3-0f9b1d5191ff}</ProjectGuid>
     <RootNamespace>morphemeEditor</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <!-- zlib comes from lib\ (zlib.lib); keep a user-wide vcpkg integration from also auto-linking its zlib (zd.lib), which causes LNK2005 on inflate*. -->
+    <VcpkgEnabled>false</VcpkgEnabled>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
