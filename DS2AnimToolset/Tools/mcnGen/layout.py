@@ -73,17 +73,23 @@ def _hits(a, b, c, hw, hh):
 
 
 def state_machine(states, actives, transitions, size, budget=40000):
-    """states/actives: ids; transitions: (src, dst).  Returns {id: (x, y)}."""
+    """states/actives: ids; transitions: (src, dst).  Returns {id: (x, y)}.
+    States go on a grid, ActiveStates in a column left of it; both the grid cells of the states and the order of the
+    ActiveStates in their column are optimised against crossings, transitions through states and length."""
     n = len(states)
     pos = {}
-    y = 0
-    fixed = {}
-    for a in actives:
+    na = len(actives)
+    ah = max([size(a)[1] for a in actives] or [0]) + ROW_GAP           # ActiveState slot pitch
+    aslot = {a: k for k, a in enumerate(actives)}
+    def acentre(a):
         w, h = size(a)
-        pos[a] = (-w - 2 * COL_GAP, y)
-        fixed[a] = (-w / 2 - 2 * COL_GAP, y + h / 2)
-        y += h + ROW_GAP
-    if n == 0: return pos
+        return (-w / 2 - 2 * COL_GAP, aslot[a] * ah + h / 2)
+    def place_actives():
+        for a in actives:
+            w, h = size(a)
+            pos[a] = (-w - 2 * COL_GAP, aslot[a] * ah)
+    if n == 0:
+        place_actives(); return pos
     maxw = max(size(s)[0] for s in states); maxh = max(size(s)[1] for s in states)
     cw, ch = maxw + 2 * COL_GAP, maxh + 3 * ROW_GAP
     cols = int(math.ceil(math.sqrt(n)))
@@ -91,12 +97,18 @@ def state_machine(states, actives, transitions, size, budget=40000):
     if n > 2 and cols * rows == n: rows += 1
     ncells = cols * rows
     idx = {s: i for i, s in enumerate(states)}
-    edges = [(a, b) for a, b in transitions if a != b and (a in idx or a in fixed) and (b in idx or b in fixed)]
+    edges = [(a, b) for a, b in transitions if a != b and (a in idx or a in aslot) and (b in idx or b in aslot)]
     cell = list(range(n))
     def centre(e):
-        if e in fixed: return fixed[e]
+        if e in aslot: return acentre(e)
         k = cell[idx[e]]
         return ((k % cols) * cw + maxw / 2, (k // cols) * ch + maxh / 2)
+    def order_actives():
+        # barycentre: each ActiveState level with the states it leads to
+        def bary(a):
+            ys = [centre(d if s == a else s)[1] for s, d in edges if a in (s, d) and (d if s == a else s) in idx]
+            return sum(ys) / len(ys) if ys else 0.0
+        for k, a in enumerate(sorted(actives, key=lambda a: (bary(a), aslot[a]))): aslot[a] = k
     def cost():
         segs = [(centre(a), centre(b)) for a, b in edges]
         c = 0.0
@@ -109,13 +121,14 @@ def state_machine(states, actives, transitions, size, budget=40000):
                 if s in edges[i]: continue
                 if _hits(p1, p2, centre(s), maxw / 2, maxh / 2): c += 60
         return c
-    if edges and n > 2:
+    if edges and (n > 2 or na > 1):
+        order_actives()
         m = len(edges)
-        budget = min(budget, max(300, 4000000 // (m * m + m * n + 1)))
+        budget = min(budget, max(300, 4000000 // (m * m + m * (n + na) + 1)))
         best, evals, improved = cost(), 0, True
         while improved and evals < budget:
             improved = False
-            for i in range(n):
+            for i in range(n if n > 2 else 0):
                 for target in range(ncells):
                     if cell[i] == target: continue
                     other = cell.index(target) if target in cell else None
@@ -129,6 +142,16 @@ def state_machine(states, actives, transitions, size, budget=40000):
                         if other is not None: cell[other] = target
                     if evals >= budget: break
                 if evals >= budget: break
+            # ActiveStates: swap slots in their column
+            for i in range(na):
+                for j in range(i + 1, na):
+                    if evals >= budget: break
+                    a, b = actives[i], actives[j]
+                    aslot[a], aslot[b] = aslot[b], aslot[a]
+                    c = cost(); evals += 1
+                    if c < best - 1e-9: best, improved = c, True
+                    else: aslot[a], aslot[b] = aslot[b], aslot[a]
+    place_actives()
     for s in states:
         k = cell[idx[s]]
         pos[s] = ((k % cols) * cw, (k // cols) * ch)
