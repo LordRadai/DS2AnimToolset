@@ -1497,20 +1497,28 @@ bool MorphemeEditorApp::exportAll(std::wstring path)
 			g_workerThread.load()->addProcess("Exporting all", 4);
 			g_workerThread.load()->setProcessStepName("Exporting model");
 
+			g_appLog->debugMessage(MsgLevel_Info, "Exporting model for %ws\n", this->m_character->getCharacterName().c_str());
+
 			this->exportModel(path);
 
 			g_workerThread.load()->increaseProgressStep();
 			g_workerThread.load()->setProcessStepName("Exporting animations and markups");
+
+			g_appLog->debugMessage(MsgLevel_Info, "Exporting animations and markups for %ws\n", this->m_character->getCharacterName().c_str());
 
 			this->exportAnimationsAndMarkups(path);
 
 			g_workerThread.load()->increaseProgressStep();
 			g_workerThread.load()->setProcessStepName("Exporting network");
 
+			g_appLog->debugMessage(MsgLevel_Info, "Exporting network for %ws\n", this->m_character->getCharacterName().c_str());
+
 			this->exportNetwork(path);
 
 			g_workerThread.load()->increaseProgressStep();
 			g_workerThread.load()->setProcessStepName("Exporting TimeAct");
+
+			g_appLog->debugMessage(MsgLevel_Info, "Exporting TimeAct for %ws\n", this->m_character->getCharacterName().c_str());
 
 			this->exportTimeAct(path);
 
@@ -1598,6 +1606,7 @@ bool MorphemeEditorApp::exportAnimations(std::wstring path)
 		{
 			std::string animName = RString::removeExtension(motionCtrl->getAnimationById(animSetIdx, i)->getAnimName());
 			g_workerThread.load()->setProcessStepName(animName);
+			g_appLog->debugMessage(MsgLevel_Info, "\t%ws\n", animName.c_str());
 
 			this->exportAnimation(path, animSetIdx, i);
 
@@ -1629,6 +1638,7 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 		{
 			std::string animName = RString::removeExtension(motionCtrl->getAnimationById(animSetIdx, i)->getAnimName());
 			g_workerThread.load()->setProcessStepName(animName);
+			g_appLog->debugMessage(MsgLevel_Info, "\t%ws\n", animName.c_str());
 
 			this->exportAnimMarkup(path, animSetIdx, i, exportedTracks);
 
@@ -2029,8 +2039,7 @@ bool MorphemeEditorApp::exportDirectoryInternal(std::wstring path)
 
 			std::filesystem::create_directories(exportPath);
 
-			g_workerThread.load()->startThread("Export all", &MorphemeEditorApp::exportAll, this, exportPath);
-			g_workerThread.load()->join();
+			exportAll(exportPath);
 		}
 
 		return true;

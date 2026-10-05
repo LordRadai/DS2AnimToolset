@@ -55,42 +55,63 @@ public:
 
 	int getProcessStep(int idx) const
 	{
+		if (this->m_processes.empty())
+			return 0;
+
 		std::lock_guard<std::mutex> lock(this->m_mutex);
 		return this->m_processes[idx].getStep();
 	}
 
 	int getProcessNumSteps(int idx) const
 	{
+		if (this->m_processes.empty())
+			return 0;
+
 		std::lock_guard<std::mutex> lock(this->m_mutex);
 		return this->m_processes[idx].getNumSteps();
 	}
 
 	float getProcessProgress(int idx) const
 	{
+		if (this->m_processes.empty())
+			return 0.f;
+
 		std::lock_guard<std::mutex> lock(this->m_mutex);
 		return this->m_processes[idx].getProgress();
 	}
 
 	std::string getProcessName(int idx) const 
 	{ 
+		if (this->m_processes.empty())
+			return "";
+
 		std::lock_guard<std::mutex> lock(this->m_mutex);
 		return this->m_processes[idx].getProcessName();
 	}
 
 	std::string getProcessStepName(int idx) const 
 	{ 
+		if (this->m_processes.empty())
+			return "";
+
 		std::lock_guard<std::mutex> lock(this->m_mutex);
 		return this->m_processes[idx].getStepName();
 	}
 
 	bool isProcessBusy(int idx) const 
 	{ 
+		if (this->m_processes.empty())
+			return false;
+
 		std::lock_guard<std::mutex> lock(this->m_mutex);
 		return this->m_processes[idx].isBusy();
 	}
 
 	void increaseProgressStep()
 	{
+		if (this->m_processes.empty())
+			return;
+
 		std::lock_guard<std::mutex> lock(this->m_mutex);
 		
 		int step = this->m_processes.back().getStep();
@@ -105,6 +126,9 @@ public:
 
 	void setProcessStepName(std::string name)
 	{
+		if (this->m_processes.empty())
+			return;
+
 		std::lock_guard<std::mutex> lock(this->m_mutex);
 		this->m_processes.back().setStepName(name);
 	}
