@@ -5,7 +5,6 @@
 #include "morpheme/mrNodeDef.h"
 #include "simpleBundle/simpleAnimRuntimeIDtoFilenameLookup.h"
 
-#include "NodeNamingStrategy/NodeNamingStrategy.inl"
 #include "GraphLayouterStrategy/GraphLayouterStrategy.inl"
 #include "NodeEditor/NodeEditor.h"
 #include "NodeEditor/Editor/ControlParameter/ControlParameter.h"
@@ -89,9 +88,8 @@ public:
 
 class NodeProcessor
 {
-	NodeNamingStrategy* m_namingStrategy;
-	GraphLayouterStrategy* m_blendTreeLayouterStrategy;
-	GraphLayouterStrategy* m_stateMachineLayouterStrategy;
+	GraphLayouterStrategy* m_blendTreeLayouterStrategy = nullptr;
+	GraphLayouterStrategy* m_stateMachineLayouterStrategy = nullptr;
 
 	std::map<BlendTreeID, ContainerNodeInfo> m_blendTreeNodes;
 	std::map<MR::NodeID, ContainerNodeInfo> m_stateMachineNodes;
@@ -182,17 +180,22 @@ private:
 	void collectBlendTreeChildNodes(MR::NetworkDef* netDef);
 
 	/*
-	* \brief Collect all node names in the network and register them.
-	* \param netDef The network definition to process.
-	*/
-	bool collectNodeNames(MR::NetworkDef* netDef);
-
-	/*
 	* \brief Fix up the names of animation nodes in the network using the provided anim names table. This should be done after collecting all node names.
 	* \param netDef The network definition to process.
 	* \param animNamesTable The table to use for looking up animation names from runtime IDs.
 	*/
 	void fixupAnimNodeNames(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable);
+
+	/*
+	* rief Fill the blend tree and state machine containers (with their layers) and the node names from the recovered
+	* hierarchy (NetworkHierarchy, a port of Tools/mcnGen/hierarchy.py).
+	*/
+	void buildContainersFromHierarchy(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable);
+
+	/*
+	* rief The editor node standing for nodeDef inside blendTree: the node itself, or the nested blend tree it is the output of.
+	*/
+	NodeEditor::Node* findNodeInBlendTree(NodeEditor::BlendTree* blendTree, MR::NodeDef* nodeDef, const BlendTreeID* btContext);
 
 	void populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef, const BlendTreeID* btContext = nullptr);
 	void populateSubGraphs(NodeEditor::Graph* graph, MR::NodeDef* ownerNodeDef);
@@ -217,6 +220,11 @@ private:
 
 	void processNodeTransitionsInStateMachine(NodeEditor::StateMachine* stateMachine, MR::NodeDef* nodeDef);
 	bool setStateMachineLayout(NodeEditor::StateMachine* stateMachine, MR::NodeDef* smNodeDef);
+
+	/*
+	* rief Lay out a finished graph and all its sub graphs (same layout as the .mcn generator).
+	*/
+	void layoutGraph(NodeEditor::Graph* graph);
 
 	bool isNetworkNodeNameMapComplete(MR::NetworkDef* netDef);
 };

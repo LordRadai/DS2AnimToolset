@@ -1,11 +1,11 @@
 #pragma once
 #include "GraphLayouterStrategy.inl"
 
-class BTFanLayouterStrategy : public GraphLayouterStrategy
+class GridStateMachineLayouterStrategy : public GraphLayouterStrategy
 {
 public:
-	BTFanLayouterStrategy() = default;
+	GridStateMachineLayouterStrategy() = default;
+	virtual ~GridStateMachineLayouterStrategy() = default;
 
-	virtual ~BTFanLayouterStrategy() = default;
 	virtual bool setLayout(NodeEditor::Graph* graph, MR::NodeDef* graphNodeDef, std::vector<MR::NodeDef*>& childNodes) override;
 };

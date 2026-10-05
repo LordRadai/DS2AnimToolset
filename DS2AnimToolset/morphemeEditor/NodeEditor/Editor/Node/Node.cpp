@@ -287,13 +287,19 @@ namespace NodeEditor
 		StyleSettings& style = m_ownerEditor->getStyleSettings();
 		ImVec2 textSize = ImGui::CalcTextSize(m_name.c_str());
 
+		// Height mirrors draw(): title bar, then the content area (padded) holding the min-height dummy and one text
+		// line per pin, items separated by the ImGui item spacing.
 		const float titleBarHeight = 2.f * imStyle.NodePadding.y + textSize.y;
-		const float nodeTotalMinHeight = titleBarHeight + style.NodeMinContentHeight;
-		const int totalPins = (int)(m_inputPins.size() + m_outputPins.size() + m_inputDataPins.size() + m_outputDataPins.size());
-		const float nodeHeight = totalPins * 10.f;
+		const float itemSpacing = ImGui::GetStyle().ItemSpacing.y;
+
+		const int controlPins = (int)(m_inputPins.size() + m_outputPins.size());
+		const int totalPins = controlPins + (int)(m_inputDataPins.size() + m_outputDataPins.size());
+		const float dummyHeight = std::fmax(0.f, style.NodeMinContentHeight - controlPins * 10.f);
+
+		const float contentHeight = 2.f * imStyle.NodePadding.y + dummyHeight + totalPins * (ImGui::GetTextLineHeight() + itemSpacing);
 
 		width = std::fmax(style.NodeMinWidth, textSize.x);
-		height = std::fmax(nodeTotalMinHeight, nodeHeight);
+		height = titleBarHeight + itemSpacing + contentHeight;
 	}
 
 	bool Node::editorGUI()

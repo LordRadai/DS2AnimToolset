@@ -24,7 +24,7 @@
     <ProjectGuid>{ebc383bc-0add-4009-acf3-0f9b1d5191ff}</ProjectGuid>
     <RootNamespace>morphemeEditor</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-	<VcpkgEnabled>false</VcpkgEnabled>
+    <VcpkgEnabled>false</VcpkgEnabled>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -227,13 +227,16 @@
     <ClInclude Include="MorphemeEditorApp\MorphemeEditorApp.h" />
     <ClInclude Include="MorphemeNetworkInspector\MessageProcessor\MessageProcessor.h" />
     <ClInclude Include="MorphemeNetworkInspector\MorphemeNetworkInspector.h" />
-    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\BTFanLayouterStrategy.h" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\ColumnBlendTreeLayouterStrategy.h" />
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GraphLayouterStrategy.inl" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GridStateMachineLayouterStrategy.h" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\Utils.h" />
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\DefaultNodeNamingStrategy.h" />
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\NodeNamingStrategy.inl" />
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\ReconstructParentChildNameStrategy.h" />
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\Utils\Utils.h" />
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.h" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NetworkHierarchy.h" />
     <ClInclude Include="MorphemeSystem\AnimLoader\AnimLoader.h" />
     <ClInclude Include="MorphemeSystem\AssetLoader\AssetLoader.h" />
     <ClInclude Include="MorphemeSystem\CharacterController\CharacterController.h" />
@@ -365,11 +368,14 @@
     <ClCompile Include="MorphemeEditorApp\MorphemeEditorApp.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\MessageProcessor\MessageProcessor.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\MorphemeNetworkInspector.cpp" />
-    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\BTFanLayouterStrategy.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\ColumnBlendTreeLayouterStrategy.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GridStateMachienLayouterStrategy.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\Utils.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\DefaultNodeNamingStrategy.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\ReconstructParentChildNameStrategy.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\Utils\Utils.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NetworkHierarchy.cpp" />
     <ClCompile Include="MorphemeSystem\AnimLoader\AnimLoader.cpp" />
     <ClCompile Include="MorphemeSystem\AssetLoader\AssetLoader.cpp" />
     <ClCompile Include="MorphemeSystem\CharacterController\CharacterController.cpp" />

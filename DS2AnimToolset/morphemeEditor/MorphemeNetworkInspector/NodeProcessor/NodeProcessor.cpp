@@ -16,7 +16,9 @@
 #include "NodeNamingStrategy/ReconstructParentChildNameStrategy.h"
 #include "NodeNamingStrategy/Utils/Utils.h"
 
-#include "GraphLayouterStrategy/BTFanLayouterStrategy.h"
+#include "GraphLayouterStrategy/ColumnBlendTreeLayouterStrategy.h"
+#include "GraphLayouterStrategy/GridStateMachineLayouterStrategy.h"
+#include "NetworkHierarchy.h"
 
 namespace
 {
@@ -61,12 +63,10 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 	m_inputCpLookupTable.clear();
 	m_multiplyConnectedCPOutputNodes.clear();
 
-	if (isNetworkNodeNameMapComplete(netDef))
-		m_namingStrategy = new DefaultNodeNamingStrategy();
-	else
-		m_namingStrategy = new ReconstructParentChildNameStrategy();
-
-	m_blendTreeLayouterStrategy = new BTFanLayouterStrategy();
+	delete m_blendTreeLayouterStrategy;
+	delete m_stateMachineLayouterStrategy;
+	m_blendTreeLayouterStrategy = new ColumnBlendTreeLayouterStrategy();
+	m_stateMachineLayouterStrategy = new GridStateMachineLayouterStrategy();
 
 	for (size_t i = 1; i < netDef->getNumNodeDefs(); i++)
 	{
@@ -97,9 +97,7 @@ bool NodeProcessor::preProcessNetwork(MR::NetworkDef* netDef, MR::UTILS::SimpleA
 		}
 	}
 
-	collectContainerNodes(netDef);
-	collectBlendTreeChildNodes(netDef);
-	collectNodeNames(netDef);
+	buildContainersFromHierarchy(netDef, animNamesTable);
 	fixupAnimNodeNames(netDef, animNamesTable);
 
 	int numNetworkNodes = 0;
@@ -220,8 +218,9 @@ NodeEditor::Graph* NodeProcessor::buildRootGraph(NodeEditor::Editor* editor, MR:
 	NodeEditor::Graph* rootGraph = editor->createRootBlendTree(rootBT.getBlendTreeID());
 
 	populateGraph(rootGraph, rootNodeDef, &rootBT);
-	//populateSubGraphs(rootGraph, rootNodeDef);
 	processMultiplyConnectedNodes(editor, rootNodeDef->getOwningNetworkDef());
+
+	layoutGraph(rootGraph);
 
 	return rootGraph;
 }
@@ -256,7 +255,6 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 		}
 
 		processNodeConnectionsInBlendTree(graph->asType<NodeEditor::BlendTree>(), ownerNodeDef, childNodes, btContext);
-		//setBlendTreeLayout(graph->asType<NodeEditor::BlendTree>(), ownerNodeDef, childNodes);
 	}
 	else if (graph->isOfType<NodeEditor::StateMachine>())
 	{
@@ -291,7 +289,6 @@ void NodeProcessor::populateGraph(NodeEditor::Graph* graph, MR::NodeDef* ownerNo
 		graph->asType<NodeEditor::StateMachine>()->setDefaultNodeID(defaultNodeID);
 
 		processNodeTransitionsInStateMachine(graph->asType<NodeEditor::StateMachine>(), ownerNodeDef);
-		setStateMachineLayout(graph->asType<NodeEditor::StateMachine>(), ownerNodeDef);
 	}
 	else
 	{
@@ -511,6 +508,13 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 					}
 				}
 
+				// A consumer in the multiply connected node's own graph takes it directly
+				if (inputIdx != -1 && multiplyConnectedNode->getParentGraph() == blendTree)
+				{
+					multiplyConnectedNode->getOutputPin(0)->connectTo(sourceNode->getInputPin(inputIdx));
+					continue;
+				}
+
 				if (inputIdx != -1)
 				{
 					char passDownPinName[256];
@@ -553,7 +557,9 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 								}
 
 								NodeEditor::Pin* parentPassDownPin = parentPassDownPinNode->getOutputPin(passDownPinName);
-								parentPassDownPin->connectTo(graphNode->getInputPin(0));
+								NodeEditor::Pin* graphNodePin = graphNode->getInputPin(passDownPinName);
+								if (parentPassDownPin && graphNodePin)
+									parentPassDownPin->connectTo(graphNodePin);
 							}
 
 							currentGraph = parentGraph;
@@ -598,8 +604,6 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 		std::vector<MR::NodeDef*> nodesWithThisAsInputCP;
 		getNodesWithThisAsInputCP(nodesWithThisAsInputCP, m_multiplyConnectedCPOutputNodes[i]->getNodeID());
 
-		if (nodesWithThisAsInputCP.size() == 1)
-			continue;
 
 		for (MR::NodeDef* nodeDef : nodesWithThisAsInputCP)
 		{
@@ -619,6 +623,9 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 				INVOKE_PANIC("Source node with ID %d for multiply connected node ID %d is not in a blend tree. This contradicts core assumptions.\n", sourceNodeID, nodeID);
 
 			NodeEditor::BlendTree* blendTree = sourceNode->getParentGraph()->asType<NodeEditor::BlendTree>();
+
+			if (multiplyConnectedNode->getParentGraph() == blendTree)
+				continue;
 
 			NodeEditor::PassDownPinsNode* passDownPinNode = blendTree->getPassDownPinsNode();
 
@@ -694,7 +701,9 @@ void NodeProcessor::processMultiplyConnectedNodes(NodeEditor::Editor* editor, MR
 							}
 
 							NodeEditor::Pin* parentPassDownPin = parentPassDownPinNode->getOutputPin(passDownPinName);
-							parentPassDownPin->connectTo(graphNode->getInputPin(0));
+							NodeEditor::Pin* graphNodePin = graphNode->getInputPin(passDownPinName);
+							if (parentPassDownPin && graphNodePin)
+								parentPassDownPin->connectTo(graphNodePin);
 						}
 
 						currentGraph = parentGraph;
@@ -781,7 +790,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 			if (targetNodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_OUTPUT_REFERENCED))
 				continue;
 
-			NodeEditor::Node* targetNode = blendTree->getNode(targetNodeDef->getNodeID());
+			NodeEditor::Node* targetNode = findNodeInBlendTree(blendTree, targetNodeDef, btContext);
 
 			if (!targetNode)
 				continue;
@@ -901,6 +910,28 @@ void NodeProcessor::processNodeTransitionsInStateMachine(NodeEditor::StateMachin
 
 		if (!transition)
 			INVOKE_PANIC("NodeProcessor::processNodeTransitionsInStateMachine: Failed to create transition '%s' in state machine '%s'.\n", getNodeName(childNodeDef->getNodeID()).c_str(), stateMachine->getName().c_str());
+	}
+}
+
+void NodeProcessor::layoutGraph(NodeEditor::Graph* graph)
+{
+	std::vector<MR::NodeDef*> noChildren;
+
+	if (graph->isOfType<NodeEditor::BlendTree>())
+	{
+		if (m_blendTreeLayouterStrategy)
+			m_blendTreeLayouterStrategy->setLayout(graph, nullptr, noChildren);
+	}
+	else if (graph->isOfType<NodeEditor::StateMachine>())
+	{
+		if (m_stateMachineLayouterStrategy)
+			m_stateMachineLayouterStrategy->setLayout(graph, nullptr, noChildren);
+	}
+
+	for (NodeEditor::Node* node : graph->getNodes())
+	{
+		if (node->hasSubGraph() && node->getSubGraph() != graph)
+			layoutGraph(node->getSubGraph());
 	}
 }
 
@@ -1755,21 +1786,180 @@ void NodeProcessor::collectBlendTreeChildNodes(MR::NetworkDef* netDef)
 	}
 }
 
-bool NodeProcessor::collectNodeNames(MR::NetworkDef* netDef)
+void NodeProcessor::buildContainersFromHierarchy(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable)
 {
-	if (!m_namingStrategy)
+	m_blendTreeNodes.clear();
+	m_stateMachineNodes.clear();
+	m_nodeNameMap.clear();
+	m_multiplyConnectedCPOutputNodes.clear();
+
+	auto animName = [animNamesTable](MR::NodeDef* nodeDef) -> std::string {
+		MR::AttribDataSourceAnim* sourceAnim = static_cast<MR::AttribDataSourceAnim*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_SOURCE_ANIM));
+		if (!sourceAnim || !animNamesTable)
+			return "";
+		const char* file = animNamesTable->getSourceFilename(sourceAnim->m_animAssetID);
+		return file ? std::filesystem::path(file).filename().replace_extension("").string() : "";
+	};
+	auto typeName = [](MR::NodeType type) -> std::string {
+		try { return nodeTypeAsManifestName(type); }
+		catch (...) { return "Node"; }
+	};
+
+	NetworkHierarchy hierarchy(netDef, animName, typeName);
+	hierarchy.build();
+
+	for (const std::string& line : hierarchy.getLog())
+		g_appLog->debugMessage(MsgLevel_Debug, "NetworkHierarchy: %s\n", line.c_str());
+
+	const MR::NodeID rootID = netDef->getRootNodeID();
+
+	// Blend trees are identified by their output node R; nested ones stack layers on the same R (1 = innermost).
+	// Outer layer: the root blend tree or a blend tree state rooted at R. Below it: the blend trees nested at R.
+	std::map<MR::NodeID, uint32_t> nestDepth;
+	std::map<MR::NodeID, MR::NodeID> nestRequester;
+	for (const auto& nest : hierarchy.getNestings())
 	{
-		g_appLog->alertMessage(MsgLevel_Warn, "NodeProcessor::collectNodeNames: No node naming strategy set.");
-		return false;
+		if (nestDepth.count(nest.first.second))
+			g_appLog->debugMessage(MsgLevel_Warn, "NodeProcessor::buildContainersFromHierarchy: node %d is the output of more than one nesting.\n", nest.first.second);
+		nestDepth[nest.first.second] = nest.second;
+		nestRequester[nest.first.second] = nest.first.first;
 	}
 
-	if (!m_namingStrategy->collectNodeNames(netDef, this))
+	auto hasOuterLayer = [&](MR::NodeID r) {
+		return r == rootID || (hierarchy.isStateRoot(r) && !hierarchy.isUnwrappedStateMachineState(r));
+	};
+	auto numLayers = [&](MR::NodeID r) -> uint32_t {
+		auto it = nestDepth.find(r);
+		return (hasOuterLayer(r) ? 1 : 0) + (it != nestDepth.end() ? it->second : 0);
+	};
+
+	auto btOf = [&](const NetworkHierarchy::Graph& g) -> BlendTreeID {
+		switch (g.kind)
+		{
+		case NetworkHierarchy::kRoot:	return BlendTreeID(rootID, numLayers(rootID));
+		case NetworkHierarchy::kState:	return BlendTreeID(g.b, numLayers(g.b));
+		default:						return BlendTreeID(g.b, hierarchy.getNestingDepth(g.a, g.b) - g.level + 1);
+		}
+	};
+
+	auto registerLayers = [&](MR::NodeID r) {
+		MR::NodeDef* rDef = netDef->getNodeDef(r);
+		const uint32_t layers = numLayers(r);
+		const uint32_t depth = nestDepth.count(r) ? nestDepth[r] : 0;
+
+		for (uint32_t k = 1; k <= layers; k++)
+		{
+			BlendTreeID id(r, k);
+			if (m_blendTreeNodes.count(id))
+				continue;
+
+			m_blendTreeNodes[id] = ContainerNodeInfo(rDef, k);
+			m_blendTreeNodes[id].addChildNodeDef(rDef);
+
+			std::string name;
+			if (k <= depth)
+				name = hierarchy.graphName(NetworkHierarchy::Graph::nested(nestRequester[r], r, depth - k + 1));
+			else if (r != rootID)
+				name = hierarchy.graphName(NetworkHierarchy::Graph::state(hierarchy.getStateOwner(r), r));
+			m_blendTreeNodes[id].setName(name);
+		}
+	};
+
+	registerLayers(rootID);
+	for (const auto& nd : nestDepth)
+		registerLayers(nd.first);
+
+	for (uint32_t i = 0; i < netDef->getNumNodeDefs(); i++)
 	{
-		g_appLog->alertMessage(MsgLevel_Warn, "NodeProcessor::collectNodeNames: Node naming strategy failed to collect node names.");
-		return false;
+		MR::NodeDef* nodeDef = netDef->getNodeDef(i);
+		if (!nodeDef)
+			continue;
+
+		if (nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_STATE_MACHINE))
+		{
+			registerSMNode(nodeDef);
+			m_stateMachineNodes[i].setName(hierarchy.leafName(i));
+			for (uint32_t j = 0; j < nodeDef->getNumChildNodes(); j++)
+			{
+				MR::NodeDef* child = nodeDef->getChildNodeDef(j);
+				if (!child || child->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_TRANSITION))
+					continue;
+
+				registerNodeAsSMChild(i, child);
+				if (hasOuterLayer(child->getNodeID()))
+					registerLayers(child->getNodeID());
+			}
+		}
+
+		if (hierarchy.isPlaced(i))
+			m_nodeNameMap[i] = hierarchy.leafName(i);
 	}
 
-	return true;
+	// every placed node goes into the blend tree of its graph (state machine states live in their state machine)
+	for (uint32_t i = 0; i < netDef->getNumNodeDefs(); i++)
+	{
+		if (!hierarchy.isPlaced(i) || hierarchy.isUnwrappedStateMachineState(i))
+			continue;
+
+		BlendTreeID bt = btOf(hierarchy.getGraph(i));
+		auto it = m_blendTreeNodes.find(bt);
+		if (it == m_blendTreeNodes.end())
+		{
+			g_appLog->debugMessage(MsgLevel_Error, "NodeProcessor::buildContainersFromHierarchy: no blend tree %d (layer %d) for node %d.\n", bt.getNodeID(), bt.getLayerIndex(), i);
+			continue;
+		}
+		it->second.addChildNodeDef(netDef->getNodeDef(i));
+	}
+
+	// the outermost nested blend tree at R sits in its requester's graph
+	for (const auto& nest : hierarchy.getNestings())
+	{
+		const MR::NodeID r = nest.first.second;
+		NetworkHierarchy::Graph outer = hierarchy.parentGraph(NetworkHierarchy::Graph::nested(nest.first.first, r, 1));
+		auto it = m_blendTreeNodes.find(btOf(outer));
+		if (it != m_blendTreeNodes.end())
+			it->second.addChildNodeDef(netDef->getNodeDef(r));
+	}
+
+	// operators whose outputs reach consumers in other blend trees go through pass down pins
+	for (MR::NodeDef* nodeDef : m_cpOutputNodes)
+	{
+		const MR::NodeID id = nodeDef->getNodeID();
+		if (!hierarchy.isPlaced(id))
+			continue;
+
+		const BlendTreeID own = btOf(hierarchy.getGraph(id));
+		std::vector<MR::NodeDef*> consumers;
+		getNodesWithThisAsInputCP(consumers, id);
+
+		for (MR::NodeDef* consumer : consumers)
+		{
+			if (!hierarchy.isPlaced(consumer->getNodeID()))
+				continue;
+			if (btOf(hierarchy.getGraph(consumer->getNodeID())).getBlendTreeID() != own.getBlendTreeID())
+			{
+				m_multiplyConnectedCPOutputNodes.push_back(nodeDef);
+				break;
+			}
+		}
+	}
+}
+
+NodeEditor::Node* NodeProcessor::findNodeInBlendTree(NodeEditor::BlendTree* blendTree, MR::NodeDef* nodeDef, const BlendTreeID* btContext)
+{
+	const MR::NodeID id = nodeDef->getNodeID();
+
+	if (btContext && id == btContext->getNodeID())
+		return blendTree->getNode(BlendTreeID(id, btContext->getLayerIndex() - 1).getBlendTreeID());
+
+	if (isNodeBlendTree(nodeDef))
+	{
+		NodeEditor::Node* nested = blendTree->getNode(BlendTreeID(id, getBlendTreesForNode(id).size()).getBlendTreeID());
+		if (nested)
+			return nested;
+	}
+
+	return blendTree->getNode(id);
 }
 
 void NodeProcessor::fixupAnimNodeNames(MR::NetworkDef* netDef, MR::UTILS::SimpleAnimRuntimeIDtoFilenameLookup* animNamesTable)

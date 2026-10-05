@@ -17,7 +17,10 @@ bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* networkDef, MR::UTILS
 		return false;
 	}
 
-	//m_nodeProcessor.preProcessNetwork(networkDef, animFileLookupTable);
+	// a new network replaces the previous one
+	reset();
+
+	m_nodeProcessor.preProcessNetwork(networkDef, animFileLookupTable);
 
 	std::vector<MR::NodeID> controlParamNodeIDs(numControlParams);
 	networkDef->getControlParameterNodeIDs(controlParamNodeIDs.data(), numControlParams);
@@ -38,11 +41,9 @@ bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* networkDef, MR::UTILS
 		m_messageProcessor.processMessage(this, const_cast<MR::MessageDistributor*>(messageDef), name);
 	}
 
-	/*
 	MR::NodeDef* rootNodeDef = networkDef->getNodeDef(networkDef->getRootNodeID());
 
-	NodeEditor::Graph* root = m_nodeProcessor.buildRootGraph(this, rootNodeDef);
-	*/
+	m_nodeProcessor.buildRootGraph(this, rootNodeDef);
 
 	return true;
 }
