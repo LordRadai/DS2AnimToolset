@@ -328,7 +328,12 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
         wchar_t modelName[256];
         swprintf_s(modelName, L"%ws\%ws.bnd", chrFolder.c_str(), character->m_characterName.c_str());
 
-        character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, rigDef));
+		FlverModel* model = FlverModel::createFromBnd(modelName, rigDef);
+
+        if (model == nullptr)
+			g_appLog->alertMessage(MsgLevel_Error, "Failed to load model %ws\n", modelName);
+
+        character->m_characterModelCtrl->setModel(model);
 
         g_workerThread.load()->increaseProgressStep();
 
