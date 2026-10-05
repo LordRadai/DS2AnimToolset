@@ -614,6 +614,16 @@ namespace
 		ImGui::PopItemWidth();
 	}
 
+	void exportSettingsGroup()
+	{
+		MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
+
+		ImGui::Checkbox("Export Animations", &editorApp->getExportSettings()->exportAnimations);
+		ImGui::Checkbox("Export Network", &editorApp->getExportSettings()->exportNetwork);
+		ImGui::Checkbox("Export Model", &editorApp->getExportSettings()->exportModel);
+		ImGui::Checkbox("Export TimeAct", &editorApp->getExportSettings()->exportTae);
+	}
+
 	void animationSettingGroup()
 	{
 		MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
@@ -913,10 +923,7 @@ void GuiManager::rootWindow()
 
 			ImGui::SeparatorText("Export Settings");
 
-			ImGui::Checkbox("Export Animations", &editorApp->getTaskFlags()->batchExportAnimations);
-			ImGui::Checkbox("Export Network", &editorApp->getTaskFlags()->batchExportNetwork);
-			ImGui::Checkbox("Export Model", &editorApp->getTaskFlags()->batchExportModel);
-			ImGui::Checkbox("Export TimeAct", &editorApp->getTaskFlags()->batchExportTimeAct);
+			exportSettingsGroup();
 
 			ImGui::SeparatorText("Animation Settings");
 
@@ -938,10 +945,7 @@ void GuiManager::rootWindow()
 
 			ImGui::SeparatorText("Export Settings");
 
-			ImGui::Checkbox("Export Animations", &editorApp->getTaskFlags()->exportAnimations);
-			ImGui::Checkbox("Export Network", &editorApp->getTaskFlags()->exportNetwork);
-			ImGui::Checkbox("Export Model", &editorApp->getTaskFlags()->exportModel);
-			ImGui::Checkbox("Export TimeAct", &editorApp->getTaskFlags()->exportTae);
+			exportSettingsGroup();
 
 			ImGui::SeparatorText("Animation Settings");
 

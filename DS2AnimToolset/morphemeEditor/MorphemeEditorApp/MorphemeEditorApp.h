@@ -49,10 +49,7 @@ public:
 		bool exportTask = false;
 		bool exportAll = false;
 		bool exportAndProcess = false;
-		bool exportTae = false;
-		bool exportModel = false;
-		bool exportAnimations = false;
-		bool exportNetwork = false;
+		
 
 		bool compileNetwork = false;
 		bool compileTaes = false;
@@ -61,10 +58,6 @@ public:
 
 		bool batchExport = false;
 		bool batchExportAll = false;
-		bool batchExportAnimations = false;
-		bool batchExportNetwork = false;
-		bool batchExportModel = false;
-		bool batchExportTimeAct = false;
 	};
 
 	struct CameraFlags
@@ -107,6 +100,10 @@ public:
 		MR::AnimType compressionFormat = ANIM_TYPE_NSA;
 		bool useSourceSampleFrequency = true;
 		int sampleFrequency = 30;
+		bool exportTae = false;
+		bool exportModel = false;
+		bool exportAnimations = false;
+		bool exportNetwork = false;
 	};
 
 	~MorphemeEditorApp();

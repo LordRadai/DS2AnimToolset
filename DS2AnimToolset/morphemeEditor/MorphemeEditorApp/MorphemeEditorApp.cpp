@@ -1058,6 +1058,10 @@ void MorphemeEditorApp::loadSettings()
 	this->m_exportSettings.compressionFormat = settings->getInt("Export", "compression_format", 2);
 	this->m_exportSettings.useSourceSampleFrequency = settings->getBool("Export", "compression_use_source_sample_frequency", true);
 	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "compression_sample_frequency", 20);
+	this->m_exportSettings.exportModel = settings->getBool("Export", "export_model", true);
+	this->m_exportSettings.exportAnimations = settings->getBool("Export", "export_animations", true);
+	this->m_exportSettings.exportNetwork = settings->getBool("Export", "export_network", true);
+	this->m_exportSettings.exportTae = settings->getBool("Export", "export_tae", true);
 
 	this->m_previewFlags.drawDummies = settings->getBool("Scene", "draw_dummies", false);
 	this->m_previewFlags.drawMeshes = settings->getBool("Scene", "draw_meshes", true);
@@ -1087,6 +1091,10 @@ void MorphemeEditorApp::saveSettings()
 	settings->setInt("Export", "compression_format", this->m_exportSettings.compressionFormat);
 	settings->setBool("Export", "compression_use_source_sample_frequency", this->m_exportSettings.useSourceSampleFrequency);
 	settings->setInt("Export", "compression_sample_frequency", this->m_exportSettings.sampleFrequency);
+	settings->setBool("Export", "export_model", this->m_exportSettings.exportModel);
+	settings->setBool("Export", "export_animations", this->m_exportSettings.exportAnimations);
+	settings->setBool("Export", "export_network", this->m_exportSettings.exportNetwork);
+	settings->setBool("Export", "export_tae", this->m_exportSettings.exportTae);
 
 	settings->setBool("Scene", "draw_dummies", this->m_previewFlags.drawDummies);
 	settings->setBool("Scene", "draw_meshes", this->m_previewFlags.drawMeshes);
@@ -1269,16 +1277,16 @@ bool MorphemeEditorApp::exportTask(std::wstring path)
 	}
 	else
 	{
-		if (m_taskFlags.exportAnimations)
+		if (m_exportSettings.exportAnimations)
 			this->exportAnimationsAndMarkups(path);
 
-		if (m_taskFlags.exportModel)
+		if (m_exportSettings.exportModel)
 			this->exportModel(path);
 
-		if (m_taskFlags.exportNetwork)
+		if (m_exportSettings.exportNetwork)
 			this->exportNetwork(path);
 
-		if (m_taskFlags.exportTae)
+		if (m_exportSettings.exportTae)
 			this->exportTimeAct(path);
 	}
 
@@ -2051,16 +2059,16 @@ bool MorphemeEditorApp::exportDirectoryInternal(std::wstring path)
 					}
 					else
 					{
-						if (m_taskFlags.batchExportAnimations)
+						if (m_exportSettings.exportAnimations)
 							this->exportAnimationsAndMarkups(exportPath);
 
-						if (m_taskFlags.batchExportModel)
+						if (m_exportSettings.exportModel)
 							this->exportModel(exportPath);
 
-						if (m_taskFlags.batchExportNetwork)
+						if (m_exportSettings.exportNetwork)
 							this->exportNetwork(exportPath);
 
-						if (m_taskFlags.batchExportTimeAct)
+						if (m_exportSettings.exportTae)
 							this->exportTimeAct(exportPath);
 					}
 				}
