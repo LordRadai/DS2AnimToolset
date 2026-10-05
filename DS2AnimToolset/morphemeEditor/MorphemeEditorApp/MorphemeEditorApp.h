@@ -46,12 +46,13 @@ public:
 		bool saveFile = false;
 
 		bool exportTaeTemplateXml = false;
+		bool exportTask = false;
+		bool exportAll = false;
+		bool exportAndProcess = false;
 		bool exportTae = false;
 		bool exportModel = false;
 		bool exportAnimations = false;
 		bool exportNetwork = false;
-		bool exportAll = false;
-		bool exportAndProcess = false;
 
 		bool compileNetwork = false;
 		bool compileTaes = false;
@@ -174,6 +175,7 @@ private:
 	bool exportAndProcess(std::wstring path);
 	bool exportAndCompileTae(std::wstring path);
 
+	bool exportTask(std::wstring path);
 	bool exportTimeAct(std::wstring path);
 	bool exportNetwork(std::wstring path);
 	void exportAnimationsAndMarkups(std::wstring path);

@@ -455,7 +455,7 @@ namespace
 	void modelPartsSelectorGUI(const FileIDNamesTable list, PlayerModelPreset* preset, Character* character, PartType type)
 	{
 		std::string childName = "resource_list##" + std::to_string(type);
-		if (ImGui::BeginChild(childName.c_str())) 
+		if (ImGui::BeginChild(childName.c_str()))
 		{
 			for (size_t i = 0; i < list.getNumEntries(); i++)
 			{
@@ -612,6 +612,57 @@ namespace
 		}
 
 		ImGui::PopItemWidth();
+	}
+
+	void animationSettingGroup()
+	{
+		MorphemeEditorApp* editorApp = MorphemeEditorApp::getInstance();
+
+		int currentItem = editorApp->getExportSettings()->exportFormat;
+
+		static const char* s_exportFormat[] = { "FBX", "XMD", "GLTF" };
+
+		if (ImGui::BeginCombo("Animation Format", s_exportFormat[editorApp->getExportSettings()->exportFormat]))
+		{
+			for (size_t i = 0; i < FT::kNumExportFormats; i++)
+			{
+				const bool selected = (editorApp->getExportSettings()->exportFormat == i);
+
+				if (ImGui::Selectable(s_exportFormat[i], selected))
+					editorApp->getExportSettings()->exportFormat = static_cast<FT::ExportFormat>(i);
+
+				if (selected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+
+		static const char* s_compressionFormats[] = { "MBA", "ASA", "NSA", "QSA" };
+
+		if (ImGui::BeginCombo("Animation Compression Format", s_compressionFormats[editorApp->getExportSettings()->compressionFormat]))
+		{
+			for (uint8_t i = 0; i < 4; i++)
+			{
+				const bool selected = (editorApp->getExportSettings()->compressionFormat == i);
+
+				if (ImGui::Selectable(s_compressionFormats[i], selected))
+					editorApp->getExportSettings()->compressionFormat = i;
+
+				if (selected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+
+		ImGui::Checkbox("Use source sample frequency", &editorApp->getExportSettings()->useSourceSampleFrequency);
+
+		ImGui::BeginDisabled(editorApp->getExportSettings()->useSourceSampleFrequency);
+
+		ImGui::InputDragInt("Sample frequency", &editorApp->getExportSettings()->sampleFrequency, 1, 120);
+
+		ImGui::EndDisabled();
 	}
 }
 
@@ -860,12 +911,16 @@ void GuiManager::rootWindow()
 			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->batchExport = true; }
 			if (ImGui::MenuItem("Export All")) { editorApp->getTaskFlags()->batchExportAll = true; }
 
-			ImGui::SeparatorText("Export Components");
+			ImGui::SeparatorText("Export Settings");
 
 			if (ImGui::MenuItem("Export Animations")) { editorApp->getTaskFlags()->batchExportAnimations = true; }
 			if (ImGui::MenuItem("Export Network")) { editorApp->getTaskFlags()->batchExportNetwork = true; }
 			if (ImGui::MenuItem("Export Model")) { editorApp->getTaskFlags()->batchExportModel = true; }
 			if (ImGui::MenuItem("Export TimeAct")) { editorApp->getTaskFlags()->batchExportTimeAct = true; }
+
+			ImGui::SeparatorText("Animation Settings");
+
+			animationSettingGroup();
 
 			ImGui::EndMenu();
 		}
@@ -878,63 +933,19 @@ void GuiManager::rootWindow()
 
 			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->exportAll = true; }
 			if (ImGui::MenuItem("Export and Process")) { editorApp->getTaskFlags()->exportAndProcess = true; }
-			
-			ImGui::SeparatorText("Export Components");
-			
+					
+			ImGui::EndDisabled();
+
+			ImGui::SeparatorText("Export Settings");
+
 			if (ImGui::MenuItem("Export Model")) { editorApp->getTaskFlags()->exportModel = true; }
 			if (ImGui::MenuItem("Export Animations")) { editorApp->getTaskFlags()->exportAnimations = true; }
 			if (ImGui::MenuItem("Export Network")) { editorApp->getTaskFlags()->exportNetwork = true; }
 			if (ImGui::MenuItem("Export TimeAct")) { editorApp->getTaskFlags()->exportTae = true; }
 
-			ImGui::EndDisabled();
+			ImGui::SeparatorText("Animation Settings");
 
-			ImGui::SeparatorText("Export Settings");
-
-			int currentItem = editorApp->getExportSettings()->exportFormat;
-
-			static const char* s_exportFormat[] = { "FBX", "XMD", "GLTF"};
-
-			if (ImGui::BeginCombo("Export Format", s_exportFormat[editorApp->getExportSettings()->exportFormat]))
-			{
-				for (size_t i = 0; i < FT::kNumExportFormats; i++)
-				{
-					const bool selected = (editorApp->getExportSettings()->exportFormat == i);
-
-					if (ImGui::Selectable(s_exportFormat[i], selected))
-						editorApp->getExportSettings()->exportFormat = static_cast<FT::ExportFormat>(i);
-
-					if (selected)
-						ImGui::SetItemDefaultFocus();
-				}
-
-				ImGui::EndCombo();
-			}
-
-			static const char* s_compressionFormats[] = { "MBA", "ASA", "NSA", "QSA" };
-
-			if (ImGui::BeginCombo("Compression Format", s_compressionFormats[editorApp->getExportSettings()->compressionFormat]))
-			{
-				for (uint8_t i = 0; i < 4; i++)
-				{
-					const bool selected = (editorApp->getExportSettings()->compressionFormat == i);
-
-					if (ImGui::Selectable(s_compressionFormats[i], selected))
-						editorApp->getExportSettings()->compressionFormat = i;
-
-					if (selected)
-						ImGui::SetItemDefaultFocus();
-				}
-
-				ImGui::EndCombo();
-			}
-
-			ImGui::Checkbox("Use source sample frequency", &editorApp->getExportSettings()->useSourceSampleFrequency);
-
-			ImGui::BeginDisabled(editorApp->getExportSettings()->useSourceSampleFrequency);
-
-			ImGui::InputDragInt("Sample frequency", &editorApp->getExportSettings()->sampleFrequency, 1, 120);
-
-			ImGui::EndDisabled();
+			animationSettingGroup();
 
 			ImGui::EndMenu();
 		}

@@ -932,15 +932,26 @@ void MorphemeEditorApp::update(float dt)
 		this->saveFile();
 	}
 
-	if (this->m_taskFlags.exportAll)
+	if (this->m_taskFlags.exportTask)
 	{
-		this->m_taskFlags.exportAll = false;
+		this->m_taskFlags.exportTask = false;
 
 		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->runTask("Export All", &MorphemeEditorApp::exportAll, this, exportPath);
+		g_workerThread.load()->runTask("Export", &MorphemeEditorApp::exportTask, this, exportPath);
+	}
+
+	if (this->m_taskFlags.exportAll)
+	{
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
+
+		std::filesystem::create_directories(exportPath);
+
+		g_workerThread.load()->runTask("Export All", &MorphemeEditorApp::exportTask, this, exportPath);
+
+		this->m_taskFlags.exportAll = false;
 	}
 
 	if (this->m_taskFlags.exportAndProcess)
@@ -952,71 +963,6 @@ void MorphemeEditorApp::update(float dt)
 		std::filesystem::create_directories(exportPath);
 
 		g_workerThread.load()->runTask("Export and Process", &MorphemeEditorApp::exportAndProcess, this, exportPath);
-	}
-
-	if (this->m_taskFlags.exportTae)
-	{
-		this->m_taskFlags.exportTae = false;
-
-		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
-
-		std::filesystem::create_directories(exportPath);
-
-		g_workerThread.load()->runTask("Export TimeAct", &MorphemeEditorApp::exportAndCompileTae, this, exportPath);
-	}
-
-	if (this->m_taskFlags.exportModel)
-	{
-		this->m_taskFlags.exportModel = false;
-
-		if (this->m_character != nullptr)
-		{
-			std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
-
-			std::filesystem::create_directories(exportPath);
-
-			g_workerThread.load()->runTask("Export Model" ,&MorphemeEditorApp::exportModel, this, exportPath);
-		}
-		else
-		{
-			g_appLog->alertMessage(MsgLevel_Error, "No character is loaded");
-		}
-	}
-
-	if (this->m_taskFlags.exportNetwork)
-	{
-		this->m_taskFlags.exportNetwork = false;
-
-		if (this->m_character != nullptr)
-		{
-			std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
-
-			std::filesystem::create_directories(exportPath);
-
-			g_workerThread.load()->runTask("Export Network", &MorphemeEditorApp::exportNetwork, this, exportPath);
-		}
-		else
-		{
-			g_appLog->alertMessage(MsgLevel_Error, "No character is loaded");
-		}
-	}
-
-	if (this->m_taskFlags.exportAnimations)
-	{
-		this->m_taskFlags.exportAnimations = false;
-
-		if (this->m_character != nullptr && this->m_character->getCharacterMotionCtrl()->getMorphemeCharacter() != nullptr)
-		{
-			std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
-			
-			std::filesystem::create_directories(exportPath);
-
-			g_workerThread.load()->runTask("Export Animations", &MorphemeEditorApp::exportAnimationsAndMarkups, this, exportPath);
-		}
-		else
-		{
-			g_appLog->alertMessage(MsgLevel_Error, "No character is loaded");
-		}
 	}
 
 	if (this->m_taskFlags.compileNetwork)
@@ -1313,6 +1259,28 @@ void MorphemeEditorApp::reloadFile()
 
 void MorphemeEditorApp::saveFile()
 {
+}
+
+bool MorphemeEditorApp::exportTask(std::wstring path)
+{
+	if (m_taskFlags.exportAll)
+	{
+		this->exportAll(path);
+	}
+	else
+	{
+		if (m_taskFlags.exportAnimations)
+			this->exportAnimationsAndMarkups(path);
+
+		if (m_taskFlags.exportModel)
+			this->exportModel(path);
+
+		if (m_taskFlags.exportNetwork)
+			this->exportNetwork(path);
+
+		if (m_taskFlags.exportTae)
+			this->exportTimeAct(path);
+	}
 }
 
 bool MorphemeEditorApp::exportTimeAct(std::wstring path)
