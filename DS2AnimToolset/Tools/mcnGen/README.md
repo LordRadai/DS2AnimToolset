@@ -50,6 +50,7 @@ CONNECT=C:\Program Files (x86)\NaturalMotion\morphemeConnect 3.6.2\bin\morphemeC
 PYTHON=python
 CP_CONFIG=          ; empty = cp_config.json next to the script
 CLEAN=1             ; 1 = delete the previous .mcn / paths / round-trip export first
+NO_WARN=c1021,c2250 ; characters whose warning box is skipped (known differences), for unattended runs
 ```
 
 Then run:
