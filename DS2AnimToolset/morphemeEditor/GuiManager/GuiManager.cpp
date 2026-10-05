@@ -863,7 +863,7 @@ void GuiManager::rootWindow()
 
 			if (ImGui::BeginCombo("Export Format", s_batchExportTypeName[editorApp->getTaskFlags()->batchExportType]))
 			{
-				for (size_t i = 0; i < FT::kNumExportFormats; i++)
+				for (size_t i = 0; i < MorphemeEditorApp::TaskFlags::kBatchExportType_NumTypes; i++)
 				{
 					const bool selected = (editorApp->getTaskFlags()->batchExportType == i);
 
