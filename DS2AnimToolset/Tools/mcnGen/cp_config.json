@@ -1636,5 +1636,29 @@
     "group": null,
     "min": null,
     "max": null
+  },
+  "UnevenTerrain": {
+    "type": "bool",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "WepHandWeiht": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "Add_pos": {
+    "type": "vector3",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "SlopeWeight": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null
   }
 }
