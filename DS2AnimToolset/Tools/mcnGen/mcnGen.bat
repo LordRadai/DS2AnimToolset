@@ -102,6 +102,8 @@ exit /b 0
 :warn
 echo WARNING: %~1
 set "WARN_TEXT=%~1"
+rem MCNGEN_NOPOPUP=1 skips the box (unattended runs)
+if "%MCNGEN_NOPOPUP%"=="1" exit /b 0
 powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; [void][System.Windows.Forms.MessageBox]::Show($env:WARN_TEXT, 'mcnGen', 'OK', 'Warning')"
 exit /b 0
 

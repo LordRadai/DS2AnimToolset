@@ -190,6 +190,20 @@ class Hierarchy:
         occupied = collections.Counter(g for i, g in self.G.items() if not (g[0] == 'state' and g[2] == i))
         self.wrapped = {r for r in self.state_owner if r in self.sms and occupied[('state', self.state_owner[r], r)]}
         self.sm_name, self.state_name, self.nbt_name = {}, {}, {}
+        # state machine states of one state machine whose paths all have one level more than their chain, with the
+        # same component there (BT_Ladder|SM_Ladder|SM_LadderIdle, ...|SM_Ladder|SM_LadderFall): sibling states
+        # cannot share a name, so the extra level is not a BlendTree wrapping each of them but their owner,
+        # wrapped in a BlendTree state of its own state machine
+        extra = collections.defaultdict(list)
+        for nid, name in named.items():
+            if nid in nodes and nid in self.state_owner and nid in self.sms and nid not in self.wrapped:
+                comps = name.split('|')
+                if len(comps) == len(self.chain(nid)) + 1:
+                    extra[(self.state_owner[nid], comps[-2])].append(nid)
+        for (sm, comp), kids in sorted(extra.items()):
+            if len(kids) > 1 and sm in self.state_owner and sm in self.sms and sm not in self.wrapped:
+                self.wrapped.add(sm)
+                self.log.append('state machine %d wrapped in a BlendTree state: its states %r share the level %s' % (sm, sorted(kids), comp))
         # names along named paths
         for nid, name in named.items():
             if nid not in nodes or nodes[nid].type in CP_TYPES: continue

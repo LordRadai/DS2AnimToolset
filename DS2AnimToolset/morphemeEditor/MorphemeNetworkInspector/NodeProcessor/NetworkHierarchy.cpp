@@ -579,6 +579,29 @@ bool NetworkHierarchy::build()
 		if (isStateMachine(so.first) && occupied[Graph::state(so.second, so.first)] > 0)
 			m_wrapped.insert(so.first);
 
+	// state machine states of one state machine whose paths all have one level more than their chain, with the same
+	// component there (BT_Ladder|SM_Ladder|SM_LadderIdle, ...|SM_Ladder|SM_LadderFall): sibling states cannot share a
+	// name, so the extra level is not a blend tree wrapping each of them but their owner, wrapped in a blend tree state
+	// of its own state machine
+	std::map<std::pair<int, std::string>, std::vector<int>> extra;
+	for (auto& nm : m_named)
+	{
+		if (!isPlaceable(nm.first) || !isStateRoot(nm.first) || !isStateMachine(nm.first) || m_wrapped.count(nm.first))
+			continue;
+		std::vector<std::string> comps = splitPath(nm.second);
+		if (comps.size() >= 2 && comps.size() == chain(nm.first).size() + 1)
+			extra[std::make_pair(m_stateOwner[nm.first], comps[comps.size() - 2])].push_back(nm.first);
+	}
+	for (auto& e : extra)
+	{
+		const int sm = e.first.first;
+		if (e.second.size() > 1 && isStateRoot(sm) && isStateMachine(sm) && !m_wrapped.count(sm))
+		{
+			m_wrapped.insert(sm);
+			log("state machine %d wrapped in a blend tree state: %d of its states share the level %s", sm, (int)e.second.size(), e.first.second.c_str());
+		}
+	}
+
 	// names along named paths
 	m_smName.clear();
 	m_stateName.clear();
