@@ -1743,6 +1743,8 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 			break;
 		}
 
+		std::filesystem::create_directories(modelExportPath);
+
 		ScopedCurrentPath scopedPath(modelExportPath);
 
 		FT::FileTranslator fileTranslator;
