@@ -76,6 +76,11 @@ def load_rig_joints(path):
     return {int(j.get('index')): j.get('name') for j in r.iter('Joint')}, r
 
 
+# manifest types whose output pin is not called Result
+OUTPUT_PINS = {'OperatorReRange': 'Output', 'OperatorVector3Angle': 'Degrees', 'OperatorVector3Distance': 'Distance',
+               'OperatorVector3Length': 'Length'}
+
+
 def parent_path(p): return p.rsplit('|', 1)[0] if '|' in p else ''
 
 
@@ -663,7 +668,9 @@ class Converter:
         done = set()
 
         def out_of(item):   # output pin expression of a node id or container path
-            return 'PIN(%s, "Result")' % self.ref(item)
+            pin = 'Result'
+            if isinstance(item, int) and item in self.spec: pin = OUTPUT_PINS.get(self.spec[item][0], pin)
+            return 'PIN(%s, "%s")' % (self.ref(item), pin)
 
         def add(src, dst, depth, stage2=False):
             k = (src, dst)
