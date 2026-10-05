@@ -855,7 +855,30 @@ void GuiManager::rootWindow()
 	if (ImGui::BeginMenu("File"))
 	{
 		if (ImGui::MenuItem("Open...")) { editorApp->getTaskFlags()->loadFile = true; }
-		if (ImGui::MenuItem("Export Directory...")) { editorApp->getTaskFlags()->exportDir = true; }
+		if (ImGui::BeginMenu("Batch Export"))
+		{
+			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->exportDir = true; }
+
+			static const char* s_batchExportTypeName[] = { "All", "Animations", "Network", "Model", "TimeAct" };
+
+			if (ImGui::BeginCombo("Export Format", s_batchExportTypeName[editorApp->getTaskFlags()->batchExportType]))
+			{
+				for (size_t i = 0; i < FT::kNumExportFormats; i++)
+				{
+					const bool selected = (editorApp->getTaskFlags()->batchExportType == i);
+
+					if (ImGui::Selectable(s_batchExportTypeName[i], selected))
+						editorApp->getTaskFlags()->batchExportType = static_cast<MorphemeEditorApp::TaskFlags::BatchExportType>(i);
+
+					if (selected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+			}
+
+			ImGui::EndMenu();
+		}
 
 		ImGui::Separator();
 		
@@ -879,15 +902,15 @@ void GuiManager::rootWindow()
 
 			int currentItem = editorApp->getExportSettings()->exportFormat;
 
-			const char* exportFormat[] = { "FBX", "XMD", "GLTF"};
+			static const char* s_exportFormat[] = { "FBX", "XMD", "GLTF"};
 
-			if (ImGui::BeginCombo("Export Format", exportFormat[editorApp->getExportSettings()->exportFormat]))
+			if (ImGui::BeginCombo("Export Format", s_exportFormat[editorApp->getExportSettings()->exportFormat]))
 			{
 				for (size_t i = 0; i < FT::kNumExportFormats; i++)
 				{
 					const bool selected = (editorApp->getExportSettings()->exportFormat == i);
 
-					if (ImGui::Selectable(exportFormat[i], selected))
+					if (ImGui::Selectable(s_exportFormat[i], selected))
 						editorApp->getExportSettings()->exportFormat = static_cast<FT::ExportFormat>(i);
 
 					if (selected)
@@ -897,15 +920,15 @@ void GuiManager::rootWindow()
 				ImGui::EndCombo();
 			}
 
-			const char* compressionFormats[] = { "MBA", "ASA", "NSA", "QSA" };
+			static const char* s_compressionFormats[] = { "MBA", "ASA", "NSA", "QSA" };
 
-			if (ImGui::BeginCombo("Compression Format", compressionFormats[editorApp->getExportSettings()->compressionFormat]))
+			if (ImGui::BeginCombo("Compression Format", s_compressionFormats[editorApp->getExportSettings()->compressionFormat]))
 			{
 				for (uint8_t i = 0; i < 4; i++)
 				{
 					const bool selected = (editorApp->getExportSettings()->compressionFormat == i);
 
-					if (ImGui::Selectable(compressionFormats[i], selected))
+					if (ImGui::Selectable(s_compressionFormats[i], selected))
 						editorApp->getExportSettings()->compressionFormat = i;
 
 					if (selected)

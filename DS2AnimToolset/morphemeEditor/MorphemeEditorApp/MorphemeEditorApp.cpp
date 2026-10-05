@@ -2073,7 +2073,26 @@ bool MorphemeEditorApp::exportDirectoryInternal(std::wstring path)
 
 					std::filesystem::create_directories(exportPath);
 
-					exportAll(exportPath);
+					switch (m_taskFlags.batchExportType)
+					{
+					case TaskFlags::BatchExportType::kBatchExportType_All:
+						this->exportAll(exportPath);
+						break;
+					case TaskFlags::BatchExportType::kBatchExportType_Animations:
+						this->exportAnimationsAndMarkups(exportPath);
+						break;
+					case TaskFlags::BatchExportType::kBatchExportType_Network:
+						this->exportNetwork(exportPath);
+						break;
+					case TaskFlags::BatchExportType::kBatchExportType_Model:
+						this->exportModel(exportPath);
+						break;
+					case TaskFlags::BatchExportType::kBatchExportType_TimeAct:
+						this->exportTimeAct(exportPath);
+						break;
+					default:
+						INVOKE_PANIC("Unknown batch export type");
+					}
 				}
 			}
 
