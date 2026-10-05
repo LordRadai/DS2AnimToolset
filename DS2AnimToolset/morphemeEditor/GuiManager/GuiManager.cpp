@@ -9,7 +9,7 @@
 #include "Camera/Camera.h"
 #include "NodeEditor/NodeEditor.h"
 
-#include "MorphemeNetworkInspector/NodeProcessor/NodeNamingStrategy/Utils/Utils.h"
+#include "MorphemeNetworkInspector/NodeProcessor/NodeNameUtils.h"
 
 #define MSAA_SETTING_COUNT 3
 
@@ -1815,7 +1815,7 @@ void GuiManager::selectedNodeInfoWindow()
 						if (!nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 							continue;
 
-						std::string nodeName = NodeNameStrategyUtils::getNodeNameFromFullPath(networkDef->getNodeNameFromNodeID(nodeDef->getNodeID()));
+						std::string nodeName = NodeNameUtils::getNodeNameFromFullPath(networkDef->getNodeNameFromNodeID(nodeDef->getNodeID()));
 
 						ImVec4 textColor = ImGui::GetStyle().Colors[ImGuiCol_Text];
 

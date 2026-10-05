@@ -231,6 +231,7 @@
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GraphLayouterStrategy.inl" />
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GridStateMachineLayouterStrategy.h" />
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\Utils.h" />
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNameUtils.h" />
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.h" />
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NetworkHierarchy.h" />
     <ClInclude Include="MorphemeSystem\AnimLoader\AnimLoader.h" />
@@ -367,6 +368,7 @@
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\ColumnBlendTreeLayouterStrategy.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GridStateMachienLayouterStrategy.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\Utils.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNameUtils.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NetworkHierarchy.cpp" />
     <ClCompile Include="MorphemeSystem\AnimLoader\AnimLoader.cpp" />

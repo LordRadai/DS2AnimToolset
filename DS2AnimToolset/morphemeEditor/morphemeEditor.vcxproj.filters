@@ -477,6 +477,9 @@
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\Utils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNameUtils.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="morphemeEditor.cpp">
@@ -858,6 +861,9 @@
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\Utils.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNameUtils.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
