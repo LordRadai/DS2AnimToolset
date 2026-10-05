@@ -404,15 +404,16 @@ bool NetworkHierarchy::stateNesting()
 			continue;
 
 		const std::vector<MR::NodeID>& cons = m_consumers[i];
-		bool direct = false, deeper = false;
+		std::set<MR::NodeID> inside;
+		bool deeper = false;
 		for (MR::NodeID c : cons)
 		{
 			auto cg = m_G.find(c);
-			if (cg == m_G.end())
-				continue;
-			if (cg->second == g) direct = true; else deeper = true;
+			if (cg != m_G.end() && cg->second == g) inside.insert(c); else deeper = true;
 		}
-		if (cons.size() > 1 && direct && deeper)
+		// feeds a node of the state and something deeper, or several nodes of the state: either way more than one
+		// input, which only a pass-down pin into a nested blend tree can fan out to
+		if (cons.size() > 1 && !inside.empty() && (deeper || inside.size() > 1))
 			outside[g].insert(i);
 	}
 

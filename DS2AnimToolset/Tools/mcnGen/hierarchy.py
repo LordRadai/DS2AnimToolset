@@ -245,7 +245,8 @@ class Hierarchy:
 
     def state_nesting(self):
         """A multiply connected node N whose requester is state machine P, living in P's state S, that feeds a
-        node of S directly as well as something deeper (a state machine of S, through its pass-down pin).
+        node of S directly as well as something deeper (a state machine of S, through its pass-down pin), or that
+        feeds several nodes of S.
         Connect's outputs are one-to-one, so the original had the rest of S in a blend tree nested in S
         (its result is S's result, which makes P the requester) fed through a one-to-many pass-down pin.
         Moves everything of S except such nodes and their private upstream into ('nbt', P, root of S, 1)."""
@@ -257,7 +258,10 @@ class Hierarchy:
             if p is None or p.type != SM or n.id in self.state_owner or not g or g[0] != 'state' or g[1] != p.id: continue
             if (p.id, g[2]) in self.nbt_depth or (p.id, g[2]) in self.no_nest or g[2] in self.sms: continue
             cons = self.consumers.get(n.id, [])
-            if len(cons) > 1 and any(self.G.get(c) == g for c in cons) and any(self.G.get(c) != g for c in cons):
+            inside = {c for c in cons if self.G.get(c) == g}
+            # feeds a node of S and something deeper, or several nodes of S: either way more than one input, which
+            # only a pass-down pin into a nested blend tree can fan out to
+            if len(cons) > 1 and inside and (any(self.G.get(c) != g for c in cons) or len(inside) > 1):
                 outside[g].add(n.id)
         for g, keep in outside.items():
             # private upstream of the kept nodes stays beside them
