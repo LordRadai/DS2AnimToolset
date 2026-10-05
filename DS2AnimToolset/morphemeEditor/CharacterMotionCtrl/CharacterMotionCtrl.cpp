@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "CharacterMotionCtrl.h"
 #include "MorphemeSystem/MorphemeUtils/MorphemeUtils.h"
+#include "WorkerThread/WorkerThread.h"
 
 namespace
 {
@@ -308,6 +309,8 @@ bool CharacterMotionCtrlAnimPreview::initialize(const char* filename, bool doSim
 
 	this->m_animations.reserve(numAnimSets);
 
+    g_workerThread.load()->addProcess("Loading animations", int(numAnimSets * animCount));
+
     for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
     {
 		this->m_animations.push_back(std::vector<AnimObject*>());
@@ -319,7 +322,11 @@ bool CharacterMotionCtrlAnimPreview::initialize(const char* filename, bool doSim
             std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
             std::wstring animFilePath = animFolder + L"\\" + animFileName;
 
+            g_workerThread.load()->setProcessStepName(characterDef->getAnimFileLookUp()->getFilename(i));
+
             this->addAnimation(RString::toNarrow(animFilePath).c_str(), animSetIdx);
+
+            g_workerThread.load()->increaseProgressStep();
         }
     }
 

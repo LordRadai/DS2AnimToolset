@@ -8,6 +8,7 @@
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h>
 #include "utils/NMDX/NMDX.h"
+#include "WorkerThread/WorkerThread.h"
 
 namespace
 {
@@ -301,8 +302,14 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
     character->m_characterModelCtrl = new CharacterModelCtrl();
 	character->m_characterMotionCtrl = new CharacterMotionCtrlAnimPreview();
 
+    g_workerThread.load()->addProcess("Loading character", 3);
+    g_workerThread.load()->setProcessStepName("Loading morpheme bundle");
+
     if (character->m_characterMotionCtrl)
 		character->m_characterMotionCtrl->initialize(filename, doSimulateNetwork);
+
+    g_workerThread.load()->increaseProgressStep();
+    g_workerThread.load()->setProcessStepName("Loading model");
 
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
     character->m_characterName = RString::toWide(RString::removeExtension(std::filesystem::path(filename).filename().string()));
@@ -323,6 +330,8 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
 
         character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, rigDef));
 
+        g_workerThread.load()->increaseProgressStep();
+
         if (doPrompExtraFileLoad)
         {
             fileList = utils::getTaeFileListFromChrId(timeActFolder + L"\\chr\\", character->m_chrId);
@@ -331,6 +340,8 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
 
             if (character->m_chrId == 1)
             {
+                g_workerThread.load()->setProcessStepName("Loading equipment");
+
                 PlayerModelPreset* preset = MorphemeEditorApp::getInstance()->getPlayerModelPreset();
 
                 std::wstring partsFolder = modelFolder + L"\\parts";
@@ -359,8 +370,12 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
         character->m_characterModelCtrl->setModel(FlverModel::createFromAnimRig(rigDef));
 
         g_appLog->alertMessage(MsgLevel_Info, "Failed to find Game path. No models or TimeAct files will be loaded\n");
+
+        g_workerThread.load()->increaseProgressStep();
     }
-    
+
+    g_workerThread.load()->increaseProgressStep();
+
     return character;
 }
 

@@ -51,6 +51,4 @@ private:
 	void sceneExplorerWindow();
 	void partsManagerWindow();
 	void searchQueryWindow();
-
-	void progressIndicatorPopup();
 };

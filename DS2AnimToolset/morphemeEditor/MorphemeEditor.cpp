@@ -42,6 +42,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         g_renderManager = RenderManager::getInstance();
         g_workerThread.store(WorkerThread::getInstance());
 
+        // Tasks block the main thread while their progress window runs on its own thread, so keep
+        // Windows from swapping the main window for a "Not Responding" ghost in the meantime
+        DisableProcessWindowsGhosting();
+
         DX::StepTimer timer;
         //timer.SetFixedTimeStep(true);
         //timer.SetTargetElapsedSeconds(1.f / 60.f);
@@ -63,6 +67,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         // Show the window
         ::ShowWindow(hwnd, SW_SHOWDEFAULT);
         ::UpdateWindow(hwnd);
+
+        g_workerThread.load()->setMainWindow(hwnd);
 
         g_appLog->debugMessage(MsgLevel_Info, "Application startup\n");
 
@@ -92,8 +98,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             g_appLog->setConsoleVisibility(true);
 #endif
 
-            WorkerThread::getInstance()->update();
-
             timer.Tick([&]()
                 {
                     const float dt = float(timer.GetElapsedSeconds());
@@ -121,8 +125,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                     done = true;
             }
         }
-
-        WorkerThread::getInstance()->join();
 
         // Cleanup
         g_appLog->debugMessage(MsgLevel_Info, "Main app module shutdown\n");

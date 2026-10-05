@@ -1058,8 +1058,6 @@ void GuiManager::rootWindow()
 
 	ImGui::EndMenuBar();
 
-	this->progressIndicatorPopup();
-
 	ImGui::End();
 }
 
@@ -2343,33 +2341,4 @@ void GuiManager::searchQueryWindow()
 void GuiManager::clearSearchQueryWindow()
 {
 	m_queryResult.clear();
-}
-
-void GuiManager::progressIndicatorPopup()
-{
-	const char* iniBak = ImGui::GetIO().IniFilename;
-	ImGui::GetIO().IniFilename = NULL;
-
-	if (!g_workerThread.load()->isDone())
-	{
-		ImGui::OpenPopup(g_workerThread.load()->getThreadName().c_str());
-
-		ImGui::SetNextWindowPos(ImGui::GetWindowPos() + (ImGui::GetWindowSize() / 2 - ImVec2(150, 50)), ImGuiCond_Always);
-
-		if (ImGui::BeginPopupModal(g_workerThread.load()->getThreadName().c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
-		{
-			for (size_t i = 0; i < g_workerThread.load()->getNumProcesses(); i++)
-			{
-				if (g_workerThread.load()->isProcessBusy(i))
-					ImGui::CompositeProgressBar(g_workerThread.load()->getProcessName(i).c_str(), g_workerThread.load()->getProcessStep(i), g_workerThread.load()->getProcessNumSteps(i), g_workerThread.load()->getProcessStepName(i).c_str());
-			}
-
-			if (g_workerThread.load()->isDone())
-				ImGui::CloseCurrentPopup();
-
-			ImGui::EndPopup();
-		}
-	}
-
-	ImGui::GetIO().IniFilename = iniBak;
 }
