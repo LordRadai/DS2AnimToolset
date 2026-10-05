@@ -229,17 +229,11 @@ namespace MD
 					MR::NodeID targetNodeID = nodeInitData->getTargetNodeID();
 					MR::NodeID initialSubStateID = nodeInitData->getInitialSubStateID();
 
-					if (initialSubStateID != MR::INVALID_NODE_ID)
-					{
-						sprintf_s(paramName, "DestinationSubStateID_%d", i);
-						nodeDataBlock->writeInt(initialSubStateID, paramName);
-					}
+					sprintf_s(paramName, "DestinationSubStateID_%d", i);
+					nodeDataBlock->writeInt(initialSubStateID, paramName);
 
-					if (targetNodeID != MR::INVALID_NODE_ID)
-					{
-						sprintf_s(paramName, "DestinationSubStateParentID_%d", i);
-						nodeDataBlock->writeInt(targetNodeID, paramName);
-					}
+					sprintf_s(paramName, "DestinationSubStateParentID_%d", i);
+					nodeDataBlock->writeInt(targetNodeID, paramName);
 				}
 			}
 			else

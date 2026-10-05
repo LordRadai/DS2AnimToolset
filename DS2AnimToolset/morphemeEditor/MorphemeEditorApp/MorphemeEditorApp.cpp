@@ -1649,7 +1649,7 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 		{
 			std::string animName = RString::removeExtension(motionCtrl->getAnimationById(animSetIdx, i)->getAnimName());
 			g_workerThread.load()->setProcessStepName(animName);
-			g_appLog->debugMessage(MsgLevel_Info, "\t%ws\n", animName.c_str());
+			g_appLog->debugMessage(MsgLevel_Info, "\t%s\n", animName.c_str());
 
 			this->exportAnimMarkup(path, animSetIdx, i, exportedTracks);
 

@@ -48,6 +48,9 @@ echo --- 2/5 Connect stage 1
 "%CONNECT%" -nogui -script "%BUILD%\%NAME%_rebuild.lua"
 call :lastline "%BUILD%\%NAME%_rebuild.log"
 if not exist "%DIR%\%NAME%.mcn" (echo Stage 1 did not save %NAME%.mcn - see build\%NAME%_rebuild.log & exit /b 1)
+rem without an animation rig nothing exports (MirrorTransforms & co fail in serialize): stop here with the cause
+findstr /B /C:"NIL   anim.createRig" "%BUILD%\%NAME%_rebuild.log" >nul
+if not errorlevel 1 (echo Connect could not create the animation rig from model_xmd\%NAME%.xmd - Connect rejects the model ^(NaN skin weights, for example^). Re-export it and run again. & exit /b 1)
 
 if exist "%BUILD%\%NAME%_stage2.lua" (
     echo --- 3/5 patching the .mcn

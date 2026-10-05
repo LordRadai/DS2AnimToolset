@@ -139,7 +139,7 @@ namespace
 
 	void applyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix>& bindPose, const Matrix& transform, int boneID)
 	{
-		// Compute this bone’s world transform relative to parent
+		// Compute this boneï¿½s world transform relative to parent
 		Matrix local = bindPose[boneID];
 		Matrix world = local * transform;
 
@@ -162,7 +162,7 @@ namespace
 
 	void applyTwistTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix>& bindPose, const Matrix& transform, int boneID)
 	{
-		// Compute this bone’s world transform relative to parent
+		// Compute this boneï¿½s world transform relative to parent
 		Matrix local = bindPose[boneID];
 		Matrix world = local * transform;
 
@@ -609,6 +609,16 @@ void FlverModel::normalizeSkinVertexData(FlverModel::SkinnedVertex& skinnedVerte
 	float totalWeight = 0.f;
 	for (size_t wt = 0; wt < 4; ++wt)
 		totalWeight += skinnedVertex.boneWeights[wt];
+
+	// No weights at all: the vertex is bound rigidly to its first bone. Dividing by the zero total would write NaN
+	// weights, which make the exported XMD unusable (morphemeConnect's anim.createRig rejects it).
+	if (!(totalWeight > 0.f))
+	{
+		for (size_t wt = 0; wt < 4; ++wt)
+			skinnedVertex.boneWeights[wt] = (wt == 0) ? 1.f : 0.f;
+
+		totalWeight = 1.f;
+	}
 
 	bool bValid = false;
 
