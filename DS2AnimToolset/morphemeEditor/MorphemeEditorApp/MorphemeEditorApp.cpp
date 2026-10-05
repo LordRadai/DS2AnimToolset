@@ -2029,7 +2029,8 @@ bool MorphemeEditorApp::exportDirectoryInternal(std::wstring path)
 
 			std::filesystem::create_directories(exportPath);
 
-			this->exportAll(exportPath);
+			g_workerThread.load()->startThread("Export all", &MorphemeEditorApp::exportAll, this, exportPath);
+			g_workerThread.load()->join();
 		}
 
 		return true;
