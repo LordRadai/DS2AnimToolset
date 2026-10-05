@@ -459,25 +459,25 @@
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\NodeNamingStrategy.inl">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\DefaultNodeNamingStrategy.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\ReconstructParentChildNameStrategy.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\Utils\Utils.h">
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NetworkHierarchy.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GraphLayouterStrategy.inl">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\BTFanLayouterStrategy.h">
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\ColumnBlendTreeLayouterStrategy.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="NodeEditor\Editor\Node\PassDownPinsNode.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GridStateMachineLayouterStrategy.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\Utils.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="MorphemeNetworkInspector\NodeProcessor\NodeNameUtils.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
@@ -848,19 +848,22 @@
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\DefaultNodeNamingStrategy.cpp">
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NetworkHierarchy.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\ReconstructParentChildNameStrategy.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNamingStrategy\Utils\Utils.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\BTFanLayouterStrategy.cpp">
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\ColumnBlendTreeLayouterStrategy.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
     <ClCompile Include="NodeEditor\Editor\Node\PassDownPinsNode.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GridStateMachienLayouterStrategy.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\Utils.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNameUtils.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>

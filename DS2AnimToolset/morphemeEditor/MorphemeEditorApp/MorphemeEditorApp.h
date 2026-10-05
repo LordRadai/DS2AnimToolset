@@ -57,6 +57,8 @@ public:
 		bool compileTaes = false;
 
 		bool createTestEditorProject = false;
+
+		bool exportDir = false;
 	};
 
 	struct CameraFlags
@@ -159,6 +161,7 @@ private:
 	void savePlayerModelPreset();
 
 	void loadFile();
+	void loadFileInternal(const std::filesystem::path& path, bool headless = false);
 	void reloadFile();
 	void saveFile();
 
@@ -178,6 +181,9 @@ private:
 
 	bool exportAnimation(std::wstring path, int animSetIdx, int animId);
 	bool exportAnimMarkup(std::wstring path, int animSetIdx, int animId, std::vector<ME::EventTrackExport*>& exportedTracks);
+
+	void exportDirectory();
+	bool exportDirectoryInternal(std::wstring path);
 
 	void exportTaeTemplateXML();
 	void createTestEditorProject();

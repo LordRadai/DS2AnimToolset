@@ -621,7 +621,7 @@ void FlverModel::normalizeSkinVertexData(FlverModel::SkinnedVertex& skinnedVerte
 	}
 
 	if (!bValid)
-		g_appLog->alertMessage(MsgLevel_Error, "Warning: Vertex with no valid bone influences detected!\n");
+		g_appLog->debugMessage(MsgLevel_Warn, "Warning: Vertex with no valid bone influences detected!\n");
 }
 
 // Gets all the model vertices for all the meshes and stores them into m_verts
@@ -1150,6 +1150,8 @@ void FlverModel::transformVertex(int meshIdx, int vertexIndex, const std::vector
 
         const float weight = constWeights[wt];
         if (weight == 0.f) continue;
+
+		if (boneID >= boneRelativeTransforms.size()) continue;
 
         hasInfluence = true;
         newPos += Vector3::Transform(bindVertex.vertexData.position, boneRelativeTransforms[boneID]) * weight;

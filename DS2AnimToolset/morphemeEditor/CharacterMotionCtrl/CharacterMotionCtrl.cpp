@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "CharacterMotionCtrl.h"
 #include "MorphemeSystem/MorphemeUtils/MorphemeUtils.h"
+#include "WorkerThread/WorkerThread.h"
 
 namespace
 {
@@ -21,14 +22,29 @@ bool CharacterMotionCtrlBase::initialize(const char* filename, bool doSimulateNe
     this->m_pMorphemeCharacter = MorphemeCharacter::create(characterDef, doSimulateNetwork);
 
     if (!this->m_pMorphemeCharacter)
+    {
+        MorphemeCharacterDef::destroy(characterDef);
         throw("Failed to create MorphemeCharacter instance (%s)", filename);
+    }
 
     return true;
 }
 
 void CharacterMotionCtrlBase::destroy()
 {
+    if (!this->m_pMorphemeCharacter)
+        return;
+
+    //----------------------------
+    // The network instance references the CharacterDef, so tear it down first, then release the CharacterDef. This
+    // unloads its animations and drops the ref counts of every asset it registered with MR::Manager.
+    MorphemeCharacterDef* characterDef = this->m_pMorphemeCharacter->getCharacterDef();
+
 	MorphemeCharacter::destroy(this->m_pMorphemeCharacter);
+    this->m_pMorphemeCharacter = nullptr;
+
+    if (characterDef)
+        MorphemeCharacterDef::destroy(characterDef);
 }
 
 void CharacterMotionCtrlBase::update(float dt)
@@ -308,6 +324,8 @@ bool CharacterMotionCtrlAnimPreview::initialize(const char* filename, bool doSim
 
 	this->m_animations.reserve(numAnimSets);
 
+    g_workerThread.load()->addProcess("Loading animations", int(numAnimSets * animCount));
+
     for (uint32_t animSetIdx = 0; animSetIdx < numAnimSets; animSetIdx++)
     {
 		this->m_animations.push_back(std::vector<AnimObject*>());
@@ -319,7 +337,11 @@ bool CharacterMotionCtrlAnimPreview::initialize(const char* filename, bool doSim
             std::wstring animFileName = RString::toWide(characterDef->getAnimFileLookUp()->getFilename(i));
             std::wstring animFilePath = animFolder + L"\\" + animFileName;
 
+            g_workerThread.load()->setProcessStepName(characterDef->getAnimFileLookUp()->getFilename(i));
+
             this->addAnimation(RString::toNarrow(animFilePath).c_str(), animSetIdx);
+
+            g_workerThread.load()->increaseProgressStep();
         }
     }
 

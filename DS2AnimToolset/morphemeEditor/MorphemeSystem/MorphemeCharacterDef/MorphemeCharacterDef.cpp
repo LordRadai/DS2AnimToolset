@@ -69,6 +69,8 @@ MorphemeCharacterDef* MorphemeCharacterDef::create(const char* filename)
   int64_t fileSize = NMP::NMFile::allocAndLoad(filename, &bundle, &bundleSize);
   if (fileSize <= -1)
   {
+    MorphemeCharacterDef::destroy(instance);
+
     NMP_ASSERT_FAIL();
 
     return NULL;
@@ -81,9 +83,14 @@ MorphemeCharacterDef* MorphemeCharacterDef::create(const char* filename)
     // Allocate memory and unpack bundle
     if(!(instance->init(bundle, (size_t)bundleSize)))
     {
+      //----------------------------
+      // Releases whatever assets were registered before the failure so they don't stay in the Manager's object pool
       MorphemeCharacterDef::destroy(instance);
+      NMP::Memory::memFree(bundle);
 
       NMP_ASSERT_FAIL();
+
+      return NULL;
     }
   }
 
@@ -101,6 +108,9 @@ bool MorphemeCharacterDef::destroy(MorphemeCharacterDef* characterDef)
 
   characterDef->term();
 
+  //----------------------------
+  // The instance was placement-new'd into NMP memory, so run the destructor to free the std::vector members
+  characterDef->~MorphemeCharacterDef();
   NMP::Memory::memFree(characterDef);
   characterDef = NULL;
 
@@ -171,7 +181,11 @@ bool MorphemeCharacterDef::init(void* bundle, size_t bundleSize)
 // --------------------------------------------------------------------------------------------------------------------
 bool MorphemeCharacterDef::term()
 {
-  if( m_isLoaded )
+  bool success = true;
+
+  //----------------------------
+  // The network def may exist even if init() failed afterwards, in which case its animations were still requested.
+  if (m_netDef)
   {
     for (UINT i = 0; i < m_netDef->getNumAnimSets(); ++i)
     {
@@ -179,10 +193,16 @@ bool MorphemeCharacterDef::term()
 
       if (!m_netDef->unloadAnimations((MR::AnimSetIndex)i, NULL))
       {
-        return false;
+        success = false;
       }
     }
+  }
 
+  //----------------------------
+  // Always release the registered assets, even after a partial load, otherwise they stay in the Manager's object pool
+  // and exhaust it when many bundles are loaded in a row (e.g. exporting a whole directory).
+  if (m_registeredAssetIDs || m_clientAssets)
+  {
     g_appLog->debugMessage(MsgLevel_Info, "Unloading bundles\n");
 
     //----------------------------
@@ -193,15 +213,26 @@ bool MorphemeCharacterDef::term()
   if (m_registeredAssetIDs)
   {
     NMP::Memory::memFree(m_registeredAssetIDs);
+    m_registeredAssetIDs = NULL;
   }
 
   if(m_clientAssets)
   {
     NMP::Memory::memFree(m_clientAssets);
+    m_clientAssets = NULL;
   }
+
+  m_numRegisteredAssets = 0;
+  m_numClientAssets = 0;
+  m_netDef = NULL;
+  m_metadata.m_animFileLookUp = NULL;
+  m_rigToAnimMaps.clear();
+  m_characterControllerDefs.clear();
+  m_isLoaded = false;
+
   //----------------------------
   // Free any memory that may be allocated in this class here
-  return true;
+  return success;
 }
 
 MR::RigToAnimMap* MorphemeCharacterDef::getRigToAnimMap(int idx)

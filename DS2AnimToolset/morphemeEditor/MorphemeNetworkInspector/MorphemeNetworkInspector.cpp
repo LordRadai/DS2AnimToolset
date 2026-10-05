@@ -2,7 +2,7 @@
 
 #include "morpheme/mrDefines.h"
 
-#include "NodeProcessor/NodeNamingStrategy/Utils/Utils.h"
+#include "NodeProcessor/NodeNameUtils.h"
 
 #include "RLog/RLog.h"
 #include "extern.h"
@@ -17,7 +17,10 @@ bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* networkDef, MR::UTILS
 		return false;
 	}
 
-	//m_nodeProcessor.preProcessNetwork(networkDef, animFileLookupTable);
+	// a new network replaces the previous one
+	reset();
+
+	m_nodeProcessor.preProcessNetwork(networkDef, animFileLookupTable);
 
 	std::vector<MR::NodeID> controlParamNodeIDs(numControlParams);
 	networkDef->getControlParameterNodeIDs(controlParamNodeIDs.data(), numControlParams);
@@ -27,7 +30,7 @@ bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* networkDef, MR::UTILS
 		MR::NodeDef* nodeDef = networkDef->getNodeDef(controlParamNodeIDs[i]);
 		const char* nodeName = networkDef->getNodeNameFromNodeID(controlParamNodeIDs[i]);
 
-		m_nodeProcessor.processControlParameter(this, nodeDef, NodeNameStrategyUtils::getNodeNameFromFullPath(nodeName));
+		m_nodeProcessor.processControlParameter(this, nodeDef, NodeNameUtils::getNodeNameFromFullPath(nodeName));
 	}
 
 	for (uint32_t i = 0; i < networkDef->getNumMessages(); ++i)
@@ -38,11 +41,9 @@ bool MorphemeNetworkInspector::loadNetwork(MR::NetworkDef* networkDef, MR::UTILS
 		m_messageProcessor.processMessage(this, const_cast<MR::MessageDistributor*>(messageDef), name);
 	}
 
-	/*
 	MR::NodeDef* rootNodeDef = networkDef->getNodeDef(networkDef->getRootNodeID());
 
-	NodeEditor::Graph* root = m_nodeProcessor.buildRootGraph(this, rootNodeDef);
-	*/
+	m_nodeProcessor.buildRootGraph(this, rootNodeDef);
 
 	return true;
 }

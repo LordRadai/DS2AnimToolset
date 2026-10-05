@@ -9,7 +9,7 @@
 #include "Camera/Camera.h"
 #include "NodeEditor/NodeEditor.h"
 
-#include "MorphemeNetworkInspector/NodeProcessor/NodeNamingStrategy/Utils/Utils.h"
+#include "MorphemeNetworkInspector/NodeProcessor/NodeNameUtils.h"
 
 #define MSAA_SETTING_COUNT 3
 
@@ -855,7 +855,7 @@ void GuiManager::rootWindow()
 	if (ImGui::BeginMenu("File"))
 	{
 		if (ImGui::MenuItem("Open...")) { editorApp->getTaskFlags()->loadFile = true; }
-		//if (ImGui::MenuItem("Save...")) { editorApp->getTaskFlags()->saveFile = true; }
+		if (ImGui::MenuItem("Export Directory...")) { editorApp->getTaskFlags()->exportDir = true; }
 
 		ImGui::Separator();
 		
@@ -1057,8 +1057,6 @@ void GuiManager::rootWindow()
 #endif
 
 	ImGui::EndMenuBar();
-
-	this->progressIndicatorPopup();
 
 	ImGui::End();
 }
@@ -1815,7 +1813,7 @@ void GuiManager::selectedNodeInfoWindow()
 						if (!nodeDef->getNodeFlags().isSet(MR::NodeDef::NODE_FLAG_IS_CONTROL_PARAM))
 							continue;
 
-						std::string nodeName = NodeNameStrategyUtils::getNodeNameFromFullPath(networkDef->getNodeNameFromNodeID(nodeDef->getNodeID()));
+						std::string nodeName = NodeNameUtils::getNodeNameFromFullPath(networkDef->getNodeNameFromNodeID(nodeDef->getNodeID()));
 
 						ImVec4 textColor = ImGui::GetStyle().Colors[ImGuiCol_Text];
 
@@ -2343,33 +2341,4 @@ void GuiManager::searchQueryWindow()
 void GuiManager::clearSearchQueryWindow()
 {
 	m_queryResult.clear();
-}
-
-void GuiManager::progressIndicatorPopup()
-{
-	const char* iniBak = ImGui::GetIO().IniFilename;
-	ImGui::GetIO().IniFilename = NULL;
-
-	if (!g_workerThread.load()->isDone())
-	{
-		ImGui::OpenPopup(g_workerThread.load()->getThreadName().c_str());
-
-		ImGui::SetNextWindowPos(ImGui::GetWindowPos() + (ImGui::GetWindowSize() / 2 - ImVec2(150, 50)), ImGuiCond_Always);
-
-		if (ImGui::BeginPopupModal(g_workerThread.load()->getThreadName().c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
-		{
-			for (size_t i = 0; i < g_workerThread.load()->getNumProcesses(); i++)
-			{
-				if (g_workerThread.load()->isProcessBusy(i))
-					ImGui::CompositeProgressBar(g_workerThread.load()->getProcessName(i).c_str(), g_workerThread.load()->getProcessStep(i), g_workerThread.load()->getProcessNumSteps(i), g_workerThread.load()->getProcessStepName(i).c_str());
-			}
-
-			if (g_workerThread.load()->isDone())
-				ImGui::CloseCurrentPopup();
-
-			ImGui::EndPopup();
-		}
-	}
-
-	ImGui::GetIO().IniFilename = iniBak;
 }

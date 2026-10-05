@@ -8,6 +8,7 @@
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h>
 #include "utils/NMDX/NMDX.h"
+#include "WorkerThread/WorkerThread.h"
 
 namespace
 {
@@ -294,15 +295,21 @@ namespace
     }
 }
 
-Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork)
+Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork, bool doPrompExtraFileLoad)
 {
     Character* character = new Character();
 
     character->m_characterModelCtrl = new CharacterModelCtrl();
 	character->m_characterMotionCtrl = new CharacterMotionCtrlAnimPreview();
 
+    g_workerThread.load()->addProcess("Loading character", 3);
+    g_workerThread.load()->setProcessStepName("Loading morpheme bundle");
+
     if (character->m_characterMotionCtrl)
 		character->m_characterMotionCtrl->initialize(filename, doSimulateNetwork);
+
+    g_workerThread.load()->increaseProgressStep();
+    g_workerThread.load()->setProcessStepName("Loading model");
 
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
     character->m_characterName = RString::toWide(RString::removeExtension(std::filesystem::path(filename).filename().string()));
@@ -310,7 +317,7 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
     std::wstring gamePath = utils::findGamePath(RString::toWide(filename));
 
     MorphemeCharacterDef* characterDef = character->m_characterMotionCtrl->getMorphemeCharacterDef();
-	MR::AnimRigDef* rigDef = characterDef->getNetworkDef()->getRig(0);
+    MR::AnimRigDef* rigDef = characterDef->getNetworkDef()->getRig(0);
 
     if (gamePath != L"")
     {
@@ -322,41 +329,52 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
         swprintf_s(modelName, L"%ws\%ws.bnd", chrFolder.c_str(), character->m_characterName.c_str());
 
         character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, rigDef));
-        
-        fileList = utils::getTaeFileListFromChrId(timeActFolder + L"\\chr\\", character->m_chrId);
 
-        ImGui::OpenPopup("Select TimeAct File");
+        g_workerThread.load()->increaseProgressStep();
 
-        if (character->m_chrId == 1)
+        if (doPrompExtraFileLoad)
         {
-            PlayerModelPreset* preset = MorphemeEditorApp::getInstance()->getPlayerModelPreset();
+            fileList = utils::getTaeFileListFromChrId(timeActFolder + L"\\chr\\", character->m_chrId);
 
-            std::wstring partsFolder = modelFolder + L"\\parts";
+            ImGui::OpenPopup("Select TimeAct File");
 
-            const bool female = preset->isFemale();
+            if (character->m_chrId == 1)
+            {
+                g_workerThread.load()->setProcessStepName("Loading equipment");
 
-            character->loadPartsFaceGenBnd(partsFolder, kFgHair, preset->getFgHairId(), female);
-            character->loadPartsFaceGenBnd(partsFolder, kFgFace, preset->getFgFaceId(), female);
-            character->loadPartsFaceGenBnd(partsFolder, kFgHead, preset->getFgHeadId(), female);
-            character->loadPartsFaceGenBnd(partsFolder, kFgEyeBrows, preset->getFgEyeBrowsId(), female);
-            character->loadPartsFaceGenBnd(partsFolder, kFgEyes, preset->getFgEyeId(), female);
-            character->loadPartsFaceGenBnd(partsFolder, kFgBeard, preset->getFgBeardId(), female);
+                PlayerModelPreset* preset = MorphemeEditorApp::getInstance()->getPlayerModelPreset();
 
-            character->loadPartsBnd(partsFolder, kPartsHead, preset->getHeadId(), female);
-            character->loadPartsBnd(partsFolder, kPartsBody, preset->getBodyId(), female);
-            character->loadPartsBnd(partsFolder, kPartsArm, preset->getArmId(), female);
-            character->loadPartsBnd(partsFolder, kPartsLeg, preset->getLegId(), female);
+                std::wstring partsFolder = modelFolder + L"\\parts";
 
-            character->loadWeaponBnd(partsFolder, kPartsWeaponLeft, preset->getLeftHandEquipId(), preset->isLeftHandEquipShield());
-            character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getRightHandEquipId(), preset->isRightHandEquipShield());
-        }
+                const bool female = preset->isFemale();
+
+                character->loadPartsFaceGenBnd(partsFolder, kFgHair, preset->getFgHairId(), female);
+                character->loadPartsFaceGenBnd(partsFolder, kFgFace, preset->getFgFaceId(), female);
+                character->loadPartsFaceGenBnd(partsFolder, kFgHead, preset->getFgHeadId(), female);
+                character->loadPartsFaceGenBnd(partsFolder, kFgEyeBrows, preset->getFgEyeBrowsId(), female);
+                character->loadPartsFaceGenBnd(partsFolder, kFgEyes, preset->getFgEyeId(), female);
+                character->loadPartsFaceGenBnd(partsFolder, kFgBeard, preset->getFgBeardId(), female);
+
+                character->loadPartsBnd(partsFolder, kPartsHead, preset->getHeadId(), female);
+                character->loadPartsBnd(partsFolder, kPartsBody, preset->getBodyId(), female);
+                character->loadPartsBnd(partsFolder, kPartsArm, preset->getArmId(), female);
+                character->loadPartsBnd(partsFolder, kPartsLeg, preset->getLegId(), female);
+
+                character->loadWeaponBnd(partsFolder, kPartsWeaponLeft, preset->getLeftHandEquipId(), preset->isLeftHandEquipShield());
+                character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getRightHandEquipId(), preset->isRightHandEquipShield());
+            }
+        }     
     }
     else
     {
-		character->m_characterModelCtrl->setModel(FlverModel::createFromAnimRig(rigDef));
+        character->m_characterModelCtrl->setModel(FlverModel::createFromAnimRig(rigDef));
 
         g_appLog->alertMessage(MsgLevel_Info, "Failed to find Game path. No models or TimeAct files will be loaded\n");
+
+        g_workerThread.load()->increaseProgressStep();
     }
+
+    g_workerThread.load()->increaseProgressStep();
 
     return character;
 }

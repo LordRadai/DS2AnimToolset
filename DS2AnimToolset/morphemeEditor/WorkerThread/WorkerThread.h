@@ -2,8 +2,13 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <string>
+#include <functional>
 #include "ProgressIndicator/ProgressIndicator.h"
 
+// Runs long tasks (exports, compiles) synchronously on the calling thread, while a separate
+// UI thread owns a small native progress window and keeps it repainted and responsive.
+// The task reports progress through addProcess/setProcessStepName/increaseProgressStep.
 class WorkerThread
 {
 public:
@@ -14,106 +19,75 @@ public:
 	WorkerThread(const WorkerThread&) = delete;
 	void operator=(const WorkerThread&) = delete;
 
-	void update();
-	void join();
-
-	bool isDone() const 
+	bool isDone() const
 	{
 		std::lock_guard<std::mutex> lock(this->m_mutex);
 		return this->m_done;
 	}
 
-	template <class _Fn, class... _Args, std::enable_if_t<!std::is_same_v<std::_Remove_cvref_t<_Fn>, std::thread>, int> = 0>
-	void startThread(std::string name, _Fn&& func, _Args&&... args)
+	// Invokes func(args...) on the calling thread and shows the progress window until it returns
+	template <class _Fn, class... _Args>
+	void runTask(std::string name, _Fn&& func, _Args&&... args)
 	{
-		std::lock_guard<std::mutex> lock(this->m_mutex);
+		// Nested task: it reports into the progress window that is already up
+		if (!this->isDone())
+		{
+			std::invoke(std::forward<_Fn>(func), std::forward<_Args>(args)...);
+			return;
+		}
 
-		this->m_done = false;
-		this->m_threadName = name;
+		this->beginTask(name);
 
-		this->m_thread = std::thread([this, func = std::forward<_Fn>(func)](auto&&... args_inner) {
-			std::invoke(func, std::forward<decltype(args_inner)>(args_inner)...);
+		try
+		{
+			std::invoke(std::forward<_Fn>(func), std::forward<_Args>(args)...);
+		}
+		catch (...)
+		{
+			this->endTask();
+			throw;
+		}
 
-			std::lock_guard<std::mutex> lock(this->m_mutex);
-			this->m_done = true;
-			}, std::forward<_Args>(args)...);
+		this->endTask();
 	}
+
+	// The editor's main window (HWND), which the progress window is kept inside of
+	void setMainWindow(void* hwnd);
 
 	void addProcess(std::string name, int numSteps);
+	void increaseProgressStep();
+	void setProcessStepName(std::string name);
 
-	std::string getThreadName() const 
+	std::string getThreadName() const
 	{
 		std::lock_guard<std::mutex> lock(this->m_mutex);
-		return this->m_threadName; 
+		return this->m_threadName;
 	}
 
-	int getNumProcesses() const 
+	int getNumProcesses() const
 	{
 		std::lock_guard<std::mutex> lock(this->m_mutex);
-		return this->m_processes.size(); 
+		return int(this->m_processes.size());
 	}
 
-	int getProcessStep(int idx) const
+	// Copy of the active processes, safe to read from the progress UI thread
+	std::vector<ProgressIndicator> getProcessesSnapshot() const
 	{
 		std::lock_guard<std::mutex> lock(this->m_mutex);
-		return this->m_processes[idx].getStep();
-	}
-
-	int getProcessNumSteps(int idx) const
-	{
-		std::lock_guard<std::mutex> lock(this->m_mutex);
-		return this->m_processes[idx].getNumSteps();
-	}
-
-	float getProcessProgress(int idx) const
-	{
-		std::lock_guard<std::mutex> lock(this->m_mutex);
-		return this->m_processes[idx].getProgress();
-	}
-
-	std::string getProcessName(int idx) const 
-	{ 
-		std::lock_guard<std::mutex> lock(this->m_mutex);
-		return this->m_processes[idx].getProcessName();
-	}
-
-	std::string getProcessStepName(int idx) const 
-	{ 
-		std::lock_guard<std::mutex> lock(this->m_mutex);
-		return this->m_processes[idx].getStepName();
-	}
-
-	bool isProcessBusy(int idx) const 
-	{ 
-		std::lock_guard<std::mutex> lock(this->m_mutex);
-		return this->m_processes[idx].isBusy();
-	}
-
-	void increaseProgressStep()
-	{
-		std::lock_guard<std::mutex> lock(this->m_mutex);
-		
-		int step = this->m_processes.back().getStep();
-		this->m_processes.back().setStep(++step);
-
-		for (size_t i = 0; i < this->m_processes.size(); i++)
-		{
-			if (!this->m_processes[i].isBusy())
-				this->m_processes.erase(this->m_processes.begin() + i);
-		}
-	}
-
-	void setProcessStepName(std::string name)
-	{
-		std::lock_guard<std::mutex> lock(this->m_mutex);
-		this->m_processes.back().setStepName(name);
+		return this->m_processes;
 	}
 
 private:
 	WorkerThread() {}
 
+	void beginTask(std::string name);
+	void endTask();
+
+	void progressWindowThread(void* parentWnd);
+
 	std::string m_threadName = "";
-	std::thread m_thread;
+	std::thread m_uiThread;
+	void* m_mainWnd = nullptr;
 	bool m_done = true;
 	std::vector<ProgressIndicator> m_processes;
 	mutable std::mutex m_mutex;
