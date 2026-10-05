@@ -330,8 +330,13 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
 
 		FlverModel* model = FlverModel::createFromBnd(modelName, rigDef);
 
+        // Characters can genuinely have a network but no model (cut content): carry on with a skeleton-only model built
+        // from the rig, so exports still produce a model file (the morphemeConnect project needs it for the rig)
         if (model == nullptr)
-			g_appLog->alertMessage(MsgLevel_Error, "Failed to load model %ws\n", modelName);
+        {
+			g_appLog->debugMessage(MsgLevel_Warn, "No model found at %ws, using the animation rig's skeleton instead\n", modelName);
+			model = FlverModel::createFromAnimRig(rigDef);
+        }
 
         character->m_characterModelCtrl->setModel(model);
 

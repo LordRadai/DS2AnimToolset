@@ -103,6 +103,9 @@ namespace
 
 	void exportFlverToMorphemeBoneMap(FlverModel* model, std::wstring path)
 	{
+		if (model == nullptr)
+			return;
+
 		std::ofstream out(path, std::ios::out);
 		
 		std::vector<int> boneMap = model->getFlverToMorphemeBoneMap();
@@ -1716,9 +1719,6 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 	try
 	{
 		FlverModel* model = this->m_character->getCharacterModelCtrl()->getModel();
-
-		if (model == nullptr)
-			return false;
 
 		g_workerThread.load()->addProcess("Exporting model", 1);
 
