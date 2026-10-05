@@ -629,6 +629,12 @@
     "min": 0,
     "max": 1
   },
+  "FakeDead": {
+    "type": "int",
+    "group": "Event Action",
+    "min": 0,
+    "max": 1
+  },
   "InitCategory": {
     "type": "int",
     "group": "Event Action",
@@ -706,6 +712,18 @@
     "group": "Gesture",
     "min": 0,
     "max": 100
+  },
+  "Guard_pos": {
+    "type": "vector3",
+    "group": "Guard",
+    "min": -1000,
+    "max": 1000
+  },
+  "Guard_rat": {
+    "type": "vector3",
+    "group": "Guard",
+    "min": -1000,
+    "max": 1000
   },
   "GuardAimBlendWeight": {
     "type": "float",
@@ -1163,6 +1181,12 @@
     "min": 0,
     "max": 1
   },
+  "rope": {
+    "type": "vector3",
+    "group": "Rope",
+    "min": -1000,
+    "max": 1000
+  },
   "RopeLHandIK": {
     "type": "float",
     "group": "Rope",
@@ -1228,6 +1252,36 @@
     "group": "Target",
     "min": 0,
     "max": 1
+  },
+  "Target_X": {
+    "type": "float",
+    "group": "Target",
+    "min": -1000,
+    "max": 1000
+  },
+  "Target_Y": {
+    "type": "float",
+    "group": "Target",
+    "min": -1000,
+    "max": 1000
+  },
+  "Add_Pos": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000
+  },
+  "Add_pos": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000
+  },
+  "Add_Rot": {
+    "type": "vector3",
+    "group": null,
+    "min": -180,
+    "max": 180
   },
   "AdditiveBlend_1": {
     "type": "float",
@@ -1343,6 +1397,18 @@
     "min": null,
     "max": null
   },
+  "hip": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000
+  },
+  "hip2": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000
+  },
   "HipPosotion": {
     "type": "vector3",
     "group": null,
@@ -1396,6 +1462,18 @@
     "group": null,
     "min": 0.0,
     "max": 100.0
+  },
+  "PlaySpeed_02": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 100
+  },
+  "PlaySpeed_03": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 100
   },
   "PlaySpeed_05": {
     "type": "float",
@@ -1535,6 +1613,18 @@
     "min": -100,
     "max": 100
   },
+  "SlopeWeight": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "Target_Distance": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1000
+  },
   "Test_01": {
     "type": "float",
     "group": null,
@@ -1555,6 +1645,12 @@
   },
   "TwoHandIKTarget": {
     "type": "vector3",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "UnevenTerrain": {
+    "type": "bool",
     "group": null,
     "min": 0,
     "max": 1
@@ -1583,142 +1679,46 @@
     "min": 0,
     "max": 1
   },
-  "Target_Distance": {
+  "WeoHandWeight": {
     "type": "float",
     "group": null,
-    "min": null,
-    "max": null
-  },
-  "Target_X": {
-    "type": "float",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "Target_Y": {
-    "type": "float",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "Add_Pos": {
-    "type": "vector3",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "Add_Rot": {
-    "type": "vector3",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "PlaySpeed_03": {
-    "type": "float",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "WepHandDuration": {
-    "type": "float",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "FakeDead": {
-    "type": "int",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "rope": {
-    "type": "vector3",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "UnevenTerrain": {
-    "type": "bool",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "WepHandWeiht": {
-    "type": "float",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "Add_pos": {
-    "type": "vector3",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "SlopeWeight": {
-    "type": "float",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "WepHandWegiht": {
-    "type": "float",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "WepHandOnline": {
-    "type": "float",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "Guard_pos": {
-    "type": "vector3",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "Guard_rat": {
-    "type": "vector3",
-    "group": null,
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 1
   },
   "Wep02_Pos": {
     "type": "vector3",
     "group": null,
-    "min": null,
-    "max": null
+    "min": -1000,
+    "max": 1000
   },
   "Wep02_Rot": {
     "type": "vector3",
     "group": null,
-    "min": null,
-    "max": null
+    "min": -180,
+    "max": 180
   },
-  "hip": {
-    "type": "vector3",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "hip2": {
-    "type": "vector3",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "PlaySpeed_02": {
+  "WepHandDuration": {
     "type": "float",
     "group": null,
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 100
   },
-  "WeoHandWeight": {
+  "WepHandOnline": {
     "type": "float",
     "group": null,
-    "min": null,
-    "max": null
+    "min": -2,
+    "max": 2
+  },
+  "WepHandWegiht": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "WepHandWeiht": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
   }
 }
