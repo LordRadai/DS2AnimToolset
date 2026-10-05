@@ -224,7 +224,8 @@ registerNode("LockFoot",
           return nil, string.format("LockFoot node %s requires a valid input to IkFkBlendWeight, node %s is not valid", node, weightNode)
         end
       else
-        return nil, string.format("LockFoot node %s is missing a required connection to IkFkBlendWeight", node)
+        -- DS2 (FRPG2): IkFkBlendWeight is optional (c2170 has LockFoot nodes without it; serialize already skips it)
+        -- return nil, string.format("LockFoot node %s is missing a required connection to IkFkBlendWeight", node)
       end
 
       local swivelContributionToOrientationPin = string.format("%s.SwivelContributionToOrientation", node)

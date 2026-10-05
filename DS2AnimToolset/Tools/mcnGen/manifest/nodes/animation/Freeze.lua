@@ -51,7 +51,17 @@ registerNode("Freeze",
 
     --------------------------------------------------------------------------------------------------------------------
     getTransformChannels = function(node, set)
-      local transformChannels = anim.getTransformChannels((node .. ".AnimationTake"), set)
+      -- Freeze has no input or animation take: it holds the last pose of every channel, so it outputs the whole rig
+      -- (asking for node.AnimationTake returned nil, which made every node downstream fail and Connect silently drop
+      -- the state from the export)
+      local rigInfo = anim.getRigHierarchy(set)
+
+      local transformChannels = { }
+      table.setn(transformChannels, table.getn(rigInfo))
+      for i, v in ipairs(rigInfo) do
+        transformChannels[v.index] = true
+      end
+
       return transformChannels
     end,
 

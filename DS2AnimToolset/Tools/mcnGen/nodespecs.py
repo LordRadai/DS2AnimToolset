@@ -270,8 +270,10 @@ def spec_112(ctx, node):
         times, add = float(node.get('ConstantValue')), float(node.get('ConstantValueX'))
         return 'OperatorReRange', [('InputRange1', 0.0, False), ('InputRange2', 1.0, False),
                                    ('OutputRange1', add, False), ('OutputRange2', add + times, False)], inputs
+    # DS2's manifest also has ConstantValueX, the asset compiler's second constant (Y/Z only matter for vectors)
     return 'OperatorOneInputArithmetic', [('Operation', OPS_ARITH[code] if 0 <= code < len(OPS_ARITH) else '*', False),
-                                          ('ConstantValue', float(node.get('ConstantValue', 0.0)), False)], inputs
+                                          ('ConstantValue', float(node.get('ConstantValue', 0.0)), False),
+                                          ('ConstantValueX', float(node.get('ConstantValueX', 0.0)), False)], inputs
 
 
 def spec_110(ctx, node):

@@ -50,6 +50,13 @@ registerNode("OperatorOneInputArithmetic",
         value = 0.0,
         helptext = "Constant numerical value used in the operation Result = Input operation Constant.  For instance, select '/' to perform the operation Result = Input / Constant. "
       },
+      -- DS2 (FRPG2): the asset compiler reads ConstantValueX as the operation's second constant (Y and Z are only
+      -- used by vector operators)
+      { name = "ConstantValueX",
+        type = "float",
+        value = 0.0,
+        helptext = "Second constant of the operation, read by the DS2 asset compiler as ConstantValueX."
+      },
     },
     
     --------------------------------------------------------------------------------------------------------------------
@@ -153,7 +160,7 @@ registerNode("OperatorOneInputArithmetic",
       --Stream:writeBool(true, "IsScalar")
       Stream:writeInt(operationCode, "OperationCode")
       Stream:writeFloat(getAttribute(node, "ConstantValue"),  "ConstantValue")
-      Stream:writeFloat(0, "ConstantValueX")
+      Stream:writeFloat(getAttribute(node, "ConstantValueX"), "ConstantValueX")
       Stream:writeFloat(0, "ConstantValueY")
       Stream:writeFloat(0, "ConstantValueZ")
     end,
@@ -183,6 +190,11 @@ if not mcn.inCommandLineMode() then
         title = "Properties",
         usedAttributes = { "Operation", "ConstantValue" },
         displayFunc = function(...) safefunc(attributeEditor.operatorOneInputArithmeticDisplayInfoSection, unpack(arg)) end
+      },
+      {
+        title = "Second Constant",
+        usedAttributes = { "ConstantValueX" },
+        displayFunc = function(...) safefunc(attributeEditor.standardDisplayInfoSection, unpack(arg)) end
       }
     }
   )
