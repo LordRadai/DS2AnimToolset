@@ -259,9 +259,9 @@ class Hierarchy:
             if (p.id, g[2]) in self.nbt_depth or (p.id, g[2]) in self.no_nest or g[2] in self.sms: continue
             cons = self.consumers.get(n.id, [])
             inside = {c for c in cons if self.G.get(c) == g}
-            # feeds a node of S and something deeper, or several nodes of S: either way more than one input, which
-            # only a pass-down pin into a nested blend tree can fan out to
-            if len(cons) > 1 and inside and (any(self.G.get(c) != g for c in cons) or len(inside) > 1):
+            # feeds a node of S through a pass-down pin (P, not that node, is its requester): it sits outside a blend
+            # tree nested in S. Whatever else it feeds (more nodes of S, something deeper) shares the pin
+            if inside:
                 outside[g].add(n.id)
         for g, keep in outside.items():
             _, P, R = g
