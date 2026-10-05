@@ -264,22 +264,60 @@ class Hierarchy:
             if len(cons) > 1 and inside and (any(self.G.get(c) != g for c in cons) or len(inside) > 1):
                 outside[g].add(n.id)
         for g, keep in outside.items():
-            # private upstream of the kept nodes stays beside them
-            todo = list(keep)
-            while todo:
-                m = todo.pop()
-                for field, pin in self.spec.get(m, (0, 0, []))[2]:
-                    u = self.nodes[m].get(field)
-                    if u in self.nodes and u not in keep and self.G.get(u) == g and u != g[2] and \
-                            all(c in keep for c in self.consumers.get(u, [])):
-                        keep.add(u); todo.append(u)
             _, P, R = g
-            self.nbt_depth[(P, R)] = 1
+            mc = lambda i: self.nodes[i].attrs.get('downstreamMultiplyConnected') == 'true'
+            # the other multiply connected nodes of S requested by P were passed down too, even with one consumer
             for i, gi in self.G.items():
-                if gi == g and i not in keep and self.nodes[i].type not in DATA_TYPES:
-                    self.override[i] = ('nbt', P, R, 1)
-            self.override[R] = ('nbt', P, R, 1)
-            self.log.append('state %d of %d: nested blend tree for multiply connected %r' % (R, P, sorted(keep)))
+                if gi == g and i != R and mc(i) and self.nodes[i].parent == P and                         self.nodes[i].type not in CP_TYPES + DATA_TYPES:
+                    keep.add(i)
+            # nodes of S that only feed the kept part (kept nodes themselves, graphs inside a kept state machine or
+            # inside a blend tree nested for a kept requester) stay beside them: their private upstream, and multiply
+            # connected nodes passed down into a kept state machine (the nested blend tree only outputs S's result,
+            # nothing can come out of it into the rest of S)
+            def feeds_kept(c):
+                if c in keep: return True
+                gc = self.G.get(c)
+                return gc is not None and any(a[0] in ('state', 'nbt') and a[1] in keep for a in self.ancestors(gc))
+            grown = True
+            while grown:
+                grown = False
+                for i, gi in list(self.G.items()):
+                    if gi != g or i in keep or i == R: continue
+                    cons = self.consumers.get(i, [])
+                    if cons and all(feeds_kept(c) for c in cons):
+                        keep.add(i); grown = True
+            # levels: a multiply connected node feeding another kept node went through a pass-down pin, so its consumer
+            # sits one nested blend tree deeper; other kept nodes sit at the level of their consumers; the rest of S
+            # goes one level below the deepest
+            def kept_owner(c):
+                if c in keep: return c
+                gc = self.G.get(c)
+                for a in self.ancestors(gc) if gc is not None else []:
+                    if a[0] in ('state', 'nbt') and a[1] in keep: return a[1]
+                return None
+            level = dict.fromkeys(keep, 0)
+            for _ in range(len(keep) + 1):
+                changed = False
+                for n in keep:
+                    if mc(n):
+                        new = 0
+                        for field, pin in self.spec.get(n, (0, 0, []))[2]:
+                            u = self.nodes[n].get(field)
+                            if u in keep and mc(u): new = max(new, level[u] + 1)
+                    else:
+                        owners = [kept_owner(c) for c in self.consumers.get(n, [])]
+                        new = min([level[o] for o in owners if o is not None] or [0])
+                    if new != level[n]: level[n] = new; changed = True
+                if not changed: break
+            depth = 1 + max(level.values() or [0])
+            self.nbt_depth[(P, R)] = depth
+            for i, gi in self.G.items():
+                if gi != g or self.nodes[i].type in DATA_TYPES: continue
+                if i not in keep: self.override[i] = ('nbt', P, R, depth)
+                elif level[i] > 0: self.override[i] = ('nbt', P, R, level[i])
+            self.override[R] = ('nbt', P, R, depth)
+            self.log.append('state %d of %d: %d nested blend tree level(s) for multiply connected %r' % (
+                R, P, depth, sorted((n, level[n]) for n in keep)))
         return bool(outside)
 
     def contradicted_members(self, named):

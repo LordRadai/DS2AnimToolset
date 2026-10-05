@@ -276,6 +276,12 @@ def spec_112(ctx, node):
                                           ('ConstantValueX', float(node.get('ConstantValueX', 0.0)), False)], inputs
 
 
+def spec_111(ctx, node):
+    code = int(node.get('OperationCode', 0))
+    inputs = [(f, f) for f in ('Input0', 'Input1') if node.get(f) not in (None, 0xFFFFFFFF)]
+    return 'OperatorArithmetic', [('Operation', OPS_ARITH[code] if 0 <= code < 6 else '*', False)], inputs
+
+
 def spec_110(ctx, node):
     code = int(node.get('OperationCode', 0))
     inputs = [('Input', 'Input')] if node.get('Input') not in (None, 0xFFFFFFFF) else []
@@ -322,7 +328,7 @@ def simple(mtype, **kw):
 SPECS = {
     104: spec_AnimWithEvents, 122: spec_HeadLook, 120: spec_TwoBoneIK, 121: spec_LockFoot, 129: spec_HipsIK,
     138: spec_PredictiveUnevenTerrain, 105: spec_FilterTransforms, 135: spec_MirrorTransforms,
-    500: spec_SmoothTransforms, 153: spec_EmitRequestOnDiscreteEvent, 110: spec_110, 112: spec_112,
+    500: spec_SmoothTransforms, 153: spec_EmitRequestOnDiscreteEvent, 110: spec_110, 111: spec_111, 112: spec_112,
     142: spec_142, 146: spec_146, 126: spec_126,
     107: simple('Blend2'), 114: simple('FeatherBlend2'), 170: simple('SubtractiveBlend'),
     108: simple('BlendN'), 131: simple('Switch'), 134: simple('PassThrough'), 125: simple('PlaySpeedModifier'),
