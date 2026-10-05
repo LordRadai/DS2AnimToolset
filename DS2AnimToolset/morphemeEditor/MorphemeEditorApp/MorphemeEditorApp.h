@@ -168,11 +168,11 @@ private:
 	void reloadFile();
 	void saveFile();
 
+	bool exportTask(std::wstring path);
 	bool exportAll(std::wstring path);
 	bool exportAndProcess(std::wstring path);
 	bool exportAndCompileTae(std::wstring path);
 
-	bool exportTask(std::wstring path);
 	bool exportTimeAct(std::wstring path);
 	bool exportNetwork(std::wstring path);
 	void exportAnimationsAndMarkups(std::wstring path);
