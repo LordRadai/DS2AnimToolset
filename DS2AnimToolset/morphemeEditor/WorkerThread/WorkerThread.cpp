@@ -188,8 +188,8 @@ void WorkerThread::progressWindowThread(void* parentWnd)
 
 	// Deliberately neither a child nor owned by the main window: either relationship would attach this
 	// thread's input queue to the main thread's, which is busy running the task. Instead the window is
-	// kept centered over the main window's client area and slotted right above it in the z-order, so it
-	// moves with morphemeEditor and other applications can still cover it.
+	// a normal (non topmost) window slotted right above the main window in the z-order, so it doesn't
+	// get lost behind morphemeEditor and other applications can still cover it.
 	HWND mainWnd = (HWND)parentWnd;
 
 	const std::string title = this->getThreadName();
@@ -207,6 +207,7 @@ void WorkerThread::progressWindowThread(void* parentWnd)
 	const ULONGLONG startTime = GetTickCount64();
 
 	bool visible = false;
+	bool placed = false;
 
 	while (!this->isDone())
 	{
@@ -233,17 +234,29 @@ void WorkerThread::progressWindowThread(void* parentWnd)
 			const int width = rect.right - rect.left;
 			const int height = rect.bottom - rect.top;
 
-			RECT area;
-			if (hasMainWnd)
-			{
-				GetClientRect(mainWnd, &area);
-				MapWindowPoints(mainWnd, nullptr, reinterpret_cast<POINT*>(&area), 2);
-			}
-			else
-				SystemParametersInfoW(SPI_GETWORKAREA, 0, &area, 0);
+			RECT current;
+			GetWindowRect(hwnd, &current);
 
-			const int x = (std::max)(area.left, area.left + ((area.right - area.left) - width) / 2);
-			const int y = (std::max)(area.top, area.top + ((area.bottom - area.top) - height) / 2);
+			// Centered over the editor when it first shows up, after that it stays wherever the user drags it
+			int x = current.left;
+			int y = current.top;
+
+			if (!placed)
+			{
+				RECT area;
+				if (hasMainWnd)
+				{
+					GetClientRect(mainWnd, &area);
+					MapWindowPoints(mainWnd, nullptr, reinterpret_cast<POINT*>(&area), 2);
+				}
+				else
+					SystemParametersInfoW(SPI_GETWORKAREA, 0, &area, 0);
+
+				x = (std::max)(area.left, area.left + ((area.right - area.left) - width) / 2);
+				y = (std::max)(area.top, area.top + ((area.bottom - area.top) - height) / 2);
+
+				placed = true;
+			}
 
 			// Insert just below whatever sits right above the editor. A topmost window or nothing above it
 			// means the editor is the top normal window, so HWND_TOP keeps this out of the topmost band.
@@ -258,9 +271,6 @@ void WorkerThread::progressWindowThread(void* parentWnd)
 				else if (above != nullptr && !(GetWindowLongW(above, GWL_EXSTYLE) & WS_EX_TOPMOST))
 					insertAfter = above;
 			}
-
-			RECT current;
-			GetWindowRect(hwnd, &current);
 
 			UINT flags = SWP_NOACTIVATE | SWP_NOOWNERZORDER;
 
