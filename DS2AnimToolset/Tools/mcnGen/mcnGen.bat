@@ -71,18 +71,36 @@ if exist "%BUILD%\%NAME%_stage3.lua" (
 )
 
 echo --- 5/5 checking
+rem DIFF: 0 = round trip identical, 1 = differences, 2 = no round-trip export to compare
+set "DIFF=2"
 if exist "%BUILD%\roundtrip\%NAME%.xml" (
     "%PYTHON%" "%TOOLS%xmldiff.py" "%INPUT_XML%" "%BUILD%\roundtrip\%NAME%.xml" --paths "%BUILD%\%NAME%_paths.lua" --max 5000 > "%BUILD%\diff_full.txt"
     "%PYTHON%" "%TOOLS%xmldiff.py" "%INPUT_XML%" "%BUILD%\roundtrip\%NAME%.xml" --paths "%BUILD%\%NAME%_paths.lua" --max 0
+    if errorlevel 1 (set "DIFF=1") else (set "DIFF=0")
 ) else (
     echo No round-trip export was written - Connect's export failed, see the stage logs.
 )
 "%PYTHON%" "%TOOLS%layoutcheck.py" "%DIR%\%NAME%.mcn"
 
+echo --- packing the Connect project
+call "%TOOLS%mcnPack.bat" "%DIR%"
+set "PACKED=%errorlevel%"
+
 echo.
-echo Project:  %DIR%\%NAME%.mcn
+if "%PACKED%"=="0" (echo Project:  %DIR%_project\%NAME%.mcn) else (echo Project:  %DIR%\%NAME%.mcn - packing FAILED, see the mcnPack message above)
 echo Diff:     %BUILD%\diff_full.txt
 echo Missing CP config entries: %BUILD%\%NAME%_cp_config_missing.log
+
+rem ---- warn with a message box when the rebuilt network does not match the export (waits for OK)
+if "%DIFF%"=="1" call :warn "%NAME%: the rebuilt network differs from the export. See %BUILD%\diff_full.txt"
+if "%DIFF%"=="2" call :warn "%NAME%: Connect wrote no round-trip export, so the rebuild could not be checked. See the stage logs in %BUILD%"
+if not "%PACKED%"=="0" exit /b 1
+exit /b 0
+
+:warn
+echo WARNING: %~1
+set "WARN_TEXT=%~1"
+powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; [void][System.Windows.Forms.MessageBox]::Show($env:WARN_TEXT, 'mcnGen', 'OK', 'Warning')"
 exit /b 0
 
 :lastline

@@ -307,24 +307,24 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
     character->m_characterName = RString::toWide(RString::removeExtension(std::filesystem::path(filename).filename().string()));
 
-    if (doPrompExtraFileLoad)
+    std::wstring gamePath = utils::findGamePath(RString::toWide(filename));
+
+    MorphemeCharacterDef* characterDef = character->m_characterMotionCtrl->getMorphemeCharacterDef();
+    MR::AnimRigDef* rigDef = characterDef->getNetworkDef()->getRig(0);
+
+    if (gamePath != L"")
     {
-        std::wstring gamePath = utils::findGamePath(RString::toWide(filename));
+        std::wstring modelFolder = gamePath + L"\\model";
+        std::wstring timeActFolder = gamePath + L"\\timeact";
+        std::wstring chrFolder = modelFolder + L"\\chr\\";
 
-        MorphemeCharacterDef* characterDef = character->m_characterMotionCtrl->getMorphemeCharacterDef();
-        MR::AnimRigDef* rigDef = characterDef->getNetworkDef()->getRig(0);
+        wchar_t modelName[256];
+        swprintf_s(modelName, L"%ws\%ws.bnd", chrFolder.c_str(), character->m_characterName.c_str());
 
-        if (gamePath != L"")
+        character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, rigDef));
+
+        if (doPrompExtraFileLoad)
         {
-            std::wstring modelFolder = gamePath + L"\\model";
-            std::wstring timeActFolder = gamePath + L"\\timeact";
-            std::wstring chrFolder = modelFolder + L"\\chr\\";
-
-            wchar_t modelName[256];
-            swprintf_s(modelName, L"%ws\%ws.bnd", chrFolder.c_str(), character->m_characterName.c_str());
-
-            character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, rigDef));
-
             fileList = utils::getTaeFileListFromChrId(timeActFolder + L"\\chr\\", character->m_chrId);
 
             ImGui::OpenPopup("Select TimeAct File");
@@ -352,13 +352,13 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
                 character->loadWeaponBnd(partsFolder, kPartsWeaponLeft, preset->getLeftHandEquipId(), preset->isLeftHandEquipShield());
                 character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getRightHandEquipId(), preset->isRightHandEquipShield());
             }
-        }
-        else
-        {
-            character->m_characterModelCtrl->setModel(FlverModel::createFromAnimRig(rigDef));
+        }     
+    }
+    else
+    {
+        character->m_characterModelCtrl->setModel(FlverModel::createFromAnimRig(rigDef));
 
-            g_appLog->alertMessage(MsgLevel_Info, "Failed to find Game path. No models or TimeAct files will be loaded\n");
-        }
+        g_appLog->alertMessage(MsgLevel_Info, "Failed to find Game path. No models or TimeAct files will be loaded\n");
     }
     
     return character;

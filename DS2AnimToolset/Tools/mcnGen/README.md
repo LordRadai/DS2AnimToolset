@@ -82,10 +82,16 @@ mcnPack.bat E:\Export\c0001                  :: -> E:\Export\c0001_project
 mcnPack.bat E:\Export\c0001 D:\Projects\c0001
 ```
 
-Copies only what morphemeConnect needs out of a built character folder: `<chr>.mcn`, `<chr>.mcp`, the
+Moves (not copies) only what morphemeConnect needs out of a built character folder: `<chr>.mcn`, `<chr>.mcp`, the
 `.mcarig` and `.mcskin` of every animation set, and `motion_xmd`, `model_xmd`, `morphemeMarkup`. The export
 XMLs, rigs (`.mrarig`), names table and `build\` stay behind. Paths in the project are `$(RootDir)`-relative,
-so the folder can live anywhere. It stops if any of those files is missing.
+so the folder can live anywhere. It stops if any of those files is missing. Because the rigs, skins and
+animation folders leave the character folder, export the character from the decompiler again before
+rebuilding it.
+
+`mcnGen.bat` runs it at the end of every build (into `<chr>_project`). When the round-trip check finds
+differences, or Connect wrote no round-trip export to check, it also pops up a warning message box and
+waits for OK before finishing (in `mcnGenAll.bat` the next character starts after you close it).
 
 ### Step by step
 
