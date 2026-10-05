@@ -83,9 +83,9 @@ mcnPack.bat E:\Export\c0001 D:\Projects\c0001
 ```
 
 Puts only what morphemeConnect needs into a project folder. What mcnGen generated is moved out of the
-character folder: `<chr>.mcn`, `<chr>.mcp` and the `.mcarig` and `.mcskin` of every animation set. What the
-decompiler exported is copied and stays: `motion_xmd`, `model_xmd`, `morphemeMarkup` (as do the export XMLs,
-`.mrarig` rigs, names table and `build\`), so the character can be rebuilt without exporting it again.
+character folder: `<chr>.mcn`, `<chr>.mcp`, the `.mcarig` and `.mcskin` of every animation set, and `build\`.
+What the decompiler exported is copied and stays: `motion_xmd`, `model_xmd`, `morphemeMarkup` (as do the
+export XMLs, `.mrarig` rigs and names table), so the character can be rebuilt without exporting it again.
 Paths in the project are `$(RootDir)`-relative, so the folder can live anywhere. It stops if any of those
 files is missing.
 

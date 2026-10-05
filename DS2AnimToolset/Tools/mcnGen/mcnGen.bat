@@ -85,6 +85,8 @@ if exist "%BUILD%\roundtrip\%NAME%.xml" (
 echo --- packing the Connect project
 call "%TOOLS%mcnPack.bat" "%DIR%"
 set "PACKED=%errorlevel%"
+rem build\ moved into the project with the rest
+if "%PACKED%"=="0" set "BUILD=%DIR%_project\build"
 
 echo.
 if "%PACKED%"=="0" (echo Project:  %DIR%_project\%NAME%.mcn) else (echo Project:  %DIR%\%NAME%.mcn - packing FAILED, see the mcnPack message above)

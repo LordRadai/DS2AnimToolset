@@ -3,8 +3,8 @@ rem mcnPack.bat - put a rebuilt character into a clean morphemeConnect project f
 rem Usage: mcnPack.bat <input folder> [output folder]
 rem   input folder   a character folder mcnGen.bat has built (e.g. ...\Export\c0001)
 rem   output folder  where the project goes (default: <input folder>_project)
-rem The project gets only what Connect needs. What mcnGen generated is moved: <chr>.mcn, <chr>.mcp and one
-rem .mcarig and .mcskin per animation set. What the decompiler exported stays in the input folder and is
+rem The project gets only what Connect needs. What mcnGen generated is moved: <chr>.mcn, <chr>.mcp, one
+rem .mcarig and .mcskin per animation set, and build\ (scripts, logs, round-trip export, diff). What the decompiler exported stays in the input folder and is
 rem copied: motion_xmd, model_xmd and morphemeMarkup. So the character can be rebuilt without exporting it
 rem again (mcnGen recreates the rigs). All paths in the project are $(RootDir)-relative, so the folder can
 rem be moved anywhere.
@@ -34,6 +34,10 @@ move /y "%SRC%\%NAME%.mcn" "%DST%\" >nul || goto :copyfail
 move /y "%SRC%\%NAME%.mcp" "%DST%\" >nul || goto :copyfail
 move /y "%SRC%\*.mcarig" "%DST%\" >nul || goto :copyfail
 move /y "%SRC%\*.mcskin" "%DST%\" >nul || goto :copyfail
+if exist "%SRC%\build\" (
+    robocopy "%SRC%\build" "%DST%\build" /E /MOVE /NFL /NDL /NJH /NJS /NP >nul
+    if errorlevel 8 goto :copyfail
+)
 rem ---- exported by the decompiler: copied, the input folder keeps them
 for %%D in (motion_xmd model_xmd morphemeMarkup) do (
     robocopy "%SRC%\%%D" "%DST%\%%D" /E /NFL /NDL /NJH /NJS /NP >nul
@@ -42,7 +46,7 @@ for %%D in (motion_xmd model_xmd morphemeMarkup) do (
 
 set /a RIGS=0
 for %%R in ("%DST%\*.mcarig") do set /a RIGS+=1
-echo moved %NAME%.mcn, %NAME%.mcp, %RIGS% rig(s) with skins; copied motion_xmd, model_xmd, morphemeMarkup
+echo moved %NAME%.mcn, %NAME%.mcp, %RIGS% rig(s) with skins, build; copied motion_xmd, model_xmd, morphemeMarkup
 exit /b 0
 
 :copyfail
