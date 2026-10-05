@@ -1660,5 +1660,65 @@
     "group": null,
     "min": null,
     "max": null
+  },
+  "WepHandWegiht": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "WepHandOnline": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "Guard_pos": {
+    "type": "vector3",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "Guard_rat": {
+    "type": "vector3",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "Wep02_Pos": {
+    "type": "vector3",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "Wep02_Rot": {
+    "type": "vector3",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "hip": {
+    "type": "vector3",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "hip2": {
+    "type": "vector3",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "PlaySpeed_02": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "WeoHandWeight": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null
   }
 }
