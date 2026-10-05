@@ -421,36 +421,108 @@ bool NetworkHierarchy::stateNesting()
 	{
 		const Graph g = entry.first;
 		std::set<MR::NodeID>& keep = entry.second;
+		const MR::NodeID P = g.a, R = g.b;
 
-		// private upstream of the kept nodes stays beside them
-		std::vector<MR::NodeID> todo(keep.begin(), keep.end());
-		while (!todo.empty())
+		// the other multiply connected nodes of the state requested by P were passed down too, even with one consumer
+		for (auto& gi : m_G)
+			if (gi.second == g && gi.first != R && isMultiplyConnected(gi.first) && !isOperator(gi.first) && !isCP(gi.first) &&
+				node(gi.first)->getParentNodeID() == P)
+				keep.insert(gi.first);
+
+		// the kept node owning a consumer: the consumer itself, or a kept state machine / requester whose state or
+		// nested blend tree contains it
+		auto keptOwner = [&](MR::NodeID c) -> MR::NodeID
 		{
-			MR::NodeID m = todo.back();
-			todo.pop_back();
-			for (MR::NodeID u : m_inputs[m])
+			if (keep.count(c))
+				return c;
+			auto cg = m_G.find(c);
+			if (cg == m_G.end())
+				return MR::INVALID_NODE_ID;
+			for (const Graph& a : ancestors(cg->second))
+				if ((a.kind == kState || a.kind == kNested) && keep.count(a.a))
+					return a.a;
+			return MR::INVALID_NODE_ID;
+		};
+
+		// nodes of the state that only feed the kept part stay beside it: their private upstream, and multiply connected
+		// nodes passed down into a kept state machine (the nested blend tree only outputs the state's result, nothing can
+		// come out of it into the rest of the state)
+		bool grown = true;
+		while (grown)
+		{
+			grown = false;
+			for (auto& gi : m_G)
 			{
-				auto ug = m_G.find(u);
-				if (keep.count(u) || ug == m_G.end() || ug->second != g || u == g.b)
+				if (gi.second != g || keep.count(gi.first) || gi.first == R)
 					continue;
-				bool priv = true;
-				for (MR::NodeID c : m_consumers[u])
-					priv = priv && keep.count(c);
-				if (priv)
+				const std::vector<MR::NodeID>& cons = m_consumers[gi.first];
+				bool feedsKept = !cons.empty();
+				for (MR::NodeID c : cons)
+					feedsKept = feedsKept && keptOwner(c) != MR::INVALID_NODE_ID;
+				if (feedsKept)
 				{
-					keep.insert(u);
-					todo.push_back(u);
+					keep.insert(gi.first);
+					grown = true;
 				}
 			}
 		}
 
-		const MR::NodeID P = g.a, R = g.b;
-		m_nbtDepth[{ P, R }] = 1;
+		// levels: a multiply connected node feeding another kept node went through a pass-down pin, so its consumer sits
+		// one nested blend tree deeper; other kept nodes sit at the level of their consumers; the rest of the state goes
+		// one level below the deepest
+		std::map<MR::NodeID, int> level;
+		for (MR::NodeID n : keep)
+			level[n] = 0;
+		for (size_t pass = 0; pass <= keep.size(); pass++)
+		{
+			bool changed = false;
+			for (MR::NodeID n : keep)
+			{
+				int value = 0;
+				if (isMultiplyConnected(n))
+				{
+					for (MR::NodeID u : m_inputs[n])
+						if (keep.count(u) && isMultiplyConnected(u))
+							value = std::max(value, level[u] + 1);
+				}
+				else
+				{
+					bool any = false;
+					for (MR::NodeID c : m_consumers[n])
+					{
+						const MR::NodeID owner = keptOwner(c);
+						if (owner == MR::INVALID_NODE_ID)
+							continue;
+						value = any ? std::min(value, level[owner]) : level[owner];
+						any = true;
+					}
+				}
+				if (value != level[n])
+				{
+					level[n] = value;
+					changed = true;
+				}
+			}
+			if (!changed)
+				break;
+		}
+
+		int depth = 1;
+		for (auto& l : level)
+			depth = std::max(depth, l.second + 1);
+
+		m_nbtDepth[{ P, R }] = depth;
 		for (auto& gi : m_G)
-			if (gi.second == g && !keep.count(gi.first) && !isOperator(gi.first))
-				m_override[gi.first] = Graph::nested(P, R, 1);
-		m_override[R] = Graph::nested(P, R, 1);
-		log("state %d of %d: nested blend tree for multiply connected nodes", R, P);
+		{
+			if (gi.second != g || isOperator(gi.first))
+				continue;
+			if (!keep.count(gi.first))
+				m_override[gi.first] = Graph::nested(P, R, depth);
+			else if (level[gi.first] > 0)
+				m_override[gi.first] = Graph::nested(P, R, level[gi.first]);
+		}
+		m_override[R] = Graph::nested(P, R, depth);
+		log("state %d of %d: %d nested blend tree level(s) for %d multiply connected nodes", R, P, depth, (int)keep.size());
 	}
 
 	return !outside.empty();
