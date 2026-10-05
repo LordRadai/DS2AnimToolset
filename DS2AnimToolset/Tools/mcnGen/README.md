@@ -89,7 +89,10 @@ export XMLs, `.mrarig` rigs and names table), so the character can be rebuilt wi
 Paths in the project are `$(RootDir)`-relative, so the folder can live anywhere. It stops if any of those
 files is missing.
 
-`mcnGen.bat` runs it at the end of every build (into `<chr>_project`). When the round-trip check finds
+`mcnGen.bat` runs it after the Connect stages and before the round-trip export (into `<chr>_project`), so
+the project is kept even when Connect cannot export it, e.g. a second pass on an upgraded network without the
+animations: `motion_xmd`, `model_xmd` and `morphemeMarkup` are copied when present. The round-trip export then runs
+on the packed project (`mcnExport.lua`, log in `build\<chr>_export.log`). When the round-trip check finds
 differences, or Connect wrote no round-trip export to check, it also pops up a warning message box and
 waits for OK before finishing (in `mcnGenAll.bat` the next character starts after you close it).
 
@@ -115,7 +118,7 @@ logs, paths, the round-trip export, the diff) goes to `<project>\build\`, which 
 | `build\<chr>_rebuild.log`, `build\<chr>_stage2.log` | stages | every failed API call (`FAIL` / `NIL`), connect rounds, `DONE failures=N` |
 | `build\<chr>_paths.lua` | stages | node id / container -> the path Connect really gave it (duplicate names get `_1` suffixes) |
 | `<chr>.mcn` | stages | the project |
-| `build\roundtrip\<chr>.xml` | stage 2 | Connect's re-export of the rebuilt project |
+| `build\roundtrip\<chr>.xml` | mcnExport.lua (after packing) | Connect's re-export of the rebuilt project |
 
 Step 1 also lists `UNSUPPORTED` items (node or condition types with no mapping, hierarchy decisions it could
 not make) and `UNMAPPED FIELD`s (export fields it does not know). Both should be empty, or at least

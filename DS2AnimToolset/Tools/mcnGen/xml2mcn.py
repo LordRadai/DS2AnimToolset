@@ -926,7 +926,8 @@ class Converter:
         self.emit('for i, c in ipairs(PENDING or {}) do pf:write(string.format("CONN(%q, %q)\\n", c[1], c[2])) end')
         self.emit('pf:close()')
 
-    def epilogue(self, export=True):
+    def epilogue(self, export=False):
+        # the round-trip export runs separately (mcnExport.lua, after packing): a failing export cannot cost the project
         self.emit('TRY("mcn.saveAs", function() return mcn.saveAs(ROOT .. "\\\\" .. NAME .. ".mcn") end)')
         if export:
             self.emit('pcall(function() app.createDirectory(BUILD .. "\\\\roundtrip") end)')
@@ -966,7 +967,7 @@ class Converter:
         self.prologue('_rebuild.log'); self.setup(); self.anim_set_options(); self.requests(); self.control_params()
         self.graph(); self.emit_pins_and_edges(); self.transitions(False); self.default_states()
         if not self.needs_stage2(): self.late_attributes(); self.auto_layout()
-        self.save_paths(); self.epilogue(export=not self.needs_stage2())
+        self.save_paths(); self.epilogue()
         self.write_project()
         out = [self.write_lua('_rebuild.lua')]
         if self.needs_stage2():
