@@ -855,7 +855,7 @@ void GuiManager::rootWindow()
 	if (ImGui::BeginMenu("File"))
 	{
 		if (ImGui::MenuItem("Open...")) { editorApp->getTaskFlags()->loadFile = true; }
-		//if (ImGui::MenuItem("Save...")) { editorApp->getTaskFlags()->saveFile = true; }
+		if (ImGui::MenuItem("Export Directory...")) { editorApp->getTaskFlags()->exportDir = true; }
 
 		ImGui::Separator();
 		

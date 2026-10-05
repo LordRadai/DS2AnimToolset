@@ -755,6 +755,24 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 		INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Invalid blend tree '%s'. No children node are present.\n", blendTree->getName().c_str());
 
 	MR::NetworkDef* netDef = ownerNodeDef->getOwningNetworkDef();
+
+	// A pin can be missing when the manifest declares fewer pins than the runtime node uses: report it and skip the
+	// connection instead of crashing.
+	auto connect = [&](NodeEditor::Pin* outputPin, NodeEditor::Pin* inputPin, NodeEditor::Node* source, NodeEditor::Node* target, const char* what, int index)
+		{
+			if (outputPin && inputPin)
+			{
+				outputPin->connectTo(inputPin);
+				return;
+			}
+
+			g_appLog->debugMessage(MsgLevel_Warn, "NodeProcessor::processNodeConnectionsInBlendTree: Missing %s %s pin %d connecting '%s' (%s) to '%s' (%s) in blend tree '%s'.\n",
+				outputPin ? "input" : "output", what, index,
+				source ? source->getName().c_str() : "?", source ? source->getTypeName().c_str() : "?",
+				target ? target->getName().c_str() : "?", target ? target->getTypeName().c_str() : "?",
+				blendTree->getName().c_str());
+		};
+
 	for (MR::NodeDef* childNodeDef : childNodes)
 	{
 		uint32_t nodeID = childNodeDef->getNodeID();
@@ -793,7 +811,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 			if (!targetNode)
 				continue;
 
-			targetNode->getOutputPin(0)->connectTo(sourceNode->getInputPin(i));
+			connect(targetNode->getOutputPin(0), sourceNode->getInputPin(i), targetNode, sourceNode, "control", (int)i);
 		}
 
 		bool hasUnusuedPins = sourceNode->getNumInputDataPins() != childNodeDef->getNumInputCPConnections();
@@ -824,7 +842,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 						continue;
 					}
 
-					targetNode->getOutputDataPin(cpConnection->m_sourcePinIndex)->connectTo(sourceNode->getInputDataPin(pinIndex));
+					connect(targetNode->getOutputDataPin(cpConnection->m_sourcePinIndex), sourceNode->getInputDataPin(pinIndex), targetNode, sourceNode, "data", pinIndex);
 				}
 				else
 				{
@@ -833,7 +851,7 @@ void NodeProcessor::processNodeConnectionsInBlendTree(NodeEditor::BlendTree* ble
 					if (!controlParam)
 						INVOKE_PANIC("NodeProcessor::processNodeConnectionsInBlendTree: Failed to find control parameter '%s' in blend tree '%s'.\n", getNodeName(targetNodeDef->getNodeID()).c_str(), blendTree->getName().c_str());
 
-					blendTree->getControlParameterDataPin(controlParam->getName())->connectTo(sourceNode->getInputDataPin(pinIndex));
+					connect(blendTree->getControlParameterDataPin(controlParam->getName()), sourceNode->getInputDataPin(pinIndex), blendTree->getControlParametersNode(), sourceNode, "data", pinIndex);
 				}
 
 				pinIndex++;

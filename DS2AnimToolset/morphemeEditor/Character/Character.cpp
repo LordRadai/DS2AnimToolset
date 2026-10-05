@@ -294,7 +294,7 @@ namespace
     }
 }
 
-Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork)
+Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork, bool doPrompExtraFileLoad)
 {
     Character* character = new Character();
 
@@ -307,57 +307,60 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
     character->m_chrId = getChrIdFromNmbFileName(RString::toWide(filename));
     character->m_characterName = RString::toWide(RString::removeExtension(std::filesystem::path(filename).filename().string()));
 
-    std::wstring gamePath = utils::findGamePath(RString::toWide(filename));
-
-    MorphemeCharacterDef* characterDef = character->m_characterMotionCtrl->getMorphemeCharacterDef();
-	MR::AnimRigDef* rigDef = characterDef->getNetworkDef()->getRig(0);
-
-    if (gamePath != L"")
+    if (doPrompExtraFileLoad)
     {
-        std::wstring modelFolder = gamePath + L"\\model";
-        std::wstring timeActFolder = gamePath + L"\\timeact";
-        std::wstring chrFolder = modelFolder + L"\\chr\\";
+        std::wstring gamePath = utils::findGamePath(RString::toWide(filename));
 
-        wchar_t modelName[256];
-        swprintf_s(modelName, L"%ws\%ws.bnd", chrFolder.c_str(), character->m_characterName.c_str());
+        MorphemeCharacterDef* characterDef = character->m_characterMotionCtrl->getMorphemeCharacterDef();
+        MR::AnimRigDef* rigDef = characterDef->getNetworkDef()->getRig(0);
 
-        character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, rigDef));
-        
-        fileList = utils::getTaeFileListFromChrId(timeActFolder + L"\\chr\\", character->m_chrId);
-
-        ImGui::OpenPopup("Select TimeAct File");
-
-        if (character->m_chrId == 1)
+        if (gamePath != L"")
         {
-            PlayerModelPreset* preset = MorphemeEditorApp::getInstance()->getPlayerModelPreset();
+            std::wstring modelFolder = gamePath + L"\\model";
+            std::wstring timeActFolder = gamePath + L"\\timeact";
+            std::wstring chrFolder = modelFolder + L"\\chr\\";
 
-            std::wstring partsFolder = modelFolder + L"\\parts";
+            wchar_t modelName[256];
+            swprintf_s(modelName, L"%ws\%ws.bnd", chrFolder.c_str(), character->m_characterName.c_str());
 
-            const bool female = preset->isFemale();
+            character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, rigDef));
 
-            character->loadPartsFaceGenBnd(partsFolder, kFgHair, preset->getFgHairId(), female);
-            character->loadPartsFaceGenBnd(partsFolder, kFgFace, preset->getFgFaceId(), female);
-            character->loadPartsFaceGenBnd(partsFolder, kFgHead, preset->getFgHeadId(), female);
-            character->loadPartsFaceGenBnd(partsFolder, kFgEyeBrows, preset->getFgEyeBrowsId(), female);
-            character->loadPartsFaceGenBnd(partsFolder, kFgEyes, preset->getFgEyeId(), female);
-            character->loadPartsFaceGenBnd(partsFolder, kFgBeard, preset->getFgBeardId(), female);
+            fileList = utils::getTaeFileListFromChrId(timeActFolder + L"\\chr\\", character->m_chrId);
 
-            character->loadPartsBnd(partsFolder, kPartsHead, preset->getHeadId(), female);
-            character->loadPartsBnd(partsFolder, kPartsBody, preset->getBodyId(), female);
-            character->loadPartsBnd(partsFolder, kPartsArm, preset->getArmId(), female);
-            character->loadPartsBnd(partsFolder, kPartsLeg, preset->getLegId(), female);
+            ImGui::OpenPopup("Select TimeAct File");
 
-            character->loadWeaponBnd(partsFolder, kPartsWeaponLeft, preset->getLeftHandEquipId(), preset->isLeftHandEquipShield());
-            character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getRightHandEquipId(), preset->isRightHandEquipShield());
+            if (character->m_chrId == 1)
+            {
+                PlayerModelPreset* preset = MorphemeEditorApp::getInstance()->getPlayerModelPreset();
+
+                std::wstring partsFolder = modelFolder + L"\\parts";
+
+                const bool female = preset->isFemale();
+
+                character->loadPartsFaceGenBnd(partsFolder, kFgHair, preset->getFgHairId(), female);
+                character->loadPartsFaceGenBnd(partsFolder, kFgFace, preset->getFgFaceId(), female);
+                character->loadPartsFaceGenBnd(partsFolder, kFgHead, preset->getFgHeadId(), female);
+                character->loadPartsFaceGenBnd(partsFolder, kFgEyeBrows, preset->getFgEyeBrowsId(), female);
+                character->loadPartsFaceGenBnd(partsFolder, kFgEyes, preset->getFgEyeId(), female);
+                character->loadPartsFaceGenBnd(partsFolder, kFgBeard, preset->getFgBeardId(), female);
+
+                character->loadPartsBnd(partsFolder, kPartsHead, preset->getHeadId(), female);
+                character->loadPartsBnd(partsFolder, kPartsBody, preset->getBodyId(), female);
+                character->loadPartsBnd(partsFolder, kPartsArm, preset->getArmId(), female);
+                character->loadPartsBnd(partsFolder, kPartsLeg, preset->getLegId(), female);
+
+                character->loadWeaponBnd(partsFolder, kPartsWeaponLeft, preset->getLeftHandEquipId(), preset->isLeftHandEquipShield());
+                character->loadWeaponBnd(partsFolder, kPartsWeaponRight, preset->getRightHandEquipId(), preset->isRightHandEquipShield());
+            }
+        }
+        else
+        {
+            character->m_characterModelCtrl->setModel(FlverModel::createFromAnimRig(rigDef));
+
+            g_appLog->alertMessage(MsgLevel_Info, "Failed to find Game path. No models or TimeAct files will be loaded\n");
         }
     }
-    else
-    {
-		character->m_characterModelCtrl->setModel(FlverModel::createFromAnimRig(rigDef));
-
-        g_appLog->alertMessage(MsgLevel_Info, "Failed to find Game path. No models or TimeAct files will be loaded\n");
-    }
-
+    
     return character;
 }
 

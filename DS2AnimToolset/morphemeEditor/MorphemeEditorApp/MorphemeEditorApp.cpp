@@ -894,6 +894,13 @@ void MorphemeEditorApp::update(float dt)
 	if (this->m_nodeEditor)
 		this->m_nodeEditor->update(dt);
 
+	if (this->m_taskFlags.exportDir)
+	{
+		this->m_taskFlags.exportDir = false;
+
+		this->exportDirectory();
+	}
+
 	if (this->m_taskFlags.loadFile)
 	{
 		this->m_taskFlags.loadFile = false;
@@ -1205,54 +1212,7 @@ void MorphemeEditorApp::loadFile()
 					{
 						std::filesystem::path filepath = std::wstring(pszFilePath);
 
-						this->m_loadedFilePath = filepath;
-
-						g_guiManager->clearSearchQueryWindow();
-
-						if (this->m_character)
-							this->m_character->destroy();
-
-						if (this->m_eventTrackEditor)
-							this->m_eventTrackEditor->reset();
-
-						if (this->m_timeActEditor)
-							this->m_timeActEditor->reset();
-
-						if (this->m_nodeEditor)
-							this->m_nodeEditor->reset();
-
-						this->m_timeActFileList.clear();
-
-						this->m_gamePath = utils::findGamePath(filepath);
-
-						if (filepath.extension() == ".nmb")
-							this->m_character = Character::createFromMorphemeBundle(this->m_timeActFileList, RString::toNarrow(filepath).c_str(), m_morphemeNetworkFlags.simulateNetwork);
-						else if (filepath.extension() == ".tae")
-							this->m_character = Character::createFromTimeAct(RString::toNarrow(filepath).c_str());
-
-						if ((this->m_character != nullptr) && (this->m_character->getCharacterId() == 1))
-						{
-							if (this->m_gamePath.compare(L"") != 0)
-								fillFlverResources(this->getFlverResources(), this->m_gamePath);
-						}
-
-						this->m_animPlayer->setCharacter(this->m_character);
-
-						this->m_camera->setOffset(Vector3::Zero);
-						this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
-
-						MorphemeNetworkInspector* inspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
-						CharacterMotionCtrlBase* motionCtrl = this->m_character->getCharacterMotionCtrl();
-
-						try
-						{
-							if (inspector)
-								inspector->loadNetwork(motionCtrl->getNetworkDef(), motionCtrl->getAnimFileLookUpTable());
-						}
-						catch (const std::exception& e)
-						{
-							//g_appLog->alertMessage(MsgLevel_Error, "Failed to load morpheme network: %s\n", e.what());
-						}
+						loadFileInternal(filepath);
 					}
 					pItem->Release();
 				}
@@ -1265,37 +1225,46 @@ void MorphemeEditorApp::loadFile()
 	}
 }
 
-void MorphemeEditorApp::reloadFile()
+void MorphemeEditorApp::loadFileInternal(const std::filesystem::path& path, bool headless)
 {
+	this->m_loadedFilePath = path.wstring();
+
+	g_guiManager->clearSearchQueryWindow();
+
 	if (this->m_character)
-	{
-		std::filesystem::path filepath = this->m_loadedFilePath;
-
-		g_guiManager->clearSearchQueryWindow();
-
 		this->m_character->destroy();
-		this->m_character = nullptr;
 
-		if (this->m_eventTrackEditor)
-			this->m_eventTrackEditor->reset();
+	if (this->m_eventTrackEditor)
+		this->m_eventTrackEditor->reset();
 
-		if (this->m_timeActEditor)
-			this->m_timeActEditor->reset();
+	if (this->m_timeActEditor)
+		this->m_timeActEditor->reset();
 
-		if (this->m_nodeEditor)
-			this->m_nodeEditor->reset();
+	if (this->m_nodeEditor)
+		this->m_nodeEditor->reset();
 
-		this->m_timeActFileList.clear();
+	this->m_timeActFileList.clear();
 
-		if (filepath.extension() == ".nmb")
-			this->m_character = Character::createFromMorphemeBundle(this->m_timeActFileList, RString::toNarrow(filepath).c_str(), m_morphemeNetworkFlags.simulateNetwork);
-		else if (filepath.extension() == ".tae")
-			this->m_character = Character::createFromTimeAct(RString::toNarrow(filepath).c_str());
+	this->m_gamePath = utils::findGamePath(path);
 
-		this->m_animPlayer->setCharacter(this->m_character);
-		this->m_camera->setOffset(Vector3::Zero);
-		this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
+	if (path.extension() == ".nmb")
+		this->m_character = Character::createFromMorphemeBundle(this->m_timeActFileList, RString::toNarrow(path).c_str(), m_morphemeNetworkFlags.simulateNetwork, !headless);
+	else if (path.extension() == ".tae")
+		this->m_character = Character::createFromTimeAct(RString::toNarrow(path).c_str());
 
+	if (!headless && (this->m_character != nullptr) && (this->m_character->getCharacterId() == 1))
+	{
+		if (this->m_gamePath.compare(L"") != 0)
+			fillFlverResources(this->getFlverResources(), this->m_gamePath);
+	}
+
+	this->m_animPlayer->setCharacter(this->m_character);
+
+	this->m_camera->setOffset(Vector3::Zero);
+	this->m_camera->setRadius(calculateOptimalCameraDistance(this->m_camera, this->m_character));
+
+	if (!headless)
+	{
 		MorphemeNetworkInspector* inspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
 		CharacterMotionCtrlBase* motionCtrl = this->m_character->getCharacterMotionCtrl();
 
@@ -1311,60 +1280,18 @@ void MorphemeEditorApp::reloadFile()
 	}
 }
 
+void MorphemeEditorApp::reloadFile()
+{
+	if (this->m_character)
+	{
+		std::filesystem::path filepath = this->m_loadedFilePath;
+
+		loadFileInternal(filepath, false);
+	}
+}
+
 void MorphemeEditorApp::saveFile()
 {
-	COMDLG_FILTERSPEC ComDlgFS[] = { {L"Morpheme Network Binary", L"*.nmb"}, {L"TimeAct", L"*.tae"}, {L"All Files",L"*.*"} };
-
-	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
-		COINIT_DISABLE_OLE1DDE);
-
-	if (SUCCEEDED(hr))
-	{
-		IFileOpenDialog* pFileSave = NULL;
-
-		// Create the FileOpenDialog object.
-		hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL,
-			IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileSave));
-
-		if (SUCCEEDED(hr))
-		{
-			pFileSave->SetFileTypes(3, ComDlgFS);
-
-			// Show the Open dialog box.
-			hr = pFileSave->Show(NULL);
-
-			// Get the file name from the dialog box.
-			if (SUCCEEDED(hr))
-			{
-				IShellItem* pItem;
-				hr = pFileSave->GetResult(&pItem);
-
-				if (SUCCEEDED(hr))
-				{
-					PWSTR pszOutFilePath;
-					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszOutFilePath);
-
-					// Display the file name to the user.
-					if (SUCCEEDED(hr))
-					{
-						std::filesystem::path filepath = std::wstring(pszOutFilePath);
-
-						if (filepath.extension() == ".nmb")
-						{	
-						}
-						else if (filepath.extension() == ".tae")
-						{
-						}
-					}
-					pItem->Release();
-				}
-				else
-					MessageBoxW(NULL, L"Failed to save file", L"Application.cpp", MB_ICONERROR);
-			}
-			pFileSave->Release();
-		}
-		CoUninitialize();
-	}
 }
 
 bool MorphemeEditorApp::exportTimeAct(std::wstring path)
@@ -2000,6 +1927,122 @@ bool MorphemeEditorApp::exportAnimMarkup(std::wstring path, int animSetIdx, int 
 	}
 
 	return true;
+}
+
+void getNmbFromDirectory(const std::filesystem::path& path, std::vector<std::filesystem::path>& nmbFiles)
+{
+	try
+	{
+		for (auto& it : std::filesystem::directory_iterator(path))
+		{
+			if (std::filesystem::is_directory(it))
+				continue;
+
+			if (it.path().extension() == ".nmb")
+				nmbFiles.push_back(it.path());
+		}
+	}
+	catch (const std::exception& e)
+	{
+		INVOKE_PANIC(e.what());
+	}
+}
+
+void MorphemeEditorApp::exportDirectory()
+{
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+		COINIT_DISABLE_OLE1DDE);
+
+	if (SUCCEEDED(hr))
+	{
+		IFileOpenDialog* pFileOpen = NULL;
+
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+		if (SUCCEEDED(hr))
+		{
+			DWORD opts = 0;
+			pFileOpen->GetOptions(&opts);
+			pFileOpen->SetOptions(opts | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM);
+
+			// Show the Open dialog box.
+			hr = pFileOpen->Show(NULL);
+
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem* pItem;
+				hr = pFileOpen->GetResult(&pItem);
+
+				if (SUCCEEDED(hr))
+				{
+					PWSTR pszFilePath;
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+					// Display the file name to the user.
+					if (SUCCEEDED(hr))
+					{
+						std::filesystem::path filepath = std::wstring(pszFilePath);
+
+						g_workerThread.load()->startThread("Export Directory", &MorphemeEditorApp::exportDirectoryInternal, this, filepath);
+					}
+
+					pItem->Release();
+				}
+				else
+					g_appLog->alertMessage(MsgLevel_Error, "Failed to open file");
+			}
+			pFileOpen->Release();
+		}
+		CoUninitialize();
+	}
+}
+
+bool MorphemeEditorApp::exportDirectoryInternal(std::wstring path)
+{
+	try
+	{
+		std::vector<std::filesystem::path> nmbFiles;
+		for (auto& it : std::filesystem::directory_iterator(path))
+		{
+			if (std::filesystem::is_directory(it))
+				getNmbFromDirectory(it.path(), nmbFiles);
+			else if (it.path().extension() == ".nmb")
+				nmbFiles.push_back(it.path());
+		}
+
+		g_workerThread.load()->addProcess("Export directory", nmbFiles.size());
+
+		std::filesystem::path exportPath = path;
+
+		for (auto& it : nmbFiles)
+		{
+			if (std::filesystem::is_directory(it))
+				continue;
+
+			g_workerThread.load()->setProcessStepName(it.filename().string());
+			
+			loadFileInternal(it, true);
+
+			if (this->m_character == nullptr)
+				continue;
+
+			std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
+
+			std::filesystem::create_directories(exportPath);
+			this->exportAll(exportPath);
+
+			g_workerThread.load()->increaseProgressStep();
+		}
+
+		return true;
+	}
+	catch (const std::exception& e)
+	{
+		INVOKE_PANIC(e.what());
+	}
 }
 
 void MorphemeEditorApp::exportTaeTemplateXML()

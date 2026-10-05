@@ -15,7 +15,7 @@ enum TimeActSlot
 class Character
 {
 public:
-	static Character* createFromMorphemeBundle(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork);
+	static Character* createFromMorphemeBundle(std::vector<std::wstring>& fileList, const char* filename, bool doSimulateNetwork, bool doPrompExtraFileLoad = true);
 	static Character* createFromTimeAct(const char* filename);
 
 	CharacterModelCtrl* getCharacterModelCtrl() const { return this->m_characterModelCtrl; }
