@@ -1281,6 +1281,8 @@ bool MorphemeEditorApp::exportTask(std::wstring path)
 		if (m_taskFlags.exportTae)
 			this->exportTimeAct(path);
 	}
+
+	return true;
 }
 
 bool MorphemeEditorApp::exportTimeAct(std::wstring path)
