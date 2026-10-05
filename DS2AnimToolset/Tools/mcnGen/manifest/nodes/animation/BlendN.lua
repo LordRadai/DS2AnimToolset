@@ -364,7 +364,10 @@ registerNode("BlendN",
     serialize = function(node, stream)
       -- write out the id of the node connected to the weight parameter
       local weightNodeInfo = getConnectedNodeInfo(node, "Weight")
-      stream:writeNetworkNodeId(weightNodeInfo.id, "Weight", weightNodeInfo.pinIndex)
+      -- DS2 (FRPG2): Weight can be unconnected; the runtime data then has no Weight field
+      if weightNodeInfo then
+        stream:writeNetworkNodeId(weightNodeInfo.id, "Weight", weightNodeInfo.pinIndex)
+      end
 
       -- write connected node runtime ids and source weights
       local sourceWeights = getAttribute(node, "SourceWeights")
