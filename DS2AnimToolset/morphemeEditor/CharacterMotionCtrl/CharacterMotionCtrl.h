@@ -8,7 +8,7 @@ class CharacterMotionCtrlBase
 protected:
 	MorphemeCharacter* m_pMorphemeCharacter; // Pointer to the character definition this motion belongs to
 public:
-	CharacterMotionCtrlBase() {}
+	CharacterMotionCtrlBase() : m_pMorphemeCharacter(nullptr) {}
 
 	virtual ~CharacterMotionCtrlBase() {};
 	virtual bool initialize(const char* filename, bool doSimulateNetwork);

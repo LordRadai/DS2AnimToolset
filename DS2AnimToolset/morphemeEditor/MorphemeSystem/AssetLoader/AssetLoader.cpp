@@ -242,26 +242,48 @@ void AssetLoader::unLoadBundle(
   void* const*    clientAssets,
   UINT        numClientAssets)
 {
+  UINT numFreed = 0;
+  UINT numStillReferenced = 0;
+
   //----------------------------
   // Release registered assets but only free the associated memory if the reference count goes to zero.
-  for (UINT i = 0; i < numRegisteredAssets; ++i)
+  for (UINT i = 0; registeredAssetIDs && (i < numRegisteredAssets); ++i)
   {
     const UINT assetId = registeredAssetIDs[i];
 
     //----------------------------
+    // A zero ID means loadBundle() failed before reaching this slot, so nothing was registered for it.
+    if (assetId == 0)
+      continue;
+
+    //----------------------------
     // Unregister and free the asset if it's no longer referenced.
-    if (MR::Manager::decObjectRefCount(assetId) == 0)
+    const uint32_t refCount = MR::Manager::decObjectRefCount(assetId);
+    if (refCount == 0)
     {
       void* const asset = const_cast<void*>(MR::Manager::getInstance().getObjectPtrFromObjectID(assetId));
       MR::Manager::getInstance().unregisterObject(assetId);
       NMP::Memory::memFree(asset);
+      ++numFreed;
+    }
+    else if (refCount != 0xFFFFFFFF)
+    {
+      g_appLog->debugMessage(MsgLevel_Debug, "\tAsset %X is still referenced (refCount=%d), keeping it registered\n", assetId, refCount);
+      ++numStillReferenced;
     }
   }
 
   //----------------------------
   // Free client assets.
-  for (UINT i = 0; i < numClientAssets; ++i)
+  for (UINT i = 0; clientAssets && (i < numClientAssets); ++i)
   {
-    NMP::Memory::memFree(clientAssets[i]);
+    if (clientAssets[i])
+      NMP::Memory::memFree(clientAssets[i]);
   }
+
+  UINT numRemaining = 0;
+  for (int assetType = 0; assetType < MR::Manager::kAsset_NumAssetTypes; ++assetType)
+    numRemaining += MR::Manager::getInstance().getNumObjectsOfType((MR::Manager::AssetType)assetType);
+
+  g_appLog->debugMessage(MsgLevel_Info, "\tReleased bundle: %d assets freed, %d still referenced, %d objects left registered with MR::Manager\n", numFreed, numStillReferenced, numRemaining);
 }

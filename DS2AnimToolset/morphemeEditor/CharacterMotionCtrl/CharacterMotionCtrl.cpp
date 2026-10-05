@@ -22,14 +22,29 @@ bool CharacterMotionCtrlBase::initialize(const char* filename, bool doSimulateNe
     this->m_pMorphemeCharacter = MorphemeCharacter::create(characterDef, doSimulateNetwork);
 
     if (!this->m_pMorphemeCharacter)
+    {
+        MorphemeCharacterDef::destroy(characterDef);
         throw("Failed to create MorphemeCharacter instance (%s)", filename);
+    }
 
     return true;
 }
 
 void CharacterMotionCtrlBase::destroy()
 {
+    if (!this->m_pMorphemeCharacter)
+        return;
+
+    //----------------------------
+    // The network instance references the CharacterDef, so tear it down first, then release the CharacterDef. This
+    // unloads its animations and drops the ref counts of every asset it registered with MR::Manager.
+    MorphemeCharacterDef* characterDef = this->m_pMorphemeCharacter->getCharacterDef();
+
 	MorphemeCharacter::destroy(this->m_pMorphemeCharacter);
+    this->m_pMorphemeCharacter = nullptr;
+
+    if (characterDef)
+        MorphemeCharacterDef::destroy(characterDef);
 }
 
 void CharacterMotionCtrlBase::update(float dt)
