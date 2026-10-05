@@ -897,11 +897,18 @@ void MorphemeEditorApp::update(float dt)
 	if (this->m_nodeEditor)
 		this->m_nodeEditor->update(dt);
 
-	if (this->m_taskFlags.exportDir)
+	if (this->m_taskFlags.batchExport)
 	{
-		this->m_taskFlags.exportDir = false;
+		this->m_taskFlags.batchExport = false;
 
 		this->exportDirectory();
+	}
+
+	if (this->m_taskFlags.batchExportAll)
+	{
+		this->exportDirectory();
+
+		this->m_taskFlags.batchExportAll = false;
 	}
 
 	if (this->m_taskFlags.loadFile)
@@ -2068,25 +2075,23 @@ bool MorphemeEditorApp::exportDirectoryInternal(std::wstring path)
 
 					std::filesystem::create_directories(exportPath);
 
-					switch (m_taskFlags.batchExportType)
+					if (m_taskFlags.batchExportAll)
 					{
-					case TaskFlags::BatchExportType::kBatchExportType_All:
 						this->exportAll(exportPath);
-						break;
-					case TaskFlags::BatchExportType::kBatchExportType_Animations:
-						this->exportAnimationsAndMarkups(exportPath);
-						break;
-					case TaskFlags::BatchExportType::kBatchExportType_Network:
-						this->exportNetwork(exportPath);
-						break;
-					case TaskFlags::BatchExportType::kBatchExportType_Model:
-						this->exportModel(exportPath);
-						break;
-					case TaskFlags::BatchExportType::kBatchExportType_TimeAct:
-						this->exportTimeAct(exportPath);
-						break;
-					default:
-						INVOKE_PANIC("Unknown batch export type");
+					}
+					else
+					{
+						if (m_taskFlags.batchExportAnimations)
+							this->exportAnimationsAndMarkups(exportPath);
+
+						if (m_taskFlags.batchExportModel)
+							this->exportModel(exportPath);
+
+						if (m_taskFlags.batchExportNetwork)
+							this->exportNetwork(exportPath);
+
+						if (m_taskFlags.batchExportTimeAct)
+							this->exportTimeAct(exportPath);
 					}
 				}
 			}

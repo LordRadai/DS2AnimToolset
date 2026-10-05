@@ -41,17 +41,6 @@ class MorphemeEditorApp : public Application
 public:
 	struct TaskFlags
 	{
-		enum BatchExportType
-		{
-			kBatchExportType_All,
-			kBatchExportType_Animations,
-			kBatchExportType_Network,
-			kBatchExportType_Model,
-			kBatchExportType_TimeAct,
-
-			kBatchExportType_NumTypes
-		};
-
 		bool loadFile = false;
 		bool reloadFile = false;
 		bool saveFile = false;
@@ -69,8 +58,12 @@ public:
 
 		bool createTestEditorProject = false;
 
-		bool exportDir = false;
-		BatchExportType batchExportType = kBatchExportType_All;
+		bool batchExport = false;
+		bool batchExportAll = false;
+		bool batchExportAnimations = false;
+		bool batchExportNetwork = false;
+		bool batchExportModel = false;
+		bool batchExportTimeAct = false;
 	};
 
 	struct CameraFlags

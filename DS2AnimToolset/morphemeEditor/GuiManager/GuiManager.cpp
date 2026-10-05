@@ -857,25 +857,15 @@ void GuiManager::rootWindow()
 		if (ImGui::MenuItem("Open...")) { editorApp->getTaskFlags()->loadFile = true; }
 		if (ImGui::BeginMenu("Batch Export"))
 		{
-			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->exportDir = true; }
+			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->batchExport = true; }
+			if (ImGui::MenuItem("Export All")) { editorApp->getTaskFlags()->batchExportAll = true; }
 
-			static const char* s_batchExportTypeName[] = { "All", "Animations", "Network", "Model", "TimeAct" };
+			ImGui::SeparatorText("Export Components");
 
-			if (ImGui::BeginCombo("Export Format", s_batchExportTypeName[editorApp->getTaskFlags()->batchExportType]))
-			{
-				for (size_t i = 0; i < MorphemeEditorApp::TaskFlags::kBatchExportType_NumTypes; i++)
-				{
-					const bool selected = (editorApp->getTaskFlags()->batchExportType == i);
-
-					if (ImGui::Selectable(s_batchExportTypeName[i], selected))
-						editorApp->getTaskFlags()->batchExportType = static_cast<MorphemeEditorApp::TaskFlags::BatchExportType>(i);
-
-					if (selected)
-						ImGui::SetItemDefaultFocus();
-				}
-
-				ImGui::EndCombo();
-			}
+			if (ImGui::MenuItem("Export Animations")) { editorApp->getTaskFlags()->batchExportAnimations = true; }
+			if (ImGui::MenuItem("Export Network")) { editorApp->getTaskFlags()->batchExportNetwork = true; }
+			if (ImGui::MenuItem("Export Model")) { editorApp->getTaskFlags()->batchExportModel = true; }
+			if (ImGui::MenuItem("Export TimeAct")) { editorApp->getTaskFlags()->batchExportTimeAct = true; }
 
 			ImGui::EndMenu();
 		}
