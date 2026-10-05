@@ -12,9 +12,7 @@
 #include "morpheme/mrNetworkDef.h"
 #include "morpheme/Nodes/mrNodeStateMachine.h"
 
-#include "NodeNamingStrategy/DefaultNodeNamingStrategy.h"
-#include "NodeNamingStrategy/ReconstructParentChildNameStrategy.h"
-#include "NodeNamingStrategy/Utils/Utils.h"
+#include "NodeNameUtils.h"
 
 #include "GraphLayouterStrategy/ColumnBlendTreeLayouterStrategy.h"
 #include "GraphLayouterStrategy/GridStateMachineLayouterStrategy.h"
@@ -972,13 +970,13 @@ bool NodeProcessor::isStateMachineNestedInBT(MR::NodeDef* smNodeDef)
 
 	MR::NetworkDef* netDef = smNodeDef->getOwningNetworkDef();
 
-	std::string smNodeName = NodeNameStrategyUtils::getParentNodeNameFromFullPath(netDef->getNodeNameFromNodeID(smNodeDef->getNodeID()));
+	std::string smNodeName = NodeNameUtils::getParentNodeNameFromFullPath(netDef->getNodeNameFromNodeID(smNodeDef->getNodeID()));
 
 	int numLayersUpByNames = 0;
 	while (smNodeName != "")
 	{
 		numLayersUpByNames++;
-		smNodeName = NodeNameStrategyUtils::getParentNodeNameFromFullPath(smNodeName);
+		smNodeName = NodeNameUtils::getParentNodeNameFromFullPath(smNodeName);
 	}
 
 	if (numLayersUpByNames == 0)

@@ -7,8 +7,6 @@
 #include "NMGeomUtils/NMJointLimits.h"
 #include "Node/Node.h"
 
-#include "MorphemeNetworkInspector/NodeProcessor/NodeNamingStrategy/Utils/Utils.h"
-
 #include "MorphemeEditorApp/MorphemeEditorApp.h"
 
 namespace
