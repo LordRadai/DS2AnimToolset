@@ -913,10 +913,10 @@ void GuiManager::rootWindow()
 
 			ImGui::SeparatorText("Export Settings");
 
-			if (ImGui::MenuItem("Export Animations")) { editorApp->getTaskFlags()->batchExportAnimations = true; }
-			if (ImGui::MenuItem("Export Network")) { editorApp->getTaskFlags()->batchExportNetwork = true; }
-			if (ImGui::MenuItem("Export Model")) { editorApp->getTaskFlags()->batchExportModel = true; }
-			if (ImGui::MenuItem("Export TimeAct")) { editorApp->getTaskFlags()->batchExportTimeAct = true; }
+			ImGui::Checkbox("Export Animations", &editorApp->getTaskFlags()->batchExportAnimations);
+			ImGui::Checkbox("Export Network", &editorApp->getTaskFlags()->batchExportNetwork);
+			ImGui::Checkbox("Export Model", &editorApp->getTaskFlags()->batchExportModel);
+			ImGui::Checkbox("Export TimeAct", &editorApp->getTaskFlags()->batchExportTimeAct);
 
 			ImGui::SeparatorText("Animation Settings");
 
@@ -938,10 +938,10 @@ void GuiManager::rootWindow()
 
 			ImGui::SeparatorText("Export Settings");
 
-			if (ImGui::MenuItem("Export Model")) { editorApp->getTaskFlags()->exportModel = true; }
-			if (ImGui::MenuItem("Export Animations")) { editorApp->getTaskFlags()->exportAnimations = true; }
-			if (ImGui::MenuItem("Export Network")) { editorApp->getTaskFlags()->exportNetwork = true; }
-			if (ImGui::MenuItem("Export TimeAct")) { editorApp->getTaskFlags()->exportTae = true; }
+			ImGui::Checkbox("Export Animations", &editorApp->getTaskFlags()->exportAnimations);
+			ImGui::Checkbox("Export Network", &editorApp->getTaskFlags()->exportNetwork);
+			ImGui::Checkbox("Export Model", &editorApp->getTaskFlags()->exportModel);
+			ImGui::Checkbox("Export TimeAct", &editorApp->getTaskFlags()->exportTae);
 
 			ImGui::SeparatorText("Animation Settings");
 
