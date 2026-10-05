@@ -1722,9 +1722,28 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 
 		g_workerThread.load()->addProcess("Exporting model", 1);
 
-		ScopedCurrentPath scopedPath(path);
-
+#ifdef _DEBUG
 		exportFlverToMorphemeBoneMap(model, (std::filesystem::path(path) / L"morpheme_bone_map.txt").wstring());
+#endif
+
+		std::wstring modelExportPath;
+
+		switch (this->m_exportSettings.exportFormat)
+		{
+		case FT::kFbx:
+			modelExportPath = L"model_fbx\\" + this->m_character->getCharacterName();
+			break;
+		case FT::kGltf:
+			modelExportPath = L"model_gltf\\" + this->m_character->getCharacterName();
+			break;
+		case FT::kXmd:
+			modelExportPath = L"model_xmd\\" + this->m_character->getCharacterName();
+			break;
+		default:
+			break;
+		}
+
+		ScopedCurrentPath scopedPath(modelExportPath);
 
 		FT::FileTranslator fileTranslator;
 		fileTranslator.exportModel(this->m_character, this->m_exportSettings.exportFormat);
