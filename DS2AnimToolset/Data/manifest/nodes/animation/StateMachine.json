@@ -1,0 +1,20 @@
+{
+    "group": "Containers",
+    "displayName": "State Machine",
+    "pinOrder": [
+        "Result"
+    ],
+    "image": "StateMachine.png",
+    "version": 1,
+    "attributes": [
+        
+    ],
+    "functionPins": [
+        
+    ],
+    "interfaces": [
+        
+    ],
+    "helptext": "Create a State Machine",
+    "id": 10
+}

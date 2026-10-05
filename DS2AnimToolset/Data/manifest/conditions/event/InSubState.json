@@ -1,0 +1,12 @@
+{
+    "version": 1,
+    "id": 617,
+    "helptext": "Requires that the source state machine has a specific sub state node active.",
+    "attributes": {
+        "Node": {
+            "type": "ref",
+            "helptext": "The full path of the sub state node.",
+            "kind": "conditionSubState"
+        }
+    }
+}

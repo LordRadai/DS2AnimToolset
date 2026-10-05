@@ -1,0 +1,12 @@
+{
+    "presets": [
+        
+    ],
+    "id": 103,
+    "version": 1,
+    "supportsPresets": false,
+    "attributes": [
+        
+    ],
+    "helptext": "Internal message to update the retargeting system's characterScale"
+}
