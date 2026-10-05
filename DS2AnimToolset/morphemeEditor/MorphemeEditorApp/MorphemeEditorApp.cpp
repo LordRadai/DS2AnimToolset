@@ -2019,8 +2019,6 @@ bool MorphemeEditorApp::exportDirectoryInternal(std::wstring path)
 		{
 			if (std::filesystem::is_directory(it))
 				continue;
-
-			g_workerThread.load()->setProcessStepName(it.filename().string());
 			
 			loadFileInternal(it, true);
 
