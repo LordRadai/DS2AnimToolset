@@ -1731,13 +1731,13 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 		switch (this->m_exportSettings.exportFormat)
 		{
 		case FT::kFbx:
-			modelExportPath = L"model_fbx\\" + this->m_character->getCharacterName();
+			modelExportPath = path + L"model_fbx\\" + this->m_character->getCharacterName();
 			break;
 		case FT::kGltf:
-			modelExportPath = L"model_gltf\\" + this->m_character->getCharacterName();
+			modelExportPath = path + L"model_gltf\\" + this->m_character->getCharacterName();
 			break;
 		case FT::kXmd:
-			modelExportPath = L"model_xmd\\" + this->m_character->getCharacterName();
+			modelExportPath = path + L"model_xmd\\" + this->m_character->getCharacterName();
 			break;
 		default:
 			break;
