@@ -1986,7 +1986,7 @@ void MorphemeEditorApp::exportDirectory()
 					{
 						std::filesystem::path filepath = std::wstring(pszFilePath);
 
-						g_workerThread.load()->startThread("Export Directory", &MorphemeEditorApp::exportDirectoryInternal, this, filepath);
+						this->exportDirectoryInternal(filepath);
 					}
 
 					pItem->Release();
@@ -2013,8 +2013,6 @@ bool MorphemeEditorApp::exportDirectoryInternal(std::wstring path)
 				nmbFiles.push_back(it.path());
 		}
 
-		g_workerThread.load()->addProcess("Export directory", nmbFiles.size());
-
 		std::filesystem::path exportPath = path;
 
 		for (auto& it : nmbFiles)
@@ -2032,9 +2030,8 @@ bool MorphemeEditorApp::exportDirectoryInternal(std::wstring path)
 			std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 			std::filesystem::create_directories(exportPath);
-			this->exportAll(exportPath);
 
-			g_workerThread.load()->increaseProgressStep();
+			this->exportAll(exportPath);
 		}
 
 		return true;
