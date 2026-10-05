@@ -1582,5 +1582,59 @@
     "group": null,
     "min": 0,
     "max": 1
+  },
+  "Target_Distance": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "Target_X": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "Target_Y": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "Add_Pos": {
+    "type": "vector3",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "Add_Rot": {
+    "type": "vector3",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "PlaySpeed_03": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "WepHandDuration": {
+    "type": "float",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "FakeDead": {
+    "type": "int",
+    "group": null,
+    "min": null,
+    "max": null
+  },
+  "rope": {
+    "type": "vector3",
+    "group": null,
+    "min": null,
+    "max": null
   }
 }
