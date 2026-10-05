@@ -938,9 +938,10 @@ void GuiManager::rootWindow()
 		{
 			ImGui::BeginDisabled(editorApp->getCharacter() == nullptr);
 
-			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->exportAll = true; }
+			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->exportTask = true; }
+			if (ImGui::MenuItem("Export All")) { editorApp->getTaskFlags()->exportAll = true; }
 			if (ImGui::MenuItem("Export and Process")) { editorApp->getTaskFlags()->exportAndProcess = true; }
-					
+			
 			ImGui::EndDisabled();
 
 			ImGui::SeparatorText("Export Settings");
