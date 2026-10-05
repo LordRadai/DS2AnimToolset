@@ -12,6 +12,63 @@
 
 namespace
 {
+	std::wstring getUserModelPath()
+	{
+		std::wstring returnPath = L"";
+
+        COMDLG_FILTERSPEC ComDlgFS[] = { {L"Binder4", L"*.bnd"} };
+
+        HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+            COINIT_DISABLE_OLE1DDE);
+
+        if (SUCCEEDED(hr))
+        {
+            IFileOpenDialog* pFileOpen = NULL;
+
+            // Create the FileOpenDialog object.
+            hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+                IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+            if (SUCCEEDED(hr))
+            {
+                pFileOpen->SetFileTypes(1, ComDlgFS);
+
+                // Show the Open dialog box.
+                hr = pFileOpen->Show(NULL);
+
+                // Get the file name from the dialog box.
+                if (SUCCEEDED(hr))
+                {
+                    IShellItem* pItem;
+                    hr = pFileOpen->GetResult(&pItem);
+
+                    if (SUCCEEDED(hr))
+                    {
+                        PWSTR pszFilePath;
+                        hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+                        // Display the file name to the user.
+                        if (SUCCEEDED(hr))
+                        {
+                            std::filesystem::path filepath = std::wstring(pszFilePath);
+							returnPath = filepath.wstring();
+                        }
+
+                        pItem->Release();
+                    }
+                    else
+                        g_appLog->alertMessage(MsgLevel_Error, "Failed to open file");
+                }
+
+                pFileOpen->Release();
+            }
+
+            CoUninitialize();
+        }
+
+		return returnPath;
+	}
+
     bool isNumeric(const std::string& s)
     {
         return !s.empty() &&
@@ -328,7 +385,21 @@ Character* Character::createFromMorphemeBundle(std::vector<std::wstring>& fileLi
         wchar_t modelName[256];
         swprintf_s(modelName, L"%ws\%ws.bnd", chrFolder.c_str(), character->m_characterName.c_str());
 
-        character->m_characterModelCtrl->setModel(FlverModel::createFromBnd(modelName, rigDef));
+		FlverModel* model = FlverModel::createFromBnd(modelName, rigDef);
+
+		// Not all model paths match exactly the nmb file ID. Prompt the user to select a model if the default one is not found.
+        if (model == nullptr)
+        {
+			g_appLog->alertMessage(MsgLevel_Warn, "No model found at %ws. Please find a model manually, or the animation rig will be used.\n", modelName);
+			std::wstring userModelPath = getUserModelPath();
+
+			model = FlverModel::createFromBnd(userModelPath, rigDef);
+
+			if (model == nullptr)
+                model = FlverModel::createFromAnimRig(rigDef);
+        }
+
+        character->m_characterModelCtrl->setModel(model);
 
         g_workerThread.load()->increaseProgressStep();
 

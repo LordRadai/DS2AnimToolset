@@ -334,8 +334,11 @@ registerNode("FeatherBlend2",
       stream:writeNetworkNodeId(source0NodeID, "Source0NodeID")
       local source1NodeID = getConnectedNodeID(node, "Source1")
       stream:writeNetworkNodeId(source1NodeID, "Source1NodeID")
+      -- DS2 (FRPG2): Weight can be unconnected (c3260); the runtime data then has no Weight field
       local weightNodeInfo = getConnectedNodeInfo(node, "Weight")
-      stream:writeNetworkNodeId(weightNodeInfo.id, "Weight", weightNodeInfo.pinIndex)
+      if weightNodeInfo then
+        stream:writeNetworkNodeId(weightNodeInfo.id, "Weight", weightNodeInfo.pinIndex)
+      end
 
       local blendWeights = getAttribute(node, "BlendWeights")
       stream:writeFloat(blendWeights[1], ("BlendWeight_0"))

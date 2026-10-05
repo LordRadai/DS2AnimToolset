@@ -190,6 +190,20 @@ class Hierarchy:
         occupied = collections.Counter(g for i, g in self.G.items() if not (g[0] == 'state' and g[2] == i))
         self.wrapped = {r for r in self.state_owner if r in self.sms and occupied[('state', self.state_owner[r], r)]}
         self.sm_name, self.state_name, self.nbt_name = {}, {}, {}
+        # state machine states of one state machine whose paths all have one level more than their chain, with the
+        # same component there (BT_Ladder|SM_Ladder|SM_LadderIdle, ...|SM_Ladder|SM_LadderFall): sibling states
+        # cannot share a name, so the extra level is not a BlendTree wrapping each of them but their owner,
+        # wrapped in a BlendTree state of its own state machine
+        extra = collections.defaultdict(list)
+        for nid, name in named.items():
+            if nid in nodes and nid in self.state_owner and nid in self.sms and nid not in self.wrapped:
+                comps = name.split('|')
+                if len(comps) == len(self.chain(nid)) + 1:
+                    extra[(self.state_owner[nid], comps[-2])].append(nid)
+        for (sm, comp), kids in sorted(extra.items()):
+            if len(kids) > 1 and sm in self.state_owner and sm in self.sms and sm not in self.wrapped:
+                self.wrapped.add(sm)
+                self.log.append('state machine %d wrapped in a BlendTree state: its states %r share the level %s' % (sm, sorted(kids), comp))
         # names along named paths
         for nid, name in named.items():
             if nid not in nodes or nodes[nid].type in CP_TYPES: continue
@@ -231,7 +245,8 @@ class Hierarchy:
 
     def state_nesting(self):
         """A multiply connected node N whose requester is state machine P, living in P's state S, that feeds a
-        node of S directly as well as something deeper (a state machine of S, through its pass-down pin).
+        node of S directly as well as something deeper (a state machine of S, through its pass-down pin), or that
+        feeds several nodes of S.
         Connect's outputs are one-to-one, so the original had the rest of S in a blend tree nested in S
         (its result is S's result, which makes P the requester) fed through a one-to-many pass-down pin.
         Moves everything of S except such nodes and their private upstream into ('nbt', P, root of S, 1)."""
@@ -243,25 +258,66 @@ class Hierarchy:
             if p is None or p.type != SM or n.id in self.state_owner or not g or g[0] != 'state' or g[1] != p.id: continue
             if (p.id, g[2]) in self.nbt_depth or (p.id, g[2]) in self.no_nest or g[2] in self.sms: continue
             cons = self.consumers.get(n.id, [])
-            if len(cons) > 1 and any(self.G.get(c) == g for c in cons) and any(self.G.get(c) != g for c in cons):
+            inside = {c for c in cons if self.G.get(c) == g}
+            # feeds a node of S through a pass-down pin (P, not that node, is its requester): it sits outside a blend
+            # tree nested in S. Whatever else it feeds (more nodes of S, something deeper) shares the pin
+            if inside:
                 outside[g].add(n.id)
         for g, keep in outside.items():
-            # private upstream of the kept nodes stays beside them
-            todo = list(keep)
-            while todo:
-                m = todo.pop()
-                for field, pin in self.spec.get(m, (0, 0, []))[2]:
-                    u = self.nodes[m].get(field)
-                    if u in self.nodes and u not in keep and self.G.get(u) == g and u != g[2] and \
-                            all(c in keep for c in self.consumers.get(u, [])):
-                        keep.add(u); todo.append(u)
             _, P, R = g
-            self.nbt_depth[(P, R)] = 1
+            mc = lambda i: self.nodes[i].attrs.get('downstreamMultiplyConnected') == 'true'
+            # the other multiply connected nodes of S requested by P were passed down too, even with one consumer
             for i, gi in self.G.items():
-                if gi == g and i not in keep and self.nodes[i].type not in DATA_TYPES:
-                    self.override[i] = ('nbt', P, R, 1)
-            self.override[R] = ('nbt', P, R, 1)
-            self.log.append('state %d of %d: nested blend tree for multiply connected %r' % (R, P, sorted(keep)))
+                if gi == g and i != R and mc(i) and self.nodes[i].parent == P and                         self.nodes[i].type not in CP_TYPES + DATA_TYPES:
+                    keep.add(i)
+            # nodes of S that only feed the kept part (kept nodes themselves, graphs inside a kept state machine or
+            # inside a blend tree nested for a kept requester) stay beside them: their private upstream, and multiply
+            # connected nodes passed down into a kept state machine (the nested blend tree only outputs S's result,
+            # nothing can come out of it into the rest of S)
+            def feeds_kept(c):
+                if c in keep: return True
+                gc = self.G.get(c)
+                return gc is not None and any(a[0] in ('state', 'nbt') and a[1] in keep for a in self.ancestors(gc))
+            grown = True
+            while grown:
+                grown = False
+                for i, gi in list(self.G.items()):
+                    if gi != g or i in keep or i == R: continue
+                    cons = self.consumers.get(i, [])
+                    if cons and all(feeds_kept(c) for c in cons):
+                        keep.add(i); grown = True
+            # levels: a multiply connected node feeding another kept node went through a pass-down pin, so its consumer
+            # sits one nested blend tree deeper; other kept nodes sit at the level of their consumers; the rest of S
+            # goes one level below the deepest
+            def kept_owner(c):
+                if c in keep: return c
+                gc = self.G.get(c)
+                for a in self.ancestors(gc) if gc is not None else []:
+                    if a[0] in ('state', 'nbt') and a[1] in keep: return a[1]
+                return None
+            level = dict.fromkeys(keep, 0)
+            for _ in range(len(keep) + 1):
+                changed = False
+                for n in keep:
+                    if mc(n):
+                        new = 0
+                        for field, pin in self.spec.get(n, (0, 0, []))[2]:
+                            u = self.nodes[n].get(field)
+                            if u in keep and mc(u): new = max(new, level[u] + 1)
+                    else:
+                        owners = [kept_owner(c) for c in self.consumers.get(n, [])]
+                        new = min([level[o] for o in owners if o is not None] or [0])
+                    if new != level[n]: level[n] = new; changed = True
+                if not changed: break
+            depth = 1 + max(level.values() or [0])
+            self.nbt_depth[(P, R)] = depth
+            for i, gi in self.G.items():
+                if gi != g or self.nodes[i].type in DATA_TYPES: continue
+                if i not in keep: self.override[i] = ('nbt', P, R, depth)
+                elif level[i] > 0: self.override[i] = ('nbt', P, R, level[i])
+            self.override[R] = ('nbt', P, R, depth)
+            self.log.append('state %d of %d: %d nested blend tree level(s) for multiply connected %r' % (
+                R, P, depth, sorted((n, level[n]) for n in keep)))
         return bool(outside)
 
     def contradicted_members(self, named):

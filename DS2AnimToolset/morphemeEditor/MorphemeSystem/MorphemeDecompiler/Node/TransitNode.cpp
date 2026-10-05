@@ -157,11 +157,14 @@ namespace MD
 
 			ME::NodeExportXML* nodeExportXML = NodeDecompilerBase::exportNode(netDefExport, netDef, nodeDef, nodeName);
 			ME::DataBlockExportXML* nodeDataBlock = static_cast<ME::DataBlockExportXML*>(nodeExportXML->getDataBlock());
+			const MR::NodeID srcNodeID = nodeDef->getChildNodeID(0);
+			const MR::NodeID destNodeID = nodeDef->getChildNodeID(1);
 
-			if (nodeDef->getChildNodeID(0) != MR::INVALID_NODE_ID)
-				nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(0), "SourceNodeID");
+			if (srcNodeID != MR::INVALID_NODE_ID)
+				nodeDataBlock->writeNetworkNodeId(srcNodeID, "SourceNodeID");
 
-			nodeDataBlock->writeNetworkNodeId(nodeDef->getChildNodeID(1), "DestNodeID");
+			if (destNodeID != MR::INVALID_NODE_ID)
+				nodeDataBlock->writeNetworkNodeId(destNodeID, "DestNodeID");
 
 			MR::AttribDataTransitSyncEventsDef* transitDef = static_cast<MR::AttribDataTransitSyncEventsDef*>(nodeDef->getAttribData(MR::ATTRIB_SEMANTIC_NODE_SPECIFIC_DEF));
 
@@ -223,12 +226,14 @@ namespace MD
 				for (int i = 0; i < numDestSubStates; i++)
 				{
 					MR::StateMachineInitData* nodeInitData = static_cast<MR::StateMachineInitData*>(transitDef->m_nodeInitData->m_nodeInitDataArray[i]);
+					MR::NodeID targetNodeID = nodeInitData->getTargetNodeID();
+					MR::NodeID initialSubStateID = nodeInitData->getInitialSubStateID();
 
 					sprintf_s(paramName, "DestinationSubStateID_%d", i);
-					nodeDataBlock->writeInt(nodeInitData->getInitialSubStateID(), paramName);
+					nodeDataBlock->writeInt(initialSubStateID, paramName);
 
 					sprintf_s(paramName, "DestinationSubStateParentID_%d", i);
-					nodeDataBlock->writeInt(nodeInitData->getTargetNodeID(), paramName);
+					nodeDataBlock->writeInt(targetNodeID, paramName);
 				}
 			}
 			else

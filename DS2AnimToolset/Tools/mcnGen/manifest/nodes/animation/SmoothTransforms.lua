@@ -100,8 +100,6 @@ registerNode("SmoothTransforms",
       local multiplierNodeInfo = getConnectedNodeInfo(node, "Multiplier")
       if multiplierNodeInfo then
         stream:writeNetworkNodeId(multiplierNodeInfo.id, "Multiplier", multiplierNodeInfo.pinIndex)
-      else
-        stream:writeNetworkNodeId(-1, "Multiplier")
       end
 
       local animSets = listAnimSets()

@@ -103,6 +103,9 @@ namespace
 
 	void exportFlverToMorphemeBoneMap(FlverModel* model, std::wstring path)
 	{
+		if (model == nullptr)
+			return;
+
 		std::ofstream out(path, std::ios::out);
 		
 		std::vector<int> boneMap = model->getFlverToMorphemeBoneMap();
@@ -894,11 +897,18 @@ void MorphemeEditorApp::update(float dt)
 	if (this->m_nodeEditor)
 		this->m_nodeEditor->update(dt);
 
-	if (this->m_taskFlags.exportDir)
+	if (this->m_taskFlags.batchExport)
 	{
-		this->m_taskFlags.exportDir = false;
+		this->m_taskFlags.batchExport = false;
 
 		this->exportDirectory();
+	}
+
+	if (this->m_taskFlags.batchExportAll)
+	{
+		this->exportDirectory();
+
+		this->m_taskFlags.batchExportAll = false;
 	}
 
 	if (this->m_taskFlags.loadFile)
@@ -922,15 +932,26 @@ void MorphemeEditorApp::update(float dt)
 		this->saveFile();
 	}
 
-	if (this->m_taskFlags.exportAll)
+	if (this->m_taskFlags.exportTask)
 	{
-		this->m_taskFlags.exportAll = false;
+		this->m_taskFlags.exportTask = false;
 
 		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->runTask("Export All", &MorphemeEditorApp::exportAll, this, exportPath);
+		g_workerThread.load()->runTask("Export", &MorphemeEditorApp::exportTask, this, exportPath);
+	}
+
+	if (this->m_taskFlags.exportAll)
+	{
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
+
+		std::filesystem::create_directories(exportPath);
+
+		g_workerThread.load()->runTask("Export All", &MorphemeEditorApp::exportTask, this, exportPath);
+
+		this->m_taskFlags.exportAll = false;
 	}
 
 	if (this->m_taskFlags.exportAndProcess)
@@ -942,71 +963,6 @@ void MorphemeEditorApp::update(float dt)
 		std::filesystem::create_directories(exportPath);
 
 		g_workerThread.load()->runTask("Export and Process", &MorphemeEditorApp::exportAndProcess, this, exportPath);
-	}
-
-	if (this->m_taskFlags.exportTae)
-	{
-		this->m_taskFlags.exportTae = false;
-
-		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
-
-		std::filesystem::create_directories(exportPath);
-
-		g_workerThread.load()->runTask("Export TimeAct", &MorphemeEditorApp::exportAndCompileTae, this, exportPath);
-	}
-
-	if (this->m_taskFlags.exportModel)
-	{
-		this->m_taskFlags.exportModel = false;
-
-		if (this->m_character != nullptr)
-		{
-			std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
-
-			std::filesystem::create_directories(exportPath);
-
-			g_workerThread.load()->runTask("Export Model" ,&MorphemeEditorApp::exportModel, this, exportPath);
-		}
-		else
-		{
-			g_appLog->alertMessage(MsgLevel_Error, "No character is loaded");
-		}
-	}
-
-	if (this->m_taskFlags.exportNetwork)
-	{
-		this->m_taskFlags.exportNetwork = false;
-
-		if (this->m_character != nullptr)
-		{
-			std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
-
-			std::filesystem::create_directories(exportPath);
-
-			g_workerThread.load()->runTask("Export Network", &MorphemeEditorApp::exportNetwork, this, exportPath);
-		}
-		else
-		{
-			g_appLog->alertMessage(MsgLevel_Error, "No character is loaded");
-		}
-	}
-
-	if (this->m_taskFlags.exportAnimations)
-	{
-		this->m_taskFlags.exportAnimations = false;
-
-		if (this->m_character != nullptr && this->m_character->getCharacterMotionCtrl()->getMorphemeCharacter() != nullptr)
-		{
-			std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
-			
-			std::filesystem::create_directories(exportPath);
-
-			g_workerThread.load()->runTask("Export Animations", &MorphemeEditorApp::exportAnimationsAndMarkups, this, exportPath);
-		}
-		else
-		{
-			g_appLog->alertMessage(MsgLevel_Error, "No character is loaded");
-		}
 	}
 
 	if (this->m_taskFlags.compileNetwork)
@@ -1102,6 +1058,10 @@ void MorphemeEditorApp::loadSettings()
 	this->m_exportSettings.compressionFormat = settings->getInt("Export", "compression_format", 2);
 	this->m_exportSettings.useSourceSampleFrequency = settings->getBool("Export", "compression_use_source_sample_frequency", true);
 	this->m_exportSettings.sampleFrequency = settings->getInt("Export", "compression_sample_frequency", 20);
+	this->m_exportSettings.exportModel = settings->getBool("Export", "export_model", true);
+	this->m_exportSettings.exportAnimations = settings->getBool("Export", "export_animations", true);
+	this->m_exportSettings.exportNetwork = settings->getBool("Export", "export_network", true);
+	this->m_exportSettings.exportTae = settings->getBool("Export", "export_tae", true);
 
 	this->m_previewFlags.drawDummies = settings->getBool("Scene", "draw_dummies", false);
 	this->m_previewFlags.drawMeshes = settings->getBool("Scene", "draw_meshes", true);
@@ -1131,6 +1091,10 @@ void MorphemeEditorApp::saveSettings()
 	settings->setInt("Export", "compression_format", this->m_exportSettings.compressionFormat);
 	settings->setBool("Export", "compression_use_source_sample_frequency", this->m_exportSettings.useSourceSampleFrequency);
 	settings->setInt("Export", "compression_sample_frequency", this->m_exportSettings.sampleFrequency);
+	settings->setBool("Export", "export_model", this->m_exportSettings.exportModel);
+	settings->setBool("Export", "export_animations", this->m_exportSettings.exportAnimations);
+	settings->setBool("Export", "export_network", this->m_exportSettings.exportNetwork);
+	settings->setBool("Export", "export_tae", this->m_exportSettings.exportTae);
 
 	settings->setBool("Scene", "draw_dummies", this->m_previewFlags.drawDummies);
 	settings->setBool("Scene", "draw_meshes", this->m_previewFlags.drawMeshes);
@@ -1305,6 +1269,30 @@ void MorphemeEditorApp::saveFile()
 {
 }
 
+bool MorphemeEditorApp::exportTask(std::wstring path)
+{
+	if (m_taskFlags.exportAll)
+	{
+		this->exportAll(path);
+	}
+	else
+	{
+		if (m_exportSettings.exportAnimations)
+			this->exportAnimationsAndMarkups(path);
+
+		if (m_exportSettings.exportModel)
+			this->exportModel(path);
+
+		if (m_exportSettings.exportNetwork)
+			this->exportNetwork(path);
+
+		if (m_exportSettings.exportTae)
+			this->exportTimeAct(path);
+	}
+
+	return true;
+}
+
 bool MorphemeEditorApp::exportTimeAct(std::wstring path)
 {
 	try
@@ -1457,11 +1445,6 @@ bool MorphemeEditorApp::exportNetwork(std::wstring path)
 		dumpControlParametersUsageData(netDef, L"CPConnections.xml");
 		dumpNetworkTaskQueuingFnTables(netDef, L"taskQueuingFnTables.txt");
 		dumpNetworkOutputCPTasksFnTables(netDef, L"outputCPTasksFnTables.txt");
-
-		MorphemeNetworkInspector* networkInspector = dynamic_cast<MorphemeNetworkInspector*>(this->m_nodeEditor);
-
-		if (networkInspector)
-			networkInspector->dumpNetworkToFile(L"network.layout", netDef);
 #endif // EXPORT_DEBUG_NETWORK_INFO
 
 		g_appLog->debugMessage(MsgLevel_Info, "Exporting networkDef for %ws (%ws):\n", chrName.c_str(), networkFilename);
@@ -1649,7 +1632,7 @@ bool MorphemeEditorApp::exportAnimMarkups(std::wstring path)
 		{
 			std::string animName = RString::removeExtension(motionCtrl->getAnimationById(animSetIdx, i)->getAnimName());
 			g_workerThread.load()->setProcessStepName(animName);
-			g_appLog->debugMessage(MsgLevel_Info, "\t%ws\n", animName.c_str());
+			g_appLog->debugMessage(MsgLevel_Info, "\t%s\n", animName.c_str());
 
 			this->exportAnimMarkup(path, animSetIdx, i, exportedTracks);
 
@@ -1716,9 +1699,6 @@ bool MorphemeEditorApp::exportModel(std::wstring path)
 	try
 	{
 		FlverModel* model = this->m_character->getCharacterModelCtrl()->getModel();
-
-		if (model == nullptr)
-			return false;
 
 		g_workerThread.load()->addProcess("Exporting model", 1);
 
@@ -2028,7 +2008,7 @@ void MorphemeEditorApp::exportDirectory()
 					{
 						std::filesystem::path filepath = std::wstring(pszFilePath);
 
-						g_workerThread.load()->runTask("Export Directory", &MorphemeEditorApp::exportDirectoryInternal, this, filepath.wstring());
+						g_workerThread.load()->runTask("Batch Export", &MorphemeEditorApp::exportDirectoryInternal, this, filepath.wstring());
 					}
 
 					pItem->Release();
@@ -2057,7 +2037,7 @@ bool MorphemeEditorApp::exportDirectoryInternal(std::wstring path)
 
 		std::filesystem::path exportPath = path;
 
-		g_workerThread.load()->addProcess("Exporting directory", int(nmbFiles.size()));
+		g_workerThread.load()->addProcess("File", int(nmbFiles.size()));
 
 		for (auto& it : nmbFiles)
 		{
@@ -2073,7 +2053,24 @@ bool MorphemeEditorApp::exportDirectoryInternal(std::wstring path)
 
 					std::filesystem::create_directories(exportPath);
 
-					exportAll(exportPath);
+					if (m_taskFlags.batchExportAll)
+					{
+						this->exportAll(exportPath);
+					}
+					else
+					{
+						if (m_exportSettings.exportAnimations)
+							this->exportAnimationsAndMarkups(exportPath);
+
+						if (m_exportSettings.exportModel)
+							this->exportModel(exportPath);
+
+						if (m_exportSettings.exportNetwork)
+							this->exportNetwork(exportPath);
+
+						if (m_exportSettings.exportTae)
+							this->exportTimeAct(exportPath);
+					}
 				}
 			}
 

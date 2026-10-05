@@ -362,6 +362,8 @@ class Converter:
         self.emit('end')
         self.emit('-- connections are queued and retried until no more succeed (interfaces form bottom up)')
         self.emit('CONNS = {}')
+        self.emit('-- pin path, nil when the object was not created (CONN then reports it instead of the script aborting)')
+        self.emit('function PIN(obj, pin) if obj then return obj .. "." .. pin end return nil end')
         self.emit('function CONN(src, dst) if src and dst then table.insert(CONNS, { src, dst }) else NFAIL = NFAIL + 1; LOG("FAIL  connect missing path " .. TS(src) .. " -> " .. TS(dst)) end end')
         self.emit('function RUNCONNS()')
         self.emit('  local pending = CONNS')
@@ -661,7 +663,7 @@ class Converter:
         done = set()
 
         def out_of(item):   # output pin expression of a node id or container path
-            return '%s .. ".Result"' % self.ref(item)
+            return 'PIN(%s, "Result")' % self.ref(item)
 
         def add(src, dst, depth, stage2=False):
             k = (src, dst)
@@ -674,7 +676,7 @@ class Converter:
             if rid not in nodes: continue
             item, direct = self.item_in(p, rid)
             src = out_of(rid if direct else item)
-            dst = '%s .. ".Result"' % self.ref(p) if p else '".Result"'
+            dst = 'PIN(%s, "Result")' % self.ref(p) if p else '".Result"'
             add(src, dst, p.count('|') + 1 if p else 0)
 
         def pin_on(container, key, label):
@@ -688,7 +690,7 @@ class Converter:
                 self.pin_defs.append((container, name))
             return self.pins[k]
 
-        def pin_expr(container, name): return '%s .. ".%s"' % (self.ref(container), name)
+        def pin_expr(container, name): return 'PIN(%s, "%s")' % (self.ref(container), name)
 
         for n in self.gnodes:
             mtype, attrs, inputs = self.spec[n.id]
@@ -697,10 +699,10 @@ class Converter:
                 sid = n.get(field)
                 s = nodes.get(sid)
                 if s is None: continue
-                dst = '%s .. ".%s"' % (self.ref(n.id), pin)
+                dst = 'PIN(%s, "%s")' % (self.ref(n.id), pin)
                 depth = gc.count('|') + 1 if gc else 0
                 if s.type in CP_TYPES:
-                    add('%s .. ".Result"' % self.ref(s.id), dst, depth); continue
+                    add('PIN(%s, "Result")' % self.ref(s.id), dst, depth); continue
                 gs = parent_path(s.name)
                 # lowest common graph
                 L = gs
@@ -924,7 +926,8 @@ class Converter:
         self.emit('for i, c in ipairs(PENDING or {}) do pf:write(string.format("CONN(%q, %q)\\n", c[1], c[2])) end')
         self.emit('pf:close()')
 
-    def epilogue(self, export=True):
+    def epilogue(self, export=False):
+        # the round-trip export runs separately (mcnExport.lua, after packing): a failing export cannot cost the project
         self.emit('TRY("mcn.saveAs", function() return mcn.saveAs(ROOT .. "\\\\" .. NAME .. ".mcn") end)')
         if export:
             self.emit('pcall(function() app.createDirectory(BUILD .. "\\\\roundtrip") end)')
@@ -964,7 +967,7 @@ class Converter:
         self.prologue('_rebuild.log'); self.setup(); self.anim_set_options(); self.requests(); self.control_params()
         self.graph(); self.emit_pins_and_edges(); self.transitions(False); self.default_states()
         if not self.needs_stage2(): self.late_attributes(); self.auto_layout()
-        self.save_paths(); self.epilogue(export=not self.needs_stage2())
+        self.save_paths(); self.epilogue()
         self.write_project()
         out = [self.write_lua('_rebuild.lua')]
         if self.needs_stage2():

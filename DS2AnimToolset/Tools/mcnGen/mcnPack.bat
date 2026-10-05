@@ -5,7 +5,7 @@ rem   input folder   a character folder mcnGen.bat has built (e.g. ...\Export\c0
 rem   output folder  where the project goes (default: <input folder>_project)
 rem The project gets only what Connect needs. What mcnGen generated is moved: <chr>.mcn, <chr>.mcp, one
 rem .mcarig and .mcskin per animation set, and build\ (scripts, logs, round-trip export, diff). What the decompiler exported stays in the input folder and is
-rem copied: motion_xmd, model_xmd and morphemeMarkup. So the character can be rebuilt without exporting it
+rem copied when present: motion_xmd, model_xmd and morphemeMarkup. So the character can be rebuilt without exporting it
 rem again (mcnGen recreates the rigs). All paths in the project are $(RootDir)-relative, so the folder can
 rem be moved anywhere.
 setlocal EnableExtensions
@@ -22,8 +22,10 @@ set "MISSING="
 for %%X in (mcn mcp) do if not exist "%SRC%\%NAME%.%%X" set "MISSING=%MISSING% %NAME%.%%X"
 if not exist "%SRC%\*.mcarig" set "MISSING=%MISSING% *.mcarig"
 if not exist "%SRC%\*.mcskin" set "MISSING=%MISSING% *.mcskin"
-for %%D in (motion_xmd model_xmd morphemeMarkup) do if not exist "%SRC%\%%D\" set "MISSING=%MISSING% %%D\"
 if defined MISSING (echo Missing in "%SRC%":%MISSING% & echo Run mcnGen.bat on this character first. & exit /b 1)
+rem the exported folders are optional: a second pass to check an upgraded network can run without the animations
+set "ABSENT="
+for %%D in (motion_xmd model_xmd morphemeMarkup) do if not exist "%SRC%\%%D\" call set "ABSENT=%%ABSENT%% %%D\"
 
 if /i "%DST%"=="%SRC%" (echo The output folder must differ from the input folder. & exit /b 1)
 if not exist "%DST%\" mkdir "%DST%" || (echo Cannot create "%DST%" & exit /b 1)
@@ -39,14 +41,15 @@ if exist "%SRC%\build\" (
     if errorlevel 8 goto :copyfail
 )
 rem ---- exported by the decompiler: copied, the input folder keeps them
-for %%D in (motion_xmd model_xmd morphemeMarkup) do (
+for %%D in (motion_xmd model_xmd morphemeMarkup) do if exist "%SRC%\%%D\" (
     robocopy "%SRC%\%%D" "%DST%\%%D" /E /NFL /NDL /NJH /NJS /NP >nul
     if errorlevel 8 goto :copyfail
 )
 
 set /a RIGS=0
 for %%R in ("%DST%\*.mcarig") do set /a RIGS+=1
-echo moved %NAME%.mcn, %NAME%.mcp, %RIGS% rig(s) with skins, build; copied motion_xmd, model_xmd, morphemeMarkup
+echo moved %NAME%.mcn, %NAME%.mcp, %RIGS% rig(s) with skins, build; copied the exported folders
+if defined ABSENT echo not in the input folder, so not in the project:%ABSENT%
 exit /b 0
 
 :copyfail

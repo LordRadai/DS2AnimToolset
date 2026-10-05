@@ -48,6 +48,9 @@ echo --- 2/5 Connect stage 1
 "%CONNECT%" -nogui -script "%BUILD%\%NAME%_rebuild.lua"
 call :lastline "%BUILD%\%NAME%_rebuild.log"
 if not exist "%DIR%\%NAME%.mcn" (echo Stage 1 did not save %NAME%.mcn - see build\%NAME%_rebuild.log & exit /b 1)
+rem without an animation rig nothing exports (MirrorTransforms & co fail in serialize): stop here with the cause
+findstr /B /C:"NIL   anim.createRig" "%BUILD%\%NAME%_rebuild.log" >nul
+if not errorlevel 1 (echo Connect could not create the animation rig from model_xmd\%NAME%.xmd - Connect rejects the model ^(NaN skin weights, for example^). Re-export it and run again. & exit /b 1)
 
 if exist "%BUILD%\%NAME%_stage2.lua" (
     echo --- 3/5 patching the .mcn
@@ -70,7 +73,22 @@ if exist "%BUILD%\%NAME%_stage3.lua" (
     call :lastline "%BUILD%\%NAME%_stage3.log"
 )
 
-echo --- 5/5 checking
+rem ---- pack before the round-trip export: the project is kept even when Connect cannot export it
+rem (a second pass without all the animations, for example)
+echo --- packing the Connect project
+call "%TOOLS%mcnPack.bat" "%DIR%"
+set "PACKED=%errorlevel%"
+set "PROJ=%DIR%"
+if "%PACKED%"=="0" set "PROJ=%DIR%_project"
+rem build\ moved into the project with the rest
+set "BUILD=%PROJ%\build"
+
+echo --- 5/5 round-trip export and check
+del /q "%BUILD%\roundtrip\%NAME%.xml" 2>nul
+set "MCNGEN_ROOT=%PROJ%"
+set "MCNGEN_NAME=%NAME%"
+"%CONNECT%" -nogui -script "%TOOLS%mcnExport.lua"
+call :lastline "%BUILD%\%NAME%_export.log"
 rem DIFF: 0 = round trip identical, 1 = differences, 2 = no round-trip export to compare
 set "DIFF=2"
 if exist "%BUILD%\roundtrip\%NAME%.xml" (
@@ -78,15 +96,9 @@ if exist "%BUILD%\roundtrip\%NAME%.xml" (
     "%PYTHON%" "%TOOLS%xmldiff.py" "%INPUT_XML%" "%BUILD%\roundtrip\%NAME%.xml" --paths "%BUILD%\%NAME%_paths.lua" --max 0
     if errorlevel 1 (set "DIFF=1") else (set "DIFF=0")
 ) else (
-    echo No round-trip export was written - Connect's export failed, see the stage logs.
+    echo No round-trip export was written - Connect's export failed, see build\%NAME%_export.log.
 )
-"%PYTHON%" "%TOOLS%layoutcheck.py" "%DIR%\%NAME%.mcn"
-
-echo --- packing the Connect project
-call "%TOOLS%mcnPack.bat" "%DIR%"
-set "PACKED=%errorlevel%"
-rem build\ moved into the project with the rest
-if "%PACKED%"=="0" set "BUILD=%DIR%_project\build"
+"%PYTHON%" "%TOOLS%layoutcheck.py" "%PROJ%\%NAME%.mcn"
 
 echo.
 if "%PACKED%"=="0" (echo Project:  %DIR%_project\%NAME%.mcn) else (echo Project:  %DIR%\%NAME%.mcn - packing FAILED, see the mcnPack message above)
@@ -95,13 +107,15 @@ echo Missing CP config entries: %BUILD%\%NAME%_cp_config_missing.log
 
 rem ---- warn with a message box when the rebuilt network does not match the export (waits for OK)
 if "%DIFF%"=="1" call :warn "%NAME%: the rebuilt network differs from the export. See %BUILD%\diff_full.txt"
-if "%DIFF%"=="2" call :warn "%NAME%: Connect wrote no round-trip export, so the rebuild could not be checked. See the stage logs in %BUILD%"
+if "%DIFF%"=="2" call :warn "%NAME%: Connect wrote no round-trip export, so the rebuild could not be checked. See %BUILD%\%NAME%_export.log"
 if not "%PACKED%"=="0" exit /b 1
 exit /b 0
 
 :warn
 echo WARNING: %~1
 set "WARN_TEXT=%~1"
+rem MCNGEN_NOPOPUP=1 skips the box (unattended runs)
+if "%MCNGEN_NOPOPUP%"=="1" exit /b 0
 powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; [void][System.Windows.Forms.MessageBox]::Show($env:WARN_TEXT, 'mcnGen', 'OK', 'Warning')"
 exit /b 0
 

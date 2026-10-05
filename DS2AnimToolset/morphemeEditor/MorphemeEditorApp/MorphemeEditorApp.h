@@ -46,19 +46,18 @@ public:
 		bool saveFile = false;
 
 		bool exportTaeTemplateXml = false;
-		bool exportTae = false;
-		bool exportModel = false;
-		bool exportAnimations = false;
-		bool exportNetwork = false;
+		bool exportTask = false;
 		bool exportAll = false;
 		bool exportAndProcess = false;
+		
 
 		bool compileNetwork = false;
 		bool compileTaes = false;
 
 		bool createTestEditorProject = false;
 
-		bool exportDir = false;
+		bool batchExport = false;
+		bool batchExportAll = false;
 	};
 
 	struct CameraFlags
@@ -101,6 +100,10 @@ public:
 		MR::AnimType compressionFormat = ANIM_TYPE_NSA;
 		bool useSourceSampleFrequency = true;
 		int sampleFrequency = 30;
+		bool exportTae = false;
+		bool exportModel = false;
+		bool exportAnimations = false;
+		bool exportNetwork = false;
 	};
 
 	~MorphemeEditorApp();
@@ -165,6 +168,7 @@ private:
 	void reloadFile();
 	void saveFile();
 
+	bool exportTask(std::wstring path);
 	bool exportAll(std::wstring path);
 	bool exportAndProcess(std::wstring path);
 	bool exportAndCompileTae(std::wstring path);
