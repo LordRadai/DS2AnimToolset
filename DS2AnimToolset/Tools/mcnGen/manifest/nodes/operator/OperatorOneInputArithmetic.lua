@@ -161,8 +161,6 @@ registerNode("OperatorOneInputArithmetic",
       Stream:writeInt(operationCode, "OperationCode")
       Stream:writeFloat(getAttribute(node, "ConstantValue"),  "ConstantValue")
       Stream:writeFloat(getAttribute(node, "ConstantValueX"), "ConstantValueX")
-      Stream:writeFloat(0, "ConstantValueY")
-      Stream:writeFloat(0, "ConstantValueZ")
     end,
   }
 )

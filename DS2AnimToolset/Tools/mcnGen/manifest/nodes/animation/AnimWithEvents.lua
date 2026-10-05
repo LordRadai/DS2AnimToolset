@@ -26,7 +26,7 @@ registerNode("AnimWithEvents",
     group = "Utilities",
     image = "AnimWithEvents.png",
     id = generateNamespacedId(idNamespaces.NaturalMotion, 104),
-    version = 9,
+    version = 10,
 
     --------------------------------------------------------------------------------------------------------------------
     functionPins =
@@ -82,8 +82,8 @@ registerNode("AnimWithEvents",
         helptext = "Make this animation suitable for additive blending. Subtracts the first frame from each subsequent frame."
       },
       {
-        name = "DefaultClip", type = "bool", value = true, perAnimSet = true,
-        helptext = "Specify the start and end positions of the clip are different from those that are defined for this animation."
+        name = "ClipRangeMode", type = "int", value = 1, min = 1, max = 3, perAnimSet = true, displayName = "Clip range",
+        helptext = "Which part of the animation plays: 1 = the clip range marked up in the animation take, 2 = the entire animation, 3 = the custom Start / End below."
       },
       {
         name = "ClipStartFraction", type = "float", units = "fraction", min = 0.0, max = 1.0, value = 0.0, perAnimSet = true, displayName = "Start",
@@ -275,7 +275,7 @@ registerNode("AnimWithEvents",
       local numAnimSets = table.getn(animSets)
 
       for asIdx, asVal in ipairs(animSets) do
-        local defaultClip = getAttribute(node, "DefaultClip")
+        local clipRangeMode = getAttribute(node, "ClipRangeMode", asVal)
         local clipStartFraction = getAttribute(node, "ClipStartFraction", asVal)
         local clipEndFraction = getAttribute(node, "ClipEndFraction", asVal)
 
@@ -284,7 +284,7 @@ registerNode("AnimWithEvents",
           clipEndFraction = clipStartFraction
         end
 
-        Stream:writeBool(defaultClip, string.format("DefaultClip_%d", asIdx))
+        Stream:writeInt(clipRangeMode, string.format("ClipRangeMode_%d", asIdx))
         Stream:writeFloat(clipStartFraction, string.format("ClipStartFraction_%d", asIdx))
         Stream:writeFloat(clipEndFraction, string.format("ClipEndFraction_%d", asIdx))
 
@@ -350,7 +350,7 @@ registerNode("AnimWithEvents",
         -- the 3.0 version 5 upgrade added one false to the default animation set.
         -- detect if there is only one value...
         local dataCount = 0
-        local attr = string.format("%s.DefaultClip", node)
+        local attr = string.format("%s.ClipRangeMode", node)
         local sets = listAnimSets()
         for _, set in ipairs(sets) do
           if hasAnimSetData(attr, set) then
@@ -369,7 +369,7 @@ registerNode("AnimWithEvents",
             
             -- store new data
             if hasAnimSetData(copyOrderFromAttr, set) then
-              setAttribute(attr, false, set)
+              setAttribute(attr, 3, set)
             end
           end
           local srcOrder = listAnimSetOrder(copyOrderFromAttr)
@@ -378,10 +378,10 @@ registerNode("AnimWithEvents",
       elseif version < 6 then
         local sets = listAnimSets()
         local copyOrderFromAttr = string.format("%s.ClipStartFraction", node)
-        local attr = string.format("%s.DefaultClip", node)
+        local attr = string.format("%s.ClipRangeMode", node)
         for _, set in ipairs(sets) do
           if hasAnimSetData(copyOrderFromAttr, set) then
-            setAttribute(attr, false, set)
+            setAttribute(attr, 3, set)
           end
         end
         local srcOrder = listAnimSetOrder(copyOrderFromAttr)
@@ -420,6 +420,20 @@ registerNode("AnimWithEvents",
           end
         end
       end
+
+      -- DS2: the DefaultClip bool became the ClipRangeMode enum (1 marker range, 2 entire range, 3 custom range)
+      if version < 10 then
+        local deprecated = string.format("%s.deprecated_DefaultClip", node)
+        if attributeExists(deprecated) then
+          local attr = string.format("%s.ClipRangeMode", node)
+          for _, set in ipairs(listAnimSets()) do
+            if hasAnimSetData(deprecated, set) then
+              setAttribute(attr, getAttribute(deprecated, set) and 1 or 3, set)
+            end
+          end
+          removeAttribute(node, "deprecated_DefaultClip")
+        end
+      end
     end
   }
 )
@@ -438,7 +452,7 @@ if not mcn.inCommandLineMode() then
       },
       {
         title = "Clip Range",
-        usedAttributes = { "ClipStartFraction", "ClipEndFraction", "DefaultClip" },
+        usedAttributes = { "ClipStartFraction", "ClipEndFraction", "ClipRangeMode" },
         displayFunc = function(...) safefunc(attributeEditor.animationClipRangeDisplayInfoSection, unpack(arg)) end
       },
       {
