@@ -50,6 +50,7 @@ CONNECT=C:\Program Files (x86)\NaturalMotion\morphemeConnect 3.6.2\bin\morphemeC
 PYTHON=python
 CP_CONFIG=          ; empty = cp_config.json next to the script
 CLEAN=1             ; 1 = delete the previous .mcn / paths / round-trip export first
+NO_WARN=c1021,c2250 ; characters whose warning box is skipped (known differences), for unattended runs
 ```
 
 Then run:
@@ -74,6 +75,29 @@ mcnGenAll.bat E:\Export my.ini     :: same, with another config
 It runs `mcnGen.bat` on each `cXXXX` subfolder (`c` and four digits) that has a `cXXXX.xml`, keeps going
 when one fails, and ends with a count of built / failed / skipped characters and the names of the
 failed ones.
+
+### CP settings straight into .mcn files: `mcnApplyCp.py`
+
+```bat
+python mcnApplyCp.py D:\Projects\FRPG2_64                 :: every .mcn under the folder
+python mcnApplyCp.py D:\Projects\FRPG2_64\c0001\c0001.mcn my_cp_config.json --dry-run
+```
+
+Only the .mcn and the CP settings file (default `cp_config.json`): no export xml, no Connect. Sets min/max (bounds
+equal to Connect's defaults are left out, as Connect does) and groups; defaults stay as built. Files are rewritten only
+when something changes.
+
+### CP settings onto built networks: `mcnUpdateCp.bat`
+
+```bat
+mcnUpdateCp.bat E:\Export                          :: projects in E:\Export\cXXXX_project (or cXXXX)
+mcnUpdateCp.bat E:\Export D:\Projects\FRPG2_64     :: projects moved elsewhere
+```
+
+Applies the CP settings file (`CP_CONFIG`, default `cp_config.json`) to every built character without rebuilding:
+groups and vector ranges go straight into the .mcn, float/int ranges and defaults are set by Connect
+(`build\cXXXX_cparams.lua` in the project), which then saves. The .mcp and the rest of the network are untouched.
+Each character's `cXXXX.xml` export must still be in the export folder.
 
 ### A clean Connect project: `mcnPack.bat`
 

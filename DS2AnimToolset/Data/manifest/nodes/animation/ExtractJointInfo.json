@@ -1,0 +1,95 @@
+{
+    "group": "Utilities",
+    "displayName": "Extract Joint Info",
+    "pinOrder": [
+        "Source",
+        "Result",
+        "Position",
+        "Angle"
+    ],
+    "image": "ExtractJointInfo.png",
+    "version": 3,
+    "attributes": [
+        {
+            "type": "rigChannelName",
+            "name": "JointName",
+            "value": "",
+            "helptext": "Selects the joint that will output its position vector and angles.",
+            "perAnimSet": true
+        },
+        {
+            "type": "enum",
+            "name": "OutputSpace",
+            "value": 1,
+            "enumOptions": [
+                "Local",
+                "Object"
+            ],
+            "helptext": "Change the space within which the outputs of this node are defined."
+        },
+        {
+            "type": "enum",
+            "name": "AngleType",
+            "value": 0,
+            "enumOptions": [
+                "Total",
+                "EulerX",
+                "EulerY",
+                "EulerZ"
+            ],
+            "helptext": "Change the angle you want to output: total, eulerX, eulerY or eulerZ"
+        },
+        {
+            "type": "enum",
+            "name": "MeasureUnit",
+            "value": 1,
+            "enumOptions": [
+                "Degree",
+                "Radian"
+            ],
+            "helptext": "Change the measure unit, radian or degree, of the ouput angle."
+        }
+    ],
+    "functionPins": {
+        "Result": {
+            "passThrough": true,
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    
+                ],
+                "required": [
+                    "Transforms"
+                ]
+            }
+        },
+        "Source": {
+            "passThrough": true,
+            "input": true,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    
+                ],
+                "required": [
+                    "Transforms"
+                ]
+            }
+        }
+    },
+    "dataPins": {
+        "Angle": {
+            "input": false,
+            "array": false,
+            "type": "float"
+        },
+        "Position": {
+            "input": false,
+            "array": false,
+            "type": "vector3"
+        }
+    },
+    "helptext": "Outputs the current local space position vector and angles of a selected joint. Passes through all other Node communication.",
+    "id": 152
+}

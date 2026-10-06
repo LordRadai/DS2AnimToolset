@@ -1,0 +1,27 @@
+{
+    "group": "Utilities",
+    "displayName": "Freeze",
+    "id": 126,
+    "image": "Freeze.png",
+    "version": 1,
+    "functionPins": {
+        "Result": {
+            "input": false,
+            "array": false,
+            "interfaces": {
+                "optional": [
+                    
+                ],
+                "required": [
+                    "Transforms",
+                    "Time",
+                    "Events"
+                ]
+            }
+        }
+    },
+    "attributes": [
+        
+    ],
+    "helptext": "Freezes the last transformation state of the system"
+}

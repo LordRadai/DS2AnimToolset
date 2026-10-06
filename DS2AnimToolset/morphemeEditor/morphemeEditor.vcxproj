@@ -366,7 +366,7 @@
     <ClCompile Include="MorphemeNetworkInspector\MessageProcessor\MessageProcessor.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\MorphemeNetworkInspector.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\ColumnBlendTreeLayouterStrategy.cpp" />
-    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GridStateMachienLayouterStrategy.cpp" />
+    <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\GridStateMachineLayouterStrategy.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\GraphLayouterStrategy\Utils.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeNameUtils.cpp" />
     <ClCompile Include="MorphemeNetworkInspector\NodeProcessor\NodeProcessor.cpp" />

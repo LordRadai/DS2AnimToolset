@@ -669,36 +669,18 @@
     "type": "int",
     "group": "Event Action",
     "min": 0,
-    "max": 99999999
+    "max": 100
   },
   "StartUpCategory": {
     "type": "int",
     "group": "Event Action",
     "min": 0,
-    "max": 99999999
+    "max": 100
   },
   "StartupType": {
     "type": "int",
     "group": "Event Action",
     "min": -1,
-    "max": 99999999
-  },
-  "Flight_Banking": {
-    "type": "float",
-    "group": "Flight",
-    "min": -180,
-    "max": 180
-  },
-  "Flight_FB_Speed": {
-    "type": "float",
-    "group": "Flight",
-    "min": 0,
-    "max": 100
-  },
-  "Flight_UD_Speed": {
-    "type": "float",
-    "group": "Flight",
-    "min": 0,
     "max": 100
   },
   "GestureCategory": {
@@ -1085,6 +1067,24 @@
     "min": 0.0,
     "max": 100.0
   },
+  "Flight_Banking": {
+    "type": "float",
+    "group": "Move",
+    "min": -180,
+    "max": 180
+  },
+  "Flight_FB_Speed": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 100
+  },
+  "Flight_UD_Speed": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 100
+  },
   "Floating_Banking": {
     "type": "float",
     "group": "Move",
@@ -1106,8 +1106,8 @@
   "FrontDirection": {
     "type": "float",
     "group": "Move",
-    "min": 0.0,
-    "max": 100.0
+    "min": -180.0,
+    "max": 180.0
   },
   "IsFall": {
     "type": "int",

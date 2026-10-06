@@ -5,13 +5,8 @@
 
 #include "Utils.h"
 
-#include <algorithm>
 #include <cmath>
-#include <numeric>
 
-// States go on a grid, active states in a column left of it. Both the grid cells of the states and the order of the
-// active states in their column are optimised against transition crossings, transitions running through states and
-// transition length (same as Tools/mcnGen/layout.py).
 bool GridStateMachineLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::NodeDef* graphNodeDef, std::vector<MR::NodeDef*>& childNodes)
 {
 	if (!graph->isOfType<NodeEditor::StateMachine>())
@@ -25,35 +20,27 @@ bool GridStateMachineLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::N
 	const std::vector<NodeEditor::Node*>& states = stateMachine->getNodes();
 	const size_t n = states.size();
 
-	// active states: one slot each in a column left of the grid
+	// active states in a column on the left of the grid
 	// (the editor's canvas starts at the origin: everything is shifted right by the widest active state)
-	std::vector<NodeEditor::Node*> actives;
+	float shift = 0.f;
 	for (size_t i = 0; i < stateMachine->getNumStateNodes(); i++)
-		actives.push_back(stateMachine->getStateNodeAt(i));
-	const size_t na = actives.size();
+		shift = std::max(shift, stateMachine->getStateNodeAt(i)->getSize().x + 2.f * LayouterUtils::COL_GAP);
 
-	float shift = 0.f, slotPitch = 0.f;
-	for (NodeEditor::Node* active : actives)
+	std::unordered_map<NodeEditor::Node*, LayouterUtils::Point2D> fixed;
+	float y = 0.f;
+	for (size_t i = 0; i < stateMachine->getNumStateNodes(); i++)
 	{
-		shift = std::max(shift, active->getSize().x + 2.f * LayouterUtils::COL_GAP);
-		slotPitch = std::max(slotPitch, active->getSize().y);
+		NodeEditor::StateNode* active = stateMachine->getStateNodeAt(i);
+		ImVec2 size = active->getSize();
+
+		active->setPosition(shift - size.x - 2.f * LayouterUtils::COL_GAP, y);
+		fixed[active] = LayouterUtils::Point2D{ -size.x / 2.f - 2.f * LayouterUtils::COL_GAP, y + size.y / 2.f };
+
+		y += size.y + LayouterUtils::ROW_GAP;
 	}
-	slotPitch += LayouterUtils::ROW_GAP;
-
-	std::vector<int> slot(na);
-	std::iota(slot.begin(), slot.end(), 0);
-
-	auto placeActives = [&]()
-		{
-			for (size_t k = 0; k < na; k++)
-				actives[k]->setPosition(shift - actives[k]->getSize().x - 2.f * LayouterUtils::COL_GAP, slot[k] * slotPitch);
-		};
 
 	if (n == 0)
-	{
-		placeActives();
 		return true;
-	}
 
 	float maxW = 0.f, maxH = 0.f;
 	for (NodeEditor::Node* state : states)
@@ -73,25 +60,48 @@ bool GridStateMachineLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::N
 
 	const int numCells = cols * rows;
 
-	// an endpoint is a state (>= 0) or an active state (-1 - its index in actives)
-	std::unordered_map<NodeEditor::Node*, int> endpointOf;
+	std::unordered_map<NodeEditor::Node*, int> idx;
 	for (size_t i = 0; i < n; i++)
-		endpointOf[states[i]] = (int)i;
-	for (size_t k = 0; k < na; k++)
-		endpointOf[actives[k]] = -1 - (int)k;
+		idx[states[i]] = (int)i;
+
+	// an endpoint is a state (>= 0) or an active state (-1 - index into fixedPos)
+	std::vector<LayouterUtils::Point2D> fixedPos;
+	std::unordered_map<NodeEditor::Node*, int> fixedIdx;
+	auto endpoint = [&](NodeEditor::Node* node, int& out) -> bool
+		{
+			auto s = idx.find(node);
+			if (s != idx.end())
+			{
+				out = s->second;
+				return true;
+			}
+
+			auto f = fixed.find(node);
+			if (f == fixed.end())
+				return false;
+
+			auto fi = fixedIdx.find(node);
+			if (fi == fixedIdx.end())
+			{
+				fixedPos.push_back(f->second);
+				fi = fixedIdx.emplace(node, -1 - (int)(fixedPos.size() - 1)).first;
+			}
+
+			out = fi->second;
+			return true;
+		};
 
 	std::vector<std::pair<int, int>> edges;
 	for (size_t i = 0; i < stateMachine->getNumTransitions(); i++)
 	{
 		NodeEditor::Transition* transition = stateMachine->getTransitionAt(i);
+		int a, b;
 
 		if (transition->getSourceNode() == transition->getDestinationNode())
 			continue;
 
-		auto a = endpointOf.find(transition->getSourceNode());
-		auto b = endpointOf.find(transition->getDestinationNode());
-		if (a != endpointOf.end() && b != endpointOf.end())
-			edges.emplace_back(a->second, b->second);
+		if (endpoint(transition->getSourceNode(), a) && endpoint(transition->getDestinationNode(), b))
+			edges.emplace_back(a, b);
 	}
 
 	std::vector<int> cell(n);
@@ -105,11 +115,7 @@ bool GridStateMachineLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::N
 	auto centre = [&](int e) -> LayouterUtils::Point2D
 		{
 			if (e < 0)
-			{
-				const size_t k = (size_t)(-1 - e);
-				const ImVec2 size = actives[k]->getSize();
-				return LayouterUtils::Point2D{ -size.x / 2.f - 2.f * LayouterUtils::COL_GAP, slot[k] * slotPitch + size.y / 2.f };
-			}
+				return fixedPos[-1 - e];
 
 			const int k = cell[e];
 			return LayouterUtils::Point2D{ (k % cols) * cw + maxW / 2.f, (k / cols) * ch + maxH / 2.f };
@@ -134,7 +140,7 @@ bool GridStateMachineLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::N
 					if (edges[i].first == edges[j].first || edges[i].first == edges[j].second || edges[i].second == edges[j].first || edges[i].second == edges[j].second)
 						continue;
 
-					if (LayouterUtils::segmentsCross(p1, p2, segs[j].first, segs[j].second))
+					if (segmentsCross(p1, p2, segs[j].first, segs[j].second))
 						c += 100.0;
 				}
 
@@ -143,7 +149,7 @@ bool GridStateMachineLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::N
 					if (s == edges[i].first || s == edges[i].second)
 						continue;
 
-					if (LayouterUtils::segmentHits(p1, p2, centre(s), maxW / 2.f, maxH / 2.f))
+					if (segmentHits(p1, p2, centre(s), maxW / 2.f, maxH / 2.f))
 						c += 60.0;
 				}
 			}
@@ -151,34 +157,10 @@ bool GridStateMachineLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::N
 			return c;
 		};
 
-	if (!edges.empty() && (n > 2 || na > 1))
+	if (!edges.empty() && n > 2)
 	{
-		// start the active states level with the states they lead to (barycentre)
-		std::vector<float> bary(na, 0.f);
-		for (size_t k = 0; k < na; k++)
-		{
-			const int me = -1 - (int)k;
-			float sum = 0.f;
-			int count = 0;
-			for (const auto& e : edges)
-			{
-				const int other = (e.first == me) ? e.second : (e.second == me) ? e.first : -1;
-				if (other >= 0)
-				{
-					sum += centre(other).y;
-					count++;
-				}
-			}
-			bary[k] = count ? sum / count : 0.f;
-		}
-		std::vector<int> order(na);
-		std::iota(order.begin(), order.end(), 0);
-		std::stable_sort(order.begin(), order.end(), [&](int a, int b) { return bary[a] < bary[b]; });
-		for (size_t r = 0; r < na; r++)
-			slot[order[r]] = (int)r;
-
 		const long long m = (long long)edges.size();
-		const long long budget = std::min(40000LL, std::max(300LL, 4000000LL / (m * m + m * (long long)(n + na) + 1)));
+		const long long budget = std::min(40000LL, std::max(300LL, 4000000LL / (m * m + m * (long long)n + 1)));
 
 		double best = cost();
 		long long evals = 0;
@@ -188,7 +170,7 @@ bool GridStateMachineLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::N
 		{
 			improved = false;
 
-			for (size_t i = 0; i < n && n > 2 && evals < budget; i++)
+			for (size_t i = 0; i < n && evals < budget; i++)
 			{
 				for (int target = 0; target < numCells; target++)
 				{
@@ -225,30 +207,9 @@ bool GridStateMachineLayouterStrategy::setLayout(NodeEditor::Graph* graph, MR::N
 						break;
 				}
 			}
-
-			// active states: swap slots in their column
-			for (size_t a = 0; a < na && evals < budget; a++)
-			{
-				for (size_t b = a + 1; b < na && evals < budget; b++)
-				{
-					std::swap(slot[a], slot[b]);
-
-					const double c = cost();
-					evals++;
-
-					if (c < best - 1e-9)
-					{
-						best = c;
-						improved = true;
-					}
-					else
-						std::swap(slot[a], slot[b]);
-				}
-			}
 		}
 	}
 
-	placeActives();
 	for (size_t i = 0; i < n; i++)
 	{
 		const int k = cell[i];

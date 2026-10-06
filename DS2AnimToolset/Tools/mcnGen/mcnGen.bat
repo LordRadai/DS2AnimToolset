@@ -13,7 +13,7 @@ if "%CFG%"=="" set "CFG=%TOOLS%config.ini"
 if not exist "%CFG%" (echo Config file not found: "%CFG%" & exit /b 1)
 
 rem ---- read key=value pairs (lines starting with ; are comments)
-set "INPUT_XML=" & set "CONNECT=" & set "PYTHON=python" & set "CP_CONFIG=" & set "CLEAN=1"
+set "INPUT_XML=" & set "CONNECT=" & set "PYTHON=python" & set "CP_CONFIG=" & set "CLEAN=1" & set "NO_WARN="
 for /f "usebackq eol=; tokens=1,* delims==" %%A in ("%CFG%") do (
     if not "%%A"=="" set "%%A=%%B"
 )
@@ -116,6 +116,10 @@ echo WARNING: %~1
 set "WARN_TEXT=%~1"
 rem MCNGEN_NOPOPUP=1 skips the box (unattended runs)
 if "%MCNGEN_NOPOPUP%"=="1" exit /b 0
+rem NO_WARN in the config: characters whose warning is known and expected (comma separated, e.g. c1021,c2250)
+if defined NO_WARN (
+    echo ,%NO_WARN: =%,| findstr /i /c:",%NAME%," >nul && (echo ^(no message box: %NAME% is in NO_WARN^) & exit /b 0)
+)
 powershell -NoProfile -Command "Add-Type -AssemblyName System.Windows.Forms; [void][System.Windows.Forms.MessageBox]::Show($env:WARN_TEXT, 'mcnGen', 'OK', 'Warning')"
 exit /b 0
 
