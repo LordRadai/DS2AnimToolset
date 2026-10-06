@@ -1455,91 +1455,91 @@
     "type": "float",
     "group": null,
     "min": 0.0,
-    "max": 100.0
+    "max": 10.0
   },
   "PlaySpeed_01": {
     "type": "float",
     "group": null,
     "min": 0.0,
-    "max": 100.0
+    "max": 10.0
   },
   "PlaySpeed_02": {
     "type": "float",
     "group": null,
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "PlaySpeed_03": {
     "type": "float",
     "group": null,
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "PlaySpeed_05": {
     "type": "float",
     "group": null,
     "min": 0.0,
-    "max": 100.0
+    "max": 10.0
   },
   "PlaySpeed_07": {
     "type": "float",
     "group": null,
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "PlaySpeed_1": {
     "type": "float",
     "group": null,
     "min": 0.0,
-    "max": 100.0
+    "max": 10.0
   },
   "PlaySpeed_10": {
     "type": "float",
     "group": null,
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "PlaySpeed_1_3": {
     "type": "float",
     "group": null,
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "PlaySpeed_1_5": {
     "type": "float",
     "group": null,
     "min": 0.0,
-    "max": 100.0
+    "max": 10.0
   },
   "PlaySpeed_2": {
     "type": "float",
     "group": null,
     "min": 0.0,
-    "max": 100.0
+    "max": 10.0
   },
   "PlaySpeed_3": {
     "type": "float",
     "group": null,
     "min": 0.0,
-    "max": 100.0
+    "max": 10.0
   },
   "PlaySpeed_5": {
     "type": "float",
     "group": null,
     "min": 0.0,
-    "max": 100.0
+    "max": 10.0
   },
   "PlaySpeed_6": {
     "type": "float",
     "group": null,
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "PlaySpeed_minus1": {
     "type": "float",
     "group": null,
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "R_WepBreak": {
     "type": "float",
