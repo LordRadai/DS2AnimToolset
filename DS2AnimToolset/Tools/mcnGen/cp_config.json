@@ -135,7 +135,7 @@
     "type": "float",
     "group": "Attack",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "Attack_Banking": {
     "type": "float",
@@ -147,13 +147,13 @@
     "type": "float",
     "group": "Attack",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "Attack_FollowSwingSpeed": {
     "type": "float",
     "group": "Attack",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "Attack_HandTilt_Frame": {
     "type": "float",
@@ -195,25 +195,25 @@
     "type": "float",
     "group": "Attack",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "Attack_SwingSpeed2": {
     "type": "float",
     "group": "Attack",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "Attack_SwingSpeed3": {
     "type": "float",
     "group": "Attack",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "Attack_SwingSpeed4": {
     "type": "float",
     "group": "Attack",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "AttackCategory_Ene": {
     "type": "float",
@@ -375,7 +375,7 @@
     "type": "float",
     "group": "Damage",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "DmgCategory": {
     "type": "int",
@@ -507,7 +507,7 @@
     "type": "float",
     "group": "Dodge",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "StepDirection": {
     "type": "float",
@@ -525,7 +525,7 @@
     "type": "float",
     "group": "Dodge",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "DoorCategory": {
     "type": "int",
@@ -561,7 +561,7 @@
     "type": "float",
     "group": "Door",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "BonfireCategory": {
     "type": "float",
@@ -609,7 +609,7 @@
     "type": "float",
     "group": "Event Action",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "EventBlend_Tire": {
     "type": "float",
@@ -639,7 +639,7 @@
     "type": "int",
     "group": "Event Action",
     "min": 0,
-    "max": 1000
+    "max": 10
   },
   "IsBonfire": {
     "type": "int",
@@ -687,13 +687,13 @@
     "type": "float",
     "group": "Gesture",
     "min": 0,
-    "max": 1000
+    "max": 100
   },
   "GestureSpeed": {
     "type": "float",
     "group": "Gesture",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "Guard_pos": {
     "type": "vector3",
@@ -729,13 +729,13 @@
     "type": "int",
     "group": "Guard",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "GuardCategory": {
     "type": "int",
     "group": "Guard",
     "min": 0,
-    "max": 99
+    "max": 100000
   },
   "GuardDuration": {
     "type": "float",
@@ -759,13 +759,13 @@
     "type": "float",
     "group": "Guard",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "GuardStance": {
     "type": "float",
     "group": "Guard",
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 1
   },
   "AttackStance_L": {
     "type": "float",
@@ -909,7 +909,7 @@
     "type": "float",
     "group": "Idle",
     "min": 0,
-    "max": 1
+    "max": 10
   },
   "WeaponStorage_L": {
     "type": "float",
@@ -945,7 +945,7 @@
     "type": "float",
     "group": "Item Use",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "ItemUseAdjustHipsRotation": {
     "type": "vector3",
@@ -981,13 +981,13 @@
     "type": "float",
     "group": "Ladder",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "LadderFallSpeed": {
     "type": "float",
     "group": "Ladder",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "LadderMove": {
     "type": "float",
@@ -999,13 +999,13 @@
     "type": "float",
     "group": "Ladder",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "LadderMoveUpSpeed": {
     "type": "float",
     "group": "Ladder",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "LadderStartType": {
     "type": "int",
@@ -1449,7 +1449,7 @@
     "type": "float",
     "group": null,
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "PlaySpeed_0": {
     "type": "float",
