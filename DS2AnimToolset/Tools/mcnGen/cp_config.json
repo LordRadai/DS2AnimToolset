@@ -767,162 +767,6 @@
     "min": 0,
     "max": 1
   },
-  "AttackStance_L": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_L_2Weapon": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_LR": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_R": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_R_2Weapon": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_HandsUp_F": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_HandsUp_S": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_Stance": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "ChangeStance_R_Preset": {
-    "type": "int",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "Injured_HipsPosition": {
-    "type": "vector3",
-    "group": "Idle",
-    "min": -1000,
-    "max": 1000
-  },
-  "Injured_HipsRotation": {
-    "type": "vector3",
-    "group": "Idle",
-    "min": -1000,
-    "max": 1000
-  },
-  "IsBattleStance": {
-    "type": "int",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "IsBattleWalk": {
-    "type": "int",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "IsMenuIdle": {
-    "type": "int",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "IsStagger": {
-    "type": "int",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "IsSwitchStance": {
-    "type": "int",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "Load_L_Weight": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "Load_R_Weight": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "LoadTotalWeight": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 100
-  },
-  "SlopePitch": {
-    "type": "float",
-    "group": "Idle",
-    "min": -180,
-    "max": 180
-  },
-  "SlopeRoll": {
-    "type": "float",
-    "group": "Idle",
-    "min": -180,
-    "max": 180
-  },
-  "TwoHandStance": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "TwoWeaponStance": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "WeaponChangeSpeed": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 10
-  },
-  "WeaponStorage_L": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
-  "WeaponStorage_R": {
-    "type": "float",
-    "group": "Idle",
-    "min": 0,
-    "max": 1
-  },
   "IsDrinkUp": {
     "type": "int",
     "group": "Item Use",
@@ -1013,6 +857,36 @@
     "min": 0,
     "max": 1
   },
+  "AttackStance_L": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "AttackStance_L_2Weapon": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "AttackStance_LR": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "AttackStance_R": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "AttackStance_R_2Weapon": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
   "Banking": {
     "type": "float",
     "group": "Move",
@@ -1025,8 +899,32 @@
     "min": 0.0,
     "max": 100.0
   },
+  "BlendWeight_HandsUp_F": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "BlendWeight_HandsUp_S": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
   "BlendWeight_SideWalk": {
     "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "BlendWeight_Stance": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "ChangeStance_R_Preset": {
+    "type": "int",
     "group": "Move",
     "min": 0,
     "max": 1
@@ -1103,6 +1001,30 @@
     "min": -180.0,
     "max": 180.0
   },
+  "Injured_HipsPosition": {
+    "type": "vector3",
+    "group": "Move",
+    "min": -1000,
+    "max": 1000
+  },
+  "Injured_HipsRotation": {
+    "type": "vector3",
+    "group": "Move",
+    "min": -1000,
+    "max": 1000
+  },
+  "IsBattleStance": {
+    "type": "int",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "IsBattleWalk": {
+    "type": "int",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
   "IsFall": {
     "type": "int",
     "group": "Move",
@@ -1127,6 +1049,12 @@
     "min": 0,
     "max": 1
   },
+  "IsMenuIdle": {
+    "type": "int",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
   "IsMoving": {
     "type": "int",
     "group": "Move",
@@ -1134,6 +1062,18 @@
     "max": 1
   },
   "IsSideWalk": {
+    "type": "int",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "IsStagger": {
+    "type": "int",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "IsSwitchStance": {
     "type": "int",
     "group": "Move",
     "min": 0,
@@ -1157,6 +1097,24 @@
     "min": 0,
     "max": 1
   },
+  "Load_L_Weight": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "Load_R_Weight": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "LoadTotalWeight": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 100
+  },
   "MoveCategory": {
     "type": "int",
     "group": "Move",
@@ -1174,6 +1132,48 @@
     "group": "Move",
     "min": -180,
     "max": 180
+  },
+  "SlopePitch": {
+    "type": "float",
+    "group": "Move",
+    "min": -180,
+    "max": 180
+  },
+  "SlopeRoll": {
+    "type": "float",
+    "group": "Move",
+    "min": -180,
+    "max": 180
+  },
+  "TwoHandStance": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "TwoWeaponStance": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "WeaponChangeSpeed": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 10
+  },
+  "WeaponStorage_L": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
+  },
+  "WeaponStorage_R": {
+    "type": "float",
+    "group": "Move",
+    "min": 0,
+    "max": 1
   },
   "IsRope": {
     "type": "int",
