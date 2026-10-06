@@ -283,7 +283,7 @@
   },
   "IsPrecisionShoot": {
     "type": "int",
-    "group": "Attack",
+    "group": "Move",
     "min": 0,
     "max": 1
   },
