@@ -45,7 +45,7 @@
     "type": "float",
     "group": "Attack",
     "min": 0,
-    "max": 99999999
+    "max": 100
   },
   "AtkStaggerHandRotation_Frame": {
     "type": "float",
@@ -315,7 +315,7 @@
     "type": "float",
     "group": "Attack",
     "min": 0,
-    "max": 99999999
+    "max": 1000
   },
   "Shot1_Route": {
     "type": "int",
@@ -381,7 +381,7 @@
     "type": "int",
     "group": "Damage",
     "min": 0,
-    "max": 99999999
+    "max": 1000
   },
   "DmgDirection": {
     "type": "float",
@@ -405,7 +405,7 @@
     "type": "float",
     "group": "Damage",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "DmgHitBackDistance": {
     "type": "float",
@@ -417,13 +417,13 @@
     "type": "float",
     "group": "Damage",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "DmgHitBackEventID": {
     "type": "float",
     "group": "Damage",
     "min": 0,
-    "max": 99999999
+    "max": 1000
   },
   "DmgHitBackHold": {
     "type": "float",
@@ -531,7 +531,7 @@
     "type": "int",
     "group": "Door",
     "min": 0,
-    "max": 99999999
+    "max": 100000
   },
   "DoorLHandIK": {
     "type": "float",
@@ -567,13 +567,13 @@
     "type": "float",
     "group": "Event Action",
     "min": 0,
-    "max": 99999999
+    "max": 100
   },
   "EventActionCategory": {
     "type": "int",
     "group": "Event Action",
     "min": 0,
-    "max": 99999999
+    "max": 100000
   },
   "EventActionLeverOnOff": {
     "type": "int",
@@ -639,7 +639,7 @@
     "type": "int",
     "group": "Event Action",
     "min": 0,
-    "max": 99999999
+    "max": 1000
   },
   "IsBonfire": {
     "type": "int",
@@ -687,7 +687,7 @@
     "type": "float",
     "group": "Gesture",
     "min": 0,
-    "max": 99999999
+    "max": 1000
   },
   "GestureSpeed": {
     "type": "float",
@@ -723,7 +723,7 @@
     "type": "float",
     "group": "Guard",
     "min": 0,
-    "max": 99999999
+    "max": 100000
   },
   "GuardCancelSpeedCategory": {
     "type": "int",
@@ -735,7 +735,7 @@
     "type": "int",
     "group": "Guard",
     "min": 0,
-    "max": 99999999
+    "max": 99
   },
   "GuardDuration": {
     "type": "float",
@@ -747,13 +747,13 @@
     "type": "float",
     "group": "Guard",
     "min": 0,
-    "max": 99999999
+    "max": 99
   },
   "GuardID_Number": {
     "type": "float",
     "group": "Guard",
     "min": 0,
-    "max": 99999999
+    "max": 100000
   },
   "GuardSpeed": {
     "type": "float",
@@ -963,7 +963,7 @@
     "type": "float",
     "group": "Item Use",
     "min": 0,
-    "max": 99999999
+    "max": 100000
   },
   "IsLadder": {
     "type": "int",
@@ -1161,7 +1161,7 @@
     "type": "int",
     "group": "Move",
     "min": 0,
-    "max": 99999999
+    "max": 1000
   },
   "RadioControlMode": {
     "type": "int",
