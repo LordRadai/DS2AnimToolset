@@ -863,6 +863,24 @@
     "min": 0,
     "max": 1
   },
+  "Load_L_Weight": {
+    "type": "float",
+    "group": "Idle",
+    "min": 0,
+    "max": 1
+  },
+  "Load_R_Weight": {
+    "type": "float",
+    "group": "Idle",
+    "min": 0,
+    "max": 1
+  },
+  "LoadTotalWeight": {
+    "type": "float",
+    "group": "Idle",
+    "min": 0,
+    "max": 100
+  },
   "RadioControlMode": {
     "type": "int",
     "group": "Idle",
@@ -1000,24 +1018,6 @@
     "group": "Ladder",
     "min": 0,
     "max": 1
-  },
-  "Load_L_Weight": {
-    "type": "float",
-    "group": "Load",
-    "min": 0,
-    "max": 1
-  },
-  "Load_R_Weight": {
-    "type": "float",
-    "group": "Load",
-    "min": 0,
-    "max": 1
-  },
-  "LoadTotalWeight": {
-    "type": "float",
-    "group": "Load",
-    "min": 0,
-    "max": 100
   },
   "Banking": {
     "type": "float",
