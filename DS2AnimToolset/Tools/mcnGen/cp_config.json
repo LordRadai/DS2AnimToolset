@@ -45,7 +45,7 @@
     "type": "float",
     "group": "Attack",
     "min": 0,
-    "max": 100
+    "max": 1000
   },
   "AtkStaggerHandRotation_Frame": {
     "type": "float",
