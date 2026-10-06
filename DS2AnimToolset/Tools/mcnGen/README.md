@@ -76,6 +76,17 @@ It runs `mcnGen.bat` on each `cXXXX` subfolder (`c` and four digits) that has a 
 when one fails, and ends with a count of built / failed / skipped characters and the names of the
 failed ones.
 
+### CP settings straight into .mcn files: `mcnApplyCp.py`
+
+```bat
+python mcnApplyCp.py D:\Projects\FRPG2_64                 :: every .mcn under the folder
+python mcnApplyCp.py D:\Projects\FRPG2_64\c0001\c0001.mcn my_cp_config.json --dry-run
+```
+
+Only the .mcn and the CP settings file (default `cp_config.json`): no export xml, no Connect. Sets min/max (bounds
+equal to Connect's defaults are left out, as Connect does) and groups; defaults stay as built. Files are rewritten only
+when something changes.
+
 ### CP settings onto built networks: `mcnUpdateCp.bat`
 
 ```bat
