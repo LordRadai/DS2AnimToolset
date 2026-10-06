@@ -1293,7 +1293,7 @@ def main():
     joints, rig_root = load_rig_joints(rig)
     # the character model lives in <project>\model_xmd\ (moved there if it sits next to the XML)
     model = a.model
-    if not model:
+    if not model and not a.cp_only:
         dst = os.path.join(os.path.abspath(a.out_dir or base), 'model_xmd', name + '.xmd')
         src = os.path.join(base, name + '.xmd')
         if not os.path.exists(dst) and os.path.exists(src):
@@ -1308,11 +1308,16 @@ def main():
         print('%s now lists %d control parameters' % (a.cp_config, c.write_cp_template(a.cp_config)))
         cp_config = {k: v for k, v in json.load(open(a.cp_config, encoding='utf-8')).items() if not k.startswith('_')}
         c = Converter(a.xml, lib, joints, rig_root, os.path.abspath(a.out_dir or base), model, cp_config)
-    luas = c.run()
     mcn = os.path.join(c.out_dir, c.name + '.mcn')
     if a.cp_only:
+        # CP settings onto an existing .mcn (groups and vector ranges in the file, the rest by Lua in Connect):
+        # no rebuild scripts, and the project's .mcp is left alone
+        if not os.path.exists(mcn): print('no .mcn to update:', mcn); return 1
+        os.makedirs(c.build_dir, exist_ok=True)
+        c.analyse()
         print('wrote %d CP groups into %s' % (c.inject_groups_only(mcn), mcn))
         print('wrote', c.cp_only()); return
+    luas = c.run()
     if a.inject_late:
         print('added %d stage-2 transitions to ActiveStates in %s' % (c.inject_late(mcn), mcn))
         for u in c.unsupported:

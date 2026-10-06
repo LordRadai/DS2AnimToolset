@@ -76,6 +76,18 @@ It runs `mcnGen.bat` on each `cXXXX` subfolder (`c` and four digits) that has a 
 when one fails, and ends with a count of built / failed / skipped characters and the names of the
 failed ones.
 
+### CP settings onto built networks: `mcnUpdateCp.bat`
+
+```bat
+mcnUpdateCp.bat E:\Export                          :: projects in E:\Export\cXXXX_project (or cXXXX)
+mcnUpdateCp.bat E:\Export D:\Projects\FRPG2_64     :: projects moved elsewhere
+```
+
+Applies the CP settings file (`CP_CONFIG`, default `cp_config.json`) to every built character without rebuilding:
+groups and vector ranges go straight into the .mcn, float/int ranges and defaults are set by Connect
+(`build\cXXXX_cparams.lua` in the project), which then saves. The .mcp and the rest of the network are untouched.
+Each character's `cXXXX.xml` export must still be in the export folder.
+
 ### A clean Connect project: `mcnPack.bat`
 
 ```bat
