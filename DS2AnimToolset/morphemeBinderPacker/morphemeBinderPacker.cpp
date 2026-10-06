@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
 		if (entry.is_regular_file() && isMorphemeBinary(entry.path())) 
 		{
 			std::wstring filename = entry.path().filename().wstring();
-			std::filesystem::path destinationFile = std::filesystem::path(outputFolder).wstring() + L"\\" + chrIdStr + L"\\runtimeBinary\\" + filename;
+			std::filesystem::path destinationFile = std::filesystem::path(outputFolder).wstring() + L"\\runtimeBinary\\" + filename;
 			
 			CHAR binderFileName[256];
 			sprintf_s(binderFileName, "%ws.anibnd.dcx", chrIdStr.c_str());
@@ -173,7 +173,7 @@ int main(int argc, char* argv[])
 						wchar_t extAnibndFolderName[256];
 						wsprintf(extAnibndFolderName, L"c0001_c%04d", targetChrId);
 
-						destinationFile = std::filesystem::path(outputFolder).wstring() + L"\\" + chrIdStr + L"\\ext\\" + extAnibndFolderName + L"\\" + filename;
+						destinationFile = std::filesystem::path(outputFolder).wstring() + L"\\c0001\\" + extAnibndFolderName + L"\\" + filename;
 					
 						sprintf_s(binderFileName, "%ws.extanibnd.dcx", extAnibndFolderName);
 					}
