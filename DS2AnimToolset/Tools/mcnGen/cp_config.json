@@ -471,19 +471,19 @@
     "type": "float",
     "group": "Die",
     "min": 0,
-    "max": 1000
+    "max": 10
   },
   "CatchDmgCategory": {
     "type": "int",
     "group": "DmgCatch",
     "min": 0,
-    "max": 100000
+    "max": 9999
   },
   "CatchDmgHitCategory": {
     "type": "float",
     "group": "DmgCatch",
     "min": 0,
-    "max": 100000
+    "max": 99
   },
   "CatchDmgModelID": {
     "type": "int",
