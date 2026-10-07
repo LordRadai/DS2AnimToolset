@@ -251,7 +251,7 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 		if (exFormatFile && exFormatFile->data)
 			exFormat = ChrModelExFormat::ChrModelExFormat::createFromResource(reinterpret_cast<ChrModelExFormat::FLVPWV::Header*>(exFormatFile->data));
 		else
-			g_appLog->alertMessage(MsgLevel_Warn, "No twist bone file in \"%ws\", twist bones will follow their parent\n", path.c_str());
+			g_appLog->debugMessage(MsgLevel_Warn, "No twist bone file in \"%ws\", twist bones will follow their parent\n", path.c_str());
 
 		model = new FlverModel(umem, rig, exFormat);
 
