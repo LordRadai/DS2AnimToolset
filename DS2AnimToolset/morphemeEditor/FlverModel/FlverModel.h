@@ -13,6 +13,8 @@
 #include "fromloader/fromloader.h"
 #include "MorphemeSystem/MorphemeSystem.h"
 #include "AnimObject/AnimObject.h"
+#include "RCore.h"
+
 #include <PrimitiveBatch.h>
 
 class RenderManager;

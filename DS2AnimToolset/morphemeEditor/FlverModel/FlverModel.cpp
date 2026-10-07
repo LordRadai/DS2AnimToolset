@@ -3,9 +3,8 @@
 #include "extern.h"
 #include "utils/NMDX/NMDX.h"
 #include "RenderManager/RenderManager.h"
-#include "RCore.h"
 
-#define MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS 100
+//#define MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS 100
 
 Matrix g_nmToYUpAdjustMatrix = Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
 Matrix g_invertedNmToYUpAdjustMatrix = g_nmToYUpAdjustMatrix.Invert();
@@ -204,6 +203,7 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 		return nullptr;
 
 	BND4::BndFile* flverFile = bnd->getFirstFileWithExtension(".flv");
+	BND4::BndFile* flvpwvFile = bnd->getFirstFileWithExtension(".flvpwv");
 
 	if (flverFile)
 	{
@@ -215,10 +215,7 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 		model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
 		model->m_fileOrigin = path + L"\\" + RString::toWide(flverFile->name.c_str());
 
-		wchar_t exFormatPath[MAX_PATH];
-		swprintf_s(exFormatPath, L"%ws\\%ws.flvpwv", std::filesystem::path(path).parent_path().c_str(), RString::toWide(flverFile->name.c_str()).c_str());
-
-		model->m_exFormat = ChrModelExFormat::ChrModelExFormat::createFromFile(exFormatPath);
+		model->m_exFormat = ChrModelExFormat::ChrModelExFormat::createFromResource(reinterpret_cast<ChrModelExFormat::FLVPWV::Header*>((char*)flvpwvFile->data));
 
 		assert(model->m_exFormat != nullptr);
 	}
