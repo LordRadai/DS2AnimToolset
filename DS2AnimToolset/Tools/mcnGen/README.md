@@ -87,6 +87,16 @@ Only the .mcn and the CP settings file (default `cp_config.json`): no export xml
 equal to Connect's defaults are left out, as Connect does) and groups; defaults stay as built. Files are rewritten only
 when something changes.
 
+### Message groups straight into .mcn files: `mcnApplyMsg.py`
+
+```bat
+python mcnApplyMsg.py D:\Projects\FRPG2_64 --template     :: list every message in msg_config.json (group null)
+python mcnApplyMsg.py D:\Projects\FRPG2_64                :: apply the groups
+```
+
+Same idea as `mcnApplyCp.py` for messages (requests): `msg_config.json` maps a message name to `{"group": ...}`;
+a null group takes the message out of any group, empty groups are removed, unlisted messages are left alone.
+
 ### CP settings onto built networks: `mcnUpdateCp.bat`
 
 ```bat
