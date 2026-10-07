@@ -1195,7 +1195,7 @@
   },
   "FB_Speed": {
     "type": "float",
-    "group": null,
+    "group": "BaseAct",
     "min": 0.0,
     "max": 100.0
   },
