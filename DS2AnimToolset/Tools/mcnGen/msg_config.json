@@ -128,6 +128,9 @@
   "ExMotion": {
     "group": "Damage"
   },
+  "HitBack": {
+    "group": "Damage"
+  },
   "SitDown": {
     "group": "Damage"
   },
@@ -267,9 +270,6 @@
     "group": null
   },
   "ExMotionEnd": {
-    "group": null
-  },
-  "HitBack": {
     "group": null
   },
   "RagDoll_End": {
