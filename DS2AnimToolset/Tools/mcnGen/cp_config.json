@@ -359,6 +359,36 @@
     "min": -180,
     "max": 180
   },
+  "AttackStance_L": {
+    "type": "float",
+    "group": "Base Act",
+    "min": 0,
+    "max": 999999
+  },
+  "AttackStance_L_2Weapon": {
+    "type": "float",
+    "group": "Base Act",
+    "min": 0,
+    "max": 999999
+  },
+  "AttackStance_LR": {
+    "type": "float",
+    "group": "Base Act",
+    "min": 0,
+    "max": 999999
+  },
+  "AttackStance_R": {
+    "type": "float",
+    "group": "Base Act",
+    "min": 0,
+    "max": 999999
+  },
+  "AttackStance_R_2Weapon": {
+    "type": "float",
+    "group": "Base Act",
+    "min": 0,
+    "max": 999999
+  },
   "Banking": {
     "type": "float",
     "group": "Base Act",
@@ -370,6 +400,18 @@
     "group": "Base Act",
     "min": 0.0,
     "max": 100.0
+  },
+  "BlendWeight_HandsUp_F": {
+    "type": "float",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
+  },
+  "BlendWeight_HandsUp_S": {
+    "type": "float",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
   },
   "BlendWeight_Injured": {
     "type": "float",
@@ -396,6 +438,18 @@
     "max": 1
   },
   "BlendWeight_Stabilize_R": {
+    "type": "float",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
+  },
+  "BlendWeight_Stance": {
+    "type": "float",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
+  },
+  "BlendWeight_Tire": {
     "type": "float",
     "group": "Base Act",
     "min": 0,
@@ -509,12 +563,6 @@
     "min": -1000,
     "max": 1000
   },
-  "Guard_rat": {
-    "type": "vector3",
-    "group": "Base Act",
-    "min": -1000,
-    "max": 1000
-  },
   "hip": {
     "type": "vector3",
     "group": "Base Act",
@@ -564,6 +612,12 @@
     "max": 1
   },
   "IsFall": {
+    "type": "int",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
+  },
+  "IsFloating": {
     "type": "int",
     "group": "Base Act",
     "min": 0,
@@ -1031,6 +1085,12 @@
     "min": 0,
     "max": 1
   },
+  "Guard_rat": {
+    "type": "vector3",
+    "group": "Guard",
+    "min": -1000,
+    "max": 1000
+  },
   "GuardAimBlendWeight": {
     "type": "float",
     "group": "Guard",
@@ -1391,36 +1451,6 @@
     "min": 0,
     "max": 1
   },
-  "AttackStance_L": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 999999
-  },
-  "AttackStance_L_2Weapon": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 999999
-  },
-  "AttackStance_LR": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 999999
-  },
-  "AttackStance_R": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 999999
-  },
-  "AttackStance_R_2Weapon": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 999999
-  },
   "BlendWeight_05": {
     "type": "float",
     "group": null,
@@ -1433,34 +1463,10 @@
     "min": 0,
     "max": 1
   },
-  "BlendWeight_HandsUp_F": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_HandsUp_S": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 1
-  },
   "BlendWeight_minus1": {
     "type": "float",
     "group": null,
     "min": -1,
-    "max": 1
-  },
-  "BlendWeight_Stance": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_Tire": {
-    "type": "float",
-    "group": null,
-    "min": 0,
     "max": 1
   },
   "FootLock_IK": {
@@ -1480,12 +1486,6 @@
     "group": null,
     "min": null,
     "max": null
-  },
-  "IsFloating": {
-    "type": "int",
-    "group": null,
-    "min": 0,
-    "max": 1
   },
   "LookAtTarget": {
     "type": "vector3",
