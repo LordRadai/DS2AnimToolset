@@ -6,11 +6,6 @@
 #include "utils/NMDX/NMDX.h"
 #include "RenderManager/RenderManager.h"
 
-//#define MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS 100
-
-// Extension of the FLVPWV (twist bone settings) file inside a model's .bnd
-#define FLVPWV_FILE_EXTENSION ".flvpwv"
-
 Matrix g_nmToYUpAdjustMatrix = Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
 Matrix g_invertedNmToYUpAdjustMatrix = g_nmToYUpAdjustMatrix.Invert();
 Matrix g_flverToYUpAdjustMatrix = Matrix::CreateRotationY(DirectX::XM_PI);
@@ -250,12 +245,12 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 		UMEM* umem = uopenMem((char*)flverFile->data, flverFile->uncompressedSize);
 
 		ChrModelExFormat::ChrModelExFormat* exFormat = nullptr;
-		BND4::BndFile* exFormatFile = bnd->getFirstFileWithExtension(FLVPWV_FILE_EXTENSION);
+		BND4::BndFile* exFormatFile = bnd->getFirstFileWithExtension(".flvpwv");
 
 		if (exFormatFile && exFormatFile->data)
 			exFormat = ChrModelExFormat::ChrModelExFormat::createFromResource(reinterpret_cast<ChrModelExFormat::FLVPWV::Header*>(exFormatFile->data));
 		else
-			g_appLog->debugMessage(MsgLevel_Debug, "No twist bone file (%s) in \"%ws\", twist bones will follow their parent\n", FLVPWV_FILE_EXTENSION, path.c_str());
+			g_appLog->alertMessage(MsgLevel_Warn, "No twist bone file in \"%ws\", twist bones will follow their parent\n", path.c_str());
 
 		model = new FlverModel(umem, rig, exFormat);
 
