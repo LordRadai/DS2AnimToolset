@@ -136,56 +136,6 @@ namespace
 			dstPose[i] = localTransform * g_flverBoneAdjustMatrix;
 		}
 	}
-
-	void applyTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix>& bindPose, const Matrix& transform, int boneID)
-	{
-		// Compute this bone�s world transform relative to parent
-		Matrix local = bindPose[boneID];
-		Matrix world = local * transform;
-
-		buffer[boneID] = world;
-
-		int siblingIndex = flv->bones[boneID].nextSiblingIndex;
-
-		while (siblingIndex != -1)
-		{
-			applyTransform(buffer, flv, bindPose, transform, siblingIndex);
-
-			int childIndex = flv->bones[boneID].childIndex;
-
-			if (childIndex != -1)
-				applyTransform(buffer, flv, bindPose, transform, childIndex);
-
-			siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
-		}
-	}
-
-	void applyTwistTransform(std::vector<Matrix>& buffer, FLVER2* flv, std::vector<Matrix>& bindPose, const Matrix& transform, int boneID)
-	{
-		// Compute this bone�s world transform relative to parent
-		Matrix local = bindPose[boneID];
-		Matrix world = local * transform;
-
-		buffer[boneID] = world;
-
-		int childIndex = flv->bones[boneID].childIndex;
-
-		while (childIndex != -1)
-		{
-			applyTwistTransform(buffer, flv, bindPose, transform, childIndex);
-
-			int siblingIndex = flv->bones[childIndex].nextSiblingIndex;
-
-			while (siblingIndex != -1)
-			{
-				applyTwistTransform(buffer, flv, bindPose, transform, siblingIndex);
-
-				siblingIndex = flv->bones[siblingIndex].nextSiblingIndex;
-			}
-
-			childIndex = flv->bones[childIndex].nextSiblingIndex;
-		}
-	}
 }
 
 FlverModel::SkinnedVertex::SkinnedVertex(Vector3 pos, Vector3 normal, float* weights, int* bone_indices)
@@ -224,6 +174,8 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 
 	this->createFlverToMorphemeBoneMap();
 	this->createMorphemeToFlverBoneMap();
+	this->createFlverToMorphemeSkinningBoneMap();
+	this->createFlverBoneEvaluationOrder();
 
 	if (!this->initialise())
 		INVOKE_PANIC("Flver model initialisation failed");
@@ -698,17 +650,25 @@ void FlverModel::update(float dt)
 
 	this->m_focusPoint = Vector3::Transform(Vector3::Zero, this->getWorldMatrix());
 
-	// Apply the morpheme rig transforms to the flver skeleton
-	for (uint32_t i = 0; i < this->m_flver->header.boneCount; i++)
+	// Apply the morpheme rig transforms to the flver skeleton. Parents are always evaluated before their children.
+	for (const int i : this->m_flverBoneEvaluationOrder)
 	{
 		const int morphemeBoneID = this->m_flverToMorphemeBoneMap[i];
 
 		if (morphemeBoneID != -1)
 		{
-			const int parentMorphemeBoneID = this->m_nmRig->getParentBoneIndex(morphemeBoneID);
-			// Take the morpheme animation transform relative to the morpheme bind pose, align it to the flver bind pose, and then apply it to the flver bind pose.
+			// Take the morpheme animation transform relative to the morpheme bind pose and apply it to the flver bind pose.
+			this->m_flverBoneTransforms[i] = this->m_flverBindPoseTransforms[i] * getNmBoneRelativeTransform(morphemeBoneID);
+		}
+		else
+		{
+			// Bones morpheme does not animate (twist bones, etc.) keep their flver bind pose local transform and follow their parent.
+			const int parentIdx = this->getFlverBoneParentIndex(i);
 
-			applyTransform(this->m_flverBoneTransforms, this->m_flver, this->m_flverBindPoseTransforms, getNmBoneRelativeTransform(morphemeBoneID), i);
+			if (parentIdx != -1)
+				this->m_flverBoneTransforms[i] = this->m_flverBindPoseTransforms[i] * this->m_flverInverseBindPoseTransforms[parentIdx] * this->m_flverBoneTransforms[parentIdx];
+			else
+				this->m_flverBoneTransforms[i] = this->m_flverBindPoseTransforms[i];
 		}
 	}
 
@@ -920,7 +880,7 @@ void FlverModel::createMorphemeToFlverBoneMap()
 {
 	this->m_morphemeToFlverBoneMap.reserve(this->m_nmRig->getNumBones());
 
-	for (int idx = 0; idx < this->m_flver->header.boneCount; idx++)
+	for (int idx = 0; idx < this->m_nmRig->getNumBones(); idx++)
 	{
 		this->m_morphemeToFlverBoneMap.push_back(-1);
 
@@ -930,6 +890,133 @@ void FlverModel::createMorphemeToFlverBoneMap()
 				this->m_morphemeToFlverBoneMap.back() = i;
 		}
 	}
+}
+
+// Returns the flver parent of the given bone, or -1 if it has none or the index is invalid
+int FlverModel::getFlverBoneParentIndex(int idx)
+{
+	if ((idx < 0) || (idx >= this->m_flver->header.boneCount))
+		return -1;
+
+	const int parentIdx = this->m_flver->bones[idx].parentIndex;
+
+	if ((parentIdx < 0) || (parentIdx >= this->m_flver->header.boneCount))
+		return -1;
+
+	return parentIdx;
+}
+
+//Maps each flver bone to the morpheme bone that drives it: the bone with the same name, or the one of its nearest flver ancestor 
+//that exists in the morpheme rig. Used to move the weights of bones morpheme does not animate (twist bones, etc.) to a bone it does.
+void FlverModel::createFlverToMorphemeSkinningBoneMap()
+{
+	const int boneCount = this->m_flver->header.boneCount;
+
+	this->m_flverToMorphemeSkinningBoneMap.assign(boneCount, -1);
+
+	for (int i = 0; i < boneCount; i++)
+	{
+		int boneIdx = i;
+
+		// Bounded walk so a malformed hierarchy cannot loop forever
+		for (int depth = 0; (boneIdx != -1) && (depth < boneCount); depth++)
+		{
+			if (this->m_flverToMorphemeBoneMap[boneIdx] != -1)
+			{
+				this->m_flverToMorphemeSkinningBoneMap[i] = this->m_flverToMorphemeBoneMap[boneIdx];
+				break;
+			}
+
+			boneIdx = this->getFlverBoneParentIndex(boneIdx);
+		}
+
+		if (this->m_flverToMorphemeBoneMap[i] == -1)
+		{
+			std::string boneName = this->getFlverBoneName(i);
+			g_appLog->debugMessage(MsgLevel_Debug, "\tBone \"%s\" is not in the morpheme rig, skinning it to \"%s\"\n", boneName.c_str(), this->getMorphemeBoneName(this->m_flverToMorphemeSkinningBoneMap[i]).c_str());
+		}
+	}
+}
+
+//Orders the flver bones so that each bone comes after its parent
+void FlverModel::createFlverBoneEvaluationOrder()
+{
+	const int boneCount = this->m_flver->header.boneCount;
+
+	std::vector<bool> added(boneCount, false);
+	std::vector<int> chain;
+
+	this->m_flverBoneEvaluationOrder.clear();
+	this->m_flverBoneEvaluationOrder.reserve(boneCount);
+
+	for (int i = 0; i < boneCount; i++)
+	{
+		chain.clear();
+
+		for (int boneIdx = i; (boneIdx != -1) && !added[boneIdx] && (chain.size() < static_cast<size_t>(boneCount)); boneIdx = this->getFlverBoneParentIndex(boneIdx))
+			chain.push_back(boneIdx);
+
+		for (auto it = chain.rbegin(); it != chain.rend(); ++it)
+		{
+			if (added[*it])
+				continue;
+
+			added[*it] = true;
+			this->m_flverBoneEvaluationOrder.push_back(*it);
+		}
+	}
+}
+
+int FlverModel::getMorphemeSkinningBoneIdByFlverBoneId(int idx)
+{
+	if ((idx >= 0) && (idx < this->m_flverToMorphemeSkinningBoneMap.size()))
+		return this->m_flverToMorphemeSkinningBoneMap[idx];
+
+	return -1;
+}
+
+FlverModel::MorphemeSkinInfluences FlverModel::getMorphemeSkinInfluences(const SkinnedVertex& vertex)
+{
+	MorphemeSkinInfluences influences;
+
+	for (int wt = 0; wt < 4; wt++)
+	{
+		const float weight = vertex.boneWeights[wt];
+
+		if (!(weight > 0.f))
+			continue;
+
+		const int morphemeBoneID = this->getMorphemeSkinningBoneIdByFlverBoneId(vertex.boneIndices[wt]);
+
+		if (morphemeBoneID == -1)
+			continue;
+
+		// Several flver bones can collapse onto the same morpheme bone (e.g. an upper arm and its twist bone), merge them
+		int slot = 0;
+		while ((slot < influences.numInfluences) && (influences.boneIndices[slot] != morphemeBoneID))
+			slot++;
+
+		if (slot == influences.numInfluences)
+		{
+			influences.boneIndices[slot] = morphemeBoneID;
+			influences.boneWeights[slot] = 0.f;
+			influences.numInfluences++;
+		}
+
+		influences.boneWeights[slot] += weight;
+	}
+
+	float totalWeight = 0.f;
+	for (int i = 0; i < influences.numInfluences; i++)
+		totalWeight += influences.boneWeights[i];
+
+	if (totalWeight > 0.f)
+	{
+		for (int i = 0; i < influences.numInfluences; i++)
+			influences.boneWeights[i] /= totalWeight;
+	}
+
+	return influences;
 }
 
 int FlverModel::getMorphemeBoneIdByFlverBoneId(int idx)

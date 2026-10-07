@@ -41,6 +41,14 @@ public:
 		SkinnedVertex(Vector3 pos, Vector3 normal, float* weights, int* bone_indices);
 	};
 
+	// Bone influences of a vertex expressed in morpheme rig bones. Weights are merged per bone and normalised.
+	struct MorphemeSkinInfluences
+	{
+		int numInfluences = 0;
+		int boneIndices[4] = { -1, -1, -1, -1 };
+		float boneWeights[4] = { 0, 0, 0, 0 };
+	};
+
 	struct Settings
 	{
 		DisplayMode displayMode = kDispNormal;
@@ -90,6 +98,18 @@ public:
 
 	int getMorphemeBoneIdByFlverBoneId(int idx);
 	int getFlverBoneIndexByMorphemeBoneIndex(int idx);
+
+	/**
+	 * \brief Gets the morpheme bone that drives a flver bone when skinning against the morpheme rig.
+	 * Flver bones that are not in the morpheme rig (twist bones, etc.) resolve to their nearest ancestor that is.
+	 */
+	int getMorphemeSkinningBoneIdByFlverBoneId(int idx);
+
+	/**
+	 * \brief Converts the flver bone influences of a vertex to morpheme rig bone influences.
+	 * Weights on bones morpheme does not animate are moved to the morpheme bone that drives them.
+	 */
+	MorphemeSkinInfluences getMorphemeSkinInfluences(const SkinnedVertex& vertex);
 
 	Matrix getDummyPolygonTransform(int id);
 
@@ -169,6 +189,8 @@ private:
 	MR::AnimRigDef* m_nmRig = nullptr;
 	std::vector<int> m_flverToMorphemeBoneMap;
 	std::vector<int> m_morphemeToFlverBoneMap;
+	std::vector<int> m_flverToMorphemeSkinningBoneMap;
+	std::vector<int> m_flverBoneEvaluationOrder;
 	std::vector<std::vector<SkinnedVertex>> m_meshVerticesTransforms;
 	std::vector<std::vector<SkinnedVertex>> m_meshVerticesBindPoseTransforms;
 	std::vector<Matrix> m_flverBoneTransforms;
@@ -184,6 +206,9 @@ private:
 
 	void createFlverToMorphemeBoneMap();
 	void createMorphemeToFlverBoneMap();
+	void createFlverToMorphemeSkinningBoneMap();
+	void createFlverBoneEvaluationOrder();
+	int getFlverBoneParentIndex(int idx);
 
 	std::vector<Vector3> getFlverMeshVertices(int idx);
 	std::vector<Vector3> getFlverMeshNormals(int idx);

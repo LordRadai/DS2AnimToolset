@@ -215,47 +215,30 @@ namespace FT
 
 		if (pSkin)
 		{
+			// Resolve every vertex to morpheme rig bones once. Flver bones morpheme does not animate (twist bones, etc.) are skinned to the morpheme bone driving them.
+			std::vector<FlverModel::MorphemeSkinInfluences> influences;
+			influences.reserve(skinnedVertices.size());
+
+			for (int vertexIndex = 0; vertexIndex < skinnedVertices.size(); vertexIndex++)
+				influences.push_back(pFlverModel->getMorphemeSkinInfluences(skinnedVertices[vertexIndex]));
+
 			for (size_t i = 0; i < pFlverModel->getNumMorphemeBones(); i++)
 			{
 				FbxNode* pBoneNode = skeletonNodes[i];
 
-				FbxCluster* pCluster = FbxCluster::Create(pScene, (mesh_node_name + "_" + pFlverModel->getFlverBoneName(i) + "_cluster").c_str());
+				FbxCluster* pCluster = FbxCluster::Create(pScene, (mesh_node_name + "_" + pFlverModel->getMorphemeBoneName(i) + "_cluster").c_str());
 				pCluster->SetLink(pBoneNode);
 				pCluster->SetLinkMode(FbxCluster::eTotalOne);
 				pCluster->SetTransformLinkMatrix(skeletonNodes[i]->EvaluateGlobalTransform());
 
-				for (int vertexIndex = 0; vertexIndex < skinnedVertices.size(); vertexIndex++)
+				for (int vertexIndex = 0; vertexIndex < influences.size(); vertexIndex++)
 				{
-					int* indices = skinnedVertices[vertexIndex].boneIndices;
-					float* weights = skinnedVertices[vertexIndex].boneWeights;
+					const FlverModel::MorphemeSkinInfluences& vertexInfluences = influences[vertexIndex];
 
-					for (int wt = 0; wt < 4; wt++)
+					for (int wt = 0; wt < vertexInfluences.numInfluences; wt++)
 					{
-						const int flverBoneID = indices[wt];
-
-						if (flverBoneID != -1)
-						{
-							const int boneID = pFlverModel->getMorphemeBoneIdByFlverBoneId(flverBoneID);
-
-							if ((boneID != -1) && (boneID == i))
-							{
-								switch (wt)
-								{
-								case 0:
-									pCluster->AddControlPointIndex(vertexIndex, weights[0]);
-									break;
-								case 1:
-									pCluster->AddControlPointIndex(vertexIndex, weights[1]);
-									break;
-								case 2:
-									pCluster->AddControlPointIndex(vertexIndex, weights[2]);
-									break;
-								case 3:
-									pCluster->AddControlPointIndex(vertexIndex, weights[3]);
-									break;
-								}
-							}
-						}
+						if (vertexInfluences.boneIndices[wt] == i)
+							pCluster->AddControlPointIndex(vertexIndex, vertexInfluences.boneWeights[wt]);
 					}
 				}
 

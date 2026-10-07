@@ -344,19 +344,17 @@ namespace FT
 		{
 			XMD::XSkinnedVertex skinnedVertex;
 
-			for (size_t wt = 0; wt < 4; wt++)
+			// Flver bones morpheme does not animate (twist bones, etc.) are skinned to the morpheme bone driving them
+			const FlverModel::MorphemeSkinInfluences influences = model->getMorphemeSkinInfluences(vertexData[i]);
+
+			for (int wt = 0; wt < influences.numInfluences; wt++)
 			{
-				int boneIdx = model->getMorphemeBoneIdByFlverBoneId(vertexData[i].boneIndices[wt]);
+				XMD::XBone* bone = getBoneByName(bones, rig->getBoneName(influences.boneIndices[wt]));
 
-				if (boneIdx != -1)
+				if (bone != nullptr)
 				{
-					XMD::XBone* bone = getBoneByName(bones, rig->getBoneName(boneIdx));
-
-					if (bone != nullptr)
-					{
-						XM2::XU32 id = skin->AddInfluence(bone);
-						skinnedVertex.push_back(XMD::XSkinWeight(vertexData[i].boneWeights[wt], id));
-					}
+					XM2::XU32 id = skin->AddInfluence(bone);
+					skinnedVertex.push_back(XMD::XSkinWeight(influences.boneWeights[wt], id));
 				}
 			}
 
