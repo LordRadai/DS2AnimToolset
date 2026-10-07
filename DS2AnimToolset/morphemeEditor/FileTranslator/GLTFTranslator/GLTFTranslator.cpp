@@ -340,42 +340,28 @@ namespace
         // Convert flver bone indices to morpheme bone indices
         for (size_t i = 0; i < skinnedVertices.size(); i++)
         {
-            Vector4 jointWeightData = Vector4::Zero;
-            JointIndicesVec jointIndexData(-1, -1, -1, -1);
-            for (size_t j = 0; j < 4; j++)
+            // Flver bones morpheme does not animate (twist bones, etc.) are skinned to the morpheme bone driving them
+            const FlverModel::MorphemeSkinInfluences influences = model->getMorphemeSkinInfluences(skinnedVertices[i]);
+
+            float jointWeights[4] = { 0.f, 0.f, 0.f, 0.f };
+            uint16_t jointIndices[4] = { UINT16_MAX, UINT16_MAX, UINT16_MAX, UINT16_MAX };
+            int numJoints = 0;
+
+            for (int j = 0; j < influences.numInfluences; j++)
             {
-                const int morphemeBoneID = model->getMorphemeBoneIdByFlverBoneId(skinnedVertices[i].boneIndices[j]);
+                const int morphemeBoneID = influences.boneIndices[j];
+                const tinygltf::Node* jointNode = getGltfNodeByName(gltf, model->getMorphemeBoneName(morphemeBoneID));
 
-                if (morphemeBoneID != -1)
+                if (jointNode)
                 {
-                    const tinygltf::Node* jointNode = getGltfNodeByName(gltf, model->getMorphemeBoneName(morphemeBoneID));
-
-                    if (jointNode)
-                    {
-                        const int influenceArrayIndex = addBoneInfluence(jointArray, ibm, model, morphemeBoneID);
-
-                        switch (j)
-                        {
-                        case 0:
-                            jointWeightData.x = skinnedVertices[i].boneWeights[j];
-                            jointIndexData.x = influenceArrayIndex;
-                            break;
-                        case 1:
-                            jointWeightData.y = skinnedVertices[i].boneWeights[j];
-                            jointIndexData.y = influenceArrayIndex;
-                            break;
-                        case 2:
-                            jointWeightData.z = skinnedVertices[i].boneWeights[j];
-                            jointIndexData.z = influenceArrayIndex;
-                            break;
-                        case 3:
-                            jointWeightData.w = skinnedVertices[i].boneWeights[j];
-                            jointIndexData.w = influenceArrayIndex;
-                            break;
-                        }
-                    }           
+                    jointWeights[numJoints] = influences.boneWeights[j];
+                    jointIndices[numJoints] = addBoneInfluence(jointArray, ibm, model, morphemeBoneID);
+                    numJoints++;
                 }
             }
+
+            const Vector4 jointWeightData(jointWeights);
+            const JointIndicesVec jointIndexData(jointIndices[0], jointIndices[1], jointIndices[2], jointIndices[3]);
 
             weights.push_back(jointWeightData);
             indices.push_back(jointIndexData);

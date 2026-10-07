@@ -13,9 +13,16 @@
 #include "fromloader/fromloader.h"
 #include "MorphemeSystem/MorphemeSystem.h"
 #include "AnimObject/AnimObject.h"
+#include "RCore.h"
+
 #include <PrimitiveBatch.h>
 
 class RenderManager;
+
+namespace ChrModelExFormat
+{
+	class ChrModelExFormat;
+}
 
 using namespace cfr;
 
@@ -39,6 +46,14 @@ public:
 
 		SkinnedVertex() {}
 		SkinnedVertex(Vector3 pos, Vector3 normal, float* weights, int* bone_indices);
+	};
+
+	// Bone influences of a vertex expressed in morpheme rig bones. Weights are merged per bone and normalised.
+	struct MorphemeSkinInfluences
+	{
+		int numInfluences = 0;
+		int boneIndices[4] = { -1, -1, -1, -1 };
+		float boneWeights[4] = { 0, 0, 0, 0 };
 	};
 
 	struct Settings
@@ -91,6 +106,19 @@ public:
 	int getMorphemeBoneIdByFlverBoneId(int idx);
 	int getFlverBoneIndexByMorphemeBoneIndex(int idx);
 
+	/**
+	 * \brief Gets the morpheme bone that drives a flver bone when skinning against the morpheme rig.
+	 * Flver bones that are not in the morpheme rig (twist bones, etc.) resolve to their nearest ancestor that is.
+	 */
+	int getMorphemeSkinningBoneIdByFlverBoneId(int idx);
+
+	/**
+	 * \brief Converts the flver bone influences of a vertex to morpheme rig bone influences.
+	 * Weights on bones morpheme does not animate are moved to the morpheme bone that drives them. Twist bones split their weight
+	 * between their base bone and their rotation addition bone by the rotation scale. At most the 4 largest influences are kept.
+	 */
+	MorphemeSkinInfluences getMorphemeSkinInfluences(const SkinnedVertex& vertex);
+
 	Matrix getDummyPolygonTransform(int id);
 
 	// FLVER functions
@@ -141,7 +169,7 @@ public:
 
 private:
 	FlverModel() {}
-	FlverModel(UMEM* umem, MR::AnimRigDef* rig);
+	FlverModel(UMEM* umem, MR::AnimRigDef* rig, const ChrModelExFormat::ChrModelExFormat* exFormat);
 	FlverModel(MR::AnimRigDef* rig);
 	~FlverModel() {}
 
@@ -169,6 +197,20 @@ private:
 	MR::AnimRigDef* m_nmRig = nullptr;
 	std::vector<int> m_flverToMorphemeBoneMap;
 	std::vector<int> m_morphemeToFlverBoneMap;
+	std::vector<int> m_flverToMorphemeSkinningBoneMap;
+	std::vector<int> m_flverBoneEvaluationOrder;
+
+	// Twist bone settings from the model's FLVPWV file, indexed by flver bone. Bones that are not twist bones have no base bone.
+	struct TwistBone
+	{
+		int baseBone = -1;
+		int rotationAdditionBone = -1;
+		float rotationScale = 0.f;
+		bool threeAxis = false;
+		Vector3 twistAxis = Vector3::UnitX;	// Rotation addition bone direction in its own bind frame
+	};
+
+	std::vector<TwistBone> m_flverTwistBones;
 	std::vector<std::vector<SkinnedVertex>> m_meshVerticesTransforms;
 	std::vector<std::vector<SkinnedVertex>> m_meshVerticesBindPoseTransforms;
 	std::vector<Matrix> m_flverBoneTransforms;
@@ -184,6 +226,13 @@ private:
 
 	void createFlverToMorphemeBoneMap();
 	void createMorphemeToFlverBoneMap();
+	void createFlverToMorphemeSkinningBoneMap();
+	void createFlverTwistBones(const ChrModelExFormat::ChrModelExFormat* exFormat);
+	void createFlverBoneEvaluationOrder();
+	Vector3 computeFlverBoneDirection(int idx);
+	bool isFlverTwistBone(int idx) const;
+	Matrix computeFlverTwistBoneTransform(int idx);
+	int getFlverBoneParentIndex(int idx);
 
 	std::vector<Vector3> getFlverMeshVertices(int idx);
 	std::vector<Vector3> getFlverMeshNormals(int idx);
