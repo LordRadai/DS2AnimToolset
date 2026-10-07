@@ -262,12 +262,9 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 
 		if (exFormat)
 			exFormat->destroy();
+
 		model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
 		model->m_fileOrigin = path + L"\\" + RString::toWide(flverFile->name.c_str());
-
-		model->m_exFormat = ChrModelExFormat::ChrModelExFormat::createFromResource(reinterpret_cast<ChrModelExFormat::FLVPWV::Header*>((char*)flvpwvFile->data));
-
-		assert(model->m_exFormat != nullptr);
 	}
 	else
 		g_appLog->debugMessage(MsgLevel_Error, "Could not find a .flver file inside \"%ws\"\n", path);
