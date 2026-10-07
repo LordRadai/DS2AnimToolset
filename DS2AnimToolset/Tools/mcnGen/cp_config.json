@@ -665,6 +665,18 @@
     "min": -180,
     "max": 180
   },
+  "TwoHandStance": {
+    "type": "float",
+    "group": "Base Act",
+    "min": -2,
+    "max": 2
+  },
+  "TwoWeaponStance": {
+    "type": "float",
+    "group": "Base Act",
+    "min": -2,
+    "max": 2
+  },
   "WeaponChangeSpeed": {
     "type": "float",
     "group": "Base Act",
@@ -1675,18 +1687,6 @@
   },
   "TwoHandIKTarget": {
     "type": "vector3",
-    "group": null,
-    "min": 0,
-    "max": 1
-  },
-  "TwoHandStance": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 1
-  },
-  "TwoWeaponStance": {
-    "type": "float",
     "group": null,
     "min": 0,
     "max": 1
