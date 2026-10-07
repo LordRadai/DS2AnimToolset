@@ -267,7 +267,7 @@
     "group": null
   },
   "Guard": {
-    "group": null
+    "group": "Guard"
   },
   "HitBack": {
     "group": null
