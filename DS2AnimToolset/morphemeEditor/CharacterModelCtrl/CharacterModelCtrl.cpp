@@ -134,8 +134,11 @@ void CharacterModelCtrl::setModelPart(PartType partType, FlverModel* model)
 
 void CharacterModelCtrl::setModelFg(FgPartType fgType, FlverModel* model)
 {
-	std::vector<FlverModel::TwistBone> twistBones = m_model->getTwistBones();
-	model->setTwistBones(twistBones);
+	if (model)
+	{
+		std::vector<FlverModel::TwistBone> twistBones = m_model->getTwistBones();
+		model->setTwistBones(twistBones);
+	}
 
 	switch (fgType)
 	{
