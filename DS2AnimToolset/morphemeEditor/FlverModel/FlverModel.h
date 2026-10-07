@@ -48,6 +48,16 @@ public:
 		SkinnedVertex(Vector3 pos, Vector3 normal, float* weights, int* bone_indices);
 	};
 
+	// Twist bone settings from the model's FLVPWV file, indexed by flver bone. Bones that are not twist bones have no base bone.
+	struct TwistBone
+	{
+		int baseBone = -1;
+		int rotationAdditionBone = -1;
+		float rotationScale = 0.f;
+		bool threeAxis = false;
+		Vector3 twistAxis = Vector3::UnitX;	// Rotation addition bone direction in its own bind frame
+	};
+
 	// Bone influences of a vertex expressed in morpheme rig bones. Weights are merged per bone and normalised.
 	struct MorphemeSkinInfluences
 	{
@@ -95,6 +105,9 @@ public:
 
 	std::vector<int> getFlverToMorphemeBoneMap() const { return this->m_flverToMorphemeBoneMap; }
 	std::vector<int> getMorphemeToFlverBoneMap() const { return this->m_morphemeToFlverBoneMap; }
+
+	void setTwistBones(const std::vector<TwistBone>& bones) { this->m_flverTwistBones = bones; }
+	std::vector<TwistBone> getTwistBones() const { return this->m_flverTwistBones; }
 
 	Settings* getSettings() { return &this->m_settings; }
 
@@ -199,16 +212,6 @@ private:
 	std::vector<int> m_morphemeToFlverBoneMap;
 	std::vector<int> m_flverToMorphemeSkinningBoneMap;
 	std::vector<int> m_flverBoneEvaluationOrder;
-
-	// Twist bone settings from the model's FLVPWV file, indexed by flver bone. Bones that are not twist bones have no base bone.
-	struct TwistBone
-	{
-		int baseBone = -1;
-		int rotationAdditionBone = -1;
-		float rotationScale = 0.f;
-		bool threeAxis = false;
-		Vector3 twistAxis = Vector3::UnitX;	// Rotation addition bone direction in its own bind frame
-	};
 
 	std::vector<TwistBone> m_flverTwistBones;
 	std::vector<std::vector<SkinnedVertex>> m_meshVerticesTransforms;
