@@ -207,6 +207,7 @@ private:
 		int rotationAdditionBone = -1;
 		float rotationScale = 0.f;
 		bool threeAxis = false;
+		Vector3 twistAxis = Vector3::UnitX;	// Rotation addition bone direction in its own bind frame
 	};
 
 	std::vector<TwistBone> m_flverTwistBones;
@@ -228,6 +229,7 @@ private:
 	void createFlverToMorphemeSkinningBoneMap();
 	void createFlverTwistBones(const ChrModelExFormat::ChrModelExFormat* exFormat);
 	void createFlverBoneEvaluationOrder();
+	Vector3 computeFlverBoneDirection(int idx);
 	bool isFlverTwistBone(int idx) const;
 	Matrix computeFlverTwistBoneTransform(int idx);
 	int getFlverBoneParentIndex(int idx);

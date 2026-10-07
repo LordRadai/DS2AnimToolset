@@ -152,8 +152,8 @@ namespace
 		return Matrix::CreateFromQuaternion(rotation);
 	}
 
-	// Scales a rotation by a factor. If oneAxis is set, only the twist around the local X axis (the bone direction) is kept.
-	Matrix scaleTwistRotation(const Matrix& rotation, float scale, bool oneAxis)
+	// Scales a rotation by a factor. If oneAxis is set, only the twist around the given (unit) axis is kept.
+	Matrix scaleTwistRotation(const Matrix& rotation, float scale, bool oneAxis, const Vector3& twistAxis)
 	{
 		Quaternion q = Quaternion::CreateFromRotationMatrix(rotation);
 
@@ -163,10 +163,10 @@ namespace
 
 		if (oneAxis)
 		{
-			// Swing-twist decomposition: the twist around X is the normalised (x, 0, 0, w) part of the quaternion
-			const float twistAngle = 2.f * std::atan2(q.x, q.w);
+			// Swing-twist decomposition: the twist is the quaternion's vector part projected on the axis, together with w
+			const float twistAngle = 2.f * std::atan2(Vector3(q.x, q.y, q.z).Dot(twistAxis), q.w);
 
-			return Matrix::CreateRotationX(twistAngle * scale);
+			return Matrix::CreateFromAxisAngle(twistAxis, twistAngle * scale);
 		}
 
 		return Matrix::CreateFromQuaternion(Quaternion::Slerp(Quaternion::Identity, q, scale));
@@ -210,11 +210,13 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig, const ChrModelExFormat::
 	this->createFlverToMorphemeBoneMap();
 	this->createMorphemeToFlverBoneMap();
 	this->createFlverToMorphemeSkinningBoneMap();
-	this->createFlverTwistBones(exFormat);
-	this->createFlverBoneEvaluationOrder();
 
 	if (!this->initialise())
 		INVOKE_PANIC("Flver model initialisation failed");
+
+	// Needs the flver bind pose computed by initialise()
+	this->createFlverTwistBones(exFormat);
+	this->createFlverBoneEvaluationOrder();
 }
 
 FlverModel::FlverModel(MR::AnimRigDef* rig)
@@ -1029,9 +1031,39 @@ void FlverModel::createFlverTwistBones(const ChrModelExFormat::ChrModelExFormat*
 		twistBone.rotationAdditionBone = rotationAdditionBone;
 		twistBone.rotationScale = exBone->getRotationScale();
 		twistBone.threeAxis = (exBone->getType() == ChrModelExFormat::FLVPWV::Bone::TWIST_BONE_THREE_AXIS);
+		twistBone.twistAxis = this->computeFlverBoneDirection(rotationAdditionBone);
 
 		g_appLog->debugMessage(MsgLevel_Debug, "\tTwist bone \"%s\": base=\"%s\", rotationAddition=\"%s\", scale=%.3f, %s\n", this->getFlverBoneName(i).c_str(), this->getFlverBoneName(baseBone).c_str(), this->getFlverBoneName(rotationAdditionBone).c_str(), twistBone.rotationScale, twistBone.threeAxis ? "three axis" : "one axis");
 	}
+}
+
+//Gets the direction a flver bone points to in its own bind pose frame: towards its farthest child, so a twist bone sitting on top of it 
+//does not count. Falls back to local X for leaf bones.
+Vector3 FlverModel::computeFlverBoneDirection(int idx)
+{
+	const int boneCount = this->m_flver->header.boneCount;
+
+	Vector3 direction = Vector3::Zero;
+	int childIdx = this->m_flver->bones[idx].childIndex;
+
+	for (int i = 0; (childIdx >= 0) && (childIdx < boneCount) && (i < boneCount); i++)
+	{
+		// Both bind transforms carry the axis adjust matrix, which cancels out here
+		const Vector3 childOffset = (this->m_flverBindPoseTransforms[childIdx] * this->m_flverInverseBindPoseTransforms[idx]).Translation();
+
+		if (childOffset.LengthSquared() > direction.LengthSquared())
+			direction = childOffset;
+
+		childIdx = this->m_flver->bones[childIdx].nextSiblingIndex;
+	}
+
+	if (direction.LengthSquared() > 1e-8f)
+	{
+		direction.Normalize();
+		return direction;
+	}
+
+	return Vector3::UnitX;
 }
 
 bool FlverModel::isFlverTwistBone(int idx) const
@@ -1078,7 +1110,7 @@ void FlverModel::createFlverBoneEvaluationOrder()
 }
 
 //Computes the current transform of a twist bone: its bind pose relative to its base bone, plus the rotation of its rotation addition bone 
-//away from that bone's bind pose, scaled by the rotation scale. One axis twist bones only take the roll around the bone direction (local X).
+//away from that bone's bind pose, scaled by the rotation scale. One axis twist bones only take the roll around the rotation addition bone's direction.
 Matrix FlverModel::computeFlverTwistBoneTransform(int idx)
 {
 	const TwistBone& twistBone = this->m_flverTwistBones[idx];
@@ -1094,7 +1126,7 @@ Matrix FlverModel::computeFlverTwistBoneTransform(int idx)
 
 	// Rotation away from the bind pose, expressed in the rotation addition bone's own frame (local = delta * bind)
 	const Matrix additionDelta = additionLocal * additionBindLocal.Transpose();
-	const Matrix scaledDelta = scaleTwistRotation(additionDelta, twistBone.rotationScale, !twistBone.threeAxis);
+	const Matrix scaledDelta = scaleTwistRotation(additionDelta, twistBone.rotationScale, !twistBone.threeAxis, twistBone.twistAxis);
 
 	// Move the rotation from the rotation addition bone's frame to the twist bone's frame
 	const Matrix additionToTwist = getRotationMatrix(this->m_flverBindPoseTransforms[idx] * this->m_flverInverseBindPoseTransforms[additionBone]);
