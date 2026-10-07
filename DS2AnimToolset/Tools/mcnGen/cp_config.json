@@ -1,136 +1,4 @@
 {
-  "AimBlendWeightBody": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AimTarget": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkAdjustHipsBlendWeightSlope": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AtkAdjustHipsPositionSlope": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkAdjustHipsRotation": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -180,
-    "max": 180
-  },
-  "AtkAdjustHipsRotationSlope": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkAdustBlendWeight": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AtkStaggerHandID": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1000
-  },
-  "AtkStaggerHandRotation_Frame": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 100
-  },
-  "AtkStaggerHandWeight": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AtkStaggerHipID_Position": {
-    "type": "float",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkStaggerHipID_Rotation": {
-    "type": "float",
-    "group": "Attack",
-    "min": -180,
-    "max": 180
-  },
-  "AtkStaggerHips_0": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkStaggerHipsPosition_B": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkStaggerHipsPosition_F": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkStaggerHipsPosition_L": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkStaggerHipsPosition_R": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkStaggerHipsRotation_B": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkStaggerHipsRotation_F": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkStaggerHipsRotation_L": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkStaggerHipsRotation_R": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "AtkStaggerHipsWeight": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
   "Attack_BackSwingSpeed": {
     "type": "float",
     "group": "Attack",
@@ -155,47 +23,11 @@
     "min": 0,
     "max": 10
   },
-  "Attack_HandTilt_Frame": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 100
-  },
-  "Attack_HandTilt_Weight": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "Attack_MoveBlend": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "Attack_RotationBlend": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
   "Attack_ShootFrame_03": {
     "type": "float",
     "group": "Attack",
     "min": 0,
     "max": 100
-  },
-  "Attack_SizeCategory": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 4
-  },
-  "Attack_SwingSpeed": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 10
   },
   "Attack_SwingSpeed2": {
     "type": "float",
@@ -215,24 +47,6 @@
     "min": 0,
     "max": 10
   },
-  "AttackCategory_Ene": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 100
-  },
-  "AttackID_Category": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 100
-  },
-  "AttackID_Number": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 100000
-  },
   "Combo1_Route": {
     "type": "int",
     "group": "Attack",
@@ -251,12 +65,6 @@
     "min": 0,
     "max": 10
   },
-  "IsAttackChangeHide": {
-    "type": "int",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
   "IsAttackHold": {
     "type": "int",
     "group": "Attack",
@@ -269,89 +77,323 @@
     "min": 0,
     "max": 1
   },
-  "IsFallAttack": {
+  "PlaySpeed_1": {
+    "type": "float",
+    "group": "Attack",
+    "min": 0.0,
+    "max": 10.0
+  },
+  "Target_Distance": {
     "type": "float",
     "group": "Attack",
     "min": 0,
+    "max": 1000
+  },
+  "AtkAdjustHipsBlendWeightSlope": {
+    "type": "float",
+    "group": "Attack_MoveGuard",
+    "min": 0,
     "max": 1
   },
-  "IsMoveAttackHold": {
+  "AtkAdjustHipsPositionSlope": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkAdjustHipsRotation": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -180,
+    "max": 180
+  },
+  "AtkAdjustHipsRotationSlope": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkAdustBlendWeight": {
+    "type": "float",
+    "group": "Attack_MoveGuard",
+    "min": 0,
+    "max": 1
+  },
+  "AtkStaggerHandID": {
+    "type": "float",
+    "group": "Attack_MoveGuard",
+    "min": 0,
+    "max": 1000
+  },
+  "AtkStaggerHandRotation_Frame": {
+    "type": "float",
+    "group": "Attack_MoveGuard",
+    "min": 0,
+    "max": 100
+  },
+  "AtkStaggerHandWeight": {
+    "type": "float",
+    "group": "Attack_MoveGuard",
+    "min": 0,
+    "max": 1
+  },
+  "AtkStaggerHipID_Position": {
+    "type": "float",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkStaggerHipID_Rotation": {
+    "type": "float",
+    "group": "Attack_MoveGuard",
+    "min": -180,
+    "max": 180
+  },
+  "AtkStaggerHips_0": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkStaggerHipsPosition_B": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkStaggerHipsPosition_F": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkStaggerHipsPosition_L": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkStaggerHipsPosition_R": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkStaggerHipsRotation_B": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkStaggerHipsRotation_F": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkStaggerHipsRotation_L": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkStaggerHipsRotation_R": {
+    "type": "vector3",
+    "group": "Attack_MoveGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "AtkStaggerHipsWeight": {
+    "type": "float",
+    "group": "Attack_MoveGuard",
+    "min": 0,
+    "max": 1
+  },
+  "Attack_HandTilt_Frame": {
+    "type": "float",
+    "group": "Attack_MoveGuard",
+    "min": 0,
+    "max": 100
+  },
+  "Attack_HandTilt_Weight": {
+    "type": "float",
+    "group": "Attack_MoveGuard",
+    "min": 0,
+    "max": 1
+  },
+  "IsAttackChangeHide": {
     "type": "int",
-    "group": "Attack",
+    "group": "Attack_MoveGuard",
     "min": 0,
     "max": 1
   },
-  "MoveHit_Position": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "MoveHit_Rotation": {
-    "type": "vector3",
-    "group": "Attack",
-    "min": -1000,
-    "max": 1000
-  },
-  "MoveHit_Weight": {
+  "Attack_SizeCategory": {
     "type": "float",
-    "group": "Attack",
+    "group": "Attack_ShortRange",
+    "min": 0,
+    "max": 4
+  },
+  "Add_Pos": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -1000,
+    "max": 1000
+  },
+  "Add_Rot": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -180,
+    "max": 180
+  },
+  "Banking": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": -180.0,
+    "max": 180
+  },
+  "Banking_Speed": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0.0,
+    "max": 100.0
+  },
+  "BlendWeight_Injured": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 1
+  },
+  "BlendWeight_SideWalk": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 1
+  },
+  "FrontDirection": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": -180.0,
+    "max": 180.0
+  },
+  "Guard_pos": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -1000,
+    "max": 1000
+  },
+  "Guard_rat": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -1000,
+    "max": 1000
+  },
+  "hip": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -1000,
+    "max": 1000
+  },
+  "hip2": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -1000,
+    "max": 1000
+  },
+  "HipPosotion": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -1000,
+    "max": 1000
+  },
+  "HipRotation": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -180,
+    "max": 180
+  },
+  "IsBattleStance": {
+    "type": "int",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 1
+  },
+  "L_WepBreak": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": null,
+    "max": null
+  },
+  "LandingRate": {
+    "type": "float",
+    "group": "BaseAct",
     "min": 0,
     "max": 1
   },
   "ParryStance": {
     "type": "float",
-    "group": "Attack",
+    "group": "BaseAct",
     "min": 0,
     "max": 1
   },
-  "ShootCategory": {
+  "PlaySpeed_10": {
     "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1000
-  },
-  "Shot1_Route": {
-    "type": "int",
-    "group": "Attack",
-    "min": 0,
-    "max": 100
-  },
-  "Shot2_Route": {
-    "type": "int",
-    "group": "Attack",
-    "min": 0,
-    "max": 100
-  },
-  "Shot3_Route": {
-    "type": "int",
-    "group": "Attack",
-    "min": 0,
-    "max": 100
-  },
-  "ShotMoveFinish": {
-    "type": "int",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "ShotPreparationFinish": {
-    "type": "int",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "WeaponCategory_Ene": {
-    "type": "float",
-    "group": "Attack",
+    "group": "BaseAct",
     "min": 0,
     "max": 10
   },
-  "WepHandWeight": {
+  "PlaySpeed_1_3": {
     "type": "float",
-    "group": "Attack",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 10
+  },
+  "PlaySpeed_5": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0.0,
+    "max": 10.0
+  },
+  "R_WepBreak": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": null,
+    "max": null
+  },
+  "RadioControlMode": {
+    "type": "int",
+    "group": "BaseAct",
     "min": 0,
     "max": 1
+  },
+  "rope": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -1000,
+    "max": 1000
+  },
+  "SideWalkRotation": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": -180,
+    "max": 180
+  },
+  "BSCancelDuration_High": {
+    "type": "float",
+    "group": "BattleStance",
+    "min": null,
+    "max": null
+  },
+  "BSCancelDuration_Low": {
+    "type": "float",
+    "group": "BattleStance",
+    "min": null,
+    "max": null
+  },
+  "BSCancelDuration_Mid": {
+    "type": "float",
+    "group": "BattleStance",
+    "min": null,
+    "max": null
   },
   "BonfireCategory": {
     "type": "float",
@@ -377,95 +419,23 @@
     "min": -1000,
     "max": 1000
   },
-  "DmgBankingSpeed": {
-    "type": "float",
-    "group": "Damage",
-    "min": 0,
-    "max": 10
-  },
-  "DmgCategory": {
-    "type": "int",
-    "group": "Damage",
-    "min": 0,
-    "max": 1000
-  },
-  "DmgDirection": {
-    "type": "float",
-    "group": "Damage",
-    "min": -180,
-    "max": 180
-  },
   "DmgDistance": {
     "type": "float",
     "group": "Damage",
     "min": 0,
     "max": 100
   },
-  "DmgDownOrUp": {
+  "DmgBankingSpeed": {
     "type": "float",
-    "group": "Damage",
-    "min": 0,
-    "max": 1
-  },
-  "DmgDuration": {
-    "type": "float",
-    "group": "Damage",
+    "group": "DamageFullBody",
     "min": 0,
     "max": 10
-  },
-  "DmgHitBackDistance": {
-    "type": "float",
-    "group": "Damage",
-    "min": 0,
-    "max": 100
-  },
-  "DmgHitBackDuration": {
-    "type": "float",
-    "group": "Damage",
-    "min": 0,
-    "max": 10
-  },
-  "DmgHitBackEventID": {
-    "type": "float",
-    "group": "Damage",
-    "min": 0,
-    "max": 1000
-  },
-  "DmgHitBackHold": {
-    "type": "float",
-    "group": "Damage",
-    "min": 0,
-    "max": 1
-  },
-  "DmgSlashOrThrust": {
-    "type": "float",
-    "group": "Damage",
-    "min": 0,
-    "max": 1
   },
   "IsDown": {
     "type": "int",
-    "group": "Damage",
+    "group": "DamageFullBody",
     "min": 0,
     "max": 1
-  },
-  "MoveHit_Rotation_L": {
-    "type": "vector3",
-    "group": "Damage",
-    "min": -180,
-    "max": 180
-  },
-  "MoveHit_Rotation_R": {
-    "type": "vector3",
-    "group": "Damage",
-    "min": -180,
-    "max": 180
-  },
-  "DieCategory": {
-    "type": "int",
-    "group": "Die",
-    "min": 0,
-    "max": 1000
   },
   "DieDirection": {
     "type": "float",
@@ -478,24 +448,6 @@
     "group": "Die",
     "min": 0,
     "max": 10
-  },
-  "CatchDmgCategory": {
-    "type": "int",
-    "group": "DmgCatch",
-    "min": 0,
-    "max": 9999
-  },
-  "CatchDmgHitCategory": {
-    "type": "float",
-    "group": "DmgCatch",
-    "min": 0,
-    "max": 99
-  },
-  "CatchDmgModelID": {
-    "type": "int",
-    "group": "DmgCatch",
-    "min": 0,
-    "max": 9999
   },
   "DodgeDirection": {
     "type": "float",
@@ -510,24 +462,6 @@
     "max": 100
   },
   "DodgeSpeed": {
-    "type": "float",
-    "group": "Dodge",
-    "min": 0,
-    "max": 10
-  },
-  "StepDirection": {
-    "type": "float",
-    "group": "Dodge",
-    "min": -180,
-    "max": 180
-  },
-  "StepDistance": {
-    "type": "float",
-    "group": "Dodge",
-    "min": 0,
-    "max": 100
-  },
-  "StepSpeed": {
     "type": "float",
     "group": "Dodge",
     "min": 0,
@@ -551,12 +485,6 @@
     "min": -1000,
     "max": 1000
   },
-  "DoorRHandIK": {
-    "type": "float",
-    "group": "Door",
-    "min": -1000,
-    "max": 1000
-  },
   "DoorRHandIKTarget": {
     "type": "vector3",
     "group": "Door",
@@ -569,6 +497,12 @@
     "min": 0,
     "max": 10
   },
+  "BlendWeight_0": {
+    "type": "float",
+    "group": "Event Action",
+    "min": 0,
+    "max": 1
+  },
   "EventActionCategory": {
     "type": "int",
     "group": "Event Action",
@@ -580,30 +514,6 @@
     "group": "Event Action",
     "min": 0,
     "max": 1
-  },
-  "EventActionLHandIK": {
-    "type": "float",
-    "group": "Event Action",
-    "min": 0,
-    "max": 1
-  },
-  "EventActionLHandIKTarget": {
-    "type": "vector3",
-    "group": "Event Action",
-    "min": -1000,
-    "max": 1000
-  },
-  "EventActionRHandIK": {
-    "type": "float",
-    "group": "Event Action",
-    "min": 0,
-    "max": 1
-  },
-  "EventActionRHandIKTarget": {
-    "type": "vector3",
-    "group": "Event Action",
-    "min": -1000,
-    "max": 1000
   },
   "EventActionSpeed": {
     "type": "float",
@@ -629,29 +539,11 @@
     "min": 0,
     "max": 1
   },
-  "FakeDead": {
-    "type": "int",
+  "SingleFrame_03": {
+    "type": "float",
     "group": "Event Action",
     "min": 0,
-    "max": 1
-  },
-  "InitCategory": {
-    "type": "int",
-    "group": "Event Action",
-    "min": 0,
-    "max": 10
-  },
-  "IsEventAction": {
-    "type": "int",
-    "group": "Event Action",
-    "min": 0,
-    "max": 1
-  },
-  "IsSubAction": {
-    "type": "int",
-    "group": "Event Action",
-    "min": 0,
-    "max": 1
+    "max": 100
   },
   "GestureCategory": {
     "type": "float",
@@ -665,17 +557,11 @@
     "min": 0,
     "max": 10
   },
-  "Guard_pos": {
-    "type": "vector3",
+  "BlenWeight_095": {
+    "type": "float",
     "group": "Guard",
-    "min": -1000,
-    "max": 1000
-  },
-  "Guard_rat": {
-    "type": "vector3",
-    "group": "Guard",
-    "min": -1000,
-    "max": 1000
+    "min": 0,
+    "max": 1
   },
   "GuardAimBlendWeight": {
     "type": "float",
@@ -683,105 +569,69 @@
     "min": 0,
     "max": 1
   },
-  "GuardAimTarget": {
-    "type": "vector3",
-    "group": "Guard",
-    "min": -1000,
-    "max": 1000
-  },
-  "GuardBottomCategory": {
-    "type": "float",
-    "group": "Guard",
-    "min": 0,
-    "max": 100000
-  },
-  "GuardCancelSpeedCategory": {
-    "type": "int",
-    "group": "Guard",
-    "min": 0,
-    "max": 10
-  },
-  "GuardCategory": {
-    "type": "int",
-    "group": "Guard",
-    "min": 0,
-    "max": 100000
-  },
-  "GuardDuration": {
-    "type": "float",
-    "group": "Guard",
-    "min": 0,
-    "max": 100
-  },
-  "GuardID_Category": {
-    "type": "float",
-    "group": "Guard",
-    "min": 0,
-    "max": 99
-  },
   "GuardID_Number": {
     "type": "float",
     "group": "Guard",
     "min": 0,
     "max": 100000
   },
-  "GuardSpeed": {
+  "DmgHitBackDistance": {
     "type": "float",
-    "group": "Guard",
+    "group": "HitBack",
+    "min": 0,
+    "max": 100
+  },
+  "DmgHitBackDuration": {
+    "type": "float",
+    "group": "HitBack",
     "min": 0,
     "max": 10
   },
-  "GuardStance": {
+  "DmgHitBackEventID": {
     "type": "float",
-    "group": "Guard",
+    "group": "HitBack",
+    "min": 0,
+    "max": 1000
+  },
+  "DmgHitBackHold": {
+    "type": "float",
+    "group": "HitBack",
     "min": 0,
     "max": 1
   },
-  "IsDrinkUp": {
-    "type": "int",
-    "group": "Item Use",
-    "min": 0,
-    "max": 1
+  "Wep02_Pos": {
+    "type": "vector3",
+    "group": "Idle",
+    "min": -1000,
+    "max": 1000
+  },
+  "Wep02_Rot": {
+    "type": "vector3",
+    "group": "Idle",
+    "min": -180,
+    "max": 180
   },
   "IsItemUseLoop": {
     "type": "int",
-    "group": "Item Use",
+    "group": "ItemUse",
     "min": 0,
     "max": 1
-  },
-  "ItemUse_MoveBlend": {
-    "type": "float",
-    "group": "Item Use",
-    "min": 0,
-    "max": 1
-  },
-  "ItemUse_Speed": {
-    "type": "float",
-    "group": "Item Use",
-    "min": 0,
-    "max": 10
   },
   "ItemUseAdjustHipsRotation": {
     "type": "vector3",
-    "group": "Item Use",
+    "group": "ItemUse",
     "min": -180,
     "max": 180
   },
   "ItemUseAdustBlendWeight": {
     "type": "float",
-    "group": "Item Use",
+    "group": "ItemUse",
     "min": 0,
     "max": 1
   },
-  "ItemUseCategory": {
+  "ItemUse_MoveBlend": {
     "type": "float",
-    "group": "Item Use",
-    "min": 0,
-    "max": 1000
-  },
-  "IsLadder": {
-    "type": "int",
-    "group": "Ladder",
+    "group": "ItemUseTurn",
     "min": 0,
     "max": 1
   },
@@ -827,67 +677,43 @@
     "min": 0,
     "max": 1
   },
-  "AttackStance_L": {
+  "IsMenuIdle": {
+    "type": "int",
+    "group": "MainNetwork",
+    "min": 0,
+    "max": 1
+  },
+  "IsPrecisionShoot": {
+    "type": "int",
+    "group": "MainNetwork",
+    "min": 0,
+    "max": 1
+  },
+  "IsStagger": {
+    "type": "int",
+    "group": "MainNetwork",
+    "min": 0,
+    "max": 1
+  },
+  "ShootCategory": {
+    "type": "float",
+    "group": "MainNetwork",
+    "min": 0,
+    "max": 1000
+  },
+  "BlendWeight_SpineSpiral": {
     "type": "float",
     "group": "Move",
     "min": 0,
     "max": 1
   },
-  "AttackStance_L_2Weapon": {
+  "BlendWeight_Stabilize_L": {
     "type": "float",
     "group": "Move",
     "min": 0,
     "max": 1
   },
-  "AttackStance_LR": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_R": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_R_2Weapon": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "Banking": {
-    "type": "float",
-    "group": "Move",
-    "min": -180.0,
-    "max": 180
-  },
-  "Banking_Speed": {
-    "type": "float",
-    "group": "Move",
-    "min": 0.0,
-    "max": 100.0
-  },
-  "BlendWeight_HandsUp_F": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_HandsUp_S": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_SideWalk": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_Stance": {
+  "BlendWeight_Stabilize_R": {
     "type": "float",
     "group": "Move",
     "min": 0,
@@ -923,18 +749,6 @@
     "min": -180,
     "max": 180
   },
-  "FB_Speed": {
-    "type": "float",
-    "group": "Move",
-    "min": 0.0,
-    "max": 100.0
-  },
-  "Flight_Banking": {
-    "type": "float",
-    "group": "Move",
-    "min": -180,
-    "max": 180
-  },
   "Flight_FB_Speed": {
     "type": "float",
     "group": "Move",
@@ -947,29 +761,11 @@
     "min": 0,
     "max": 100
   },
-  "Floating_Banking": {
-    "type": "float",
+  "FrontTarget": {
+    "type": "vector3",
     "group": "Move",
-    "min": -180,
-    "max": 180
-  },
-  "Floating_FB_Speed": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 100
-  },
-  "Floating_UD_Speed": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 100
-  },
-  "FrontDirection": {
-    "type": "float",
-    "group": "Move",
-    "min": -180.0,
-    "max": 180.0
+    "min": -1000,
+    "max": 1000
   },
   "Injured_HipsPosition": {
     "type": "vector3",
@@ -982,96 +778,6 @@
     "group": "Move",
     "min": -1000,
     "max": 1000
-  },
-  "IsBattleStance": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsBattleWalk": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsFall": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsFloating": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsLanding": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsLockOn": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsMenuIdle": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsMoving": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsPrecisionShoot": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsSideWalk": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsStagger": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsSwitchStance": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "Landing_BlendWeight": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "LandingCategory": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 100
-  },
-  "LandingRate": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
   },
   "Load_L_Weight": {
     "type": "float",
@@ -1091,47 +797,17 @@
     "min": 0,
     "max": 100
   },
-  "MoveCategory": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1000
-  },
-  "RadioControlMode": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "SideWalkRotation": {
-    "type": "float",
+  "MoveHit_Rotation_L": {
+    "type": "vector3",
     "group": "Move",
     "min": -180,
     "max": 180
   },
-  "SlopePitch": {
-    "type": "float",
+  "MoveHit_Rotation_R": {
+    "type": "vector3",
     "group": "Move",
     "min": -180,
     "max": 180
-  },
-  "SlopeRoll": {
-    "type": "float",
-    "group": "Move",
-    "min": -180,
-    "max": 180
-  },
-  "TwoHandStance": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "TwoWeaponStance": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
   },
   "WeaponChangeSpeed": {
     "type": "float",
@@ -1139,29 +815,59 @@
     "min": 0,
     "max": 10
   },
-  "WeaponStorage_L": {
+  "AimBlendWeightBody": {
     "type": "float",
-    "group": "Move",
+    "group": "MoveAttack",
     "min": 0,
     "max": 1
   },
-  "WeaponStorage_R": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "IsRope": {
-    "type": "int",
-    "group": "Rope",
-    "min": 0,
-    "max": 1
-  },
-  "rope": {
+  "AimTarget": {
     "type": "vector3",
-    "group": "Rope",
+    "group": "MoveAttack",
     "min": -1000,
     "max": 1000
+  },
+  "Attack_MoveBlend": {
+    "type": "float",
+    "group": "MoveAttack",
+    "min": 0,
+    "max": 1
+  },
+  "Attack_RotationBlend": {
+    "type": "float",
+    "group": "MoveAttack",
+    "min": 0,
+    "max": 1
+  },
+  "IsMoveAttackHold": {
+    "type": "int",
+    "group": "MoveAttack",
+    "min": 0,
+    "max": 1
+  },
+  "SingleFrame_095": {
+    "type": "float",
+    "group": "MoveAttack",
+    "min": 0,
+    "max": 100
+  },
+  "HipsPosition": {
+    "type": "vector3",
+    "group": "MoveOrAttackGuard",
+    "min": -1000,
+    "max": 1000
+  },
+  "HipsRotation": {
+    "type": "vector3",
+    "group": "MoveOrAttackGuard",
+    "min": null,
+    "max": null
+  },
+  "Landing_BlendWeight": {
+    "type": "float",
+    "group": "MoveOrAttackGuard",
+    "min": 0,
+    "max": 1
   },
   "RopeLHandIK": {
     "type": "float",
@@ -1211,53 +917,59 @@
     "min": 0,
     "max": 10
   },
+  "IsBattleWalk": {
+    "type": "int",
+    "group": "SideWalk",
+    "min": 0,
+    "max": 1
+  },
+  "AdditiveBlendWeight_1": {
+    "type": "float",
+    "group": "SlopePitch",
+    "min": 0,
+    "max": 1
+  },
+  "SlopePitch": {
+    "type": "float",
+    "group": "SlopePitch",
+    "min": -180,
+    "max": 180
+  },
+  "SlopeRoll": {
+    "type": "float",
+    "group": "SlopeRoll",
+    "min": -180,
+    "max": 180
+  },
   "IsStartUp": {
     "type": "int",
-    "group": "Startup",
+    "group": "StartUp",
     "min": 0,
     "max": 1
   },
   "NPCActionCategory": {
     "type": "int",
-    "group": "Startup",
+    "group": "StartUp",
     "min": 0,
     "max": 100
   },
-  "StartUpCategory": {
-    "type": "int",
-    "group": "Startup",
-    "min": 0,
-    "max": 100
-  },
-  "StartupType": {
-    "type": "int",
-    "group": "Startup",
-    "min": -1,
-    "max": 100
-  },
-  "FrontTarget": {
-    "type": "vector3",
-    "group": "Target",
-    "min": -1000,
-    "max": 1000
-  },
-  "LookAtTarget": {
-    "type": "vector3",
-    "group": "Target",
-    "min": -1000,
-    "max": 1000
-  },
-  "LookAtWeight": {
+  "StepDirection": {
     "type": "float",
-    "group": "Target",
-    "min": 0,
-    "max": 1
+    "group": "Step",
+    "min": -180,
+    "max": 180
   },
-  "Target_X": {
+  "StepDistance": {
     "type": "float",
-    "group": "Target",
-    "min": -1000,
-    "max": 1000
+    "group": "Step",
+    "min": 0,
+    "max": 100
+  },
+  "StepSpeed": {
+    "type": "float",
+    "group": "StepStaminaEmpty",
+    "min": 0,
+    "max": 10
   },
   "Target_Y": {
     "type": "float",
@@ -1265,23 +977,23 @@
     "min": -1000,
     "max": 1000
   },
-  "Add_Pos": {
-    "type": "vector3",
-    "group": null,
-    "min": -1000,
-    "max": 1000
+  "WeaponStorage_L": {
+    "type": "float",
+    "group": "WeaponChange_L",
+    "min": 0,
+    "max": 1
+  },
+  "WeaponStorage_R": {
+    "type": "float",
+    "group": "WeaponChange_R",
+    "min": 0,
+    "max": 1
   },
   "Add_pos": {
     "type": "vector3",
     "group": null,
     "min": -1000,
     "max": 1000
-  },
-  "Add_Rot": {
-    "type": "vector3",
-    "group": null,
-    "min": -180,
-    "max": 180
   },
   "AdditiveBlend_1": {
     "type": "float",
@@ -1295,13 +1007,55 @@
     "min": 0,
     "max": 1
   },
-  "AdditiveBlendWeight_1": {
+  "Attack_SwingSpeed": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 10
+  },
+  "AttackCategory_Ene": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 100
+  },
+  "AttackID_Category": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 100
+  },
+  "AttackID_Number": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 100000
+  },
+  "AttackStance_L": {
     "type": "float",
     "group": null,
     "min": 0,
     "max": 1
   },
-  "BlendWeight_0": {
+  "AttackStance_L_2Weapon": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "AttackStance_LR": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "AttackStance_R": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "AttackStance_R_2Weapon": {
     "type": "float",
     "group": null,
     "min": 0,
@@ -1319,7 +1073,13 @@
     "min": 0,
     "max": 1
   },
-  "BlendWeight_Injured": {
+  "BlendWeight_HandsUp_F": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "BlendWeight_HandsUp_S": {
     "type": "float",
     "group": null,
     "min": 0,
@@ -1331,19 +1091,7 @@
     "min": -1,
     "max": 1
   },
-  "BlendWeight_SpineSpiral": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_Stabilize_L": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_Stabilize_R": {
+  "BlendWeight_Stance": {
     "type": "float",
     "group": null,
     "min": 0,
@@ -1355,29 +1103,125 @@
     "min": 0,
     "max": 1
   },
-  "BlenWeight_095": {
+  "CatchDmgCategory": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 9999
+  },
+  "CatchDmgHitCategory": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 99
+  },
+  "CatchDmgModelID": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 9999
+  },
+  "DieCategory": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1000
+  },
+  "DmgCategory": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1000
+  },
+  "DmgDirection": {
+    "type": "float",
+    "group": null,
+    "min": -180,
+    "max": 180
+  },
+  "DmgDownOrUp": {
     "type": "float",
     "group": null,
     "min": 0,
     "max": 1
   },
-  "BSCancelDuration_High": {
+  "DmgDuration": {
     "type": "float",
     "group": null,
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 10
   },
-  "BSCancelDuration_Low": {
+  "DmgSlashOrThrust": {
     "type": "float",
     "group": null,
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 1
   },
-  "BSCancelDuration_Mid": {
+  "DoorRHandIK": {
     "type": "float",
     "group": null,
-    "min": null,
-    "max": null
+    "min": -1000,
+    "max": 1000
+  },
+  "EventActionLHandIK": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "EventActionLHandIKTarget": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000
+  },
+  "EventActionRHandIK": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "EventActionRHandIKTarget": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000
+  },
+  "FakeDead": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "FB_Speed": {
+    "type": "float",
+    "group": null,
+    "min": 0.0,
+    "max": 100.0
+  },
+  "Flight_Banking": {
+    "type": "float",
+    "group": null,
+    "min": -180,
+    "max": 180
+  },
+  "Floating_Banking": {
+    "type": "float",
+    "group": null,
+    "min": -180,
+    "max": 180
+  },
+  "Floating_FB_Speed": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 100
+  },
+  "Floating_UD_Speed": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 100
   },
   "FootLock_IK": {
     "type": "float",
@@ -1391,53 +1235,197 @@
     "min": 0,
     "max": 1
   },
+  "GuardAimTarget": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000
+  },
+  "GuardBottomCategory": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 100000
+  },
+  "GuardCancelSpeedCategory": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 10
+  },
+  "GuardCategory": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 100000
+  },
+  "GuardDuration": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 100
+  },
+  "GuardID_Category": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 99
+  },
+  "GuardSpeed": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 10
+  },
+  "GuardStance": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
   "Head": {
     "type": "float",
     "group": null,
     "min": null,
     "max": null
   },
-  "hip": {
-    "type": "vector3",
+  "InitCategory": {
+    "type": "int",
     "group": null,
-    "min": -1000,
-    "max": 1000
+    "min": 0,
+    "max": 10
   },
-  "hip2": {
-    "type": "vector3",
+  "IsDrinkUp": {
+    "type": "int",
     "group": null,
-    "min": -1000,
-    "max": 1000
+    "min": 0,
+    "max": 1
   },
-  "HipPosotion": {
-    "type": "vector3",
+  "IsEventAction": {
+    "type": "int",
     "group": null,
-    "min": -1000,
-    "max": 1000
+    "min": 0,
+    "max": 1
   },
-  "HipRotation": {
-    "type": "vector3",
+  "IsFall": {
+    "type": "int",
     "group": null,
-    "min": -180,
-    "max": 180
+    "min": 0,
+    "max": 1
   },
-  "HipsPosition": {
-    "type": "vector3",
-    "group": null,
-    "min": -1000,
-    "max": 1000
-  },
-  "HipsRotation": {
-    "type": "vector3",
-    "group": null,
-    "min": null,
-    "max": null
-  },
-  "L_WepBreak": {
+  "IsFallAttack": {
     "type": "float",
     "group": null,
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 1
+  },
+  "IsFloating": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "IsLadder": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "IsLanding": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "IsLockOn": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "IsMoving": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "IsRope": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "IsSideWalk": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "IsSubAction": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "IsSwitchStance": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "ItemUse_Speed": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 10
+  },
+  "ItemUseCategory": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1000
+  },
+  "LandingCategory": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 100
+  },
+  "LookAtTarget": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000
+  },
+  "LookAtWeight": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "MoveCategory": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1000
+  },
+  "MoveHit_Position": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000
+  },
+  "MoveHit_Rotation": {
+    "type": "vector3",
+    "group": null,
+    "min": -1000,
+    "max": 1000
+  },
+  "MoveHit_Weight": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
   },
   "PitchAnim": {
     "type": "float",
@@ -1487,24 +1475,6 @@
     "min": 0,
     "max": 10
   },
-  "PlaySpeed_1": {
-    "type": "float",
-    "group": null,
-    "min": 0.0,
-    "max": 10.0
-  },
-  "PlaySpeed_10": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 10
-  },
-  "PlaySpeed_1_3": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 10
-  },
   "PlaySpeed_1_5": {
     "type": "float",
     "group": null,
@@ -1523,12 +1493,6 @@
     "min": 0.0,
     "max": 10.0
   },
-  "PlaySpeed_5": {
-    "type": "float",
-    "group": null,
-    "min": 0.0,
-    "max": 10.0
-  },
   "PlaySpeed_6": {
     "type": "float",
     "group": null,
@@ -1540,12 +1504,6 @@
     "group": null,
     "min": 0,
     "max": 10
-  },
-  "R_WepBreak": {
-    "type": "float",
-    "group": null,
-    "min": null,
-    "max": null
   },
   "Road_Down_Rotation": {
     "type": "vector3",
@@ -1571,25 +1529,43 @@
     "min": 0,
     "max": 100
   },
+  "Shot1_Route": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 100
+  },
+  "Shot2_Route": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 100
+  },
+  "Shot3_Route": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 100
+  },
+  "ShotMoveFinish": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "ShotPreparationFinish": {
+    "type": "int",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
   "SingleFrame_0": {
     "type": "float",
     "group": null,
     "min": 0,
     "max": 100
   },
-  "SingleFrame_03": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 100
-  },
   "SingleFrame_05": {
-    "type": "float",
-    "group": null,
-    "min": 0,
-    "max": 100
-  },
-  "SingleFrame_095": {
     "type": "float",
     "group": null,
     "min": 0,
@@ -1619,10 +1595,22 @@
     "min": 0,
     "max": 1
   },
-  "Target_Distance": {
-    "type": "float",
+  "StartUpCategory": {
+    "type": "int",
     "group": null,
     "min": 0,
+    "max": 100
+  },
+  "StartupType": {
+    "type": "int",
+    "group": null,
+    "min": -1,
+    "max": 100
+  },
+  "Target_X": {
+    "type": "float",
+    "group": null,
+    "min": -1000,
     "max": 1000
   },
   "Test_01": {
@@ -1645,6 +1633,18 @@
   },
   "TwoHandIKTarget": {
     "type": "vector3",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "TwoHandStance": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "TwoWeaponStance": {
+    "type": "float",
     "group": null,
     "min": 0,
     "max": 1
@@ -1679,23 +1679,17 @@
     "min": 0,
     "max": 1
   },
+  "WeaponCategory_Ene": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 10
+  },
   "WeoHandWeight": {
     "type": "float",
     "group": null,
     "min": 0,
     "max": 1
-  },
-  "Wep02_Pos": {
-    "type": "vector3",
-    "group": null,
-    "min": -1000,
-    "max": 1000
-  },
-  "Wep02_Rot": {
-    "type": "vector3",
-    "group": null,
-    "min": -180,
-    "max": 180
   },
   "WepHandDuration": {
     "type": "float",
@@ -1710,6 +1704,12 @@
     "max": 2
   },
   "WepHandWegiht": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 1
+  },
+  "WepHandWeight": {
     "type": "float",
     "group": null,
     "min": 0,
