@@ -1,0 +1,296 @@
+{
+  "A10": {
+    "group": "Attack"
+  },
+  "A10End": {
+    "group": "Attack"
+  },
+  "Attack": {
+    "group": "Attack"
+  },
+  "Attack_01": {
+    "group": "Attack"
+  },
+  "Attack_02": {
+    "group": "Attack"
+  },
+  "Attack_03": {
+    "group": "Attack"
+  },
+  "Attack_04": {
+    "group": "Attack"
+  },
+  "Attack_Cancel": {
+    "group": "Attack"
+  },
+  "Attack_L": {
+    "group": "Attack"
+  },
+  "Attack_R": {
+    "group": "Attack"
+  },
+  "AttackOnline": {
+    "group": "Attack"
+  },
+  "AttackTurn": {
+    "group": "Attack"
+  },
+  "CatchAttackOnline": {
+    "group": "Attack"
+  },
+  "CAtchAttackOnline": {
+    "group": "Attack"
+  },
+  "CatchAttackOnlline": {
+    "group": "Attack"
+  },
+  "CatcjAttackOnline": {
+    "group": "Attack"
+  },
+  "Combination": {
+    "group": "Attack"
+  },
+  "JumpAttack": {
+    "group": "Attack"
+  },
+  "SecondAttack": {
+    "group": "Attack"
+  },
+  "AttackGuard_L": {
+    "group": "Base Act"
+  },
+  "AttackGuard_R": {
+    "group": "Base Act"
+  },
+  "BattleStance": {
+    "group": "Base Act"
+  },
+  "ChangeStance": {
+    "group": "Base Act"
+  },
+  "ChangeStance_L": {
+    "group": "Base Act"
+  },
+  "ChangeStance_NoAnime": {
+    "group": "Base Act"
+  },
+  "ChangeStance_R": {
+    "group": "Base Act"
+  },
+  "Default": {
+    "group": "Base Act"
+  },
+  "Defaut": {
+    "group": "Base Act"
+  },
+  "Idle": {
+    "group": "Base Act"
+  },
+  "Jump": {
+    "group": "Base Act"
+  },
+  "QuickStop": {
+    "group": "Base Act"
+  },
+  "Rope": {
+    "group": "Base Act"
+  },
+  "StandJump": {
+    "group": "Base Act"
+  },
+  "SwichStance_L": {
+    "group": "Base Act"
+  },
+  "SwichStance_R": {
+    "group": "Base Act"
+  },
+  "Turn": {
+    "group": "Base Act"
+  },
+  "Bonfire": {
+    "group": "Bonfire"
+  },
+  "BonfireMenu": {
+    "group": "Bonfire"
+  },
+  "A20": {
+    "group": "Damage"
+  },
+  "DamageFullBody": {
+    "group": "Damage"
+  },
+  "DamageParts": {
+    "group": "Damage"
+  },
+  "DamageUpper": {
+    "group": "Damage"
+  },
+  "DestructionFullBody": {
+    "group": "Damage"
+  },
+  "DestructionParts": {
+    "group": "Damage"
+  },
+  "ExMotion": {
+    "group": "Damage"
+  },
+  "SitDown": {
+    "group": "Damage"
+  },
+  "SitUp_FaceDown": {
+    "group": "Damage"
+  },
+  "SitUp_FaceUp": {
+    "group": "Damage"
+  },
+  "Die": {
+    "group": "Die"
+  },
+  "Die_A": {
+    "group": "Die"
+  },
+  "Die_B": {
+    "group": "Die"
+  },
+  "Die_C": {
+    "group": "Die"
+  },
+  "Dodge": {
+    "group": "Dodge"
+  },
+  "DodgeFailed": {
+    "group": "Dodge"
+  },
+  "DodgeStaminaEmpty": {
+    "group": "Dodge"
+  },
+  "Door": {
+    "group": "Event Action"
+  },
+  "EventAction": {
+    "group": "Event Action"
+  },
+  "EventActionLoopEnd": {
+    "group": "Event Action"
+  },
+  "EventSubAction": {
+    "group": "Event Action"
+  },
+  "InitEventAction": {
+    "group": "Event Action"
+  },
+  "Gesture": {
+    "group": "Gesture"
+  },
+  "Guard_Cancel": {
+    "group": "Guard"
+  },
+  "MoveGuard": {
+    "group": "Guard"
+  },
+  "ItemUse": {
+    "group": "Item Use"
+  },
+  "ItemUseLoop": {
+    "group": "Item Use"
+  },
+  "LadderDownEnd": {
+    "group": "Ladder"
+  },
+  "LadderStart": {
+    "group": "Ladder"
+  },
+  "LadderUpEnd": {
+    "group": "Ladder"
+  },
+  "NPCAction": {
+    "group": "Startup"
+  },
+  "Start00": {
+    "group": "Startup"
+  },
+  "Start01": {
+    "group": "Startup"
+  },
+  "Start02": {
+    "group": "Startup"
+  },
+  "Start03": {
+    "group": "Startup"
+  },
+  "Start04": {
+    "group": "Startup"
+  },
+  "Start05": {
+    "group": "Startup"
+  },
+  "Start06": {
+    "group": "Startup"
+  },
+  "Start07": {
+    "group": "Startup"
+  },
+  "Start08": {
+    "group": "Startup"
+  },
+  "Start09": {
+    "group": "Startup"
+  },
+  "StartUp": {
+    "group": "Startup"
+  },
+  "StartUp_Dmy": {
+    "group": "Startup"
+  },
+  "Step": {
+    "group": "Step"
+  },
+  "StepFailed": {
+    "group": "Step"
+  },
+  "StepStaminaEmpty": {
+    "group": "Step"
+  },
+  "CatchAttack": {
+    "group": null
+  },
+  "CatchDamage": {
+    "group": null
+  },
+  "Contact": {
+    "group": null
+  },
+  "Dummy": {
+    "group": null
+  },
+  "ExMotionEnd": {
+    "group": null
+  },
+  "Guard": {
+    "group": null
+  },
+  "HitBack": {
+    "group": null
+  },
+  "RagDoll_End": {
+    "group": null
+  },
+  "Reset": {
+    "group": null
+  },
+  "SkinCheck": {
+    "group": null
+  },
+  "Test": {
+    "group": null
+  },
+  "Test_01": {
+    "group": null
+  },
+  "Test_02": {
+    "group": null
+  },
+  "Test_03": {
+    "group": null
+  }
+}
