@@ -329,12 +329,6 @@
     "min": 0,
     "max": 1
   },
-  "PlaySpeed_1": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0.0,
-    "max": 10.0
-  },
   "ShootCategory": {
     "type": "float",
     "group": "Attack",
@@ -712,24 +706,6 @@
     "group": "Base Act",
     "min": 0,
     "max": 1
-  },
-  "PlaySpeed_10": {
-    "type": "float",
-    "group": "Base Act",
-    "min": 0,
-    "max": 10
-  },
-  "PlaySpeed_1_3": {
-    "type": "float",
-    "group": "Base Act",
-    "min": 0,
-    "max": 10
-  },
-  "PlaySpeed_5": {
-    "type": "float",
-    "group": "Base Act",
-    "min": 0.0,
-    "max": 10.0
   },
   "R_WepBreak": {
     "type": "float",
@@ -1571,6 +1547,24 @@
     "min": 0,
     "max": 10
   },
+  "PlaySpeed_1": {
+    "type": "float",
+    "group": null,
+    "min": 0.0,
+    "max": 10.0
+  },
+  "PlaySpeed_10": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 10
+  },
+  "PlaySpeed_1_3": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 10
+  },
   "PlaySpeed_1_5": {
     "type": "float",
     "group": null,
@@ -1584,6 +1578,12 @@
     "max": 10.0
   },
   "PlaySpeed_3": {
+    "type": "float",
+    "group": null,
+    "min": 0.0,
+    "max": 10.0
+  },
+  "PlaySpeed_5": {
     "type": "float",
     "group": null,
     "min": 0.0,
