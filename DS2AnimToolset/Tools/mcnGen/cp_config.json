@@ -317,6 +317,12 @@
     "min": -180,
     "max": 180
   },
+  "FB_Speed": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0.0,
+    "max": 100.0
+  },
   "Flight_FB_Speed": {
     "type": "float",
     "group": "BaseAct",
@@ -1192,12 +1198,6 @@
     "group": null,
     "min": 0,
     "max": 1
-  },
-  "FB_Speed": {
-    "type": "float",
-    "group": "BaseAct",
-    "min": 0.0,
-    "max": 100.0
   },
   "Flight_Banking": {
     "type": "float",
