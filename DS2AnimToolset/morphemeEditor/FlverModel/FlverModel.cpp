@@ -242,7 +242,6 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 		return nullptr;
 
 	BND4::BndFile* flverFile = bnd->getFirstFileWithExtension(".flv");
-	BND4::BndFile* flvpwvFile = bnd->getFirstFileWithExtension(".flvpwv");
 
 	if (flverFile)
 	{
