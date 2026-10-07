@@ -25,6 +25,11 @@ How it works:
 Connect is single instance: close any running Connect first, or the headless
 one quits immediately.
 
+Settings come from config.ini (the same file rebuild.bat uses: key=value lines,
+';' comments). Looked up next to this script unless --config is given. Keys used:
+  CONNECT   path to morphemeConnect.exe
+Command-line options override the config.
+
 Usage:
   python mcskin_batch.py <root>                    # generate, run Connect, install
   python mcskin_batch.py <root> --only c1240 c1370 # subset of folders
@@ -47,6 +52,19 @@ DEFAULT_CONNECT_DIR = Path(r"C:\Program Files (x86)\NaturalMotion\morphemeConnec
 TMP_DIR_NAME = "_mcskin_tmp"
 LUA_NAME = "_mcskin_batch.lua"
 RESULTS_NAME = "results.txt"
+CONFIG_NAME = "config.ini"
+
+
+def read_config(path):
+    """key=value lines, ';' or '#' comments, no sections (rebuild.bat's config.ini)."""
+    cfg = {}
+    for raw in path.read_text(encoding="utf-8-sig", errors="replace").splitlines():
+        line = raw.strip()
+        if not line or line[0] in ";#" or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        cfg[key.strip().upper()] = value.strip().strip('"')
+    return cfg
 
 
 def find_connect_exe(given):
@@ -208,7 +226,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("root", help="folder of Connect project folders, or one project folder")
     ap.add_argument("--only", nargs="+", help="only these project folder names")
-    ap.add_argument("--connect", help="path to morphemeConnect.exe (or its folder)")
+    ap.add_argument("--config", help="config.ini to read (default: config.ini next to this script)")
+    ap.add_argument("--connect", help="path to morphemeConnect.exe (or its folder); overrides CONNECT in config.ini")
     ap.add_argument("--scale", type=float, default=1.0, help="rig unit scale factor for createSkin (default 1.0 = metres)")
     ap.add_argument("--traj", default="Master", help="trajectory joint for the createRig fallback (default Master)")
     ap.add_argument("--hip", default="Root", help="hip joint for the createRig fallback (default Root)")
@@ -216,6 +235,16 @@ def main():
     ap.add_argument("--install-only", action="store_true", help="skip Connect, install skins from an earlier run")
     ap.add_argument("--keep-tmp", action="store_true", help="keep the _mcskin_tmp folder after installing")
     args = ap.parse_args()
+
+    config_path = Path(args.config) if args.config else Path(__file__).resolve().parent / CONFIG_NAME
+    if config_path.is_file():
+        cfg = read_config(config_path)
+        print("config %s" % config_path)
+    elif args.config:
+        sys.exit("config not found: %s" % config_path)
+    else:
+        cfg = {}
+    connect = args.connect or cfg.get("CONNECT") or None
 
     root = Path(args.root).resolve()
     if not root.is_dir():
@@ -239,14 +268,15 @@ def main():
         write_lua(jobs, tmp_root, lua_path, args.scale, args.traj, args.hip)
         print("wrote %s (%d projects)" % (lua_path, len(jobs)))
 
-        exe = find_connect_exe(args.connect)
+        exe = find_connect_exe(connect)
         cmd = [str(exe) if exe else "morphemeConnect.exe", "-nogui", "-script", str(lua_path)]
         if args.lua_only:
             print("close Connect, then run:\n  " + subprocess.list2cmdline(cmd))
             print("then: python %s %s --install-only" % (Path(__file__).name, args.root))
             return
         if exe is None:
-            sys.exit("morphemeConnect.exe not found; pass --connect")
+            sys.exit("morphemeConnect.exe not found%s; set CONNECT in config.ini or pass --connect"
+                     % ((" at " + connect) if connect else ""))
         print("running Connect headless (close any open Connect first)...")
         subprocess.run(cmd, cwd=str(exe.parent))
 
