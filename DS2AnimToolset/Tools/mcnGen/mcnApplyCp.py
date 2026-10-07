@@ -6,7 +6,8 @@ mcnApplyCp.py - apply the CP settings file to built .mcn files directly: no expo
 For every control parameter of the .mcn that the settings file lists:
   min / max  float and vector CPs: <Min>/<Max> (float) after the data pin; int CPs: <MinInt>/<MaxInt> after the
              default. A null min or max removes that bound. Bool CPs have no range.
-  group      the CP is moved into that control parameter group (groups left empty are removed).
+  group      the CP is moved into that control parameter group; a null group takes it out of any group (groups left
+             empty are removed).
 Bounds equal to Connect's own defaults are left out, as Connect does. Defaults are not touched (they come from the game export when the network is built). A folder is searched
 recursively for .mcn files. Each file is rewritten only when something changes.
 """
@@ -56,10 +57,13 @@ def apply_range(el, cfg):
 
 def apply_groups(cpnode, arr, config):
     """True when the groups changed."""
-    wanted = {}
+    wanted, ungrouped = {}, set()
     for c in arr.findall('ControlParameter'):
-        g = (config.get(c.get('name')) or {}).get('group')
-        if g: wanted.setdefault(g, []).append(c.get('name'))
+        name = c.get('name')
+        if name not in config: continue
+        g = config[name].get('group')
+        if g: wanted.setdefault(g, []).append(name)
+        else: ungrouped.add(name)          # listed with a null group: taken out of any group
     container = cpnode.find('ControlParametersNode')
     if container is None:
         if not wanted: return False
@@ -68,7 +72,7 @@ def apply_groups(cpnode, arr, config):
     snapshot = lambda: sorted((g.get('name'), sorted(e.text or '' for e in g.iter('elem')))
                               for g in container.findall('ControlParameterGroup'))
     before = snapshot()
-    regrouped = {cp for cps in wanted.values() for cp in cps}
+    regrouped = {cp for cps in wanted.values() for cp in cps} | ungrouped
     for grp in container.findall('ControlParameterGroup'):
         ga = grp.find('ControlParameterArray')
         if ga is None: continue
