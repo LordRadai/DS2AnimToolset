@@ -114,8 +114,7 @@ public:
 
 	/**
 	 * \brief Converts the flver bone influences of a vertex to morpheme rig bone influences.
-	 * Weights on bones morpheme does not animate are moved to the morpheme bone that drives them. Twist bones split their weight
-	 * between their base bone and their rotation addition bone by the rotation scale. At most the 4 largest influences are kept.
+	 * Weights on bones morpheme does not animate are moved to the morpheme bone that drives them.
 	 */
 	MorphemeSkinInfluences getMorphemeSkinInfluences(const SkinnedVertex& vertex);
 
