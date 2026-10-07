@@ -269,11 +269,77 @@
     "min": 0,
     "max": 1
   },
+  "BlendWeight_SpineSpiral": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 1
+  },
+  "BlendWeight_Stabilize_L": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 1
+  },
+  "BlendWeight_Stabilize_R": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 1
+  },
+  "ChangeStance_R_Preset": {
+    "type": "int",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 1
+  },
+  "DashBlendWeight": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 1
+  },
+  "DashHipsFootTurn": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": -180,
+    "max": 180
+  },
+  "DashHipsPosition": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -1000,
+    "max": 1000
+  },
+  "DashHipsRotation": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -180,
+    "max": 180
+  },
+  "Flight_FB_Speed": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 100
+  },
+  "Flight_UD_Speed": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 100
+  },
   "FrontDirection": {
     "type": "float",
     "group": "BaseAct",
     "min": -180.0,
     "max": 180.0
+  },
+  "FrontTarget": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -1000,
+    "max": 1000
   },
   "Guard_pos": {
     "type": "vector3",
@@ -311,6 +377,18 @@
     "min": -180,
     "max": 180
   },
+  "Injured_HipsPosition": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -1000,
+    "max": 1000
+  },
+  "Injured_HipsRotation": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -1000,
+    "max": 1000
+  },
   "IsBattleStance": {
     "type": "int",
     "group": "BaseAct",
@@ -328,6 +406,36 @@
     "group": "BaseAct",
     "min": 0,
     "max": 1
+  },
+  "Load_L_Weight": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 1
+  },
+  "Load_R_Weight": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 1
+  },
+  "LoadTotalWeight": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 100
+  },
+  "MoveHit_Rotation_L": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -180,
+    "max": 180
+  },
+  "MoveHit_Rotation_R": {
+    "type": "vector3",
+    "group": "BaseAct",
+    "min": -180,
+    "max": 180
   },
   "ParryStance": {
     "type": "float",
@@ -376,6 +484,12 @@
     "group": "BaseAct",
     "min": -180,
     "max": 180
+  },
+  "WeaponChangeSpeed": {
+    "type": "float",
+    "group": "BaseAct",
+    "min": 0,
+    "max": 10
   },
   "BSCancelDuration_High": {
     "type": "float",
@@ -700,120 +814,6 @@
     "group": "MainNetwork",
     "min": 0,
     "max": 1000
-  },
-  "BlendWeight_SpineSpiral": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_Stabilize_L": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "BlendWeight_Stabilize_R": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "ChangeStance_R_Preset": {
-    "type": "int",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "DashBlendWeight": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "DashHipsFootTurn": {
-    "type": "float",
-    "group": "Move",
-    "min": -180,
-    "max": 180
-  },
-  "DashHipsPosition": {
-    "type": "vector3",
-    "group": "Move",
-    "min": -1000,
-    "max": 1000
-  },
-  "DashHipsRotation": {
-    "type": "vector3",
-    "group": "Move",
-    "min": -180,
-    "max": 180
-  },
-  "Flight_FB_Speed": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 100
-  },
-  "Flight_UD_Speed": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 100
-  },
-  "FrontTarget": {
-    "type": "vector3",
-    "group": "Move",
-    "min": -1000,
-    "max": 1000
-  },
-  "Injured_HipsPosition": {
-    "type": "vector3",
-    "group": "Move",
-    "min": -1000,
-    "max": 1000
-  },
-  "Injured_HipsRotation": {
-    "type": "vector3",
-    "group": "Move",
-    "min": -1000,
-    "max": 1000
-  },
-  "Load_L_Weight": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "Load_R_Weight": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 1
-  },
-  "LoadTotalWeight": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 100
-  },
-  "MoveHit_Rotation_L": {
-    "type": "vector3",
-    "group": "Move",
-    "min": -180,
-    "max": 180
-  },
-  "MoveHit_Rotation_R": {
-    "type": "vector3",
-    "group": "Move",
-    "min": -180,
-    "max": 180
-  },
-  "WeaponChangeSpeed": {
-    "type": "float",
-    "group": "Move",
-    "min": 0,
-    "max": 10
   },
   "AimBlendWeightBody": {
     "type": "float",
