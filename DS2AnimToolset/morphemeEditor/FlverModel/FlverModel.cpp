@@ -1,3 +1,5 @@
+#include <functional>
+
 #include "FlverModel.h"
 #include "framework.h"
 #include "extern.h"
@@ -5,6 +7,9 @@
 #include "RenderManager/RenderManager.h"
 
 //#define MAX_BONE_WEIGHT_SANITIZATION_ITERATIONS 100
+
+// Extension of the FLVPWV (twist bone settings) file inside a model's .bnd
+#define FLVPWV_FILE_EXTENSION ".flvpwv"
 
 Matrix g_nmToYUpAdjustMatrix = Matrix::CreateRotationX(-DirectX::XM_PIDIV2);
 Matrix g_invertedNmToYUpAdjustMatrix = g_nmToYUpAdjustMatrix.Invert();
@@ -135,6 +140,37 @@ namespace
 			dstPose[i] = localTransform * g_flverBoneAdjustMatrix;
 		}
 	}
+
+	Matrix getRotationMatrix(Matrix transform)
+	{
+		Vector3 scale;
+		Quaternion rotation;
+		Vector3 translation;
+
+		transform.Decompose(scale, rotation, translation);
+
+		return Matrix::CreateFromQuaternion(rotation);
+	}
+
+	// Scales a rotation by a factor. If oneAxis is set, only the twist around the local X axis (the bone direction) is kept.
+	Matrix scaleTwistRotation(const Matrix& rotation, float scale, bool oneAxis)
+	{
+		Quaternion q = Quaternion::CreateFromRotationMatrix(rotation);
+
+		// Take the shortest arc so the scaled rotation does not flip around
+		if (q.w < 0.f)
+			q = -q;
+
+		if (oneAxis)
+		{
+			// Swing-twist decomposition: the twist around X is the normalised (x, 0, 0, w) part of the quaternion
+			const float twistAngle = 2.f * std::atan2(q.x, q.w);
+
+			return Matrix::CreateRotationX(twistAngle * scale);
+		}
+
+		return Matrix::CreateFromQuaternion(Quaternion::Slerp(Quaternion::Identity, q, scale));
+	}
 }
 
 FlverModel::SkinnedVertex::SkinnedVertex(Vector3 pos, Vector3 normal, float* weights, int* bone_indices)
@@ -150,7 +186,7 @@ FlverModel::SkinnedVertex::SkinnedVertex(Vector3 pos, Vector3 normal, float* wei
 	}
 }
 
-FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
+FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig, const ChrModelExFormat::ChrModelExFormat* exFormat)
 {
 	this->m_loaded = false;
 	this->m_meshVerticesTransforms.clear();
@@ -174,6 +210,7 @@ FlverModel::FlverModel(UMEM* umem, MR::AnimRigDef* rig)
 	this->createFlverToMorphemeBoneMap();
 	this->createMorphemeToFlverBoneMap();
 	this->createFlverToMorphemeSkinningBoneMap();
+	this->createFlverTwistBones(exFormat);
 	this->createFlverBoneEvaluationOrder();
 
 	if (!this->initialise())
@@ -211,7 +248,18 @@ FlverModel* FlverModel::createFromBnd(std::wstring path, MR::AnimRigDef* rig)
 
 		UMEM* umem = uopenMem((char*)flverFile->data, flverFile->uncompressedSize);
 
-		model = new FlverModel(umem, rig);
+		ChrModelExFormat::ChrModelExFormat* exFormat = nullptr;
+		BND4::BndFile* exFormatFile = bnd->getFirstFileWithExtension(FLVPWV_FILE_EXTENSION);
+
+		if (exFormatFile && exFormatFile->data)
+			exFormat = ChrModelExFormat::ChrModelExFormat::createFromResource(reinterpret_cast<ChrModelExFormat::FLVPWV::Header*>(exFormatFile->data));
+		else
+			g_appLog->debugMessage(MsgLevel_Debug, "No twist bone file (%s) in \"%ws\", twist bones will follow their parent\n", FLVPWV_FILE_EXTENSION, path.c_str());
+
+		model = new FlverModel(umem, rig, exFormat);
+
+		if (exFormat)
+			exFormat->destroy();
 		model->m_name = std::filesystem::path(path).filename().replace_extension("").string();
 		model->m_fileOrigin = path + L"\\" + RString::toWide(flverFile->name.c_str());
 
@@ -664,9 +712,14 @@ void FlverModel::update(float dt)
 			// Take the morpheme animation transform relative to the morpheme bind pose and apply it to the flver bind pose.
 			this->m_flverBoneTransforms[i] = this->m_flverBindPoseTransforms[i] * getNmBoneRelativeTransform(morphemeBoneID);
 		}
+		else if (this->isFlverTwistBone(i))
+		{
+			// Twist bones are driven by the FLVPWV settings: they follow their base bone and add part of the rotation of another bone
+			this->m_flverBoneTransforms[i] = this->computeFlverTwistBoneTransform(i);
+		}
 		else
 		{
-			// Bones morpheme does not animate (twist bones, etc.) keep their flver bind pose local transform and follow their parent.
+			// Other bones morpheme does not animate keep their flver bind pose local transform and follow their parent.
 			const int parentIdx = this->getFlverBoneParentIndex(i);
 
 			if (parentIdx != -1)
@@ -942,33 +995,114 @@ void FlverModel::createFlverToMorphemeSkinningBoneMap()
 	}
 }
 
-//Orders the flver bones so that each bone comes after its parent
+//Reads the twist bone settings of every flver bone from the FLVPWV file. Entries are matched to flver bones by name.
+void FlverModel::createFlverTwistBones(const ChrModelExFormat::ChrModelExFormat* exFormat)
+{
+	const int boneCount = this->m_flver->header.boneCount;
+
+	this->m_flverTwistBones.assign(boneCount, TwistBone());
+
+	if (exFormat == nullptr)
+		return;
+
+	for (int i = 0; i < boneCount; i++)
+	{
+		if (this->m_flver->bones[i].name == nullptr)
+			continue;
+
+		const ChrModelExFormat::Bone* exBone = exFormat->getBone(this->m_flver->bones[i].name);
+
+		if ((exBone == nullptr) || !exBone->isTwistBone())
+			continue;
+
+		const int baseBone = exBone->getBaseBone();
+		const int rotationAdditionBone = exBone->getRotationAdditionBone();
+
+		if ((baseBone < 0) || (baseBone >= boneCount) || (rotationAdditionBone < 0) || (rotationAdditionBone >= boneCount) || (baseBone == i) || (rotationAdditionBone == i))
+		{
+			g_appLog->debugMessage(MsgLevel_Warn, "Twist bone \"%s\" has invalid base (%d) or rotation addition (%d) bone, ignoring it\n", this->getFlverBoneName(i).c_str(), baseBone, rotationAdditionBone);
+			continue;
+		}
+
+		TwistBone& twistBone = this->m_flverTwistBones[i];
+		twistBone.baseBone = baseBone;
+		twistBone.rotationAdditionBone = rotationAdditionBone;
+		twistBone.rotationScale = exBone->getRotationScale();
+		twistBone.threeAxis = (exBone->getType() == ChrModelExFormat::FLVPWV::Bone::TWIST_BONE_THREE_AXIS);
+
+		g_appLog->debugMessage(MsgLevel_Debug, "\tTwist bone \"%s\": base=\"%s\", rotationAddition=\"%s\", scale=%.3f, %s\n", this->getFlverBoneName(i).c_str(), this->getFlverBoneName(baseBone).c_str(), this->getFlverBoneName(rotationAdditionBone).c_str(), twistBone.rotationScale, twistBone.threeAxis ? "three axis" : "one axis");
+	}
+}
+
+bool FlverModel::isFlverTwistBone(int idx) const
+{
+	if ((idx < 0) || (idx >= this->m_flverTwistBones.size()))
+		return false;
+
+	return this->m_flverTwistBones[idx].baseBone != -1;
+}
+
+//Orders the flver bones so that each bone comes after its parent, and twist bones after their base and rotation addition bones
 void FlverModel::createFlverBoneEvaluationOrder()
 {
 	const int boneCount = this->m_flver->header.boneCount;
 
-	std::vector<bool> added(boneCount, false);
-	std::vector<int> chain;
+	enum VisitState : uint8_t { kNotVisited, kVisiting, kVisited };
+	std::vector<VisitState> state(boneCount, kNotVisited);
 
 	this->m_flverBoneEvaluationOrder.clear();
 	this->m_flverBoneEvaluationOrder.reserve(boneCount);
 
-	for (int i = 0; i < boneCount; i++)
+	std::function<void(int)> visit = [&](int idx)
 	{
-		chain.clear();
+		// A bone that is still being visited is part of a dependency cycle: skip that dependency instead of looping
+		if ((idx == -1) || (state[idx] != kNotVisited))
+			return;
 
-		for (int boneIdx = i; (boneIdx != -1) && !added[boneIdx] && (chain.size() < static_cast<size_t>(boneCount)); boneIdx = this->getFlverBoneParentIndex(boneIdx))
-			chain.push_back(boneIdx);
+		state[idx] = kVisiting;
 
-		for (auto it = chain.rbegin(); it != chain.rend(); ++it)
+		visit(this->getFlverBoneParentIndex(idx));
+
+		if (this->isFlverTwistBone(idx))
 		{
-			if (added[*it])
-				continue;
-
-			added[*it] = true;
-			this->m_flverBoneEvaluationOrder.push_back(*it);
+			visit(this->m_flverTwistBones[idx].baseBone);
+			visit(this->m_flverTwistBones[idx].rotationAdditionBone);
 		}
-	}
+
+		state[idx] = kVisited;
+		this->m_flverBoneEvaluationOrder.push_back(idx);
+	};
+
+	for (int i = 0; i < boneCount; i++)
+		visit(i);
+}
+
+//Computes the current transform of a twist bone: its bind pose relative to its base bone, plus the rotation of its rotation addition bone 
+//away from that bone's bind pose, scaled by the rotation scale. One axis twist bones only take the roll around the bone direction (local X).
+Matrix FlverModel::computeFlverTwistBoneTransform(int idx)
+{
+	const TwistBone& twistBone = this->m_flverTwistBones[idx];
+	const int additionBone = twistBone.rotationAdditionBone;
+	const int additionParent = this->getFlverBoneParentIndex(additionBone);
+
+	// Local transforms of the rotation addition bone. Root bones are taken relative to the axis adjust matrix, so neither carries its reflection.
+	const Matrix additionParentTransform = (additionParent != -1) ? this->m_flverBoneTransforms[additionParent] : g_flverBoneAdjustMatrix;
+	const Matrix additionParentBindInverse = (additionParent != -1) ? this->m_flverInverseBindPoseTransforms[additionParent] : g_flverBoneAdjustMatrix.Invert();
+
+	const Matrix additionLocal = getRotationMatrix(this->m_flverBoneTransforms[additionBone] * additionParentTransform.Invert());
+	const Matrix additionBindLocal = getRotationMatrix(this->m_flverBindPoseTransforms[additionBone] * additionParentBindInverse);
+
+	// Rotation away from the bind pose, expressed in the rotation addition bone's own frame (local = delta * bind)
+	const Matrix additionDelta = additionLocal * additionBindLocal.Transpose();
+	const Matrix scaledDelta = scaleTwistRotation(additionDelta, twistBone.rotationScale, !twistBone.threeAxis);
+
+	// Move the rotation from the rotation addition bone's frame to the twist bone's frame
+	const Matrix additionToTwist = getRotationMatrix(this->m_flverBindPoseTransforms[idx] * this->m_flverInverseBindPoseTransforms[additionBone]);
+	const Matrix twistRotation = additionToTwist * scaledDelta * additionToTwist.Transpose();
+
+	const int baseBone = twistBone.baseBone;
+
+	return twistRotation * this->m_flverBindPoseTransforms[idx] * this->m_flverInverseBindPoseTransforms[baseBone] * this->m_flverBoneTransforms[baseBone];
 }
 
 int FlverModel::getMorphemeSkinningBoneIdByFlverBoneId(int idx)

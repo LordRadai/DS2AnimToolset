@@ -19,6 +19,11 @@
 
 class RenderManager;
 
+namespace ChrModelExFormat
+{
+	class ChrModelExFormat;
+}
+
 using namespace cfr;
 
 enum DisplayMode
@@ -163,7 +168,7 @@ public:
 
 private:
 	FlverModel() {}
-	FlverModel(UMEM* umem, MR::AnimRigDef* rig);
+	FlverModel(UMEM* umem, MR::AnimRigDef* rig, const ChrModelExFormat::ChrModelExFormat* exFormat);
 	FlverModel(MR::AnimRigDef* rig);
 	~FlverModel() {}
 
@@ -194,6 +199,17 @@ private:
 	std::vector<int> m_morphemeToFlverBoneMap;
 	std::vector<int> m_flverToMorphemeSkinningBoneMap;
 	std::vector<int> m_flverBoneEvaluationOrder;
+
+	// Twist bone settings from the model's FLVPWV file, indexed by flver bone. Bones that are not twist bones have no base bone.
+	struct TwistBone
+	{
+		int baseBone = -1;
+		int rotationAdditionBone = -1;
+		float rotationScale = 0.f;
+		bool threeAxis = false;
+	};
+
+	std::vector<TwistBone> m_flverTwistBones;
 	std::vector<std::vector<SkinnedVertex>> m_meshVerticesTransforms;
 	std::vector<std::vector<SkinnedVertex>> m_meshVerticesBindPoseTransforms;
 	std::vector<Matrix> m_flverBoneTransforms;
@@ -210,7 +226,10 @@ private:
 	void createFlverToMorphemeBoneMap();
 	void createMorphemeToFlverBoneMap();
 	void createFlverToMorphemeSkinningBoneMap();
+	void createFlverTwistBones(const ChrModelExFormat::ChrModelExFormat* exFormat);
 	void createFlverBoneEvaluationOrder();
+	bool isFlverTwistBone(int idx) const;
+	Matrix computeFlverTwistBoneTransform(int idx);
 	int getFlverBoneParentIndex(int idx);
 
 	std::vector<Vector3> getFlverMeshVertices(int idx);
