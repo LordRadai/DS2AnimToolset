@@ -1,1 +1,1 @@
-python sortCpConfig.py
+python sortMsgConfig.py
