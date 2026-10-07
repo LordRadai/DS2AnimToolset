@@ -77,12 +77,6 @@
   "ChangeStance_R": {
     "group": "Base Act"
   },
-  "Default": {
-    "group": "Base Act"
-  },
-  "Defaut": {
-    "group": "Base Act"
-  },
   "Idle": {
     "group": "Base Act"
   },
@@ -261,6 +255,12 @@
     "group": null
   },
   "Contact": {
+    "group": null
+  },
+  "Default": {
+    "group": null
+  },
+  "Defaut": {
     "group": null
   },
   "Dummy": {
