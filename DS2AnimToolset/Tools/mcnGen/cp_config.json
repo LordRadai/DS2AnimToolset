@@ -185,6 +185,18 @@
     "min": 0,
     "max": 100
   },
+  "Attack_SizeCategory": {
+    "type": "float",
+    "group": "Attack",
+    "min": 0,
+    "max": 4
+  },
+  "Attack_SwingSpeed": {
+    "type": "float",
+    "group": "Attack",
+    "min": 0,
+    "max": 10
+  },
   "Attack_SwingSpeed2": {
     "type": "float",
     "group": "Attack",
@@ -202,6 +214,54 @@
     "group": "Attack",
     "min": 0,
     "max": 10
+  },
+  "AttackCategory_Ene": {
+    "type": "float",
+    "group": "Attack",
+    "min": 0,
+    "max": 100
+  },
+  "AttackID_Category": {
+    "type": "float",
+    "group": "Attack",
+    "min": 0,
+    "max": 100
+  },
+  "AttackID_Number": {
+    "type": "float",
+    "group": "Attack",
+    "min": 0,
+    "max": 100000
+  },
+  "AttackStance_L": {
+    "type": "float",
+    "group": "Attack",
+    "min": 0,
+    "max": 1
+  },
+  "AttackStance_L_2Weapon": {
+    "type": "float",
+    "group": "Attack",
+    "min": 0,
+    "max": 1
+  },
+  "AttackStance_LR": {
+    "type": "float",
+    "group": "Attack",
+    "min": 0,
+    "max": 1
+  },
+  "AttackStance_R": {
+    "type": "float",
+    "group": "Attack",
+    "min": 0,
+    "max": 1
+  },
+  "AttackStance_R_2Weapon": {
+    "type": "float",
+    "group": "Attack",
+    "min": 0,
+    "max": 1
   },
   "Combo1_Route": {
     "type": "int",
@@ -322,12 +382,6 @@
     "group": "Attack",
     "min": 0,
     "max": 1000
-  },
-  "Attack_SizeCategory": {
-    "type": "float",
-    "group": "Attack_ShortRange",
-    "min": 0,
-    "max": 4
   },
   "Add_Pos": {
     "type": "vector3",
@@ -539,7 +593,37 @@
     "min": 0,
     "max": 1
   },
+  "IsBattleWalk": {
+    "type": "int",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
+  },
+  "IsFall": {
+    "type": "int",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
+  },
+  "IsLanding": {
+    "type": "int",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
+  },
+  "IsLockOn": {
+    "type": "int",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
+  },
   "IsMenuIdle": {
+    "type": "int",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
+  },
+  "IsMoving": {
     "type": "int",
     "group": "Base Act",
     "min": 0,
@@ -574,6 +658,12 @@
     "group": "Base Act",
     "min": null,
     "max": null
+  },
+  "LandingCategory": {
+    "type": "int",
+    "group": "Base Act",
+    "min": 0,
+    "max": 100
   },
   "LandingRate": {
     "type": "float",
@@ -682,6 +772,18 @@
     "group": "Base Act",
     "min": 0,
     "max": 10
+  },
+  "WeaponStorage_L": {
+    "type": "float",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
+  },
+  "WeaponStorage_R": {
+    "type": "float",
+    "group": "Base Act",
+    "min": 0,
+    "max": 1
   },
   "BonfireCategory": {
     "type": "float",
@@ -1073,6 +1175,12 @@
     "min": 0,
     "max": 1
   },
+  "ItemUse_MoveBlend": {
+    "type": "float",
+    "group": "Item Use",
+    "min": 0,
+    "max": 1
+  },
   "ItemUse_Speed": {
     "type": "float",
     "group": "Item Use",
@@ -1096,12 +1204,6 @@
     "group": "Item Use",
     "min": 0,
     "max": 1000
-  },
-  "ItemUse_MoveBlend": {
-    "type": "float",
-    "group": "ItemUseTurn",
-    "min": 0,
-    "max": 1
   },
   "IsLadder": {
     "type": "int",
@@ -1148,12 +1250,6 @@
   "LadderStartType": {
     "type": "int",
     "group": "Ladder",
-    "min": 0,
-    "max": 1
-  },
-  "IsFall": {
-    "type": "int",
-    "group": "Base Act",
     "min": 0,
     "max": 1
   },
@@ -1211,12 +1307,6 @@
     "min": 0,
     "max": 10
   },
-  "IsBattleWalk": {
-    "type": "int",
-    "group": "SideWalk",
-    "min": 0,
-    "max": 1
-  },
   "AdditiveBlendWeight_1": {
     "type": "float",
     "group": "Slope",
@@ -1273,7 +1363,7 @@
   },
   "StepSpeed": {
     "type": "float",
-    "group": "StepStaminaEmpty",
+    "group": "Step",
     "min": 0,
     "max": 10
   },
@@ -1337,18 +1427,6 @@
     "min": 0,
     "max": 1
   },
-  "WeaponStorage_L": {
-    "type": "float",
-    "group": "WeaponChange_L",
-    "min": 0,
-    "max": 1
-  },
-  "WeaponStorage_R": {
-    "type": "float",
-    "group": "WeaponChange_R",
-    "min": 0,
-    "max": 1
-  },
   "Add_pos": {
     "type": "vector3",
     "group": null,
@@ -1364,60 +1442,6 @@
   "AdditiveBlendWeight_0": {
     "type": "float",
     "group": null,
-    "min": 0,
-    "max": 1
-  },
-  "Attack_SwingSpeed": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 10
-  },
-  "AttackCategory_Ene": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 100
-  },
-  "AttackID_Category": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 100
-  },
-  "AttackID_Number": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 100000
-  },
-  "AttackStance_L": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_L_2Weapon": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_LR": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_R": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_R_2Weapon": {
-    "type": "float",
-    "group": "Attack",
     "min": 0,
     "max": 1
   },
@@ -1486,30 +1510,6 @@
     "group": null,
     "min": 0,
     "max": 1
-  },
-  "IsLanding": {
-    "type": "int",
-    "group": "Base Act",
-    "min": 0,
-    "max": 1
-  },
-  "IsLockOn": {
-    "type": "int",
-    "group": "Base Act",
-    "min": 0,
-    "max": 1
-  },
-  "IsMoving": {
-    "type": "int",
-    "group": "Base Act",
-    "min": 0,
-    "max": 1
-  },
-  "LandingCategory": {
-    "type": "int",
-    "group": "Base Act",
-    "min": 0,
-    "max": 100
   },
   "LookAtTarget": {
     "type": "vector3",
