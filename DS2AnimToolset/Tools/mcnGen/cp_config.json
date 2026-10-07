@@ -231,37 +231,7 @@
     "type": "float",
     "group": "Attack",
     "min": 0,
-    "max": 100000
-  },
-  "AttackStance_L": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_L_2Weapon": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_LR": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_R": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
-  },
-  "AttackStance_R_2Weapon": {
-    "type": "float",
-    "group": "Attack",
-    "min": 0,
-    "max": 1
+    "max": 999999
   },
   "Combo1_Route": {
     "type": "int",
@@ -453,7 +423,7 @@
     "type": "int",
     "group": "Base Act",
     "min": 0,
-    "max": 1
+    "max": 999999
   },
   "DashBlendWeight": {
     "type": "float",
@@ -909,7 +879,7 @@
     "type": "int",
     "group": "Door",
     "min": 0,
-    "max": 100000
+    "max": 999999
   },
   "DoorLHandIK": {
     "type": "float",
@@ -951,7 +921,7 @@
     "type": "int",
     "group": "Event Action",
     "min": 0,
-    "max": 100000
+    "max": 999999
   },
   "EventActionLeverOnOff": {
     "type": "int",
@@ -1077,7 +1047,7 @@
     "type": "float",
     "group": "Guard",
     "min": 0,
-    "max": 100000
+    "max": 999999
   },
   "GuardCancelSpeedCategory": {
     "type": "int",
@@ -1089,7 +1059,7 @@
     "type": "int",
     "group": "Guard",
     "min": 0,
-    "max": 100000
+    "max": 999999
   },
   "GuardDuration": {
     "type": "float",
@@ -1107,7 +1077,7 @@
     "type": "float",
     "group": "Guard",
     "min": 0,
-    "max": 100000
+    "max": 999999
   },
   "GuardSpeed": {
     "type": "float",
@@ -1420,6 +1390,36 @@
     "group": null,
     "min": 0,
     "max": 1
+  },
+  "AttackStance_L": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 999999
+  },
+  "AttackStance_L_2Weapon": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 999999
+  },
+  "AttackStance_LR": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 999999
+  },
+  "AttackStance_R": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 999999
+  },
+  "AttackStance_R_2Weapon": {
+    "type": "float",
+    "group": null,
+    "min": 0,
+    "max": 999999
   },
   "BlendWeight_05": {
     "type": "float",
