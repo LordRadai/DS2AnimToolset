@@ -186,6 +186,7 @@ private:
 	Vector3 m_focusPoint = Vector3::Zero;
 
 	cfr::FLVER2* m_flver = nullptr;
+	ChrModelExFormat::ChrModelExFormat* m_exFormat = nullptr;
 	MR::AnimRigDef* m_nmRig = nullptr;
 	std::vector<int> m_flverToMorphemeBoneMap;
 	std::vector<int> m_morphemeToFlverBoneMap;
