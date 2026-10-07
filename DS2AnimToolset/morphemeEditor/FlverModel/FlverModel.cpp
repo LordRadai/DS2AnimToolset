@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <functional>
 
 #include "FlverModel.h"
@@ -1139,75 +1138,33 @@ int FlverModel::getMorphemeSkinningBoneIdByFlverBoneId(int idx)
 
 FlverModel::MorphemeSkinInfluences FlverModel::getMorphemeSkinInfluences(const SkinnedVertex& vertex)
 {
-	// Twist bones split their weight in two, so a vertex can reach up to 8 morpheme bones before trimming
-	constexpr int kMaxCandidates = 8;
-
-	int candidateBones[kMaxCandidates];
-	float candidateWeights[kMaxCandidates];
-	int numCandidates = 0;
-
-	// Several flver bones can collapse onto the same morpheme bone (e.g. an upper arm and its twist bone), merge them
-	auto addInfluence = [&](int flverBoneID, float weight)
-	{
-		const int morphemeBoneID = this->getMorphemeSkinningBoneIdByFlverBoneId(flverBoneID);
-
-		if ((morphemeBoneID == -1) || !(weight > 0.f))
-			return;
-
-		int slot = 0;
-		while ((slot < numCandidates) && (candidateBones[slot] != morphemeBoneID))
-			slot++;
-
-		if (slot == numCandidates)
-		{
-			candidateBones[slot] = morphemeBoneID;
-			candidateWeights[slot] = 0.f;
-			numCandidates++;
-		}
-
-		candidateWeights[slot] += weight;
-	};
+	MorphemeSkinInfluences influences;
 
 	for (int wt = 0; wt < 4; wt++)
 	{
-		const int flverBoneID = vertex.boneIndices[wt];
 		const float weight = vertex.boneWeights[wt];
 
 		if (!(weight > 0.f))
 			continue;
 
-		// Twist bones the morpheme rig does not have: split the weight between the base bone and the rotation addition bone by the rotation 
-		// scale, so the exported mesh picks up part of the twist the preview computes.
-		if ((this->getMorphemeBoneIdByFlverBoneId(flverBoneID) == -1) && this->isFlverTwistBone(flverBoneID))
+		const int morphemeBoneID = this->getMorphemeSkinningBoneIdByFlverBoneId(vertex.boneIndices[wt]);
+
+		if (morphemeBoneID == -1)
+			continue;
+
+		// Several flver bones can collapse onto the same morpheme bone (e.g. an upper arm and its twist bone), merge them
+		int slot = 0;
+		while ((slot < influences.numInfluences) && (influences.boneIndices[slot] != morphemeBoneID))
+			slot++;
+
+		if (slot == influences.numInfluences)
 		{
-			const TwistBone& twistBone = this->m_flverTwistBones[flverBoneID];
-			const float rotationScale = std::clamp(twistBone.rotationScale, 0.f, 1.f);
-
-			addInfluence(twistBone.baseBone, weight * (1.f - rotationScale));
-			addInfluence(twistBone.rotationAdditionBone, weight * rotationScale);
-		}
-		else
-			addInfluence(flverBoneID, weight);
-	}
-
-	// Keep the 4 largest influences
-	MorphemeSkinInfluences influences;
-
-	for (int i = 0; (i < numCandidates) && (influences.numInfluences < 4); i++)
-	{
-		int largest = i;
-		for (int j = i + 1; j < numCandidates; j++)
-		{
-			if (candidateWeights[j] > candidateWeights[largest])
-				largest = j;
+			influences.boneIndices[slot] = morphemeBoneID;
+			influences.boneWeights[slot] = 0.f;
+			influences.numInfluences++;
 		}
 
-		std::swap(candidateBones[i], candidateBones[largest]);
-		std::swap(candidateWeights[i], candidateWeights[largest]);
-
-		influences.boneIndices[influences.numInfluences] = candidateBones[i];
-		influences.boneWeights[influences.numInfluences] = candidateWeights[i];
-		influences.numInfluences++;
+		influences.boneWeights[slot] += weight;
 	}
 
 	float totalWeight = 0.f;
