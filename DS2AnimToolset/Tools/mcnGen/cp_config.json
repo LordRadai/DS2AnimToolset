@@ -943,13 +943,13 @@
   },
   "IsStartUp": {
     "type": "int",
-    "group": "StartUp",
+    "group": "Startup",
     "min": 0,
     "max": 1
   },
   "NPCActionCategory": {
     "type": "int",
-    "group": "StartUp",
+    "group": "Startup",
     "min": 0,
     "max": 100
   },
