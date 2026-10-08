@@ -35,6 +35,9 @@
   "AttackTurn": {
     "group": "Attack"
   },
+  "CatchAttack": {
+    "group": "Attack"
+  },
   "CatchAttackOnline": {
     "group": "Attack"
   },
@@ -108,6 +111,9 @@
     "group": "Bonfire"
   },
   "A20": {
+    "group": "Damage"
+  },
+  "CatchDamage": {
     "group": "Damage"
   },
   "DamageFullBody": {
@@ -250,12 +256,6 @@
   },
   "StepStaminaEmpty": {
     "group": "Step"
-  },
-  "CatchAttack": {
-    "group": null
-  },
-  "CatchDamage": {
-    "group": null
   },
   "Contact": {
     "group": null

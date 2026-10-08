@@ -799,19 +799,19 @@
   },
   "CatchDmgCategory": {
     "type": "int",
-    "group": "Catch Damage",
+    "group": "Damage",
     "min": 0,
     "max": 9999
   },
   "CatchDmgHitCategory": {
     "type": "float",
-    "group": "Catch Damage",
+    "group": "Damage",
     "min": 0,
     "max": 99
   },
   "CatchDmgModelID": {
     "type": "int",
-    "group": "Catch Damage",
+    "group": "Damage",
     "min": 0,
     "max": 9999
   },
