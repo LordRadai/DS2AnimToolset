@@ -398,8 +398,8 @@
   "Banking_Speed": {
     "type": "float",
     "group": "Base Act",
-    "min": 0.0,
-    "max": 100.0
+    "min": 0,
+    "max": 10
   },
   "BlendWeight_HandsUp_F": {
     "type": "float",
