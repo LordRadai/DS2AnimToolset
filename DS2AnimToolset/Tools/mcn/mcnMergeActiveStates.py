@@ -7,8 +7,10 @@ Without --write it only prints the plan. With --write the file is backed up to
 
 Grouping, per state machine, for ActiveStates whose transitions all share one key:
   1. Message first: ActiveStates whose transitions test the same messages (MessageCondition,
-     not OnNotSet). Among them, the ones whose CP tests have the same values are grouped
-     together; the rest, whose CP test values all differ, are merged into one group by message.
+     not OnNotSet). Among them, CP test values that occur on more than one transition
+     form their own group (Attack + AttackCategory 0-9 stays apart from 10-19); transitions whose
+     CP test values occur only once are merged into one group by message (Die + DieCategory 20,
+     60, 80... become one ActiveState_Die).
      Event conditions are ignored.
   2. No message: the key is the set of CP range tests (ControlParamInRange / ControlParamTest
      with their values and NotInRange flag). Event conditions are ignored.
@@ -145,9 +147,11 @@ def plan(root, pm, only, any_dest):
             if k[1][0] == 'msg': bym[(k[0], k[1][1]) + k[1][3:]].append((k, m))
             elif len(m) > 1: gs.append((k, m))
         for mk, subs in bym.items():
-            shared = [(k, m) for k, m in subs if len(m) > 1]
-            single = [(k, m) for k, m in subs if len(m) == 1]
-            gs += shared
+            # a value set is 'shared' when it occurs on more than one transition (several ActiveStates,
+            # or one ActiveState already holding several transitions with those values)
+            shared = [(k, m) for k, m in subs if sum(len(ts) for _, ts in m) > 1]
+            single = [(k, m) for k, m in subs if sum(len(ts) for _, ts in m) == 1]
+            gs += [(k, m) for k, m in shared if len(m) > 1]
             if len(single) > 1:
                 k0 = single[0][0]
                 gs.append(((k0[0], ('msg', k0[1][1], ()) + k0[1][3:]), [x for _, m in single for x in m]))
