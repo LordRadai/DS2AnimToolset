@@ -458,20 +458,20 @@
   "BSCancelDuration_High": {
     "type": "float",
     "group": "Base Act",
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 10
   },
   "BSCancelDuration_Low": {
     "type": "float",
     "group": "Base Act",
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 10
   },
   "BSCancelDuration_Mid": {
     "type": "float",
     "group": "Base Act",
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 10
   },
   "ChangeStance_R_Preset": {
     "type": "int",
@@ -1125,7 +1125,7 @@
     "type": "float",
     "group": "Guard",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "GuardID_Category": {
     "type": "float",
@@ -1407,7 +1407,7 @@
     "type": "float",
     "group": "Weapon",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "WepHandOnline": {
     "type": "float",
