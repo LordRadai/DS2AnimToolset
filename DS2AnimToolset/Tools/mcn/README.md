@@ -5,8 +5,9 @@ DS2AnimToolset decompiler writes) back into an editable **morphemeConnect 3.6.2*
 Connect itself writes the `.mcn`: the tools generate Lua scripts that rebuild the network through
 Connect's scripting API, then patch in the few things Lua cannot create.
 
-Verified on c1020 (2418 nodes, every node type DS2 uses there). c7770 (170 nodes) was verified with an
-earlier version of the converter.
+Verified on all networks in the game, although not all have been tested against an import back to the game itself.
+All of those that were tested produce valid results, which are seemingly equal to what was there before, including c0001 which is the most complex network.
+If you encounter any issues, contact me on Discord.
 
 ---
 
@@ -19,23 +20,27 @@ earlier version of the converter.
 
 ## Input folder
 
-Put the decompiler output for one character in a folder:
+Put the decompiler output for one character in a folder like this:
 
 ```
-c1020\
-  c1020.xml             network export (required)
+cXXXX\
+  cXXXX.xml             network export (required)
   NodeIDNamesTable.xml  node names and state names (the only source of names, see below)
-  c1020_Library.xml     animation library: AnimIndex -> anim file, take, sync track, format, options
-  c1020_Preset.xml
-  c1020_0.mrarig        exported rig: joint index -> name, hip / trajectory joints
-  c1020_0.mrctrl        (one .mrarig / .mrctrl per animation set: c0001 has _0 and _1)
-  c1020.xmd             character model (moved to model_xmd\ automatically)
+  cXXXX_Library.xml     animation library: AnimIndex -> anim file, take, sync track, format, options
+  cXXXX_Preset.xml
+  cXXXX_0.mrarig        exported rig: joint index -> name, hip / trajectory joints
+  cXXXX_0.mrctrl        (one .mrarig / .mrctrl per animation set: c0001 has _0 and _1)
+  model_xmd\cXXXX.xmd             character model (moved to model_xmd\ automatically)
   motion_xmd\*.xmd      animations
   morphemeMarkup\*.xml  animation markup
 ```
 
 The finished Connect project lives in the same folder. `$(RootDir)` is that folder, through the generated
-`c1020.mcp`.
+`cXXXX.mcp`.
+
+You can then load the project and the .mcn within connect itself for editing.
+Please note that the process can take some time, especially for large networks.
+Batch processing all characters took around 3 hours.
 
 ---
 
@@ -43,22 +48,24 @@ The finished Connect project lives in the same folder. `$(RootDir)` is that fold
 
 ### One click: `mcnGen.bat`
 
-Edit `rebuild_config.ini` next to the script:
+1. Edit `config.ini` next to the script:
 
 ```ini
-CONNECT=C:\Program Files (x86)\NaturalMotion\morphemeConnect 3.6.2\bin\morphemeConnect.exe
+CONNECT=C:\Program Files (x86)\NaturalMotion\morphemeConnect 3.6.2\bin\morphemeConnect.exe ; Actual path to your connect executable
 PYTHON=python
 CP_CONFIG=          ; empty = cp_config.json next to the script
 CLEAN=1             ; 1 = delete the previous .mcn / paths / round-trip export first
 NO_WARN=c1021,c2250 ; characters whose warning box is skipped (known differences), for unattended runs
 ```
 
-Then run:
+2. Close connect
+
+3. Run any of the following:
 
 ```bat
-mcnGen.bat                                  :: INPUT_XML from rebuild_config.ini
-mcnGen.bat E:\Export\c1020\c1020.xml         :: this network
-mcnGen.bat E:\Export\c1020\c1020.xml my.ini  :: this network, another config
+mcnGen.bat                                   :: INPUT_XML from config.ini
+mcnGen.bat E:\Export\cXXXX\cXXXX.xml         :: this network
+mcnGen.bat E:\Export\cXXXX\cXXXX.xml my.ini  :: this network, another config
 ```
 
 It refuses to start if Connect is open. It runs all five steps below (skipping 3 and 4 when not needed),
@@ -66,6 +73,10 @@ prints the result of each stage and the diff summary, writes `build\diff_full.tx
 check. It exits with an error code if a step fails.
 
 ### Every character in a folder: `mcnGenAll.bat`
+
+1. Close connect
+
+2. Run any of the following
 
 ```bat
 mcnGenAll.bat E:\Export            :: every E:\Export\cXXXX\cXXXX.xml
@@ -78,32 +89,40 @@ failed ones.
 
 ### CP settings straight into .mcn files: `mcnApplyCp.py`
 
+1. Run any of the following:
+
 ```bat
 python mcnApplyCp.py D:\Projects\FRPG2_64                 :: every .mcn under the folder
-python mcnApplyCp.py D:\Projects\FRPG2_64\c0001\c0001.mcn my_cp_config.json --dry-run
+python mcnApplyCp.py D:\Projects\FRPG2_64\cXXXX\cXXXX.mcn my_cp_config.json --dry-run
 ```
+
+2. Reopen the network within connect for the changes to take effect
 
 Only the .mcn and the CP settings file (default `cp_config.json`): no export xml, no Connect. Sets min/max (bounds
 equal to Connect's defaults are left out, as Connect does) and groups; defaults stay as built. Files are rewritten only
 when something changes.
 
-### CP settings onto built networks: `mcnUpdateCp.bat`
+Please note that connect could report an invalid network if the network was ran before invoking this script. This is a fake error, restart connect if it happens.
+
+### Message groups straight into .mcn files: `mcnApplyMsg.py`
+
+1. Run any of the following:
 
 ```bat
-mcnUpdateCp.bat E:\Export                          :: projects in E:\Export\cXXXX_project (or cXXXX)
-mcnUpdateCp.bat E:\Export D:\Projects\FRPG2_64     :: projects moved elsewhere
+python mcnApplyMsg.py D:\Projects\FRPG2_64 --template     :: list every message in msg_config.json (group null)
+python mcnApplyMsg.py D:\Projects\FRPG2_64                :: apply the groups
 ```
 
-Applies the CP settings file (`CP_CONFIG`, default `cp_config.json`) to every built character without rebuilding:
-groups and vector ranges go straight into the .mcn, float/int ranges and defaults are set by Connect
-(`build\cXXXX_cparams.lua` in the project), which then saves. The .mcp and the rest of the network are untouched.
-Each character's `cXXXX.xml` export must still be in the export folder.
+Same idea as `mcnApplyCp.py` for messages (requests): `msg_config.json` maps a message name to `{"group": ...}`;
+a null group takes the message out of any group, empty groups are removed, unlisted messages are left alone.
 
 ### A clean Connect project: `mcnPack.bat`
 
+1. Run any of the following:
+
 ```bat
-mcnPack.bat E:\Export\c0001                  :: -> E:\Export\c0001_project
-mcnPack.bat E:\Export\c0001 D:\Projects\c0001
+mcnPack.bat E:\Export\cXXXX                     :: -> E:\Export\cXXXX_project
+mcnPack.bat E:\Export\cXXXX D:\Projects\cXXXX
 ```
 
 Puts only what morphemeConnect needs into a project folder. What mcnGen generated is moved out of the
@@ -255,15 +274,33 @@ TwoBoneIK flags).
 
 | file | purpose |
 |---|---|
-| `xml2mcn.py` | the converter: analysis, Lua generation, `--inject`, CP options, project file |
-| `nodespecs.py` | per node and condition type: export fields -> Connect attributes and input pins (the inverse of each manifest's `serialize()`) |
-| `hierarchy.py` | hierarchy and names for exports without decompiler names |
-| `layout.py` | layout computation |
-| `manifest_info.py` | reads attribute definitions from Connect's Lua manifests |
-| `mcnxml.py` | export XML parser (`python mcnxml.py X.xml [ids...]` dumps decoded nodes) |
-| `xmldiff.py` | semantic round-trip diff |
-| `layoutcheck.py` | layout rule checker for a saved `.mcn` |
+| `config.ini` | Default config file |
+| `copyMcn.bat` | Copies all mcn found in a folder (param 1) and all sub folders to the output folder (param 2) |
 | `cp_config.json` | CP ranges / groups |
+| `hierarchy.py` | Hierarchy and names for exports without decompiler names |
+| `layout.py` | Layout computation |
+| `layoutcheck.py` | Layout rule checker for a saved `.mcn` |
+| `manifest_info.py` | Reads attribute definitions from Connect's Lua manifests |
+| `mcnApplyCp.py` | Applies cp_config.ini to every .mcn in the input folder (param 1) recursively to all subfolders |
+| `mcnApplyMsg.py` | Applies msg_config.ini to every .mcn in the input folder (param 1) recursively to all subfolders |
+| `mcnExport.lua` | Round-trip export of a rebuilt (and packed) project, run by mcnGen.bat after packing |
+| `mcnGen.bat` | Run the whole xml -> mcn rebuild for one network.
+                 Usage: mcnGen.bat [input.xml] [config.ini] (optional) |
+| `mcnGenAll.bat` | Runs mcnGen on all subfolders of the input folder (param 1) |
+| `mcnPack.bat` | Packs generated project files by mcnGen.bat into a project folder. Run automatically by mcnGen.bat |
+| `mcnStripNodeIds.bat` | Remove the node-ID numbers mcnGen bakes into names in morphemeConnect .mcn files and rename things the way morpheme itself does.
+                          Usage:
+                            python mcn_strip_node_ids.py <folder> [--recursive] [--dry-run [-v]] [--out DIR | --in-place] |
+| `mcnxml.py` | export XML parser (`python mcnxml.py X.xml [ids...]` dumps decoded nodes) |
+| `mcskin_batch.py` | Batch recreate connect skins from a model in model_xmd of the input folder |
+| `msg_config.json` | Request groups |
+| `nodespecs.py` | per node and condition type: export fields -> Connect attributes and input pins (the inverse of each manifest's `serialize()`) |
+| `sortCpConfig.bat` | Utility to run sortCpConfig.py by double clicking |
+| `sortCpConfig.py` | Sort the cp_config file alphabetically, by group name |
+| `sortMsgConfig.bat` | Utility to run sortMsgConfig.py by double clicking |
+| `sortMsgConfig.py` | Sort the msg_config file alphabetically, by group name |
+| `xml2mcn.py` | The converter: analysis, Lua generation, `--inject`, CP options, project file |
+| `xmldiff.py` | semantic round-trip diff |
 
 ### Supported types
 

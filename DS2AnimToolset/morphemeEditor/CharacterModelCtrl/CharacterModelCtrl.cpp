@@ -134,6 +134,12 @@ void CharacterModelCtrl::setModelPart(PartType partType, FlverModel* model)
 
 void CharacterModelCtrl::setModelFg(FgPartType fgType, FlverModel* model)
 {
+	if (model)
+	{
+		std::vector<FlverModel::TwistBone> twistBones = m_model->getTwistBones();
+		model->setTwistBones(twistBones);
+	}
+
 	switch (fgType)
 	{
 	case kFgFace:
@@ -176,7 +182,6 @@ void CharacterModelCtrl::setModelFg(FgPartType fgType, FlverModel* model)
 		break;
 	}
 }
-
 
 FlverModel* CharacterModelCtrl::getModel()
 {
