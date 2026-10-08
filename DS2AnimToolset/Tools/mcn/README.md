@@ -274,21 +274,33 @@ TwoBoneIK flags).
 
 | file | purpose |
 |---|---|
-| `xml2mcn.py` | the converter: analysis, Lua generation, `--inject`, CP options, project file |
-| `nodespecs.py` | per node and condition type: export fields -> Connect attributes and input pins (the inverse of each manifest's `serialize()`) |
-| `hierarchy.py` | hierarchy and names for exports without decompiler names |
-| `layout.py` | layout computation |
-| `manifest_info.py` | reads attribute definitions from Connect's Lua manifests |
-| `mcnxml.py` | export XML parser (`python mcnxml.py X.xml [ids...]` dumps decoded nodes) |
-| `xmldiff.py` | semantic round-trip diff |
-| `layoutcheck.py` | layout rule checker for a saved `.mcn` |
+| `config.ini` | Default config file |
+| `copyMcn.bat` | Copies all mcn found in a folder (param 1) and all sub folders to the output folder (param 2) |
 | `cp_config.json` | CP ranges / groups |
-| `msg_config.json` | Request groups |
+| `hierarchy.py` | Hierarchy and names for exports without decompiler names |
+| `layout.py` | Layout computation |
+| `layoutcheck.py` | Layout rule checker for a saved `.mcn` |
+| `manifest_info.py` | Reads attribute definitions from Connect's Lua manifests |
+| `mcnApplyCp.py` | Applies cp_config.ini to every .mcn in the input folder (param 1) recursively to all subfolders |
+| `mcnApplyMsg.py` | Applies msg_config.ini to every .mcn in the input folder (param 1) recursively to all subfolders |
+| `mcnExport.lua` | Round-trip export of a rebuilt (and packed) project, run by mcnGen.bat after packing |
+| `mcnGen.bat` | Run the whole xml -> mcn rebuild for one network.
+                 Usage: mcnGen.bat [input.xml] [config.ini] (optional) |
+| `mcnGenAll.bat` | Runs mcnGen on all subfolders of the input folder (param 1) |
+| `mcnPack.bat` | Packs generated project files by mcnGen.bat into a project folder. Run automatically by mcnGen.bat |
+| `mcnStripNodeIds.bat` | Remove the node-ID numbers mcnGen bakes into names in morphemeConnect .mcn files and rename things the way morpheme itself does.
+                          Usage:
+                            python mcn_strip_node_ids.py <folder> [--recursive] [--dry-run [-v]] [--out DIR | --in-place] |
+| `mcnxml.py` | export XML parser (`python mcnxml.py X.xml [ids...]` dumps decoded nodes) |
 | `mcskin_batch.py` | Batch recreate connect skins from a model in model_xmd of the input folder |
-| `sortCpConfig.py` | Sort the cp_config file alphabetically, by group name |
+| `msg_config.json` | Request groups |
+| `nodespecs.py` | per node and condition type: export fields -> Connect attributes and input pins (the inverse of each manifest's `serialize()`) |
 | `sortCpConfig.bat` | Utility to run sortCpConfig.py by double clicking |
-| `sortMsgConfig.py` | Sort the msg_config file alphabetically, by group name |
+| `sortCpConfig.py` | Sort the cp_config file alphabetically, by group name |
 | `sortMsgConfig.bat` | Utility to run sortMsgConfig.py by double clicking |
+| `sortMsgConfig.py` | Sort the msg_config file alphabetically, by group name |
+| `xml2mcn.py` | The converter: analysis, Lua generation, `--inject`, CP options, project file |
+| `xmldiff.py` | semantic round-trip diff |
 
 ### Supported types
 
