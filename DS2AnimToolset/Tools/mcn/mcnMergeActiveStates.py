@@ -1,6 +1,6 @@
 """Merge ActiveStates in a morphemeConnect .mcn.
 
-Usage: python mcn_merge_active_states.py <file.mcn> [--write] [--sm NAME ...] [--any-dest]
+Usage: python mcnMergeActiveStates.py <file.mcn> [--write] [--sm NAME ...] [--any-dest]
 
 Without --write it only prints the plan. With --write the file is backed up to
 <file>.bak_before_as_merge[_N] and rewritten in place (text-level edit, CRLF kept).
@@ -206,6 +206,8 @@ def main(fn, write, only, any_dest):
                     base = nn + '_' + last(t.find('To').text); tn = base; j = 1
                     while tn in used: tn = '%s_%d' % (base, j); j += 1
                     used.add(tn)
+                    if tn != t.get('name'):
+                        tp = opath(t); renames.append((tp, tp.rsplit('.', 1)[0] + '.' + tn))
                     tl = sp[opath(t)][0] - 1
                     assert lines[tl].count('name="%s"' % t.get('name')) == 1
                     lines[tl] = lines[tl].replace('name="%s"' % t.get('name'), 'name="%s"' % tn)
@@ -216,8 +218,12 @@ def main(fn, write, only, any_dest):
                 renames.append((kp, kp.rsplit('.', 1)[0] + '.' + nn))
     for s, e in sorted(delete, reverse=True): del lines[s - 1:e]
     txt = '\r\n'.join(lines)
-    for old, new in renames:
-        txt = txt.replace('>' + old + '<', '>' + new + '<').replace('>' + old + '.', '>' + new + '.')
+    # rewire every pointer to a renamed keeper or transition (e.g. ActiveState 'States' lists
+    # reference transitions); two-phase through placeholders so swapped names can't collide
+    for i, (old, new) in enumerate(renames):
+        txt = txt.replace('>' + old + '<', '>\x00%d\x00<' % i).replace('>' + old + '.', '>\x00%d\x00.' % i)
+    for i, (old, new) in enumerate(renames):
+        txt = txt.replace('>\x00%d\x00' % i, '>' + new)
     bad, dup = validate(txt)
     print('%d groups, %d ActiveStates removed; unresolved pointers %d, duplicate names %d' % (len(groups), len(delete), len(bad), len(dup)))
     for b in bad[:5]: print('  unresolved', b)
