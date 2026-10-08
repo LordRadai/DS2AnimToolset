@@ -827,6 +827,12 @@
     "min": -1000,
     "max": 1000
   },
+  "DmgBankingSpeed": {
+    "type": "float",
+    "group": "Damage",
+    "min": 0,
+    "max": 10
+  },
   "DmgCategory": {
     "type": "int",
     "group": "Damage",
@@ -863,6 +869,12 @@
     "min": 0,
     "max": 1
   },
+  "IsDown": {
+    "type": "int",
+    "group": "Damage",
+    "min": 0,
+    "max": 1
+  },
   "MoveHit_Position": {
     "type": "vector3",
     "group": "Damage",
@@ -878,18 +890,6 @@
   "MoveHit_Weight": {
     "type": "float",
     "group": "Damage",
-    "min": 0,
-    "max": 1
-  },
-  "DmgBankingSpeed": {
-    "type": "float",
-    "group": "DamageFullBody",
-    "min": 0,
-    "max": 10
-  },
-  "IsDown": {
-    "type": "int",
-    "group": "DamageFullBody",
     "min": 0,
     "max": 1
   },
