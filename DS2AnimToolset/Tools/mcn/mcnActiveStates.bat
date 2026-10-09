@@ -1,11 +1,11 @@
 @echo off
 setlocal EnableDelayedExpansion
 rem Run mcnMergeActiveStates.py on every .mcn in a folder and its subfolders.
-rem Usage: mcnMergeActiveStates.bat <folder> [--write] [--sm NAME] [--any-dest]
+rem Usage: mcnMergeActiveStates.bat <folder> [--write] [--sm NAME]
 rem Without --write every file is only dry-run (plan printed, nothing changed).
 
 if "%~1"=="" (
-    echo Usage: %~nx0 ^<folder^> [--write] [--sm NAME] [--any-dest]
+    echo Usage: %~nx0 ^<folder^> [--write] [--sm NAME]
     exit /b 1
 )
 if not exist "%~1\" (
