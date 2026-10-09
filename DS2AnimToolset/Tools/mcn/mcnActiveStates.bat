@@ -15,7 +15,7 @@ if not exist "%~1\" (
 
 set "PY=python"
 where python >nul 2>nul || set "PY=py -3"
-set "SCRIPT=%~dp0mcnMergeActiveStates.py"
+set "SCRIPT=%~dp0mcnActiveStates.py"
 set "ROOT=%~1"
 shift
 set "ARGS="
