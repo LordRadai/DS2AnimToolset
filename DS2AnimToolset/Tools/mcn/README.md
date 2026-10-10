@@ -40,8 +40,6 @@ You can then load the project and the .mcn within connect itself for editing.
 Please note that the process can take some time, especially for large networks.
 Batch processing all characters took around 3 hours.
 
----
-
 ## Rebuilding a network
 
 ### One click: `mcnGen.bat`
@@ -165,8 +163,6 @@ Step 1 also lists `UNSUPPORTED` items (node or condition types with no mapping, 
 not make) and `UNMAPPED FIELD`s (export fields it does not know). Both should be empty, or at least
 understood, before you trust a result.
 
----
-
 ## Control parameter settings
 
 The export has each CP's default value, and that is always the one used. `cp_config.json` adds range and
@@ -247,8 +243,6 @@ Headless Connect does not measure nodes, so sizes are estimated (width from the 
 pins). `layoutcheck.py` reports overlaps, inputs not left of their consumer, nodes past the Output pin,
 inputs out of pin order, CP node placement, transition crossings, and transitions through states.
 
----
-
 ## Reading the diff
 
 `xmldiff.py` matches every original node to its re-exported counterpart, through `_paths.lua`, and
@@ -265,8 +259,6 @@ The report has these sections:
 Structure, attributes, transitions and conditions match the game exactly, given DS2's manifest changes
 (`TransitBase.lua` destination sub states, `Transit.lua` DestinationStartSyncEvent, False condition,
 TwoBoneIK flags).
-
----
 
 ## Files
 
