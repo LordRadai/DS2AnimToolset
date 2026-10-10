@@ -18,7 +18,10 @@ Templates are inside the `MorphemeConnect/res` folder. If you want to make chang
 Tooltips are inside the `MorphemeConnect/res/tooltip folder`. They are shown when you hover an event in the editor windows.
 
 # Export
-You can export animations and models to FBX or XMD using the Export menu under File. Note that animation files do not contain the model within them, and that exporting animations will automatically export the model
+You can export animations and models to FBX, glTF or XMD using the Export menu under File. Note that animation files do not contain the model within them, and that exporting animations will automatically export the model.
+
+# Reconstruct morpheme source project from DS2 assets (mcn)
+[Instructions](https://github.com/LordRadai/DS2AnimToolset/blob/main/DS2AnimToolset/Tools/mcn/README.md)
 
 # TODO
 * Rewrite the FLVER lib. Current one causes memory corruption in some cases, and fails to handle specific .flver files.
