@@ -30,5 +30,9 @@ A set of scripts, run by a batch script, to decompile an export from morphemeEdi
 
 Instructions [here](https://github.com/LordRadai/DS2AnimToolset/blob/main/DS2AnimToolset/Tools/mcn/README.md)
 
+# Decompiled Source Projects
+Here's a shared folder with all the decompiled game morpheme projects as source:
+https://drive.google.com/drive/folders/1N0WAoNuqFO-evxonbvBdZ9A_sjbv0JcV?usp=sharing
+
 # Bugs
 Report any bugs in the Discord server's bug report forum https://discord.gg/CJk2b5WMMF
