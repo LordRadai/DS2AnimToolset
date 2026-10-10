@@ -9,8 +9,6 @@ Verified on all networks in the game, although not all have been tested against 
 All of those that were tested produce valid results, which are seemingly equal to what was there before, including c0001 which is the most complex network.
 If you encounter any issues, contact me on Discord.
 
----
-
 ## Requirements
 
 * Python 3.8+ (standard library only).
