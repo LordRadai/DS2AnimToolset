@@ -23,9 +23,6 @@ You can export animations and models to FBX, glTF or XMD using the Export menu u
 # Reconstruct morpheme source project from DS2 assets (mcn)
 [Instructions](https://github.com/LordRadai/DS2AnimToolset/blob/main/DS2AnimToolset/Tools/mcn/README.md)
 
-# TODO
-* Rewrite the FLVER lib. Current one causes memory corruption in some cases, and fails to handle specific .flver files.
-
 # Build Requirements
 If you want to compile this project, you need the following things:
 * DirectXTK UWP (install with VS GnuPackage)
