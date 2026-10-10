@@ -916,10 +916,17 @@ void GuiManager::rootWindow()
 	if (ImGui::BeginMenu("File"))
 	{
 		if (ImGui::MenuItem("Open...")) { editorApp->getTaskFlags()->loadFile = true; }
+
+		ImGui::Separator();
+
 		if (ImGui::BeginMenu("Batch Export"))
 		{
 			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->batchExport = true; }
 			if (ImGui::MenuItem("Export All")) { editorApp->getTaskFlags()->batchExportAll = true; }
+			if (ImGui::MenuItem("Export Animations")) { editorApp->getTaskFlags()->batchExportAnimations = true; }
+			if (ImGui::MenuItem("Export Model")) { editorApp->getTaskFlags()->batchExportModel = true; }
+			if (ImGui::MenuItem("Export Network")) { editorApp->getTaskFlags()->batchExportNetwork = true; }
+			if (ImGui::MenuItem("Export TimeAct")) { editorApp->getTaskFlags()->batchExportTimeAct = true; }
 
 			ImGui::SeparatorText("Export Settings");
 
@@ -931,8 +938,6 @@ void GuiManager::rootWindow()
 
 			ImGui::EndMenu();
 		}
-
-		ImGui::Separator();
 		
 		if (ImGui::BeginMenu("Export"))
 		{
@@ -940,6 +945,10 @@ void GuiManager::rootWindow()
 
 			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->exportTask = true; }
 			if (ImGui::MenuItem("Export All")) { editorApp->getTaskFlags()->exportAll = true; }
+			if (ImGui::MenuItem("Export Animations")) { editorApp->getTaskFlags()->exportAnimations = true; }
+			if (ImGui::MenuItem("Export Model")) { editorApp->getTaskFlags()->exportModel = true; }
+			if (ImGui::MenuItem("Export Network")) { editorApp->getTaskFlags()->exportNetwork = true; }
+			if (ImGui::MenuItem("Export TimeAct")) { editorApp->getTaskFlags()->exportTimeAct = true; }
 			if (ImGui::MenuItem("Export and Process")) { editorApp->getTaskFlags()->exportAndProcess = true; }
 			
 			ImGui::EndDisabled();

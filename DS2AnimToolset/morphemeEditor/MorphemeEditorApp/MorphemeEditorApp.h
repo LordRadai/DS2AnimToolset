@@ -49,7 +49,10 @@ public:
 		bool exportTask = false;
 		bool exportAll = false;
 		bool exportAndProcess = false;
-		
+		bool exportAnimations = false;
+		bool exportModel = false;
+		bool exportNetwork = false;
+		bool exportTimeAct = false;
 
 		bool compileNetwork = false;
 		bool compileTaes = false;
@@ -58,6 +61,10 @@ public:
 
 		bool batchExport = false;
 		bool batchExportAll = false;
+		bool batchExportAnimations = false;
+		bool batchExportModel = false;
+		bool batchExportNetwork = false;
+		bool batchExportTimeAct = false;
 	};
 
 	struct CameraFlags
@@ -162,6 +169,8 @@ private:
 
 	void loadPlayerModelPreset();
 	void savePlayerModelPreset();
+
+	void executeTasks();
 
 	void loadFile();
 	void loadFileInternal(const std::filesystem::path& path, bool headless = false);

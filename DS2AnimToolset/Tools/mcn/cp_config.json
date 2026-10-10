@@ -398,8 +398,8 @@
   "Banking_Speed": {
     "type": "float",
     "group": "Base Act",
-    "min": 0.0,
-    "max": 100.0
+    "min": 0,
+    "max": 10
   },
   "BlendWeight_HandsUp_F": {
     "type": "float",
@@ -458,20 +458,20 @@
   "BSCancelDuration_High": {
     "type": "float",
     "group": "Base Act",
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 10
   },
   "BSCancelDuration_Low": {
     "type": "float",
     "group": "Base Act",
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 10
   },
   "BSCancelDuration_Mid": {
     "type": "float",
     "group": "Base Act",
-    "min": null,
-    "max": null
+    "min": 0,
+    "max": 10
   },
   "ChangeStance_R_Preset": {
     "type": "int",
@@ -799,19 +799,19 @@
   },
   "CatchDmgCategory": {
     "type": "int",
-    "group": "Catch Damage",
+    "group": "Damage",
     "min": 0,
     "max": 9999
   },
   "CatchDmgHitCategory": {
     "type": "float",
-    "group": "Catch Damage",
+    "group": "Damage",
     "min": 0,
     "max": 99
   },
   "CatchDmgModelID": {
     "type": "int",
-    "group": "Catch Damage",
+    "group": "Damage",
     "min": 0,
     "max": 9999
   },
@@ -826,6 +826,12 @@
     "group": "Damage",
     "min": -1000,
     "max": 1000
+  },
+  "DmgBankingSpeed": {
+    "type": "float",
+    "group": "Damage",
+    "min": 0,
+    "max": 10
   },
   "DmgCategory": {
     "type": "int",
@@ -863,6 +869,12 @@
     "min": 0,
     "max": 1
   },
+  "IsDown": {
+    "type": "int",
+    "group": "Damage",
+    "min": 0,
+    "max": 1
+  },
   "MoveHit_Position": {
     "type": "vector3",
     "group": "Damage",
@@ -878,18 +890,6 @@
   "MoveHit_Weight": {
     "type": "float",
     "group": "Damage",
-    "min": 0,
-    "max": 1
-  },
-  "DmgBankingSpeed": {
-    "type": "float",
-    "group": "DamageFullBody",
-    "min": 0,
-    "max": 10
-  },
-  "IsDown": {
-    "type": "int",
-    "group": "DamageFullBody",
     "min": 0,
     "max": 1
   },
@@ -947,6 +947,12 @@
     "min": -1000,
     "max": 1000
   },
+  "DoorRHandIK": {
+    "type": "float",
+    "group": "Door",
+    "min": -1000,
+    "max": 1000
+  },
   "DoorRHandIKTarget": {
     "type": "vector3",
     "group": "Door",
@@ -964,12 +970,6 @@
     "group": "Event Action",
     "min": 0,
     "max": 1
-  },
-  "DoorRHandIK": {
-    "type": "float",
-    "group": "Event Action",
-    "min": -1000,
-    "max": 1000
   },
   "EventActionCategory": {
     "type": "int",
@@ -1125,7 +1125,7 @@
     "type": "float",
     "group": "Guard",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "GuardID_Category": {
     "type": "float",
@@ -1382,7 +1382,7 @@
   "WeaponCategory_Ene": {
     "type": "float",
     "group": "Weapon",
-    "min": 0,
+    "min": -1,
     "max": 10
   },
   "WeoHandWeight": {
@@ -1407,7 +1407,7 @@
     "type": "float",
     "group": "Weapon",
     "min": 0,
-    "max": 100
+    "max": 10
   },
   "WepHandOnline": {
     "type": "float",

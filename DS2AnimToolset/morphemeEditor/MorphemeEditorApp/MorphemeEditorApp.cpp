@@ -897,6 +897,11 @@ void MorphemeEditorApp::update(float dt)
 	if (this->m_nodeEditor)
 		this->m_nodeEditor->update(dt);
 
+	executeTasks();
+}
+
+void MorphemeEditorApp::executeTasks()
+{
 	if (this->m_taskFlags.batchExport)
 	{
 		this->m_taskFlags.batchExport = false;
@@ -906,9 +911,111 @@ void MorphemeEditorApp::update(float dt)
 
 	if (this->m_taskFlags.batchExportAll)
 	{
+		bool settingExportAnim = this->m_exportSettings.exportAnimations;
+		bool settingExportModel = this->m_exportSettings.exportModel;
+		bool settingExportNetwork = this->m_exportSettings.exportNetwork;
+		bool settingExportTimeAct = this->m_exportSettings.exportTae;
+
+		this->m_exportSettings.exportAnimations = true;
+		this->m_exportSettings.exportModel = true;
+		this->m_exportSettings.exportNetwork = true;
+		this->m_exportSettings.exportTae = true;
+
 		this->exportDirectory();
 
+		this->m_exportSettings.exportAnimations = settingExportAnim;
+		this->m_exportSettings.exportModel = settingExportModel;
+		this->m_exportSettings.exportNetwork = settingExportNetwork;
+		this->m_exportSettings.exportTae = settingExportTimeAct;
+
 		this->m_taskFlags.batchExportAll = false;
+	}
+
+	if (this->m_taskFlags.batchExportAnimations)
+	{
+		bool settingExportAnim = this->m_exportSettings.exportAnimations;
+		bool settingExportModel = this->m_exportSettings.exportModel;
+		bool settingExportNetwork = this->m_exportSettings.exportNetwork;
+		bool settingExportTimeAct = this->m_exportSettings.exportTae;
+
+		this->m_exportSettings.exportAnimations = true;
+		this->m_exportSettings.exportModel = false;
+		this->m_exportSettings.exportNetwork = false;
+		this->m_exportSettings.exportTae = false;
+
+		this->exportDirectory();
+
+		this->m_exportSettings.exportAnimations = settingExportAnim;
+		this->m_exportSettings.exportModel = settingExportModel;
+		this->m_exportSettings.exportNetwork = settingExportNetwork;
+		this->m_exportSettings.exportTae = settingExportTimeAct;
+
+		this->m_taskFlags.batchExportAnimations = false;
+	}
+
+	if (this->m_taskFlags.batchExportModel)
+	{
+		bool settingExportAnim = this->m_exportSettings.exportAnimations;
+		bool settingExportModel = this->m_exportSettings.exportModel;
+		bool settingExportNetwork = this->m_exportSettings.exportNetwork;
+		bool settingExportTimeAct = this->m_exportSettings.exportTae;
+
+		this->m_exportSettings.exportAnimations = false;
+		this->m_exportSettings.exportModel = true;
+		this->m_exportSettings.exportNetwork = false;
+		this->m_exportSettings.exportTae = false;
+
+		this->exportDirectory();
+
+		this->m_exportSettings.exportAnimations = settingExportAnim;
+		this->m_exportSettings.exportModel = settingExportModel;
+		this->m_exportSettings.exportNetwork = settingExportNetwork;
+		this->m_exportSettings.exportTae = settingExportTimeAct;
+
+		this->m_taskFlags.batchExportModel = false;
+	}
+
+	if (this->m_taskFlags.batchExportNetwork)
+	{
+		bool settingExportAnim = this->m_exportSettings.exportAnimations;
+		bool settingExportModel = this->m_exportSettings.exportModel;
+		bool settingExportNetwork = this->m_exportSettings.exportNetwork;
+		bool settingExportTimeAct = this->m_exportSettings.exportTae;
+
+		this->m_exportSettings.exportAnimations = false;
+		this->m_exportSettings.exportModel = false;
+		this->m_exportSettings.exportNetwork = true;
+		this->m_exportSettings.exportTae = false;
+
+		this->exportDirectory();
+
+		this->m_exportSettings.exportAnimations = settingExportAnim;
+		this->m_exportSettings.exportModel = settingExportModel;
+		this->m_exportSettings.exportNetwork = settingExportNetwork;
+		this->m_exportSettings.exportTae = settingExportTimeAct;
+		this->m_taskFlags.batchExportNetwork = false;
+	}
+
+	if (this->m_taskFlags.batchExportTimeAct)
+	{
+		bool settingExportAnim = this->m_exportSettings.exportAnimations;
+		bool settingExportModel = this->m_exportSettings.exportModel;
+		bool settingExportNetwork = this->m_exportSettings.exportNetwork;
+		bool settingExportTimeAct = this->m_exportSettings.exportTae;
+
+		this->m_exportSettings.exportAnimations = false;
+		this->m_exportSettings.exportModel = false;
+		this->m_exportSettings.exportNetwork = false;
+		this->m_exportSettings.exportTae = true;
+
+		this->exportDirectory();
+
+		this->m_exportSettings.exportAnimations = settingExportAnim;
+		this->m_exportSettings.exportModel = settingExportModel;
+		this->m_exportSettings.exportNetwork = settingExportNetwork;
+		this->m_exportSettings.exportTae = settingExportTimeAct;
+
+		this->m_taskFlags.batchExportTimeAct = false;
 	}
 
 	if (this->m_taskFlags.loadFile)
@@ -952,6 +1059,50 @@ void MorphemeEditorApp::update(float dt)
 		g_workerThread.load()->runTask("Export All", &MorphemeEditorApp::exportTask, this, exportPath);
 
 		this->m_taskFlags.exportAll = false;
+	}
+
+	if (this->m_taskFlags.exportAnimations)
+	{
+		this->m_taskFlags.exportAnimations = false;
+
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
+
+		std::filesystem::create_directories(exportPath);
+
+		g_workerThread.load()->runTask("Export Animations", &MorphemeEditorApp::exportAnimations, this, exportPath);
+	}
+
+	if (this->m_taskFlags.exportModel)
+	{
+		this->m_taskFlags.exportModel = false;
+
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
+
+		std::filesystem::create_directories(exportPath);
+
+		g_workerThread.load()->runTask("Export Model", &MorphemeEditorApp::exportModel, this, exportPath);
+	}
+
+	if (this->m_taskFlags.exportNetwork)
+	{
+		this->m_taskFlags.exportNetwork = false;
+
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
+
+		std::filesystem::create_directories(exportPath);
+
+		g_workerThread.load()->runTask("Export Network", &MorphemeEditorApp::exportNetwork, this, exportPath);
+	}
+
+	if (this->m_taskFlags.exportTimeAct)
+	{
+		this->m_taskFlags.exportTimeAct = false;
+
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
+
+		std::filesystem::create_directories(exportPath);
+
+		g_workerThread.load()->runTask("Export TimeAct", &MorphemeEditorApp::exportTimeAct, this, exportPath);
 	}
 
 	if (this->m_taskFlags.exportAndProcess)
