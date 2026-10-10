@@ -916,6 +916,9 @@ void GuiManager::rootWindow()
 	if (ImGui::BeginMenu("File"))
 	{
 		if (ImGui::MenuItem("Open...")) { editorApp->getTaskFlags()->loadFile = true; }
+
+		ImGui::Separator();
+
 		if (ImGui::BeginMenu("Batch Export"))
 		{
 			if (ImGui::MenuItem("Export")) { editorApp->getTaskFlags()->batchExport = true; }
@@ -935,8 +938,6 @@ void GuiManager::rootWindow()
 
 			ImGui::EndMenu();
 		}
-
-		ImGui::Separator();
 		
 		if (ImGui::BeginMenu("Export"))
 		{
