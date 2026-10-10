@@ -11,26 +11,24 @@ It can be used in the following ways:
 ## Preview Window
 When opening an NMB, the program will attempt to find the character model in the parent path. If it finds one and it has valid vertex data in it, it will show the model in the Model Viewer window.
 
-![Immagine 2024-09-14 162335](https://github.com/user-attachments/assets/908844b3-0601-4ca9-9043-828d77658f34)
+## TimeAct Templates, Tooltips
+Templates are inside the `Data/res` folder. If you want to make changes to the templates, just edit `TimeActTemplate.xml`.
+Tooltips are inside the `Data/res/tooltip` folder. They are shown when you hover an event in the editor windows.
 
-# TimeAct Templates, Tooltips
-Templates are inside the `MorphemeConnect/res` folder. If you want to make changes to the templates, just edit `TimeActTemplate.xml`.
-Tooltips are inside the `MorphemeConnect/res/tooltip folder`. They are shown when you hover an event in the editor windows.
-
-# Export
+## Export
 You can export animations and models to FBX, glTF or XMD using the Export menu under File. Note that animation files do not contain the model within them, and that exporting animations will automatically export the model.
 
-# Reconstruct morpheme source project from DS2 assets (mcn)
-[Instructions](https://github.com/LordRadai/DS2AnimToolset/blob/main/DS2AnimToolset/Tools/mcn/README.md)
-
-# Build Requirements
+## Build Requirements
 If you want to compile this project, you need the following things:
 * DirectXTK UWP (install with VS GnuPackage)
 * ICU
 * ZLIB
 * FBX SDK
 
+# mcnGen
+A set of scripts, run by a batch script, to decompile an export from morphemeEditor back to morphemeConnect source projects.
+
+Instructions [here](https://github.com/LordRadai/DS2AnimToolset/blob/main/DS2AnimToolset/Tools/mcn/README.md)
+
 # Bugs
 Report any bugs in the Discord server's bug report forum https://discord.gg/CJk2b5WMMF
-
-![Immagine 2024-09-14 162729](https://github.com/user-attachments/assets/a9401a1a-d1b3-48c3-949d-ad6aee3a710d)
