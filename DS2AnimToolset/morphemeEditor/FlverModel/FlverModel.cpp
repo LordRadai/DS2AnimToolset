@@ -768,7 +768,7 @@ void FlverModel::draw(RenderManager* renderManager)
 {
 	Matrix world = this->getWorldMatrix();
 
-	renderManager->applyDebugEffect(Matrix::Identity);
+	renderManager->applyDebugEffect(world);
 	renderManager->setInputLayout(kDebugLayout);
 
 	DirectX::PrimitiveBatch<DirectX::VertexPositionColor> prim(renderManager->getDeviceContext(), UINT16_MAX * 3, UINT16_MAX);
