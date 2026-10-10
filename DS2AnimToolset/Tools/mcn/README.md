@@ -1,4 +1,4 @@
-# xml2mcn: rebuild morphemeConnect projects from DS2 network exports
+# Rebuild morphemeConnect projects from DS2 network exports
 
 These tools turn a compiled morpheme network export (`<chr>.xml`, the `NetworkDefinition` XML that the
 DS2AnimToolset decompiler writes) back into an editable **morphemeConnect 3.6.2** project (`<chr>.mcn`).
@@ -8,8 +8,6 @@ Connect's scripting API, then patch in the few things Lua cannot create.
 Verified on all networks in the game, although not all have been tested against an import back to the game itself.
 All of those that were tested produce valid results, which are seemingly equal to what was there before, including c0001 which is the most complex network.
 If you encounter any issues, contact me on Discord.
-
----
 
 ## Requirements
 
@@ -41,8 +39,6 @@ The finished Connect project lives in the same folder. `$(RootDir)` is that fold
 You can then load the project and the .mcn within connect itself for editing.
 Please note that the process can take some time, especially for large networks.
 Batch processing all characters took around 3 hours.
-
----
 
 ## Rebuilding a network
 
@@ -167,8 +163,6 @@ Step 1 also lists `UNSUPPORTED` items (node or condition types with no mapping, 
 not make) and `UNMAPPED FIELD`s (export fields it does not know). Both should be empty, or at least
 understood, before you trust a result.
 
----
-
 ## Control parameter settings
 
 The export has each CP's default value, and that is always the one used. `cp_config.json` adds range and
@@ -249,8 +243,6 @@ Headless Connect does not measure nodes, so sizes are estimated (width from the 
 pins). `layoutcheck.py` reports overlaps, inputs not left of their consumer, nodes past the Output pin,
 inputs out of pin order, CP node placement, transition crossings, and transitions through states.
 
----
-
 ## Reading the diff
 
 `xmldiff.py` matches every original node to its re-exported counterpart, through `_paths.lua`, and
@@ -267,8 +259,6 @@ The report has these sections:
 Structure, attributes, transitions and conditions match the game exactly, given DS2's manifest changes
 (`TransitBase.lua` destination sub states, `Transit.lua` DestinationStartSyncEvent, False condition,
 TwoBoneIK flags).
-
----
 
 ## Files
 
