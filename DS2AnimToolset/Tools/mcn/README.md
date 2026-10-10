@@ -1,4 +1,4 @@
-# xml2mcn: rebuild morphemeConnect projects from DS2 network exports
+# Rebuild morphemeConnect projects from DS2 network exports
 
 These tools turn a compiled morpheme network export (`<chr>.xml`, the `NetworkDefinition` XML that the
 DS2AnimToolset decompiler writes) back into an editable **morphemeConnect 3.6.2** project (`<chr>.mcn`).
