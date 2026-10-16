@@ -1,6 +1,6 @@
 # Converts a morpheme XMD (ANIM_CYCLE, per-frame quat/translate/scale) to a Dark Souls 2 Ap2Ani file.
 # (Ap2AnimFileSingle, one animation, key type 8, all vectors in the float table).
-# The file layout is the same for 32 bit and 63 bits:
+# The file layout is the same for 32 bit and 64 bit:
 # all links are u32 offsets from the file start, object stride 0x40, same key types.
 # Target platforms for the output file:
 #   --target le64  64 bit little-endian
@@ -32,12 +32,14 @@ def quat_to_euler_xyz(q):
     ez = math.atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z))
     return [ex, ey, ez]
 
-# Z-up (morpheme) -> Y-up (game): rotate -90 degrees about X, (x, y, z) -> (x, z, -y).
+# Z-up (morpheme) -> Y-up (game), facing the game's forward:
+# rotate -90 degrees about X, (x, y, z) -> (x, z, -y), then 180 degrees about Y, (x, y, z) -> (-x, y, -z).
+# Combined: (x, y, z) -> (-x, z, y), quaternion Ry(180) * Rx(-90) = (0, sqrt(0.5), sqrt(0.5), 0).
 # Children are in parent space, so only the top bones need it.
-UP_Q = [-math.sqrt(0.5), 0.0, 0.0, math.sqrt(0.5)]
+UP_Q = [0.0, math.sqrt(0.5), math.sqrt(0.5), 0.0]
 
 def up_vec(v):
-    return [v[0], v[2], -v[1]]
+    return [-v[0], v[2], v[1]]
 
 def quat_mul(a, b):
     ax, ay, az, aw = a; bx, by, bz, bw = b
