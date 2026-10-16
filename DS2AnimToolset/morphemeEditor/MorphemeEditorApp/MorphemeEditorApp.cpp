@@ -1065,22 +1065,7 @@ void MorphemeEditorApp::executeTasks()
 	{
 		this->m_taskFlags.exportAnimations = false;
 
-		std::wstring animExportDir = L"";
-		switch (m_exportSettings.exportFormat)
-		{
-		case FT::ExportFormat::kXmd:
-			animExportDir = L"motion_xmd\\";
-			break;
-		case FT::ExportFormat::kFbx:
-			animExportDir = L"motion_fbx\\";
-			break;
-		case FT::ExportFormat::kGltf:
-			animExportDir = L"motion_gltf\\";
-		default:
-			break;
-		}
-
-		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName()) + L"\\" + animExportDir;
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 		std::filesystem::create_directories(exportPath);
 
@@ -1091,22 +1076,7 @@ void MorphemeEditorApp::executeTasks()
 	{
 		this->m_taskFlags.exportModel = false;
 
-		std::wstring modelExportDir = L"";
-		switch (m_exportSettings.exportFormat)
-		{
-		case FT::ExportFormat::kXmd:
-			modelExportDir = L"model_xmd\\";
-			break;
-		case FT::ExportFormat::kFbx:
-			modelExportDir = L"model_fbx\\";
-			break;
-		case FT::ExportFormat::kGltf:
-			modelExportDir = L"model_gltf\\";
-		default:
-			break;
-		}
-
-		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName()) + L"\\" + modelExportDir;
+		std::wstring exportPath = getCharacterExportPath(this->m_character->getCharacterName());
 
 		std::filesystem::create_directories(exportPath);
 
