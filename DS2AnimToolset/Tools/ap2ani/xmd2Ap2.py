@@ -72,7 +72,6 @@ def main(src, dst, up_mode='flver'):
     joints, anim = parse(src)
     ids = sorted(anim)
     if up_mode == 'flver':
-        print('Z-up -> FLVER: reflection (x, y, z) -> (x, z, y) on every bone')
         for j in joints.values():
             j['t'] = flver_vec(j['t']); j['r'] = flver_quat(j['r']); j['s'] = flver_vec(j['s'])
         for jid in ids:
