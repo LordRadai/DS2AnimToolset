@@ -881,6 +881,7 @@ void FlverModel::draw(RenderManager* renderManager)
 		}
 		else
 		{
+			renderManager->applyDebugEffect(world);
 			prim.Begin();
 			DX::DrawModelWireframe(&prim, Matrix::Identity, this, Vector4(DirectX::Colors::White));
 			prim.End();
