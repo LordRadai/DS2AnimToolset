@@ -1084,7 +1084,7 @@ void MorphemeEditorApp::executeTasks()
 
 		std::filesystem::create_directories(exportPath);
 
-		g_workerThread.load()->runTask("Export Animations", &MorphemeEditorApp::exportAnimations, this, exportPath);
+		g_workerThread.load()->runTask("Export Animations", &MorphemeEditorApp::exportAnimationsAndMarkups, this, exportPath);
 	}
 
 	if (this->m_taskFlags.exportModel)
@@ -1769,6 +1769,25 @@ bool MorphemeEditorApp::exportAnimations(std::wstring path)
 {
 	try
 	{
+		std::wstring animExportPath;
+
+		switch (this->m_exportSettings.exportFormat)
+		{
+		case FT::kFbx:
+			animExportPath = L"motion_fbx\\";
+			break;
+		case FT::kXmd:
+			animExportPath = L"motion_xmd\\";
+			break;
+		case FT::kGltf:
+			animExportPath = L"motion_gltf\\";
+			break;
+		default:
+			break;
+		}
+
+		std::filesystem::create_directories(animExportPath);
+
 		CharacterMotionCtrlAnimPreview* motionCtrl = this->m_character->getCharacterMotionCtrl();
 
 		const int animSetIdx = motionCtrl->getNetwork()->getActiveAnimSetIndex();
@@ -1783,7 +1802,7 @@ bool MorphemeEditorApp::exportAnimations(std::wstring path)
 			g_workerThread.load()->setProcessStepName(animName);
 			g_appLog->debugMessage(MsgLevel_Info, "\t%ws\n", animName.c_str());
 
-			this->exportAnimation(path, animSetIdx, i);
+			this->exportAnimation(animExportPath, animSetIdx, i);
 
 			g_workerThread.load()->increaseProgressStep();
 		}
@@ -1844,28 +1863,9 @@ void MorphemeEditorApp::exportAnimationsAndMarkups(std::wstring path)
 
 		g_workerThread.load()->increaseProgressStep();
 
-		std::wstring animExportPath;
-
-		switch (this->m_exportSettings.exportFormat)
-		{
-		case FT::kFbx:
-			animExportPath = L"motion_fbx\\";
-			break;
-		case FT::kXmd:
-			animExportPath = L"motion_xmd\\";
-			break;
-		case FT::kGltf:
-			animExportPath = L"motion_gltf\\";
-			break;
-		default:
-			break;
-		}
-
-		std::filesystem::create_directories(animExportPath);
-
 		g_workerThread.load()->setProcessStepName("Exporting animations...");
 
-		this->exportAnimations(animExportPath);
+		this->exportAnimations(path);
 
 		g_workerThread.load()->increaseProgressStep();
 	}
