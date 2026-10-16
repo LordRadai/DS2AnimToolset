@@ -35,11 +35,21 @@ def quat_to_euler_xyz(q):
 # Z-up (morpheme) -> Y-up (game), facing the game's forward:
 # rotate -90 degrees about X, (x, y, z) -> (x, z, -y), then 180 degrees about Y, (x, y, z) -> (-x, y, -z).
 # Combined: (x, y, z) -> (-x, z, y), quaternion Ry(180) * Rx(-90) = (0, sqrt(0.5), sqrt(0.5), 0).
-# Children are in parent space, so only the top bones need it.
+# Mode 'bones' (default): change of basis on every bone, so each bone's own axes are converted:
+#   q' = C q C^-1, t' = C t, scale axes permuted the same way.
+# Mode 'root': old behaviour, C q and C t on the top bones only (turns the whole skeleton,
+#   but leaves every bone's local axes as morpheme has them).
 UP_Q = [0.0, math.sqrt(0.5), math.sqrt(0.5), 0.0]
+UP_QI = [-UP_Q[0], -UP_Q[1], -UP_Q[2], UP_Q[3]]
 
 def up_vec(v):
     return [-v[0], v[2], v[1]]
+
+def up_scale(v):
+    return [v[0], v[2], v[1]]
+
+def up_quat(q):
+    return quat_mul(quat_mul(UP_Q, q), UP_QI)
 
 def quat_mul(a, b):
     ax, ay, az, aw = a; bx, by, bz, bw = b
@@ -48,17 +58,24 @@ def quat_mul(a, b):
             aw * bz + ax * by - ay * bx + az * bw,
             aw * bw - ax * bx - ay * by - az * bz]
 
-def main(src, dst, up_bones=None):
+def main(src, dst, up_mode='bones'):
     joints, anim = parse(src)
     ids = sorted(anim)
-    if up_bones is None:  # default: bones whose parent is not in the file
-        up_bones = {joints[j]['name'] for j in ids if j in joints and joints[j]['parent'] not in joints}
-    print('Z-up -> Y-up on:', ', '.join(sorted(up_bones)))
-    for jid in ids:
-        if jid in joints and joints[jid]['name'] in up_bones:
+    if up_mode == 'bones':
+        print('Z-up -> Y-up: change of basis on every bone')
+        for j in joints.values():
+            j['t'] = up_vec(j['t']); j['r'] = up_quat(j['r']); j['s'] = up_scale(j['s'])
+        for jid in ids:
+            anim[jid] = [up_quat(r[0:4]) + up_vec(r[4:7]) + up_scale(r[7:10]) for r in anim[jid]]
+    elif up_mode == 'root':
+        top = {j for j in ids if j in joints and joints[j]['parent'] not in joints}
+        print('Z-up -> Y-up on top bones:', ', '.join(sorted(joints[j]['name'] for j in top)))
+        for jid in top:
             j = joints[jid]
             j['t'] = up_vec(j['t']); j['r'] = quat_mul(UP_Q, j['r'])
             anim[jid] = [quat_mul(UP_Q, r[0:4]) + up_vec(r[4:7]) + r[7:10] for r in anim[jid]]
+    else:
+        print('Z-up -> Y-up: off')
     nframes = len(anim[ids[0]])
     vecs, vindex = [], {}
     def vec(v):
@@ -130,8 +147,9 @@ ap = argparse.ArgumentParser(description='Convert a morpheme XMD to an FRPG2 .an
 ap.add_argument('input'); ap.add_argument('output')
 ap.add_argument('--target', choices=['le64', 'le32', 'be32'], default='le64',
                 help='le64 = PC FRPG2_64 (default), le32 = little-endian 32-bit, be32 = PS3')
-ap.add_argument('--up-bones', help='comma-separated bones to convert Z-up -> Y-up (default: top bones)')
-ap.add_argument('--no-up', action='store_true', help='skip the Z-up -> Y-up conversion (raw morpheme axes)')
+ap.add_argument('--up-mode', choices=['bones', 'root', 'off'], default='bones',
+                help='bones = convert every bone\'s axes (default), root = turn the top bones only, off = raw morpheme axes')
+ap.add_argument('--no-up', action='store_true', help='same as --up-mode off')
 args = ap.parse_args()
 E = '>' if args.target == 'be32' else '<'
-main(args.input, args.output, set() if args.no_up else (set(args.up_bones.split(',')) if args.up_bones else None))
+main(args.input, args.output, 'off' if args.no_up else args.up_mode)
