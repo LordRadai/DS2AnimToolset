@@ -131,6 +131,7 @@ ap.add_argument('input'); ap.add_argument('output')
 ap.add_argument('--target', choices=['le64', 'le32', 'be32'], default='le64',
                 help='le64 = PC FRPG2_64 (default), le32 = little-endian 32-bit, be32 = PS3')
 ap.add_argument('--up-bones', help='comma-separated bones to convert Z-up -> Y-up (default: top bones)')
+ap.add_argument('--no-up', action='store_true', help='skip the Z-up -> Y-up conversion (raw morpheme axes)')
 args = ap.parse_args()
 E = '>' if args.target == 'be32' else '<'
-main(args.input, args.output, set(args.up_bones.split(',')) if args.up_bones else None)
+main(args.input, args.output, set() if args.no_up else (set(args.up_bones.split(',')) if args.up_bones else None))
