@@ -156,6 +156,7 @@ def main(src, dst, up_mode='flver'):
     out += names
     out += bytes((-len(out)) % 16)
     open(dst, 'wb').write(out)
+    print(f'{len(objs)} objects, {nframes} frames, {len(vecs)} vectors, {len(out)} bytes')
 
 ap = argparse.ArgumentParser(description='Convert a morpheme XMD to an FRPG2 .ani')
 ap.add_argument('input'); ap.add_argument('output')
