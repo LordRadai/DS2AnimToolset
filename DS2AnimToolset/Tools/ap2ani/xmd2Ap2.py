@@ -45,6 +45,16 @@ UP_QI = [-UP_Q[0], -UP_Q[1], -UP_Q[2], UP_Q[3]]
 def up_vec(v):
     return [-v[0], v[2], v[1]]
 
+# Mode 'flver' (default): morpheme -> FLVER bone space is the reflection (x, y, z) -> (x, z, y)
+# (morphemeEditor: g_nmToYUpAdjustMatrix = RotX(-90), g_flverBoneAdjustMatrix = RotY(180) * Reflect(X)).
+# A reflection is not a rotation, so it is applied as M R M on every bone:
+#   t' = (x, z, y), s' = (sx, sz, sy), q' = (-qx, -qz, -qy, qw).
+def flver_vec(v):
+    return [v[0], v[2], v[1]]
+
+def flver_quat(q):
+    return [-q[0], -q[2], -q[1], q[3]]
+
 def up_scale(v):
     return [v[0], v[2], v[1]]
 
@@ -58,10 +68,16 @@ def quat_mul(a, b):
             aw * bz + ax * by - ay * bx + az * bw,
             aw * bw - ax * bx - ay * by - az * bz]
 
-def main(src, dst, up_mode='bones'):
+def main(src, dst, up_mode='flver'):
     joints, anim = parse(src)
     ids = sorted(anim)
-    if up_mode == 'bones':
+    if up_mode == 'flver':
+        print('Z-up -> FLVER: reflection (x, y, z) -> (x, z, y) on every bone')
+        for j in joints.values():
+            j['t'] = flver_vec(j['t']); j['r'] = flver_quat(j['r']); j['s'] = flver_vec(j['s'])
+        for jid in ids:
+            anim[jid] = [flver_quat(r[0:4]) + flver_vec(r[4:7]) + flver_vec(r[7:10]) for r in anim[jid]]
+    elif up_mode == 'bones':
         print('Z-up -> Y-up: change of basis on every bone')
         for j in joints.values():
             j['t'] = up_vec(j['t']); j['r'] = up_quat(j['r']); j['s'] = up_scale(j['s'])
@@ -147,8 +163,8 @@ ap = argparse.ArgumentParser(description='Convert a morpheme XMD to an FRPG2 .an
 ap.add_argument('input'); ap.add_argument('output')
 ap.add_argument('--target', choices=['le64', 'le32', 'be32'], default='le64',
                 help='le64 = PC FRPG2_64 (default), le32 = little-endian 32-bit, be32 = PS3')
-ap.add_argument('--up-mode', choices=['bones', 'root', 'off'], default='bones',
-                help='bones = convert every bone\'s axes (default), root = turn the top bones only, off = raw morpheme axes')
+ap.add_argument('--up-mode', choices=['flver', 'bones', 'root', 'off'], default='flver',
+                help='flver = morphemeEditor basis, reflection on every bone (default), bones = rotation on every bone, root = turn the top bones only, off = raw morpheme axes')
 ap.add_argument('--no-up', action='store_true', help='same as --up-mode off')
 args = ap.parse_args()
 E = '>' if args.target == 'be32' else '<'
