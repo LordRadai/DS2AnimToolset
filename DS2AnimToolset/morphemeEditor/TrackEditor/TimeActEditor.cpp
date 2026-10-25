@@ -385,11 +385,12 @@ namespace TrackEditor
 
 			if (ImGui::BeginCombo("Event Type", group.events[selectedEventIdx].name.c_str()))
 			{
+				char label[256];
+
 				for (size_t i = 0; i < group.events.size(); i++)
 				{
 					TimeAct::TaeTemplate::Group::Event event = group.events[i];
 
-					char label[256];
 					sprintf_s(label, "%s [%d]", event.name.c_str(), event.id);
 
 					ImGui::Selectable(label);
