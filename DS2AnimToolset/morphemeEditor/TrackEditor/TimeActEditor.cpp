@@ -288,7 +288,6 @@ namespace TrackEditor
 			ImGui::Separator();
 
 			static int selectedGroupIdx = 0;
-			this->trackBuffer->userData = this->m_template->groups[selectedGroupIdx].id;
 
 			if (ImGui::BeginCombo("Group Type", this->m_template->groups[selectedGroupIdx].name.c_str()))
 			{
@@ -304,7 +303,6 @@ namespace TrackEditor
 					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
 					{
 						selectedGroupIdx = i;
-						this->trackBuffer->userData = this->m_template->groups[i].id;
 					}
 				}
 
@@ -313,6 +311,8 @@ namespace TrackEditor
 
 			if (ImGui::Button("Add Track") || RInput::isKeyStateChanged(VK_RETURN))
 			{
+				this->trackBuffer->userData = this->m_template->groups[selectedGroupIdx].id;
+
 				this->addTrack(this->trackBuffer->userData, this->m_template->getGroupName(this->trackBuffer->userData), false);
 
 				ImGui::CloseCurrentPopup();
@@ -382,8 +382,6 @@ namespace TrackEditor
 
 			static int selectedEventIdx = 0;
 
-			this->eventBuffer->userData = this->m_template->groups[groupIdx].events[selectedEventIdx].id;
-
 			if (ImGui::BeginCombo("Event Type", group.events[selectedEventIdx].name.c_str()))
 			{
 				char label[256];
@@ -408,6 +406,7 @@ namespace TrackEditor
 
 			if (ImGui::Button("Add Event") || RInput::isKeyStateChanged(VK_RETURN))
 			{
+				this->eventBuffer->userData = this->m_template->groups[groupIdx].events[selectedEventIdx].id;
 				this->addEvent(this->m_selectedTrack, startTime, endTime, this->eventBuffer->userData);
 				
 				ImGui::CloseCurrentPopup();
