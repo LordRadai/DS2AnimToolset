@@ -6,7 +6,7 @@
 
 namespace TrackEditor
 {
-    enum MovingPart
+    enum MovingPart : uint32_t
     {
         kMovingPartNone,
         kMovingPartStart,
@@ -14,14 +14,14 @@ namespace TrackEditor
         kMovingPartAll
     };
 
-    enum LabelAlignment
+    enum LabelAlignment : uint32_t
     {
         kLeft,
         kCenter,
         kRight
     };
 
-    enum TimeCodeFormat
+    enum TimeCodeFormat : uint8_t
     {
         kSeconds,
         kMilliseconds,

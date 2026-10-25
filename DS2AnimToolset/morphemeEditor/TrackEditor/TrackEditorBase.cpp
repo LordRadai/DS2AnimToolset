@@ -8,143 +8,6 @@
 
 namespace
 {
-    int drawDurationEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, float framePixelWidth, int frameStart, int frameEnd, std::string label, TrackEditor::LabelAlignment alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor, bool interactable)
-    {
-        ImVec2 slotP1(startOffset.x + frameStart * framePixelWidth - 1, startOffset.y + 2);
-        ImVec2 slotP2(startOffset.x + frameEnd * framePixelWidth - 1, startOffset.y + itemHeight - 2);
-
-        ImVec2 textSize = ImGui::CalcTextSize(label.c_str());
-
-        ImVec2 textPos(0, 0);
-
-        switch (alignment)
-        {
-        case TrackEditor::kLeft:
-            textPos = ImVec2(slotP1.x + 2, slotP2.y + (slotP1.y - slotP2.y - textSize.y) / 2);
-            break;
-        case TrackEditor::kCenter:
-            textPos = ImVec2(slotP1.x + (slotP2.x - slotP1.x - textSize.x) / 2, slotP2.y + (slotP1.y - slotP2.y - textSize.y) / 2);
-            break;
-        case TrackEditor::kRight:
-            textPos = ImVec2(slotP1.x + (slotP2.x - slotP1.x - textSize.x) - 2, slotP2.y + (slotP1.y - slotP2.y - textSize.y) / 2);
-            break;
-        default:
-            break;
-        }
-
-        if (textPos.x < startOffset.x)
-            label = "<-" + label;
-
-        draw_list->AddRectFilled(slotP1, slotP2, trackColor, 0);
-        draw_list->AddRect(slotP1, slotP2, boundColor, 0);
-        draw_list->AddText(textPos, textColor, label.c_str()); //Event Value
-
-        if (!interactable)
-            return 0;
-
-        float resizeHandleWidth = std::fmax(framePixelWidth / 3, 3);
-
-        ImRect rects[3] = { ImRect(ImVec2(slotP1.x - resizeHandleWidth, slotP1.y), ImVec2(slotP1.x, slotP2.y))
-        , ImRect(ImVec2(slotP2.x, slotP1.y), ImVec2(slotP2.x + resizeHandleWidth, slotP2.y))
-        , ImRect(slotP1, slotP2) };
-
-        for (size_t i = 0; i < 3; i++)
-        {
-            ImRect& rc = rects[i];
-
-            if (!rc.Contains(ImGui::GetIO().MousePos))
-                continue;
-
-            switch (i)
-            {
-            case 0:
-            case 1:
-                if (ImGui::GetMouseCursor() == ImGuiMouseCursor_Arrow)
-                    ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
-                break;
-            case 2:
-                if (ImGui::GetMouseCursor() == ImGuiMouseCursor_Arrow)
-                    ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-                break;
-            default:
-                break;
-            }
-
-            if (ImGui::IsMouseClicked(0))
-                return i + 1;
-        }
-
-        return 0;
-    }
-
-    int drawDiscreteEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, float framePixelWidth, int frameStart, std::string label, int idx, TrackEditor::LabelAlignment alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor, bool interactable)
-    {
-        ImVec2 slotD1(startOffset.x + frameStart * framePixelWidth - 6, startOffset.y + 2);
-        ImVec2 slotD2(startOffset.x + frameStart * framePixelWidth + 4, startOffset.y + itemHeight - 7);
-        ImVec2 slotT1 = ImVec2(slotD1.x, startOffset.y + itemHeight - 7);
-        ImVec2 slotT2 = ImVec2(slotD2.x, startOffset.y + itemHeight - 7);
-        ImVec2 slotT3 = ImVec2((slotT2.x + slotT1.x) / 2, (slotT2.y + slotT1.y) / 2 + 5);
-
-        ImVec2 textSize = ImGui::CalcTextSize(label.c_str());
-        ImVec2 textSizeIdx = ImGui::CalcTextSize(std::to_string(idx).c_str());
-
-        ImVec2 textPos(0, 0);
-        ImVec2 textPosIdx(0, 0);
-
-        switch (alignment)
-        {
-        case TrackEditor::kLeft:
-            textPosIdx = ImVec2(slotD1.x + 2, slotD2.y + (slotD1.y - slotD2.y - textSizeIdx.y) / 2);
-            textPos = ImVec2(slotD2.x + 2, slotT3.y  - textSize.y);
-            break;
-        case TrackEditor::kCenter:
-            textPosIdx = ImVec2(slotD1.x + (slotD2.x - slotD1.x - textSizeIdx.x) / 2, slotD2.y + (slotD1.y - slotD2.y - textSizeIdx.y) / 2);
-            textPos = ImVec2(slotD2.x + 2, slotT3.y - textSize.y);
-            break;
-        case TrackEditor::kRight:
-            textPosIdx = ImVec2(slotD1.x + (slotD2.x - slotD1.x - textSizeIdx.x) - 2, slotD2.y + (slotD1.y - slotD2.y - textSizeIdx.y) / 2);
-            textPos = ImVec2(slotD2.x + 2, slotT3.y - textSize.y);
-            break;
-        default:
-            break;
-        }
-
-        draw_list->AddRectFilled(slotD1, slotD2, trackColor, 0); //Track Box
-        draw_list->AddLine(slotD1, ImVec2(slotD2.x, slotD1.y), boundColor);
-        draw_list->AddLine(slotD2, ImVec2(slotD2.x, slotD1.y), boundColor);
-        draw_list->AddLine(slotD1, ImVec2(slotD1.x, slotD2.y), boundColor);
-
-        draw_list->AddTriangleFilled(slotT1, slotT2, slotT3, trackColor);
-        draw_list->AddLine(slotT1, slotT3, boundColor);
-        draw_list->AddLine(slotT2, slotT3, boundColor);
-
-        ImRect track_box(slotD1, slotD2);
-
-        draw_list->AddText(textPosIdx, textColor, std::to_string(idx).c_str()); //Event Value
-        draw_list->AddText(textPos, textColor, label.c_str());           //Event Idx
-
-        if (!interactable)
-            return 0;
-
-        ImRect rect_discrete = ImRect(slotD1, slotD2);
-
-        if (rect_discrete.Contains(ImGui::GetMousePos()))
-        {
-            if (ImGui::GetMouseCursor() == ImGuiMouseCursor_Arrow)
-                ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-
-            if (ImGui::IsMouseClicked(0))
-            {
-                if (ImGui::GetMouseCursor() == ImGuiMouseCursor_Arrow)
-                    ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-
-                return 3;
-            }
-        }
-
-        return 0;
-    }
-
     bool editorAddDeleteButton(ImDrawList* draw_list, ImVec2 pos, ImVec2 size, bool add = true)
     {
         ImGuiIO& io = ImGui::GetIO();
@@ -820,9 +683,9 @@ namespace TrackEditor
                         int movingPart = 0;
 
                         if (isDiscrete)
-                            movingPart = drawDiscreteEvent(draw_list, startPos, ItemHeight, framePixelWidth, this->m_tracks[trackIndex]->events[eventIdx]->frameStart, this->getEventLabel(trackIndex, eventIdx, true), eventIdx, this->m_eventLabelAlignment, slotColor, boundColor, textColor, focused && hovered);
+                            movingPart = this->m_tracks[trackIndex]->events[eventIdx]->drawDiscreteEvent(draw_list, startPos, ItemHeight, framePixelWidth, this->getEventLabel(trackIndex, eventIdx, true), eventIdx, this->m_eventLabelAlignment, slotColor, boundColor, textColor, focused && hovered);
                         else
-                            movingPart = drawDurationEvent(draw_list, startPos, ItemHeight, framePixelWidth, this->m_tracks[trackIndex]->events[eventIdx]->frameStart, this->m_tracks[trackIndex]->events[eventIdx]->frameEnd, this->getEventLabel(trackIndex, eventIdx, true), this->m_eventLabelAlignment, slotColor, boundColor, textColor, focused && hovered);
+                            movingPart = this->m_tracks[trackIndex]->events[eventIdx]->drawDurationEvent(draw_list, startPos, ItemHeight, framePixelWidth, this->getEventLabel(trackIndex, eventIdx, true), this->m_eventLabelAlignment, slotColor, boundColor, textColor, focused && hovered);
 
                         if (!this->m_popupOpened && !this->m_movingScrollBar && !this->m_movingCurrentFrame)
                         {

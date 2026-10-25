@@ -3,6 +3,9 @@
 #include <vector>
 #include <Windows.h>
 #include <string>
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
+#include <imgui/imstb_rectpack.h>
 #include "FromSoftware/TimeAct/TimeAct.h"
 
 namespace TrackEditor
@@ -114,6 +117,8 @@ namespace TrackEditor
 		Argument* addArgument(TimeAct::DataType type, std::string name);
 		bool isEventActive(int currentFrame);
 		void destroy();
+		int drawDurationEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, float framePixelWidth, std::string label, uint32_t alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor, bool interactable);
+		int drawDiscreteEvent(ImDrawList* draw_list, ImVec2 startOffset, int itemHeight, float framePixelWidth, std::string label, int idx, uint32_t alignment, ImU32 trackColor, ImU32 boundColor, ImU32 textColor, bool interactable);
 
 		std::string getArgumentsString(int groupId, TimeAct::TaeTemplate* taeTemplate);
 		void argsEditorGUI(int groupId, TimeAct::TaeTemplate* taeTemplate);
