@@ -288,6 +288,7 @@ namespace TrackEditor
 			ImGui::Separator();
 
 			static int selectedGroupIdx = 0;
+			this->trackBuffer->userData = this->m_template->groups[selectedGroupIdx].id;
 
 			if (ImGui::BeginCombo("Group Type", this->m_template->groups[selectedGroupIdx].name.c_str()))
 			{
