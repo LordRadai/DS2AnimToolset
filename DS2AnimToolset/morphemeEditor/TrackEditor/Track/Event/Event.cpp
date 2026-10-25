@@ -171,12 +171,6 @@ namespace TrackEditor
 		ImVec2 slotP1(startOffset.x + this->frameStart * framePixelWidth - 1, startOffset.y + 2);
 		ImVec2 slotP2(startOffset.x + this->frameEnd * framePixelWidth - 1, startOffset.y + itemHeight - 2);
 
-		if (this->frameStart < 0)
-		{
-			label = "<-" + label;
-			slotP1.x = startOffset.x;
-		}
-
 		ImVec2 textSize = ImGui::CalcTextSize(label.c_str());
 
 		ImVec2 textPos(0, 0);
@@ -194,6 +188,12 @@ namespace TrackEditor
 			break;
 		default:
 			break;
+		}
+
+		if (textPos.x < startOffset.x)
+		{
+			label = "<-" + label;
+			textPos.x = startOffset.x;
 		}
 
 		draw_list->AddRectFilled(slotP1, slotP2, trackColor, 0);
