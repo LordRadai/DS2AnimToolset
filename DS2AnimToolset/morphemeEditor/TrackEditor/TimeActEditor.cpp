@@ -381,6 +381,8 @@ namespace TrackEditor
 
 			static int selectedEventIdx = 0;
 
+			this->eventBuffer->userData = this->m_template->groups[groupIdx].events[selectedEventIdx].id;
+
 			if (ImGui::BeginCombo("Event Type", group.events[selectedEventIdx].name.c_str()))
 			{
 				for (size_t i = 0; i < group.events.size(); i++)
