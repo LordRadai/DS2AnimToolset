@@ -291,19 +291,18 @@ namespace TrackEditor
 
 			if (ImGui::BeginCombo("Group Type", this->m_template->groups[selectedGroupIdx].name.c_str()))
 			{
+				char label[256];
+
 				for (size_t i = 0; i < this->m_template->groups.size(); i++)
 				{
 					TimeAct::TaeTemplate::Group group = this->m_template->groups[i];
 
-					char label[256];
 					sprintf_s(label, "%s [%d]", group.name.c_str(), group.id);
 
 					ImGui::Selectable(label);
 
 					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
-					{
 						selectedGroupIdx = i;
-					}
 				}
 
 				ImGui::EndCombo();
@@ -395,10 +394,7 @@ namespace TrackEditor
 					ImGui::Selectable(label);
 
 					if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(0))
-					{
 						selectedEventIdx = i;
-						this->eventBuffer->userData = this->m_template->groups[groupIdx].events[selectedEventIdx].id;
-					}
 				}
 
 				ImGui::EndCombo();
