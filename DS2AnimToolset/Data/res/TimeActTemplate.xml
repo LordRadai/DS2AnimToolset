@@ -2,67 +2,67 @@
     <EventGroupTemplate id="200" name="SoundCtrl">
         <EventTemplate id="201" name="PlaySound">
             <ArgTemplate name="Sound ID" type="int" hidden="false"/>
-            <ArgTemplate name="BodyPartSlot" type="int" hidden="false">
+            <ArgTemplate name="MaterialSource" type="int" hidden="false">
                 <Enum value="0" name="0: None"/>
-                <Enum value="1" name="1: Default"/>
+                <Enum value="1" name="1: Floor"/>
                 <Enum value="2" name="2: Head"/>
                 <Enum value="3" name="3: Body"/>
                 <Enum value="4" name="4: Arm"/>
                 <Enum value="5" name="5: Leg"/>
-                <Enum value="6" name="6: Unknown"/>
+                <Enum value="6" name="6: ActionPropsSoundType"/>
             </ArgTemplate>
-            <ArgTemplate name="Unk08" type="byte" hidden="false"/>
-            <ArgTemplate name="bIs2D" type="bool" hidden="false"/>
-            <ArgTemplate name="Slot ID" type="short" hidden="false"/>
-            <ArgTemplate name="Unk0C" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk0D" type="byte" hidden="false"/>
-            <ArgTemplate name="UnkType" type="byte" hidden="false"/>
+            <ArgTemplate name="bUseBodyPropsMaterial" type="byte" hidden="false"/>
+            <ArgTemplate name="bRawSoundId" type="bool" hidden="false"/>
+            <ArgTemplate name="DmyPoly ID" type="short" hidden="false"/>
+            <ArgTemplate name="bDetached" type="byte" hidden="false"/>
+            <ArgTemplate name="bSetEquipmentId" type="byte" hidden="false"/>
+            <ArgTemplate name="Condition" type="byte" hidden="false">
+                <Enum value="0" name="0: Always"/>
+                <Enum value="1" name="1: If Chr Check True"/>
+                <Enum value="2" name="2: If Chr Check False"/>
+            </ArgTemplate>
             <ArgTemplate name="Unk0F" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk10" type="short" hidden="false"/>
+            <ArgTemplate name="Slot ID" type="short" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="202" name="PlayWeaponSound">
-            <ArgTemplate name="Index" type="int" hidden="false"/>
-            <ArgTemplate name="bVar4" type="bool" hidden="false"/>
-            <ArgTemplate name="Unk05" type="byte" hidden="true"/>
-            <ArgTemplate name="Unk06" type="byte" hidden="true"/>
-            <ArgTemplate name="Unk07" type="byte" hidden="true"/>
-            <ArgTemplate name="Slot ID" type="short" hidden="false"/>
-            <ArgTemplate name="Unk0A" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk0B" type="byte" hidden="false"/>
+            <ArgTemplate name="Swing Index" type="int" hidden="false"/>
+            <ArgTemplate name="bOtherHand" type="bool" hidden="false"/>
+            <ArgTemplate name="Pad05" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad06" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad07" type="byte" hidden="true"/>
+            <ArgTemplate name="DmyPoly ID" type="short" hidden="false"/>
+            <ArgTemplate name="bDetached" type="byte" hidden="false"/>
+            <ArgTemplate name="bSetSwingId" type="bool" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="203" name="PlaySoundUnk">
+        <EventTemplate id="203" name="PlayMaterialSound">
             <ArgTemplate name="Sound ID" type="int" hidden="false"/>
-            <ArgTemplate name="BodyPartSlot" type="int" hidden="false">
+            <ArgTemplate name="MaterialSource" type="int" hidden="false">
                 <Enum value="0" name="0: None"/>
-                <Enum value="1" name="1: Default"/>
+                <Enum value="1" name="1: Floor"/>
                 <Enum value="2" name="2: Head"/>
                 <Enum value="3" name="3: Body"/>
                 <Enum value="4" name="4: Arm"/>
                 <Enum value="5" name="5: Leg"/>
-                <Enum value="6" name="6: Unknown"/>
+                <Enum value="6" name="6: ActionPropsSoundType"/>
             </ArgTemplate>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="300" name="AiCtrl">
-        <EventTemplate id="300" name="GenerateSound">
-            <ArgTemplate name="Priority Category" type="byte" hidden="false">
+        <EventTemplate id="300" name="GenerateNoise">
+            <ArgTemplate name="Size Category" type="byte" hidden="false">
                 <Enum value="0" name="0: Tiny"/>
                 <Enum value="1" name="1: Small"/>
                 <Enum value="2" name="2: Default"/>
                 <Enum value="3" name="3: Large"/>
                 <Enum value="4" name="4: Extra Large"/>
             </ArgTemplate>
-            <ArgTemplate name="bAlwaysCreate" type="bool" hidden="false"/>
+            <ArgTemplate name="bCheckFloorMaterial" type="bool" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="301" name="GenerateSound">
-            <ArgTemplate name="Priority Category" type="byte" hidden="false">
-                <Enum value="0" name="0: Tiny"/>
-                <Enum value="1" name="1: Small"/>
-                <Enum value="2" name="2: Default"/>
-                <Enum value="3" name="3: Large"/>
-                <Enum value="4" name="4: Extra Large"/>
-            </ArgTemplate>
-            <ArgTemplate name="bAlwaysCreate" type="bool" hidden="false"/>
+        <EventTemplate id="301" name="GenerateNoiseEx">
+            <ArgTemplate name="Noise Intensity" type="byte" hidden="false"/>
+            <ArgTemplate name="bCheckFloorMaterial" type="bool" hidden="false"/>
+            <ArgTemplate name="Pad02" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad03" type="byte" hidden="true"/>
             <ArgTemplate name="Radius" type="float" hidden="false"/>
         </EventTemplate>
     </EventGroupTemplate>
@@ -70,24 +70,28 @@
         <EventTemplate id="2200" name="CreateReservedDamage">
             <ArgTemplate name="Index" type="int" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="2201" name="CreateReservedGrabDamage">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
+        <EventTemplate id="2201" name="SetDamageRequest_40">
+            <ArgTemplate name="Value" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="2202" name="CreateDamage">
             <ArgTemplate name="DamageParam ID" type="int" hidden="false"/>
-            <ArgTemplate name="Index" type="byte" hidden="false"/>
+            <ArgTemplate name="WeaponCondition" type="byte" hidden="false">
+                <Enum value="0" name="0: Always"/>
+                <Enum value="1" name="1: If Motion Request Set"/>
+            </ArgTemplate>
         </EventTemplate>
-        <EventTemplate id="2203" name="CreateGrabDamage">
-            <ArgTemplate name="DamageParam ID" type="int" hidden="false"/>
+        <EventTemplate id="2203" name="SetDamageRequest_80">
+            <ArgTemplate name="Value" type="int" hidden="false"/>
         </EventTemplate>
+        <EventTemplate id="2204" name="CreateChrParamDamage"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="1150" name="BulletCtrl">
         <EventTemplate id="2300" name="CreateReservedBullet">
             <ArgTemplate name="Index" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="2301" name="CreateBullet">
-            <ArgTemplate name="DamageParam ID" type="int" hidden="false"/>
             <ArgTemplate name="BulletParam ID" type="int" hidden="false"/>
+            <ArgTemplate name="DamageParam ID" type="int" hidden="false"/>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="1220" name="ParryCtrl">
@@ -95,96 +99,121 @@
         <EventTemplate id="1230" name="EnableSideWalk"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="1500" name="CameraCtrl">
-        <EventTemplate id="1500" name="Unusued_1500"/>
-        <EventTemplate id="1501" name="Unusued_1501"/>
+        <EventTemplate id="1500" name="Unused_1500"/>
+        <EventTemplate id="1501" name="Unused_1501"/>
         <EventTemplate id="1502" name="CameraRumble">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
-            <ArgTemplate name="Unk04" type="float" hidden="false"/>
-            <ArgTemplate name="Unk08" type="float" hidden="false"/>
+            <ArgTemplate name="Rumble ID" type="int" hidden="false"/>
+            <ArgTemplate name="Unk04" type="int" hidden="false"/>
+            <ArgTemplate name="Unk08" type="int" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="1503" name="BeginGrapplerCamera">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
+        <EventTemplate id="1503" name="BeginGrabCamera">
+            <ArgTemplate name="Unused00" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="1504" name="CameraManipulation">
             <ArgTemplate name="CameraExFollowImpactParam ID" type="int" hidden="false"/>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="2100" name="SfxCtrl">
-        <EventTemplate id="2100" name="AddAttackSfx">
+        <EventTemplate id="2100" name="CreateSlotSfx">
             <ArgTemplate name="Slot" type="int" hidden="false"/>
             <ArgTemplate name="Sfx ID" type="int" hidden="false"/>
             <ArgTemplate name="DmyPoly ID" type="int" hidden="false"/>
+            <ArgTemplate name="bDetached" type="byte" hidden="false"/>
             <ArgTemplate name="bMultiSfx" type="bool" hidden="false"/>
-            <ArgTemplate name="Unk0D" type="bool" hidden="false"/>
             <ArgTemplate name="bIsHorizontalSfx" type="bool" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="2101" name="GenerateSfx">
+        <EventTemplate id="2101" name="EraseSfx">
             <ArgTemplate name="Slot" type="int" hidden="false"/>
-            <ArgTemplate name="bIsTurret" type="bool" hidden="false"/>
-            <ArgTemplate name="Unk05" type="byte" hidden="true"/>
-            <ArgTemplate name="Unk06" type="byte" hidden="true"/>
-            <ArgTemplate name="Unk07" type="byte" hidden="true"/>
-            <ArgTemplate name="Turret Duration" type="float" hidden="false"/>
+            <ArgTemplate name="bFade" type="bool" hidden="false"/>
+            <ArgTemplate name="Pad05" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad06" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad07" type="byte" hidden="true"/>
+            <ArgTemplate name="Fade Time" type="float" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="2102" name="GenerateSfx">
+        <EventTemplate id="2102" name="CreateAutoSlotSfx">
             <ArgTemplate name="Sfx ID" type="int" hidden="false"/>
             <ArgTemplate name="DmyPoly ID" type="int" hidden="false"/>
-            <ArgTemplate name="Unk09" type="bool" hidden="false"/>
+            <ArgTemplate name="bDetached" type="byte" hidden="false"/>
+            <ArgTemplate name="bMultiSfx" type="bool" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="2103" name="CreateFullBodySfx">
             <ArgTemplate name="ChrFullBodySfxParam ID" type="int" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="2104" name="GenerateSfx">
-            <ArgTemplate name="State" type="int" hidden="false"/>
+        <EventTemplate id="2104" name="CreateWatchedSlotSfx">
+            <ArgTemplate name="Slot" type="int" hidden="false"/>
             <ArgTemplate name="Sfx ID" type="int" hidden="false"/>
             <ArgTemplate name="DmyPoly ID" type="int" hidden="false"/>
-            <ArgTemplate name="Unk0C" type="bool" hidden="false"/>
-            <ArgTemplate name="Unk0D" type="bool" hidden="false"/>
-            <ArgTemplate name="Slot Type" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk0F" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk10" type="int" hidden="false"/>
+            <ArgTemplate name="bDetached" type="byte" hidden="false"/>
+            <ArgTemplate name="bMultiSfx" type="bool" hidden="false"/>
+            <ArgTemplate name="bIsHorizontalSfx" type="byte" hidden="false"/>
+            <ArgTemplate name="bWatcherFlag" type="byte" hidden="false"/>
+            <ArgTemplate name="Unused10" type="int" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="2105" name="InvokeSfxInDefaultSlot">
-            <ArgTemplate name="Sfx ID" type="int" hidden="false"/>
+        <EventTemplate id="2105" name="CreateActionPropsSfx">
+            <ArgTemplate name="Unused00" type="int" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="2106" name="InvokeSimpletonRingSfx">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
+        <EventTemplate id="2106" name="CreateWatchedSlotSfxOnFlag">
+            <ArgTemplate name="Slot" type="int" hidden="false"/>
             <ArgTemplate name="Sfx ID" type="int" hidden="false"/>
             <ArgTemplate name="DmyPoly ID" type="int" hidden="false"/>
-            <ArgTemplate name="Unk0C" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk0D" type="byte" hidden="false"/>
-            <ArgTemplate name="Slot Type" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk0F" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk10" type="int" hidden="false"/>
+            <ArgTemplate name="bDetached" type="byte" hidden="false"/>
+            <ArgTemplate name="bMultiSfx" type="bool" hidden="false"/>
+            <ArgTemplate name="bIsHorizontalSfx" type="byte" hidden="false"/>
+            <ArgTemplate name="bWatcherFlag" type="byte" hidden="false"/>
+            <ArgTemplate name="Condition" type="byte" hidden="false">
+                <Enum value="0" name="0: Always"/>
+                <Enum value="1" name="1: If Status Flag 0x1F Set"/>
+            </ArgTemplate>
+            <ArgTemplate name="Pad11" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad12" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad13" type="byte" hidden="true"/>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="2200" name="FootEffectCtrl">
-        <EventTemplate id="100" name="Unusued_100"/>
+        <EventTemplate id="100" name="Unused_100"/>
         <EventTemplate id="2400" name="DisableFootEffect"/>
         <EventTemplate id="2401" name="PlayFootEffect">
-            <ArgTemplate name="ID" type="int" hidden="false"/>
+            <ArgTemplate name="ID" type="byte" hidden="false"/>
+            <ArgTemplate name="Pad01" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad02" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad03" type="byte" hidden="true"/>
         </EventTemplate>
-        <EventTemplate id="2402" name="PlayFootEffect">
-            <ArgTemplate name="ID" type="int" hidden="false"/>
-            <ArgTemplate name="FootEffectSize" type="int" hidden="false"/>
+        <EventTemplate id="2402" name="PlayFootEffectSized">
+            <ArgTemplate name="ID" type="byte" hidden="false"/>
+            <ArgTemplate name="FootEffectSize" type="byte" hidden="false"/>
+            <ArgTemplate name="Pad02" type="short" hidden="true"/>
+            <ArgTemplate name="Pad04" type="int" hidden="true"/>
         </EventTemplate>
-        <EventTemplate id="2403" name="ChrFootEffectCtrl_2403">
-            <ArgTemplate name="Unk00" type="byte" hidden="false"/>
+        <EventTemplate id="2403" name="PlayBodyPropsFootEffect">
+            <ArgTemplate name="BodyProps Index" type="byte" hidden="false"/>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="2300" name="WeaponCtrl">
         <EventTemplate id="2500" name="SetActiveWeapon">
-            <ArgTemplate name="Index" type="short" hidden="false"/>
-        </EventTemplate>
-        <EventTemplate id="2501" name="SetWeaponVisibility">
             <ArgTemplate name="Index" type="byte" hidden="false"/>
-            <ArgTemplate name="RightHand" type="bool" hidden="false"/>
-            <ArgTemplate name="LeftHand" type="bool" hidden="false"/>
+            <ArgTemplate name="Pad01" type="byte" hidden="true"/>
         </EventTemplate>
-        <EventTemplate id="2502" name="SetWeaponVisibilityAndCollision">
-            <ArgTemplate name="Index" type="byte" hidden="false"/>
-            <ArgTemplate name="RightHand" type="bool" hidden="false"/>
-            <ArgTemplate name="LeftHand" type="bool" hidden="false"/>
+        <EventTemplate id="2501" name="SetWeaponMaskBit">
+            <ArgTemplate name="Bit Index" type="byte" hidden="false"/>
+            <ArgTemplate name="Hand" type="byte" hidden="false">
+                <Enum value="0" name="0: Other"/>
+                <Enum value="1" name="1: Hand 1"/>
+            </ArgTemplate>
+            <ArgTemplate name="Mode" type="byte" hidden="false"/>
+        </EventTemplate>
+        <EventTemplate id="2502" name="SetWeaponMaskBitEx">
+            <ArgTemplate name="Bit Index" type="byte" hidden="false"/>
+            <ArgTemplate name="Hand" type="byte" hidden="false">
+                <Enum value="0" name="0: Other"/>
+                <Enum value="1" name="1: Hand 1"/>
+            </ArgTemplate>
+            <ArgTemplate name="Mode" type="byte" hidden="false"/>
+            <ArgTemplate name="Pad03" type="byte" hidden="true"/>
+            <ArgTemplate name="Sfx ID" type="int" hidden="false"/>
+            <ArgTemplate name="Unk08" type="int" hidden="false"/>
+            <ArgTemplate name="Unk0C" type="byte" hidden="false"/>
+            <ArgTemplate name="Unk0D" type="bool" hidden="false"/>
+            <ArgTemplate name="Unk0E" type="bool" hidden="false"/>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="2400" name="LockOnCtrl">
@@ -196,37 +225,40 @@
     <EventGroupTemplate id="110000" name="DamageActionCtrl">
         <EventTemplate id="110000" name="InvokeChrParamDamageActionState"/>
         <EventTemplate id="110100" name="InvokeInvincibility"/>
-        <EventTemplate id="110200" name="Unusued_110200"/>
+        <EventTemplate id="110200" name="Unused_110200"/>
         <EventTemplate id="110210" name="InvokeSuperArmor"/>
-        <EventTemplate id="110300" name="InvokeScaledInvincibility"/>
+        <EventTemplate id="110300" name="InvokeDodgeInvincibility"/>
         <EventTemplate id="110400" name="DisableHitDetection"/>
         <EventTemplate id="110500" name="InvokeSuperArmor_2"/>
         <EventTemplate id="110600" name="InvokeUltraArmor"/>
         <EventTemplate id="110700" name="ChrDamageActionCtrl_110700"/>
         <EventTemplate id="110800" name="ChrDamageActionCtrl_110800"/>
-        <EventTemplate id="110900" name="ChrDamageActionCtrl_110900"/>
-        <EventTemplate id="111000" name="SetUnkDamageActionParam">
+        <EventTemplate id="110900" name="EnablePartsGuardSpellParry"/>
+        <EventTemplate id="111000" name="SetPartsDamageMagnification">
             <ArgTemplate name="Value" type="float" hidden="false"/>
-            <ArgTemplate name="Index" type="int" hidden="false"/>
+            <ArgTemplate name="Part Index" type="byte" hidden="false"/>
+            <ArgTemplate name="Pad05" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad06" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad07" type="byte" hidden="true"/>
         </EventTemplate>
         <EventTemplate id="111100" name="ApplyDamageReduction"/>
-        <EventTemplate id="111200" name="PostureRelated"/>
-        <EventTemplate id="111300" name="PoiseRelated"/>
+        <EventTemplate id="111200" name="PoiseRelated"/>
+        <EventTemplate id="111300" name="StunRelated"/>
         <EventTemplate id="111400" name="DisableBackstab"/>
         <EventTemplate id="111500" name="DisableHitBack"/>
         <EventTemplate id="111600" name="EnableCounterDamage"/>
         <EventTemplate id="111700" name="ForceHitBackBehaviour"/>
         <EventTemplate id="111800" name="DisableDamage"/>
-        <EventTemplate id="111900" name="InvokeSuperPoise"/>
+        <EventTemplate id="111900" name="ApplyWeaponUninterruptibleRate"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="120000" name="AttackCtrl">
         <EventTemplate id="120100" name="EnableTracking"/>
-        <EventTemplate id="120200" name="LockTargetRelated"/>
+        <EventTemplate id="120200" name="DisableAttackHoming"/>
         <EventTemplate id="120300" name="ChrAttackCtrl_120300"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="210000" name="GimmickCtrl">
         <EventTemplate id="210000" name="InvokeGimmickBehaviour"/>
-        <EventTemplate id="210099" name="EnableGimmickStateChange"/>
+        <EventTemplate id="210099" name="EquipTorch"/>
         <EventTemplate id="210100" name="LightTorch"/>
         <EventTemplate id="210200" name="ChrGimmickCtrl_210200"/>
     </EventGroupTemplate>
@@ -234,49 +266,73 @@
         <EventTemplate id="220000" name="InvokeItemParamSpEffect"/>
         <EventTemplate id="220100" name="EnableItemMovementCorrection"/>
         <EventTemplate id="220200" name="CreateItemSfx">
-            <ArgTemplate name="DummyPoly ID" type="int" hidden="false"/>
-            <ArgTemplate name="Index" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk05" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk06" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk07" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk08" type="int" hidden="false"/>
+            <ArgTemplate name="DmyPoly ID" type="int" hidden="false"/>
+            <ArgTemplate name="Type" type="byte" hidden="false">
+                <Enum value="0" name="0: Slot 12000"/>
+                <Enum value="1" name="1: Slot 12001"/>
+                <Enum value="2" name="2: Slot 12002"/>
+            </ArgTemplate>
+            <ArgTemplate name="Pad05" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad06" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad07" type="byte" hidden="true"/>
+            <ArgTemplate name="Alt DmyPoly ID" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="220300" name="DropItem">
-            <ArgTemplate name="DummyPoly ID" type="int" hidden="false"/>
+            <ArgTemplate name="DmyPoly ID" type="int" hidden="false"/>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="230000" name="ChrGenerateCtrl">
         <EventTemplate id="230000" name="SetChrGenerateFlags">
             <ArgTemplate name="Flags" type="byte" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="230001" name="GenerateChr"/>
+        <EventTemplate id="230001" name="Unused_230001"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="240000" name="DeadCtrl">
-        <EventTemplate id="240000" name="EnableAltDeadType"/>
+        <EventTemplate id="240000" name="SetDeadType">
+            <ArgTemplate name="Type" type="byte" hidden="false">
+                <Enum value="0" name="0: Dead Type 1"/>
+                <Enum value="1" name="1: Dead Type 2"/>
+            </ArgTemplate>
+        </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="250000" name="ObjGenerateCtrl">
         <EventTemplate id="250000" name="ChrObjGenerateCtrl"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="260000" name="ModelCtrl">
         <EventTemplate id="260000" name="ApplyChrNetworkPhantomParameters"/>
-        <EventTemplate id="260001" name="SetClothEnable">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
+        <EventTemplate id="260001" name="LerpMetamorRate">
+            <ArgTemplate name="Direction" type="byte" hidden="false">
+                <Enum value="0" name="0: To 1.2"/>
+                <Enum value="1" name="1: To -0.2"/>
+            </ArgTemplate>
+            <ArgTemplate name="Pad01" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad02" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad03" type="byte" hidden="true"/>
         </EventTemplate>
         <EventTemplate id="260002" name="BeginEmissive">
-            <ArgTemplate name="Index" type="int" hidden="false"/>
+            <ArgTemplate name="Index" type="byte" hidden="false"/>
+            <ArgTemplate name="Pad01" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad02" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad03" type="byte" hidden="true"/>
             <ArgTemplate name="Unk04" type="float" hidden="false"/>
             <ArgTemplate name="Unk08" type="float" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="260003" name="ChrModelCtrl_260003"/>
+        <EventTemplate id="260003" name="SetModelTableValue">
+            <ArgTemplate name="Table Index" type="byte" hidden="false"/>
+        </EventTemplate>
         <EventTemplate id="260004" name="AdjustModelOpacity">
             <ArgTemplate name="FadeOut Speed" type="float" hidden="false"/>
             <ArgTemplate name="FadeIn Speed" type="float" hidden="false"/>
+            <ArgTemplate name="Unk08" type="bool" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="260005" name="ModelFadeOutOnFlagSet">
             <ArgTemplate name="FadeOut Speed" type="float" hidden="false"/>
             <ArgTemplate name="FadeIn Speed" type="float" hidden="false"/>
-            <ArgTemplate name="Index" type="byte" hidden="false"/>
-            <ArgTemplate name="State" type="byte" hidden="false"/>
+            <ArgTemplate name="Unk08" type="bool" hidden="false"/>
+            <ArgTemplate name="Condition" type="byte" hidden="false">
+                <Enum value="0" name="0: Always"/>
+                <Enum value="1" name="1: If Status Flag 0x1F Set"/>
+            </ArgTemplate>
         </EventTemplate>
         <EventTemplate id="260006" name="ChrModelCtrl_260006"/>
     </EventGroupTemplate>
@@ -284,13 +340,15 @@
         <EventTemplate id="270000" name="DisableRagdollParts">
             <ArgTemplate name="Part ID" type="byte" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="270001" name="InvokeDismemberment"/>
+        <EventTemplate id="270001" name="SetPartsUndead"/>
         <EventTemplate id="270002" name="SetPartHPToFull">
             <ArgTemplate name="Part ID" type="byte" hidden="false"/>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="280000" name="ChrMoveCtrl">
-        <EventTemplate id="280000" name="LockDisableMove"/>
+        <EventTemplate id="280000" name="LockDisableMove">
+            <ArgTemplate name="bKeepAfterEnd" type="byte" hidden="false"/>
+        </EventTemplate>
         <EventTemplate id="280100" name="SetChrTurnRate">
             <ArgTemplate name="Turn Rate" type="float" hidden="false"/>
         </EventTemplate>
@@ -302,57 +360,91 @@
     </EventGroupTemplate>
     <EventGroupTemplate id="300000" name="EventCtrl">
         <EventTemplate id="300000" name="ChrEventCtrl_300000">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
+            <ArgTemplate name="Unused00" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="300100" name="AddPadLocationRumble">
             <ArgTemplate name="DmyPoly ID" type="int" hidden="false"/>
             <ArgTemplate name="PadRumbleParam ID" type="int" hidden="false"/>
-            <ArgTemplate name="Intensity" type="float" hidden="false"/>
+            <ArgTemplate name="Duration" type="float" hidden="false"/>
             <ArgTemplate name="Unk0C" type="float" hidden="false"/>
             <ArgTemplate name="Unk10" type="float" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="300200" name="CreateKeyGuide">
-            <ArgTemplate name="Type" type="int" hidden="false"/>
+            <ArgTemplate name="Type" type="byte" hidden="false">
+                <Enum value="0" name="0: KeyGuide 750 (Host Only)"/>
+            </ArgTemplate>
+            <ArgTemplate name="Pad01" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad02" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad03" type="byte" hidden="true"/>
         </EventTemplate>
-        <EventTemplate id="300300" name="ChrEventCtrl_300300">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
+        <EventTemplate id="300300" name="SetActionPropsStartupValue">
+            <ArgTemplate name="Value" type="int" hidden="false"/>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="310000" name="SpEffectCtrl">
         <EventTemplate id="310000" name="CreateSpEffect">
             <ArgTemplate name="SpEffect ID" type="int" hidden="false"/>
-            <ArgTemplate name="Unk04" type="short" hidden="false"/>
-            <ArgTemplate name="Unk06" type="short" hidden="false"/>
+            <ArgTemplate name="Watcher Slot" type="short" hidden="false"/>
+            <ArgTemplate name="bRemoveAtEnd" type="bool" hidden="false"/>
+            <ArgTemplate name="Pad07" type="byte" hidden="true"/>
         </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="500000" name="MapGimmick">
-        <EventTemplate id="500000" name="MapGimmick_500000">
-            <ArgTemplate name="Unk00" type="int" hidden="false"/>
-            <ArgTemplate name="Unk04" type="int" hidden="false"/>
-            <ArgTemplate name="Unk08" type="int" hidden="false"/>
-            <ArgTemplate name="Unk0C" type="int" hidden="false"/>
+        <EventTemplate id="500000" name="SetCancelDisable">
+            <ArgTemplate name="Unused00" type="int" hidden="false"/>
+            <ArgTemplate name="Unused04" type="int" hidden="false"/>
+            <ArgTemplate name="Unused08" type="int" hidden="false"/>
+            <ArgTemplate name="Unused0C" type="int" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="500001" name="MapGimmick_500001"/>
-        <EventTemplate id="500002" name="MapGimmick_500002"/>
-        <EventTemplate id="500003" name="MapGimmick_500003"/>
-        <EventTemplate id="500004" name="MapGimmick_500004"/>
+        <EventTemplate id="500001" name="SetAnimAccEnable"/>
+        <EventTemplate id="500002" name="SetAnimAccDisable"/>
+        <EventTemplate id="500003" name="SetAnimSpeedOff"/>
+        <EventTemplate id="500004" name="SetAnimSpeedOn"/>
     </EventGroupTemplate>
     <EventGroupTemplate id="502000" name="MapSound">
         <EventTemplate id="502000" name="PlayMapSound">
             <ArgTemplate name="Sound ID" type="int" hidden="false"/>
-            <ArgTemplate name="Unk04" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk05" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk06" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk07" type="byte" hidden="false"/>
-            <ArgTemplate name="Unk08" type="byte" hidden="false"/>
+            <ArgTemplate name="Sound Type" type="byte" hidden="false">
+                <Enum value="100" name="100: Special"/>
+                <Enum value="255" name="255: Stream"/>
+            </ArgTemplate>
+            <ArgTemplate name="bKeepAfterEnd" type="byte" hidden="false"/>
+            <ArgTemplate name="DmyPoly ID" type="short" hidden="false"/>
+            <ArgTemplate name="Unk08" type="bool" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="502001" name="MapSound_502001"/>
+        <EventTemplate id="502001" name="LerpGimmickValue">
+            <ArgTemplate name="From" type="float" hidden="false"/>
+            <ArgTemplate name="To" type="float" hidden="false"/>
+        </EventTemplate>
     </EventGroupTemplate>
     <EventGroupTemplate id="503000" name="MapExtra">
-        <EventTemplate id="503001" name="MapExtra_503001"/>
-        <EventTemplate id="503002" name="MapExtra_503002"/>
-        <EventTemplate id="503003" name="MapExtra_503003"/>
-        <EventTemplate id="503004" name="MapExtra_503004"/>
-        <EventTemplate id="503005" name="MapExtra_503005"/>
+        <EventTemplate id="503001" name="SetEntityFlag"/>
+        <EventTemplate id="503002" name="LerpMetamorRate">
+            <ArgTemplate name="Direction" type="byte" hidden="false">
+                <Enum value="0" name="0: To 1"/>
+                <Enum value="1" name="1: To 0"/>
+            </ArgTemplate>
+        </EventTemplate>
+        <EventTemplate id="503003" name="AddPadLocationRumble">
+            <ArgTemplate name="DmyPoly ID" type="int" hidden="false"/>
+            <ArgTemplate name="PadRumbleParam ID" type="int" hidden="false"/>
+            <ArgTemplate name="Duration" type="float" hidden="false"/>
+            <ArgTemplate name="Unk0C" type="float" hidden="false"/>
+            <ArgTemplate name="Unk10" type="float" hidden="false"/>
+        </EventTemplate>
+        <EventTemplate id="503004" name="BeginEmissive">
+            <ArgTemplate name="Index" type="byte" hidden="false"/>
+            <ArgTemplate name="Pad01" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad02" type="byte" hidden="true"/>
+            <ArgTemplate name="Pad03" type="byte" hidden="true"/>
+            <ArgTemplate name="Unk04" type="float" hidden="false"/>
+            <ArgTemplate name="Unk08" type="float" hidden="false"/>
+        </EventTemplate>
+        <EventTemplate id="503005" name="LerpModelAlpha">
+            <ArgTemplate name="Direction" type="byte" hidden="false">
+                <Enum value="0" name="0: Fade In"/>
+                <Enum value="1" name="1: Fade Out"/>
+            </ArgTemplate>
+        </EventTemplate>
     </EventGroupTemplate>
 </TimeActTemplate>
