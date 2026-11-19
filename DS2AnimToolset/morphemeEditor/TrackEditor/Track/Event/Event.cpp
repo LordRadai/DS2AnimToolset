@@ -319,10 +319,10 @@ namespace TrackEditor
 
 			if (!argTemplate.hidden)
 			{
-				str += this->arguments[i]->getAsString();
-
-				if (i < this->arguments.size() - 1)
+				if (i > 0)
 					str += ", ";
+
+				str += this->arguments[i]->getAsString();
 			}
 		}
 
