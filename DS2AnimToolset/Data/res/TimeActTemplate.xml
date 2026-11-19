@@ -162,7 +162,7 @@
             <ArgTemplate name="bWatcherFlag" type="byte" hidden="false"/>
             <ArgTemplate name="Condition" type="byte" hidden="false">
                 <Enum value="0" name="0: Always"/>
-                <Enum value="1" name="1: If Status Flag 0x1F Set"/>
+                <Enum value="1" name="1: If Status Flag 31 Set"/>
             </ArgTemplate>
             <ArgTemplate name="Pad11" type="byte" hidden="true"/>
             <ArgTemplate name="Pad12" type="byte" hidden="true"/>
