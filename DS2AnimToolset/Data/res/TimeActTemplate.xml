@@ -70,8 +70,8 @@
         <EventTemplate id="2200" name="CreateReservedDamage">
             <ArgTemplate name="Index" type="int" hidden="false"/>
         </EventTemplate>
-        <EventTemplate id="2201" name="SetDamageRequest_40">
-            <ArgTemplate name="Value" type="int" hidden="false"/>
+        <EventTemplate id="2201" name="CreateReservedGrabDamage">
+            <ArgTemplate name="Unk00" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="2202" name="CreateDamage">
             <ArgTemplate name="DamageParam ID" type="int" hidden="false"/>
@@ -80,8 +80,8 @@
                 <Enum value="1" name="1: If Motion Request Set"/>
             </ArgTemplate>
         </EventTemplate>
-        <EventTemplate id="2203" name="SetDamageRequest_80">
-            <ArgTemplate name="Value" type="int" hidden="false"/>
+        <EventTemplate id="2203" name="CreateGrabDamage">
+            <ArgTemplate name="DamageParam ID" type="int" hidden="false"/>
         </EventTemplate>
         <EventTemplate id="2204" name="CreateChrParamDamage"/>
     </EventGroupTemplate>
