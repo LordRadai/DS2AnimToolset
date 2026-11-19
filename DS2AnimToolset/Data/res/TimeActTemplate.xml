@@ -226,11 +226,11 @@
         <EventTemplate id="110000" name="InvokeChrParamDamageActionState"/>
         <EventTemplate id="110100" name="InvokeInvincibility"/>
         <EventTemplate id="110200" name="Unused_110200"/>
-        <EventTemplate id="110210" name="InvokeSuperArmor"/>
+        <EventTemplate id="110210" name="ApplySuperArmor"/>
         <EventTemplate id="110300" name="InvokeDodgeInvincibility"/>
         <EventTemplate id="110400" name="DisableHitDetection"/>
-        <EventTemplate id="110500" name="InvokeSuperArmor_2"/>
-        <EventTemplate id="110600" name="InvokeUltraArmor"/>
+        <EventTemplate id="110500" name="ApplySuperArmor_2"/>
+        <EventTemplate id="110600" name="ApplyHyperArmor"/>
         <EventTemplate id="110700" name="ChrDamageActionCtrl_110700"/>
         <EventTemplate id="110800" name="ChrDamageActionCtrl_110800"/>
         <EventTemplate id="110900" name="EnablePartsGuardSpellParry"/>
